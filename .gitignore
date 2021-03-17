@@ -1,4 +1,9 @@
 .vscode
 /vscode
 /cert
+/obj
+/dist
+*.bat
+*.sh
+*.as3proj
 bin/Dukascopy.swf
