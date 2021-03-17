@@ -27,6 +27,8 @@ package com.dukascopy.connect {
         static public const EP_VI_PAY:int = 136;
         static public const EP_VI_DEF:int = 133;
         static public const EP_911:int = 138;
+        static public const EP_TRADING:int = 143;
+        static public const EP_CONNECT:int = 41;
         static public const CAT_DATING:int = 5;
         static public const CAT_GENERAL:int = 2;
         static public const SERVER_NAME:String = "";
@@ -64,6 +66,7 @@ package com.dukascopy.connect {
 		static public const EP_VI_PAY:int = 136;
 		static public const EP_VI_DEF:int = 133;
 		static public const EP_911:int = 138;
+        static public const EP_TRADING:int = 143;
 		static public const CAT_DATING:int = 5;
 		static public const CAT_GENERAL:int = 2;
 		static public const test:Boolean = true;
@@ -96,6 +99,7 @@ package com.dukascopy.connect {
 		static public const EP_VI_PAY:int = 47;
 		static public const EP_VI_DEF:int = 36;
 		static public const EP_911:int = 30;
+        static public const EP_TRADING:int = 143;
 		static public const CAT_DATING:int = 41;
 		static public const CAT_GENERAL:int = 4;
 		static public const SERVER_NAME:String = " TEST";π

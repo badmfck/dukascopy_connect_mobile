@@ -303,7 +303,12 @@ package com.dukascopy.connect.sys.auth {
 		public static function getItem(name:String):String {
 			if (!EncryptedLocalStore.isSupported)
 				return null;
-			var ba:ByteArray = EncryptedLocalStore.getItem(name);
+			var ba:ByteArray=null;
+			try{
+				ba= EncryptedLocalStore.getItem(name);
+			}catch(e:Error){
+				trace("GOT ELS ERROR: "+e.message);
+			}
 			if (ba == null || ba.length == 0 || ba.bytesAvailable == 0)
 				return null;
 			try {
@@ -322,7 +327,11 @@ package com.dukascopy.connect.sys.auth {
 		public static function removeItem(name:String):void{
 			if (!EncryptedLocalStore.isSupported)
 				return;
-			EncryptedLocalStore.removeItem(name);
+			try{
+				EncryptedLocalStore.removeItem(name);
+			}catch(e:Error){
+				trace("GOT ELS error: "+e.message);
+			}
 		}
 
 		public static function setItem(name:String, value:String):void {
@@ -334,7 +343,11 @@ package com.dukascopy.connect.sys.auth {
 			var ba:ByteArray = new ByteArray();
 			ba.writeUTFBytes(value);
 			ba.compress();
-			EncryptedLocalStore.setItem(name, ba);
+			try{
+				EncryptedLocalStore.setItem(name, ba);
+			}catch(e:Error){
+				trace("Got ELS error: "+e.message);
+			}
 			ba.clear();
 		}
 		
@@ -788,10 +801,14 @@ package com.dukascopy.connect.sys.auth {
 			GlobalSettings.reset();
 
             if(EncryptedLocalStore.isSupported) {
-                var dID:ByteArray = EncryptedLocalStore.getItem('dc_connect_devID');
-                EncryptedLocalStore.reset();
-                if (dID != null)
-                    EncryptedLocalStore.setItem('dc_connect_devID', dID);
+				try{
+					var dID:ByteArray = EncryptedLocalStore.getItem('dc_connect_devID');
+					EncryptedLocalStore.reset();
+					if (dID != null)
+						EncryptedLocalStore.setItem('dc_connect_devID', dID);
+				}catch(e:Error){
+					trace("GOT ELS ERROR: "+e.message);
+				}
             }
 
 			SQLite.clear();

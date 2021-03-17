@@ -1,5 +1,5 @@
 {
-    "config": "air",
+    "config": "airmobile",
     "compilerOptions": {
         "default-frame-rate": 60,
         "use-gpu": true,
@@ -11,8 +11,14 @@
             "conf/project.xml"
         ],
         "debug": true,
-        "output": "bin/Dukascopy.swf"
+        "output": "./bin/Dukascopy.swf"
     },
+
+    "airOptions": {
+		"extdir": [
+			"lib/ane"
+		]
+	},
 
     "mainClass": "Main",
     "application":"conf/desktop.xml"

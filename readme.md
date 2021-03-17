@@ -8,12 +8,14 @@
 4. setup AIR SDK (ctrl+p -> Action Script Select Workspace SDK)
 5. To build project once: Terminal -> Run build task -> Action Script - compile debug asconfig.json
 6. To create build & run task: press F5, select SWF, be sure to create tasks as shown below
+7. config documentation: https://as3mxml.com/
 
 
 
 ### EXAMPLE OF asconfig.json
+```json
 {
-    "config": "air",
+    "config": "airmobile",
     "compilerOptions": {
         "default-frame-rate": 60,
         "use-gpu": true,
@@ -25,57 +27,46 @@
             "conf/project.xml"
         ],
         "debug": true,
-        "output": "bin/Dukascopy.swf"
+        "output": "./bin/Dukascopy.swf"
     },
+
+    "airOptions": {
+		"extdir": [
+			"lib/ane"
+		]
+	},
 
     "mainClass": "Main",
     "application":"conf/desktop.xml"
 }
+```
 
-
-### EXAMPLE OF task.json
-{
-	"version": "2.0.0",
-	"tasks": [
-		{
-			"type": "actionscript",
-			"debug": true,
-			"group": {
-				"kind": "build",
-				"isDefault": true
-			},
-			"problemMatcher": [],
-			"label": "ActionScript: compile debug - asconfig.json"
-		}
-	]
-}
-
-### EXAMPLE OF tasks.json
-{
-	"version": "2.0.0",
-	"tasks": [
-		{
-			"type": "actionscript",
-			"debug": true,
-			"group": {
-				"kind": "build",
-				"isDefault": true
-			},
-			"problemMatcher": [],
-			"label": "ActionScript: compile debug - asconfig.json"
-		}
-	]
-}
-
-### EXAMPLE OF launch.json
+### EXAMPLE OF .vscode/launch.json
+```json
 {
     "version": "0.2.0",
     "configurations": [
         {
             "type": "swf",
             "request": "launch",
+            "name": "Build & Launch SWF",
+            "profile": "mobileDevice",
+            "screensize": "iPhoneRetina",
+            "screenDPI": 326,
+            "versionPlatform": "IOS",
+            "extdir": "lib/debug",
+            "preLaunchTask": "ActionScript: compile debug - asconfig.json"
+        },
+        {
+            "type": "swf",
+            "request": "launch",
             "name": "Launch SWF",
-            "preLaunchTask": "${defaultBuildTask}"
+            "profile": "mobileDevice",
+            "screensize": "iPhoneRetina",
+            "screenDPI": 326,
+            "versionPlatform": "IOS",
+            "extdir": "lib/debug",
         }
     ]
 }
+```

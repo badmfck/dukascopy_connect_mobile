@@ -1,7 +1,7 @@
 package com.dukascopy.connect.screens.dialogs.bottom 
 {
 	import com.dukascopy.connect.Config;
-	import com.dukascopy.connect.data.ICollection;
+	//import com.dukascopy.connect.data.ICollection;
 	import com.dukascopy.connect.data.SelectorItemData;
 	import com.dukascopy.connect.gui.list.List;
 	import com.dukascopy.connect.sys.style.Style;
