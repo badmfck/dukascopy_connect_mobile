@@ -1,0 +1,40 @@
+{
+  "background_images": [
+    {
+      "image": "nm_back_01.jpg",
+      "preview": "tumb_back_01.jpg"
+    },
+    {
+      "image": "nm_back_02.jpg",
+      "preview": "tumb_back_02.jpg"
+    },
+    {
+      "image": "nm_back_03.jpg",
+      "preview": "tumb_back_03.jpg"
+    },
+    {
+      "image": "nm_back_04.jpg",
+      "preview": "tumb_back_04.jpg"
+    },
+    {
+      "image": "nm_back_05.jpg",
+      "preview": "tumb_back_05.jpg"
+    },
+    {
+      "image": "nm_back_06.jpg",
+      "preview": "tumb_back_06.jpg"
+    },
+    {
+      "image": "nm_back_07.jpg",
+      "preview": "tumb_back_07.jpg"
+    },
+    {
+      "image": "nm_back_08.jpg",
+      "preview": "tumb_back_08.jpg"
+    },
+    {
+      "image": "nm_back_09.jpg",
+      "preview": "tumb_back_09.jpg"
+    }
+  ]
+}

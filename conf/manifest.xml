@@ -1,0 +1,180 @@
+<manifest android:installLocation="auto">
+
+    <uses-sdk android:minSdkVersion="14" android:targetSdkVersion="29"/>
+    <uses-permission android:name="android.permission.WRITE_CONTACTS" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.MICROPHONE" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="android.permission.INTERACT_ACROSS_USERS_FULL" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.USE_FINGERPRINT"/>
+    
+    <uses-permission android:name="air.com.iswfx.connect.permission.C2D_MESSAGE" />
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+    
+    <permission android:name="android.permission.INTERACT_ACROSS_USERS_FULL" android:protectionLevel="signature" />
+    <permission android:name="air.com.iswfx.connect.permission.C2D_MESSAGE" android:protectionLevel="signature" />
+
+
+    <application android:allowBackup="false" android:name="android.support.multidex.MultiDexApplication">
+
+        <supports-screens
+                android:normalScreens="true"
+                android:largeScreens="true"
+                android:xlargeScreens="true"
+                android:anyDensity="true"/>
+
+        <meta-data android:name="android.max_aspect" android:value="2.1" />
+        <meta-data android:name="com.google.android.gms.version" android:value="@integer/google_play_services_version" />
+
+
+        <meta-data
+                android:name="com.google.firebase.messaging.default_notification_icon"
+                android:resource="@drawable/ic_smallicon" />
+
+        <meta-data
+                android:name="com.google.firebase.messaging.default_notification_color"
+                android:resource="@color/colorAccent" />
+
+
+
+
+        <service
+                android:name="air.com.iswfx.connect.FirebaseService"
+                android:enabled="true"
+                android:exported="true">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
+        <receiver android:name="air.com.iswfx.connect.NotificationReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
+
+
+        <!-- NOTIFICATIONS
+        <receiver android:name="com.distriqt.extension.pushnotifications.notifications.receivers.NotificationReceiver">
+            <intent-filter>
+                <action android:name="com.iswfx.connect.NOTIFICATION_SELECTED" />
+                <action android:name="com.iswfx.connect.NOTIFICATION_DELETED" />
+                <action android:name="com.iswfx.connect.NOTIFICATION_ACTION" />
+                <data android:scheme="dtpn" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver> -->
+        
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="air.com.iswfx.connect.fileprovider"
+            android:grantUriPermissions="true"
+            android:exported="false">
+            <meta-data 
+                android:name="android.support.FILE_PROVIDER_PATHS" 
+                android:resource="@xml/distriqt_pushnotifications_paths" />
+        </provider>
+        
+        
+        
+        <!-- FIREBASE CORE -->
+        <service android:name="com.google.firebase.components.ComponentDiscoveryService" >
+            <meta-data
+                android:name="com.google.firebase.components:com.google.firebase.analytics.connector.internal.AnalyticsConnectorRegistrar"
+                android:value="com.google.firebase.components.ComponentRegistrar" />
+            <meta-data
+                android:name="com.google.firebase.components:com.google.firebase.iid.Registrar"
+                android:value="com.google.firebase.components.ComponentRegistrar" />
+        </service>
+        <provider
+            android:authorities="com.iswfx.connect.firebaseinitprovider"
+            android:name="com.google.firebase.provider.FirebaseInitProvider"
+            android:exported="false"
+            android:initOrder="100" />
+        
+        
+        
+        <!-- iid -->
+        <receiver
+            android:name="com.google.firebase.iid.FirebaseInstanceIdReceiver"
+            android:exported="true"
+            android:permission="com.google.android.c2dm.permission.SEND" >
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+                
+                <category android:name="com.iswfx.connect" />
+            </intent-filter>
+        </receiver>
+        <!--
+                FirebaseInstanceIdService performs security checks at runtime,
+                no need for explicit permissions despite exported="true"
+        -->
+        <service
+            android:name="com.google.firebase.iid.FirebaseInstanceIdService"
+            android:exported="true" >
+            <intent-filter android:priority="-500" >
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
+            </intent-filter>
+        </service>
+
+
+
+        
+        <activity>
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="dukascopy" />
+            </intent-filter>
+        </activity>
+
+        <activity android:name="org.appspot.apprtc.ConnectActivity" android:screenOrientation="portrait"/>
+        <activity android:name="org.appspot.apprtc.CallActivity" android:screenOrientation="portrait"/>
+        <activity android:name="org.appspot.apprtc.SettingsActivity" android:label=""/>
+        <activity android:name="com.dukascopy.dukascopyextension.media.PickMediaActivity" android:screenOrientation="portrait"/>
+        <activity android:name="com.dukascopy.dukascopyextension.media.Gallery" android:screenOrientation="portrait"/>
+        <activity android:name="com.dukascopy.dukascopyextension.media.OpenGallery" android:screenOrientation="portrait"/>
+        <activity android:name="com.dukascopy.dukascopyextension.media.PickImageActivity" android:screenOrientation="portrait" android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name="com.dukascopy.dukascopyextension.video.player.ShowVideoActivity" android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name="com.dukascopy.dukascopyextension.video.record.CameraActivity" android:theme="@style/AppTheme.NoActionBar" android:screenOrientation="portrait"/>
+        <activity android:name="com.dukascopy.dukascopyextension.video.record.PreviewActivity" android:theme="@style/AppTheme.NoActionBar" android:screenOrientation="portrait"/>
+        <activity android:name="com.dukascopy.dukascopyextension.activity.RecordVoicePermissionActivity" android:theme="@style/Theme.Transparent"/>
+        <activity android:name="com.dukascopy.dukascopyextension.StoragePermissionActivity" android:theme="@style/Theme.Transparent"/>
+        <activity android:name="com.dukascopy.dukascopyextension.activity.maps.MapActivity" android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name="com.dukascopy.dukascopyextension.activity.VoiceActivity" android:theme="@style/Theme.Transparent"/>
+        <activity android:name="com.dukascopy.dukascopyextension.activity.SpeechGoogleActivity" android:theme="@style/Theme.Transparent"/>
+        <activity android:name="com.dukascopy.dukascopyextension.activity.mrz.MRZctivity" android:screenOrientation="landscape" android:theme="@android:style/Theme.Holo.NoActionBar.Fullscreen"/>
+        <activity android:name="com.dukascopy.dukascopyextension.activity.CameraPermissionActivity" android:theme="@style/Theme.Transparent"/>
+        <activity android:name="com.dukascopy.dukascopyextension.activity.WebViewActivity" android:theme="@style/AppTheme.SimpleTheme"/>
+        <activity android:name="com.dukascopy.dukascopyextension.activity.NotificationActivity" android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name="com.dukascopy.dukascopyextension.media.file.PickFileActivity" android:theme="@style/Theme.Transparent"/>
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyCKOb-OxqtIMMpN8Q84feskE54azE3UqVI"
+        />
+    </application>
+</manifest>

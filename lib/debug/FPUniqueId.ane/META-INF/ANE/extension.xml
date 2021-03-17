@@ -1,0 +1,31 @@
+<extension xmlns="http://ns.adobe.com/air/extension/16.0">
+	<id>ru.flashpress.FPUniqueId</id>
+	<versionNumber>1</versionNumber>
+	<platforms>
+		<platform name="iPhone-ARM">
+			<applicationDeployment>
+				<nativeLibrary>FPUniqueIdDevice.a</nativeLibrary>
+				<initializer>FPuidIOSExtInitializer</initializer>
+				<finalizer>FPuidIOSExtFinalizer</finalizer>
+			</applicationDeployment>
+		</platform>
+        <platform name="iPhone-x86">
+            <applicationDeployment>
+                <nativeLibrary>FPUniqueIdSim.a</nativeLibrary>
+                <initializer>FPuidIOSExtInitializer</initializer>
+                <finalizer>FPuidIOSExtFinalizer</finalizer>
+            </applicationDeployment>
+        </platform>
+        <platform name="Android-ARM">
+            <applicationDeployment>
+                <nativeLibrary>FPUniqueId.jar</nativeLibrary>
+                <initializer>ru.flashpress.uid.FPUniqueIdExt</initializer>
+                <finalizer>ru.flashpress.uid.FPUniqueIdExt</finalizer>
+            </applicationDeployment>
+        </platform>
+
+		<platform name="default"> 
+			<applicationDeployment/> 
+		</platform>
+	</platforms>
+</extension>

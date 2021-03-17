@@ -1,0 +1,32 @@
+<?xml version="1.0" ?>
+<swc xmlns="http://www.adobe.com/flash/swccatalog/9">
+    <versions>
+        <swc version="1.2"/>
+        <flex version="4.7.0" build="354188" minimumSupportedVersion="3.0.0"/>
+        <compiler name="ActionScript Compiler" version="2.0.0" build="354188"/>
+    </versions>
+    <features>
+        <feature-script-deps/>
+    </features>
+    <libraries>
+        <library path="library.swf">
+            <script name="connect/DukascopyExtension" mod="1478184325000">
+                <def id="connect:DukascopyExtension"/>
+                <dep id="Boolean" type="s"/>
+                <dep id="Function" type="s"/>
+                <dep id="Number" type="s"/>
+                <dep id="String" type="s"/>
+                <dep id="flash.display:BitmapData" type="e"/>
+                <dep id="flash.events:EventDispatcher" type="i"/>
+                <dep id="flash.events:IEventDispatcher" type="s"/>
+                <dep id="flash.events:StatusEvent" type="s"/>
+                <dep id="flash.external:ExtensionContext" type="s"/>
+                <dep id="flash.utils:ByteArray" type="s"/>
+                <dep id="int" type="s"/>
+            </script>
+            <digests>
+                <digest type="SHA-256" signed="false" value="b9f20f4815f5b1cb4904c1e45023ba89caafb18e58392f00bf35e957376356ea"/>
+            </digests>
+        </library>
+    </libraries>
+</swc>

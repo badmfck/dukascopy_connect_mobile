@@ -1,0 +1,32 @@
+<?xml version="1.0" ?>
+<swc xmlns="http://www.adobe.com/flash/swccatalog/9">
+    <versions>
+        <swc version="1.2"/>
+        <compiler name="ActionScript Compiler" version="2.0.0" build="354071"/>
+    </versions>
+    <features>
+        <feature-script-deps/>
+    </features>
+    <libraries>
+        <library path="library.swf">
+            <script name="com/freshplanet/ane/airaddressbook/AirAddressBook" mod="1395096889000">
+                <def id="com.freshplanet.ane.airaddressbook:AirAddressBook"/>
+                <dep id="Array" type="s"/>
+                <dep id="Boolean" type="s"/>
+                <dep id="String" type="s"/>
+                <dep id="flash.events:EventDispatcher" type="i"/>
+                <dep id="int" type="s"/>
+            </script>
+            <script name="com/freshplanet/ane/airaddressbook/AirAddressBookContactsEvent" mod="1381937080000">
+                <def id="com.freshplanet.ane.airaddressbook:AirAddressBookContactsEvent"/>
+                <dep id="Boolean" type="s"/>
+                <dep id="Object" type="s"/>
+                <dep id="com.freshplanet.ane.airaddressbook:AirAddressBook" type="e"/>
+                <dep id="flash.events:Event" type="i"/>
+            </script>
+            <digests>
+                <digest type="SHA-256" signed="false" value="cfbb3dffb592a1bddb21ca435ee28c07bee01aefa074b6297b158ae4cb088151"/>
+            </digests>
+        </library>
+    </libraries>
+</swc>

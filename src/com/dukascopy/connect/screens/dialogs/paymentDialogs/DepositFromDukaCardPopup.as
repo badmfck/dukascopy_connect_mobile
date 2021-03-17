@@ -1,0 +1,1178 @@
+package com.dukascopy.connect.screens.dialogs.paymentDialogs 
+{
+	import com.dukascopy.connect.Config;
+	import com.dukascopy.connect.MobileGui;
+	import com.dukascopy.connect.data.GiftData;
+	import com.dukascopy.connect.data.TextFieldSettings;
+	import com.dukascopy.connect.gui.button.DDAccountButton;
+	import com.dukascopy.connect.gui.button.DDCardButton;
+	import com.dukascopy.connect.gui.button.DDCardButtonExtended;
+	import com.dukascopy.connect.gui.button.DDFieldButton;
+	import com.dukascopy.connect.gui.components.message.ToastMessage;
+	import com.dukascopy.connect.gui.input.Input;
+	import com.dukascopy.connect.gui.lightbox.UI;
+	import com.dukascopy.connect.gui.list.renderers.ListCardItem;
+	import com.dukascopy.connect.gui.list.renderers.ListPayWalletItem;
+	import com.dukascopy.connect.gui.menuVideo.BitmapButton;
+	import com.dukascopy.connect.gui.preloader.Preloader;
+	import com.dukascopy.connect.gui.tools.HorizontalPreloader;
+	import com.dukascopy.connect.screens.base.BaseScreen;
+	import com.dukascopy.connect.screens.dialogs.ScreenPayDialog;
+	import com.dukascopy.connect.screens.payments.PayCardsManager;
+	import com.dukascopy.connect.screens.payments.card.CardStatic;
+	import com.dukascopy.connect.screens.payments.card.TypeCurrency;
+	import com.dukascopy.connect.sys.applicationError.ApplicationErrors;
+	import com.dukascopy.connect.sys.applicationShop.commodity.Commodity;
+	import com.dukascopy.connect.sys.auth.Auth;
+	import com.dukascopy.connect.sys.dialogManager.DialogManager;
+	import com.dukascopy.connect.sys.imageManager.ImageBitmapData;
+	import com.dukascopy.connect.sys.payments.InvoiceManager;
+	import com.dukascopy.connect.sys.payments.PayAPIManager;
+	import com.dukascopy.connect.sys.payments.PayManager;
+	import com.dukascopy.connect.sys.payments.advancedPayments.vo.PayTaskVO;
+	import com.dukascopy.connect.sys.serviceScreenManager.ServiceScreenManager;
+	import com.dukascopy.connect.sys.softKeyboard.SoftKeyboard;
+	import com.dukascopy.connect.sys.style.Style;
+	import com.dukascopy.connect.sys.theme.AppTheme;
+	import com.dukascopy.connect.utils.TextUtils;
+	import com.dukascopy.langs.Lang;
+	import com.dukascopy.langs.LangManager;
+	import com.telefision.sys.signals.Signal;
+	import fl.motion.Color;
+	import flash.display.Bitmap;
+	import flash.display.Shape;
+	import flash.display.Sprite;
+	import flash.events.Event;
+	import flash.geom.ColorTransform;
+	import flash.geom.Rectangle;
+	import flash.text.TextFieldAutoSize;
+	import flash.text.TextFormatAlign;
+	
+	/**
+	 * ...
+	 * @author Sergey Dobarin. Telefision TEAM Kiev.
+	 */
+	
+	public class DepositFromDukaCardPopup extends BaseScreen {
+		
+		protected var container:Sprite;
+		private var bg:Shape;
+		private var text:Bitmap;
+		private var acceptButton:BitmapButton;
+		private var accountText:Bitmap;
+		private var backButton:BitmapButton;
+		private var selectorDebitAccont:DDAccountButton;
+		private var preloader:Preloader;
+		private var screenLocked:Boolean;
+		private var finishImage:Bitmap;
+		private var finishImageMask:Sprite;
+		private var verticalMargin:Number;
+		private var walletSelected:Boolean;
+		private var selectedAccount:Object;
+		private var payId:String;
+		private var resultAccount:String;
+		private var newAmount:Number;
+		private var currentCommision:Number = 0;
+		private var preloaderShown:Boolean = false;
+		private var commodity:Commodity;
+		private var iAmountCurrency:Input;
+		private var selectorCurrency:DDFieldButton;
+		private var amountSectionTitle:Bitmap;
+		private var cardSectionTitle:Bitmap;
+		private var accountTitle:Bitmap;
+		private var selectorCard:DDCardButtonExtended;
+		private var receivedCards:Array;
+		private var id:String;
+		private var accountsPreloader:HorizontalPreloader;
+		private var cardsPreloader:HorizontalPreloader;
+		private var noCardsMessage:Bitmap;
+		private var cardId:String;
+		private var noAccountMessage:Bitmap;
+		private var giftData:GiftData;
+		private var dataRedy:Boolean;
+		protected var componentsWidth:int;
+		
+		public function DepositFromDukaCardPopup() {
+			
+		}
+		
+		override protected function createView():void {
+			super.createView();
+			container = new Sprite();
+			
+			bg = new Shape();
+			bg.graphics.beginFill(Style.color(Style.COLOR_BACKGRIUND));
+			var round:int = Config.FINGER_SIZE * .3;
+			var round3:int = round * 3;
+			bg.graphics.drawRect(0, 0, round3, round3);
+			bg.scale9Grid = new Rectangle(round, round, round, round);
+			container.addChild(bg);
+			
+			accountText = new Bitmap();
+			container.addChild(accountText);
+			
+			acceptButton = new BitmapButton();
+			acceptButton.setStandartButtonParams();
+			acceptButton.setDownScale(1);
+			acceptButton.setDownColor(0);
+			acceptButton.tapCallback = nextClick;
+			acceptButton.disposeBitmapOnDestroy = true;
+			container.addChild(acceptButton);
+			
+			backButton = new BitmapButton();
+			backButton.setStandartButtonParams();
+			backButton.setDownScale(1);
+			backButton.setDownColor(0);
+			backButton.tapCallback = backClick;
+			backButton.disposeBitmapOnDestroy = true;
+			container.addChild(backButton);
+			
+			selectorDebitAccont = new DDAccountButton(openWalletSelector, null, DDAccountButton.STYLE_1);
+			container.addChild(selectorDebitAccont);
+			
+			selectorCard = new DDCardButtonExtended(openCardSelector, null, DDCardButton.STYLE_1);
+			container.addChild(selectorCard);
+			
+			_view.addChild(container);
+			
+			iAmountCurrency = new Input(Input.MODE_DIGIT_DECIMAL);
+			iAmountCurrency.setParams(Lang.textAmount, Input.MODE_DIGIT_DECIMAL);
+			iAmountCurrency.S_CHANGED.add(onChangeInputValueCurrency);
+			iAmountCurrency.setRoundBG(false);
+			iAmountCurrency.getTextField().textColor = Style.color(Style.COLOR_TEXT);
+			iAmountCurrency.setRoundRectangleRadius(0);
+			iAmountCurrency.inUse = true;
+			container.addChild(iAmountCurrency.view);
+			
+			selectorCurrency = new DDFieldButton(selectCurrencyTap, "", false);
+			container.addChild(selectorCurrency);
+			
+			amountSectionTitle = new Bitmap();
+			container.addChild(amountSectionTitle);
+			
+			cardSectionTitle = new Bitmap();
+			container.addChild(cardSectionTitle);
+			
+			accountTitle = new Bitmap();
+			container.addChild(accountTitle);
+			
+			accountsPreloader = new HorizontalPreloader();
+			container.addChild(accountsPreloader);
+			
+			cardsPreloader = new HorizontalPreloader();
+			container.addChild(cardsPreloader);
+			
+			noCardsMessage = new Bitmap();
+			container.addChild(noCardsMessage);
+			
+			noAccountMessage = new Bitmap();
+			container.addChild(noAccountMessage);
+		}
+		
+		private function callbackSelectCard(card:Object):void {
+			if (card == null)
+				return;
+			selectorCard.visible = true;
+			selectorCard.setValue(card);
+			noCardsMessage.visible = false;
+			
+			var currency:String;
+			if ("ccy" in card && card.ccy != null)
+			{
+				currency = card.ccy;
+			}
+			else if ("currency" in card && card.currency != null)
+			{
+				currency = card.currency;
+			}
+			
+			selectorCurrency.setValue(currency);
+			checkDataValid();
+		}
+		
+		private function checkDataValid():void
+		{
+			if (isActivated && selectorCard.getValue() != null && selectedAccount != null && iAmountCurrency.value != null && iAmountCurrency.value != "" && !isNaN(Number(iAmountCurrency.value)))
+			{
+				acceptButton.activate();
+				acceptButton.alpha = 1;
+			}
+			else{
+				acceptButton.deactivate();
+				acceptButton.alpha = 0.5;
+			}
+		}
+		
+		private function selectCurrencyTap(string:String):void 
+		{
+			
+		}
+		
+		private function onMoneyCardsReceived(data:Object):void {
+			if (_isDisposed) {
+				return;
+			}
+			
+			if (receivedCards == null)
+			{
+				receivedCards = new Array();
+			}
+			
+			var array:Array;
+			
+			
+			if (data != null) {
+				if ("cards" in data) { 
+					array = data.cards as Array;
+				} else {
+					array = data as Array;
+				}
+				if (array != null)
+				{
+					for (var i:int = 0; i < array.length; i++) 
+					{
+						array[i].linked = true;
+					}
+					receivedCards = receivedCards.concat(array);
+				}
+			}
+			
+			dataRedy = true;
+			if (isActivated == true)
+			{
+				selectorCard.activate();
+				selectorDebitAccont.activate();
+			}
+			
+			cardsPreloader.stop();
+			autofillCard(cardId);
+			var card:Object = selectorCard.getValue();
+			if (card != null) {
+				selectAccount(("currency" in card == true) ? card.currency : (("ccy" in card == true) ? card.ccy : null), false);
+			}
+		}
+		
+		private function autofillCard(preselectedCardId:String = null):void {
+			var arr:Array;
+			var cardSelected:Object;
+			var card:Object;
+			if (preselectedCardId != null) {
+				arr = getCardsDataCommon("", CardStatic.TYPE_ACTIVE, receivedCards);
+				if (arr != null && arr.length > 0) {
+					for (var i:int = 0; i < arr.length; i++) {
+						card = arr[i];
+						if ("id" in card == true) {
+							if (card.id == preselectedCardId) {
+								cardSelected = card;
+								break;
+							}
+						} else if ("uid" in card == true && card.uid == preselectedCardId) {
+							cardSelected = card;
+							break;
+						}
+					}
+				}
+				if (cardSelected) {
+					callbackSelectCard(card);
+				} else {
+					drawNoCard();
+				//	ApplicationErrors.add("card not found");
+				}
+			} else {
+				/*if (selectedAccount != null) {
+					arr = getCardsDataCommon(selectedAccount.CURRENCY, CardStatic.TYPE_ACTIVE, receivedCards);
+					if (arr != null && arr.length > 0) {
+						for (var i2:int = 0; i2 < arr.length; i2++) {
+							card = arr[i2];
+							
+							if (card.currency == selectedAccount.CURRENCY) {
+								cardSelected = card;
+								break;
+							}
+						}
+					}
+					if (cardSelected) {
+						callbackSelectCard(card);
+					} else {
+						drawNoCard();
+					}
+				} else {*/
+					arr = getCardsDataCommon("", CardStatic.TYPE_ACTIVE, receivedCards);
+					if (arr != null && arr.length > 0) {
+						callbackSelectCard(arr[0]);
+					} else {
+						drawNoCard();
+					}
+				/*}*/
+			}
+		}
+		
+		private function drawNoCard():void {
+			drawNoCardsMessage();
+			selectorCard.visible = false;
+			selectorCard.setValue();
+			
+			checkDataValid();
+		}
+		
+		private function onPPCardsReceived(data:Object):void {
+			if (_isDisposed)
+				return;
+			if (data != null) {
+				if (data.cards != null) {
+					receivedCards = data.cards as Array;
+				} else {
+					receivedCards = data as Array;
+				}
+			}
+			
+			dataRedy = true;
+			if (isActivated == true)
+			{
+				selectorCard.activate();
+				selectorDebitAccont.activate();
+			}
+			
+			cardsPreloader.stop();
+			autofillCard(cardId);
+			var card:Object = selectorCard.getValue();
+			if (card != null) {
+				selectAccount(("currency" in card == true) ? card.currency : (("ccy" in card == true) ? card.ccy : null), false);
+			}
+		}
+		
+		private function openCardSelector(e:Event = null):void {
+			if (receivedCards == null)
+				return;
+				
+			var cards:Array;
+			
+			cards = getCardsDataCommon("", CardStatic.TYPE_ACTIVE, receivedCards)
+			
+			DialogManager.showDialog(ScreenPayDialog, {
+				callback: callbackSelectMYCard,
+				data: cards,
+				itemClass: ListCardItem,
+				label: Lang.TEXT_SELECT_ACCOUNT
+			});
+		}
+		
+		private function callbackSelectMYCard(obj:Object):void {
+			if (obj == null) return;
+			selectorCard.setValue(obj);
+			var currency:String;
+			if ("ccy" in obj && obj.ccy != null)
+			{
+				currency = obj.ccy;
+			}
+			else if ("currency" in obj && obj.currency != null)
+			{
+				currency = obj.currency;
+			}
+			selectorCurrency.setValue(currency);
+			selectAccount(currency, false);
+		}
+		
+		private function getCardsDataCommon(currencyFilter:String = "", statusFilter:String = "", arr:Array = null):Array {
+			if (arr == null) {
+				return [];
+			}
+			var filteredCards:Array;
+			var cardData:Object;
+			var sameCurrency:Boolean = false;
+			var sameStatus:Boolean = false;
+			var i:int;
+			var currency:String;
+			if (currencyFilter != "" && statusFilter != "") {
+				filteredCards = [];
+				for (i = 0; i < arr.length; i++) {
+					cardData = arr[i];
+					currency = cardData.currency || cardData.ccy;
+					sameCurrency = currency == currencyFilter;
+					if ("status_name" in cardData && cardData.status_name != null)
+					{
+						sameStatus = (cardData.status_name as String).toLowerCase() == statusFilter.toLowerCase();
+					}
+					else{
+						//!TODO: ask Alex;
+						sameStatus = true;
+					}
+					
+					//sameStatus = (cardData.status as String).toLowerCase() == statusFilter.toLowerCase();
+					if (sameCurrency && sameStatus) {
+						filteredCards[filteredCards.length] = cardData;
+					}
+				}
+				
+				return filteredCards;
+			} else if (currencyFilter != "" && statusFilter == "") {
+				filteredCards = [];
+				for (i = 0; i < arr.length; i++) {
+					cardData = arr[i];
+					currency = cardData.currency || cardData.ccy;
+					sameCurrency = currency == currencyFilter;
+					if (sameCurrency) {
+						filteredCards[filteredCards.length] = cardData;
+					}
+				}
+				
+				return filteredCards;
+			} else if (currencyFilter == "" && statusFilter != "") {
+				filteredCards = [];
+				for (i = 0; i < arr.length; i++) {
+					cardData = arr[i];
+					if ("status_name" in cardData && cardData.status_name != null)
+					{
+						sameStatus = (cardData.status_name as String).toLowerCase() == statusFilter.toLowerCase();
+					}
+					else{
+						sameStatus = true;
+					}
+					if (sameStatus) {
+						filteredCards[filteredCards.length] = cardData;
+					}
+				}
+				
+				return filteredCards;
+			} else {
+				return arr;
+			}
+		}
+		
+		private function openWalletSelector(e:Event = null):void
+		{
+			SoftKeyboard.closeKeyboard();
+			if (iAmountCurrency != null)
+			{
+				iAmountCurrency.forceFocusOut();
+			}
+			
+			PayAPIManager.selectMainAPI(); // Dobavil tut poskolku v SendGiftAction ne otrabativat perekljuchenie API
+			
+			if (PayAPIManager.isSwissApiChecked == true)
+			{
+				if (PayAPIManager.hasSwissAccount == true)
+				{
+					
+				}
+				else{
+					DialogManager.alert(Lang.information, Lang.featureNoPaments, createPaymentsAccount, Lang.registrate, Lang.textCancel);
+					return;
+				}
+			}
+			else{
+				return;
+			}
+			
+			if (PayManager.accountInfo == null)
+			{
+				showPreloader();
+				deactivateScreen();
+				var preGiftModel:PayTaskVO = new PayTaskVO(PayTaskVO.TASK_TYPE_PAY_GIFT_BY_UID);
+				preGiftModel.from_uid = Auth.uid;
+				preGiftModel.handleInCustomScreenName = "CreateGiftPopup";
+				InvoiceManager.preProcessInvoce(preGiftModel);
+			} else
+				showWalletsDialog();
+		}
+		
+		static private function createPaymentsAccount(val:int):void {
+			if (val != 1) {
+				return;
+			}
+			MobileGui.showRoadMap();
+		}
+		
+		private function showWalletsDialog():void
+		{
+			DialogManager.showDialog(ScreenPayDialog, {callback: onWalletSelect, data: PayManager.accountInfo.accounts, itemClass: ListPayWalletItem/*ListPayAccount*/, label: Lang.TEXT_SELECT_ACCOUNT});
+		}
+		
+		private function showPreloader():void
+		{
+			preloaderShown = true;
+			
+			var color:Color = new Color();
+			color.setTint(0xFFFFFF, 0.7);
+			container.transform.colorTransform = color;
+			
+			if (preloader == null)
+			{
+				preloader = new Preloader();
+			}
+			preloader.x = _width * .5;
+			preloader.y = _height * .5;
+			view.addChild(preloader);
+			preloader.show();
+		}
+		
+		private function onWalletSelect(account:Object, updateCards:Boolean = true, cleanCurrent:Boolean = false):void
+		{
+			
+			if (account == null)
+			{
+				if (cleanCurrent == true)
+				{
+					selectedAccount = account;
+				//	selectorCurrency.setValue();
+					walletSelected = false;
+				}	
+			}
+			else{
+				selectedAccount = account;
+			//	selectorCurrency.setValue(account.CURRENCY);
+			}
+			if (account != null || cleanCurrent == true)
+			{
+				selectorDebitAccont.setValue(account);
+			}
+			
+			if (updateCards)
+			{
+				autofillCard();
+			}
+		}
+		
+		private function drawNoCardsMessage():void 
+		{
+			if (noCardsMessage.bitmapData)
+			{
+				noCardsMessage.bitmapData.dispose();
+				noCardsMessage.bitmapData = null;
+			}
+			
+			var currency:String = Lang.currency;
+			if (selectorCurrency.value != selectorCurrency.placeholder)
+			{
+				currency = selectorCurrency.value;
+			}
+			
+			var strValue:String = LangManager.replace(Lang.regExtValue, Lang.TEXT_NO_ACTIVE_YOUR_CARDS, currency);
+			noCardsMessage.bitmapData = TextUtils.createTextFieldData(strValue, componentsWidth, 10, true, 
+															TextFormatAlign.LEFT, TextFieldAutoSize.LEFT, Config.FINGER_SIZE * .28, true, 0x777E8A, 0xFFFFFF, false, true);
+			noCardsMessage.x = int(_width * .5 - noCardsMessage.width * .5);
+			noCardsMessage.visible = true;
+			selectorCard.visible = false;
+			drawView();
+		}
+		
+		override public function onBack(e:Event = null):void {
+			if (screenLocked == false) {
+				InvoiceManager.stopProcessInvoice();
+				ServiceScreenManager.closeView();
+			}
+		}
+		
+		private function backClick():void {
+			onBack();
+		}
+		
+		private function nextClick():void {
+			SoftKeyboard.closeKeyboard();
+			if (iAmountCurrency != null)
+			{
+				iAmountCurrency.forceFocusOut();
+			}
+			if (giftData != null)
+			{
+				giftData.credit_account_number = selectedAccount.ACCOUNT_NUMBER;
+				giftData.currency = selectorCurrency.value;
+				giftData.customValue = Number(iAmountCurrency.value);
+				if (selectorCard.getValue() != null)
+				{
+					if ("linked" in selectorCard.getValue() && selectorCard.getValue().linked == true && "uid" in selectorCard.getValue())
+					{
+						giftData.accountNumber = selectorCard.getValue().uid;
+					}
+					else{
+						giftData.accountNumber = selectorCard.getValue().id;
+					}
+				}
+				
+				if (giftData.callback != null)
+				{
+					giftData.callback(giftData);
+				}
+			}
+			
+			ServiceScreenManager.closeView();
+		}
+		
+		override public function clearView():void
+		{
+			super.clearView();
+			InvoiceManager.stopProcessInvoice();
+		}
+		
+		private function activateButtons():void
+		{
+			activateBackButton();
+			activateAcceptButton();
+		}
+		
+		private function activateBackButton():void
+		{
+			if (isDisposed)
+			{
+				return;
+			}
+			
+			if (backButton != null && isActivated)
+			{
+				backButton.activate();
+			}
+		}
+		
+		private function activateAcceptButton():void
+		{
+			if (isDisposed)
+			{
+				return;
+			}
+			
+			if (acceptButton != null && isActivated)
+			{
+				acceptButton.activate();
+				acceptButton.alpha = 1;
+			}
+		}
+		
+		override public function initScreen(data:Object = null):void
+		{
+			super.initScreen(data);
+			
+			if (data != null && "giftData" in data && data.giftData is GiftData) {
+				giftData = data.giftData as GiftData;
+				if (giftData.currency != null)
+				{
+					cardId = giftData.currency;
+				}
+			}
+			
+			componentsWidth = _width - Config.DIALOG_MARGIN * 2;
+			
+			drawAmountTitle();
+			drawCardSectionTitle();
+			drawAccountSectionTitle();
+			
+			drawAccountSelector();
+			drawCardSelector();
+		//	drawAccountText(Lang.chooseAccount);
+			drawAcceptButton(Lang.textNext);
+			acceptButton.deactivate();
+			acceptButton.alpha = 0.5;
+			
+			drawBackButton();
+			
+			var itemWidth:int = (componentsWidth - Config.MARGIN) / 2;
+			
+			iAmountCurrency.width = itemWidth;
+			iAmountCurrency.view.x = Config.DIALOG_MARGIN;
+			
+			selectorCurrency.x = iAmountCurrency.view.x + itemWidth + Config.MARGIN;
+			selectorCurrency.setSize(itemWidth, Config.FINGER_SIZE * .8);
+			
+			accountsPreloader.setSize(componentsWidth, int(Config.FINGER_SIZE * .05));
+			cardsPreloader.setSize(componentsWidth, int(Config.FINGER_SIZE * .05));
+			
+			if(PayAPIManager.isSwissApiChecked == false ){	
+				PayAPIManager.S_SWISS_API_CHECKED.add(onSwissApiChecked);
+			}
+			else{
+				checkData();
+			}
+		}
+		
+		private function drawAccountSectionTitle():void 
+		{
+			if (accountTitle.bitmapData)
+			{
+				accountTitle.bitmapData.dispose();
+				accountTitle.bitmapData = null;
+			}
+			accountTitle.bitmapData = TextUtils.createTextFieldData("<b>" + Lang.toAccount + "</b>", componentsWidth, 10, false, TextFormatAlign.LEFT, 
+																	TextFieldAutoSize.LEFT, Config.FINGER_SIZE * .3, false, 0x777E8A, 0xFFFFFF, false, true);
+		}
+		
+		private function checkData():void {
+			if (PayManager.accountInfo != null) {
+				if (PayManager.systemOptions != null) {
+					onDataReady();
+				} else {
+					accountsPreloader.start();
+					getSystemOptions();
+				}
+			} else {
+				accountsPreloader.start();
+				PayManager.init();
+			}
+			PayManager.S_ACCOUNT.add(onAccountInfo);
+			PayManager.callGetAccountInfo();
+		}
+		
+		private function onSwissApiChecked():void 
+		{
+			if (PayAPIManager.hasSwissAccount){
+				checkData();
+			}else{
+				//!TODO:;
+			}
+		}
+		
+		private function selectAccount(currency:String, updateCards:Boolean = true):void 
+		{
+			if (PayManager.accountInfo && PayManager.accountInfo.accounts)
+			{
+				var defaultAccount:Object;
+				
+				var currencyNeeded:String = currency;
+				var wallets:Array = PayManager.accountInfo.accounts;
+				var l:int = wallets.length;
+				var walletItem:Object;
+				for (var i:int = 0; i < l; i++)
+				{
+					walletItem = wallets[i];
+					if (currencyNeeded == walletItem.CURRENCY)
+					{
+						defaultAccount = walletItem;
+						break;
+					}
+				}
+				if (defaultAccount != null)
+				{
+					onWalletSelect(defaultAccount, updateCards);
+				}
+				else{
+				//	drawNoAccountMessage();
+					onWalletSelect(null, updateCards, true);
+				}
+			}
+		}
+		
+		private function drawNoAccountMessage():void 
+		{
+			if (noAccountMessage.bitmapData)
+			{
+				noAccountMessage.bitmapData.dispose();
+				noAccountMessage.bitmapData = null;
+			}
+			var strValue:String = LangManager.replace(Lang.regExtValue, Lang.TEXT_NO_ACTIVE_YOUR_CARDS, selectorCurrency.value);
+			noAccountMessage.bitmapData = TextUtils.createTextFieldData(strValue, componentsWidth, 10, true, 
+															TextFormatAlign.LEFT, TextFieldAutoSize.LEFT, Config.FINGER_SIZE * .28, true, 0x777E8A, 0xFFFFFF, false, true);
+			noAccountMessage.x = int(_width * .5 - noAccountMessage.width * .5);
+			noAccountMessage.visible = true;
+			selectorDebitAccont.visible = false;
+			drawView();
+		}
+		
+		private function onDataReady():void {
+			accountsPreloader.stop();
+			
+			getCards();
+		}
+		
+		private function getCards():void 
+		{
+			cardsPreloader.start();
+			
+			PayCardsManager.S_LOADING_STATE_CHANGED.add(onCardsLoadStateChange);
+			onCardsLoadStateChange(true);
+		}
+		
+		private function onCardsLoadStateChange(needToLoad:Boolean = false):void {
+			if (PayCardsManager.isLoadingLinkedCards == false && 
+				PayCardsManager.isLoadingDukascopyCards == false && 
+				PayCardsManager.hadDukascopyCardsRespond == true && 
+				PayCardsManager.hadLinkedCardsRespond == true) {
+				
+				onPPCardsReceived(PayCardsManager.getDukascopyCardsData());
+				
+				checkDataValid();
+			}
+			if (needToLoad == true) {
+				if (PayCardsManager.isLoadingLinkedCards == false)
+					PayCardsManager.loadLinkedCards();
+				if (PayCardsManager.isLoadingDukascopyCards == false)
+					PayCardsManager.loadDukascopyCards();
+			}
+		}
+		
+		private function onAccountInfo():void {
+			if (PayManager.systemOptions != null)
+				onDataReady();
+			else
+				getSystemOptions();
+		}
+		
+		private function drawAmountTitle():void 
+		{
+			if (amountSectionTitle.bitmapData)
+			{
+				amountSectionTitle.bitmapData.dispose();
+				amountSectionTitle.bitmapData = null;
+			}
+			amountSectionTitle.bitmapData = TextUtils.createTextFieldData("<b>" + Lang.TEXT_DEPOSIT + "</b>", componentsWidth, 10, false, 
+															TextFormatAlign.LEFT, TextFieldAutoSize.LEFT, Config.FINGER_SIZE * .3, false, 0x777E8A, 0xFFFFFF, false, true);
+			amountSectionTitle.x = int(_width * .5 - amountSectionTitle.width * .5);
+			
+			drawView();
+		}
+		
+		private function drawCardSectionTitle():void 
+		{
+			if (cardSectionTitle.bitmapData)
+			{
+				cardSectionTitle.bitmapData.dispose();
+				cardSectionTitle.bitmapData = null;
+			}
+			cardSectionTitle.bitmapData = TextUtils.createTextFieldData("<b>" + Lang.fromCard + "</b>", componentsWidth, 10, false, TextFormatAlign.LEFT, TextFieldAutoSize.LEFT, 
+																Config.FINGER_SIZE * .3, false, 0x777E8A, 0xFFFFFF, false, true);
+		}
+		
+		private function getSystemOptions():void 
+		{
+			if(PayManager.S_SYSTEM_OPTIONS_READY == null)
+			{
+				PayManager.S_SYSTEM_OPTIONS_READY = new Signal("PayManager.S_SYSTEM_OPTIONS_READY");
+			}
+			if (PayManager.S_SYSTEM_OPTIONS_ERROR == null)
+			{
+				PayManager.S_SYSTEM_OPTIONS_ERROR = new Signal("PayManager.S_SYSTEM_OPTIONS_ERROR");
+			}
+			PayManager.S_SYSTEM_OPTIONS_READY.add(onSystemOptions);
+			PayManager.S_SYSTEM_OPTIONS_ERROR.add(onSystemOptions);
+			
+			PayManager.getConfig(callBackGetConfig);
+		}
+		
+		private function onSystemOptions():void
+		{
+			onDataReady();
+		}
+		
+		private function localSelectCurrency(currency:String):void {
+			selectorCurrency.setValue(currency);
+		//	selectorCurrency.activate();
+		}
+		
+		private function callBackSelectCurrency(currency:String):void {
+			if (selectorCurrency != null && currency != null) {
+				selectorCurrency.setValue(currency);
+				
+			//	selectAccount(currency);
+			//	checkCommision();
+			}
+			
+			selectAccount(currency);
+		}
+		
+		private function callBackGetConfig():void
+		{
+			PayManager.callGetSystemOptions();
+		}
+		
+		private function showToastMessage():void {
+			ToastMessage.display(Lang.connectionError);
+		}
+		
+		private function onChangeInputValueCurrency():void {
+			checkDataValid();
+		}
+		
+		private function onWalletsReady():void {
+			if (isDisposed)
+				return;
+			
+			activateScreen();
+			hidePreloader();
+			//!TODO:;
+			setDefaultWallet();
+			
+			InvoiceManager.S_ACCOUNT_READY.remove(onWalletsReady);
+		}
+		
+		private function hidePreloader():void
+		{
+			preloaderShown = false;
+			container.transform.colorTransform = new ColorTransform();
+			
+			if (preloader != null)
+			{
+				preloader.hide();
+				if (preloader.parent)
+				{
+					preloader.parent.removeChild(preloader);
+				}
+			}
+		}
+		
+		private function setDefaultWallet():void
+		{
+			if (PayManager.accountInfo == null) return;
+			var defaultAccount:Object;
+			
+			var currencyNeeded:String = TypeCurrency.EUR;
+			var wallets:Array = PayManager.accountInfo.accounts;
+			var l:int = wallets.length;
+			var walletItem:Object;
+			for (var i:int = 0; i < l; i++)
+			{
+				walletItem = wallets[i];
+				if (currencyNeeded == walletItem.CURRENCY)
+				{
+					defaultAccount = walletItem;
+					break;
+				}
+			}
+			if (defaultAccount != null)
+			{
+				onWalletSelect(defaultAccount);
+			}
+		}
+		
+		private function drawAccountSelector():void
+		{
+			selectorDebitAccont.setSize(componentsWidth, Config.FINGER_SIZE * .8);
+			selectorDebitAccont.setValue(Lang.TEXT_SELECT_ACCOUNT);
+			selectorDebitAccont.x = Config.DIALOG_MARGIN;
+		}
+		
+		private function drawCardSelector():void
+		{
+			selectorCard.setSize(componentsWidth, Config.FINGER_SIZE * .8);
+		//	selectorCard.setValue(Lang.textChoose);
+			selectorCard.x = Config.DIALOG_MARGIN;
+		}
+		
+		private function drawAcceptButton(text:String):void
+		{
+			var textSettings:TextFieldSettings = new TextFieldSettings(text, 0xFFFFFF, Config.FINGER_SIZE * .3, TextFormatAlign.CENTER);
+			var buttonBitmap:ImageBitmapData = TextUtils.createbutton(textSettings, 0x78C043, 1, Config.FINGER_SIZE * .8, NaN, (componentsWidth - Config.DIALOG_MARGIN) * .5);
+			acceptButton.setBitmapData(buttonBitmap, true);
+			acceptButton.x = int(acceptButton.width + Config.DIALOG_MARGIN * 2);
+		}
+		
+		private function drawBackButton():void
+		{
+			var textSettings:TextFieldSettings = new TextFieldSettings(Lang.textBack, 0, Config.FINGER_SIZE * .3, TextFormatAlign.CENTER);
+			var buttonBitmap:ImageBitmapData = TextUtils.createbutton(textSettings, 0x78C043, 0, Config.FINGER_SIZE * .8, NaN, (componentsWidth - Config.DIALOG_MARGIN) * .5);
+			backButton.setBitmapData(buttonBitmap);
+			backButton.x = Config.DIALOG_MARGIN;
+		}
+		
+		private function drawAccountText(text:String):void
+		{
+			accountText.bitmapData = TextUtils.createTextFieldData(text, componentsWidth, 10, true, TextFormatAlign.CENTER, TextFieldAutoSize.LEFT, Config.FINGER_SIZE * .3, true, 0xABB8C1, 0xffffff, false);
+			accountText.x = int(_width * .5 - accountText.width * .5);
+		}
+		
+		override protected function drawView():void
+		{
+			if (_isDisposed == true)
+				return;
+			
+			bg.width = _width;
+			
+			verticalMargin = Config.MARGIN * 1.5;
+			
+			var position:int;
+			
+			position = verticalMargin;
+			
+			position += verticalMargin * 1.5;
+			
+			// WITHDRAW
+			amountSectionTitle.y = position;
+			position += amountSectionTitle.height + verticalMargin * 1.5;
+			amountSectionTitle.x = int(_width * .5 - amountSectionTitle.width * .5);
+			
+			// AMOUNT
+			iAmountCurrency.view.y = position;
+			selectorCurrency.y = position;
+			position += iAmountCurrency.height + verticalMargin * 2.5;
+			
+			// FROM
+			cardSectionTitle.y = position;
+			cardSectionTitle.x = int(_width * .5 - cardSectionTitle.width * .5);
+			position += cardSectionTitle.height + verticalMargin * .6;
+			
+			// CARD
+			selectorCard.y = position;
+			position += selectorCard.height + verticalMargin * 3;
+			cardsPreloader.y = selectorCard.y + selectorCard.height;
+			cardsPreloader.x = selectorCard.x;
+			
+			// TO ACCOUNT
+			accountTitle.y = position;
+			accountTitle.x = int(_width * .5 - accountTitle.width * .5);
+			position += accountTitle.height + verticalMargin * .6;
+			
+			// ACCOUNT
+			selectorDebitAccont.y = position;
+			position += selectorDebitAccont.height + verticalMargin * 3;
+			accountsPreloader.y = selectorDebitAccont.y + selectorDebitAccont.height;
+			accountsPreloader.x = selectorDebitAccont.x;
+			
+			noCardsMessage.y = selectorCard.y + Config.MARGIN;
+			
+			//	accountText.y = position;
+			//	position += accountText.height + verticalMargin * 1.8;
+			accountText.visible = false;
+			
+			acceptButton.y = position;
+			backButton.y = position;
+			position += acceptButton.height + verticalMargin * 1.8;
+			
+			bg.height = position;
+			
+			container.y = _height - position;
+		}
+		
+		override public function activateScreen():void
+		{
+			if (_isDisposed == true)
+				return;
+			
+			super.activateScreen();
+			
+			iAmountCurrency.activate();
+			
+			checkDataValid();
+			
+			backButton.activate();
+			
+			if (dataRedy == true)
+			{
+				selectorCard.activate();
+				selectorDebitAccont.activate();
+			}
+		}
+		
+		override public function deactivateScreen():void
+		{
+			if (_isDisposed == true)
+				return;
+			
+			super.deactivateScreen();
+			
+			iAmountCurrency.deactivate();
+			acceptButton.deactivate();
+			backButton.deactivate();
+			selectorDebitAccont.deactivate();
+			selectorCard.deactivate();
+		}
+		
+		protected function onCloseTap():void
+		{
+			DialogManager.closeDialog();
+		}
+		
+		override public function dispose():void
+		{
+			if (_isDisposed == true)
+				return;
+			super.dispose();
+			
+			PayCardsManager.S_LOADING_STATE_CHANGED.remove(onCardsLoadStateChange);
+			
+			if (PayAPIManager.S_SWISS_API_CHECKED)
+			{
+				PayAPIManager.S_SWISS_API_CHECKED.remove(onSwissApiChecked);
+			}
+			if (PayManager.S_ACCOUNT)
+			{
+				PayManager.S_ACCOUNT.remove(onAccountInfo);
+			}
+			if (PayManager.S_SYSTEM_OPTIONS_READY)
+			{
+				PayManager.S_SYSTEM_OPTIONS_READY.remove(onSystemOptions);
+			}
+			if (PayManager.S_SYSTEM_OPTIONS_ERROR){
+				PayManager.S_SYSTEM_OPTIONS_ERROR.remove(onSystemOptions);
+			}
+			if (amountSectionTitle != null)
+			{
+				UI.destroy(amountSectionTitle);
+				amountSectionTitle = null;
+			}
+			if (cardSectionTitle != null)
+			{
+				UI.destroy(cardSectionTitle);
+				cardSectionTitle = null;
+			}
+			if (accountTitle != null)
+			{
+				UI.destroy(accountTitle);
+				accountTitle = null;
+			}
+			if (iAmountCurrency != null)
+			{
+				iAmountCurrency.dispose();
+				iAmountCurrency = null;
+			}
+			if (text != null)
+			{
+				UI.destroy(text);
+				text = null;
+			}
+			if (preloader != null)
+			{
+				preloader.dispose();
+				preloader = null;
+			}
+			if (selectorDebitAccont != null)
+			{
+				selectorDebitAccont.dispose();
+				selectorDebitAccont = null;
+			}
+			if (backButton != null)
+			{
+				backButton.dispose();
+				backButton = null;
+			}
+			if (accountText != null)
+			{
+				UI.destroy(accountText);
+				accountText = null;
+			}
+			if (acceptButton != null)
+			{
+				acceptButton.dispose();
+				acceptButton = null;
+			}
+			if (bg != null)
+			{
+				UI.destroy(bg);
+				bg = null;
+			}
+			if (container != null)
+			{
+				UI.destroy(container);
+				container = null;
+			}
+			if (accountsPreloader != null)
+			{
+				accountsPreloader.dispose();
+				accountsPreloader = null;
+			}
+			if (cardsPreloader != null)
+			{
+				cardsPreloader.dispose();
+				cardsPreloader = null;
+			}
+			
+			if (noCardsMessage != null)
+			{
+				UI.destroy(noCardsMessage);
+				noCardsMessage = null;
+			}
+			if (noAccountMessage != null)
+			{
+				UI.destroy(noAccountMessage);
+				noAccountMessage = null;
+			}
+			
+			giftData = null;
+		}
+	}
+}

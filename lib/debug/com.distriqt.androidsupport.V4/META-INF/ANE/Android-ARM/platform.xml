@@ -1,0 +1,33 @@
+<platform xmlns="http://ns.adobe.com/air/extension/4.0">
+	<packagedDependencies>
+<packagedDependency>android.arch.core-common-1.1.0.jar</packagedDependency>
+<packagedDependency>android.arch.core-runtime-1.1.0.aar.jar</packagedDependency>
+<packagedDependency>android.arch.lifecycle-common-1.1.0.jar</packagedDependency>
+<packagedDependency>android.arch.lifecycle-extensions-1.1.0.aar.jar</packagedDependency>
+<packagedDependency>android.arch.lifecycle-livedata-1.1.0.aar.jar</packagedDependency>
+<packagedDependency>android.arch.lifecycle-livedata-core-1.1.0.aar.jar</packagedDependency>
+<packagedDependency>android.arch.lifecycle-runtime-1.1.0.aar.jar</packagedDependency>
+<packagedDependency>android.arch.lifecycle-viewmodel-1.1.0.aar.jar</packagedDependency>
+<packagedDependency>support-annotations-27.0.2.jar</packagedDependency>
+<packagedDependency>support-compat-27.0.2.jar</packagedDependency>
+<packagedDependency>support-core-ui-27.0.2.jar</packagedDependency>
+<packagedDependency>support-core-utils-27.0.2.jar</packagedDependency>
+<packagedDependency>support-fragment-27.0.2.jar</packagedDependency>
+<packagedDependency>support-media-compat-27.0.2.jar</packagedDependency>
+<packagedDependency>support-v4-27.0.2.jar</packagedDependency>
+	</packagedDependencies>
+	<packagedResources>
+	     <packagedResource>
+		    <packageName>com.distriqt.extension.androidsupport.v4</packageName> 
+		    <folderName>distriqt-extension-androidsupport-v4-res</folderName> 
+		</packagedResource>
+		<packagedResource>
+			<packageName>android.support.compat</packageName>
+			<folderName>support-compat-27.0.2-res</folderName>
+		</packagedResource>
+		<packagedResource>
+			<packageName>android.support.mediacompat</packageName>
+			<folderName>support-media-compat-27.0.2-res</folderName>
+		</packagedResource>
+	</packagedResources>
+</platform>

@@ -1,0 +1,12 @@
+<platform xmlns="http://ns.adobe.com/air/extension/24.0">
+	<packagedDependencies>
+<packagedDependency>corenativeextension.android.lib.air.jar</packagedDependency>
+<packagedDependency>corenativeextension.android.lib.jar</packagedDependency>
+	</packagedDependencies>
+	<packagedResources>
+	    <packagedResource>
+			<packageName>com.distriqt.extension.core</packageName> 
+			<folderName>distriqt-extension-core-res</folderName> 
+		</packagedResource>
+	</packagedResources>
+</platform>

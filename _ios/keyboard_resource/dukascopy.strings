@@ -1,0 +1,50 @@
+
+
+"voice.permission.description"="To send a voice, you must provide permission to Microphone";
+"voice.permission.title"="Send voice messages to friends";
+
+"photo.permission.denied.title"="Start Sending Voice Messages";
+"voice.permission.denied.description"="In iPhone settings, tap Dukascopy and turn on Microphone";
+
+
+"voice.record"="Hold to record";
+"voice.cancel"="Release to cancel";
+"voice.release"="Release to send";
+
+"attach.view.makePhoto"="Make Photo";
+"attach.view.sendInvoice"="Send Invoice";
+"attach.view.photoGallery"="Photo Gallery";
+"attach.view.sendVoice"="Send Puzzle";
+"attach.view.sendMoney"="Send Money";
+"attach.view.sendGift"="Send Gift";
+"attach.view.praiseNow"="Praise now!";
+"attach.view.skip"="Skip";
+"attach.view.next"="huy";
+
+"photo.permission.denied.title"="Start Sending Photos";
+"photo.permission.denied.description"="In iPhone settings, tap Dukascopy and turn on Photos";
+
+"photo.permission.title"="Send photo to friends";
+"photo.permission.description" = "To send an image, you must provide permission to Photos";
+
+"button.grant.access" = "Grant Access";
+"button.openSettings"="Open Settings";
+
+
+
+"attach.view.giftsTitleStep1"="A good way to express your feeling";
+"attach.view.giftsTextStep1"="If you are grateful to your chatter for something, or want to express special gratitude. You can send a money gift to your chatter.";
+"attach.view.giftsTitleStep2"="Greeting card";
+"attach.view.giftsTextStep2"="The chatter received a colorful postcard with your photo and congratulations.";
+"attach.view.giftsTitleStep3"="Good mood";
+"attach.view.giftsTextStep3"="Get to know about your appreciation. And she will receive a cash gift in Dukascopy payments";
+
+"record.video.view.title" = "Send to %@";
+"record.video.view.send" = "Send";
+
+"video.recording.permission.description" = "Enable access so you can start taking photos and videos.";
+"video.recording.permission.title" = "Share on Dukascopy";
+"video.recording.permission.camera.enabled" = "Camera Access Enabled";
+"video.recording.permission.mic.enabled" = "Microphone Access Enabled";
+"video.recording.permission.camera.disabled" = "Enable Camera Access";
+"video.recording.permission.mic.disabled" = "Enable Microphone Access";

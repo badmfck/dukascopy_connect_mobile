@@ -1,0 +1,41 @@
+	<extension xmlns="http://ns.adobe.com/air/extension/4.0">
+	  <id>com.milkmangames.extensions.EasyPush</id>
+	  <versionNumber>3.0</versionNumber>
+	  <platforms>
+		  
+		<platform name="Android-ARM">
+	      <applicationDeployment>
+	        <nativeLibrary>EasyPushAPI.jar</nativeLibrary>
+	        <initializer>com.milkmangames.extensions.android.push.PushNotifyExtension</initializer>
+	        <finalizer>com.milkmangames.extensions.android.push.PushNotifyExtension</finalizer>
+	      </applicationDeployment>
+	    </platform>
+	<platform name="iPhone-ARM">
+	        <applicationDeployment>
+	          <nativeLibrary>EasyPushAPI.a</nativeLibrary>
+	          <initializer>MmgPnApiExtInitializer</initializer>
+	          <finalizer>MmgPnApiExtFinalizer</finalizer>
+	        </applicationDeployment>
+	 </platform>
+	 
+		<platform name="Android-x86">
+	      <applicationDeployment>
+	        <nativeLibrary>EasyPushAPI.jar</nativeLibrary>
+	        <initializer>com.milkmangames.extensions.android.push.PushNotifyExtension</initializer>
+	        <finalizer>com.milkmangames.extensions.android.push.PushNotifyExtension</finalizer>
+	      </applicationDeployment>
+	    </platform>
+	<platform name="iPhone-x86">
+	        <applicationDeployment>
+	          <nativeLibrary>EasyPushAPI.a</nativeLibrary>
+	          <initializer>MmgPnApiExtInitializer</initializer>
+	          <finalizer>MmgPnApiExtFinalizer</finalizer>
+	        </applicationDeployment>
+	 </platform>
+	 
+		<platform name="default"> 
+	      <applicationDeployment>
+	      </applicationDeployment>
+		</platform> 
+	  </platforms>
+	</extension>

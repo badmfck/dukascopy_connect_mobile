@@ -1,0 +1,20 @@
+<platform xmlns="http://ns.adobe.com/air/extension/4.0">
+    <sdkVersion>7.1</sdkVersion>
+	    <packagedDependencies> 
+    </packagedDependencies> 
+    <linkerOptions>
+		 <option>-framework MessageUI</option>
+		 <option>-framework CoreTelephony</option>
+		 <option>-framework StoreKit</option>
+		 <option>-framework MapKit</option>
+		 <option>-framework CoreLocation</option>
+		 <option>-framework MobileCoreServices</option>
+		 <option>-framework AudioToolbox</option>
+		 <option>-framework Security</option>
+		 <option>-framework SystemConfiguration</option>
+		 <option>-framework CFNetwork</option>
+		 <option>-weak_framework CoreData</option>
+		 <option>-ObjC</option>
+		 <option>-w</option>
+    </linkerOptions>
+</platform>

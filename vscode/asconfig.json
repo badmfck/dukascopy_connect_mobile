@@ -1,0 +1,19 @@
+{
+    "config": "air",
+    "compilerOptions": {
+        "default-frame-rate": 60,
+        "use-gpu": true,
+        "advanced-telemetry": true,
+        "source-path": [
+            "src"
+        ],
+        "load-config": [
+            "project.xml"
+        ],
+        "debug": true,
+        "output": "bin/Dukascopy.swf"
+    },
+
+    "mainClass": "Main",
+    "application":"desktop.xml"
+}

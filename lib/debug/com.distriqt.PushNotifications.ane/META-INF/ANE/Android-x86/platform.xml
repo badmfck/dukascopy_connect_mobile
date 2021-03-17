@@ -1,0 +1,15 @@
+<platform xmlns="http://ns.adobe.com/air/extension/29.0">
+	<packagedDependencies>
+<packagedDependency>firebase-messaging-17.0.0.jar</packagedDependency>
+	</packagedDependencies>
+	<packagedResources>
+		<packagedResource>
+			<packageName>com.distriqt.extension.pushnotifications</packageName> 
+			<folderName>distriqt-extension-pushnotifications-res</folderName> 
+		</packagedResource>
+		<packagedResource>
+			<packageName>com.google.firebase.messaging</packageName> 
+			<folderName>firebase-messaging-17.0.0-res</folderName> 
+		</packagedResource>
+	</packagedResources>
+</platform>

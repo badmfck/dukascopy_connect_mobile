@@ -1,0 +1,37 @@
+<extension xmlns="http://ns.adobe.com/air/extension/29.0">
+	<id>com.distriqt.PushNotifications</id>
+	<versionNumber>7.6.270</versionNumber>
+	<platforms>
+		<platform name="Android-ARM">
+			<applicationDeployment>
+				<nativeLibrary>distriqt.extension.pushnotifications.android.jar</nativeLibrary>
+				<initializer>com.distriqt.extension.pushnotifications.PushNotificationsExtension</initializer>
+				<finalizer>com.distriqt.extension.pushnotifications.PushNotificationsExtension</finalizer>
+			</applicationDeployment>
+		</platform>
+		<platform name="Android-x86">
+			<applicationDeployment>
+				<nativeLibrary>distriqt.extension.pushnotifications.android.jar</nativeLibrary>
+				<initializer>com.distriqt.extension.pushnotifications.PushNotificationsExtension</initializer>
+				<finalizer>com.distriqt.extension.pushnotifications.PushNotificationsExtension</finalizer>
+			</applicationDeployment>
+		</platform>
+		<platform name="iPhone-ARM">
+			<applicationDeployment>
+				<nativeLibrary>libPushNotifications.a</nativeLibrary>
+				<initializer>PushNotificationsExtInitializer</initializer>
+				<finalizer>PushNotificationsExtFinalizer</finalizer>
+			</applicationDeployment>
+		</platform>
+		<platform name="iPhone-x86">
+			<applicationDeployment>
+				<nativeLibrary>libPushNotifications.a</nativeLibrary>
+				<initializer>PushNotificationsExtInitializer</initializer>
+				<finalizer>PushNotificationsExtFinalizer</finalizer>
+			</applicationDeployment>
+		</platform>
+		<platform name="default"> 
+			<applicationDeployment /> 
+		</platform>
+	</platforms>
+</extension>

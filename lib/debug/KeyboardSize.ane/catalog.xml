@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding ="utf-8"?>
+<swc xmlns="http://www.adobe.com/flash/swccatalog/9">
+  <versions>
+    <swc version="1.2" />
+    <flex version="4.6.0" build="23201" minimumSupportedVersion="3.0.0" />
+  </versions>
+  <features>
+    <feature-script-deps />
+    <feature-files />
+  </features>
+  <libraries>
+    <library path="library.swf">
+      <script name="com/freshplanet/ane/KeyboardSize/MeasureKeyboard" mod="1385148691000" signatureChecksum="3643381077" >
+        <def id="com.freshplanet.ane.KeyboardSize:MeasureKeyboard" /> 
+        <dep id="trace" type="e" /> 
+        <dep id="flash.external:ExtensionContext" type="e" /> 
+        <dep id="Error" type="e" /> 
+        <dep id="flash.external:ExtensionContext" type="s" /> 
+        <dep id="AS3" type="n" /> 
+        <dep id="Object" type="i" /> 
+      </script>
+      <script name="_73ce2442909398ca443dea9393706aff62614472b62c320e09533d65f02b41bd_flash_display_Sprite" mod="1385154537174" signatureChecksum="3905583175" >
+        <def id="_73ce2442909398ca443dea9393706aff62614472b62c320e09533d65f02b41bd_flash_display_Sprite" /> 
+        <dep id="flash.system:Security" type="e" /> 
+        <dep id="AS3" type="n" /> 
+        <dep id="flash.display:Sprite" type="i" /> 
+      </script>
+      <digests>
+        <digest type="SHA-256" signed="false" value="71a2b7001c44257837e6aca97648140e12b19f09be26c43d198fe63aa6d88bdb"   />
+      </digests>
+    </library>
+  </libraries>
+  <files>
+  </files>
+</swc>

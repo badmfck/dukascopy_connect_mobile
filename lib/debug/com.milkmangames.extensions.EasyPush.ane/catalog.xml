@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding ="utf-8"?>
+<swc xmlns="http://www.adobe.com/flash/swccatalog/9">
+  <versions>
+    <swc version="1.2" />
+    <flex version="4.6.0" build="23201" minimumSupportedVersion="3.0.0" />
+  </versions>
+  <features>
+    <feature-script-deps />
+    <feature-files />
+  </features>
+  <libraries>
+    <library path="library.swf">
+      <script name="com/milkmangames/nativeextensions/EasyPush" mod="1433233168436" signatureChecksum="626114432" >
+        <def id="com.milkmangames.nativeextensions:EasyPush" /> 
+        <dep id="com.milkmangames.nativeextensions:PNOneSignal" type="e" /> 
+        <dep id="ArgumentError" type="e" /> 
+        <dep id="com.milkmangames.nativeextensions:PNManual" type="e" /> 
+        <dep id="flash.external:ExtensionContext" type="e" /> 
+        <dep id="Error" type="e" /> 
+        <dep id="com.milkmangames.nativeextensions:PNOneSignal" type="s" /> 
+        <dep id="com.milkmangames.nativeextensions:PNManual" type="s" /> 
+        <dep id="flash.external:ExtensionContext" type="s" /> 
+        <dep id="Error" type="s" /> 
+        <dep id="AS3" type="n" /> 
+        <dep id="Object" type="i" /> 
+      </script>
+      <script name="com/milkmangames/nativeextensions/PNManual" mod="1404952573891" signatureChecksum="2084071929" >
+        <def id="com.milkmangames.nativeextensions:PNManual" /> 
+        <dep id="flash.utils:setTimeout" type="e" /> 
+        <dep id="com.milkmangames.nativeextensions:EasyPush" type="e" /> 
+        <dep id="trace" type="e" /> 
+        <dep id="flash.system:Capabilities" type="e" /> 
+        <dep id="flash.events:StatusEvent" type="e" /> 
+        <dep id="flash.utils:getDefinitionByName" type="e" /> 
+        <dep id="com.milkmangames.nativeextensions.events:PNMEvent" type="e" /> 
+        <dep id="Error" type="e" /> 
+        <dep id="flash.events:InvokeEvent" type="e" /> 
+        <dep id="flash.desktop:NativeApplication" type="e" /> 
+        <dep id="flash.events:Event" type="s" /> 
+        <dep id="flash.events:StatusEvent" type="s" /> 
+        <dep id="com.milkmangames.nativeextensions.events:PNMEvent" type="s" /> 
+        <dep id="flash.external:ExtensionContext" type="s" /> 
+        <dep id="Error" type="s" /> 
+        <dep id="AS3" type="n" /> 
+        <dep id="flash.events:EventDispatcher" type="i" /> 
+      </script>
+      <script name="com/milkmangames/nativeextensions/PNOneSignal" mod="1446091178037" signatureChecksum="3350302135" >
+        <def id="com.milkmangames.nativeextensions:PNOneSignal" /> 
+        <dep id="flash.events:Event" type="e" /> 
+        <dep id="com.milkmangames.nativeextensions:EasyPush" type="e" /> 
+        <dep id="com.milkmangames.nativeextensions.events:PNOSEvent" type="e" /> 
+        <dep id="flash.net:SharedObject" type="e" /> 
+        <dep id="flash.net:URLRequest" type="e" /> 
+        <dep id="JSON" type="e" /> 
+        <dep id="trace" type="e" /> 
+        <dep id="Math" type="e" /> 
+        <dep id="flash.events:IOErrorEvent" type="e" /> 
+        <dep id="flash.desktop:NativeApplication" type="e" /> 
+        <dep id="Error" type="e" /> 
+        <dep id="flash.utils:setTimeout" type="e" /> 
+        <dep id="flash.net:URLRequestMethod" type="e" /> 
+        <dep id="flash.net:URLRequestHeader" type="e" /> 
+        <dep id="Date" type="e" /> 
+        <dep id="flash.system:Capabilities" type="e" /> 
+        <dep id="flash.events:StatusEvent" type="e" /> 
+        <dep id="flash.utils:getDefinitionByName" type="e" /> 
+        <dep id="flash.net:URLLoader" type="e" /> 
+        <dep id="flash.events:InvokeEvent" type="e" /> 
+        <dep id="flash.events:Event" type="s" /> 
+        <dep id="com.milkmangames.nativeextensions.events:PNOSEvent" type="s" /> 
+        <dep id="flash.net:SharedObject" type="s" /> 
+        <dep id="flash.net:URLRequest" type="s" /> 
+        <dep id="flash.events:StatusEvent" type="s" /> 
+        <dep id="flash.events:IOErrorEvent" type="s" /> 
+        <dep id="flash.net:URLLoader" type="s" /> 
+        <dep id="flash.external:ExtensionContext" type="s" /> 
+        <dep id="Error" type="s" /> 
+        <dep id="flash.events:InvokeEvent" type="s" /> 
+        <dep id="AS3" type="n" /> 
+        <dep id="flash.events:EventDispatcher" type="i" /> 
+        <dep id="Object" type="i" /> 
+      </script>
+      <script name="com/milkmangames/nativeextensions/events/PNEvent" mod="1424417478864" signatureChecksum="3115768296" >
+        <def id="com.milkmangames.nativeextensions.events:PNEvent" /> 
+        <dep id="AS3" type="n" /> 
+        <dep id="flash.events:Event" type="i" /> 
+      </script>
+      <script name="com/milkmangames/nativeextensions/events/PNMEvent" mod="1377826164213" signatureChecksum="3379924724" >
+        <def id="com.milkmangames.nativeextensions.events:PNMEvent" /> 
+        <dep id="AS3" type="n" /> 
+        <dep id="com.milkmangames.nativeextensions.events:PNEvent" type="i" /> 
+      </script>
+      <script name="com/milkmangames/nativeextensions/events/PNOSEvent" mod="1431391000350" signatureChecksum="3854864286" >
+        <def id="com.milkmangames.nativeextensions.events:PNOSEvent" /> 
+        <dep id="AS3" type="n" /> 
+        <dep id="com.milkmangames.nativeextensions.events:PNEvent" type="i" /> 
+      </script>
+      <script name="_1d71c80add210530c618a0b5dd49735e28f8bc175a33ab69009f220c38709902_flash_display_Sprite" mod="1446096051903" signatureChecksum="1041332359" >
+        <def id="_1d71c80add210530c618a0b5dd49735e28f8bc175a33ab69009f220c38709902_flash_display_Sprite" /> 
+        <dep id="flash.system:Security" type="e" /> 
+        <dep id="AS3" type="n" /> 
+        <dep id="flash.display:Sprite" type="i" /> 
+      </script>
+      <digests>
+        <digest type="SHA-256" signed="false" value="94cf4e9a125a2c5eefed619ef3d801b938e92f114799bd01ba355d31d2f6db80"   />
+      </digests>
+    </library>
+  </libraries>
+  <files>
+  </files>
+</swc>

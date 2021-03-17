@@ -1,0 +1,149 @@
+<?xml version="1.0" ?>
+<swc xmlns="http://www.adobe.com/flash/swccatalog/9">
+    <versions>
+        <swc version="1.2"/>
+        <compiler name="ActionScript Compiler" version="2.0.0" build="354207"/>
+    </versions>
+    <features>
+        <feature-script-deps/>
+    </features>
+    <libraries>
+        <library path="library.swf">
+            <script name="com/distriqt/extension/pushnotifications/AuthorisationStatus" mod="1458700757000">
+                <def id="com.distriqt.extension.pushnotifications:AuthorisationStatus"/>
+                <dep id="Object" type="i"/>
+                <dep id="String" type="s"/>
+            </script>
+            <script name="com/distriqt/extension/pushnotifications/PushNotifications" mod="1533946710000">
+                <def id="com.distriqt.extension.pushnotifications:PushNotifications"/>
+                <dep id="Array" type="e"/>
+                <dep id="Boolean" type="s"/>
+                <dep id="Error" type="e"/>
+                <dep id="Function" type="s"/>
+                <dep id="JSON" type="e"/>
+                <dep id="Object" type="e"/>
+                <dep id="String" type="s"/>
+                <dep id="com.distriqt.extension.pushnotifications:AuthorisationStatus" type="e"/>
+                <dep id="com.distriqt.extension.pushnotifications:Service" type="s"/>
+                <dep id="com.distriqt.extension.pushnotifications:Version" type="e"/>
+                <dep id="com.distriqt.extension.pushnotifications.builders:ChannelBuilder" type="e"/>
+                <dep id="com.distriqt.extension.pushnotifications.channels:Channel" type="e"/>
+                <dep id="com.distriqt.extension.pushnotifications.channels:ChannelGroup" type="e"/>
+                <dep id="com.distriqt.extension.pushnotifications.events:AuthorisationEvent" type="e"/>
+                <dep id="com.distriqt.extension.pushnotifications.events:PushNotificationEvent" type="e"/>
+                <dep id="com.distriqt.extension.pushnotifications.events:PushNotificationGroupEvent" type="e"/>
+                <dep id="com.distriqt.extension.pushnotifications.events:RegistrationEvent" type="e"/>
+                <dep id="com.distriqt.extension.pushnotifications.events:TagEvent" type="e"/>
+                <dep id="flash.desktop:NativeApplication" type="e"/>
+                <dep id="flash.events:ErrorEvent" type="e"/>
+                <dep id="flash.events:Event" type="e"/>
+                <dep id="flash.events:EventDispatcher" type="i"/>
+                <dep id="flash.events:StatusEvent" type="e"/>
+                <dep id="flash.external:ExtensionContext" type="s"/>
+                <dep id="int" type="s"/>
+                <dep id="trace" type="e"/>
+            </script>
+            <script name="com/distriqt/extension/pushnotifications/Service" mod="1530700763000">
+                <def id="com.distriqt.extension.pushnotifications:Service"/>
+                <dep id="Boolean" type="s"/>
+                <dep id="Object" type="i"/>
+                <dep id="String" type="s"/>
+                <dep id="__AS3__.vec:Vector" type="s"/>
+                <dep id="com.distriqt.extension.pushnotifications.actions:Category" type="s"/>
+                <dep id="com.distriqt.extension.pushnotifications.channels:Channel" type="s"/>
+                <dep id="com.distriqt.extension.pushnotifications.channels:ChannelGroup" type="s"/>
+            </script>
+            <script name="com/distriqt/extension/pushnotifications/Version" mod="1536882573000">
+                <def id="com.distriqt.extension.pushnotifications:Version"/>
+                <dep id="Object" type="i"/>
+                <dep id="String" type="s"/>
+            </script>
+            <script name="com/distriqt/extension/pushnotifications/actions/Action" mod="1499658283000">
+                <def id="com.distriqt.extension.pushnotifications.actions:Action"/>
+                <dep id="Boolean" type="s"/>
+                <dep id="Object" type="i"/>
+                <dep id="String" type="s"/>
+            </script>
+            <script name="com/distriqt/extension/pushnotifications/actions/Category" mod="1458218236000">
+                <def id="com.distriqt.extension.pushnotifications.actions:Category"/>
+                <dep id="Object" type="i"/>
+                <dep id="String" type="s"/>
+                <dep id="__AS3__.vec:Vector" type="s"/>
+                <dep id="com.distriqt.extension.pushnotifications.actions:Action" type="s"/>
+            </script>
+            <script name="com/distriqt/extension/pushnotifications/builders/ActionBuilder" mod="1499658283000">
+                <def id="com.distriqt.extension.pushnotifications.builders:ActionBuilder"/>
+                <dep id="Boolean" type="s"/>
+                <dep id="Error" type="e"/>
+                <dep id="Object" type="i"/>
+                <dep id="String" type="s"/>
+                <dep id="com.distriqt.extension.pushnotifications.actions:Action" type="s"/>
+            </script>
+            <script name="com/distriqt/extension/pushnotifications/builders/CategoryBuilder" mod="1458218244000">
+                <def id="com.distriqt.extension.pushnotifications.builders:CategoryBuilder"/>
+                <dep id="Error" type="e"/>
+                <dep id="Object" type="i"/>
+                <dep id="String" type="s"/>
+                <dep id="com.distriqt.extension.pushnotifications.actions:Action" type="s"/>
+                <dep id="com.distriqt.extension.pushnotifications.actions:Category" type="s"/>
+            </script>
+            <script name="com/distriqt/extension/pushnotifications/builders/ChannelBuilder" mod="1528587495000">
+                <def id="com.distriqt.extension.pushnotifications.builders:ChannelBuilder"/>
+                <dep id="Boolean" type="s"/>
+                <dep id="Error" type="e"/>
+                <dep id="Object" type="i"/>
+                <dep id="String" type="s"/>
+                <dep id="com.distriqt.extension.pushnotifications.channels:Channel" type="s"/>
+                <dep id="int" type="s"/>
+            </script>
+            <script name="com/distriqt/extension/pushnotifications/channels/Channel" mod="1528587403000">
+                <def id="com.distriqt.extension.pushnotifications.channels:Channel"/>
+                <dep id="Boolean" type="s"/>
+                <dep id="Object" type="i"/>
+                <dep id="String" type="s"/>
+                <dep id="int" type="s"/>
+            </script>
+            <script name="com/distriqt/extension/pushnotifications/channels/ChannelGroup" mod="1513573003000">
+                <def id="com.distriqt.extension.pushnotifications.channels:ChannelGroup"/>
+                <dep id="Object" type="i"/>
+                <dep id="String" type="s"/>
+            </script>
+            <script name="com/distriqt/extension/pushnotifications/events/AuthorisationEvent" mod="1523076326000">
+                <def id="com.distriqt.extension.pushnotifications.events:AuthorisationEvent"/>
+                <dep id="Boolean" type="s"/>
+                <dep id="String" type="s"/>
+                <dep id="flash.events:Event" type="i"/>
+            </script>
+            <script name="com/distriqt/extension/pushnotifications/events/PushNotificationEvent" mod="1459241236000">
+                <def id="com.distriqt.extension.pushnotifications.events:PushNotificationEvent"/>
+                <dep id="Boolean" type="s"/>
+                <dep id="String" type="s"/>
+                <dep id="flash.events:Event" type="i"/>
+            </script>
+            <script name="com/distriqt/extension/pushnotifications/events/PushNotificationGroupEvent" mod="1458219900000">
+                <def id="com.distriqt.extension.pushnotifications.events:PushNotificationGroupEvent"/>
+                <dep id="Array" type="s"/>
+                <dep id="Boolean" type="s"/>
+                <dep id="String" type="s"/>
+                <dep id="flash.events:Event" type="i"/>
+            </script>
+            <script name="com/distriqt/extension/pushnotifications/events/RegistrationEvent" mod="1504228149000">
+                <def id="com.distriqt.extension.pushnotifications.events:RegistrationEvent"/>
+                <dep id="Boolean" type="s"/>
+                <dep id="String" type="s"/>
+                <dep id="flash.events:Event" type="i"/>
+                <dep id="int" type="s"/>
+            </script>
+            <script name="com/distriqt/extension/pushnotifications/events/TagEvent" mod="1523070872000">
+                <def id="com.distriqt.extension.pushnotifications.events:TagEvent"/>
+                <dep id="Boolean" type="s"/>
+                <dep id="Object" type="s"/>
+                <dep id="String" type="s"/>
+                <dep id="flash.events:Event" type="i"/>
+            </script>
+            <digests>
+                <digest type="SHA-256" signed="false" value="fe5c258f1763315c1132a76e08b7340179fc0ff3383dfc00e9d321911f63f7fe"/>
+            </digests>
+        </library>
+    </libraries>
+</swc>

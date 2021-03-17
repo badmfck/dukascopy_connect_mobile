@@ -1,0 +1,13 @@
+<extension xmlns="http://ns.adobe.com/air/extension/3.1">
+       <id>com.pusleb.RefreshGallery</id>
+          <versionNumber>1</versionNumber>
+   
+          <platforms>
+           <platform name="Android-ARM">
+           	<applicationDeployment>         
+       			<nativeLibrary>HelloANENative.jar</nativeLibrary>
+         		<initializer>com.pusleb.example.android.helloANE.extensions.RefreshGalleryExtension</initializer>
+			</applicationDeployment>
+           </platform>
+       </platforms>
+</extension>

@@ -1,0 +1,98 @@
+<iPhone><InfoAdditions>
+    <![CDATA[
+
+        <key>NSLocationWhenInUseUsageDescription</key>
+        <string>Provision of access to geolocation will allow you to share your current location with friends nearby.</string>
+
+        <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+        <string>Provision of access to geolocation will allow you to share your current location with friends nearby.</string>
+
+        <key>UIViewControllerBasedStatusBarAppearance</key>
+        <string>NO</string>
+
+	<key>UIStatusBarStyle</key>
+	<string>UIStatusBarStyleDarkContent</string>
+        
+        <key>UIUserInterfaceStyle</key>
+        <string>Light</string>
+
+        <key>UIRequiresPersistentWiFi</key>
+        <string>NO</string>
+
+  
+        <key>NSPhotoLibraryUsageDescription</key>
+        <string>Provision of access to gallery will allow you to share your photos and videos in chats with your friends.</string>
+
+        <key>NSContactsUsageDescription</key>
+        <string>Phone numbers of your contacts will be transferred to our servers to find your friends. For additional information please read our privacy policy.</string>
+
+        <key>NSCameraUsageDescription</key>
+        <string>Provision of access to camera will allow you to make video calls, take pictures and share them in chats with your friends.</string>
+
+        <key>NSMicrophoneUsageDescription</key>
+        <string>Provision of access to microphone will allow you to make audio calls, record audio messages and share them in chats with your friends.</string>
+
+        <key>NSFaceIDUsageDescription</key>
+        <string>Face ID is used to protect your account password</string>
+
+        <key>UIDeviceFamily</key>
+        <array>
+            <string>1</string>
+        </array>
+
+        <key>MinimumOSVersion</key>
+        <string>9.0</string>
+
+        <key>CFBundleURLTypes</key>
+        <array>
+            <dict>
+                <key>CFBundleURLName</key>
+                <string>com.iswfx.connect</string>
+                <key>CFBundleURLSchemes</key>
+                <array>
+                    <string>dukascopy</string>
+                </array>
+            </dict>
+        </array>
+
+        <key>LSApplicationQueriesSchemes</key>
+        <array>
+            <string>com.dukascopy.community</string>
+            <string>com.dukascopy.iplatform</string>
+        </array>
+
+        <key>Fabric</key>
+        <dict>
+            <key>APIKey</key>
+            <string>6d81b5f368a32de5772b247444a55d90d568b566</string>
+            <key>Kits</key>
+            <array>
+            <dict>
+                <key>KitInfo</key>
+                <dict/>
+                <key>KitName</key>
+                <string>Crashlytics</string>
+            </dict>
+            </array>
+        </dict>
+
+    ]]>
+</InfoAdditions>
+<Entitlements>
+    <![CDATA[
+        <key>application-identifier</key>
+        <string>8D8YS6F93L.com.iswfx.connect</string>
+        <key>com.apple.security.application-groups</key>
+        <array>
+            <string>group.com.iswfx.connect</string>
+        </array>
+        <key>aps-environment</key>
+        <string>production</string>
+        <key>keychain-access-groups</key>
+        <array>
+            <string>8D8YS6F93L.com.iswfx.connect</string>
+        </array>
+    ]]>
+</Entitlements>
+<requestedDisplayResolution>high</requestedDisplayResolution>
+</iPhone>
