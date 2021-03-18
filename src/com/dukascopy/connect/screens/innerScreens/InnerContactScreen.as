@@ -721,7 +721,7 @@ package com.dukascopy.connect.screens.innerScreens {
 				data = data.entry;
 			}
 			
-			if (autoInvoiceData != null && (data is ContactVO || data is ChatUserVO)) {
+			if (autoInvoiceData != null && (data is ContactVO || data is ChatUserVO || data is PhonebookUserVO)) {
 				var userUID:String;
 				if (data is ContactVO)
 				{
@@ -731,6 +731,10 @@ package com.dukascopy.connect.screens.innerScreens {
 				{
 					userUID = (data as ChatUserVO).uid;
 				}
+				else if (data is PhonebookUserVO)
+				{
+					userUID = (data as PhonebookUserVO).uid;
+				}
 				
 				chatScreenData = new ChatScreenData();
 				chatScreenData.additionalData = autoInvoiceData;
@@ -738,7 +742,7 @@ package com.dukascopy.connect.screens.innerScreens {
 				chatScreenData.type = ChatInitType.USERS_IDS;
 				chatScreenData.backScreen = MobileGui.centerScreen.currentScreenClass;
 				chatScreenData.backScreenData = this.data;
-			
+				
 				MobileGui.showChatScreen(chatScreenData);
 				autoInvoiceData = null;
 				return;
