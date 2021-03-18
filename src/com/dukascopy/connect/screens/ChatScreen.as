@@ -3558,7 +3558,7 @@ package com.dukascopy.connect.screens {
 			bottomY = chatInput.getView().y;
 			bottomY -= getAnswersOffset(bottomY);
 			
-			updateButtonsPositions(bottomY);
+			bottomY = updateButtonsPositions(bottomY);
 			
 			var listHeightNew:int = bottomY - list.view.y;
 			if (listHeightNew == list.height)
@@ -3579,7 +3579,7 @@ package com.dukascopy.connect.screens {
 			}
 		}
 		
-		private function updateButtonsPositions(bottomY:int):void 
+		private function updateButtonsPositions(bottomY:int):int 
 		{
 			if (satisfyPublicAnswerButton != null) {
 				satisfyPublicAnswerButton.setPosition(_width - Config.FINGER_SIZE * 1.5 - Config.MARGIN * 2, bottomY - satisfyPublicAnswerButton.height - Config.MARGIN);
@@ -3599,6 +3599,8 @@ package com.dukascopy.connect.screens {
 			{
 				scrollBottomButton.y = (bottomY - scrollBottomButton.height - Config.DIALOG_MARGIN * 0.7);
 			}
+			
+			return bottomY;
 		}
 		
 		private function getAnswersOffset(bottomY:int):int {
