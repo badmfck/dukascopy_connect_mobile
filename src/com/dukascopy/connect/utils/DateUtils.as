@@ -145,30 +145,44 @@ package com.dukascopy.connect.utils {
 			return result;
 		}
 		
-		public static function getDateStringByFormat(date:Date, format:String = "YYYY-MM-DD"):String {
+		public static function getDateStringByFormat(date:Date, format:String = "YYYY-MM-DD", useGMT:Boolean = false):String {
 			if (date == null)
 				return "";
 			var result:String = format.toLowerCase();
 			if (result.indexOf("yyyy") != -1)
-				result = result.replace("yyyy", date.getFullYear());
+				result = result.replace("yyyy", (useGMT == true) ? date.getUTCFullYear() : date.getFullYear());
 			if (result.indexOf("yy") != -1)
-				result = result.replace("yy", String(date.getFullYear()).substr(2));
+				result = result.replace("yy", (useGMT == true) ? String(date.getUTCFullYear()).substr(2) : String(date.getFullYear()).substr(2));
 			if (result.indexOf("dd") != -1) {
-				if (date.getDate() < 10)
-					result = result.replace("dd", "0" + date.getDate());
-				else
-					result = result.replace("dd", date.getDate());
+				if (useGMT == true) {
+					if (date.getUTCDate() < 10)
+						result = result.replace("dd", "0" + date.getUTCDate());
+					else
+						result = result.replace("dd", date.getUTCDate());
+				} else {
+					if (date.getDate() < 10)
+						result = result.replace("dd", "0" + date.getDate());
+					else
+						result = result.replace("dd", date.getDate());
+				}
 			}
 			if (result.indexOf("d") != -1)
-				result = result.replace("d", date.getDate());
+				result = result.replace("d", (useGMT == true) ? date.getUTCDate() : date.getDate());
 			if (result.indexOf("mm") != -1) {
-				if (date.getMonth() < 9)
-					result = result.replace("mm", "0" + (date.getMonth() + 1));
-				else
-					result = result.replace("mm", (date.getMonth() + 1));
+				if (useGMT == true) {
+					if (date.getUTCMonth() < 9)
+						result = result.replace("mm", "0" + (date.getUTCMonth() + 1));
+					else
+						result = result.replace("mm", (date.getUTCMonth() + 1));
+				} else {
+					if (date.getMonth() < 9)
+						result = result.replace("mm", "0" + (date.getMonth() + 1));
+					else
+						result = result.replace("mm", (date.getMonth() + 1));
+				}
 			}
 			if (result.indexOf("m") != -1)
-				result = result.replace("m", (date.getMonth() + 1));
+				result = result.replace("m", (useGMT == true) ? (date.getUTCMonth() + 1) : (date.getMonth() + 1));
 			return result;
 		}
 		

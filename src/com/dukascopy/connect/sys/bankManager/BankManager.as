@@ -3931,7 +3931,7 @@ package com.dukascopy.connect.sys.bankManager {
 				request += "COIN_SELL";
 			var dt:Date = new Date();
 			dt.setTime(data.time);
-			request += "|!|" + DateUtils.getDateStringByFormat(dt);
+			request += "|!|" + DateUtils.getDateStringByFormat(dt, "YYYY-MM-DD", true);
 			BankBotController.getAnswer(request);
 			return true;
 		}
