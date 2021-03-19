@@ -611,7 +611,7 @@ package com.dukascopy.connect.screens {
 		
 		private function onGuestUidLoaded(data:String, error:Boolean):void 
 		{
-			error = true;
+		//	error = true;
 			if (_isDisposed == true)
 			{
 				return;
@@ -755,6 +755,8 @@ package com.dukascopy.connect.screens {
 		
 		private function onItemHold(data:Object, n:int):void {
 			echo("ChatScreen", "onItemHold", "");
+			return;
+			
 			if (!Config.PLATFORM_APPLE && (chatInput as ChatInputAndroid).softKeyboardActivated)
 				return;
 			if (!(data is ChatMessageVO))

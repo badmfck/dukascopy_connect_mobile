@@ -1208,12 +1208,6 @@ package com.dukascopy.connect.screens {
 					activateStateCode();
 				}
 			}
-			
-			//startSupportAction = new ExecuteAction();
-			//startSupportAction.getSuccessSignal().add(startSupportChat);
-			//startSupportAction.setData(Lang.startSupportChat);
-			//startSupportAction.setIconClass(IconBack);
-			//startSupportAction.execute();
 		}
 		
 		private function activateStateCode():void 
