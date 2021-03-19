@@ -39,7 +39,7 @@ public class Main extends Sprite {
 		public static var startTime:Number=new Date().getTime();
 
 		public function Main() {
-			//Comment
+			//Comment ABC
 			timer = getTimer(); 
 			stage.quality = StageQuality.LOW;
 			
