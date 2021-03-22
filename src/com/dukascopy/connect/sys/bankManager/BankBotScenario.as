@@ -236,7 +236,7 @@ package com.dukascopy.connect.sys.bankManager {
 					}, {
 						text:"lang.buttonCancel",
 						action:"system:cancel"
-					}
+					} 
 				]
 			},
 			
