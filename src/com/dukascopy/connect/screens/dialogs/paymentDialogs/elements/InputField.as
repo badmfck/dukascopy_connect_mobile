@@ -8,6 +8,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs.elements
 	import com.dukascopy.connect.gui.lightbox.UI;
 	import com.dukascopy.connect.sys.applicationError.ApplicationErrors;
 	import com.dukascopy.connect.sys.pointerManager.PointerManager;
+	import com.dukascopy.connect.sys.style.FontSize;
 	import com.dukascopy.connect.sys.style.Style;
 	import com.dukascopy.connect.sys.style.presets.Color;
 	import com.dukascopy.connect.utils.TextUtils;
@@ -219,7 +220,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs.elements
 				title.bitmapData = TextUtils.createTextFieldData(value, itemWidth, 10, 
 																false, TextFormatAlign.LEFT, 
 																TextFieldAutoSize.LEFT, 
-																Config.FINGER_SIZE * .26, 
+																FontSize.SUBHEAD, 
 																false, Style.color(Style.COLOR_SUBTITLE), backColor, false, true);
 			}
 		}
@@ -555,6 +556,21 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs.elements
 		
 		private function onChanged():void 
 		{
+			if (customMode == Input.MODE_DIGIT_DECIMAL)
+            {
+                if (valueString != null && valueString.length > 0 && valueString.charAt(0) == "0" && !isNaN(Number(valueString)))
+                {
+                    if (valueString.length > 1 && (valueString.charAt(1) == "." || valueString.charAt(1) == ","))
+                    {
+                        
+                    }
+                    else
+                    {
+                        value = Number(valueString);
+                    }
+                }
+            }
+			
 			if (_onChangedFunction != null)
 			{
 				_onChangedFunction();
