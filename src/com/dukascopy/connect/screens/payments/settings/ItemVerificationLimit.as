@@ -209,11 +209,11 @@ package com.dukascopy.connect.screens.payments.settings {
 			var result:String = "";
 			switch (accLimitVO.type) {
 				case AccountLimit.TOTAL_EQUITY_USD : {
-					return Lang.quarterLimitDescription;
+					return Lang.totalLimitDescription;
 					break;
 				}
 				case AccountLimit.DUKAPAY_INCOMING_LIMIT_AMOUNT_Q : {
-					return Lang.totalLimitDescription;
+					return Lang.quarterLimitDescription;
 					break;
 				}
 			}

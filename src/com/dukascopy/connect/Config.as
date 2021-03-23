@@ -149,7 +149,7 @@ package com.dukascopy.connect {
         static public const COMPANY_ID:String = "08A29C35B3";
 
         static public const APPLE_LOG:Boolean=true;
-        static public const VERSION:String = "3.5.50o"+(Capabilities.isDebugger?" dbg":"");
+        static public const VERSION:String = "3.5.55o"+(Capabilities.isDebugger?" dbg":"");
         static public const VERSION_SQL:int = 1;
 
         static public const MAX_UPLOAD_THUMB_SIZE:int = 230;
