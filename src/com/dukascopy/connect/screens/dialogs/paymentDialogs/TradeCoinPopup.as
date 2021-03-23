@@ -235,7 +235,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 			ToastMessage.display(Lang.avaliableSoon);
 			return;
 			
-			DialogManager.showDialog(SelectContactScreen, {callback:onSelectContact, dialog:true});
+			DialogManager.showDialog(SelectContactScreen, { title:Lang.selectContacts, callback:onSelectContact, searchText:Lang.TEXT_SEARCH_CONTACT }, ServiceScreenManager.TYPE_SCREEN );
 		}
 		
 		private function onSelectContact(user:UserVO, data:Object):void {

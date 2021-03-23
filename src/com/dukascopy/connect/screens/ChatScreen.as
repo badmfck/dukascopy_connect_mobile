@@ -3590,14 +3590,15 @@ package com.dukascopy.connect.screens {
 				verificationButton.y = chatInput.getView().y - verificationButton.height;
 			}
 			
+			var position:int = bottomY;
 			if (reportButton != null) {
 				reportButton.setPosition(_width - Config.FINGER_SIZE * 1 - Config.MARGIN * 2, bottomY - reportButton.height - Config.MARGIN);
-				bottomY -= reportButton.height - Config.FINGER_SIZE*.2;
+				position -= reportButton.height - Config.FINGER_SIZE * .2;
 			}
 			
 			if (scrollBottomButton != null)
 			{
-				scrollBottomButton.y = (bottomY - scrollBottomButton.height - Config.DIALOG_MARGIN * 0.7);
+				scrollBottomButton.y = (position - scrollBottomButton.height - Config.DIALOG_MARGIN * 0.7);
 			}
 			
 			return bottomY;

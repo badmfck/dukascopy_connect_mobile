@@ -20,11 +20,19 @@ package com.dukascopy.connect.screens.dialogs.bottom
 			super.createView();
 			
 			search = new Input();
-			search.setParams(Lang.TEXT_SEARCH_COUNTRY, Input.MODE_INPUT);	
 			search.S_CHANGED.add(onChanged);
 			container.addChild(search.view);
 			search.view.x = Config.DOUBLE_MARGIN;
 			search.setPadding(0);
+		}
+		
+		private function getSearchpromt():String 
+		{
+			if (data != null && "searchText" in data && data.searchText != null)
+			{
+				return data.searchText;
+			}
+			return Lang.TEXT_SEARCH_COUNTRY;
 		}
 		
 		private function onChanged():void {
@@ -32,7 +40,7 @@ package com.dukascopy.connect.screens.dialogs.bottom
 			doSearch(value);
 		}
 		
-		private function doSearch(value:String = ""):void {
+		protected function doSearch(value:String = ""):void {
 			if (list == null)
 				return;
 			var data:Array = list.data as Array;
@@ -53,6 +61,7 @@ package com.dukascopy.connect.screens.dialogs.bottom
 		
 		override public function initScreen(data:Object = null):void {
 			super.initScreen(data);
+			search.setParams(getSearchpromt(), Input.MODE_INPUT);	
 			search.view.y = headerHeight;
 			search.width = _width - Config.DOUBLE_MARGIN * 2;
 			list.view.y = search.view.y + search.height;

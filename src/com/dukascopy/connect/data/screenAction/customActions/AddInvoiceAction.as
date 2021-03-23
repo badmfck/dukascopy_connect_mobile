@@ -49,8 +49,10 @@ package com.dukascopy.connect.data.screenAction.customActions {
 			invoiceData.message = comment;
 			invoiceData.confirm = confirm;
 			invoiceData.block = blockInputs;
+			invoiceData.callback = callBackAddInvoice;
 			
-			DialogManager.showAddInvoice(callBackAddInvoice, null, invoiceData);
+			ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, ScreenAddInvoiceDialog, invoiceData, 0.5, 0.5, 3);
+			
 			if (disposeAction)
 			{
 				dispose();

@@ -4,37 +4,25 @@ package com.dukascopy.connect.screens.payments.settings {
 	import com.dukascopy.connect.data.CountriesData;
 	import com.dukascopy.connect.data.TextFieldSettings;
 	import com.dukascopy.connect.gui.button.DDFieldButton;
-	import com.dukascopy.connect.gui.components.WhiteToast;
-	import com.dukascopy.connect.gui.components.WhiteToastSmall;
 	import com.dukascopy.connect.gui.input.Input;
-	import com.dukascopy.connect.gui.lightbox.UI;
-	import com.dukascopy.connect.gui.list.renderers.ListCountry;
 	import com.dukascopy.connect.gui.list.renderers.ListCountrySimple;
 	import com.dukascopy.connect.gui.menuVideo.BitmapButton;
-	import com.dukascopy.connect.gui.tools.HorizontalPreloader;
 	import com.dukascopy.connect.screens.dialogs.bottom.SearchListSelectionPopup;
 	import com.dukascopy.connect.screens.dialogs.paymentDialogs.elements.InputField;
 	import com.dukascopy.connect.screens.layout.ScrollScreen;
 	import com.dukascopy.connect.sys.dialogManager.DialogManager;
 	import com.dukascopy.connect.sys.imageManager.ImageBitmapData;
-	import com.dukascopy.connect.sys.payments.PayAPIManager;
 	import com.dukascopy.connect.sys.payments.PayManager;
 	import com.dukascopy.connect.sys.payments.PayRespond;
 	import com.dukascopy.connect.sys.payments.PaymentsManager;
 	import com.dukascopy.connect.sys.serviceScreenManager.ServiceScreenManager;
-	import com.dukascopy.connect.sys.softKeyboard.SoftKeyboard;
 	import com.dukascopy.connect.sys.style.FontSize;
 	import com.dukascopy.connect.sys.style.Style;
 	import com.dukascopy.connect.sys.style.presets.Color;
 	import com.dukascopy.connect.type.HitZoneType;
 	import com.dukascopy.connect.utils.TextUtils;
 	import com.dukascopy.langs.Lang;
-	import com.greensock.TweenMax;
-	import com.greensock.easing.Power3;
-	import flash.display.Bitmap;
-	import flash.display.Sprite;
 	import flash.events.Event;
-	import flash.text.TextFieldAutoSize;
 	import flash.text.TextFormat;
 	import flash.text.TextFormatAlign;
 	
@@ -594,7 +582,7 @@ package com.dukascopy.connect.screens.payments.settings {
 				cancelButton.tapCallback = onCancelClick;
 				addObject(cancelButton);
 				
-				var textSettings:TextFieldSettings = new TextFieldSettings(Lang.textSave, Style.color(Style.COLOR_BACKGROUND), FontSize.BODY, TextFormatAlign.CENTER);
+				var textSettings:TextFieldSettings = new TextFieldSettings(Lang.textSave, Color.WHITE, FontSize.BODY, TextFormatAlign.CENTER);
 				var buttonBitmap:ImageBitmapData = TextUtils.createbutton(textSettings, Color.GREEN, 1, -1, NaN, ((_width - padding * 3) * .5), -1, Style.size(Style.SIZE_BUTTON_CORNER));
 				saveButton.setBitmapData(buttonBitmap, true);
 				

@@ -9,8 +9,12 @@ package com.dukascopy.connect.gui.button {
 	import com.dukascopy.connect.sys.theme.AppTheme;
 	import com.dukascopy.connect.type.HitZoneType;
 	import com.dukascopy.connect.uiFactory.UIFactory;
+	import com.dukascopy.connect.utils.TextUtils;
 	import com.dukascopy.langs.Lang;
+	import flash.display.Bitmap;
 	import flash.geom.ColorTransform;
+	import flash.text.TextFieldAutoSize;
+	import flash.text.TextFormatAlign;
 
 	import flash.display.Sprite;
 	import flash.display.StageQuality;
@@ -26,6 +30,7 @@ package com.dukascopy.connect.gui.button {
 		
 		private var box:Sprite;
 		private var tf:TextField;
+		private var titleClip:Bitmap;
 		
 		static private var arrowHeight:int;
 		static private var arrowCathetus:int;
@@ -34,11 +39,13 @@ package com.dukascopy.connect.gui.button {
 		private var h:int = 0;
 		private var arrowShow:Boolean;
 		private var underlineColor:Number;
+		private var title:String;
+		private var container:Sprite;
 		
-		public function DDFieldButton(callBack:Function, value:String = "", showArrow:Boolean = true, underlineColor:Number = NaN) {
+		public function DDFieldButton(callBack:Function, value:String = "", showArrow:Boolean = true, underlineColor:Number = NaN, title:String = null) {
 			this._value = value;
 			this.arrowShow = showArrow;
-			
+			this.title = title;
 			
 			if (!isNaN(underlineColor))
 			{
@@ -59,6 +66,9 @@ package com.dukascopy.connect.gui.button {
 			cancelOnVerticalMovement = true;
 			tapCallback = callBack;
 			
+			container = new Sprite();
+			titleClip = new Bitmap();
+			
 			box = new Sprite();
 			tf = UIFactory.createTextField(FontSize.BODY);
 			tf.textColor = Style.color(Style.COLOR_TEXT);
@@ -68,6 +78,31 @@ package com.dukascopy.connect.gui.button {
 			}
 			box.addChild(tf);
 			setOverlay(HitZoneType.MENU_MIDDLE_ELEMENT);
+			
+			if (title != null)
+			{
+				drawTitle(title);
+			}
+			
+			container.addChild(titleClip);
+			container.addChild(box);
+		}
+		
+		private function drawTitle(value:String):void 
+		{
+			if (titleClip.bitmapData)
+			{
+				titleClip.bitmapData.dispose();
+				titleClip.bitmapData = null;
+			}
+			if (value != null)
+			{
+				titleClip.bitmapData = TextUtils.createTextFieldData(value, Config.FINGER_SIZE * 3, 10, 
+																false, TextFormatAlign.LEFT, 
+																TextFieldAutoSize.LEFT, 
+																FontSize.SUBHEAD, 
+																false, Style.color(Style.COLOR_SUBTITLE), Style.color(Style.COLOR_BUTTON_RED_DOWN), false, true);
+			}
 		}
 		
 		public function invalid():void
@@ -87,9 +122,14 @@ package com.dukascopy.connect.gui.button {
 		
 		public function updateDefaultLabel(str:String = ""):void {
 			if (_value == "" || _value == null) {
-				_value = Lang.textChoose + "...";
+				_value = getDefaultlabel();
 			}
 			setSize(w, h);
+		}
+		
+		public function getDefaultlabel():String 
+		{
+			return Lang.textChoose + "...";
 		}
 		
 		public function setSize(w:int, h:int):void {
@@ -99,6 +139,8 @@ package com.dukascopy.connect.gui.button {
 			this.w = w;
 			this.h = h;
 			
+			var lineThickness:int = int(Math.max(1, Config.FINGER_SIZE * .03));
+			
 			if (generatedBitmap != null) {
 				if (generatedBitmap.height != h || generatedBitmap.width != w) {
 					generatedBitmap.dispose();
@@ -106,48 +148,63 @@ package com.dukascopy.connect.gui.button {
 				}
 			}
 			
-			if (generatedBitmap == null) {
-				generatedBitmap = new ImageBitmapData("DDFieldButton.generatedBitmap", w, h, true, 0);
-			} else {
-				generatedBitmap.fillRect(generatedBitmap.rect, 0);
+			tf.x = 0;
+			tf.text = _value;
+			tf.width = int(w - arrowHeight * 2 - Config.DIALOG_MARGIN - Config.MARGIN);
+			
+			var resultheight:int = h;
+			var innerHeight:int = h;
+			if (titleClip.height > 0)
+			{
+				var position:int = 0;
+				
+				box.y = int(titleClip.height + Config.FINGER_SIZE * .1);
+				
+				tf.y = position;
+				position += tf.height + Config.FINGER_SIZE * .1 + lineThickness;
+				resultheight = position + box.y;
+				innerHeight = position;
+			}
+			else
+			{
+				resultheight = h;
+				innerHeight = h;
+				tf.y = (h - tf.height) * .5;
 			}
 			
-			/*box.graphics.clear();
-			box.graphics.beginFill(AppTheme.GREY_SEMI_LIGHT);
-			box.graphics.drawRect(0, 0, w, h);
-			box.graphics.beginFill(0xFFFFFF, 1);
-			box.graphics.drawRect(1, 1, w - 2, h - 2);*/
-			
-			var lineThickness:int = int(Math.max(1, Config.FINGER_SIZE * .03));
 			box.graphics.clear();
 				box.graphics.beginFill(Style.color(Style.COLOR_BACKGROUND), 0);
 				box.graphics.drawRect(1, 1, w, h);
 				box.graphics.lineStyle(lineThickness, underlineColor);
-				box.graphics.moveTo(0, h - lineThickness / 2);
-				box.graphics.lineTo(w, h - lineThickness / 2);
+				box.graphics.moveTo(0, innerHeight - lineThickness / 2);
+				box.graphics.lineTo(w, innerHeight - lineThickness / 2);
 				box.graphics.lineStyle();
 			
 			// arrow
 			var xOffset:int = w;
 			
 			if (arrowShow == true) {
-				arrowHeight = h * 0.15;
-				arrowCathetus = h * 0.12;
+				arrowHeight = Config.FINGER_SIZE * .8 * 0.15;
+				arrowCathetus = Config.FINGER_SIZE * .8 * 0.12;
 				box.graphics.beginFill(Style.color(Style.COLOR_TEXT));
-				box.graphics.moveTo(xOffset, int((h - arrowHeight) * .5));
-				box.graphics.lineTo(xOffset - arrowCathetus, int((h + arrowHeight) * .5));
-				box.graphics.lineTo(xOffset - arrowCathetus * 2, int((h - arrowHeight) * .5));
-				box.graphics.lineTo(xOffset, int((h - arrowHeight) * .5));
+				box.graphics.moveTo(xOffset, int((innerHeight - arrowHeight) * .5));
+				box.graphics.lineTo(xOffset - arrowCathetus, int((innerHeight + arrowHeight) * .5));
+				box.graphics.lineTo(xOffset - arrowCathetus * 2, int((innerHeight - arrowHeight) * .5));
+				box.graphics.lineTo(xOffset, int((innerHeight - arrowHeight) * .5));
 				box.graphics.endFill();
 			}
 			
-		//	tf.x = (w - xOffset);
-			tf.x = 0;
-			tf.text = _value;
-			tf.width = int(w - arrowHeight*2 - Config.DIALOG_MARGIN - Config.MARGIN);
-			tf.y = (h - tf.height) * .5;
+			if (generatedBitmap == null) {
+				generatedBitmap = new ImageBitmapData("DDFieldButton.generatedBitmap", w, resultheight, true, 0);
+			} else {
+				generatedBitmap.fillRect(generatedBitmap.rect, 0);
+			}
 			
-			generatedBitmap.drawWithQuality(box, null, null, null, null, true, StageQuality.BEST);
+			
+			
+			
+			
+			generatedBitmap.drawWithQuality(container, null, null, null, null, true, StageQuality.BEST);
 			
 			setBitmapData(generatedBitmap);
 		}
@@ -176,6 +233,16 @@ package com.dukascopy.connect.gui.button {
 			if (box != null) {
 				box.graphics.clear();
 				box = null;
+			}
+			if (titleClip != null)
+			{
+				UI.destroy(titleClip);
+				titleClip = null
+			}
+			if (container != null)
+			{
+				UI.destroy(container);
+				container = null
 			}
 			if (generatedBitmap != null) {
 				generatedBitmap.dispose();

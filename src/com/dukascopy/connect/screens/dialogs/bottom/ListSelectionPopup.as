@@ -63,6 +63,11 @@ package com.dukascopy.connect.screens.dialogs.bottom
 		{
 			list.setWidthAndHeight(_width, getMaxContentHeight());
 			list.setData(itemsData, renderer);
+			updateListSize();
+		}
+		
+		protected function updateListSize():void 
+		{
 			list.setWidthAndHeight(_width, int(Math.min(getMaxContentHeight(), list.itemsHeight)));
 			if (list.itemsHeight > list.height)
 			{
@@ -96,9 +101,9 @@ package com.dukascopy.connect.screens.dialogs.bottom
 			}
 		}
 		
-		private function onItemTap(data:Object, n:int):void {
+		protected function onItemTap(data:Object, n:int):void {
 			needCallback = true;
-			selectedItem = data;
+			selectedItem = getSelectedData(data);
 			selectedNum = n;
 			if (list.data != null)
 			{
@@ -117,6 +122,11 @@ package com.dukascopy.connect.screens.dialogs.bottom
 			list.refresh();
 			deactivateScreen();
 			TweenMax.delayedCall(0.2, close);
+		}
+		
+		protected function getSelectedData(item:Object):Object 
+		{
+			return item;
 		}
 		
 		override protected function animationFinished():void 
@@ -140,7 +150,14 @@ package com.dukascopy.connect.screens.dialogs.bottom
 					}
 					else if((data.callback as Function).length == 2)
 					{
-						data.callback(selectedItem, selectedNum);
+						if (data != null && "data" in data)
+						{
+							data.callback(selectedItem, data.data);
+						}
+						else
+						{
+							data.callback(selectedItem, selectedNum);
+						}
 					}
 					else if((data.callback as Function).length == 3)
 					{
