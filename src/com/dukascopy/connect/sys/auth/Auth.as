@@ -392,7 +392,7 @@ package com.dukascopy.connect.sys.auth {
 			echo("Auth", "onRequestCodeResponse", Print_r.show(r.data));
 			if ("code" in r.data && Config.isTest() == true)
 			{
-				authorize_sendCode(r.data.to, r.data.code);
+			//	authorize_sendCode(r.data.to, r.data.code);
 			}
 			S_GET_SMS_CODE_RESPOND.invoke(r.error);
 		//	DialogManager.alert(Lang.information, Lang.smsCodeSent);
@@ -779,8 +779,8 @@ package com.dukascopy.connect.sys.auth {
 			return "";
 		}
 		
-		static public function clearAuthorization(err:String = null):void {
-			if (authorizationClearing)
+		static public function clearAuthorization(err:String = null, force:Boolean = false):void {
+			if (authorizationClearing && force == false)
 				return;
 			if (err == null) {
 				S_LOGOUT.invoke();
