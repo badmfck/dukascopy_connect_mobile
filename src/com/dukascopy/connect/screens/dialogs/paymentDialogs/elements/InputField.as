@@ -29,11 +29,23 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs.elements
 	 */
 	public class InputField extends Sprite
 	{
+		static public const ALIGN_LEFT:String = "alignLeft";
 		private var _onLongTapFunction:Function;
 		private var _onChangedFunction:Function;
 		private var _onSelectedFunction:Function;
 		private var longClick:LongClick;
 		private var selected:Boolean;
+		private var _align:String;
+		
+		public function get align():String 
+		{
+			return _align;
+		}
+		
+		public function set align(value:String):void 
+		{
+			_align = value;
+		}
 		
 		protected var title:Bitmap;
 		protected var valueField:Bitmap;
@@ -238,6 +250,14 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs.elements
 				underlineValue.bitmapData = TextUtils.createTextFieldData(value, itemWidth, 10, true, TextFormatAlign.RIGHT, 
 																		TextFieldAutoSize.LEFT, Config.FINGER_SIZE * .24, true, Style.color(Style.COLOR_SUBTITLE), backColor, false, true);
 			}
+			if (align == ALIGN_LEFT)
+			{
+				underlineValue.x = 0;
+			}
+			else
+			{
+				underlineValue.x = int(itemWidth - underlineValue.width);
+			}
 		}
 		
 		private function drawUnderline(color:Number):void 
@@ -284,7 +304,14 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs.elements
 			underline.width = itemWidth;
 			underline.y = int(input.view.y + input.height - Config.FINGER_SIZE * .10);
 			
-			underlineValue.x = int(itemWidth - underlineValue.width);
+			if (align == ALIGN_LEFT)
+			{
+				underlineValue.x = 0;
+			}
+			else
+			{
+				underlineValue.x = int(itemWidth - underlineValue.width);
+			}
 			underlineValue.y = int(underline.y + Config.FINGER_SIZE * .16);
 		}
 		
