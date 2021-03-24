@@ -218,7 +218,7 @@ package com.dukascopy.connect.screens {
 			
 			actions.push(resendCodeAction);
 			actions.push(requestCallAction);
-		//	actions.push(startSupportAction);
+			actions.push(startSupportAction);
 			actions.push(backAction);
 			
 			Overlay.removeCurrent();

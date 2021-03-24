@@ -86,7 +86,7 @@ import flash.utils.getTimer;
 		static private function onPhpAnyRequestSuccess():void {
 			if (canConnect() == false)
 				return;
-			if (_connected == false && _connecting == false)
+			if (_connected == false && _connecting == false && Auth.key != "web")
 			{
 				connect(false, "onPhpAnyRequestSuccess");
 			}
@@ -119,7 +119,7 @@ import flash.utils.getTimer;
 				return;
 			if (getTimer() - lastMessageTime >= pingDelay) {
 				echo("WS", "checkConnection", "Probably dead, NetworkManager.isConnected=" + NetworkManager.isConnected);
-				if (NetworkManager.isConnected == true)
+				if (NetworkManager.isConnected == true && Auth.key != "web")
 				{
 					connect(true, "checkConnection");
 				}
