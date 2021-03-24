@@ -293,31 +293,6 @@ package com.dukascopy.connect.sys.dialogManager {
 			S_SHOW.invoke(ScreenCreateChatByPhoneDialog, { callBack:callBack } );
 		}
 		
-		static public function showAddInvoice(callBack:Function, obj:Object = null, additionalData:Object = null, thirdparty:Boolean = false):void {
-			hasOpenedDialog = true;
-			currentScreenType = TYPE_DIALOG;
-			if(obj == null) {
-				obj = { title:Lang.addInvoice,
-					callBack:callBack,
-					buttonOk:Lang.textSend.toUpperCase(),
-					buttonSecond:Lang.textCancel.toUpperCase(),
-					buttonThird:null,
-					textAlign:TextFormatAlign.CENTER,
-					htmlText:false,
-					showFullTitle:false
-					//additionalData:additionalData
-				};
-			}
-			if (thirdparty == true) {
-				obj.thirdparty = thirdparty;
-				obj.buttonOk = Lang.create.toUpperCase();
-			}
-			if ("additionalData" in obj == false || obj.additionalData == null)
-				if (additionalData != null)
-					obj.additionalData = additionalData;
-			S_SHOW.invoke(ScreenAddInvoiceDialog, obj, .7);
-		}
-		
 		static public function showAddPuzzle(callBack:Function, obj:Object = null):void {
 			hasOpenedDialog = true;
 			currentScreenType = TYPE_DIALOG;

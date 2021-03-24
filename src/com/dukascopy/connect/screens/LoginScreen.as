@@ -325,14 +325,14 @@ package com.dukascopy.connect.screens {
 			}
 			
 			DialogManager.showDialog(
-					SearchListSelectionPopup,
-					{
-						items:cDataNew,
-						title:Lang.selectCountry,
-						renderer:ListCountry,
-						callback:onCountryListSelected
-					}, ServiceScreenManager.TYPE_SCREEN
-				);
+				SearchListSelectionPopup,
+				{
+					items:cDataNew,
+					title:Lang.selectCountry,
+					renderer:ListCountry,
+					callback:onCountryListSelected
+				}, ServiceScreenManager.TYPE_SCREEN
+			);
 		}
 		
 		private function onCountryListSelected(country:Array):void

@@ -627,33 +627,29 @@ package com.dukascopy.connect.screens.dialogs {
 				
 				return true;
 			}			
-						
 		}
-
-		private function callBackAlert():void {
-			DialogManager.showAddInvoice(null,TEMP_DATA);
-		}
+		
 		override protected function btn1Clicked():void {
 			if (callback != null) {
 				fireCallbackFunctionWithValue(2);
 			}
 			DialogManager.closeDialog();
 		}
-
+		
 		override protected function btn2Clicked():void {
 			if (callback != null) {
 				fireCallbackFunctionWithValue(3);
 			}
 			DialogManager.closeDialog();
 		}
-
+		
 		override protected function onCloseButtonClick():void {
 			if (callback != null) {
 				fireCallbackFunctionWithValue(0);
 			}
 			DialogManager.closeDialog();
 		}
-
+		
 		override public function dispose():void {
 			super.dispose();
 			if(PayManager.S_SYSTEM_OPTIONS_READY != null)
@@ -669,43 +665,34 @@ package com.dukascopy.connect.screens.dialogs {
 				dotLoader.dispose();
 				dotLoader = null;
 			}
-			
 			if(isTempData) {
 				TEMP_DATA = null;
 			}
-			
 			if (addImageButton != null){
 				addImageButton.dispose();
 				addImageButton = null;
 			}
-			
 			if (addGalleryButton != null){
 				addGalleryButton.dispose();
 				addGalleryButton = null;
 			}
-
 			if (pandingBitmap){
 				UI.destroy(pandingBitmap);
 				pandingBitmap = null;
 			}
-
 			if (labelBitmapAmount) {
 				UI.destroy(labelBitmapAmount);
 				labelBitmapAmount = null;
 			}	
-			
 			if (attachmentPreviewBitmap) {
 				attachmentPreviewBitmap.bitmapData = null;
 				UI.destroy(attachmentPreviewBitmap);
 				attachmentPreviewBitmap = null;
 			}
-
 			if (labelBitmapCurrency) {
 				UI.destroy(labelBitmapCurrency);
 				labelBitmapCurrency = null;
 			}
-			
-
 			if (selectorCurrency != null) {
 				selectorCurrency.dispose();
 				selectorCurrency = null;

@@ -635,7 +635,7 @@ import flash.events.StageOrientationEvent;
 			onStageResize();
 		}
 		
-		private function onServiceScreenShow(dialog:Class, params:Object = null, transitionTime:Number = 0.5, transparency:Number = 0.5):void { 
+		private function onServiceScreenShow(dialog:Class, params:Object = null, transitionTime:Number = 0.5, transparency:Number = 0.5, direction:int = 0):void { 
 			_serviceShowed = true;
 			if (LightBox.isShowing == true) {
 				LightBox.deactivate();
@@ -658,7 +658,7 @@ import flash.events.StageOrientationEvent;
 			onCustomSoftKeyboardClosed();
 			serviceSM.activate();
 			PointerManager.addTap(boxBlack, closeServiceScreen);
-			serviceSM.show(dialog, params, 0, transitionTime);
+			serviceSM.show(dialog, params, direction, transitionTime);
 			if (mainSM != null)
 				mainSM.deactivate();
 		}
