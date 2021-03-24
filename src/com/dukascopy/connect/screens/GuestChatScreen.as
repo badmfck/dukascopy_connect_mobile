@@ -2293,6 +2293,8 @@ package com.dukascopy.connect.screens {
 			disposing = true;
 			WS.S_CONNECTED.remove(onSocketReady);
 			
+			Auth.clearAuthorization("", true);
+			
 			TweenMax.killTweensOf(backColorClip);
 			ChatManager.clearLocalChats();
 			ChatManager.setCurrentChat(null);
