@@ -47,7 +47,6 @@ package com.dukascopy.connect.sys.payments
 			
 			orders = new Array();
 			var order:TradingOrder;
-			trace("----------------------------------");
 			for (var i:int = 0; i < currentProposal.length; i++) 
 			{
 				order = new TradingOrder();
@@ -56,7 +55,6 @@ package com.dukascopy.connect.sys.payments
 					var newQuantity:Number = Math.min((currentProposal[i] as TradingOrder).quantity, total);
 					order.quantity = newQuantity;
 					total -= newQuantity;
-					trace("total", total, Number.round(total*10000)/10000);
 					total = Number.round(total*10000)/10000;
 				}
 				
@@ -120,7 +118,6 @@ package com.dukascopy.connect.sys.payments
 				request["amount" + (i + 1).toString()] = (orders[i] as TradingOrder).quantity;
 				request["price" + (i + 1).toString()] = (orders[i] as TradingOrder).price;
 			}*/
-			trace(request);
 			PayManager.callGetSellCoinsBulkCommission(request, _lastCommissionCallID);
 		}
 		

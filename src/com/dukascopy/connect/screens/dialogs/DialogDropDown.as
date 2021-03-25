@@ -60,7 +60,6 @@ package com.dukascopy.connect.screens.dialogs {
 		}
 		
 		private function onCloseBtnClick():void {
-			//trace("Close popup");
 			DialogManager.closeDialog();
 		}
 		

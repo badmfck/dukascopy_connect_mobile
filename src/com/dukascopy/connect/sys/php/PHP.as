@@ -178,7 +178,6 @@ package com.dukascopy.connect.sys.php {
 				obj.limit = (firstTime == true) ? ChatManager.getFirstMsgsCount() : 50;
 			if (chatType)
 				obj.tp = chatType;
-			trace(UI.tracedObj(obj));
 			call('chat.hGetMessages', callBack, obj, null, false, "POST", true, false, { firstTime:firstTime } );
 		}
 		

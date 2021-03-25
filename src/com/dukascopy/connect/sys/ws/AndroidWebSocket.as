@@ -54,7 +54,6 @@ package com.dukascopy.connect.sys.ws
 					}
 					else if (e.level == "didClose")
 					{
-						trace("DukascopyExtension webSocket didClose");
 						connecting = false;
 						
 						if (needClear == true)
@@ -75,7 +74,6 @@ package com.dukascopy.connect.sys.ws
 					}
 					else if (e.level == "connectionFail")
 					{
-						trace("DukascopyExtension webSocket connectionFail");
 						connecting = false;
 						event = new WebSocketErrorEvent(WebSocketErrorEvent.CONNECTION_FAIL);
 						dispatchEvent(event);
@@ -83,7 +81,6 @@ package com.dukascopy.connect.sys.ws
 					
 					else if (e.level == "ioError")
 					{
-						trace("DukascopyExtension webSocket ioError");
 						connecting = false;
 					//	dispatchEvent(event);
 					}
