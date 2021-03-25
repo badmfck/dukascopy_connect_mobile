@@ -5,7 +5,6 @@ package {
 import com.dukascopy.connect.Config;
 import com.dukascopy.connect.MobileGui;
 import com.dukascopy.connect.sys.auth.Auth;
-import com.dukascopy.connect.sys.debug.RemoteDebugger;
 import com.dukascopy.connect.sys.echo.EchoParser;
 import com.dukascopy.connect.sys.echo.echo;
 import com.dukascopy.connect.sys.imageManager.ImageBitmapData;
@@ -15,7 +14,6 @@ import com.dukascopy.connect.utils.Debug.BloomDebugger;
 import com.dukascopy.connect.utils.TextUtils;
 import com.greensock.TweenMax;
 import com.hurlant.util.Base64;
-
 import flash.display.BitmapData;
 import flash.display.JPEGEncoderOptions;
 import flash.display.Sprite;
@@ -30,6 +28,7 @@ import flash.ui.Multitouch;
 import flash.ui.MultitouchInputMode;
 import flash.utils.ByteArray;
 import flash.utils.getTimer;
+
 
 
 [SWF(backgroundColor="#ffffff")]
