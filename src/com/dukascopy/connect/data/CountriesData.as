@@ -283,7 +283,6 @@ package com.dukascopy.connect.data {
 			}
 			
 			if (phoneNumber.length < 6) {
-				//trace('CountriesData.getCountryByPhoneNumber() -> ERROR -> Nothing to find! phone number is: '+phoneNumber);
 				return null;
 			}
 			

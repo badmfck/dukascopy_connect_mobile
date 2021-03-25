@@ -484,7 +484,6 @@ package com.dukascopy.connect.screens {
 		}
 		
 		private function onMediaUploadReady(mediaData:MediaFileData):void {
-			trace("file:", "onMediaUploadReady");
 			if (mediaData.type == MediaFileData.MEDIA_TYPE_VIDEO) {
 				VideoUploader.uploadVideo(mediaData, ChatManager.getCurrentChat().uid, "", ChatManager.getCurrentChat().getImageString(), "123");
 			}
