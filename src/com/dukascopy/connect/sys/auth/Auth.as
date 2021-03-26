@@ -56,6 +56,7 @@ package com.dukascopy.connect.sys.auth {
 		public static var S_PHAZE_CHANGE:Signal = new Signal('Auth.S_PHAZE_CHANGE');
 		public static var S_PHAZE_DATA_CHANGE:Signal = new Signal('Auth.S_PHAZE_DATA_CHANGE');
 		public static var S_DEVICES:Signal = new Signal('Auth.S_DEVICES');
+		public static var S_AUTH_CODE:Signal = new Signal('Auth.S_AUTH_CODE');
 		
 		static private var _authKey:String = 'web';// null;
 		static private var _devID:String = null;
@@ -392,6 +393,7 @@ package com.dukascopy.connect.sys.auth {
 			echo("Auth", "onRequestCodeResponse", Print_r.show(r.data));
 			if ("code" in r.data && Config.isTest() == true)
 			{
+				S_AUTH_CODE.invoke(r.data.code);
 			//	authorize_sendCode(r.data.to, r.data.code);
 			}
 			S_GET_SMS_CODE_RESPOND.invoke(r.error);
