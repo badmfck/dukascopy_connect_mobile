@@ -430,14 +430,17 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 		
 		private function updateMaxCoins():void 
 		{
-			if (!isNaN(inputPrice.value) && inputPrice.value > 0)
+			if (!isNaN(maxEurosAvaliable))
 			{
-				var value:Number = maxEurosAvaliable/inputPrice.value;
-				inputQuantity.drawUnderlineValue(Lang.max + ": " + value.toFixed(4) + " " + Lang[TypeCurrency.DCO]);
-			}
-			else
-			{
-				inputQuantity.drawUnderlineValue(Lang.max + ": ...");
+				if (!isNaN(inputPrice.value) && inputPrice.value > 0)
+				{
+					var value:Number = maxEurosAvaliable/inputPrice.value;
+					inputQuantity.drawUnderlineValue(Lang.max + ": " + value.toFixed(4) + " " + Lang[TypeCurrency.DCO]);
+				}
+				else
+				{
+					inputQuantity.drawUnderlineValue(Lang.max + ": ...");
+				}
 			}
 		}
 		
@@ -662,11 +665,11 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 			
 			var price:Number = inputPrice.value;
 			
-			if (!isNaN(price) && price <= ConfigManager.config.COINS_CSC_LLF_PRICE_LIMIT && screenData.type == TradingOrder.BUY)
+			if (!isNaN(price) && price <= PayManager.systemOptions.coin_llf_price_limit && screenData.type == TradingOrder.BUY)
 			{
-				var text:String = Lang.coinBuyLowPriceWarning.replace("%@1", ConfigManager.config.COINS_CSC_LLF_PRICE_LIMIT);
-				text = text.replace("%@2", ConfigManager.config.COINS_CSC_LLF_EUR_PER_COIN);
-				text = text.replace("%@3", (ConfigManager.config.COINS_CSC_LLF_PRICE_LIMIT + 0.01).toString());
+				var text:String = Lang.coinBuyLowPriceWarning.replace("%@1", PayManager.systemOptions.coin_llf_price_limit);
+				text = text.replace("%@2", PayManager.systemOptions.coin_llf_eur_per_coin);
+				text = text.replace("%@3", (PayManager.systemOptions.coin_llf_price_limit + 0.01).toString());
 				DialogManager.alert(Lang.information, text, onCommissionPopup, Lang.confirmMyOrder, Lang.textBack);
 			}
 			else
@@ -903,7 +906,6 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 		
 		private function construct():void 
 		{
-			
 			var maxCoinsAvaliable:String;
 			if (screenData.type == TradingOrder.SELL && accounts.coinsAccounts != null && accounts.coinsAccounts.length > 0)
 			{
