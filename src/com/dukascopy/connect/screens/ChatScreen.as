@@ -3578,8 +3578,31 @@ package com.dukascopy.connect.screens {
 				iuBox.y = userWritings.view.y - iuBox.height - Config.MARGIN;
 			}
 		}
+
+		private function updateButtonsPositions(bottomY: int): int {
+			if (satisfyPublicAnswerButton != null) {
+				satisfyPublicAnswerButton.setPosition(_width - Config.FINGER_SIZE * 1.5 - Config.MARGIN * 2, bottomY - satisfyPublicAnswerButton.height - Config.MARGIN);
+			}
+			
+			if (verificationButton != null) {
+				bottomY -= verificationButton.height;
+				verificationButton.y = chatInput.getView().y - verificationButton.height;
+			}
+			
+			var position: int = bottomY;
+			if (reportButton != null) {
+				reportButton.setPosition(_width - Config.FINGER_SIZE * 1 - Config.MARGIN * 2, bottomY - reportButton.height - Config.MARGIN);
+				position -= reportButton.height - Config.FINGER_SIZE * .2;
+			}
+			
+			if (scrollBottomButton != null) {
+				scrollBottomButton.y = (position - scrollBottomButton.height - Config.DIALOG_MARGIN * 0.7);
+			}
+	
+			return bottomY;
+		}
 		
-		private function updateButtonsPositions(bottomY:int):int 
+		/*private function updateButtonsPositions(bottomY:int):int 
 		{
 			if (satisfyPublicAnswerButton != null) {
 				satisfyPublicAnswerButton.setPosition(_width - Config.FINGER_SIZE * 1.5 - Config.MARGIN * 2, bottomY - satisfyPublicAnswerButton.height - Config.MARGIN);
@@ -3601,7 +3624,7 @@ package com.dukascopy.connect.screens {
 			}
 			
 			return bottomY;
-		}
+		}*/
 		
 		private function getAnswersOffset(bottomY:int):int {
 			if (ChatManager.getCurrentChat() == null ||
