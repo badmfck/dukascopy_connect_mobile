@@ -104,6 +104,7 @@ package com.dukascopy.connect.screens {
 		private var keyboardZoom:Number = 1;
 		private var sizeSetted:Boolean;
 		private var startSupportAction:ExecuteAction;
+		private var textCode:String;
 		
 		public function LoginScreen()
 		{
@@ -536,12 +537,16 @@ package com.dukascopy.connect.screens {
 			}
 		}
 		
-		private function setCurrentCode():void 
+		private function setCurrentCode(value:String = null):void 
 		{
-			currentCode = Auth.getMyPhone().substr(Auth.getMyPhone().length - 6);
-			for (var i:int = 0; i < currentCode.length; i++) 
+			if (value != null && phone != null)
 			{
-				phone.add(currentCode.charAt(i));
+				currentCode = value;
+				
+				for (var i:int = 0; i < currentCode.length; i++) 
+				{
+					phone.add(currentCode.charAt(i));
+				}
 			}
 		}
 		
@@ -719,9 +724,9 @@ package com.dukascopy.connect.screens {
 			
 			showStateCode();
 			
-			if (Config.isTest() == true)
+			if (Config.isTest() == true && textCode != null)
 			{
-				setCurrentCode();
+				setCurrentCode(textCode);
 			}
 		}
 		
@@ -877,6 +882,21 @@ package com.dukascopy.connect.screens {
 			finalPhone = "";
 			
 			hide();
+			
+			if (Config.isTest())
+			{
+				Auth.S_AUTH_CODE.add(insertCode);
+			}
+		}
+		
+		private function insertCode(code:String):void 
+		{
+			if (isDisposed)
+			{
+				return;
+			}
+			textCode = code;
+			setCurrentCode(code);
 		}
 		
 		private function hide():void 
