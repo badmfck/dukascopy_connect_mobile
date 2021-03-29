@@ -149,6 +149,7 @@ package com.dukascopy.connect {
         static public const COMPANY_ID:String = "08A29C35B3";
 
         static public const APPLE_LOG:Boolean=true;
+        static public const ANDROID_LOG:Boolean=true;
         static public const VERSION:String = "3.5.56o"+(Capabilities.isDebugger?" dbg":"");
         static public const VERSION_SQL:int = 1;
 

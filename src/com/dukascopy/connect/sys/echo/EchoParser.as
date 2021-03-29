@@ -2,9 +2,11 @@ package com.dukascopy.connect.sys.echo {
 	
 	import com.dukascopy.connect.Config;
 import com.dukascopy.connect.GD;
+import com.dukascopy.connect.MobileGui;
 import com.dukascopy.dccext.DCCExt;
 import com.dukascopy.dccext.DCCExtCommand;
 import com.dukascopy.dccext.DCCExtMethod;
+import com.dukascopy.dukascopyextension.DukascopyExtensionAndroid;
 import com.greensock.TweenMax;
 import com.worlize.websocket.WebSocket;
 import com.worlize.websocket.WebSocketEvent;
@@ -155,10 +157,16 @@ import flash.system.Capabilities;
 
 
 			if(Config.PLATFORM_APPLE && Config.APPLE_LOG==true){
-				if(DCCExt.isContextCreated()){
+				if(DukascopyExtensionAndroid.isContextCreated()){
 					DCCExt.call(new DCCExtCommand(DCCExtMethod.LOG,{
 						text:str
 					}))
+				}
+			}
+			else if(Config.PLATFORM_ANDROID && Config.ANDROID_LOG==true){
+				if (MobileGui.androidExtension != null)
+				{
+					MobileGui.androidExtension.log(str);
 				}
 			}
 
