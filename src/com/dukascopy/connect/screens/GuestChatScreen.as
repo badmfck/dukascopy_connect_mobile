@@ -2286,7 +2286,7 @@ package com.dukascopy.connect.screens {
 		}
 		
 		override public function dispose():void {
-			echo("ChatScreen", "dispose", "");
+			echo("GuestChangScreen", "dispose", "");
 			if (_isDisposed == true)
 				return;
 			disposing = true;
