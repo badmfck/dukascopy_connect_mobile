@@ -965,15 +965,18 @@ import flash.events.StageOrientationEvent;
 		}
 		
 		static public function openMyAccountIfExist():void {
+
 			QuestionsManager.setInOut(false);
 			if (Auth.bank_phase != "ACC_APPROVED") {
 				MobileGui.showRoadMap();
 				return;
 			}
+
 			if (Config.BANKBOT == true || Auth.companyID == "08A29C35B3") {
 				changeMainScreen(MyAccountScreen);
 				return;
 			}
+
 			mainSM.show(RootScreen);
 		}
 		

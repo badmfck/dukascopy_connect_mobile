@@ -178,20 +178,21 @@ package com.dukascopy.connect.sys.auth {
 				if ("phase" in data == true && data.phase != null) {
 					_bank_phase = data.phase;
 					S_PHAZE_CHANGE.invoke();
-					return;
 				}
 			} else if ("name" in data == true && data.name == "ch_pp") {
 				if ("phase" in data == true && data.phase != null) {
 					_ch_phase = data.phase;
 					S_PHAZE_CHANGE.invoke();
-					return;
 				}
 			} else if ("name" in data == true && data.name == "eu_pp") {
 				if ("phase" in data == true && data.phase != null) {
 					_eu_phase = data.phase;
 					S_PHAZE_CHANGE.invoke();
-					return;
 				}
+			}
+
+			if(_bank_phase=="VIDID_READY"){
+				PHP.call_regDev();
 			}
 		}
 		
@@ -1313,7 +1314,7 @@ package com.dukascopy.connect.sys.auth {
 		{
 			_uid = guestUID;
 		}
-		
+
 		static private function onDevices(respond:PHPRespond):void
 		{
 			if(respond.error == true)
