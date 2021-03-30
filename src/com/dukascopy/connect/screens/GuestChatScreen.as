@@ -212,6 +212,7 @@ package com.dukascopy.connect.screens {
 		private var emailEntered:Boolean;
 		private var userEmail:String;
 		private var userName:String;
+		private var systemMessageShown:Boolean;
 		protected var backColorClip:Sprite;
 		
 		public static const MAX_MESSAGE_LENGHT:int = 2000;
@@ -454,7 +455,11 @@ package com.dukascopy.connect.screens {
 					(chatInput as ChatInputAndroid).setY(MobileGui.stage.stageHeight - (chatInput as ChatInputAndroid).height);
 				}
 			}
-			MobileGui.changeMainScreen(LoginScreen, null, ScreenManager.DIRECTION_LEFT_RIGHT);
+			
+			WS.disableGuestConnection();
+			Auth.clearAuthorization("", true);
+			
+			MobileGui.changeMainScreen(LoginScreen, {state:LoginScreen.STATE_CODE, phone:data.phone, currentPhone:data.currentPhone, country:data.country}, ScreenManager.DIRECTION_LEFT_RIGHT, 0);
 		}
 		
 		private function onUWDisposed(uw:UserWriting):void {
@@ -610,7 +615,7 @@ package com.dukascopy.connect.screens {
 		
 		private function onGuestUidLoaded(data:String, error:Boolean):void 
 		{
-		//	error = true;
+			error = true;
 			if (_isDisposed == true)
 			{
 				return;
@@ -1818,6 +1823,11 @@ package com.dukascopy.connect.screens {
 			if (list.data && list.data.length > 0)
 				return;
 			
+			if (systemMessageShown)
+			{
+				return;
+			}
+			systemMessageShown = true;
 			var userVO:UserVO = new UserVO();
 			userVO.setData({name:Lang.textSupport, avatar:LocalAvatars.SUPPORT})
 			
@@ -2286,13 +2296,12 @@ package com.dukascopy.connect.screens {
 		}
 		
 		override public function dispose():void {
-			echo("ChatScreen", "dispose", "");
+			echo("GuestChangScreen", "dispose", "");
 			if (_isDisposed == true)
 				return;
 			disposing = true;
-			WS.S_CONNECTED.remove(onSocketReady);
 			
-			Auth.clearAuthorization("", true);
+			WS.S_CONNECTED.remove(onSocketReady);
 			
 			TweenMax.killTweensOf(backColorClip);
 			ChatManager.clearLocalChats();

@@ -434,9 +434,9 @@ import flash.events.StageOrientationEvent;
 				NativeApplication.nativeApplication.exit();
 		}
 		
-		public static function changeMainScreen(screen:Class, data:Object = null, directon:int = 0):void {
+		public static function changeMainScreen(screen:Class, data:Object = null, directon:int = 0, time:Number = 0.3):void {
 			if (screen == LoginScreen) {
-				S_MAIN_SCREEN_CHANGE.invoke(screen, data, directon);
+				S_MAIN_SCREEN_CHANGE.invoke(screen, data, directon, 1, time);
 				return;
 			}
 			var screenLabel:String;
@@ -534,7 +534,7 @@ import flash.events.StageOrientationEvent;
 			}
 		}
 		
-		private function onMainScreenChangeInvoke(screen:Class, data:Object = null, direction:int = 0, currentScreenEndAlpha:Number = 1):void {
+		private function onMainScreenChangeInvoke(screen:Class, data:Object = null, direction:int = 0, currentScreenEndAlpha:Number = 1, time:Number = 0.3):void {
 			echo("MobileGui", "onMainScreenChangeInvoke", "");
 			var fromPayments:Boolean = PayManager.isInsidePaymentsScreenNow;
 			PayManager.isInsidePaymentsScreenNow = false;
@@ -545,7 +545,7 @@ import flash.events.StageOrientationEvent;
 					return;
 				mainSM.show(RootScreen);
 			}
-			mainSM.show(screen, data, direction, 0.3, currentScreenEndAlpha);
+			mainSM.show(screen, data, direction, time, currentScreenEndAlpha);
 		}
 		
 		private function onDialogShow(dialog:Class, params:Object = null, transparency:Number = .5):void {
@@ -859,8 +859,13 @@ import flash.events.StageOrientationEvent;
 		
 		private function onAuthNeedAuthorization():void {
 			authSreenShowed = true;
-			mainSM.clear();
-			changeMainScreen(LoginScreen);
+			
+			if (centerScreen.currentScreenClass != LoginScreen)
+			{
+				mainSM.clear();
+				changeMainScreen(LoginScreen);
+			}
+			
 			PaymentsManager.deactivate();
 		}
 		
@@ -960,15 +965,18 @@ import flash.events.StageOrientationEvent;
 		}
 		
 		static public function openMyAccountIfExist():void {
+
 			QuestionsManager.setInOut(false);
 			if (Auth.bank_phase != "ACC_APPROVED") {
 				MobileGui.showRoadMap();
 				return;
 			}
+
 			if (Config.BANKBOT == true || Auth.companyID == "08A29C35B3") {
 				changeMainScreen(MyAccountScreen);
 				return;
 			}
+
 			mainSM.show(RootScreen);
 		}
 		

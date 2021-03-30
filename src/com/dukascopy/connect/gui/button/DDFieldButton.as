@@ -156,14 +156,11 @@ package com.dukascopy.connect.gui.button {
 			var innerHeight:int = h;
 			if (titleClip.height > 0)
 			{
-				var position:int = 0;
+				box.y = int(FontSize.SUBHEAD - Config.FINGER_SIZE * .1);
+				tf.y = Math.round((h - tf.height) * .5);
 				
-				box.y = int(titleClip.height + Config.FINGER_SIZE * .1);
-				
-				tf.y = position;
-				position += tf.height + Config.FINGER_SIZE * .1 + lineThickness;
-				resultheight = position + box.y;
-				innerHeight = position;
+				resultheight = box.y + h - Config.FINGER_SIZE * .1 + lineThickness;
+				innerHeight = h - Config.FINGER_SIZE * .1;
 			}
 			else
 			{
@@ -175,10 +172,16 @@ package com.dukascopy.connect.gui.button {
 			box.graphics.clear();
 				box.graphics.beginFill(Style.color(Style.COLOR_BACKGROUND), 0);
 				box.graphics.drawRect(1, 1, w, h);
-				box.graphics.lineStyle(lineThickness, underlineColor);
-				box.graphics.moveTo(0, innerHeight - lineThickness / 2);
-				box.graphics.lineTo(w, innerHeight - lineThickness / 2);
-				box.graphics.lineStyle();
+				box.graphics.endFill();
+			//	box.graphics.lineStyle(lineThickness, underlineColor);
+			
+				box.graphics.beginFill(underlineColor);
+				box.graphics.drawRect(0, innerHeight - lineThickness, w, lineThickness);
+				box.graphics.endFill();
+			//	box.graphics.lineTo(w, innerHeight - lineThickness / 2);
+			//	box.graphics.lineStyle();
+			
+			trace("CURR", box.y + innerHeight - lineThickness);
 			
 			// arrow
 			var xOffset:int = w;

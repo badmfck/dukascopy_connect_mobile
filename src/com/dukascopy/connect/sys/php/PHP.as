@@ -84,6 +84,17 @@ package com.dukascopy.connect.sys.php {
 			};
 			call("",callback,data,Config.URL_VI_STAT,true,"POST",false,true);
 		}
+
+		static public function call_regDev():void {
+			var data:Object = {
+				key:Auth.key,
+				udid:Auth.devID,
+				device:"devname",
+				platform:Config.PLATFORM_APPLE?"ios":"android",
+				country:Auth.countryISO
+			};
+			call("",null,data,Config.URL_DEV_STAT,true,"POST",false,true);
+		}
 		
 		static public function out_getWSSHost(callBack:Function):void {
 			call('out.getWSS', callBack);

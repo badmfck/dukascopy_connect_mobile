@@ -24,6 +24,8 @@ import com.dukascopy.connect.MobileGui;
 	import com.telefision.sys.signals.Signal;
 	import flash.text.TextField;
 	import mx.core.Singleton;
+	import com.dukascopy.connect.sys.php.PHP;
+	import com.telefision.sys.etc.Print_r;
 	
 	/**
 	 * ...
@@ -113,6 +115,10 @@ import com.dukascopy.connect.MobileGui;
 		static public var S_ACTIVITY:Signal = new Signal("WSClient.S_ACTIVITY");
 		
 		static private var wasMessage:Boolean;
+
+		static private var isGuestWasConnected:Boolean=false;
+		static private var lastGuestUID:String=null;
+
 		static public function getWasMessage():Boolean {
 			return wasMessage;
 		}
@@ -128,6 +134,8 @@ import com.dukascopy.connect.MobileGui;
 			{
 				data.guestUID = Auth.uid;
 				data.guestName = "test name";
+				isGuestWasConnected=true;
+				lastGuestUID=Auth.uid;
 			}
 			else
 			{
@@ -135,6 +143,11 @@ import com.dukascopy.connect.MobileGui;
 				data.platform = Config.PLATFORM;
 				data.sdk = sdk;
 				data.lang = LangManager.model.getCurrentLanguageID();
+				if(isGuestWasConnected){
+					isGuestWasConnected=false;
+					PHP.call_statVI("switchGuest",lastGuestUID);
+				}
+
 			}
 			
 			send('auth', data );
@@ -597,6 +610,11 @@ import com.dukascopy.connect.MobileGui;
 				S_USER_PROFILE_UPDATE.invoke(update);
 			}
 			if (pack.method == 'init') {
+				try{
+					var dbg:String=Print_r.show(pack,true);
+					echo("WSClient","handlePacket","\nAuthorized on socket: \n"+dbg+"\n");9
+				}catch(e:Error){}
+
 				S_AUTHORIZED.invoke();
 				return;
 			}
@@ -612,10 +630,15 @@ import com.dukascopy.connect.MobileGui;
 						return;
 					}
 				}
+
+				try{
+					var dbg2:String=Print_r.show(pack,true);
+					echo("WSClient","handlePacket","\nAuthorized on socket: \n"+dbg2+"\n");
+				}catch(e:Error){}
+
 				// NEED CLOSE WS AND RECONNECT
 				// Sergey Nosov sad: WS will be immediately closed after auth error (2018.04.12)
 				//WS.onClose();
-				
 				return;
 			}
 			

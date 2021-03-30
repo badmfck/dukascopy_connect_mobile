@@ -135,6 +135,11 @@ package com.dukascopy.connect {
 			var base:String= "//ws.telefision.com/vidid";
 			return "https:" + base;
 		}
+		
+		static public function get URL_DEV_STAT():String {
+			var base:String= "//ws.telefision.com/dev/stat";
+			return "https:" + base;
+		}
 
 
         static public const URL_MEDIA:String = "rtmp://socket.telefision.com/callapp";
@@ -149,7 +154,8 @@ package com.dukascopy.connect {
         static public const COMPANY_ID:String = "08A29C35B3";
 
         static public const APPLE_LOG:Boolean=true;
-        static public const VERSION:String = "3.5.55o"+(Capabilities.isDebugger?" dbg":"");
+        static public const ANDROID_LOG:Boolean=true;
+        static public const VERSION:String = "3.5.56o"+(Capabilities.isDebugger?" dbg":"");
         static public const VERSION_SQL:int = 1;
 
         static public const MAX_UPLOAD_THUMB_SIZE:int = 230;

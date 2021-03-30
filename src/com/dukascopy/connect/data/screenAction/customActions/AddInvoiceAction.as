@@ -51,6 +51,13 @@ package com.dukascopy.connect.data.screenAction.customActions {
 			invoiceData.block = blockInputs;
 			invoiceData.callback = callBackAddInvoice;
 			
+			var currentChat:ChatVO = ChatManager.getCurrentChat();
+			if (currentChat != null)
+			{
+				var chatUser:ChatUserVO = UsersManager.getInterlocutor(currentChat);
+				invoiceData.user = chatUser.userVO;
+			}
+			
 			ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, ScreenAddInvoiceDialog, invoiceData, 0.5, 0.5, 3);
 			
 			if (disposeAction)

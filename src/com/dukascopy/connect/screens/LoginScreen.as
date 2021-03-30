@@ -229,7 +229,7 @@ package com.dukascopy.connect.screens {
 		
 		private function startSupportChat():void 
 		{
-			MobileGui.changeMainScreen(GuestChatScreen);
+			MobileGui.changeMainScreen(GuestChatScreen, {phone:finalPhone, currentPhone:currentPhone, country:currentCountry});
 		}
 		
 		private function clearPhone():void 
@@ -660,8 +660,6 @@ package com.dukascopy.connect.screens {
 				animateHide(clearPhoneButton);
 				animateHide(phone);
 				animateHide(selectCountryButton);
-				retryCodeButton.visible = true;
-				retryCodeButton.alpha = 0;
 				
 				TweenMax.delayedCall(hideTime, drawStateCode);
 			}
@@ -670,6 +668,9 @@ package com.dukascopy.connect.screens {
 		private function drawStateCode():void 
 		{
 			state = STATE_CODE;
+			
+			retryCodeButton.visible = true;
+			retryCodeButton.alpha = 0;
 			
 			selectCountryButton.visible = false;
 			clearPhoneButton.visible = false;
@@ -866,26 +867,62 @@ package com.dukascopy.connect.screens {
 			
 			state = STATE_PHONE;
 			
+			if (data != null && "state" in data && data.state != null)
+			{
+				if (data.state == STATE_CODE || data.state == STATE_PHONE)
+				{
+					if (data.state == STATE_CODE)
+					{
+						if ("phone" in data && data.phone != null)
+						{
+							finalPhone = data.phone;
+							state = data.state;
+							if ("curentPhone" in data)
+							{
+								currentPhone = data.currentPhone;
+							}
+							if ("country" in data)
+							{
+								onCountrySelected(data.country);
+							}
+						}
+					}
+					else
+					{
+						state = data.state;
+					}
+				}
+			}
+			
 			bg.width = _width;
 			bg.height = _height;
 			
-			drawNextButton(Lang.BTN_REQUEST_CODE);
 			drawNoCodeButton(Lang.didntReceiveCode);
+			drawNextButton(Lang.BTN_REQUEST_CODE);
 			drawTerms();
-			drawTitle(Lang.enterYourPhone);
 			
-			onCountrySelected(CountriesData.getCountryByPhoneNumber("+415555000123"), false, false);
-			
-			loadCountry();
-			
-			currentPhone = "";
-			finalPhone = "";
-			
-			hide();
-			
-			if (Config.isTest())
+			if (state == STATE_PHONE)
 			{
-				Auth.S_AUTH_CODE.add(insertCode);
+				drawTitle(Lang.enterYourPhone);
+				
+				onCountrySelected(CountriesData.getCountryByPhoneNumber("+415555000123"), false, false);
+				
+				loadCountry();
+				
+				currentPhone = "";
+				finalPhone = "";
+				
+				hide();
+				
+				if (Config.isTest())
+				{
+					Auth.S_AUTH_CODE.add(insertCode);
+				}
+			}
+			else if (state == STATE_CODE)
+			{
+				firstTime = false;
+				drawStateCode();
 			}
 		}
 		
@@ -1136,10 +1173,9 @@ package com.dukascopy.connect.screens {
 			if (_isDisposed == true)
 				return;
 			
+			logo.x = int(_width * .5 - logo.width * .5);
 			if (state == STATE_PHONE)
 			{
-				logo.x = int(_width * .5 - logo.width * .5);
-				
 				var maxKeyboardHeight:int = _height - Config.APPLE_BOTTOM_OFFSET;
 				maxKeyboardHeight -= fingerSize * .15 + terms.height;
 				maxKeyboardHeight -= fingerSize * .25 + nextButton.height;
