@@ -135,6 +135,11 @@ package com.dukascopy.connect {
 			var base:String= "//ws.telefision.com/vidid";
 			return "https:" + base;
 		}
+		
+		static public function get URL_DEV_STAT():String {
+			var base:String= "//ws.telefision.com/dev/stat";
+			return "https:" + base;
+		}
 
 
         static public const URL_MEDIA:String = "rtmp://socket.telefision.com/callapp";

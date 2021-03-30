@@ -610,10 +610,9 @@ import com.dukascopy.connect.MobileGui;
 				S_USER_PROFILE_UPDATE.invoke(update);
 			}
 			if (pack.method == 'init') {
-				
 				try{
 					var dbg:String=Print_r.show(pack,true);
-					trace("\nAuthorized on socket: \n"+dbg+"\n")
+					echo("WSClient","handlePacket","\nAuthorized on socket: \n"+dbg+"\n");9
 				}catch(e:Error){}
 
 				S_AUTHORIZED.invoke();
@@ -631,10 +630,15 @@ import com.dukascopy.connect.MobileGui;
 						return;
 					}
 				}
+
+				try{
+					var dbg2:String=Print_r.show(pack,true);
+					echo("WSClient","handlePacket","\nAuthorized on socket: \n"+dbg2+"\n");
+				}catch(e:Error){}
+
 				// NEED CLOSE WS AND RECONNECT
 				// Sergey Nosov sad: WS will be immediately closed after auth error (2018.04.12)
 				//WS.onClose();
-				
 				return;
 			}
 			
