@@ -36,6 +36,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs.elements
 		private var longClick:LongClick;
 		private var selected:Boolean;
 		private var _align:String;
+		private var defaultValue:Number;
 		
 		public function get align():String 
 		{
@@ -294,7 +295,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs.elements
 			var tf:TextField = input.getTextField();
 			var line:TextLineMetrics = tf.getLineMetrics(0);
 			
-			var titleHeight:int = Config.FINGER_SIZE * .26;
+			var titleHeight:int = FontSize.SUBHEAD;
 			
 			input.view.y = int(title.y + titleHeight - Config.FINGER_SIZE * .1);
 			input.width = itemWidth - valueField.width;
@@ -302,7 +303,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs.elements
 			valueContainer.x = int(input.view.x + itemWidth - valueField.width);
 			valueContainer.y = int(input.view.y + tf.y + line.ascent - valueField.height + 2);
 			underline.width = itemWidth;
-			underline.y = int(input.view.y + input.height - Config.FINGER_SIZE * .10);
+			underline.y = int(input.view.y + input.height - Config.FINGER_SIZE * .1) - underline.height;
 			
 			if (align == ALIGN_LEFT)
 			{
@@ -313,10 +314,13 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs.elements
 				underlineValue.x = int(itemWidth - underlineValue.width);
 			}
 			underlineValue.y = int(underline.y + Config.FINGER_SIZE * .16);
+			
+			trace("FIELD", int(input.view.y + input.height - Config.FINGER_SIZE * .1));
 		}
 		
 		public function draw(itemWidth:int, titleValue:String, defaultValue:Number = NaN, underlineString:String = null, typeValue:String = null, backColor:Number = NaN):void 
 		{
+			this.defaultValue = defaultValue;
 			if (isNaN(backColor))
 			{
 				backColor = Style.color(Style.COLOR_BACKGROUND);
@@ -545,6 +549,11 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs.elements
 			selected = true;
 			if (input != null)
 			{
+				if (!isNaN(defaultValue) && !isNaN(Number(input.value)) && Number(input.value) == defaultValue)
+				{
+					input.value = "";
+				}
+				
 				//trace(input.value.length);
 				if (input.getTextField().selectionBeginIndex == input.getTextField().selectionEndIndex && 
 					input.value != null && 

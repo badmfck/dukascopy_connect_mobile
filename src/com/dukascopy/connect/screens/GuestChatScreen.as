@@ -455,7 +455,11 @@ package com.dukascopy.connect.screens {
 					(chatInput as ChatInputAndroid).setY(MobileGui.stage.stageHeight - (chatInput as ChatInputAndroid).height);
 				}
 			}
-			MobileGui.changeMainScreen(LoginScreen, null, ScreenManager.DIRECTION_LEFT_RIGHT);
+			
+			WS.disableGuestConnection();
+			Auth.clearAuthorization("", true);
+			
+			MobileGui.changeMainScreen(LoginScreen, {state:LoginScreen.STATE_CODE, phone:data.phone, currentPhone:data.currentPhone, country:data.country}, ScreenManager.DIRECTION_LEFT_RIGHT, 0);
 		}
 		
 		private function onUWDisposed(uw:UserWriting):void {
@@ -2296,9 +2300,8 @@ package com.dukascopy.connect.screens {
 			if (_isDisposed == true)
 				return;
 			disposing = true;
-			WS.S_CONNECTED.remove(onSocketReady);
 			
-			Auth.clearAuthorization("", true);
+			WS.S_CONNECTED.remove(onSocketReady);
 			
 			TweenMax.killTweensOf(backColorClip);
 			ChatManager.clearLocalChats();

@@ -427,6 +427,11 @@ import flash.utils.getTimer;
 			connect();
 		}
 		
+		static public function disableGuestConnection():void 
+		{
+			allowGuestConnection = false;
+		}
+		
 		static private function onWSMessage(e:WebSocketEvent):void {
 			clearTimeout();
 			lastMessageTime = getTimer();

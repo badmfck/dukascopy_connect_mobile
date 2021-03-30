@@ -1,15 +1,15 @@
 package com.dukascopy.connect.screens.dialogs {
 	
-	import avmplus.finish;
 	import com.dukascopy.connect.Config;
-	import com.dukascopy.connect.MobileGui;
 	import com.dukascopy.connect.data.TextFieldSettings;
 	import com.dukascopy.connect.gui.button.DDFieldButton;
 	import com.dukascopy.connect.gui.input.Input;
 	import com.dukascopy.connect.gui.lightbox.UI;
+	import com.dukascopy.connect.gui.list.ListItem;
+	import com.dukascopy.connect.gui.list.renderers.ContactListRenderer;
+	import com.dukascopy.connect.gui.list.renderers.IListRenderer;
 	import com.dukascopy.connect.gui.list.renderers.ListPayCurrency;
 	import com.dukascopy.connect.gui.menuVideo.BitmapButton;
-	import com.dukascopy.connect.gui.textedit.PayMessagePreviewBox;
 	import com.dukascopy.connect.gui.textedit.TextComposer;
 	import com.dukascopy.connect.screens.dialogs.bottom.ListSelectionPopup;
 	import com.dukascopy.connect.screens.dialogs.paymentDialogs.elements.InputField;
@@ -18,18 +18,21 @@ package com.dukascopy.connect.screens.dialogs {
 	import com.dukascopy.connect.sys.dialogManager.DialogManager;
 	import com.dukascopy.connect.sys.imageManager.ImageBitmapData;
 	import com.dukascopy.connect.sys.payments.PayManager;
-	import com.dukascopy.connect.sys.pointerManager.PointerManager;
+	import com.dukascopy.connect.sys.payments.PayRespond;
 	import com.dukascopy.connect.sys.serviceScreenManager.ServiceScreenManager;
 	import com.dukascopy.connect.sys.style.FontSize;
 	import com.dukascopy.connect.sys.style.Style;
 	import com.dukascopy.connect.sys.style.presets.Color;
-	import com.dukascopy.connect.sys.theme.AppTheme;
 	import com.dukascopy.connect.type.HitZoneType;
 	import com.dukascopy.connect.utils.TextUtils;
 	import com.dukascopy.langs.Lang;
 	import flash.display.Bitmap;
+	import flash.display.CapsStyle;
+	import flash.display.JointStyle;
+	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.FocusEvent;
+	import flash.geom.Point;
 	import flash.text.TextField;
 	import flash.text.TextFieldAutoSize;
 	import flash.text.TextFieldType;
@@ -52,6 +55,8 @@ package com.dukascopy.connect.screens.dialogs {
 		private var commentField:TextField;
 		private var nextButton:BitmapButton;
 		private var cancelButton:BitmapButton;
+		private var userClip:Bitmap;
+		private var line:Sprite;
 		
 		public function ScreenAddInvoiceDialog() { }
 		
@@ -99,6 +104,46 @@ package com.dukascopy.connect.screens.dialogs {
 		private function onNextClick():void 
 		{
 			close(1);
+			
+			/*if (iCurrency.value == Lang[TypeCurrency.DCO])
+			{
+				close(1);
+			}
+			else
+			{
+				getCommission();
+			}*/
+		}
+		
+		private function getCommission():void 
+		{
+			showPreloader();
+			
+			PayManager.S_SEND_MONEY_COMMISSION_RESPOND.add(onSendMoneyCommissionRespond);
+			PayManager.callGetSendMoneyCommission(inputAmount.value, iCurrency.value, "");
+		}
+		
+		private function onSendMoneyCommissionRespond(respond:PayRespond):void {
+			
+			PayManager.S_SEND_MONEY_COMMISSION_RESPOND.remove(onSendMoneyCommissionRespond);
+			if (isDisposed)
+			{
+				respond.dispose();
+				return;
+			}
+			hidePreloader();
+			
+			if (!respond.error) {
+				close(1);
+			} else if (respond.hasAuthorizationError) {
+				close(1);
+			} 
+			else if (respond.hasTrialVersionError) {
+				close(1);
+			}
+			else{
+				showMessage(respond.errorMsg, false);
+			}
 		}
 		
 		private function createComment():void 
@@ -203,7 +248,18 @@ package com.dukascopy.connect.screens.dialogs {
 		
 		private function updatePositions():void 
 		{
-			var position:int = Config.FINGER_SIZE * .5;
+			var position:int = 0;
+			
+			if (userClip != null)
+			{
+				userClip.y = position;
+				line.y = position + userClip.height;
+				position += userClip.height + Config.FINGER_SIZE * .4;
+			}
+			else
+			{
+				position = Config.FINGER_SIZE * .6;
+			}
 			
 			inputAmount.y = position;
 			inputAmount.x = Config.DIALOG_MARGIN;
@@ -308,6 +364,10 @@ package com.dukascopy.connect.screens.dialogs {
 				if ("message" in data == true && data.message != null) {
 					setComment(data.message);
 				}
+				
+				if ("user" in data && data.user != null) {
+					addUserClip(data.user);
+				}
 			}
 			
 			showPreloader();
@@ -316,6 +376,30 @@ package com.dukascopy.connect.screens.dialogs {
 			if (data.thirdparty == true) {
 				addFullNameDescription();
 			}
+		}
+		
+		private function addUserClip(userData:Object):void 
+		{
+			var clipWidth:int = _width - Config.FINGER_SIZE * .2;
+			var userClipRenderer:IListRenderer = new ContactListRenderer();
+			(userClipRenderer as ContactListRenderer).hideBack();
+			var listItem:ListItem = new ListItem("", 0, 0, clipWidth, userClipRenderer, userData, null);
+			userClip = new Bitmap();
+			addObject(userClip);
+			
+			line = new Sprite();
+			line.graphics.lineStyle(UI.getLineThickness(), Style.color(Style.COLOR_SEPARATOR_TOP_BAR), 1, false, "none", CapsStyle.SQUARE, JointStyle.MITER);
+			line.graphics.moveTo(0, 0);
+			line.graphics.lineTo(_width, 0);
+		//	addObject(line);
+			
+			var clipHeight:int = userClipRenderer.getHeight(listItem, clipWidth);
+			userClip.bitmapData = new ImageBitmapData("", _width, clipHeight, false, Style.color(Style.COLOR_SEPARATOR));
+			var targetDB:ImageBitmapData = UI.getSnapshot(userClipRenderer.getView(listItem, clipHeight, clipWidth) as Sprite);
+			userClip.bitmapData.copyPixels(targetDB, targetDB.rect, new Point(), null, null, true);
+			targetDB.dispose();
+			targetDB = null;
+			userClipRenderer.dispose();
 		}
 		
 		private function setComment(value:String):void 
@@ -352,7 +436,7 @@ package com.dukascopy.connect.screens.dialogs {
 			if (PayManager.systemOptions != null && PayManager.systemOptions.currencyList != null)
 			{
 				var currencies:Array = PayManager.systemOptions.currencyList.concat();
-				if (data.thirdparty == false)
+				if (!("thirdparty" in data) || data.thirdparty == false)
 					currencies.unshift(TypeCurrency.DCO);
 				
 				DialogManager.showDialog(
@@ -411,6 +495,7 @@ package com.dukascopy.connect.screens.dialogs {
 		
 		override public function dispose():void {
 			super.dispose();
+			PayManager.S_SEND_MONEY_COMMISSION_RESPOND.remove(onSendMoneyCommissionRespond);
 			if (labelBitmapFullName != null)
 				UI.destroy(labelBitmapFullName);
 			labelBitmapFullName = null;
@@ -418,8 +503,14 @@ package com.dukascopy.connect.screens.dialogs {
 				iCurrency.dispose();
 			iCurrency = null;
 			if (inputAmount != null)
-				inputAmount.deactivate();
+				inputAmount.dispose();
 			inputAmount = null;
+			if (userClip != null)
+				UI.destroy(userClip);
+			userClip = null;
+			if (line != null)
+				UI.destroy(line);
+			line = null;
 		}
 	}
 }

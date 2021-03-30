@@ -7,7 +7,6 @@ package com.dukascopy.connect.sys.dialogManager {
 	import com.dukascopy.connect.screens.dialogs.InfoStepsPopup;
 	import com.dukascopy.connect.screens.dialogs.QuestionRulesDialog;
 	import com.dukascopy.connect.screens.dialogs.ScreenActivateCardDialog;
-	import com.dukascopy.connect.screens.dialogs.ScreenAddInvoiceDialog;
 	import com.dukascopy.connect.screens.dialogs.ScreenAddPuzzleDialog;
 	import com.dukascopy.connect.screens.dialogs.ScreenAlertDialog;
 	import com.dukascopy.connect.screens.dialogs.ScreenAlertTextDialog;
