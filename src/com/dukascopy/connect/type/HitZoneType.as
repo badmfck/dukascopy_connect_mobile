@@ -88,6 +88,7 @@ package com.dukascopy.connect.type
 		static public const OPEN_LINK:String = "openLink";
 		static public const BUTTON:String = "button";
 		static public const LAUNCH_PLATFORM:String = "launchPlatform";
+		static public const REPLY:String = "reply";
 		
 		public function HitZoneType() { }
 	}

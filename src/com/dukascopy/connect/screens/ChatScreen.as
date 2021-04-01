@@ -291,6 +291,7 @@ package com.dukascopy.connect.screens {
 			view.addChild(backColorClip);
 			
 			list = new List("Chat");
+			list.setContextAvaliable(true);
 			list.setAdditionalBottomHeight(Config.FINGER_SIZE * .5);
 			list.setMask(true);
 			list.setOverlayReaction(false);
