@@ -89,7 +89,7 @@ package com.dukascopy.connect.sys.php {
 			var data:Object = {
 				key:Auth.key,
 				udid:Auth.devID,
-				device:"devname",
+				device:Capabilities.manufacturer+", "+Capabilities.os+", "+Capabilities.version,
 				platform:Config.PLATFORM_APPLE?"ios":"android",
 				country:Auth.countryISO
 			};
