@@ -1054,6 +1054,9 @@ package com.dukascopy.connect.sys.bankManager {
 						type:"walletStatement",
 						action:"nav:walletStatementAsFileConfirmed",
 						value:"@@1"
+					}, {
+						text:"lang.menuIBANCopy",
+						action:"app:copyIBAN"
 					}
 				],
 				buttons: [
