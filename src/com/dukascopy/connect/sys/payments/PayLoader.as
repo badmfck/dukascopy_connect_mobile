@@ -41,6 +41,7 @@ package com.dukascopy.connect.sys.payments {
 		private var _urlLoaderClosed:Boolean = false;
 		private var _savedRequestData:Object; // Object for secondary request if error was occured.
 		private var _id:int; // Call ID, need for debug.
+		private var _debugData:Object = {};
 		
 		public function PayLoader() {
 			urlRequest = new URLRequest();
@@ -166,7 +167,18 @@ package com.dukascopy.connect.sys.payments {
 			
 			var sha256:SHA256 = new SHA256();
 			var hmac:HMAC = new HMAC(sha256);
-			variables['_api_signature'] =  Base64.encodeByteArray(hmac.compute(btSigKey, btSigBase));
+			
+			variables['_api_signature'] = Base64.encodeByteArray(hmac.compute(btSigKey, btSigBase));
+			
+			_debugData.variables = { };
+			for (var n :String in variables) {
+				_debugData.variables[n] = variables[n];
+			}
+			_debugData.arr = [];
+			for (var j:int = 0; j < arr.length; j++) {
+				_debugData.arr.push(arr[j]);
+			}
+			_debugData.sigBase = signatureBase;
 			
 			arr.length = 0;
 			arr = null;
