@@ -1178,6 +1178,7 @@ package com.dukascopy.connect.sys.bankManager {
 				if (checkForPaymentsRequestExist(msg) == true)
 					return;
 				temp = msg.substr(command.length + 1).split("|!|");
+				var clb:Function = onHistoryLoaded;
 				if (temp.length > 2) {
 					if (temp[2].indexOf("USER") == 0)
 						lastPaymentsRequests[PaymentsManagerNew.callHistory(onHistoryLoaded, temp[0], temp[1], "", "", "", "", "", "", temp[2].substr(4))] = msg;
@@ -2094,13 +2095,16 @@ package com.dukascopy.connect.sys.bankManager {
 		}
 		
 		static private function onHistoryLoaded(respondData:Object, hash:String, accountNumber:String = null):void {
-			if (preCheckForErrors(respondData, hash, "requestRespond:history:") == true)
+			var requestAction:String = "history";
+			if (respondData.page != 1)
+				requestAction += "More";
+			if (preCheckForErrors(respondData, hash, "requestRespond:" + requestAction + ":") == true)
 				return;
 			if ("data" in respondData == false ||
 				respondData.data == null ||
 				respondData.data is Array == false ||
 				respondData.data.length == 0) {
-					S_ANSWER.invoke("requestRespond:history:");
+					S_ANSWER.invoke("requestRespond:" + requestAction + ":");
 					return;
 			}
 			var history:Array = respondData.data;
@@ -2309,7 +2313,7 @@ package com.dukascopy.connect.sys.bankManager {
 			}
 			
 			objectForScreen.reverse();
-			S_ANSWER.invoke("requestRespond:history:" + JSON.stringify(objectForScreen));
+			S_ANSWER.invoke("requestRespond:" + requestAction + ":" + JSON.stringify(objectForScreen));
 		}
 		
 		static private function getIBANByWalletNumber(accountNumber:String):String {

@@ -73,7 +73,7 @@ package com.dukascopy.connect.screens {
 		private var actions:Array = [
 			{ id:"filtersBtn", img:Style.icon(Style.ICON_FILTERS), callback:onFiltersButtonTap, imgColor:Style.color(Style.TOP_BAR_ICON_COLOR) },
 			{ id:"settingsBtn", img:Style.icon(Style.ICON_SETTINGS), callback:onBottomButtonTap, imgColor:Style.color(Style.TOP_BAR_ICON_COLOR) },
-			{ id:"refreshBtn", img:Style.icon(Style.ICON_REFRESH), callback:onRefresh, imgColor:Style.color(Style.TOP_BAR_ICON_COLOR) }
+			{ id:"refreshBtn", img:Style.icon(Style.ICON_REFRESH), callback:onRefresh1, imgColor:Style.color(Style.TOP_BAR_ICON_COLOR) }
 		];
 		
 		private var topBar:TopBarScreen;
@@ -101,6 +101,7 @@ package com.dukascopy.connect.screens {
 		private var backgroundBitmapData:ImageBitmapData;
 		
 		private var storedFilters:Vector.<FilterCategory>;
+		private var storedFiltersForLoading:Object;
 		private var headerAlert:HeaderAlert;
 		private var coinStatIndex:int = -1;
 		
@@ -143,6 +144,7 @@ package com.dukascopy.connect.screens {
 				input.startBlinkMenu();
 			
 			BankManager.S_HISTORY.add(onHistoryLoaded);
+			BankManager.S_HISTORY_MORE.add(onHistoryMoreLoaded);
 			BankManager.S_HISTORY_TRADES.add(onHistoryTradesLoaded);
 			BankManager.S_HISTORY_TS_ERROR.add(onTSError);
 			BankManager.S_WALLETS.add(onWalletsLoaded);
@@ -201,32 +203,26 @@ package com.dukascopy.connect.screens {
 				if ((new Date()).getTime() - Number(data) < 1000 * 60 * 60 * 24 * 3) {
 					showTutorialButton();
 				}
-				
 				checkTradingPhaze();
 			}
 		}
 		
-		private function checkTradingPhaze():void 
-		{
+		private function checkTradingPhaze():void {
 			var needTradingAccountAlert:Boolean;
 			var alertText:String;
-			if (Auth.ch_phase == BankPhaze.VIDID || Auth.ch_phase == BankPhaze.VIDID_PROGRESS || Auth.ch_phase == BankPhaze.VIDID_READY || Auth.ch_phase == BankPhaze.VI_FAIL)
-			{
+			if (Auth.ch_phase == BankPhaze.VIDID || Auth.ch_phase == BankPhaze.VIDID_PROGRESS || Auth.ch_phase == BankPhaze.VIDID_READY || Auth.ch_phase == BankPhaze.VI_FAIL) {
 				needTradingAccountAlert = true;
 				alertText = Lang.trading_ch_opening_reminder;
 			}
-			if (Auth.eu_phase == BankPhaze.VIDID || Auth.eu_phase == BankPhaze.VIDID_PROGRESS || Auth.eu_phase == BankPhaze.VIDID_READY || Auth.eu_phase == BankPhaze.VI_FAIL)
-			{
+			if (Auth.eu_phase == BankPhaze.VIDID || Auth.eu_phase == BankPhaze.VIDID_PROGRESS || Auth.eu_phase == BankPhaze.VIDID_READY || Auth.eu_phase == BankPhaze.VI_FAIL) {
 				needTradingAccountAlert = true;
 				alertText = Lang.trading_eu_opening_reminder;
 			}
-			if (needTradingAccountAlert)
-			{
+			if (needTradingAccountAlert) {
 				var action:OpenScreenAction = new OpenScreenAction(RoadMapScreenNew);
 				action.setData(Lang.openAccount);
 				headerAlert = HeaderAlert.show(view, 0, topBar.trueHeight, _width, alertText, action);
-				if (_isActivated)
-				{
+				if (_isActivated) {
 					headerAlert.activate();
 				}
 			}
@@ -326,6 +322,7 @@ package com.dukascopy.connect.screens {
 		private function onFiltersSetted(result:Vector.<FilterCategory>):void {
 			if (result == null || result.length == 0) {
 				storedFilters = null;
+				storedFiltersForLoading = null;
 				resetIndexes();
 				topBar.showAnimationOverButton("refreshBtn", false);
 				_waiting = true;
@@ -398,6 +395,7 @@ package com.dukascopy.connect.screens {
 					filters.tsTo = result[i].filters[1].type.type;
 				}
 			}
+			storedFiltersForLoading = filters;
 			resetIndexes();
 			topBar.showAnimationOverButton("refreshBtn", false);
 			_waiting = true;
@@ -439,6 +437,38 @@ package com.dukascopy.connect.screens {
 				BankManager.getPaymentHistory(1, 50, (init == true) ? "all" : null, init, init);
 		}
 		
+		private function onRefresh1(init:Boolean = false):void {
+			if (storedFiltersForLoading == null) {
+				BankManager.getPaymentHistory(
+					2,
+					50,
+					"all",
+					false,
+					true,
+					null,
+					null,
+					null,
+					0,
+					0,
+					true
+				);
+				return;
+			}
+			BankManager.getPaymentHistory(
+				2,
+				50,
+				storedFiltersForLoading.historyAccount,
+				false,
+				true,
+				storedFiltersForLoading.currency,
+				storedFiltersForLoading.type,
+				storedFiltersForLoading.status,
+				storedFiltersForLoading.tsFrom,
+				storedFiltersForLoading.tsTo,
+				true
+			);
+		}
+		
 		private function resetIndexes():void {
 			walletItemIndex = -1;
 			totalItemIndex = -1;
@@ -463,6 +493,18 @@ package com.dukascopy.connect.screens {
 					list.appendItem(null, ListBankEmpty);
 			}
 			list.scrollBottom();
+			resetIndexes();
+			BankManager.getAllData(local, !local);
+		}
+		
+		private function onHistoryMoreLoaded(history:Array, local:Boolean):void {
+			var listData:Array = list.data as Array;
+			var index:int = history.length;
+			if (Number(listData[0].transactionID) <= Number(history[history.length - 1].transactionID))
+				trace();
+			history = history.concat(listData);
+			setListData(history);
+			list.scrollToIndex(index, Config.MARGIN, 0, false);
 			resetIndexes();
 			BankManager.getAllData(local, !local);
 		}
@@ -1099,6 +1141,7 @@ package com.dukascopy.connect.screens {
 			if (list != null)
 				TweenMax.killTweensOf(list);
 			BankManager.S_HISTORY.remove(onHistoryLoaded);
+			BankManager.S_HISTORY_MORE.remove(onHistoryMoreLoaded);
 			BankManager.S_HISTORY_TS_ERROR.remove(onTSError);
 			BankManager.S_WALLETS.remove(onWalletsLoaded);
 			BankManager.S_CARDS.remove(onCardsLoaded);
@@ -1127,6 +1170,7 @@ package com.dukascopy.connect.screens {
 			infoAction = null;
 			actions = null;
 			storedFilters = null;
+			storedFiltersForLoading = null;
 			if (topBar != null)
 				topBar.dispose();
 			topBar = null

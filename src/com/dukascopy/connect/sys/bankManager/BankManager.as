@@ -100,6 +100,7 @@ package com.dukascopy.connect.sys.bankManager {
 		
 		static public var S_ANSWER:Signal = new Signal('BankManager.S_ANSWER');
 		static public var S_HISTORY:Signal = new Signal('BankManager.S_HISTORY');
+		static public var S_HISTORY_MORE:Signal = new Signal('BankManager.S_HISTORY_MORE');
 		static public var S_HISTORY_TRADES:Signal = new Signal('BankManager.S_HISTORY_TRADES');
 		static public var S_HISTORY_TS_ERROR:Signal = new Signal('BankManager.S_HISTORY_TS_ERROR');
 		static public var S_INVESTMENT_HISTORY:Signal = new Signal('BankManager.S_INVESTMENT_HISTORY');
@@ -2383,6 +2384,8 @@ package com.dukascopy.connect.sys.bankManager {
 				func = onCryptoTradeCompleted;
 			if (command == "history")
 				func = onHistoryLoaded;
+			if (command == "historyMore")
+				func = onHistoryMoreLoaded;
 			if (command == "historyTrades")
 				func = onHistoryTradesLoaded;
 			else if (command == "wallets")
@@ -2679,9 +2682,7 @@ package com.dukascopy.connect.sys.bankManager {
 			tsFrom:int = 0,
 			tsTo:int = 0,
 			obligatory:Boolean = false):void {
-				
 				init();
-			//	count = 5;
 				if (needToGetHistoryUser != null) {
 					BankBotController.getAnswer("bot:bankbot payments:history:" + page + "|!|" + count + "|!|USER" + needToGetHistoryUser);
 					return;
@@ -2704,7 +2705,8 @@ package com.dukascopy.connect.sys.bankManager {
 				var notNull:Boolean = false;
 				if (history != null &&
 					historyAccount in history == true &&
-					history[historyAccount] != null) {
+					history[historyAccount] != null &&
+					obligatory == false) {
 						notNull = true;
 						if (flag == true || historyAcc != historyAccount)
 							S_HISTORY.invoke(history[historyAccount], true);
@@ -3070,6 +3072,17 @@ package com.dukascopy.connect.sys.bankManager {
 			history ||= { };
 			history[historyAcc] = data as Array;
 			S_HISTORY.invoke(data, false);
+		}
+		
+		static private function onHistoryMoreLoaded(historyJSON:String):void {
+			var data:Object = null;
+			try {
+				data = JSON.parse(historyJSON);
+			} catch (e:Error) {
+				S_HISTORY_MORE.invoke(null, false);
+				return;
+			}
+			S_HISTORY_MORE.invoke(data, false);
 		}
 		
 		static private function onHistoryTradesLoaded(historyTradesJSON:String):void {
