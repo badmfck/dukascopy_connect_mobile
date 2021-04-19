@@ -73,7 +73,7 @@ package com.dukascopy.connect.screens {
 		private var actions:Array = [
 			{ id:"filtersBtn", img:Style.icon(Style.ICON_FILTERS), callback:onFiltersButtonTap, imgColor:Style.color(Style.TOP_BAR_ICON_COLOR) },
 			{ id:"settingsBtn", img:Style.icon(Style.ICON_SETTINGS), callback:onBottomButtonTap, imgColor:Style.color(Style.TOP_BAR_ICON_COLOR) },
-			{ id:"refreshBtn", img:Style.icon(Style.ICON_REFRESH), callback:onRefresh1, imgColor:Style.color(Style.TOP_BAR_ICON_COLOR) }
+			{ id:"refreshBtn", img:Style.icon(Style.ICON_REFRESH), callback:onRefresh, imgColor:Style.color(Style.TOP_BAR_ICON_COLOR) }
 		];
 		
 		private var topBar:TopBarScreen;
@@ -95,6 +95,8 @@ package com.dukascopy.connect.screens {
 		private var savingsItemIndex:int = -1;
 		private var page:int;
 		private var callMore:Boolean;
+		private var historyLoadingState:Boolean;
+		private var loadHistoryOnMouseUp:Boolean;
 		
 		private var needToActivate:Boolean = false;
 		
@@ -443,6 +445,7 @@ package com.dukascopy.connect.screens {
 			page++;
 			if (callMore == false)
 				return;
+			topBar.showAnimationOverButton("refreshBtn", false);
 			if (storedFiltersForLoading == null) {
 				BankManager.getPaymentHistory(
 					page,
@@ -505,6 +508,8 @@ package com.dukascopy.connect.screens {
 		}
 		
 		private function onHistoryMoreLoaded(history:Array, local:Boolean):void {
+			topBar.hideAnimation();
+			historyLoadingState = false;
 			if (history == null || history.length == 0)
 				callMore == false;
 			var listData:Array = list.data as Array;
@@ -1060,7 +1065,7 @@ package com.dukascopy.connect.screens {
 		}
 		
 		private function onListMove(position:Number):void {
-			/*if (position > 0) {
+			if (position > 0) {
 				if (!historyLoadingState) {
 					var positionScroller:int = Config.FINGER_SIZE * .85 + Config.APPLE_TOP_OFFSET + position - Config.FINGER_SIZE;
 					if (positionScroller > Config.FINGER_SIZE * 2.5) {
@@ -1069,67 +1074,15 @@ package com.dukascopy.connect.screens {
 					} else {
 						loadHistoryOnMouseUp = false;
 					}
-					if (ChatManager.getCurrentChat() != null &&
-						ChatManager.getCurrentChat().type == ChatRoomType.PRIVATE &&
-						ChatManager.getCurrentChat().users != null &&
-						ChatManager.getCurrentChat().users.length > 0) {
-							var cuVO:ChatUserVO = UsersManager.getInterlocutor(ChatManager.getCurrentChat());
-							if (cuVO != null &&
-								cuVO.userVO != null &&
-								cuVO.userVO.uid != Auth.uid &&
-								cuVO.userVO.type.toLowerCase() == "bot")
-									return;
-					}
-					if (historyLoadingScroller == null) {
-						var loaderSize:int = Config.FINGER_SIZE * 0.6;
-						if (loaderSize % 2 == 1)
-							loaderSize ++;
-						historyLoadingScroller = new Preloader(loaderSize, ListLoaderShape);
-						_view.addChild(historyLoadingScroller);
-						if (chatTop != null && chatTop.view != null && _view.contains(chatTop.view)) {
-							_view.setChildIndex(chatTop.view, _view.numChildren - 1);
-						}
-					}
-					historyLoadingScroller.y = Config.FINGER_SIZE * .85 + Config.APPLE_TOP_OFFSET - Config.FINGER_SIZE * .5;
-					historyLoadingScroller.x = int(_width * .5);
-					historyLoadingScroller.show(true, false);
-					historyLoadingScroller.rotation = positionScroller * 100 / Config.FINGER_SIZE;
-					historyLoadingScroller.y = positionScroller;
 				}
 			}
-			if (-position < list.itemsHeight - list.height - Config.FINGER_SIZE * 3) {
-				scrollBottomButton.alpha = 1;
-				if (_isActivated) {
-					scrollBottomButton.activate();
-				}
-				scrollBottomButton.x = int(_width - scrollBottomButton.width - Config.DIALOG_MARGIN * 0.7);
-			} else {
-				scrollBottomButton.alpha = 0;
-				scrollBottomButton.deactivate();
-			}*/
 		}
 		
 		private function onListTouchUp():void {
-			/*if (loadHistoryOnMouseUp) {
+			if (loadHistoryOnMouseUp) {
 				loadHistoryOnMouseUp = false;
-				
-				if (ChatManager.getCurrentChat().messages.length > 0 && ChatManager.getCurrentChat().messages[0].num == 1) {
-					historyLoadingState = false;
-					if (historyLoadingScroller != null)
-						historyLoadingScroller.hide();
-				} else {
-					historyLoadingState = true;
-					if (historyLoadingScroller != null)
-						historyLoadingScroller.startAnimation();
-					ChatManager.loadChatHistorycalMessages();
-				}
-			} else {
-				if (historyLoadingScroller != null)
-					historyLoadingScroller.hide();
+				onRefresh1();
 			}
-			if (questionPanel != null) {
-				questionPanel.collapse();
-			}*/
 		}
 		
 		private function setListData(data:Array):void {
