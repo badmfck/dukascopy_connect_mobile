@@ -93,6 +93,8 @@ package com.dukascopy.connect.screens {
 		private var cryptoItemIndex:int = -1;
 		private var otherItemIndex:int = -1;
 		private var savingsItemIndex:int = -1;
+		private var page:int;
+		private var callMore:Boolean;
 		
 		private var needToActivate:Boolean = false;
 		
@@ -438,9 +440,12 @@ package com.dukascopy.connect.screens {
 		}
 		
 		private function onRefresh1(init:Boolean = false):void {
+			page++;
+			if (callMore == false)
+				return;
 			if (storedFiltersForLoading == null) {
 				BankManager.getPaymentHistory(
-					2,
+					page,
 					50,
 					"all",
 					false,
@@ -455,7 +460,7 @@ package com.dukascopy.connect.screens {
 				return;
 			}
 			BankManager.getPaymentHistory(
-				2,
+				page,
 				50,
 				storedFiltersForLoading.historyAccount,
 				false,
@@ -481,6 +486,8 @@ package com.dukascopy.connect.screens {
 		}
 		
 		private function onHistoryLoaded(history:Array, local:Boolean):void {
+			page = 1;
+			callMore = true;
 			setListData(history);
 			if (isNaN(BankManager.getTimeForHistory()) == false) {
 				var dt:Date = new Date();
@@ -498,10 +505,18 @@ package com.dukascopy.connect.screens {
 		}
 		
 		private function onHistoryMoreLoaded(history:Array, local:Boolean):void {
+			if (history == null || history.length == 0)
+				callMore == false;
 			var listData:Array = list.data as Array;
+			if (Number(listData[0].transactionID) <= Number(history[history.length - 1].transactionID)) {
+				for (var i:int = history.length; i > 0; i--) {
+					if (Number(listData[0].transactionID) <= Number(history[i - 1].transactionID))
+						history.pop();
+					else
+						break;
+				}
+			}
 			var index:int = history.length;
-			if (Number(listData[0].transactionID) <= Number(history[history.length - 1].transactionID))
-				trace();
 			history = history.concat(listData);
 			setListData(history);
 			list.scrollToIndex(index, Config.MARGIN, 0, false);
