@@ -1154,6 +1154,12 @@ package com.dukascopy.connect.sys.bankManager {
 					ToastMessage.display(Lang.numberCopied);
 					return;
 				}
+				if (msg == "copyIBAN") {
+					data["tapped"] = false;
+					Clipboard.generalClipboard.setData(ClipboardFormats.TEXT_FORMAT, lastBankMessageVO.additionalData.IBAN);
+					ToastMessage.display(Lang.IBANCopied);
+					return;
+				}
 				if (msg == "payments") {
 					data["tapped"] = false;
 					navigateToURL(new URLRequest(Config.PAYMENTS_WEB));
