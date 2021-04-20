@@ -2687,11 +2687,11 @@ package com.dukascopy.connect.sys.bankManager {
 			tsFrom:int = 0,
 			tsTo:int = 0,
 			obligatory:Boolean = false):void {
-				
 				init();
-			//	count = 5;
+				count = 5;
 				if (needToGetHistoryUser != null) {
 					BankBotController.getAnswer("bot:bankbot payments:history:" + page + "|!|" + count + "|!|USER" + needToGetHistoryUser);
+					needToGetHistoryUser = null;
 					return;
 				}
 				if (flag == true)
