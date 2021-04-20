@@ -609,6 +609,7 @@ package com.dukascopy.connect.sys.bankManager {
 					waitForPass = false;
 					if (steps == null || steps.length < 2) {
 						echo("BankBotController", "getAnswer", "BACK ERROR (NO STEPS)");
+						getAnswer("bot:bankbot nav:main");
 						return;
 					}
 					if (tmp.length == 3) {
