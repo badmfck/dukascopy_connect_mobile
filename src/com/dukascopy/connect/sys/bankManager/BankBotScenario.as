@@ -3625,10 +3625,10 @@ package com.dukascopy.connect.sys.bankManager {
 				desc:"lang.confirmedTransactionAdd",
 				buttons: [
 					{
-						text:"lang.buttonYes",
+						text:"lang.buttonConfirm",
 						action:"nav:transactionConfirmed"
 					}, {
-						text:"lang.buttonNo",
+						text:"lang.buttonBack",
 						action:"cmd:back"
 					}
 				]
