@@ -2692,7 +2692,6 @@ package com.dukascopy.connect.sys.bankManager {
 			obligatory:Boolean = false):void {
 				init();
 				needToCash = true
-				count = 5;
 				if (needToGetHistoryUser != null) {
 					needToCash = false;
 					BankBotController.getAnswer("bot:bankbot payments:history:" + page + "|!|" + count + "|!|USER" + needToGetHistoryUser);
