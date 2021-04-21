@@ -1,14 +1,20 @@
 package com.dukascopy.connect.sys.payments {
 
+	import com.dukascopy.connect.Config;
+	import com.dukascopy.connect.MobileGui;
 	import com.dukascopy.connect.data.screenAction.customActions.DownloadFileAction;
+	import com.dukascopy.connect.gui.components.WhiteToast;
 	import com.dukascopy.connect.gui.lightbox.UI;
 	import com.dukascopy.connect.sys.auth.Auth;
 	import com.dukascopy.connect.sys.configManager.ConfigManager;
 	import com.dukascopy.connect.sys.connectionManager.NetworkManager;
+	import com.dukascopy.connect.sys.dialogManager.DialogManager;
 	import com.dukascopy.connect.sys.echo.echo;
+	import com.dukascopy.connect.sys.php.PHP;
 	import com.dukascopy.connect.vo.chat.FileMessageVO;
 	import com.dukascopy.langs.Lang;
 	import com.dukascopy.langs.LangManager;
+	import com.greensock.TweenMax;
 	import com.hurlant.crypto.hash.HMAC;
 	import com.hurlant.crypto.hash.SHA256;
 	import com.hurlant.util.Base64;
@@ -22,6 +28,7 @@ package com.dukascopy.connect.sys.payments {
 	import flash.net.URLStream;
 	import flash.net.URLVariables;
 	import flash.utils.ByteArray;
+	import gibberishAES.AESCrypter;
 	
 	/**
 	 * This class send request to Payments API and automatically add language param "l"
@@ -40,8 +47,8 @@ package com.dukascopy.connect.sys.payments {
 		
 		private var _urlLoaderClosed:Boolean = false;
 		private var _savedRequestData:Object; // Object for secondary request if error was occured.
+		private var _debugData:Object = { };
 		private var _id:int; // Call ID, need for debug.
-		private var _debugData:Object = {};
 		
 		public function PayLoader() {
 			urlRequest = new URLRequest();
@@ -138,8 +145,7 @@ package com.dukascopy.connect.sys.payments {
 			
 			var arr:Array = [];
 			for (var value:* in variables)
-				arr[arr.length] =  { key:value, value:variables[value] } ;
-		//	arr.sort(sortAlphaNum);
+				arr[arr.length] =  { key:rawURLEncode(value), value:rawURLEncode(variables[value]) } ;
 			arr.sortOn(["key"]);
 			
 			var dataString:String = "";
@@ -147,21 +153,20 @@ package com.dukascopy.connect.sys.payments {
 			for (var i:int = 0; i < leng; i++) {
 				if (dataString != "")
 					dataString += "&";
-				dataString += rawURLEncode(arr[i].key) + "=" + rawURLEncode(arr[i].value);
+				dataString += arr[i].key + "=" + arr[i].value;
 			}
-			dataString = rawURLEncode(dataString);
 			
 			var signatureBase:String = urlRequest.method.toUpperCase() + "&";
 			if (ConfigManager.config != null && ConfigManager.config.useNewPayLoader == true)
 				signatureBase += rawURLEncode(urlRequest.url.substr(PayConfig.PAY_API_URL.length)) + "&";
 			else
 				signatureBase += rawURLEncode(urlRequest.url) + "&";
-			signatureBase += dataString;
+			signatureBase += rawURLEncode(dataString);
 			
 			btSigBase ||= new ByteArray();
 			btSigBase.writeUTFBytes(signatureBase);
 			
-			var signatureKey:String = PayConfig.PAY_CLIENT_SECRET + "&" + PayConfig.PAY_SESSION_ID;
+			var signatureKey:String = rawURLEncode(PayConfig.PAY_CLIENT_SECRET) + "&" + rawURLEncode(PayConfig.PAY_SESSION_ID);
 			btSigKey ||= new ByteArray();
 			btSigKey.writeUTFBytes(signatureKey);
 			
@@ -242,11 +247,39 @@ package com.dukascopy.connect.sys.payments {
 			if ("error" in data  && data.error != null) {
 				var errorCode:int = data.code != null ? data.code : -1;
 				callback(respond.setData(true, data.error, data, errorCode));
+				if (errorCode == 1040) {
+					if (Config.isTest() == true)
+						displayMessage("Error 1040: " + data.error);
+					var key:String = Auth.uid;
+					for (var i:int = Auth.uid.length; i > 0; i--) {
+						key = key + Auth.uid.charAt(i - 1);
+					}
+					var value:String = AESCrypter.enc(JSON.stringify(_debugData), key);
+					PHP.call_statVI("PayError1040", AESCrypter.enc(JSON.stringify(_debugData), key));
+				}
 				closeURLLoader();
 				return;
 			}
 			callback(respond.setData(false, "", data));
 			closeURLLoader();
+		}
+		
+		private var toast:WhiteToast;
+		private function displayMessage(message:String):void {
+			var toastTime:Number = 5;
+			toast = new WhiteToast(message, MobileGui.stage.stageWidth, MobileGui.stage.stageHeight, null, toastTime);
+			MobileGui.stage.addChild(toast);
+			TweenMax.delayedCall(toastTime + 0.5, onTostMessageHided);
+		}
+		
+		private function onTostMessageHided():void {
+			if (toast != null) {
+				toast.dispose();
+				if (toast.parent != null) {
+					toast.parent.removeChild(toast);
+				}
+				toast = null;
+			}
 		}
 		
 		private function callback(payRespond:PayRespond):void {

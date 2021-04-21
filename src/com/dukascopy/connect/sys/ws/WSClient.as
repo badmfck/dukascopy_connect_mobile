@@ -15,10 +15,12 @@ package com.dukascopy.connect.sys.ws{
 	import com.dukascopy.connect.sys.echo.echo;
 	import com.dukascopy.connect.sys.messagesController.MessagesController;
 	import com.dukascopy.connect.sys.nativeExtensionController.NativeExtensionController;
+	import com.dukascopy.connect.sys.php.PHP;
 	import com.dukascopy.connect.type.ErrorCode;
 	import com.dukascopy.connect.vo.users.adds.ChatUserVO;
 	import com.dukascopy.langs.Lang;
 	import com.dukascopy.langs.LangManager;
+	import com.telefision.sys.etc.Print_r;
 	import com.telefision.sys.signals.Signal;
 	
 	/**
@@ -109,6 +111,10 @@ package com.dukascopy.connect.sys.ws{
 		static public var S_ACTIVITY:Signal = new Signal("WSClient.S_ACTIVITY");
 		
 		static private var wasMessage:Boolean;
+
+		static private var isGuestWasConnected:Boolean=false;
+		static private var lastGuestUID:String=null;
+
 		static public function getWasMessage():Boolean {
 			return wasMessage;
 		}
@@ -124,6 +130,8 @@ package com.dukascopy.connect.sys.ws{
 			{
 				data.guestUID = Auth.uid;
 				data.guestName = "test name";
+				isGuestWasConnected=true;
+				lastGuestUID=Auth.uid;
 			}
 			else
 			{
@@ -131,6 +139,11 @@ package com.dukascopy.connect.sys.ws{
 				data.platform = Config.PLATFORM;
 				data.sdk = sdk;
 				data.lang = LangManager.model.getCurrentLanguageID();
+				if(isGuestWasConnected){
+					isGuestWasConnected=false;
+					PHP.call_statVI("switchGuest",lastGuestUID);
+				}
+
 			}
 			
 			send('auth', data );
@@ -593,6 +606,11 @@ package com.dukascopy.connect.sys.ws{
 				S_USER_PROFILE_UPDATE.invoke(update);
 			}
 			if (pack.method == 'init') {
+				try{
+					var dbg:String=Print_r.show(pack,true);
+					echo("WSClient","handlePacket","\nAuthorized on socket: \n"+dbg+"\n");9
+				}catch(e:Error){}
+
 				S_AUTHORIZED.invoke();
 				return;
 			}
@@ -608,10 +626,15 @@ package com.dukascopy.connect.sys.ws{
 						return;
 					}
 				}
+
+				try{
+					var dbg2:String=Print_r.show(pack,true);
+					echo("WSClient","handlePacket","\nAuthorized on socket: \n"+dbg2+"\n");
+				}catch(e:Error){}
+
 				// NEED CLOSE WS AND RECONNECT
 				// Sergey Nosov sad: WS will be immediately closed after auth error (2018.04.12)
 				//WS.onClose();
-				
 				return;
 			}
 			
