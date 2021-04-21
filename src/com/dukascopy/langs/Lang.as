@@ -2279,6 +2279,10 @@ package com.dukascopy.langs {
 		static public var enterYourName:String = "Enter your name:";
 		static public var enterYourEmail:String = "Enter your email:";
 		static public var howCanWeHelpYou:String = "Hello, how can we help you?";
+		static public var selectContacts:String = "Select contacts";
+		static public var max:String = "Max";
+		static public var monthlyFee:String = "Monthly fee";
+		static public var imageCorrupted:String = "The image is deleted or corrupted";
 		
 		static public function updateKeys(keys:Object):void {
 			for (var n:String in keys) {

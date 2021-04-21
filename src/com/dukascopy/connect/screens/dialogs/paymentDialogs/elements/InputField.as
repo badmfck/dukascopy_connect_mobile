@@ -8,6 +8,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs.elements
 	import com.dukascopy.connect.gui.lightbox.UI;
 	import com.dukascopy.connect.sys.applicationError.ApplicationErrors;
 	import com.dukascopy.connect.sys.pointerManager.PointerManager;
+	import com.dukascopy.connect.sys.style.FontSize;
 	import com.dukascopy.connect.sys.style.Style;
 	import com.dukascopy.connect.sys.style.presets.Color;
 	import com.dukascopy.connect.utils.TextUtils;
@@ -28,11 +29,24 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs.elements
 	 */
 	public class InputField extends Sprite
 	{
+		static public const ALIGN_LEFT:String = "alignLeft";
 		private var _onLongTapFunction:Function;
 		private var _onChangedFunction:Function;
 		private var _onSelectedFunction:Function;
 		private var longClick:LongClick;
 		private var selected:Boolean;
+		private var _align:String;
+		private var defaultValue:Number;
+		
+		public function get align():String 
+		{
+			return _align;
+		}
+		
+		public function set align(value:String):void 
+		{
+			_align = value;
+		}
 		
 		protected var title:Bitmap;
 		protected var valueField:Bitmap;
@@ -219,7 +233,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs.elements
 				title.bitmapData = TextUtils.createTextFieldData(value, itemWidth, 10, 
 																false, TextFormatAlign.LEFT, 
 																TextFieldAutoSize.LEFT, 
-																Config.FINGER_SIZE * .26, 
+																FontSize.SUBHEAD, 
 																false, Style.color(Style.COLOR_SUBTITLE), backColor, false, true);
 			}
 		}
@@ -236,6 +250,14 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs.elements
 			{
 				underlineValue.bitmapData = TextUtils.createTextFieldData(value, itemWidth, 10, true, TextFormatAlign.RIGHT, 
 																		TextFieldAutoSize.LEFT, Config.FINGER_SIZE * .24, true, Style.color(Style.COLOR_SUBTITLE), backColor, false, true);
+			}
+			if (align == ALIGN_LEFT)
+			{
+				underlineValue.x = 0;
+			}
+			else
+			{
+				underlineValue.x = int(itemWidth - underlineValue.width);
 			}
 		}
 		
@@ -273,7 +295,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs.elements
 			var tf:TextField = input.getTextField();
 			var line:TextLineMetrics = tf.getLineMetrics(0);
 			
-			var titleHeight:int = Config.FINGER_SIZE * .26;
+			var titleHeight:int = FontSize.SUBHEAD;
 			
 			input.view.y = int(title.y + titleHeight - Config.FINGER_SIZE * .1);
 			input.width = itemWidth - valueField.width;
@@ -281,14 +303,24 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs.elements
 			valueContainer.x = int(input.view.x + itemWidth - valueField.width);
 			valueContainer.y = int(input.view.y + tf.y + line.ascent - valueField.height + 2);
 			underline.width = itemWidth;
-			underline.y = int(input.view.y + input.height - Config.FINGER_SIZE * .10);
+			underline.y = int(input.view.y + input.height - Config.FINGER_SIZE * .1) - underline.height;
 			
-			underlineValue.x = int(itemWidth - underlineValue.width);
+			if (align == ALIGN_LEFT)
+			{
+				underlineValue.x = 0;
+			}
+			else
+			{
+				underlineValue.x = int(itemWidth - underlineValue.width);
+			}
 			underlineValue.y = int(underline.y + Config.FINGER_SIZE * .16);
+			
+			trace("FIELD", int(input.view.y + input.height - Config.FINGER_SIZE * .1));
 		}
 		
 		public function draw(itemWidth:int, titleValue:String, defaultValue:Number = NaN, underlineString:String = null, typeValue:String = null, backColor:Number = NaN):void 
 		{
+			this.defaultValue = defaultValue;
 			if (isNaN(backColor))
 			{
 				backColor = Style.color(Style.COLOR_BACKGROUND);
@@ -517,6 +549,11 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs.elements
 			selected = true;
 			if (input != null)
 			{
+				if (!isNaN(defaultValue) && !isNaN(Number(input.value)) && Number(input.value) == defaultValue)
+				{
+					input.value = "";
+				}
+				
 				//trace(input.value.length);
 				if (input.getTextField().selectionBeginIndex == input.getTextField().selectionEndIndex && 
 					input.value != null && 
@@ -555,6 +592,21 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs.elements
 		
 		private function onChanged():void 
 		{
+			if (customMode == Input.MODE_DIGIT_DECIMAL)
+            {
+                if (valueString != null && valueString.length > 0 && valueString.charAt(0) == "0" && !isNaN(Number(valueString)))
+                {
+                    if (valueString.length > 1 && (valueString.charAt(1) == "." || valueString.charAt(1) == ","))
+                    {
+                        
+                    }
+                    else
+                    {
+                        value = Number(valueString);
+                    }
+                }
+            }
+			
 			if (_onChangedFunction != null)
 			{
 				_onChangedFunction();

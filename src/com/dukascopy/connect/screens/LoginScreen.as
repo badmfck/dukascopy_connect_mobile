@@ -104,6 +104,7 @@ package com.dukascopy.connect.screens {
 		private var keyboardZoom:Number = 1;
 		private var sizeSetted:Boolean;
 		private var startSupportAction:ExecuteAction;
+		private var textCode:String;
 		
 		public function LoginScreen()
 		{
@@ -218,7 +219,7 @@ package com.dukascopy.connect.screens {
 			
 			actions.push(resendCodeAction);
 			actions.push(requestCallAction);
-		//	actions.push(startSupportAction);
+			actions.push(startSupportAction);
 			actions.push(backAction);
 			
 			Overlay.removeCurrent();
@@ -228,7 +229,7 @@ package com.dukascopy.connect.screens {
 		
 		private function startSupportChat():void 
 		{
-			MobileGui.changeMainScreen(GuestChatScreen);
+			MobileGui.changeMainScreen(GuestChatScreen, {phone:finalPhone, currentPhone:currentPhone, country:currentCountry});
 		}
 		
 		private function clearPhone():void 
@@ -325,14 +326,14 @@ package com.dukascopy.connect.screens {
 			}
 			
 			DialogManager.showDialog(
-					SearchListSelectionPopup,
-					{
-						items:cDataNew,
-						title:Lang.selectCountry,
-						renderer:ListCountry,
-						callback:onCountryListSelected
-					}, ServiceScreenManager.TYPE_SCREEN
-				);
+				SearchListSelectionPopup,
+				{
+					items:cDataNew,
+					title:Lang.selectCountry,
+					renderer:ListCountry,
+					callback:onCountryListSelected
+				}, ServiceScreenManager.TYPE_SCREEN
+			);
 		}
 		
 		private function onCountryListSelected(country:Array):void
@@ -536,12 +537,16 @@ package com.dukascopy.connect.screens {
 			}
 		}
 		
-		private function setCurrentCode():void 
+		private function setCurrentCode(value:String = null):void 
 		{
-			currentCode = Auth.getMyPhone().substr(Auth.getMyPhone().length - 6);
-			for (var i:int = 0; i < currentCode.length; i++) 
+			if (value != null && phone != null)
 			{
-				phone.add(currentCode.charAt(i));
+				currentCode = value;
+				
+				for (var i:int = 0; i < currentCode.length; i++) 
+				{
+					phone.add(currentCode.charAt(i));
+				}
 			}
 		}
 		
@@ -655,8 +660,6 @@ package com.dukascopy.connect.screens {
 				animateHide(clearPhoneButton);
 				animateHide(phone);
 				animateHide(selectCountryButton);
-				retryCodeButton.visible = true;
-				retryCodeButton.alpha = 0;
 				
 				TweenMax.delayedCall(hideTime, drawStateCode);
 			}
@@ -665,6 +668,9 @@ package com.dukascopy.connect.screens {
 		private function drawStateCode():void 
 		{
 			state = STATE_CODE;
+			
+			retryCodeButton.visible = true;
+			retryCodeButton.alpha = 0;
 			
 			selectCountryButton.visible = false;
 			clearPhoneButton.visible = false;
@@ -719,9 +725,9 @@ package com.dukascopy.connect.screens {
 			
 			showStateCode();
 			
-			if (Config.isTest() == true)
+			if (Config.isTest() == true && textCode != null)
 			{
-				setCurrentCode();
+				setCurrentCode(textCode);
 			}
 		}
 		
@@ -861,22 +867,73 @@ package com.dukascopy.connect.screens {
 			
 			state = STATE_PHONE;
 			
+			if (data != null && "state" in data && data.state != null)
+			{
+				if (data.state == STATE_CODE || data.state == STATE_PHONE)
+				{
+					if (data.state == STATE_CODE)
+					{
+						if ("phone" in data && data.phone != null)
+						{
+							finalPhone = data.phone;
+							state = data.state;
+							if ("curentPhone" in data)
+							{
+								currentPhone = data.currentPhone;
+							}
+							if ("country" in data)
+							{
+								onCountrySelected(data.country);
+							}
+						}
+					}
+					else
+					{
+						state = data.state;
+					}
+				}
+			}
+			
 			bg.width = _width;
 			bg.height = _height;
 			
-			drawNextButton(Lang.BTN_REQUEST_CODE);
 			drawNoCodeButton(Lang.didntReceiveCode);
+			drawNextButton(Lang.BTN_REQUEST_CODE);
 			drawTerms();
-			drawTitle(Lang.enterYourPhone);
 			
-			onCountrySelected(CountriesData.getCountryByPhoneNumber("+415555000123"), false, false);
-			
-			loadCountry();
-			
-			currentPhone = "";
-			finalPhone = "";
-			
-			hide();
+			if (state == STATE_PHONE)
+			{
+				drawTitle(Lang.enterYourPhone);
+				
+				onCountrySelected(CountriesData.getCountryByPhoneNumber("+415555000123"), false, false);
+				
+				loadCountry();
+				
+				currentPhone = "";
+				finalPhone = "";
+				
+				hide();
+				
+				if (Config.isTest())
+				{
+					Auth.S_AUTH_CODE.add(insertCode);
+				}
+			}
+			else if (state == STATE_CODE)
+			{
+				firstTime = false;
+				drawStateCode();
+			}
+		}
+		
+		private function insertCode(code:String):void 
+		{
+			if (isDisposed)
+			{
+				return;
+			}
+			textCode = code;
+			setCurrentCode(code);
 		}
 		
 		private function hide():void 
@@ -1116,10 +1173,9 @@ package com.dukascopy.connect.screens {
 			if (_isDisposed == true)
 				return;
 			
+			logo.x = int(_width * .5 - logo.width * .5);
 			if (state == STATE_PHONE)
 			{
-				logo.x = int(_width * .5 - logo.width * .5);
-				
 				var maxKeyboardHeight:int = _height - Config.APPLE_BOTTOM_OFFSET;
 				maxKeyboardHeight -= fingerSize * .15 + terms.height;
 				maxKeyboardHeight -= fingerSize * .25 + nextButton.height;
@@ -1208,12 +1264,6 @@ package com.dukascopy.connect.screens {
 					activateStateCode();
 				}
 			}
-			
-			//startSupportAction = new ExecuteAction();
-			//startSupportAction.getSuccessSignal().add(startSupportChat);
-			//startSupportAction.setData(Lang.startSupportChat);
-			//startSupportAction.setIconClass(IconBack);
-			//startSupportAction.execute();
 		}
 		
 		private function activateStateCode():void 

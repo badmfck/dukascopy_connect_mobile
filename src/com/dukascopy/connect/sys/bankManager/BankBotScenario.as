@@ -236,12 +236,12 @@ package com.dukascopy.connect.sys.bankManager {
 					}, {
 						text:"lang.buttonCancel",
 						action:"system:cancel"
-					}
+					} 
 				]
 			},
 			
 			cardDetails: {
-				desc:"",
+				desc:"lang.cardDetailsDesc",
 				item: {
 					type:"showCardDetails",
 					selection:"@@1"
@@ -1328,7 +1328,7 @@ package com.dukascopy.connect.sys.bankManager {
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////
 			
 			repeatInvestmentPurchase: {
-				desc:"",
+				desc:"lang.whatWant",
 				menuLayout:"vertical",
 				menu: [
 					{
@@ -1360,7 +1360,7 @@ package com.dukascopy.connect.sys.bankManager {
 			},
 			
 			repeatInvestmentSale: {
-				desc:"",
+				desc:"lang.whatWant",
 				menuLayout:"vertical",
 				menu: [
 					{
@@ -1392,7 +1392,7 @@ package com.dukascopy.connect.sys.bankManager {
 			},
 			
 			repeatExchange: {
-				desc:"",
+				desc:"lang.whatWant",
 				menuLayout:"vertical",
 				menu: [
 					{
@@ -1420,7 +1420,7 @@ package com.dukascopy.connect.sys.bankManager {
 			},
 			
 			repeatCardDeposit: {
-				desc:"",
+				desc:"lang.whatWant",
 				menuLayout:"vertical",
 				menu: [
 					{
@@ -1448,7 +1448,7 @@ package com.dukascopy.connect.sys.bankManager {
 			},
 			
 			repeatCardWithdrawal: {
-				desc:"",
+				desc:"lang.whatWant",
 				menuLayout:"vertical",
 				menu: [
 					{
@@ -1475,7 +1475,7 @@ package com.dukascopy.connect.sys.bankManager {
 			},
 			
 			repeatSendMoneyPhone: {
-				desc:"",
+				desc:"lang.whatWant",
 				menuLayout:"vertical",
 				menu: [
 					{
@@ -1503,7 +1503,7 @@ package com.dukascopy.connect.sys.bankManager {
 			},
 			
 			repeatSendMoneyPhoneCode: {
-				desc:"",
+				desc:"lang.whatWant",
 				menuLayout:"vertical",
 				menu: [
 					{

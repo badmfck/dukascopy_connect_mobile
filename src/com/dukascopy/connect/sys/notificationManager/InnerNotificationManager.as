@@ -212,6 +212,9 @@ package com.dukascopy.connect.sys.notificationManager {
 		
 		static private function onChatMessage(data:Object):void {
 			echo("InnerNotificationManager", "onChatMessage");
+
+			if(Auth.key=="web")
+				return;
 			
 			sendPushToNative(data);
 			

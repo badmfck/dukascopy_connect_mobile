@@ -30,6 +30,8 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 	import com.dukascopy.connect.sys.payments.CoinComissionChecker;
 	import com.dukascopy.connect.sys.payments.PayManager;
 	import com.dukascopy.connect.sys.payments.PayRespond;
+	import com.dukascopy.connect.sys.payments.PaymentsManager;
+	import com.dukascopy.connect.sys.paymentsManagerNew.PaymentsManagerNew;
 	import com.dukascopy.connect.sys.serviceScreenManager.ServiceScreenManager;
 	import com.dukascopy.connect.sys.softKeyboard.SoftKeyboard;
 	import com.dukascopy.connect.sys.style.Style;
@@ -385,12 +387,22 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 			}
 		}
 		
-		private function showAdditionalCommissionAlert(undercomissionAmount:Number):void 
+		/*private function showAdditionalCommissionAlert(undercomissionAmount:Number):void 
 		{
-			var text:String = Lang.coinCommistionM1New.replace("@1", Math.round(undercomissionAmount * .2 * 100) / 100);
-			text = text.replace("@2", ConfigManager.config.COINS_CSC_LLF_PRICE_LIMIT);
-			DialogManager.alert(Lang.information, text, onCommissionPopup, Lang.iAgreeCreateOrder, Lang.iDontAgree);
+			PayManager.callGetSystemOptions(displayAdditionalCommissionAlert);
 		}
+		
+		private function displayAdditionalCommissionAlert():void 
+		{
+			if (_isDisposed)
+			{
+				return;
+			}
+			
+			var text:String = Lang.coinCommistionM1New.replace("@1", Math.round(undercomissionAmount * .2 * 100) / 100);
+			text = text.replace("@2", PayManager.systemOptions.coin_llf_price_limit);
+			DialogManager.alert(Lang.information, text, onCommissionPopup, Lang.iAgreeCreateOrder, Lang.iDontAgree);
+		}*/
 		
 		private function onCommissionPopup(val:int):void 
 		{

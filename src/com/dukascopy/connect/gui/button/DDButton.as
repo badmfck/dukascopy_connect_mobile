@@ -17,6 +17,7 @@ package com.dukascopy.connect.gui.button {
 	 */
 	public class DDButton extends BitmapButton{
 
+		
 		private var _text:String = "...";		
 		private var currentBMD:BitmapData;
 		private var _viewWidth:int = 0;

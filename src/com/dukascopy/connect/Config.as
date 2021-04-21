@@ -66,6 +66,7 @@ package com.dukascopy.connect {
 		static public const EP_VI_PAY:int = 136;
 		static public const EP_VI_DEF:int = 133;
 		static public const EP_911:int = 138;
+		static public const EP_CONNECT:int = 41;
         static public const EP_TRADING:int = 143;
 		static public const CAT_DATING:int = 5;
 		static public const CAT_GENERAL:int = 2;
@@ -84,8 +85,8 @@ package com.dukascopy.connect {
 
         /* TEST * /
 		static public const URL_PHP_CORE_SERVER:String = 'https://loki.telefision.com/master/';
-		static public const URL_WS_HOST_1:String = "wss://dccapi.telefision.com";
-		static public const URL_WS_HOST_2:String = "wss://dccapi.telefision.com";
+		static public const URL_WS_HOST_1:String = "wss://loki.telefision.com/wss/";
+		static public const URL_WS_HOST_2:String = "wss://loki.telefision.com/wss/";
 		static public const URL_MEDIA_VI:String = "rtmp://vi.telefision.com/recognition";
 		static public const URL_MEDIA_VIDID:String = "rtmp://vi.telefision.com/recognition";
 		static public const URL_FXCOMM_PROFILE:String = "https://www.php-test.site.dukascopy.com/fxcomm/profile/?nickname=";
@@ -99,10 +100,11 @@ package com.dukascopy.connect {
 		static public const EP_VI_PAY:int = 47;
 		static public const EP_VI_DEF:int = 36;
 		static public const EP_911:int = 30;
+		static public const EP_CONNECT:int = 30;
         static public const EP_TRADING:int = 143;
 		static public const CAT_DATING:int = 41;
 		static public const CAT_GENERAL:int = 4;
-		static public const SERVER_NAME:String = " TEST";π
+		static public const SERVER_NAME:String = " TEST";
 		static public const test:Boolean = true;
 		static public const ADMIN_UIDS:String = "WdW6DJI1WbWo," +	// Igor BloomC
 			"WdW6DJWbW3IsIb," +	// Ilya Shcherbakov
@@ -110,11 +112,11 @@ package com.dukascopy.connect {
 		static public const TF_UIDS:String = "WdW6DJI1WbWo," +	// Igor Bloom
 			"WdW6DJWbW3IsIb," +	// Ilya Shcherbakov
 			"I6D5WsWZDLWj";		// Sergey Dobarin
+		static public const BOT_UIDS:String = "WgDNWdIEW4I6IsWg" // Support bot
         /**/
 
 
         static public const URL_IMAGE:String = "https://www.dukascopy.com/imageserver/img/";
-
 
         static public const URL_REMOTE_DEBUGGER:String = "ws://172.18.30.103:9080/";
 
@@ -132,6 +134,11 @@ package com.dukascopy.connect {
 			var base:String= "//ws.telefision.com/vidid";
 			return "https:" + base;
 		}
+		
+		static public function get URL_DEV_STAT():String {
+			var base:String= "//ws.telefision.com/dev/stat";
+			return "https:" + base;
+		}
 
 
         static public const URL_MEDIA:String = "rtmp://socket.telefision.com/callapp";
@@ -146,7 +153,8 @@ package com.dukascopy.connect {
         static public const COMPANY_ID:String = "08A29C35B3";
 
         static public const APPLE_LOG:Boolean=true;
-        static public const VERSION:String = "3.5.50o"+(Capabilities.isDebugger?" dbg":"");
+        static public const ANDROID_LOG:Boolean=true;
+        static public const VERSION:String = "3.5.58o"+(Capabilities.isDebugger?" dbg":"");
         static public const VERSION_SQL:int = 1;
 
         static public const MAX_UPLOAD_THUMB_SIZE:int = 230;

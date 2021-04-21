@@ -19,6 +19,7 @@ package com.dukascopy.connect.gui.lightbox
 		public var previewURL:String;
 		public var imageActions:Vector.<IScreenAction>;
 		public var disposed:Boolean = false;
+		public var previewShown:Boolean;
 		
 		public function LightBoxItemVO() {}		
 		

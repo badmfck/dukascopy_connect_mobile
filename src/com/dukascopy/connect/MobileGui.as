@@ -78,8 +78,8 @@ import com.dukascopy.connect.sys.phonebookManager.PhonebookManager;
 	import com.dukascopy.connect.type.ChatInitType;
 	import com.dukascopy.connect.utils.RenderUtils;
 	import com.dukascopy.connect.vo.screen.ChatScreenData;
-import com.dukascopy.dccext.DCCExt;
-import com.dukascopy.dukascopyextension.DukascopyExtensionAndroid;
+	import com.dukascopy.dccext.DCCExt;
+	import com.dukascopy.dukascopyextension.DukascopyExtensionAndroid;
 	import com.dukascopy.langs.Lang;
 	import com.dukascopy.langs.LangManager;
 	import com.greensock.TweenMax;
@@ -90,10 +90,10 @@ import com.dukascopy.dukascopyextension.DukascopyExtensionAndroid;
 	import com.telefision.utils.Loop;
 	import connect.DukascopyExtension;
 
-import flash.desktop.Clipboard;
+	import flash.desktop.Clipboard;
 
-import flash.desktop.ClipboardFormats;
-import flash.desktop.NativeApplication;
+	import flash.desktop.ClipboardFormats;
+	import flash.desktop.NativeApplication;
 	import flash.display.FocusDirection;
 	import flash.display.Sprite;
 	import flash.display.Stage;
@@ -434,9 +434,9 @@ import flash.events.StageOrientationEvent;
 				NativeApplication.nativeApplication.exit();
 		}
 		
-		public static function changeMainScreen(screen:Class, data:Object = null, directon:int = 0):void {
+		public static function changeMainScreen(screen:Class, data:Object = null, directon:int = 0, time:Number = 0.3):void {
 			if (screen == LoginScreen) {
-				S_MAIN_SCREEN_CHANGE.invoke(screen, data, directon);
+				S_MAIN_SCREEN_CHANGE.invoke(screen, data, directon, 1, time);
 				return;
 			}
 			var screenLabel:String;
@@ -534,7 +534,7 @@ import flash.events.StageOrientationEvent;
 			}
 		}
 		
-		private function onMainScreenChangeInvoke(screen:Class, data:Object = null, direction:int = 0, currentScreenEndAlpha:Number = 1):void {
+		private function onMainScreenChangeInvoke(screen:Class, data:Object = null, direction:int = 0, currentScreenEndAlpha:Number = 1, time:Number = 0.3):void {
 			echo("MobileGui", "onMainScreenChangeInvoke", "");
 			var fromPayments:Boolean = PayManager.isInsidePaymentsScreenNow;
 			PayManager.isInsidePaymentsScreenNow = false;
@@ -545,7 +545,7 @@ import flash.events.StageOrientationEvent;
 					return;
 				mainSM.show(RootScreen);
 			}
-			mainSM.show(screen, data, direction, 0.3, currentScreenEndAlpha);
+			mainSM.show(screen, data, direction, time, currentScreenEndAlpha);
 		}
 		
 		private function onDialogShow(dialog:Class, params:Object = null, transparency:Number = .5):void {
@@ -635,7 +635,7 @@ import flash.events.StageOrientationEvent;
 			onStageResize();
 		}
 		
-		private function onServiceScreenShow(dialog:Class, params:Object = null, transitionTime:Number = 0.5, transparency:Number = 0.5):void { 
+		private function onServiceScreenShow(dialog:Class, params:Object = null, transitionTime:Number = 0.5, transparency:Number = 0.5, direction:int = 0):void { 
 			_serviceShowed = true;
 			if (LightBox.isShowing == true) {
 				LightBox.deactivate();
@@ -658,7 +658,7 @@ import flash.events.StageOrientationEvent;
 			onCustomSoftKeyboardClosed();
 			serviceSM.activate();
 			PointerManager.addTap(boxBlack, closeServiceScreen);
-			serviceSM.show(dialog, params, 0, transitionTime);
+			serviceSM.show(dialog, params, direction, transitionTime);
 			if (mainSM != null)
 				mainSM.deactivate();
 		}
@@ -859,8 +859,13 @@ import flash.events.StageOrientationEvent;
 		
 		private function onAuthNeedAuthorization():void {
 			authSreenShowed = true;
-			mainSM.clear();
-			changeMainScreen(LoginScreen);
+			
+			if (centerScreen.currentScreenClass != LoginScreen)
+			{
+				mainSM.clear();
+				changeMainScreen(LoginScreen);
+			}
+			
 			PaymentsManager.deactivate();
 		}
 		
@@ -960,15 +965,18 @@ import flash.events.StageOrientationEvent;
 		}
 		
 		static public function openMyAccountIfExist():void {
+
 			QuestionsManager.setInOut(false);
 			if (Auth.bank_phase != "ACC_APPROVED") {
 				MobileGui.showRoadMap();
 				return;
 			}
+
 			if (Config.BANKBOT == true || Auth.companyID == "08A29C35B3") {
 				changeMainScreen(MyAccountScreen);
 				return;
 			}
+
 			mainSM.show(RootScreen);
 		}
 		

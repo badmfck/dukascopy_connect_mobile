@@ -113,7 +113,6 @@ package com.dukascopy.connect.gui.chatInput {
 			
 			if (MobileGui.stage != null)
 			{
-				//trace("DukascopyExtension ChatInputAndroid");
 				setY(MobileGui.stage.stageHeight - getStartHeight());
 			}
 			
@@ -130,7 +129,6 @@ package com.dukascopy.connect.gui.chatInput {
 			
 			if (mediaScreenActivated)
 			{
-				//trace("ChatInput.onActivate", mediaScreenActivated);
 				TweenMax.killTweensOf(setY);
 				TweenMax.delayedCall(0.2, setY, [y]);
 			}
@@ -335,7 +333,6 @@ package com.dukascopy.connect.gui.chatInput {
 			inputH = inputPanel.updateView(stickerMenu);
 			mediaKeyboardBox.y = inputH;
 			if (doSignal) {
-				//trace("DukascopyExtension updateView", target);
 				setY(MobileGui.stage.stageHeight - getHeight());
 				MobileGui.setSoftKeyboardY(y);
 				S_INPUT_HEIGHT_CHANGED.invoke();
@@ -573,10 +570,8 @@ package com.dukascopy.connect.gui.chatInput {
 		}
 		
 		public function setY(openChatY:int):void {
-			//trace("ChatInput.setY", openChatY);
 			TweenMax.killTweensOf(setY);
 			y = openChatY;
-			//trace("DukascopyExtension setY");
 			inputPanel.setY(openChatY);
 			if (mediaScreenManager != null && mediaScreenManager.currentScreen != null)
 				mediaScreenManager.currentScreen.updateBounds();

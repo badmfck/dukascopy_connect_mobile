@@ -24,8 +24,10 @@ package com.dukascopy.connect.sys.bankManager {
 	import com.dukascopy.connect.screens.UserProfileScreen;
 	import com.dukascopy.connect.screens.dialogs.CreateTemplateDialog;
 	import com.dukascopy.connect.screens.dialogs.CreateTemplateDialog;
+	import com.dukascopy.connect.screens.dialogs.ScreenAddInvoiceDialog;
 	import com.dukascopy.connect.screens.dialogs.ScreenPayDialog;
 	import com.dukascopy.connect.screens.dialogs.bottom.ListSelectionPopup;
+	import com.dukascopy.connect.screens.dialogs.bottom.SearchListSelectionPopup;
 	import com.dukascopy.connect.screens.dialogs.bottom.ShareLinkPopup;
 	import com.dukascopy.connect.screens.dialogs.gifts.CreateGiftPopup;
 	import com.dukascopy.connect.screens.dialogs.paymentDialogs.BuyCommodityPopup;
@@ -707,9 +709,9 @@ package com.dukascopy.connect.sys.bankManager {
 					Gifts.startSendMoney(giftData);
 				} else if (data.type == "invoiceSend") {
 					if (_initData == null)
-						DialogManager.showAddInvoice(callBackAddInvoice, null, data);
+						ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, ScreenAddInvoiceDialog, {callback:callBackAddInvoice, additionalData:data}, 0.5, 0.5, 3);
 					else
-						DialogManager.showAddInvoice(callBackAddInvoice, null, { amount:_initData.amount, currency:_initData.acc, message:_initData.desc, additionalData:data } );
+						ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, ScreenAddInvoiceDialog, {amount:_initData.amount, currency:_initData.acc, message:_initData.desc, callback:callBackAddInvoice, additionalData:data}, 0.5, 0.5, 3);
 				} else if (data.type == "paymentsSendMy") {
 					PayManager.callGetSystemOptions(function():void {
 						giftData = new GiftData();
@@ -953,17 +955,17 @@ package com.dukascopy.connect.sys.bankManager {
 						ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_DIALOG, WithdrawalPopup, { giftData:giftData } );
 					} );
 				} else if (data.type == "paymentsSelectChatmate") {
-					ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_DIALOG, SelectContactExtendedScreen, { callback:onSelectChatmate, data:data } );
+					DialogManager.showDialog(SelectContactExtendedScreen, { title:Lang.selectChatmate, callback:onSelectChatmate, items:data, searchText:Lang.TEXT_SEARCH_CONTACT, data:data }, ServiceScreenManager.TYPE_SCREEN );
 				} else if (data.type == "paymentsSelectChatmate1") {
-					ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_DIALOG, SelectContactExtendedScreen, { callback:onSelectChatmate1, data:data } );
+					DialogManager.showDialog(SelectContactExtendedScreen, { title:Lang.selectChatmate, callback:onSelectChatmate1, items:data, searchText:Lang.TEXT_SEARCH_CONTACT, data:data }, ServiceScreenManager.TYPE_SCREEN );
 				} else if (data.type == "paymentsInvoiceThirdparty") {
-					DialogManager.showAddInvoice(callBackAddInvoiceThirdparty, null, null, true);
+					ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, ScreenAddInvoiceDialog, {callback:callBackAddInvoiceThirdparty, thirdparty:true}, 0.5, 0.5, 3);
 				} else if (data.type == "paymentsSelectContact") {
-					ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_DIALOG, SelectContactScreen, { callback:onSelectContact, data:data } );
+					DialogManager.showDialog(SelectContactScreen, { title:Lang.selectContacts, callback:onSelectContact, searchText:Lang.TEXT_SEARCH_CONTACT, data:data }, ServiceScreenManager.TYPE_SCREEN );
 				} else if (data.type == "paymentsSelectTemplate") {
 					DialogManager.showDialog(TransactionPresetsPopup, { transactionTemplates:transactionTemplates, data:data, deleteTemplate:deleteTemplate, callback:onSelectTemplate } );
 				} else if (data.type == "cryptoSelectContact") {
-					ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_DIALOG, SelectContactScreen, { callback:onSelectContactForCrypto, data:data } );
+					DialogManager.showDialog(SelectContactScreen, { title:Lang.selectContacts, callback:onSelectContactForCrypto, searchText:Lang.TEXT_SEARCH_CONTACT, data:data }, ServiceScreenManager.TYPE_SCREEN );
 				} else if (data.type == "walletSelectCurrency") {
 					PayManager.callGetSystemOptions(
 						function ():void {
@@ -3931,7 +3933,7 @@ package com.dukascopy.connect.sys.bankManager {
 				request += "COIN_SELL";
 			var dt:Date = new Date();
 			dt.setTime(data.time);
-			request += "|!|" + DateUtils.getDateStringByFormat(dt);
+			request += "|!|" + DateUtils.getDateStringByFormat(dt, "YYYY-MM-DD", true);
 			BankBotController.getAnswer(request);
 			return true;
 		}

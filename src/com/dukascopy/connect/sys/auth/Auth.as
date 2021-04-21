@@ -56,6 +56,7 @@ package com.dukascopy.connect.sys.auth {
 		public static var S_PHAZE_CHANGE:Signal = new Signal('Auth.S_PHAZE_CHANGE');
 		public static var S_PHAZE_DATA_CHANGE:Signal = new Signal('Auth.S_PHAZE_DATA_CHANGE');
 		public static var S_DEVICES:Signal = new Signal('Auth.S_DEVICES');
+		public static var S_AUTH_CODE:Signal = new Signal('Auth.S_AUTH_CODE');
 		
 		static private var _authKey:String = 'web';// null;
 		static private var _devID:String = null;
@@ -177,20 +178,21 @@ package com.dukascopy.connect.sys.auth {
 				if ("phase" in data == true && data.phase != null) {
 					_bank_phase = data.phase;
 					S_PHAZE_CHANGE.invoke();
-					return;
 				}
 			} else if ("name" in data == true && data.name == "ch_pp") {
 				if ("phase" in data == true && data.phase != null) {
 					_ch_phase = data.phase;
 					S_PHAZE_CHANGE.invoke();
-					return;
 				}
 			} else if ("name" in data == true && data.name == "eu_pp") {
 				if ("phase" in data == true && data.phase != null) {
 					_eu_phase = data.phase;
 					S_PHAZE_CHANGE.invoke();
-					return;
 				}
+			}
+
+			if(_bank_phase=="VIDID_READY"){
+				PHP.call_regDev();
 			}
 		}
 		
@@ -392,7 +394,8 @@ package com.dukascopy.connect.sys.auth {
 			echo("Auth", "onRequestCodeResponse", Print_r.show(r.data));
 			if ("code" in r.data && Config.isTest() == true)
 			{
-				authorize_sendCode(r.data.to, r.data.code);
+				S_AUTH_CODE.invoke(r.data.code);
+			//	authorize_sendCode(r.data.to, r.data.code);
 			}
 			S_GET_SMS_CODE_RESPOND.invoke(r.error);
 		//	DialogManager.alert(Lang.information, Lang.smsCodeSent);
@@ -779,8 +782,8 @@ package com.dukascopy.connect.sys.auth {
 			return "";
 		}
 		
-		static public function clearAuthorization(err:String = null):void {
-			if (authorizationClearing)
+		static public function clearAuthorization(err:String = null, force:Boolean = false):void {
+			if (authorizationClearing && force == false)
 				return;
 			if (err == null) {
 				S_LOGOUT.invoke();
@@ -1311,7 +1314,7 @@ package com.dukascopy.connect.sys.auth {
 		{
 			_uid = guestUID;
 		}
-		
+
 		static private function onDevices(respond:PHPRespond):void
 		{
 			if(respond.error == true)

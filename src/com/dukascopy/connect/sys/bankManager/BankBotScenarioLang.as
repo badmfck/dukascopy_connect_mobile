@@ -34,6 +34,7 @@ package com.dukascopy.connect.sys.bankManager {
 		
 		// MENU DESCRIPTIONS
 		static public var mainDesc:String = "What would you like to do?";
+		static public var cardDetailsDesc:String = "Card details";
 		static public var cardsDesc:String = "Please select card or other operation.";
 		static public var cardOpsDesc:String = "Please select card operation.";
 		static public var walletOpsDesc:String = "Please select account operation.";

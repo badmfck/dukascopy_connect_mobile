@@ -314,7 +314,6 @@ package com.dukascopy.connect.screens.innerScreens {
 		
 		private function updateUnreaded(refreshList:Boolean = true):void {
 			num++;
-			trace("dukascopy.test", "updateUnreaded");
 			var exist:Boolean = false;
 			var newMessagesChats:int = NewMessageNotifier.getUnreaded(NewMessageNotifier.type_LATEST, ChatRoomType.PRIVATE + "," + ChatRoomType.GROUP);
 			if (newMessagesChats > 0) {
