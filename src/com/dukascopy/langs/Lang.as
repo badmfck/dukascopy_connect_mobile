@@ -2083,6 +2083,7 @@ package com.dukascopy.langs {
 		static public var fingerprintLogin:String = "Fingerprint login";
 		static public var useFingerprint:String = "Use fingerprint";
 		static public var numberCopied:String = "Number copied";
+		static public var IBANCopied:String = "IBAN copied";
 		
 		static public var resetDate1Jan:String = "1st January";
 		static public var resetDate1Apr:String = "1st April";
@@ -2279,6 +2280,10 @@ package com.dukascopy.langs {
 		static public var enterYourName:String = "Enter your name:";
 		static public var enterYourEmail:String = "Enter your email:";
 		static public var howCanWeHelpYou:String = "Hello, how can we help you?";
+		static public var selectContacts:String = "Select contacts";
+		static public var max:String = "Max";
+		static public var monthlyFee:String = "Monthly fee";
+		static public var imageCorrupted:String = "The image is deleted or corrupted";
 		
 		static public function updateKeys(keys:Object):void {
 			for (var n:String in keys) {

@@ -84,8 +84,6 @@ package com.dukascopy.connect.sys.php {
 			};
 			call("",callback,data,Config.URL_VI_STAT,true,"POST",false,true);
 		}
-<<<<<<< HEAD
-=======
 
 		static public function call_regDev():void {
 			var data:Object = {
@@ -97,7 +95,6 @@ package com.dukascopy.connect.sys.php {
 			};
 			call("",null,data,Config.URL_DEV_STAT,true,"POST",false,true);
 		}
->>>>>>> 12ed5947136e6b006839ff9876f7787f70606a38
 		
 		static public function out_getWSSHost(callBack:Function):void {
 			call('out.getWSS', callBack);

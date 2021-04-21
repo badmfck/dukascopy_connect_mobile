@@ -3,10 +3,8 @@ package com.dukascopy.connect {
 	import assets.JailedIllustrationClip;
 	import com.dukascopy.connect.data.ChatSettingsModel;
 	import com.dukascopy.connect.data.PopupData;
-	import com.dukascopy.connect.data.TextFieldSettings;
 	import com.dukascopy.connect.data.screenAction.IScreenAction;
 	import com.dukascopy.connect.data.screenAction.customActions.OpenBankAccountAction;
-	import com.dukascopy.connect.gui.components.CirclePreloader;
 	import com.dukascopy.connect.gui.components.HiddenOnlineIndicator;
 	import com.dukascopy.connect.gui.components.message.ToastMessage;
 	import com.dukascopy.connect.gui.input.Input;
@@ -37,8 +35,8 @@ package com.dukascopy.connect {
 	import com.dukascopy.connect.sys.chatManager.typesManagers.ChannelsManager;
 	import com.dukascopy.connect.sys.connectionManager.NetworkManager;
 	import com.dukascopy.connect.sys.contactsManager.ContactsManager;
-import com.dukascopy.connect.sys.debug.RemoteDebugger;
-import com.dukascopy.connect.sys.dialogManager.DialogManager;
+	import com.dukascopy.connect.sys.debug.RemoteDebugger;
+	import com.dukascopy.connect.sys.dialogManager.DialogManager;
 	import com.dukascopy.connect.sys.echo.echo;
 	import com.dukascopy.connect.sys.geolocation.GeolocationManager;
 	import com.dukascopy.connect.sys.imageManager.ImageManager;
@@ -52,8 +50,8 @@ import com.dukascopy.connect.sys.dialogManager.DialogManager;
 	import com.dukascopy.connect.sys.payments.PayManager;
 	import com.dukascopy.connect.sys.payments.PayNews;
 	import com.dukascopy.connect.sys.payments.PaymentsManager;
-import com.dukascopy.connect.sys.phoneWeightManager.PhoneWeightManager;
-import com.dukascopy.connect.sys.phonebookManager.PhonebookManager;
+	import com.dukascopy.connect.sys.phoneWeightManager.PhoneWeightManager;
+	import com.dukascopy.connect.sys.phonebookManager.PhonebookManager;
 	import com.dukascopy.connect.sys.php.PHP;
 	import com.dukascopy.connect.sys.pointerManager.PointerManager;
 	import com.dukascopy.connect.sys.promoEvents.PromoEvents;
@@ -89,9 +87,7 @@ import com.dukascopy.connect.sys.phonebookManager.PhonebookManager;
 	import com.telefision.sys.signals.Signal;
 	import com.telefision.utils.Loop;
 	import connect.DukascopyExtension;
-
 	import flash.desktop.Clipboard;
-
 	import flash.desktop.ClipboardFormats;
 	import flash.desktop.NativeApplication;
 	import flash.display.FocusDirection;
@@ -101,13 +97,12 @@ import com.dukascopy.connect.sys.phonebookManager.PhonebookManager;
 	import flash.display.StageQuality;
 	import flash.events.Event;
 	import flash.events.KeyboardEvent;
-import flash.events.MouseEvent;
-import flash.events.StageOrientationEvent;
+	import flash.events.MouseEvent;
+	import flash.events.StageOrientationEvent;
 	import flash.system.System;
 	import flash.text.TextField;
 	import flash.text.TextFormat;
 	import flash.ui.Keyboard;
-	
 
 	public class MobileGui {
 		
