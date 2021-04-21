@@ -175,7 +175,6 @@ package com.dukascopy.connect.sys.payments {
 			
 			variables['_api_signature'] = Base64.encodeByteArray(hmac.compute(btSigKey, btSigBase));
 			
-<<<<<<< HEAD
 			_debugData.variables = { };
 			for (var n :String in variables) {
 				_debugData.variables[n] = variables[n];
@@ -185,20 +184,6 @@ package com.dukascopy.connect.sys.payments {
 				_debugData.arr.push(arr[j]);
 			}
 			_debugData.sigBase = signatureBase;
-=======
-			
-			_debugData.variables = { };
-			for (var n :String in variables) {
-				_debugData.variables[n] = variables[n];
-			}
-			_debugData.arr = [];
-			for (var j:int = 0; j < arr.length; j++) {
-				_debugData.arr.push(arr[j]);
-			}
-			_debugData.sigBase = signatureBase;
-			
-
->>>>>>> 12ed5947136e6b006839ff9876f7787f70606a38
 			
 			arr.length = 0;
 			arr = null;

@@ -145,30 +145,44 @@ package com.dukascopy.connect.utils {
 			return result;
 		}
 		
-		public static function getDateStringByFormat(date:Date, format:String = "YYYY-MM-DD"):String {
+		public static function getDateStringByFormat(date:Date, format:String = "YYYY-MM-DD", useGMT:Boolean = false):String {
 			if (date == null)
 				return "";
 			var result:String = format.toLowerCase();
 			if (result.indexOf("yyyy") != -1)
-				result = result.replace("yyyy", date.getFullYear());
+				result = result.replace("yyyy", (useGMT == true) ? date.getUTCFullYear() : date.getFullYear());
 			if (result.indexOf("yy") != -1)
-				result = result.replace("yy", String(date.getFullYear()).substr(2));
+				result = result.replace("yy", (useGMT == true) ? String(date.getUTCFullYear()).substr(2) : String(date.getFullYear()).substr(2));
 			if (result.indexOf("dd") != -1) {
-				if (date.getDate() < 10)
-					result = result.replace("dd", "0" + date.getDate());
-				else
-					result = result.replace("dd", date.getDate());
+				if (useGMT == true) {
+					if (date.getUTCDate() < 10)
+						result = result.replace("dd", "0" + date.getUTCDate());
+					else
+						result = result.replace("dd", date.getUTCDate());
+				} else {
+					if (date.getDate() < 10)
+						result = result.replace("dd", "0" + date.getDate());
+					else
+						result = result.replace("dd", date.getDate());
+				}
 			}
 			if (result.indexOf("d") != -1)
-				result = result.replace("d", date.getDate());
+				result = result.replace("d", (useGMT == true) ? date.getUTCDate() : date.getDate());
 			if (result.indexOf("mm") != -1) {
-				if (date.getMonth() < 9)
-					result = result.replace("mm", "0" + (date.getMonth() + 1));
-				else
-					result = result.replace("mm", (date.getMonth() + 1));
+				if (useGMT == true) {
+					if (date.getUTCMonth() < 9)
+						result = result.replace("mm", "0" + (date.getUTCMonth() + 1));
+					else
+						result = result.replace("mm", (date.getUTCMonth() + 1));
+				} else {
+					if (date.getMonth() < 9)
+						result = result.replace("mm", "0" + (date.getMonth() + 1));
+					else
+						result = result.replace("mm", (date.getMonth() + 1));
+				}
 			}
 			if (result.indexOf("m") != -1)
-				result = result.replace("m", (date.getMonth() + 1));
+				result = result.replace("m", (useGMT == true) ? (date.getUTCMonth() + 1) : (date.getMonth() + 1));
 			return result;
 		}
 		
@@ -296,14 +310,11 @@ package com.dukascopy.connect.utils {
 		}
 		
 		static public function getTimeString(date:Date, onlyDate:Boolean = false, plusYears:int = 0, byUTC:Boolean = true, delimiter:String = "-", needSeconds:Boolean = false):String {
-			var month:String = (date.getUTCMonth() + 1).toString();
-			if (month.length == 1)
-				month = "0" + month;
-			var day:String = date.getUTCDate().toString();
-			if (day.length == 1)
-				day = "0" + day;
+			if (plusYears != 0)
+				date.setFullYear(date.getFullYear() + plusYears);
+			var dateString:String = getDateStringByFormat(date, "YYYY" + delimiter + "MM" + delimiter + "DD", byUTC);
 			if (onlyDate)
-				return (date.getFullYear() + plusYears) + delimiter + month + delimiter + day;
+				return dateString;
 			var minutes:String = date.getUTCMinutes().toString();
 			if (minutes.length == 1)
 				minutes = "0" + minutes;
@@ -318,18 +329,16 @@ package com.dukascopy.connect.utils {
 				var sec:String = (date.getSeconds()).toString();
 				if (sec.length == 1)
 					sec = "0" + sec;
-				return (date.getFullYear() + plusYears) + delimiter + month + delimiter + day + " " + hours + ":" + minutes + ":" + sec;
+				return dateString + " " + hours + ":" + minutes + ":" + sec;
 			}
-			return (date.getFullYear() + plusYears) + delimiter + month + delimiter + day + " " + hours + ":" + minutes;
+			return dateString + " " + hours + ":" + minutes;
 		}
 		
-		static public function month(month:int, year:int):String 
-		{
+		static public function month(month:int, year:int):String {
 			var index:int = (month - 1);
 			var monthkey:String = "month_" + index;
 			var result:String = Lang[monthkey];
-			if ((new Date()).getFullYear() != year)
-			{
+			if ((new Date()).getFullYear() != year) {
 				result += " " + year;
 			}
 			return result;
