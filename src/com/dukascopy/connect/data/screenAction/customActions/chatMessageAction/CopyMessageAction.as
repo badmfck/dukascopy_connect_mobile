@@ -6,8 +6,6 @@ package com.dukascopy.connect.data.screenAction.customActions.chatMessageAction 
 	import com.dukascopy.connect.sys.chatManager.ChatManager;
 	import com.dukascopy.connect.sys.contactsManager.ContactsManager;
 	import com.dukascopy.connect.sys.phonebookManager.PhonebookManager;
-	import com.dukascopy.connect.type.ChatItemContextMenuItemType;
-	import com.dukascopy.connect.type.ChatMessageType;
 	import com.dukascopy.connect.type.ChatRoomType;
 	import com.dukascopy.connect.vo.ChatMessageVO;
 	import com.dukascopy.connect.vo.users.adds.PhonebookUserVO;
@@ -31,12 +29,7 @@ package com.dukascopy.connect.data.screenAction.customActions.chatMessageAction 
 		}
 		
 		public function execute():void {
-			var message:String = msgVO.text;
-			if (msgVO.typeEnum == ChatMessageType.FORWARDED && msgVO.systemMessageVO != null && msgVO.systemMessageVO.forwardVO != null)
-			{
-				message = msgVO.systemMessageVO.forwardVO.text;
-			}
-			if (message != null)
+			if (msgVO.text != null)
 			{
 				if (ChatManager.getCurrentChat() != null && msgVO.linksArray != null && msgVO.linksArray.length > 0)
 				{
@@ -45,7 +38,7 @@ package com.dukascopy.connect.data.screenAction.customActions.chatMessageAction 
 						var user:PhonebookUserVO = PhonebookManager.getUserModelByUserUID(msgVO.userUID);
 						if (user == null)
 						{
-							var result:String = message;
+							var result:String = msgVO.text;
 							for (var i:int = 0; i < msgVO.linksArray.length; i++) 
 							{
 								if (isBadLink(msgVO.linksArray[i].shortLink))
@@ -60,7 +53,7 @@ package com.dukascopy.connect.data.screenAction.customActions.chatMessageAction 
 					}
 				}
 				
-				Clipboard.generalClipboard.setData(ClipboardFormats.TEXT_FORMAT, message);
+				Clipboard.generalClipboard.setData(ClipboardFormats.TEXT_FORMAT, msgVO.text);
 			}
 		}
 		

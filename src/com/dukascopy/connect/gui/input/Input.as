@@ -141,6 +141,11 @@ package com.dukascopy.connect.gui.input {
 			backgroundColor = Style.color(Style.COLOR_BACKGROUND);
 			
 			this.type = type;
+			if (type == 'desktop') {
+				_width = 120;
+			//	padding = 8;
+				_height = 36;
+			}
 			if (inputFormatBig == null)
 				inputFormatBig = new TextFormat('Tahoma', _height * .7 - Config.MARGIN * 2);
 			if (infoBoxFormatBig == null)
@@ -401,7 +406,6 @@ package com.dukascopy.connect.gui.input {
 			textField.x = padding + iboxPadd;
 			textField.width = _width - padding * 2-iboxPadd;
 			textField.y = Math.round((_height - textHeight) * .5);
-			
 			_view.addChild(textField);
 			
 			if (line != null)

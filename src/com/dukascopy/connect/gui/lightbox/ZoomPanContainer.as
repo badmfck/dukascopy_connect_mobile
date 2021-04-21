@@ -139,7 +139,6 @@ package com.dukascopy.connect.gui.lightbox
 		private var rotationData:Object;
 		private var pendingAnimationData:Object;
 		private var rotatioinAnimationPlaying:Boolean;
-		private var inAnimation:Boolean;
 		public var touchStartCallback:Function;
 		
 		public var allowHideOnSwipe:Boolean = true;
@@ -1250,7 +1249,6 @@ package com.dukascopy.connect.gui.lightbox
 				{
 					TweenMax.killTweensOf(rotationData);
 				}
-				inAnimation = true;
 				TweenMax.to(this, time, {scaleX: destScale, scaleY: destScale, x: destX, y: destY, alpha: 1, distanceOpacity: 1, ease: Expo.easeOut, onComplete:boundsCheckComplete});
 				return;
 			}
@@ -1371,7 +1369,7 @@ package com.dukascopy.connect.gui.lightbox
 		}
 		
 		/** ADD BITMAP WITH ANIMATION **/
-		public function setBitmapDataWithTransition(bmd:BitmapData, showDirection:int = -1, animate:Boolean = false):void
+		public function setBitmapDataWithTransition(bmd:BitmapData, showDirection:int = -1):void
 		{
 
 			if (isHidden)
@@ -1405,27 +1403,19 @@ package com.dukascopy.connect.gui.lightbox
 				_maScale = Math.sqrt(b);
 				_maxScale = Math.sqrt(b);	// auto max scale detect 
 				
-				var animationTime:Number = 0.4;
-				if (animate == true)
+				if (showDirection == -1)
 				{
-					if (showDirection == -1)
-					{
-						// from left 
-						this.x = -originalWidth * initScale + leftOffset;
-					}
-					else
-					{
-						// from left 
-						this.x = _viewWidth + leftOffset;
-					}
+					// from left 
+					this.x = -originalWidth * initScale + leftOffset;
 				}
 				else
 				{
-					animationTime = 0;
+					// from left 
+					this.x = _viewWidth + leftOffset;
 				}
-				
-				checkBounds(animationTime);
+				checkBounds(.4);
 			}
+
 		}
 		
 		/*** SET SIZE **/
@@ -1688,7 +1678,7 @@ package com.dukascopy.connect.gui.lightbox
 		
 		private function boundsCheckComplete():void
 		{
-			inAnimation = false;
+
 			if (pendingAnimationData != null)
 			{
 				animateImageRotation(

@@ -69,10 +69,10 @@ package com.dukascopy.connect.sys.serviceScreenManager {
 			S_SHOW.invoke(GiftsTutorialScreen, null);
 		}
 		
-		static public function showScreen(screenType:String, screenClass:Class, screenData:Object = null, transitionTime:Number = 0.5, transparency:Number = 0.5, direction:int = 0):void {
+		static public function showScreen(screenType:String, screenClass:Class, screenData:Object = null, transitionTime:Number = 0.5, transparency:Number = 0.5):void {
 			_hasOpenedDialog = true;
 			currentScreenType = screenType;
-			S_SHOW.invoke(screenClass, screenData, transitionTime, transparency, direction);
+			S_SHOW.invoke(screenClass, screenData, transitionTime, transparency);
 		}
 		
 		static public function onBack():void {

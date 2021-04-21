@@ -313,13 +313,6 @@ package com.dukascopy.connect.screens.base {
 				newScreen.alpha = 1;
 				tweenObj.na = 1;
 			}
-			
-			if (_direction == 3)
-			{
-				newScreen.x = _width;
-				tweenObj.nx = _width;
-			}
-			
 			var transitionFrames:Number = (_transitionTime == 0) ? 0 : _transitionTime * MobileGui.stage.frameRate;
 			var useFramesInTransition:Boolean = _transitionTime == 0?false:true;
 			

@@ -4,16 +4,17 @@ package com.dukascopy.connect.gui.lightbox {
 		import assets.PrewIcon;
 		import asssets.EmptyImage;
 		import com.dukascopy.connect.Config;
-		import com.dukascopy.connect.MobileGui;
 		import com.dukascopy.connect.data.ImageContextMenuTexts;
-		import com.dukascopy.connect.data.TextFieldSettings;
-		import com.dukascopy.connect.data.screenAction.IScreenAction;
 		import com.dukascopy.connect.data.screenAction.customActions.OpenFxProfileAction;
+		import com.dukascopy.connect.data.screenAction.customActions.OpenImageAction;
+		import com.dukascopy.connect.data.screenAction.customActions.SaveImageAction;
+		import com.dukascopy.connect.data.screenAction.IScreenAction;
+		import com.dukascopy.connect.data.TextFieldSettings;
 		import com.dukascopy.connect.data.screenAction.customActions.SaveOpenImageAction;
-		import com.dukascopy.connect.gui.components.CirclePreloader;
 		import com.dukascopy.connect.gui.list.renderers.ListLinkWithIcon;
 		import com.dukascopy.connect.gui.menuVideo.BitmapButton;
 		import com.dukascopy.connect.gui.preloader.Preloader;
+		import com.dukascopy.connect.MobileGui;
 		import com.dukascopy.connect.gui.shapes.Box;
 		import com.dukascopy.connect.screens.dialogs.ScreenLinksDialog;
 		import com.dukascopy.connect.sys.chatManager.ChatManager;
@@ -27,13 +28,14 @@ package com.dukascopy.connect.gui.lightbox {
 		import com.dukascopy.connect.sys.imageManager.ImageManager;
 		import com.dukascopy.connect.sys.nativeExtensionController.NativeExtensionController;
 		import com.dukascopy.connect.sys.pointerManager.PointerManager;
+		import com.dukascopy.connect.type.ImageContextMenuType;
 		import com.dukascopy.connect.utils.FilesSaveUtility;
 		import com.dukascopy.connect.utils.ImageCrypterOld;
 		import com.dukascopy.connect.utils.TextUtils;
 		import com.dukascopy.langs.Lang;
+		import com.greensock.easing.Expo;
 		import com.greensock.TweenLite;
 		import com.greensock.TweenMax;
-		import com.greensock.easing.Expo;
 		import com.telefision.sys.signals.Signal;
 		import flash.display.Bitmap;
 		import flash.display.BitmapData;
@@ -62,7 +64,6 @@ package com.dukascopy.connect.gui.lightbox {
 		
 		public static var S_LIGHTBOX_CLOSED:Signal = new Signal("LightBox.S_LIGHTBOX_CLOSED");
 		public static var S_LIGHTBOX_OPENED:Signal = new Signal("LightBox.S_LIGHTBOX_OPENED");
-		public static var S_REQUEST_PREW_CONTENT:Signal = new Signal("LightBox.S_REQUEST_PREW_CONTENT");
 		
 		//pool
 		private static var freeVOStock:Vector.<LightBoxItemVO> = new Vector.<LightBoxItemVO>;
@@ -86,7 +87,7 @@ package com.dukascopy.connect.gui.lightbox {
 		private static var animationLayer:Sprite = new Sprite();	
 		private static var viewHolder:Sprite = new Sprite();
 		private static var background:Box;
-		private static var preloader:CirclePreloader;
+		private static var preloader:Preloader;
 		private static var lightBoxMenu:LightboxMenu;		
 		private static var zoomPanCont:ZoomPanContainer;
 		
@@ -591,9 +592,6 @@ package com.dukascopy.connect.gui.lightbox {
 		/*** ON  CLOSE ***/	
 		private static function onClose():void
 		{
-			prewButtonAllowed = false;
-			prewCallPanding = false;
-			
 			cancelCurrentLoading();
 			echo("Lightbox", "onClose", "START");
 			disposeVOs();
@@ -669,8 +667,7 @@ package com.dukascopy.connect.gui.lightbox {
 		}	
 		
 		/*** NEXT PAGE **/
-		private static  function displayNext():void {
-			prewCallPanding = false;
+		private static  function displayNext():void {	
 			if (hasNextImage()) {
 				//trace("NEXT PAGE");
 				zoomPanCont.resetTouchPoints();
@@ -693,27 +690,9 @@ package com.dukascopy.connect.gui.lightbox {
 				hideWithAnimationRight();
 				currentIndex--;
 			}else {
-				if (allowPrewButton && !prewCallPanding)
-				{
-					prewCallPanding = true;
-					attachPreloader();
-					S_REQUEST_PREW_CONTENT.invoke();
-				}
-				else
-				{
-					zoomPanCont.forceCheckBounds();
-				}
+				zoomPanCont.forceCheckBounds();
 			}
 			echo("Lightbox", "displayPrev", "END");
-		}
-		
-		static private function canPrew():Boolean 
-		{
-			if (prewButtonAllowed)
-			{
-				return true;
-			}
-			return hasPrevImage();
 		}
 		
 		/** HIDE TO RIGHT SIDE **/
@@ -805,7 +784,12 @@ package com.dukascopy.connect.gui.lightbox {
 		}
 		
 		private static function initPreloaderIfRequired():void {
-			
+			var loaderSize:int = Config.FINGER_SIZE * .8;
+			if (loaderSize%2 == 1)
+				loaderSize ++;
+			preloader ||= new Preloader(loaderSize, CircleLoaderShape);
+			viewHolder.addChild(preloader);
+			preloader.hide(false, null, 0);
 		}
 		
 		private static function addPreloader():void {
@@ -815,18 +799,17 @@ package com.dukascopy.connect.gui.lightbox {
 		}
 		
 		private static function showPreloader():void {
-			attachPreloader();
+			checkPreloader();
 			showLoadDescription(Lang.loading);
 		}
 		
-		static private function attachPreloader():void 
-		{
-			if (preloader == null)
-			{
-				preloader = new CirclePreloader();
-				preloader.x = int(viewWidth  * .5);
-				preloader.y = int(viewHeight * .5);
-				viewHolder.addChild(preloader);
+		static private function checkPreloader():void {
+			TweenMax.killDelayedCallsTo(showPreloader);
+			initPreloaderIfRequired();
+			preloader.x = viewWidth  * .5;
+			preloader.y = viewHeight * .5;
+			if (preloader.visible == false)	{
+				preloader.show();
 			}
 		}
 		
@@ -834,14 +817,9 @@ package com.dukascopy.connect.gui.lightbox {
 			echo("Lightbox", "removePreloader", "");
 			TweenMax.killDelayedCallsTo(showPreloader);
 			hideLoadDescription();
-			if (preloader != null)
-			{
-				if (viewHolder != null && viewHolder.contains(preloader))
-				{
-					viewHolder.removeChild(preloader);
-				}
-				preloader.dispose();
-				preloader = null;
+			if (preloader) {
+				viewHolder.addChild(preloader);
+				preloader.hide();
 			}
 			imageLoaded = true;
 		}
@@ -895,41 +873,6 @@ package com.dukascopy.connect.gui.lightbox {
 			newVO.cancelCallback = cancelCallback;
 			hash[url] = newVO;
 			addedVOStock[addedVOStock.length] = newVO;
-		}
-		
-		public static function unshift(url:String, crypt:Boolean = false, name:String = "", 
-									okCallback:Function = null, 
-									cancelCallback:Function = null, 
-									smallPreview:String = null, 
-									imageActions:Vector.<IScreenAction> = null):void {
-			createView();
-			var cryptKey:String;
-			if (url.indexOf(ImageCrypterOld.imageKeyFlag) != -1)
-			{
-				var pathElements:Array = url.split(ImageCrypterOld.imageKeyFlag);
-			//	url = pathElements[0];
-				cryptKey = (pathElements[1] as String);
-			}
-			else
-			{
-				
-			}
-			
-			if (exists(url)) {
-				//trace("Image :" + url +" alrady added to stock");
-				return;
-			}
-			var newVO:LightBoxItemVO = getVO();
-			newVO.URL =  url;
-			newVO.cryptKey = cryptKey;
-			newVO.previewURL = smallPreview;
-			newVO.imageActions = imageActions;
-			newVO.crypt = crypt;
-			newVO.name = name;
-			newVO.okCallback = okCallback;
-			newVO.cancelCallback = cancelCallback;
-			hash[url] = newVO;
-			addedVOStock.unshift(newVO);
 		}
 		
 		public static function showCommunityLink(userFxName:String):void
@@ -1309,7 +1252,7 @@ package com.dukascopy.connect.gui.lightbox {
 			return addedVOStock.indexOf(vo);
 		}
 		
-		public static function addBitmap(bmd:ImageBitmapData, animate:Boolean = true):void {
+		public static function addBitmap(bmd:ImageBitmapData):void {
 			echo("Lightbox", "addBitmap", "START");
 			var shouldDispose:Boolean = false;
 			if (previewImageDisplayed)
@@ -1317,7 +1260,7 @@ package com.dukascopy.connect.gui.lightbox {
 				lastPreview = new Bitmap();
 				var previewBD:ImageBitmapData = new ImageBitmapData("Lightbox.lastPreviewBD", viewWidth, viewHeight);
 				previewBD.draw(zoomPanCont, zoomPanCont.transform.matrix);
-			//	lastPreview.bitmapData = previewBD;
+				lastPreview.bitmapData = previewBD;
 				viewHolder.addChild(lastPreview);
 				TweenMax.to(lastPreview, 0.6, {alpha:0, onComplete:removePreviewImage});
 				
@@ -1340,7 +1283,7 @@ package com.dukascopy.connect.gui.lightbox {
 			} else {
 				imageLoaded = true;
 				zoomPanCont.show(listenForScreenRotation);
-				zoomPanCont.setBitmapDataWithTransition(bmd, _currentShowDirection, animate);
+				zoomPanCont.setBitmapDataWithTransition(bmd, _currentShowDirection);
 			}
 			inTransition = false;
 			zoomPanCont.activate();
@@ -1369,13 +1312,12 @@ package com.dukascopy.connect.gui.lightbox {
 			echo("Lightbox", "removePreviewImage", "END");
 		}
 		
-		private static function onCurrentIndexChange():void {
+		private static  function onCurrentIndexChange():void {
 			
 			cancelCurrentLoading();
 			echo("Lightbox", "onCurrentIndexChange", "START");
 			inTransition = true;
 			currentLightBoxVO = addedVOStock[_currentIndex];
-			currentLightBoxVO.previewShown = false;
 			setImagesCounter();
 			header.hideSettingsButton();
 			
@@ -1470,7 +1412,6 @@ package com.dukascopy.connect.gui.lightbox {
 				var previewImage:ImageBitmapData = ImageManager.getImageFromCache(realUrl);
 				if (previewImage)
 				{
-					currentLightBoxVO.previewShown = true;
 					var result:ImageBitmapData = new ImageBitmapData("LightBox.showPreview", previewImage.width, previewImage.height);
 					result.copyPixels(previewImage, new Rectangle(0,0,previewImage.width,previewImage.height), new Point(0,0));
 					var blur:BlurFilter = new BlurFilter();
@@ -1514,18 +1455,8 @@ package com.dukascopy.connect.gui.lightbox {
 				loadingDescription.bitmapData = null;
 			}
 			loadingDescription.bitmapData = TextUtils.createTextFieldData(text, viewWidth - Config.DOUBLE_MARGIN * 2, 10, false, TextFormatAlign.LEFT, TextFieldAutoSize.LEFT, Config.FINGER_SIZE * .35, false, 0xFFFFFF, 0x000000, true);
-			
-			if (preloader != null)
-			{
-				loadingDescription.x = preloader.x - loadingDescription.width * .5;
-				loadingDescription.y = preloader.y + preloader.height*2 + Config.DIALOG_MARGIN;
-			}
-			else
-			{
-				loadingDescription.x = viewWidth * .5 - loadingDescription.width * .5;
-				loadingDescription.y = viewHeight * .75;
-			}
-			
+			loadingDescription.x = preloader.x - loadingDescription.width * .5;
+			loadingDescription.y = preloader.y + preloader.originalHeight;
 			echo("Lightbox", "showLoadDescription", "END");
 		}
 		
@@ -1548,8 +1479,7 @@ package com.dukascopy.connect.gui.lightbox {
 				{
 					if (bmd == null) {
 						mainImageLoadError = true;
-						displayError();
-					//	retryLoadImage();
+						retryLoadImage();
 					}
 					else {
 						removePreloader();
@@ -1558,11 +1488,11 @@ package com.dukascopy.connect.gui.lightbox {
 							if (ChatManager.getCurrentChat() != null) {
 								var key:Array = ChatManager.getCurrentChat().imageKey;
 								if (key.length > 100)
-									addBitmap(Crypter.decryptImage(bmd, key), !currentLightBoxVO.previewShown);
+									addBitmap(Crypter.decryptImage(bmd, key));
 							}
 						}
 						else {
-							addBitmap(bmd, !currentLightBoxVO.previewShown);
+							addBitmap(bmd);
 						}
 					}
 				}
@@ -1576,12 +1506,6 @@ package com.dukascopy.connect.gui.lightbox {
 				//trace("LightBox loaded URL is different from Current ");
 			}
 			echo("Lightbox", "onImageLoadComplete", "END");
-		}
-		
-		static private function displayError():void 
-		{
-			TweenMax.killDelayedCallsTo(showPreloader);
-			showLoadDescription(Lang.imageCorrupted);
 		}
 		
 		static private function retryLoadImage():void {
@@ -1627,7 +1551,7 @@ package com.dukascopy.connect.gui.lightbox {
 			
 			if (prewPhotoButton != null)
 			{
-				if (canPrew())
+				if (hasPrevImage())
 				{
 					prewPhotoButton.activate();
 					prewPhotoButton.show();
@@ -1641,8 +1565,6 @@ package com.dukascopy.connect.gui.lightbox {
 		}
 		
 		private static var isDefaultButtonsEnabled:Boolean = true;
-		static private var prewButtonAllowed:Boolean;
-		static private var prewCallPanding:Boolean;
 		
 		private static function showDefaultButtons():void
 		{
@@ -1727,9 +1649,7 @@ package com.dukascopy.connect.gui.lightbox {
 		
 		private static function get totalLength():int { return addedVOStock.length; }
 		private static function hasNextImage():Boolean { return totalLength>1&& _currentIndex != totalLength - 1; }
-		private static function hasPrevImage():Boolean {
-			return totalLength > 1 && _currentIndex != 0; 
-		}
+		private static function hasPrevImage():Boolean { return totalLength > 1 && _currentIndex != 0; }
 		public static  function get currentIndex():int { return _currentIndex; }
 		public static function set currentIndex(value:int):void {
 			if (value < 0)
@@ -1923,51 +1843,7 @@ package com.dukascopy.connect.gui.lightbox {
 			if (nextPhotoButton != null)
 			{
 				nextPhotoButton.activate();
-			}
 		}
-		
-		static public function allowPrewButton():void 
-		{
-			prewButtonAllowed = true;
-		}
-		
-		static public function checkPendingCalls():void 
-		{
-			removePreloader();
-			if (currentLightBoxVO != null)
-			{
-				_currentIndex = getIndexByURL(currentLightBoxVO.URL);
-			}
-			
-			setImagesCounter();
-			if (prewCallPanding)
-			{
-				prewCallPanding = false;
-				displayPrev();
-			}
-		}
-		
-		static public function disablePrewButton():void 
-		{
-			prewButtonAllowed = false;
-			prewCallPanding = false;
-			removePreloader();
-			
-			if (prewPhotoButton != null)
-			{
-				if (hasPrevImage() == false)
-				{
-					prewPhotoButton.deactivate();
-					prewPhotoButton.hide();
-				}
-			}
-		}
-		
-		static public function clearPending():void 
-		{
-			removePreloader();
-			prewCallPanding = false;
-			disablePrewButton();
 		}
 		
 		static private function setOrientation():void {

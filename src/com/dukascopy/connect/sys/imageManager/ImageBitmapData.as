@@ -188,6 +188,7 @@ package com.dukascopy.connect.sys.imageManager
 			var l:int = _debugArrayStock.length;
 			for (n; n < l; n++){
 				var bmd:ImageBitmapData = _debugArrayStock[n];
+				trace("["+n+"] ImageBitmapData: "+bmd.name+", size: "+bmd.width+'x'+bmd.height+', '+((bmd._isDisposed)?"disposed":"active")+', size: '+bmd.getPixels(bmd.rect).length, ", usesCount: " + bmd.useCount, ", disposed: " + bmd._isDisposed);
 			}
 		}
 		

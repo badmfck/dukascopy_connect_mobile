@@ -256,7 +256,7 @@ package com.dukascopy.connect.gui.button
 					balance = data.BALANCE;
 					if ("RESERVED" in data)
 					{
-						balance = (parseFloat(data.BALANCE) - parseFloat(data.RESERVED)).toFixed(4);
+						balance = (parseFloat(data.BALANCE) - parseFloat(data.RESERVED)).toPrecision(4);
 					}
 					if (balance != null && balance.indexOf(".") == -1)
 					{

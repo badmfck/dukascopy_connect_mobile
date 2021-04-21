@@ -255,6 +255,7 @@ package com.dukascopy.connect.sys.chatManager {
 		
 		public function getLocalChatFromMessage(messageData:Object):ChatVO 
 		{
+			trace("dukascopy.test", "getLocalChatFromMessage");
 			var chat:ChatVO;
 			if (localChats != null)
 			{

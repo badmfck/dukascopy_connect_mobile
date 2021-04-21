@@ -155,6 +155,7 @@ package com.dukascopy.connect.data.screenAction.customActions {
 		private function extensionAndroidStatusHandler(e:StatusEvent):void
 		{
 			if (e.code == "webViewClose") {
+				trace("dukascopy.test", "GiftByCardAction.", e.level);
 				if (e.level != null && e.level.indexOf("status=success") != -1) {
 					getSuccessSignal().invoke(this);
 				}

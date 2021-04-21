@@ -236,12 +236,12 @@ package com.dukascopy.connect.sys.bankManager {
 					}, {
 						text:"lang.buttonCancel",
 						action:"system:cancel"
-					} 
+					}
 				]
 			},
 			
 			cardDetails: {
-				desc:"lang.cardDetailsDesc",
+				desc:"",
 				item: {
 					type:"showCardDetails",
 					selection:"@@1"
@@ -1054,9 +1054,6 @@ package com.dukascopy.connect.sys.bankManager {
 						type:"walletStatement",
 						action:"nav:walletStatementAsFileConfirmed",
 						value:"@@1"
-					}, {
-						text:"lang.menuIBANCopy",
-						action:"app:copyIBAN"
 					}
 				],
 				buttons: [
@@ -1292,7 +1289,6 @@ package com.dukascopy.connect.sys.bankManager {
 			
 			transactionConfirm: {
 				desc:"lang.confirmTransaction",
-				back: false,
 				buttons: [
 					{
 						text:"lang.buttonBack",
@@ -1302,7 +1298,7 @@ package com.dukascopy.connect.sys.bankManager {
 						action:"system:cancel"
 					}, {
 						text:"lang.buttonConfirm",
-						action:"nav:transactionConfirmedAdd"
+						action:"nav:transactionConfirmed"
 					}
 				]
 			},
@@ -1332,7 +1328,7 @@ package com.dukascopy.connect.sys.bankManager {
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////
 			
 			repeatInvestmentPurchase: {
-				desc:"lang.whatWant",
+				desc:"",
 				menuLayout:"vertical",
 				menu: [
 					{
@@ -1364,7 +1360,7 @@ package com.dukascopy.connect.sys.bankManager {
 			},
 			
 			repeatInvestmentSale: {
-				desc:"lang.whatWant",
+				desc:"",
 				menuLayout:"vertical",
 				menu: [
 					{
@@ -1396,7 +1392,7 @@ package com.dukascopy.connect.sys.bankManager {
 			},
 			
 			repeatExchange: {
-				desc:"lang.whatWant",
+				desc:"",
 				menuLayout:"vertical",
 				menu: [
 					{
@@ -1424,7 +1420,7 @@ package com.dukascopy.connect.sys.bankManager {
 			},
 			
 			repeatCardDeposit: {
-				desc:"lang.whatWant",
+				desc:"",
 				menuLayout:"vertical",
 				menu: [
 					{
@@ -1452,7 +1448,7 @@ package com.dukascopy.connect.sys.bankManager {
 			},
 			
 			repeatCardWithdrawal: {
-				desc:"lang.whatWant",
+				desc:"",
 				menuLayout:"vertical",
 				menu: [
 					{
@@ -1479,7 +1475,7 @@ package com.dukascopy.connect.sys.bankManager {
 			},
 			
 			repeatSendMoneyPhone: {
-				desc:"lang.whatWant",
+				desc:"",
 				menuLayout:"vertical",
 				menu: [
 					{
@@ -1507,7 +1503,7 @@ package com.dukascopy.connect.sys.bankManager {
 			},
 			
 			repeatSendMoneyPhoneCode: {
-				desc:"lang.whatWant",
+				desc:"",
 				menuLayout:"vertical",
 				menu: [
 					{
@@ -3620,19 +3616,6 @@ package com.dukascopy.connect.sys.bankManager {
 					}, {
 						text:"lang.buttonNo",
 						action:"app:back"
-					}
-				]
-			},
-			
-			transactionConfirmedAdd: {
-				desc:"lang.confirmedTransactionAdd",
-				buttons: [
-					{
-						text:"lang.buttonConfirm",
-						action:"nav:transactionConfirmed"
-					}, {
-						text:"lang.buttonBack",
-						action:"cmd:back"
 					}
 				]
 			},

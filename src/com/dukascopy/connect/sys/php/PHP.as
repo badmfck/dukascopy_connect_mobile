@@ -40,7 +40,7 @@ package com.dukascopy.connect.sys.php {
 
 	public class PHP {
 		
-		static public var methodsWithoutKey:Array = ["config.get", "auth.serverTime", "geo.locate", "auth.requestCode", "auth.checkCode", "sms.verificationCall", "company.startChat", "auth.guest", "chat.hGetMessages", "files.addImage"];
+		static public var methodsWithoutKey:Array = ["config.get", "auth.serverTime", "geo.locate", "auth.requestCode", "auth.checkCode", "sms.verificationCall", "company.startChat", "auth.guest", "chat.hGetMessages"];
 		
 		static public var core:String = null;
 		static public const S_ERROR:Signal = new Signal("PHP.S_ERROR");
@@ -84,6 +84,8 @@ package com.dukascopy.connect.sys.php {
 			};
 			call("",callback,data,Config.URL_VI_STAT,true,"POST",false,true);
 		}
+<<<<<<< HEAD
+=======
 
 		static public function call_regDev():void {
 			var data:Object = {
@@ -95,6 +97,7 @@ package com.dukascopy.connect.sys.php {
 			};
 			call("",null,data,Config.URL_DEV_STAT,true,"POST",false,true);
 		}
+>>>>>>> 12ed5947136e6b006839ff9876f7787f70606a38
 		
 		static public function out_getWSSHost(callBack:Function):void {
 			call('out.getWSS', callBack);
@@ -189,6 +192,7 @@ package com.dukascopy.connect.sys.php {
 				obj.limit = (firstTime == true) ? ChatManager.getFirstMsgsCount() : 50;
 			if (chatType)
 				obj.tp = chatType;
+			trace(UI.tracedObj(obj));
 			call('chat.hGetMessages', callBack, obj, null, false, "POST", true, false, { firstTime:firstTime } );
 		}
 		
@@ -1198,21 +1202,6 @@ package com.dukascopy.connect.sys.php {
 				data.showRecipientName = false;
 			}
 			call('Pay.PayThirdParty', callBack, data );
-		}
-		
-		static public function filesAddImage(chatUID:String, image:String, thumb:String, title:String, callBack:Function):void 
-		{
-			var data:Object = new Object();
-			data.key = "web";
-			data.chatUID = chatUID;
-			data.image = image;
-			data.thumb = thumb;
-			data.title = title;
-			data.b64 = true;
-			data.method = "files.addImage";
-			data.crypted = false;
-			
-			call('files.addImage', callBack, data, Config.URL_PHP_CORE_SERVER_FILE);
 		}
 		
 		static private function call(method:String, callBack:Function = null, data:Object = null,  url:String = null, rawRespond:Boolean = false, requestMethod:String = 'POST', crypt:Boolean = true, noAuthKey:Boolean = false, additionalData:Object = null):void {

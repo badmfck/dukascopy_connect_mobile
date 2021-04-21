@@ -265,6 +265,7 @@ package com.dukascopy.connect.vo {
 					echo("ChatMessageVO", "decrypt", "JSON ERROR (SystemMessage)", true);
 				}
 				if (_additionalData != null){
+				//	trace("MsgVO "+UI.tracedObj(_additionalData));
 					_systemMessageVO = new ChatSystemMsgVO(_additionalData, chatUID, id);
 				}
 			}
