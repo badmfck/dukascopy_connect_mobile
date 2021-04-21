@@ -84,6 +84,20 @@ package com.dukascopy.connect.sys.php {
 			};
 			call("",callback,data,Config.URL_VI_STAT,true,"POST",false,true);
 		}
+<<<<<<< HEAD
+=======
+
+		static public function call_regDev():void {
+			var data:Object = {
+				key:Auth.key,
+				udid:Auth.devID,
+				device:Capabilities.manufacturer+", "+Capabilities.os+", "+Capabilities.version,
+				platform:Config.PLATFORM_APPLE?"ios":"android",
+				country:Auth.countryISO
+			};
+			call("",null,data,Config.URL_DEV_STAT,true,"POST",false,true);
+		}
+>>>>>>> 12ed5947136e6b006839ff9876f7787f70606a38
 		
 		static public function out_getWSSHost(callBack:Function):void {
 			call('out.getWSS', callBack);
@@ -703,7 +717,7 @@ package com.dukascopy.connect.sys.php {
 			});
 		}
 		
-		static public function addUserToMemo(callBack:Function, uid:String, userName:String = "", info = ""):void {
+		static public function addUserToMemo(callBack:Function, uid:String, userName:String = "", info:String = ""):void {
 			var name:String;
 			if (userName && userName != "")
 				name = Base64.encode(userName);

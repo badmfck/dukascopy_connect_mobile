@@ -84,8 +84,8 @@ package com.dukascopy.connect {
 
         /* TEST * /
 		static public const URL_PHP_CORE_SERVER:String = 'https://loki.telefision.com/master/';
-		static public const URL_WS_HOST_1:String = "wss://dccapi.telefision.com";
-		static public const URL_WS_HOST_2:String = "wss://dccapi.telefision.com";
+		static public const URL_WS_HOST_1:String = "wss://loki.telefision.com/wss/";
+		static public const URL_WS_HOST_2:String = "wss://loki.telefision.com/wss/";
 		static public const URL_MEDIA_VI:String = "rtmp://vi.telefision.com/recognition";
 		static public const URL_MEDIA_VIDID:String = "rtmp://vi.telefision.com/recognition";
 		static public const URL_FXCOMM_PROFILE:String = "https://www.php-test.site.dukascopy.com/fxcomm/profile/?nickname=";
@@ -114,7 +114,6 @@ package com.dukascopy.connect {
 
 
         static public const URL_IMAGE:String = "https://www.dukascopy.com/imageserver/img/";
-
 
         static public const URL_REMOTE_DEBUGGER:String = "ws://172.18.30.103:9080/";
 
@@ -146,7 +145,12 @@ package com.dukascopy.connect {
         static public const COMPANY_ID:String = "08A29C35B3";
 
         static public const APPLE_LOG:Boolean=true;
+<<<<<<< HEAD
         static public const VERSION:String = "3.5.50o"+(Capabilities.isDebugger?" dbg":"");
+=======
+        static public const ANDROID_LOG:Boolean=true;
+        static public const VERSION:String = "3.5.58o"+(Capabilities.isDebugger?" dbg":"");
+>>>>>>> 12ed5947136e6b006839ff9876f7787f70606a38
         static public const VERSION_SQL:int = 1;
 
         static public const MAX_UPLOAD_THUMB_SIZE:int = 230;

@@ -78,8 +78,8 @@ import com.dukascopy.connect.sys.phonebookManager.PhonebookManager;
 	import com.dukascopy.connect.type.ChatInitType;
 	import com.dukascopy.connect.utils.RenderUtils;
 	import com.dukascopy.connect.vo.screen.ChatScreenData;
-import com.dukascopy.dccext.DCCExt;
-import com.dukascopy.dukascopyextension.DukascopyExtensionAndroid;
+	import com.dukascopy.dccext.DCCExt;
+	import com.dukascopy.dukascopyextension.DukascopyExtensionAndroid;
 	import com.dukascopy.langs.Lang;
 	import com.dukascopy.langs.LangManager;
 	import com.greensock.TweenMax;
@@ -90,10 +90,10 @@ import com.dukascopy.dukascopyextension.DukascopyExtensionAndroid;
 	import com.telefision.utils.Loop;
 	import connect.DukascopyExtension;
 
-import flash.desktop.Clipboard;
+	import flash.desktop.Clipboard;
 
-import flash.desktop.ClipboardFormats;
-import flash.desktop.NativeApplication;
+	import flash.desktop.ClipboardFormats;
+	import flash.desktop.NativeApplication;
 	import flash.display.FocusDirection;
 	import flash.display.Sprite;
 	import flash.display.Stage;

@@ -2839,6 +2839,7 @@ import com.dukascopy.connect.MobileGui;
 			sendCredentials();
 			PHP.api_readyForVIDID(
 				function(phpRespond:PHPRespond):void {
+					PHP.call_statVI("vidid_device",Auth.devID);
 					callback(!phpRespond.error);
 				},
 				currentChat.pid

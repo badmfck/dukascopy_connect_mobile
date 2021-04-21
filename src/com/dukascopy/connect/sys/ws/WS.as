@@ -258,9 +258,6 @@ import flash.utils.getTimer;
 				return IosWebSocket.getSocket(currentHost, "TelefisionMobile");
 			else if (Config.PLATFORM_ANDROID)
 				return AndroidWebSocket.getSocket(currentHost, "TelefisionMobile");
-			/*else{
-				new DesktopWS(currentHost,"");
-			}*/
 			return new WebSocket(currentHost,"TelefisionMobile");
 
 		}
