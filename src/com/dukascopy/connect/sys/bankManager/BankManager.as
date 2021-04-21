@@ -196,6 +196,8 @@ package com.dukascopy.connect.sys.bankManager {
 		
 		static private var cardIssueAvailable:Boolean;
 		
+		static private var needToCash:Boolean;
+		
 		public function BankManager() { }
 		
 		static public function init():void {
@@ -298,6 +300,7 @@ package com.dukascopy.connect.sys.bankManager {
 			S_OFFER_CREATED.remove(updateMarketplace);
 			_initData = null;
 			
+			needToCash = false;
 			historyAcc = null;
 			historyAccIBAN = null;
 			historyAccCurrency = null;
@@ -2691,21 +2694,24 @@ package com.dukascopy.connect.sys.bankManager {
 			tsTo:int = 0,
 			obligatory:Boolean = false):void {
 				init();
+				needToCash = true
 				if (needToGetHistoryUser != null) {
+					needToCash = false;
 					BankBotController.getAnswer("bot:bankbot payments:history:" + page + "|!|" + count + "|!|USER" + needToGetHistoryUser);
+					needToGetHistoryUser = null;
 					return;
 				}
 				if (flag == true)
 					historyAccount = historyAcc;
 				if (flag == false && historyAcc == historyAccount) {
 					S_HISTORY_TS_ERROR.invoke();
+					needToCash = false;
 					return;
 				}
 				if (historyAccount == null || historyAccount == "") {
 					historyAccCurrency = null;
 					historyAccount = "all";
 				}
-				needToGetHistoryUser = null;
 				isCardHistory = false;
 				isInvestmentHistory = false;
 				if (historyAccount != "all")
@@ -2724,17 +2730,25 @@ package com.dukascopy.connect.sys.bankManager {
 				if (historyAcc != "all")
 					request += historyAcc;
 				request += "|!|";
-				if (type != null)
+				if (type != null) {
 					request += type;
+					needToCash = false;
+				}
 				request += "|!|";
-				if (status != null)
+				if (status != null) {
 					request += status;
+					needToCash = false;
+				}
 				request += "|!|";
-				if (tsFrom != 0)
+				if (tsFrom != 0) {
 					request += tsFrom;
+					needToCash = false;
+				}
 				request += "|!|";
-				if (tsTo != 0)
+				if (tsTo != 0) {
 					request += tsTo;
+					needToCash = false;
+				}
 				var tsCurrent:Number = new Date().getTime();
 				if (obligatory == false &&
 					notNull == true &&
@@ -2743,6 +2757,7 @@ package com.dukascopy.connect.sys.bankManager {
 					tsHistory[historyAcc] != null &&
 					tsHistory[historyAcc] > tsCurrent - 60000) {
 						S_HISTORY_TS_ERROR.invoke();
+						needToCash = false;
 						return;
 				}
 				tsHistory ||= {};
@@ -2870,6 +2885,8 @@ package com.dukascopy.connect.sys.bankManager {
 		
 		static public function stopPayments():void {
 			initialized = false;
+			needToGetHistoryUser = null;
+			needToCash = false;
 			BankBotController.S_ANSWER.remove(onAnswerReceived);
 			BankBotController.reset();
 		}
@@ -3078,7 +3095,8 @@ package com.dukascopy.connect.sys.bankManager {
 				return;
 			}
 			history ||= { };
-			history[historyAcc] = data as Array;
+			if (needToCash == true)
+				history[historyAcc] = data as Array;
 			S_HISTORY.invoke(data, false);
 		}
 		
