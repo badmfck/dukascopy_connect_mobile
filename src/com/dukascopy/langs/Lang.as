@@ -2083,6 +2083,7 @@ package com.dukascopy.langs {
 		static public var fingerprintLogin:String = "Fingerprint login";
 		static public var useFingerprint:String = "Use fingerprint";
 		static public var numberCopied:String = "Number copied";
+		static public var IBANCopied:String = "IBAN copied";
 		
 		static public var resetDate1Jan:String = "1st January";
 		static public var resetDate1Apr:String = "1st April";

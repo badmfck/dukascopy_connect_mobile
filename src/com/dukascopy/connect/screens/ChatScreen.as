@@ -1607,6 +1607,10 @@ package com.dukascopy.connect.screens {
 					if (isMine && editable)
 						menuItems.push( { fullLink:Lang.textEdit, id:ChatItemContextMenuItemType.EDIT } );
 				}
+				else if (msgVO.typeEnum == ChatMessageType.FORWARDED)
+				{
+					menuItems.push( { fullLink:Lang.textCopy, id:ChatItemContextMenuItemType.COPY } );
+				}
 				
 				var removeExist:Boolean = false;
 				

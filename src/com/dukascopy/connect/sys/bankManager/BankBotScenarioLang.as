@@ -150,6 +150,7 @@ package com.dukascopy.connect.sys.bankManager {
 		static public var confirmedPinRequest:String = "Pin code was successfully sent to your phone via sms.";
 		static public var confirmedChangeCurrency:String = "Main currency changed.";
 		static public var confirmedBCAddressDeposite:String = "The address for this Dukascoin deposit operation is:\\n@@1\\n\\nPlease transfer the exact amount of @@2 Dukascoin\/s to this address.\\n\\nCAUTION! Any discrepancy between the amount declared and the actual deposit performed, mismatch in token address will potentially cause the total loss of the transferred crypto-assets. Dukascopy Bank SA is not obliged to return any crypto tokens received in case of the erroneous or unidentified transactions.";
+		static public var confirmedTransactionAdd:String = "Please note that this payment method is intended for sending money <b>internally</b> between two Multi-Currency Account holders.\\n\\nThe Bank reserves the right to clarify the purpose of money transfer. To avoid delay in payment processing it is recommended to always fill in the <b>Message</b> field.";
 		
 		// MENU ITEMS
 		static public var menuInvestmentDeliveryBC:String = "Delivery to blockchain";
@@ -285,6 +286,7 @@ package com.dukascopy.connect.sys.bankManager {
 		static public var menuCardStatement:String = "Card statement";
 		static public var menuAccountStatement:String = "Account statement";
 		static public var menuCardNumberCopy:String = "Copy card number";
+		static public var menuIBANCopy:String = "Copy IBAN";
 		
 		static public var investmentIndex:String = "Index";
 		static public var investmentSilver:String = "Silver";

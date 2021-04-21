@@ -713,7 +713,7 @@ package com.dukascopy.connect.sys.php {
 			});
 		}
 		
-		static public function addUserToMemo(callBack:Function, uid:String, userName:String = "", info = ""):void {
+		static public function addUserToMemo(callBack:Function, uid:String, userName:String = "", info:String = ""):void {
 			var name:String;
 			if (userName && userName != "")
 				name = Base64.encode(userName);

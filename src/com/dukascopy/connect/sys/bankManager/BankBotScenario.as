@@ -1054,6 +1054,9 @@ package com.dukascopy.connect.sys.bankManager {
 						type:"walletStatement",
 						action:"nav:walletStatementAsFileConfirmed",
 						value:"@@1"
+					}, {
+						text:"lang.menuIBANCopy",
+						action:"app:copyIBAN"
 					}
 				],
 				buttons: [
@@ -1289,6 +1292,7 @@ package com.dukascopy.connect.sys.bankManager {
 			
 			transactionConfirm: {
 				desc:"lang.confirmTransaction",
+				back: false,
 				buttons: [
 					{
 						text:"lang.buttonBack",
@@ -1298,7 +1302,7 @@ package com.dukascopy.connect.sys.bankManager {
 						action:"system:cancel"
 					}, {
 						text:"lang.buttonConfirm",
-						action:"nav:transactionConfirmed"
+						action:"nav:transactionConfirmedAdd"
 					}
 				]
 			},
@@ -3616,6 +3620,19 @@ package com.dukascopy.connect.sys.bankManager {
 					}, {
 						text:"lang.buttonNo",
 						action:"app:back"
+					}
+				]
+			},
+			
+			transactionConfirmedAdd: {
+				desc:"lang.confirmedTransactionAdd",
+				buttons: [
+					{
+						text:"lang.buttonConfirm",
+						action:"nav:transactionConfirmed"
+					}, {
+						text:"lang.buttonBack",
+						action:"cmd:back"
 					}
 				]
 			},
