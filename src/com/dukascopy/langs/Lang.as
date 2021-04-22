@@ -1392,6 +1392,7 @@ package com.dukascopy.langs {
 		public static var textInvestmentDetails:String = "Investment details";
 		public static var textInvestmentQuantity:String = "Investment quantity:";
 		public static var textInvestmentAmount:String = "Investment amount:";
+		public static var textCurrentInvestmentAmount:String = "Current investment value:";
 		public static var textAveragePurchasePrice:String = "Average purchase price:";
 		public static var textCurrentProfitAndLoss:String = "Current profit & loss:";
 		static public var textInvestmentTransfered:String = "Investment transfered";
