@@ -621,13 +621,20 @@ package com.dukascopy.connect.screens {
 				BankManager.getCrypto(local);
 				return;
 			}
-			if (data.length != 0) {
+			var accCorrect:Array = [];
+			var l:int = data.length;
+			for (var i:int = 0; i < l; i++) {
+				if (Number(data[i].BALANCE) == 0)
+					continue;
+				accCorrect.push(data[i]);
+			}
+			if (accCorrect.length != 0) {
 				if (investmentsItemIndex != -1) {
-					list.getStock()[investmentsItemIndex].data.accounts = data;
+					list.getStock()[investmentsItemIndex].data.accounts = accCorrect;
 					list.updateItemByIndex(investmentsItemIndex, list.getStock()[investmentsItemIndex].data.opened);
 				} else {
 					var toBottom:Boolean = checkScrollToBottom();
-					list.appendItem( { opened:false, accounts:data }, ListBankAccountInvestments);
+					list.appendItem( { opened:false, accounts:accCorrect }, ListBankAccountInvestments);
 					investmentsItemIndex = list.getStock().length - 1;
 					if (toBottom == true)
 						list.scrollBottom(true);

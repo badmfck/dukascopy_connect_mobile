@@ -103,7 +103,7 @@ package com.dukascopy.connect {
 	import flash.text.TextField;
 	import flash.text.TextFormat;
 	import flash.ui.Keyboard;
-
+	
 	public class MobileGui {
 		
 		static public const S_WS_EVENT:Signal = new Signal("WS.S_WS_EVENT");
@@ -270,23 +270,9 @@ package com.dukascopy.connect {
 			LangManager.init();
 			Auth.init();
 			
-			/*if (Config.isTF() == true) {
-				ni ||= new NetworkIndicator();
-				if (ni.parent == null)
-					stage.addChild(ni);
-			} else if (ni != null) {
-				ni.dispose();
-				ni = null;
-			}*/
-
 			container.addChild(new HiddenOnlineIndicator());
-
-
-
-			//debug_createWSLogger();
-
 		}
-
+		
 		private function debug_createWSLogger():void{
 			var tf:TextField = new TextField();
 			tf.defaultTextFormat = new TextFormat("Tahoma", Config.FINGER_SIZE_DOT_25);
@@ -630,7 +616,7 @@ package com.dukascopy.connect {
 			onStageResize();
 		}
 		
-		private function onServiceScreenShow(dialog:Class, params:Object = null, transitionTime:Number = 0.5, transparency:Number = 0.5):void { 
+		private function onServiceScreenShow(dialog:Class, params:Object = null, transitionTime:Number = 0.5, transparency:Number = 0.5, direction:int = 0):void { 
 			_serviceShowed = true;
 			if (LightBox.isShowing == true) {
 				LightBox.deactivate();
@@ -653,7 +639,7 @@ package com.dukascopy.connect {
 			onCustomSoftKeyboardClosed();
 			serviceSM.activate();
 			PointerManager.addTap(boxBlack, closeServiceScreen);
-			serviceSM.show(dialog, params, 0, transitionTime);
+			serviceSM.show(dialog, params, direction, transitionTime);
 			if (mainSM != null)
 				mainSM.deactivate();
 		}
@@ -854,8 +840,10 @@ package com.dukascopy.connect {
 		
 		private function onAuthNeedAuthorization():void {
 			authSreenShowed = true;
-			mainSM.clear();
-			changeMainScreen(LoginScreen);
+			if (centerScreen.currentScreenClass != LoginScreen) {
+				mainSM.clear();
+				changeMainScreen(LoginScreen);
+			}
 			PaymentsManager.deactivate();
 		}
 		
@@ -1015,17 +1003,13 @@ package com.dukascopy.connect {
 		static public function addReport(caller:String):void {
 			PHP.call_statVI("WrongChatOpen", caller);
 		}
-
-		static public function showRoadMap():void
-		{
+		
+		static public function showRoadMap():void {
 			changeMainScreen(RoadMapScreenNew, null);
 		}
 		
-		static public function traceText(text:String):void 
-		{
-		//	return;
-			if (testText == null)
-			{
+		static public function traceText(text:String):void {
+			if (testText == null) {
 				testText = new TextField();
 				stage.addChild(testText);
 				var tf:TextFormat = new TextFormat();
@@ -1045,7 +1029,6 @@ package com.dukascopy.connect {
 				
 			}
 			testText.appendText("\n" + text);
-		//	testText.scrollV = testText.maxScrollV;
 		}
 	}
 }

@@ -1739,12 +1739,18 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements {
 			res = Config.MARGIN;
 			var investmentSection:BAInvestmentSection;
 			var i:int = 0;
-			if (bmVO.item.type == "investmentSelect" || bmVO.item.type == "paymentsInvestmentsSell") {
+			if (bmVO.item.type == "investmentSelect" || bmVO.item.type == "investmentSelectAll" || bmVO.item.type == "paymentsInvestmentsSell") {
 				if (bmVO.item.tapped == true)
 					tapped = true;
 				investmentsSections ||= [];
 				var l:int = BankManager.getInvestmentsArray() != null ? BankManager.getInvestmentsArray().length : 0;
+				var count:int = 0;
 				for (i = 0; i < l; i++) {
+					if (bmVO.item.type == "investmentSelect") {
+						if (Number(BankManager.getInvestmentsArray()[i].BALANCE) == 0)
+							continue;
+					}
+					count++;
 					investmentSection = new BAInvestmentSection();
 					investmentSection.setData(BankManager.getInvestmentsArray()[i], sectionMenuWidth);
 					addChild(investmentSection);
@@ -1759,9 +1765,9 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements {
 				investmentSection.clearGraphics();
 				addChild(investmentSection);
 				investmentsSections.push(investmentSection);
-				l++;
+				count++;
 				if (investmentSection != null)
-					res += l * investmentSection.getHeight();
+					res += count * investmentSection.getHeight();
 			} else if (bmVO.item.type == "showInvestment" && bmVO.item.selection != null) {
 				var investmentObject:Object = BankManager.getInvestmentByAccount(bmVO.item.selection);
 				if (investmentObject != null) {
