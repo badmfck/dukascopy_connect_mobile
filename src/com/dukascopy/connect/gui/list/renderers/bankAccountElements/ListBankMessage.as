@@ -1814,9 +1814,10 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements {
 				var investmentDetailsSection:BAInvestmentDetailSection;
 				var listData:Array = [
 					{ itype: "detail", title: Lang.textInvestmentQuantity, amount: detail.AMOUNT, currency: detail.INSTRUMENT },
-					{ itype: "detail", title: Lang.textInvestmentAmount, amount: detail.REFERENCE_AMOUNT, currency: detail.REFERENCE_CURRENCY },
 					{ itype: "detail", title: Lang.textAveragePurchasePrice, amount: detail.AVG_OPEN_PRICE, currency: detail.REFERENCE_CURRENCY },
-					{ itype: "detail", title: Lang.textCurrentProfitAndLoss, amount: detail.CURRENT_PL, currency: detail.REFERENCE_CURRENCY }
+					{ itype: "detail", title: Lang.textInvestmentAmount, amount: detail.REFERENCE_AMOUNT, currency: detail.REFERENCE_CURRENCY },
+					{ itype: "detail", title: Lang.textCurrentProfitAndLoss, amount: detail.CURRENT_PL, currency: detail.REFERENCE_CURRENCY },
+					{ itype: "detail", title: Lang.textCurrentInvestmentAmount, amount: detail.REFERENCE_AMOUNT + detail.CURRENT_PL, currency: detail.REFERENCE_CURRENCY }
 				];
 				for (var i:int = 0; i < listData.length; i++) {
 					investmentDetailsSection = new BAInvestmentDetailSection();
