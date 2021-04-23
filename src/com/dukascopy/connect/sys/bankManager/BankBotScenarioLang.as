@@ -221,6 +221,7 @@ package com.dukascopy.connect.sys.bankManager {
 		static public var menuInvestmentBuy:String = "Invest money";
 		static public var menuInvestmentSell:String = "Sell investments";
 		static public var menuInvestmentPortfolio:String = "My portfolio";
+		static public var menuInvestmentPortfolioAll:String = "Show all accounts";
 		static public var menuInvestmentDetails:String = "Details";
 		static public var menuInvestmentSellAll:String = "Sell all";
 		static public var menuInvestmentIndexes:String = "Indexes";

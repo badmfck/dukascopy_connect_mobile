@@ -456,7 +456,7 @@ package com.dukascopy.connect.sys.bankManager {
 					sendBlock(tmp[1], vals[0], vals[1]);
 					return;
 				}
-				if (tmp[1] == "investmentsList" || tmp[1] == "investmentsListSell") {
+				if (tmp[1] == "investmentsList" || tmp[1] == "investmentsListAll" || tmp[1] == "investmentsListSell") {
 					if (investmentsData == null) {
 						lastWaitingInvestmentsAction = tempAction;
 						callPaymentsMethod("investments");

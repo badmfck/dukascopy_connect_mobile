@@ -389,7 +389,7 @@ package com.dukascopy.connect.screens {
 					list.updateItemByIndex(n, false);
 			}
 			if (lhz == HitZoneType.INVESTMENT_ITEM) {
-				bmVO.item.param = BankManager.getInvestmentsArray()[lastHitzoneObject.param];
+				bmVO.item.param = BankManager.getInvestmentByAccount(lastHitzoneObject.param);
 				BankManager.preSendMessage(bmVO.item);
 				if (_isDisposed == false)
 					list.updateItemByIndex(n, false);

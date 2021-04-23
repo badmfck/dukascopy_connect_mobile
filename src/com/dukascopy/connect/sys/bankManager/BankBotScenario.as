@@ -2725,6 +2725,29 @@ package com.dukascopy.connect.sys.bankManager {
 					type:"investmentSelect",
 					action:"nav:investmentOperations"
 				},
+				menu:[
+					{
+						text:"lang.menuInvestmentPortfolioAll",
+						action:"nav:investmentsListAll"
+					}
+				],
+				buttons: [
+					{
+						text:"lang.buttonBack",
+						action:"cmd:back"
+					}, {
+						text:"lang.buttonCancel",
+						action:"system:cancel"
+					}
+				]
+			},
+			
+			investmentsListAll: {
+				desc:"lang.investmentsListDesc",
+				item: {
+					type:"investmentSelectAll",
+					action:"nav:investmentOperations"
+				},
 				buttons: [
 					{
 						text:"lang.buttonBack",
