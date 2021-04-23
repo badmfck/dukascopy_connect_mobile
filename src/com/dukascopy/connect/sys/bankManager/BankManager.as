@@ -1077,7 +1077,7 @@ package com.dukascopy.connect.sys.bankManager {
 					return;
 				} else if (data.type == "cryptoSelect") {
 					return;
-				} else if (data.type == "investmentSelect") {
+				} else if (data.type == "investmentSelect" || data.type == "investmentSelectAll") {
 					data.tapped = true;
 					baVO = new BankMessageVO(PayInvestmentsManager.getInvestmentNameByInstrument(data.param.INSTRUMENT));
 					baVO.setMine();
