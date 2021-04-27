@@ -268,7 +268,8 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements {
 				sectionX,
 				sectionY,
 				hitZones,
-				(li.data.item != null && li.data.item.type == "walletSelectWithoutTotal") ? HitZoneType.WALLET_SELECT : HitZoneType.WALLET
+				(li.data.item != null && li.data.item.type == "walletSelectWithoutTotal") ? HitZoneType.WALLET_SELECT : HitZoneType.WALLET,
+				"ACCOUNT_NUMBER"
 			);
 			if (otherAccSections != null && otherAccSections.length != 0 && otherAccSections[0].parent != null) {
 				if (sectionY != 0)
@@ -547,14 +548,6 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements {
 						startTSY = sectionY;
 					}
 				}
-				/*graphics.drawRoundRect(
-					sectionX,
-					startTSY,
-					tradeStatSections[0].getWidth(),
-					sectionY - startTSY,
-					BankAccountElementSectionBase.CORNER_RADIUS_DOUBLE,
-					BankAccountElementSectionBase.CORNER_RADIUS_DOUBLE
-				);*/
 				graphics.endFill();
 			}
 			if (menuSections != null && menuSections.length != 0 && menuSections[0].parent != null) {
@@ -1403,7 +1396,7 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements {
 				walletSection.clearGraphics();
 				return res;
 			}
-			if (bmVO.item.type != "walletSelect" && bmVO.item.type != "walletSelectWithoutTotal")
+			if (bmVO.item.type != "walletSelect" && bmVO.item.type != "walletSelectAll" && bmVO.item.type != "walletSelectWithoutTotal")
 				return res;
 			if (bmVO.additionalData == null ||
 				bmVO.additionalData.length == 0)
@@ -1411,7 +1404,11 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements {
 			res = Config.MARGIN;
 			walletSections ||= [];
 			var l:int = bmVO.additionalData.length;
+			var count:int;
 			for (var i:int = 0; i < l; i++) {
+				if (bmVO.item.type != "walletSelectAll" && Number(bmVO.additionalData[i].BALANCE) == 0)
+					continue;
+				count++;
 				walletSection = new BAWalletSection();
 				walletSection.setData(bmVO.additionalData[i], sectionMenuWidth);
 				addChild(walletSection);
@@ -1429,19 +1426,10 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements {
 						walletSections.push(walletSection);
 						l++;
 					}
-				}/* else if (bmVO.item.value == "SAVINGS") {
-					if (BankManager.totalSavingAccounts != null) {
-						walletSection = new BAWalletSection();
-						walletSection.setData(BankManager.totalSavingAccounts, sectionMenuWidth);
-						walletSection.isTotal = true;
-						addChild(walletSection);
-						walletSections.push(walletSection);
-						l++;
-					}
-				}*/
+				}
 			}
 			if (walletSection != null) {
-				res += l * walletSection.getHeight();
+				res += count * walletSection.getHeight();
 				walletSection.clearGraphics();
 			}
 			return res;
@@ -1818,7 +1806,7 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements {
 				var investmentDetailsSection:BAInvestmentDetailSection;
 				var listData:Array = [
 					{ itype: "detail", title: Lang.textInvestmentQuantity, amount: detail.AMOUNT, currency: detail.INSTRUMENT },
-					{ itype: "detail", title: Lang.textAveragePurchasePrice, amount: detail.AVG_OPEN_PRICE, currency: detail.REFERENCE_CURRENCY },
+					{ itype: "detail", title: Lang.textAveragePurchasePrice, amount: Number(Math.round(Number(detail.AVG_OPEN_PRICE) * 100)/100).toFixed(2), currency: detail.REFERENCE_CURRENCY },
 					{ itype: "detail", title: Lang.textInvestmentAmount, amount: detail.REFERENCE_AMOUNT, currency: detail.REFERENCE_CURRENCY },
 					{ itype: "detail", title: Lang.textCurrentProfitAndLoss, amount: detail.CURRENT_PL, currency: detail.REFERENCE_CURRENCY },
 					{ itype: "detail", title: Lang.textCurrentInvestmentAmount, amount: Number(detail.REFERENCE_AMOUNT) + Number(detail.CURRENT_PL), currency: detail.REFERENCE_CURRENCY }

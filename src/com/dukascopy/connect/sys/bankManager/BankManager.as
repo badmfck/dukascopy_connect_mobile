@@ -1523,6 +1523,16 @@ package com.dukascopy.connect.sys.bankManager {
 			return null;
 		}
 		
+		static public function getAccountByNumber(val:String):Object {
+			if (accountInfo == null || accountInfo.accounts == null)
+				return null;
+			for (var i:int = 0; i < accountInfo.accounts.length; i++) {
+				if (accountInfo.accounts[i].ACCOUNT_NUMBER == val)
+					return accountInfo.accounts[i];
+			}
+			return null;
+		}
+		
 		static private function openCurrencySelector(data:Object):void {
 			if (accountInfo == null) {
 				PayManager.callGetAccountInfo(function():void{
@@ -2183,7 +2193,7 @@ package com.dukascopy.connect.sys.bankManager {
 					BankBotController.getAnswer("bot:bankbot payments:wallets");
 					needReturn = true;
 				}
-				if (lastBankMessageVO.item.type == "walletSelect" || lastBankMessageVO.item.type == "walletSelectWithoutTotal") {
+				if (lastBankMessageVO.item.type == "walletSelect" || lastBankMessageVO.item.type == "walletSelectAll" || lastBankMessageVO.item.type == "walletSelectWithoutTotal") {
 					if (accountInfo == null) {
 						lastBankMessageVO.waitingType = (lastBankMessageVO.item.value == "SAVINGS") ? "walletsSav" : "wallets";
 						BankBotController.getAnswer("bot:bankbot payments:homeS");

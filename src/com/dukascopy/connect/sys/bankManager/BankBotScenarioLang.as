@@ -199,6 +199,7 @@ package com.dukascopy.connect.sys.bankManager {
 		static public var menuToSavingAcc:String = "To Saving account";
 		static public var menuAccountHistory:String = "Last transactions log";
 		static public var menuAccountStat:String = "Account statistics";
+		static public var menuAccountsAll:String = "Show all accounts";
 		static public var menuCoinTradesStat:String = "Trades statistics";
 		static public var menuActiveOrdersStat:String = "Active orders statistics";
 		static public var menuTradesStatTotal:String = "Total";

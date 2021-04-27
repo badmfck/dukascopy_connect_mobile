@@ -1026,6 +1026,31 @@ package com.dukascopy.connect.sys.bankManager {
 					value:"@@1",
 					action:"nav:walletOperations"
 				},
+				menu:[
+					{
+						text:"lang.menuAccountsAll",
+						action:"nav:paymentsWalletsAll"
+					}
+				],
+				buttons: [
+					{
+						text:"lang.buttonBack",
+						action:"cmd:back"
+					}, {
+						text:"lang.buttonCancel",
+						action:"system:cancel"
+					}
+				]
+			},
+			
+			paymentsWalletsAll: {
+				desc:"lang.accountsSelectDesc",
+				item: {
+					text:"lang.itemShowAccountOps",
+					type:"walletSelectAll",
+					value:"@@1",
+					action:"nav:walletOperations"
+				},
 				buttons: [
 					{
 						text:"lang.buttonBack",
