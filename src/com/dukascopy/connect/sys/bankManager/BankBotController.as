@@ -173,6 +173,10 @@ package com.dukascopy.connect.sys.bankManager {
 					sendBlock(tmp[1], steps[steps.length - 1].val);
 					return;
 				}
+				if (tmp[1] == "paymentsWalletsAll") {
+					sendBlock(tmp[1], steps[steps.length - 2].val);
+					return;
+				}
 				if (tmp[1] == "paymentsDepositConfirm") {
 					onPaymentsDepositConfirm();
 					return;
