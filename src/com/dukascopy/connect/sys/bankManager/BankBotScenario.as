@@ -2820,6 +2820,13 @@ package com.dukascopy.connect.sys.bankManager {
 						action:"app:historyInvestment",
 						selection:"@@2"
 					}, {
+						text:"lang.menuInvestmentBuy",
+						type:"paymentsInvestments",
+						textForUser1:"lang.itemInvestmentBuy1",
+						textForUser2:"lang.itemInvestmentBuy2",
+						action:"nav:investmentConfirm",
+						value:"@@2"
+					}, {
 						text:"lang.menuInvestmentSellAll",
 						action:"nav:investmentSellAllConfirm",
 						type:"paymentsInvestmentsSellAll",

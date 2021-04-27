@@ -369,7 +369,10 @@ package com.dukascopy.connect.screens {
 				BankManager.preSendMessage(bmVO.item);
 			}
 			if (lhz == HitZoneType.WALLET) {
-				bmVO.item.param = BankManager.getAccountByNumber(lastHitzoneObject.param);
+				if (bmVO.item.value == "SAVINGS")
+					bmVO.item.param = BankManager.getSavingAccountByNumber(lastHitzoneObject.param);
+				else
+					bmVO.item.param = BankManager.getAccountByNumber(lastHitzoneObject.param);
 				BankManager.preSendMessage(bmVO.item);
 				if (_isDisposed == false)
 					list.updateItemByIndex(n, false);
