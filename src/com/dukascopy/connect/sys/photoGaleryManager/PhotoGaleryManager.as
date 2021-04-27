@@ -35,6 +35,7 @@ package com.dukascopy.connect.sys.photoGaleryManager {
 	import flash.utils.ByteArray;
 	import flash.utils.Endian;
 	import flash.utils.IDataInput;
+	import com.dukascopy.connect.gui.components.message.ToastMessage;
 	
 	/**
 	 * ...
@@ -92,6 +93,12 @@ package com.dukascopy.connect.sys.photoGaleryManager {
 				dispatchImageResult(false, null, Lang.cameraNotSupported);
 				return;
 			}
+
+			if(CameraUI.permissionStatus==PermissionStatus.DENIED){
+				ToastMessage.display("NO ACCESS!")
+				return;
+			}
+
 			if (CameraUI.permissionStatus != PermissionStatus.GRANTED && (CameraUI as Object).permissionStatus  !== undefined) {
 				var cui:CameraUI = new CameraUI();
 				cui.addEventListener(PermissionEvent.PERMISSION_STATUS, function(e:PermissionEvent):void {
