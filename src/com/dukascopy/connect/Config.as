@@ -459,6 +459,7 @@ package com.dukascopy.connect {
             if (Capabilities.screenResolutionX == 828 && Capabilities.screenResolutionY == 1792) {
                 return 44 * 3;
             }
+    
             return  -1;
         }
 		
