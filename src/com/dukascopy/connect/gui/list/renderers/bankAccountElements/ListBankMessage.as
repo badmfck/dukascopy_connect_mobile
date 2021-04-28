@@ -1732,7 +1732,7 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements {
 				var l:int = BankManager.getInvestmentsArray() != null ? BankManager.getInvestmentsArray().length : 0;
 				var count:int = 0;
 				for (i = 0; i < l; i++) {
-					if (bmVO.item.type == "investmentSelect") {
+					if (bmVO.item.type == "investmentSelect" || bmVO.item.type == "paymentsInvestmentsSell") {
 						if (Number(BankManager.getInvestmentsArray()[i].BALANCE) == 0)
 							continue;
 					}

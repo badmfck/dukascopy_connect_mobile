@@ -1037,7 +1037,7 @@ package com.dukascopy.connect.sys.bankManager {
 								((data.param.programme == "virtual") ? "V" : "P"));
 						sendMessage(msg);
 					}
-				} else if (data.type == "walletSelect") {
+				} else if (data.type == "walletSelect" || data.type == "walletSelectAll") {
 					data.tapped = true;
 					baVO = new BankMessageVO(data.text);
 					baVO.setMine();
@@ -2246,7 +2246,12 @@ package com.dukascopy.connect.sys.bankManager {
 					}
 				}
 				if (lastBankMessageVO.item.type == "operationDetails") {
-						if (_initData != null && "transactionID" in _initData == true && _initData.transactionID != null) {
+					if (_initData != null && "transactionID" in _initData == true && _initData.transactionID != null) {
+						if ("raw" in _initData == false) {
+							lastBankMessageVO.waitingType = "operationDetails" + _initData.uid;
+							getOperationTransactions(_initData.uid);
+							needReturn = true;
+						} else
 							lastBankMessageVO.additionalData = _initData.raw;
 					}
 				}
@@ -2317,9 +2322,15 @@ package com.dukascopy.connect.sys.bankManager {
 					}
 				}
 				if (lastBankMessageVO.item.type == "operationTransactions") {
-					if (_initData != null && "raw" in _initData == true) {
-						lastBankMessageVO.waitingType = "operationTransactions" + _initData.raw.UID;
-						getOperationTransactions(_initData.raw.UID);
+					if (_initData != null) {
+						var uid:String;
+						if ("raw" in _initData == true) {
+							uid = _initData.raw.UID;
+						} else if ("uid" in _initData == true) {
+							uid = _initData.uid;
+						}
+						lastBankMessageVO.waitingType = "operationTransactions" + uid;
+						getOperationTransactions(uid);
 					}
 					needReturn = true;
 				}
@@ -2704,9 +2715,12 @@ package com.dukascopy.connect.sys.bankManager {
 			}
 			currentTransaction = data;
 			if (waitingBMVO != null) {
-				if (waitingBMVO.waitingType != "operationTransactions" + currentTransaction.data.UID)
+				if (waitingBMVO.waitingType == "operationTransactions" + currentTransaction.data.UID) {
+					waitingBMVO.additionalData = currentTransaction.transactions;
+				} else if (waitingBMVO.waitingType == "operationDetails" + currentTransaction.data.UID) {
+					waitingBMVO.additionalData = currentTransaction.data;
+				} else
 					return;
-				waitingBMVO.additionalData = currentTransaction.transactions;
 				invokeAnswerSignal(waitingBMVO);
 				waitingBMVO = null;
 			}

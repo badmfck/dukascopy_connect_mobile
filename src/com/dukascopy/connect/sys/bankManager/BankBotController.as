@@ -1759,6 +1759,7 @@ package com.dukascopy.connect.sys.bankManager {
 				tempObject.amountEndPreText = "Rate: ";
 				tempObject.time = Number(history[i].ts) * 1000;
 				tempObject.transaction = history[i];
+				tempObject.uid = history[i].uid;
 				tempObject.title = Lang.TEXT_INVESTMENT.substr(0, 1).toUpperCase() + Lang.TEXT_INVESTMENT.substr(1).toLowerCase();
 				objectForScreen.push(tempObject);
 			}
