@@ -197,6 +197,7 @@ package com.dukascopy.connect.sys.bankManager {
 		static private var cardIssueAvailable:Boolean;
 		
 		static private var needToCash:Boolean;
+		static private var investmentExist:Boolean = false;
 		
 		public function BankManager() { }
 		
@@ -1533,6 +1534,16 @@ package com.dukascopy.connect.sys.bankManager {
 			return null;
 		}
 		
+		static public function getSavingAccountByNumber(val:String):Object {
+			if (savingsAccounts == null)
+				return null;
+			for (var i:int = 0; i < savingsAccounts.length; i++) {
+				if (savingsAccounts[i].ACCOUNT_NUMBER == val)
+					return savingsAccounts[i];
+			}
+			return null;
+		}
+		
 		static private function openCurrencySelector(data:Object):void {
 			if (accountInfo == null) {
 				PayManager.callGetAccountInfo(function():void{
@@ -2193,6 +2204,10 @@ package com.dukascopy.connect.sys.bankManager {
 					BankBotController.getAnswer("bot:bankbot payments:wallets");
 					needReturn = true;
 				}
+				if (lastBankMessageVO.item.type == "investments") {
+					if (investmentExist == false)
+						lastBankMessageVO.menu[1].disabled = true;
+				}
 				if (lastBankMessageVO.item.type == "walletSelect" || lastBankMessageVO.item.type == "walletSelectAll" || lastBankMessageVO.item.type == "walletSelectWithoutTotal") {
 					if (accountInfo == null) {
 						lastBankMessageVO.waitingType = (lastBankMessageVO.item.value == "SAVINGS") ? "walletsSav" : "wallets";
@@ -2277,9 +2292,15 @@ package com.dukascopy.connect.sys.bankManager {
 									for (var i:int = 0; i < lastBankMessageVO.menu.length; i++) {
 										if ("type" in lastBankMessageVO.menu[i] &&
 											lastBankMessageVO.menu[i].type == "BCWithdrawalInvestment") {
-												if (PayManager.systemOptions.investmentDeliveryCurrencies.indexOf(lastBankMessageVO.menu[i].selection) != -1) {
-													delete lastBankMessageVO.menu[i].disabled;
+												if (PayManager.systemOptions.investmentDeliveryCurrencies.indexOf(lastBankMessageVO.menu[i].selection) != -1 &&
+													Number(getInvestmentByAccount(lastBankMessageVO.menu[i].selectionAcc).BALANCE) != 0) {
+														delete lastBankMessageVO.menu[i].disabled;
 												}
+										}
+										if ("type" in lastBankMessageVO.menu[i] &&
+											lastBankMessageVO.menu[i].type == "paymentsInvestmentsSellAll" &&
+											Number(getInvestmentByAccount(lastBankMessageVO.item.selection).BALANCE) == 0) {
+												lastBankMessageVO.menu[i].disabled = true;
 										}
 									}
 								}
@@ -3256,8 +3277,20 @@ package com.dukascopy.connect.sys.bankManager {
 		}
 		
 		static private function processInvestments(data:Object):void {
+			if (data == null || data.length == 0) {
+				investments = null;
+				return;
+			}
 			investments = data as Array;
 			investments.sort(sortInvestments);
+			var l:int = investments.length;
+			investmentExist = false;
+			for (var i:int = 0; i < l; i++) {
+				if (Number(investments[i].BALANCE) > 0) {
+					investmentExist = true;
+					break;
+				}
+			}
 		}
 		
 		static private function onCryptoDealsAccounts(cryptoJSON:String):void {
