@@ -197,6 +197,7 @@ package com.dukascopy.connect.sys.bankManager {
 		static private var cardIssueAvailable:Boolean;
 		
 		static private var needToCash:Boolean;
+		static private var investmentExist:Boolean = false;
 		
 		public function BankManager() { }
 		
@@ -2203,6 +2204,10 @@ package com.dukascopy.connect.sys.bankManager {
 					BankBotController.getAnswer("bot:bankbot payments:wallets");
 					needReturn = true;
 				}
+				if (lastBankMessageVO.item.type == "investments") {
+					if (investmentExist == false)
+						lastBankMessageVO.menu[1].disabled = true;
+				}
 				if (lastBankMessageVO.item.type == "walletSelect" || lastBankMessageVO.item.type == "walletSelectAll" || lastBankMessageVO.item.type == "walletSelectWithoutTotal") {
 					if (accountInfo == null) {
 						lastBankMessageVO.waitingType = (lastBankMessageVO.item.value == "SAVINGS") ? "walletsSav" : "wallets";
@@ -3272,8 +3277,20 @@ package com.dukascopy.connect.sys.bankManager {
 		}
 		
 		static private function processInvestments(data:Object):void {
+			if (data == null || data.length == 0) {
+				investments = null;
+				return;
+			}
 			investments = data as Array;
 			investments.sort(sortInvestments);
+			var l:int = investments.length;
+			investmentExist = false;
+			for (var i:int = 0; i < l; i++) {
+				if (Number(investments[i].BALANCE) > 0) {
+					investmentExist = true;
+					break;
+				}
+			}
 		}
 		
 		static private function onCryptoDealsAccounts(cryptoJSON:String):void {

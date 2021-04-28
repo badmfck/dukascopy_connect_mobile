@@ -2698,6 +2698,9 @@ package com.dukascopy.connect.sys.bankManager {
 			investments: {
 				desc:"lang.investmentsDesc",
 				menuLayout:"vertical",
+				item: {
+					type:"investments"
+				},
 				menu:[
 					{
 						text:"lang.menuInvestmentBuy",
