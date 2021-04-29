@@ -175,9 +175,7 @@ package com.dukascopy.connect {
 		private function initComponents():void {
 			
 			if (Config.PLATFORM_APPLE)
-			{
 				DCCExt.init();
-			}
 			
 			Loop.init(stage);
 			RenderUtils.stageRef = stage;

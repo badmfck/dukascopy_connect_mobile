@@ -35,6 +35,12 @@ package com.dukascopy.connect.sys.photoGaleryManager {
 	import flash.utils.ByteArray;
 	import flash.utils.Endian;
 	import flash.utils.IDataInput;
+	import com.dukascopy.connect.gui.components.message.ToastMessage;
+	import com.dukascopy.connect.data.PopupData;
+	import com.dukascopy.connect.data.screenAction.customActions.CallSettingsAction;
+	import com.dukascopy.connect.data.screenAction.IScreenAction;
+	import com.dukascopy.connect.sys.serviceScreenManager.ServiceScreenManager;
+	import com.dukascopy.connect.screens.serviceScreen.BottomPopupScreen;
 	
 	/**
 	 * ...
@@ -92,6 +98,21 @@ package com.dukascopy.connect.sys.photoGaleryManager {
 				dispatchImageResult(false, null, Lang.cameraNotSupported);
 				return;
 			}
+
+			if(CameraUI.permissionStatus==PermissionStatus.DENIED && Config.PLATFORM_APPLE){
+				
+				// CALL FOR ACCESS
+				var popupData:PopupData = new PopupData();
+				var action:IScreenAction = new CallSettingsAction();
+				action.setData(Lang.openSettings);
+				popupData.action = action;
+				popupData.title = Lang.cameraPermissionRequest;
+				popupData.text = Lang.cameraPermissionAvatarExplain;
+				ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, BottomPopupScreen, popupData);
+				dispatchImageResult(false, null, Lang.cameraNotSupported);
+				return;
+			}
+
 			if (CameraUI.permissionStatus != PermissionStatus.GRANTED && (CameraUI as Object).permissionStatus  !== undefined) {
 				var cui:CameraUI = new CameraUI();
 				cui.addEventListener(PermissionEvent.PERMISSION_STATUS, function(e:PermissionEvent):void {
@@ -149,6 +170,21 @@ package com.dukascopy.connect.sys.photoGaleryManager {
 				browseWindowsFiles();
 				return;
 			}
+
+			if (CameraRoll.permissionStatus == PermissionStatus.DENIED && Config.PLATFORM_APPLE) {
+
+				// CALL FOR ACCESS
+				var popupData:PopupData = new PopupData();
+				var action:IScreenAction = new CallSettingsAction();
+				action.setData(Lang.openSettings);
+				popupData.action = action;
+				popupData.title = Lang.cameraRollPermissionRequest;
+				popupData.text = Lang.cameraRollPermissionAvatarExplain;
+				ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, BottomPopupScreen, popupData);
+				return
+			}
+
+
 			if (Config.PLATFORM_APPLE && MobileGui.dce != null) {
 				MobileGui.dce.removeEventListener(StatusEvent.STATUS, statusHandler);
 				MobileGui.dce.addEventListener(StatusEvent.STATUS, statusHandler);
