@@ -992,6 +992,12 @@ package com.dukascopy.connect.sys.bankManager {
 							openCurrencySelectorAll(data);
 						}
 					);
+				} else if (data.type == "selectedAccCurrency") {
+					var acc:Object = getAccountByNumber(data.val);
+					if (acc == null)
+						return;
+					sendMessage("val:" + data.value + "|!|" + acc.CURRENCY);
+					sendMessage(data.action);
 				} else if (data.type == "cardActivate") {
 					DialogManager.showVerify(onCardActivationDialogClose, { account:data.value, additional:data } );
 				} else if (data.type == "cardNewActivate") {

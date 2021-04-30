@@ -1082,6 +1082,12 @@ package com.dukascopy.connect.sys.bankManager {
 					}, {
 						text:"lang.menuIBANCopy",
 						action:"app:copyIBAN"
+					}, {
+						text:"lang.menuShareIBAN",
+						value:"WIRE",
+						val:"@@1",
+						type:"selectedAccCurrency",
+						action:"nav:paymentsDepositConfirm"
 					}
 				],
 				buttons: [

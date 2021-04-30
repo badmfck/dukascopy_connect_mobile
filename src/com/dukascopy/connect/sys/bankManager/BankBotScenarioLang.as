@@ -291,6 +291,7 @@ package com.dukascopy.connect.sys.bankManager {
 		static public var menuAccountStatement:String = "Account statement";
 		static public var menuCardNumberCopy:String = "Copy card number";
 		static public var menuIBANCopy:String = "Copy IBAN";
+		static public var menuShareIBAN:String = "Share IBAN";
 		
 		static public var investmentIndex:String = "Index";
 		static public var investmentSilver:String = "Silver";
