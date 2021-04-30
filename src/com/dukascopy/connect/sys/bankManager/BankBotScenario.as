@@ -1174,6 +1174,12 @@ package com.dukascopy.connect.sys.bankManager {
 						type:"sendMoneyOtherAcc",
 						value:"SAVINGS",
 						action:"nav:transferInternalConfirm"
+					}, {
+						disabled: true,
+						text:"lang.menuToTradingAcc",
+						type:"sendMoneyOtherAcc",
+						value:"TRADING",
+						action:"nav:transferInternalConfirm"
 					}
 				],
 				buttons: [
@@ -1219,6 +1225,12 @@ package com.dukascopy.connect.sys.bankManager {
 						type:"sendMoneyOtherAcc",
 						value:"SMCA",
 						action:"nav:transferInternalConfirm"
+					}, {
+						disabled: true,
+						text:"lang.menuFromTradingAcc",
+						type:"sendMoneyOtherAcc",
+						value:"TMCA",
+						action:"nav:transferInternalConfirmT"
 					}, {
 						disabled: true,
 						text:"lang.menuFromApplePay",
@@ -1609,6 +1621,19 @@ package com.dukascopy.connect.sys.bankManager {
 			
 			transferInternalConfirm: {
 				desc:"lang.confirmInternalTransfer",
+				buttons: [
+					{
+						text:"lang.buttonCancel",
+						action:"system:cancel"
+					}, {
+						text:"lang.buttonConfirm",
+						action:"nav:transferInternalConfirmed"
+					}
+				]
+			},
+			
+			transferInternalConfirmT: {
+				desc:"lang.confirmInternalTransferT",
 				buttons: [
 					{
 						text:"lang.buttonCancel",

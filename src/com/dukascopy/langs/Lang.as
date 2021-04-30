@@ -2169,6 +2169,7 @@ package com.dukascopy.langs {
 		static public var saveToGallery:String = "Save image";
 		static public var fromMultiAccount:String = "From Multi-currency account";
 		static public var toSavingAccount:String = "To Saving account";
+		static public var toTradingAccount:String = "To Trading account";
 		static public var fromSavingAccount:String = "From Saving account";
 		static public var toMultiAccount:String = "To Multi-currency account";
 		static public var savings:String = "Savings";

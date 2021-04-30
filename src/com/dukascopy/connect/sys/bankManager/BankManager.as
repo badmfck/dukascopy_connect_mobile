@@ -769,12 +769,21 @@ package com.dukascopy.connect.sys.bankManager {
 							title = Lang.TEXT_WITHDRAWAL
 							giftData.fromAccounts = PayManager.accountInfo.accounts;
 							giftData.toAccounts = savingsAccounts;
-							//giftData.currencies = PayManager.systemOptions.currencyList;
+							giftData.transferType = OperationType.SAVING_MONEY_TRANSFER;
+						} else if (data.value == "TRADING") {
+							textFrom = Lang.fromMultiAccount;
+							textTo = Lang.toTradingAccount;
+							title = Lang.TEXT_WITHDRAWAL
+							giftData.fromAccounts = PayManager.accountInfo.accounts;
+							giftData.toAccounts = otherAccounts;
 							giftData.transferType = OperationType.SAVING_MONEY_TRANSFER;
 						} else if (data.value == "SMCA") {
 							giftData.fromAccounts = savingsAccounts;
 							giftData.toAccounts = PayManager.accountInfo.accounts;
-							//giftData.currencies = PayManager.systemOptions.currencyList;
+							giftData.transferType = OperationType.MCA_MONEY_TRANSFER;
+						} else if (data.value == "TMCA") {
+							giftData.fromAccounts = otherAccounts;
+							giftData.toAccounts = PayManager.accountInfo.accounts;
 							giftData.transferType = OperationType.MCA_MONEY_TRANSFER;
 						}
 						ServiceScreenManager.showScreen(
@@ -3242,9 +3251,9 @@ package com.dukascopy.connect.sys.bankManager {
 				BankBotController.getScenario().scenario.selectNewWalletCurrency.menu[1].disabled = true;
 			}
 			if (accountInfo.enableApplePay == true && Config.PLATFORM_APPLE == true) {
-				delete BankBotController.getScenario().scenario.deposites.menu[6].disabled;
+				delete BankBotController.getScenario().scenario.deposites.menu[7].disabled;
 			} else {
-				BankBotController.getScenario().scenario.deposites.menu[6].disabled = true;
+				BankBotController.getScenario().scenario.deposites.menu[7].disabled = true;
 			}
 			if (waitingBMVO != null) {
 				if (waitingBMVO.waitingType != "wallets" && waitingBMVO.waitingType != "limits")
@@ -3637,6 +3646,13 @@ package com.dukascopy.connect.sys.bankManager {
 		
 		static private function processOtherAccounts(data:Array):void {
 			otherAccounts = data;
+			if (otherAccounts == null || otherAccounts.length == 0) {
+				BankBotController.getScenario().scenario.withdrawals.menu[5].disabled = true;
+				BankBotController.getScenario().scenario.deposites.menu[6].disabled = true;
+			} else {
+				delete BankBotController.getScenario().scenario.withdrawals.menu[5].disabled;
+				delete BankBotController.getScenario().scenario.deposites.menu[6].disabled;
+			}
 			otherAccounts.sort(otherAccountSort);
 			if (waitingBMVO != null) {
 				if (waitingBMVO.waitingType != "homeS")

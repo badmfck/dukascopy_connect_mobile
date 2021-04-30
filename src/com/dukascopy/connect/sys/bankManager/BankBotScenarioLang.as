@@ -100,6 +100,7 @@ package com.dukascopy.connect.sys.bankManager {
 		static public var confirmTransaction:String = "Please confirm your transaction.";
 		static public var confirmExchange:String = "Please confirm your transfer.";
 		static public var confirmInternalTransfer:String = "Confirm transfer.";
+		static public var confirmInternalTransferT:String = "Transfers that require currency conversion are executed at Dukascopy Bank SA current spot rate adjusted by a Fee\\n\\nThe undersigned client(s) has/have taken due note of all activities carried out on the abovementioned account with Dukascopy Bank and hereby ratifies/ratify them in complete knowledge and understanding thereof, fully discharging Dukascopy Bank of all liabilities related thereto. If and to the extent needed to execute the transfer requested herein, the undersigned client(s) further authorise(s) Dukascopy Bank to close out any open positions relative to the aforesaid account with Dukascopy Bank. Finally please note that transaction may be executed instantly right after you click the 'I agree' button below.\\n\\nConfirm transfer.";
 		static public var confirmInvestment:String = "Please confirm investment.";
 		static public var confirmInvestmentSell:String = "Please confirm investment sell.";
 		static public var confirmInvestmentSellAll:String = "Please confirm all investment sell.";
@@ -196,7 +197,9 @@ package com.dukascopy.connect.sys.bankManager {
 		static public var menuNewAccSaving:String = "Saving account";
 		static public var menuNewAccMCA:String = "Multi-currency account";
 		static public var menuFromSavingAcc:String = "From Savings account";
+		static public var menuFromTradingAcc:String = "From Trading account";
 		static public var menuToSavingAcc:String = "To Saving account";
+		static public var menuToTradingAcc:String = "To Trading account";
 		static public var menuAccountHistory:String = "Last transactions log";
 		static public var menuAccountStat:String = "Account statistics";
 		static public var menuAccountsAll:String = "Show all accounts";
