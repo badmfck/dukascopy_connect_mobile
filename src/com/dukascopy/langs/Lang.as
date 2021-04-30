@@ -1244,6 +1244,12 @@ package com.dukascopy.langs {
 		static public var jailOver:String = "Jail Over";
 		static public var talkWithABankBot:String = "Talk with a Bank Bot";
 		static public var bankBot:String = "Bank's Bot";
+
+		static public var cameraRollPermissionRequest:String="No access to camera roll";
+		static public var cameraRollPermissionAvatarExplain:String="To use image as avatar from camera roll, please open Settings and provide permission.";
+		
+		static public var cameraPermissionRequest:String="No access to camera";
+		static public var cameraPermissionAvatarExplain:String="To take photos as avatar, please open Settings and provide permission.";
 		
 		static public var refCodesText:Object = {};
 		static public var lottoText:Object = {};

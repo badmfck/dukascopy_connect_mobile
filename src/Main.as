@@ -39,11 +39,9 @@ public class Main extends Sprite {
 		public static var startTime:Number=new Date().getTime();
 
 		public function Main() {
-			//Comment ABC
+			// FROM MASTER 
 			timer = getTimer(); 
 			stage.quality = StageQuality.LOW;
-			
-			// ILJA HI!
 			
 			stage.scaleMode = StageScaleMode.NO_SCALE;
 			stage.align = StageAlign.TOP_LEFT;
