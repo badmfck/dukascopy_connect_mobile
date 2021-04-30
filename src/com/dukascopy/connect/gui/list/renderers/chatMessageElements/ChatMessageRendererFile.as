@@ -89,7 +89,7 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 			return trueHeight;
 		}
 		
-		public function draw(messageVO:ChatMessageVO, maxWidth:int, listItem:ListItem = null, securityKey:Array = null):void {
+		public function draw(messageVO:ChatMessageVO, maxWidth:int, listItem:ListItem = null, securityKey:Array = null, minWidth:int = -1):void {
 			iconContainer.removeChildren();
 			
 			updateBubbleColors(messageVO);

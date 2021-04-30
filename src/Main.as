@@ -66,7 +66,11 @@ public class Main extends Sprite {
 		}
 		
 		public static function onGlobalError(e:UncaughtErrorEvent = null):void {
-
+			
+		//	var tempError:Error = new Error();
+		//	var stackTrace:String = tempError.getStackTrace();
+			echo("error!", e.error.getStackTrace());
+			
 			BloomDebugger.stop();
 
 

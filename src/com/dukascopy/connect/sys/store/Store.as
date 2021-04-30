@@ -101,6 +101,8 @@ package com.dukascopy.connect.sys.store{
 		static public const SOLVENCY_CHECK_CMETHOD:String = "solvencyCheckCmethod";
 		static public const ZBX_REQUEST_TIME:String = "zbxRequestTime";
 		static public const GUEST_UID:String = "guestUid";
+		static public const GUEST_NAME:String = "guestName";
+		static public const GUEST_MAIL:String = "guestMail";
 
 		static private const TYPE_SAVE:int = 0;
 		static private const TYPE_LOAD:int = 1;
@@ -177,6 +179,10 @@ package com.dukascopy.connect.sys.store{
 							continue;*/
 						
 						if (fle.name == MD5.hash(GUEST_UID) + ".dta")
+							continue;
+						if (fle.name == MD5.hash(GUEST_NAME) + ".dta")
+							continue;
+						if (fle.name == MD5.hash(GUEST_MAIL) + ".dta")
 							continue;
 						
 						if (fle.isDirectory){

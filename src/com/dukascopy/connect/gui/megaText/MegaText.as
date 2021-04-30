@@ -7,6 +7,7 @@ package com.dukascopy.connect.gui.megaText {
 	import com.dukascopy.connect.MobileGui;
 	import com.dukascopy.connect.sys.echo.echo;
 	import com.dukascopy.connect.sys.richTextField.RichTextSmilesCodes;
+	import com.mteamapp.UnicodeStatic;
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
 	import flash.display.DisplayObjectContainer;
@@ -73,7 +74,19 @@ package com.dukascopy.connect.gui.megaText {
 			setWidth(width);
 			
 			if (wasSmile == 1) {
-				textField.text = txt;
+			//	UnicodeStatic.fastUnicodeOnLines(textField, txt);
+			//	textField.text = txt;
+			//	textField.text = UnicodeStatic.convert(txt);
+			
+				if (UnicodeStatic.isArabic(txt))
+				{
+					UnicodeStatic.fastUnicodeOnLines(textField, txt);
+				}
+				else
+				{
+					textField.text = txt;
+				}
+				
 				textField.setTextFormat(defaultFormat);
 				return textField.height;
 			}
@@ -112,7 +125,17 @@ package com.dukascopy.connect.gui.megaText {
 				textField.setTextFormat(defaultFormat);
 				textField.htmlText = "<FONT FACE=\"" + defaultFormat.font + "\" SIZE=\"" + defaultFormat.size + "\" COLOR=\"#" + color.toString(16) + "\" LETTERSPACING=\"0\" KERNING=\"0\">" + res + "</FONT>";
 			} else {
-				textField.text = res;
+				if (UnicodeStatic.isArabic(res))
+				{
+					UnicodeStatic.fastUnicodeOnLines(textField, res);
+				}
+				else
+				{
+					textField.text = res;
+				}
+				
+			//	textField.text = res;
+			//	textField.text = UnicodeStatic.convert(res);
 				textField.setTextFormat(defaultFormat);
 			}
 			return textField.height;

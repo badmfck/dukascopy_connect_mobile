@@ -56,7 +56,7 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 			return Config.FINGER_SIZE * 3;
 		}
 		
-		public function draw(messageData:ChatMessageVO, maxWidth:int, listItem:ListItem = null, securityKey:Array = null):void {
+		public function draw(messageData:ChatMessageVO, maxWidth:int, listItem:ListItem = null, securityKey:Array = null, minWidth:int = -1):void {
 			if (sticker != null) {
 				if (sticker.parent != null)
 					sticker.parent.removeChild(sticker);

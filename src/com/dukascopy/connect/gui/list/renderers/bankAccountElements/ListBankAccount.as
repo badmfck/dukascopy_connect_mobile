@@ -342,18 +342,23 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements {
 							} ] );
 						}
 					} else {
-						addChild(addCircle);
-						var ct1:ColorTransform = new ColorTransform();
-						ct1.color = 0xA3B6E0;
-						addCircle.transform.colorTransform = ct1;
-						addCircle.width = addCircle.height = Config.FINGER_SIZE * .4;
-						addCircle.x = int(sectionAccount.x + sectionAccount.BIRD_SIZE);
-						addCircle.y = sectionText.y + sectionText.height * .5;
-						addChild(addTF);
-						addTF.text = li.data.raw.CUSTOM_DATA.total_trades;
-						addTF.x = addCircle.x - addCircle.width * .5;
-						addTF.y = addCircle.y + int((addCircle.height - addTF.height) * .5) - addCircle.height * .5;
-						addTF.width = addCircle.width;
+						if ("raw" in li.data && li.data.raw != null &&
+							"CUSTOM_DATA" in li.data.raw && li.data.raw.CUSTOM_DATA != null &&
+							"total_trades" in li.data.raw.CUSTOM_DATA && li.data.raw.CUSTOM_DATA.total_trades != null)
+						{
+							addChild(addCircle);
+							var ct1:ColorTransform = new ColorTransform();
+							ct1.color = 0xA3B6E0;
+							addCircle.transform.colorTransform = ct1;
+							addCircle.width = addCircle.height = Config.FINGER_SIZE * .4;
+							addCircle.x = int(sectionAccount.x + sectionAccount.BIRD_SIZE);
+							addCircle.y = sectionText.y + sectionText.height * .5;
+							addChild(addTF);
+							addTF.text = li.data.raw.CUSTOM_DATA.total_trades;
+							addTF.x = addCircle.x - addCircle.width * .5;
+							addTF.y = addCircle.y + int((addCircle.height - addTF.height) * .5) - addCircle.height * .5;
+							addTF.width = addCircle.width;
+						}
 					}
 				}
 			}

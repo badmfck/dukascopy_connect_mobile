@@ -202,7 +202,7 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 			return result;
 		}
 		
-		public function draw(messageData:ChatMessageVO, maxWidth:int, listItem:ListItem = null, securityKey:Array = null):void {
+		public function draw(messageData:ChatMessageVO, maxWidth:int, listItem:ListItem = null, securityKey:Array = null, minWidth:int = -1):void {
 			var data:VoiceMessageVO = messageData.systemMessageVO.voiceVO;
 			
 			iconPlay.visible = false;

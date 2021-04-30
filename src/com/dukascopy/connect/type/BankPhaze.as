@@ -25,6 +25,7 @@ package com.dukascopy.connect.type
 		static public const DONATE:String = "DONATE";
 		//! DEPRECATED
 		static public const SCAN:String = "SCAN";
+		static public const WIRE_DEPOSIT:String = "WIRE";
 		
 		
 		public function BankPhaze() 

@@ -1105,12 +1105,16 @@ package com.dukascopy.connect.sys.php {
 			call("userAccess.apply", callBack, {curr:currency, amount:cost, info:request});
 		}
 		
-		static public function call_loyaltyRegister(callBack:Function):void 
+		static public function call_loyaltyRegister(callBack:Function, service:String = null):void 
 		{
 			var data:Object = new Object();
 			data.type = "gold";
 			data.currency = "EUR";
 			data.amount = Config.FAST_TRACK_COST;
+			if (service != null)
+			{
+				data.service = service;
+			}
 			call('loyalty.register', callBack, data);
 		}
 		

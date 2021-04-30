@@ -38,6 +38,7 @@ package com.dukascopy.connect.screens {
 	import com.dukascopy.connect.data.screenAction.customActions.chatMessageAction.ForwardMessageAction;
 	import com.dukascopy.connect.data.screenAction.customActions.chatMessageAction.MinimizeMessageAction;
 	import com.dukascopy.connect.data.screenAction.customActions.chatMessageAction.RemoveMessageAction;
+	import com.dukascopy.connect.data.screenAction.customActions.chatMessageAction.ReplyMessageAction;
 	import com.dukascopy.connect.data.screenAction.customActions.chatMessageAction.ResendMessageAction;
 	import com.dukascopy.connect.data.screenAction.customActions.chatMessageAction.SendGiftMessageAction;
 	import com.dukascopy.connect.gui.button.ChatNewMessagesButton;
@@ -46,6 +47,7 @@ package com.dukascopy.connect.screens {
 	import com.dukascopy.connect.gui.chat.BubbleButton;
 	import com.dukascopy.connect.gui.chat.ConnectionIndicator;
 	import com.dukascopy.connect.gui.chat.QuestionPanel;
+	import com.dukascopy.connect.gui.chat.ReplyMessagePanel;
 	import com.dukascopy.connect.gui.chat.UploadFilePanel;
 	import com.dukascopy.connect.gui.chatInput.ChatInputAndroid;
 	import com.dukascopy.connect.gui.chatInput.ChatInputIOS;
@@ -89,6 +91,7 @@ package com.dukascopy.connect.screens {
 	import com.dukascopy.connect.sys.auth.Auth;
 	import com.dukascopy.connect.sys.calendar.Calendar;
 	import com.dukascopy.connect.sys.callManager.CallManager;
+	import com.dukascopy.connect.sys.chat.RichMessageDetector;
 	import com.dukascopy.connect.sys.chatManager.ChatManager;
 	import com.dukascopy.connect.sys.chatManager.ForwardingManager;
 	import com.dukascopy.connect.sys.chatManager.typesManagers.AnswersManager;
@@ -237,6 +240,7 @@ package com.dukascopy.connect.screens {
 		private var currentInvoiceAction:AddInvoiceAction;
 		private var cachedChatImages:Vector.<ChatMessageVO>;
 		private var lastFirstMessageNum:int;
+		private var replyPanel:ReplyMessagePanel;
 		protected var backColorClip:Sprite;
 		static public var scannPassTime:Number = 0;
 		
@@ -1110,7 +1114,13 @@ package com.dukascopy.connect.screens {
 		private function onMessageUpdated(msgVO:ChatMessageVO):void {
 			echo("ChatScreen", "onMessageUpdated", "");
 			if (list != null)
-				list.updateItem(msgVO);
+			{
+				list.updateItem(msgVO, true, true);
+				if (ChatManager.getCurrentChat().messageID == msgVO.id)
+				{
+					list.scrollBottom(false);
+				}
+			}
 		}
 		
 		private function refreshList(date:int):void {
@@ -1365,6 +1375,7 @@ package com.dukascopy.connect.screens {
 			chatTop.setStartStreamCallback(startStream);
 			
 			list.S_ITEM_TAP.add(onItemTap);
+			list.S_ITEM_SWIPE.add(onItemSwipe);
 			list.S_ITEM_HOLD.add(onItemHold);
 			list.S_ITEM_DOUBLE_CLICK.add(onItemDoubleClick);
 			list.S_MOVING.add(onListMove);
@@ -1396,6 +1407,71 @@ package com.dukascopy.connect.screens {
 			updateChatInput();
 			
 			UsersManager.S_USERS_FULL_DATA.add(onUserInfoUpdated);
+		}
+		
+		public function onItemSwipe(item:ListItem):void 
+		{
+			addReplyPanel(item.data as ChatMessageVO);
+		}
+		
+		private function addReplyPanel(chatMessageVO:ChatMessageVO):void 
+		{
+			if (replyPanel == null)
+			{
+				replyPanel = new ReplyMessagePanel(onReplyPanelRemove, replayMessageSelect, onReplayResize);
+				replyPanel.setPosition(chatInput.getView().y);
+				if (replyPanel.draw(chatMessageVO, _width))
+				{
+					view.addChild(replyPanel);
+					NativeExtensionController.vibrate();
+				}
+				else
+				{
+					replyPanel.dispose();
+					replyPanel = null;
+				}
+			//	replyPanel.y = chatInput.getView().y - replyPanel.height;
+				
+			}
+			else
+			{
+				replyPanel.draw(chatMessageVO, _width, false);
+				onReplayResize();
+			}
+		}
+		
+		private function onReplayResize():void 
+		{
+			if (isDisposed == false && list != null)
+			{
+				setChatListSize();
+			}
+		}
+		
+		private function replayMessageSelect(message:ChatMessageVO):void 
+		{
+			if (message != null && isDisposed == false && list != null && list.data != null && list.data is Array)
+			{
+				var index:int = (list.data as Array).indexOf(message);
+				if (index != -1)
+				{
+					list.scrollToIndex(index, Config.FINGER_SIZE * 2, 0, true);
+				}
+			}
+		}
+		
+		private function onReplyPanelRemove():void 
+		{
+			if (isDisposed || replyPanel == null)
+			{
+				return;
+			}
+			replyPanel.dispose();
+			if (view.contains(replyPanel))
+			{
+				view.removeChild(replyPanel);
+			}
+			replyPanel = null;
 		}
 		
 		private function startStream():void {
@@ -1580,7 +1656,13 @@ package com.dukascopy.connect.screens {
 				}
 			}*/
 			
-			if (msgVO.typeEnum == ChatMessageType.TEXT && msgVO.text == "")
+			var messageType:String = msgVO.typeEnum;
+			if (messageType == ChatMessageType.REPLY)
+			{
+				messageType = ChatMessageType.TEXT;
+			}
+			
+			if (messageType == ChatMessageType.TEXT && msgVO.text == "")
 				return;
 			var isMine:Boolean = (msgVO.userUID == Auth.uid);
 			var editable:Boolean = (msgVO.created * 1000 > new Date().getTime() - 1800000);
@@ -1588,17 +1670,19 @@ package com.dukascopy.connect.screens {
 			
 			//pending massages
 			if (msgVO.id < 0) {
-				if (msgVO.typeEnum == ChatMessageType.TEXT && isMine) {
+				if (messageType == ChatMessageType.TEXT && isMine) {
 					menuItems.push( { fullLink:Lang.textCopy, id:ChatItemContextMenuItemType.COPY } );
 					menuItems.push( { fullLink:Lang.resendMessage, id:ChatItemContextMenuItemType.RESEND } );
 				}
-				else if (msgVO.typeEnum == ChatMessageType.FILE && isMine) {
+				else if (messageType == ChatMessageType.FILE && isMine) {
 					if (msgVO.systemMessageVO != null && msgVO.systemMessageVO.fileType == ChatSystemMsgVO.FILETYPE_VIDEO) {
 						menuItems.push( { fullLink:Lang.textRemove, id:ChatItemContextMenuItemType.REMOVE } );
 					}
 				}
 			} else {
-				if (msgVO.typeEnum == ChatMessageType.TEXT) {
+				if (messageType == ChatMessageType.TEXT) {
+					
+					menuItems.push( { fullLink:Lang.reply, id:ChatItemContextMenuItemType.REPLY } );
 					
 					if (msgVO.linksArray == null || (msgVO.linksArray.length > 0 && canOpenLink(msgVO)))
 					{
@@ -1607,6 +1691,9 @@ package com.dukascopy.connect.screens {
 					
 					if (isMine && editable)
 						menuItems.push( { fullLink:Lang.textEdit, id:ChatItemContextMenuItemType.EDIT } );
+				}
+				if (messageType == ChatSystemMsgVO.TYPE_CHAT_SYSTEM) {
+					menuItems.push( { fullLink:Lang.textCopy, id:ChatItemContextMenuItemType.COPY } );
 				}
 				
 				var removeExist:Boolean = false;
@@ -1617,7 +1704,7 @@ package com.dukascopy.connect.screens {
 						removeExist = true;
 						menuItems.push( { fullLink:Lang.textRemove, id:ChatItemContextMenuItemType.REMOVE } );
 					}
-					else if (editable && msgVO.typeEnum != ChatSystemMsgVO.TYPE_CHAT_SYSTEM) {
+					else if (editable && messageType != ChatSystemMsgVO.TYPE_CHAT_SYSTEM) {
 						removeExist = true;
 						menuItems.push( { fullLink:Lang.textRemove, id:ChatItemContextMenuItemType.REMOVE } );
 					}
@@ -1628,7 +1715,7 @@ package com.dukascopy.connect.screens {
 					menuItems.push( { fullLink:Lang.textRemove, id:ChatItemContextMenuItemType.REMOVE } );
 				}
 				
-					//public
+				//public
 				if (removeExist == false && ChatManager.getCurrentChat() != null && ChatManager.getCurrentChat().type == ChatRoomType.CHANNEL && 
 					(ChatManager.getCurrentChat().isOwner(Auth.uid) || ChatManager.getCurrentChat().isModerator(Auth.uid)))
 				{
@@ -1646,11 +1733,11 @@ package com.dukascopy.connect.screens {
 					menuItems.push( { fullLink:Lang.sendGift, id:ChatItemContextMenuItemType.SEND_GIFT } );
 				}
 				
-				if (msgVO.typeEnum == ChatMessageType.INVOICE || 
-					msgVO.typeEnum == ChatMessageType.TEXT || 
-					msgVO.typeEnum == ChatMessageType.STICKER || 
+				if (messageType == ChatMessageType.INVOICE || 
+					messageType == ChatMessageType.TEXT || 
+					messageType == ChatMessageType.STICKER || 
 					
-					(msgVO.typeEnum == ChatSystemMsgVO.TYPE_FILE && 
+					(messageType == ChatSystemMsgVO.TYPE_FILE && 
 					msgVO.systemMessageVO != null && 
 					(msgVO.systemMessageVO.fileType == ChatSystemMsgVO.FILETYPE_IMG || msgVO.systemMessageVO.fileType == ChatSystemMsgVO.FILETYPE_IMG_CRYPTED)))
 				{
@@ -1786,6 +1873,11 @@ package com.dukascopy.connect.screens {
 				action = null;
 				switch(menuItems[i].id)
 				{
+					case ChatItemContextMenuItemType.REPLY:
+					{
+						action = new ReplyMessageAction(msgVO, addReplyPanel);
+						break;
+					}
 					case ChatItemContextMenuItemType.FORWARD:
 					{
 						action = new ForwardMessageAction(msgVO);
@@ -1882,6 +1974,7 @@ package com.dukascopy.connect.screens {
 				verificationButton.deactivate();
 			chatTop.deactivate();
 			list.S_ITEM_TAP.remove(onItemTap);
+			list.S_ITEM_SWIPE.remove(onItemSwipe);
 			list.S_ITEM_DOUBLE_CLICK.remove(onItemDoubleClick);
 			list.S_ITEM_HOLD.remove(onItemHold);
 			list.S_MOVING.remove(onListMove);
@@ -2086,6 +2179,12 @@ package com.dukascopy.connect.screens {
 							}
 						}
 					}
+				}
+			}
+			if (lhz == HitZoneType.REPLY_MESSAGE && cmsgVO.systemMessageVO != null && cmsgVO.systemMessageVO.replayMessage != null && cmsgVO.systemMessageVO.replayMessage.target != -1) {
+				if (list != null)
+				{
+					list.scrollToItem("num", cmsgVO.systemMessageVO.replayMessage.target, Config.FINGER_SIZE, true);
 				}
 			}
 			if (lhz == HitZoneType.BOT_MENU_ACTION) {
@@ -3214,6 +3313,7 @@ package com.dukascopy.connect.screens {
 					Auth.bank_phase == BankPhaze.DONATE ||
 					Auth.bank_phase == BankPhaze.SOLVENCY_CHECK ||
 					Auth.bank_phase == BankPhaze.NOTARY ||
+					Auth.bank_phase == BankPhaze.WIRE_DEPOSIT ||
 					Auth.bank_phase == BankPhaze.RTO_STARTED)
 				{
 					showVerificationButton("show_phaze");
@@ -3621,6 +3721,13 @@ package com.dukascopy.connect.screens {
 			if (list.innerHeight + list.getBoxY() > list.height)
 				inBotomPosition = false;
 			bottomY = chatInput.getView().y;
+			
+			if (replyPanel != null)
+			{
+				replyPanel.setPosition(chatInput.getView().y);
+				bottomY -= replyPanel.getHeight();
+			}
+			
 			bottomY -= getAnswersOffset(bottomY);
 			
 			bottomY = updateButtonsPositions(bottomY);
@@ -3798,10 +3905,32 @@ package com.dukascopy.connect.screens {
 				}
 				if (String(value).indexOf(Config.BOUNDS) == -1)
 					savedText = value;
-				ChatManager.sendMessage(value as String, null, null, false, -1, setSavedTextToInput);
+				
+				if (replyPanel != null && replyPanel.getMessage() != null)
+				{
+					value = addReplay(value);
+					replyPanel.removePanel();
+				}
+				
+				var messageId:Number = ChatManager.sendMessage(value as String, null, null, false, -1, setSavedTextToInput);
+				
+				if (RichMessageDetector.detectLink(value))
+				{
+					RichMessageDetector.lastSentMessage = messageId;
+				}
 			} else if (type == ChatMessageType.VOICE)
 				ChatManager.sendVoice(value as LocalSoundFileData);
 			return true;
+		}
+		
+		private function addReplay(text:String):String 
+		{
+			if (text != null)
+			{
+				var result:String = ChatSystemMsgVO.REPLAY_START_BOUND + 'quote-type=\" \" author=\"' + replyPanel.getUser() + '\" target="' + replyPanel.getReplayNum() + '"}' + replyPanel.getMessage() + ChatSystemMsgVO.REPLAY_END_BOUND + "\n" + text;
+				return result;
+			}
+			return "";
 		}
 		
 		private function setSavedTextToInput():void {
@@ -3920,6 +4049,11 @@ package com.dukascopy.connect.screens {
 			
 			NativeExtensionController.onChatScreenClosed();
 			
+			if (replyPanel != null)
+			{
+				replyPanel.dispose();
+				replyPanel = null;
+			}
 			if (currentInvoiceAction != null)
 			{
 				currentInvoiceAction.S_ACTION_SUCCESS.remove(invoiceSent);

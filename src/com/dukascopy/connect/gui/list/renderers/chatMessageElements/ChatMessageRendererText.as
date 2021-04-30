@@ -206,7 +206,7 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 			return result;
 		}
 		
-		public function draw(messageVO:ChatMessageVO, maxWidth:int, listItem:ListItem = null, securityKey:Array = null):void {
+		public function draw(messageVO:ChatMessageVO, maxWidth:int, listItem:ListItem = null, securityKey:Array = null, minWidth:int = -1):void {
 			updateBubbleColors(messageVO);
 			var isMine:Boolean = Auth.uid === messageVO.userUID;
 			var messageToWorkWith:ChatMessageVO = messageVO;
@@ -289,6 +289,11 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 					uncrypted.parent.removeChild(uncrypted);
 				if (crypted.parent!=null)
 					crypted.parent.removeChild(crypted);
+			}
+			
+			if (minWidth != -1)
+			{
+				bgW = Math.max(minWidth, bgW);
 			}
 			
 			boxBg.width = bgW;

@@ -147,6 +147,11 @@ package com.dukascopy.connect.gui.button
 					clipData = new RoadmapStepData(RoadmapStepData.STEP_DEPOSIT,             Lang.roadmap_initialDeposit);
 					break;
 				}
+				case BankPhaze.WIRE_DEPOSIT:
+				{
+					clipData = new RoadmapStepData(RoadmapStepData.STEP_DEPOSIT,             Lang.roadmap_initialDeposit);
+					break;
+				}
 				case BankPhaze.DOCUMENT_SCAN:
 				{
 					clipData = new RoadmapStepData(RoadmapStepData.STEP_DOCUMENT_SCAN,       Lang.roadmap_documentScan);

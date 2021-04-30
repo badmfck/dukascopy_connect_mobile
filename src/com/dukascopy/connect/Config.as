@@ -85,8 +85,8 @@ package com.dukascopy.connect {
 
         /* TEST * /
 		static public const URL_PHP_CORE_SERVER:String = 'https://loki.telefision.com/master/';
-		static public const URL_WS_HOST_1:String = "wss://dccapi.telefision.com";
-		static public const URL_WS_HOST_2:String = "wss://dccapi.telefision.com";
+		static public const URL_WS_HOST_1:String = "wss://loki.telefision.com/wss/";
+		static public const URL_WS_HOST_2:String = "wss://loki.telefision.com/wss/";
 		static public const URL_MEDIA_VI:String = "rtmp://vi.telefision.com/recognition";
 		static public const URL_MEDIA_VIDID:String = "rtmp://vi.telefision.com/recognition";
 		static public const URL_FXCOMM_PROFILE:String = "https://www.php-test.site.dukascopy.com/fxcomm/profile/?nickname=";
@@ -420,7 +420,7 @@ package com.dukascopy.connect {
         }
 
         static private var _dobule_margin:int = -1;
-
+ 
         static public function get DOUBLE_MARGIN():int {
             if (_margin < 0)
                 var f:int = MARGIN;

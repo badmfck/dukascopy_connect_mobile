@@ -89,6 +89,7 @@ package com.dukascopy.connect.type
 		static public const BUTTON:String = "button";
 		static public const LAUNCH_PLATFORM:String = "launchPlatform";
 		static public const REPLY:String = "reply";
+		static public const REPLY_MESSAGE:String = "replyMessage";
 		
 		public function HitZoneType() { }
 	}

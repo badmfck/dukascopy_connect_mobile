@@ -213,6 +213,8 @@ package com.dukascopy.connect.screens {
 		private var userEmail:String;
 		private var userName:String;
 		private var systemMessageShown:Boolean;
+		private var needEnterName:Boolean;
+		private var introMessageSent:Boolean;
 		protected var backColorClip:Sprite;
 		
 		public static const MAX_MESSAGE_LENGHT:int = 2000;
@@ -615,7 +617,6 @@ package com.dukascopy.connect.screens {
 		
 		private function onGuestUidLoaded(data:String, error:Boolean):void 
 		{
-			error = true;
 			if (_isDisposed == true)
 			{
 				return;
@@ -627,7 +628,44 @@ package com.dukascopy.connect.screens {
 			else
 			{
 				Auth.setGuestUID(data);
-				startGuestChat(data);
+				
+				Store.load(Store.GUEST_NAME, onGuestNameLoaded);
+			}
+		}
+		
+		private function onGuestNameLoaded(data:String, error:Boolean):void 
+		{
+			if (_isDisposed == true)
+			{
+				return;
+			}
+			if (error == true || data == null || data == "")
+			{
+				needEnterName = true;
+				startGuestChat(Auth.uid);
+			}
+			else
+			{
+				userName = data;
+				Store.load(Store.GUEST_MAIL, onGuestMailLoaded);
+			}
+		}
+		
+		private function onGuestMailLoaded(data:String, error:Boolean):void 
+		{
+			if (_isDisposed == true)
+			{
+				return;
+			}
+			if (error == true || data == null || data == "")
+			{
+				needEnterName = true;
+				startGuestChat(Auth.uid);
+			}
+			else
+			{
+				userEmail = data;
+				startGuestChat(Auth.uid);
 			}
 		}
 		
@@ -1814,13 +1852,11 @@ package com.dukascopy.connect.screens {
 				imagesUploaders[imagesUploaders.length - 1].x = Config.MARGIN;
 			}
 			repositionImageUploaders();
-			
-			
 		}
 		
 		private function addStartSystemMessage():void 
 		{
-			if (list.data && list.data.length > 0)
+			if (list.data && list.data.length > 0 && needEnterName == false)
 				return;
 			
 			if (systemMessageShown)
@@ -2090,13 +2126,18 @@ package com.dukascopy.connect.screens {
 			}
 			
 			
-			if (introInfoReady() == false)
+			if (introInfoReady() == false || needEnterName)
 			{
 				if (type == ChatMessageType.TEXT)
 				{
 					processIntroInfo(value);
 				}
 				return true;
+			}
+			
+			if (introMessageSent == false && userName != null && userEmail != null)
+			{
+				sendSystemIntroMessage(userName, userEmail);
 			}
 			
 			savedText = null;
@@ -2212,18 +2253,29 @@ package com.dukascopy.connect.screens {
 					list.scrollBottom();
 					clearUnreaded();
 				}
-				
-				sendSystemIntroMessage();
+				needEnterName = false;
+				sendSystemIntroMessage(userName, userEmail);
 			}
 		}
 		
-		private function sendSystemIntroMessage():void 
+		private function sendSystemIntroMessage(user:String, mail:String):void 
 		{
+			if (introMessageSent == true)
+			{
+				return;
+			}
+			introMessageSent = true;
+			
+			trace("!!!!!!!!!!!!!!!!!!!!----------");
+			
+			Store.save(Store.GUEST_NAME, user);
+			Store.save(Store.GUEST_MAIL, mail);
+			
 			var message:Object = new Object();
 			message.title = userName + ", " + userEmail;
 			message.additionalData = new Object();
-			message.additionalData.name = userName;
-			message.additionalData.mail = userEmail;
+			message.additionalData.name = user;
+			message.additionalData.mail = mail;
 			message.additionalData.uid = Auth.uid;
 			message.type = "credentials";
 			message.method = "credentials";

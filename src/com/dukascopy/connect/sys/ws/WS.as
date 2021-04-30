@@ -247,8 +247,10 @@ import flash.utils.getTimer;
 			}
 
 			if(!Config.PLATFORM_APPLE && !Config.PLATFORM_ANDROID ){
-				if(!Config.isTest())
+				if (!Config.isTest())
+				{
 					currentHost="ws://ws.site.dukascopy.com:8080";
+				}
 			}
 
 

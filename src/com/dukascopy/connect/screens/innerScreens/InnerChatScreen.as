@@ -313,6 +313,11 @@ package com.dukascopy.connect.screens.innerScreens {
 		}
 		
 		private function updateUnreaded(refreshList:Boolean = true):void {
+			if (tabs == null || list == null)
+			{
+				return;
+			}
+			
 			num++;
 			var exist:Boolean = false;
 			var newMessagesChats:int = NewMessageNotifier.getUnreaded(NewMessageNotifier.type_LATEST, ChatRoomType.PRIVATE + "," + ChatRoomType.GROUP);
@@ -512,6 +517,7 @@ package com.dukascopy.connect.screens.innerScreens {
 		
 		private function resetPrivateData():void {
 			privateData = null;
+			hardListUpdate();
 		}
 		
 		private function onServerDataLoadStart():void {
@@ -897,7 +903,14 @@ package com.dukascopy.connect.screens.innerScreens {
 				doLoadLatests = true;
 				return;
 			}
+			
 			doLoadLatests = false;
+			
+			hardListUpdate();
+		}
+		
+		private function hardListUpdate():void 
+		{
 			allData = null;
 			privateData = null;
 			groupData = null;
@@ -967,6 +980,11 @@ package com.dukascopy.connect.screens.innerScreens {
 		}
 		
 		private function setListData():void {
+			if (list == null)
+			{
+				return;
+			}
+			
 			i++;
 			echo("InnerChatScreen", "setListData", "");
 			if (list.getScrolling() == true) {
@@ -983,7 +1001,7 @@ package com.dukascopy.connect.screens.innerScreens {
 				if (listBoxY < 0) {
 					storedTabListPosition[selectedFilter].listBoxY = list.getBoxY();
 					var fli:ListItem = list.getFirstVisibleItem();
-					if (fli != null) {
+					if (fli != null && list.getFirstVisibleItem() != null) {
 						storedTabListPosition[selectedFilter].item = list.getFirstVisibleItem().data;
 						storedTabListPosition[selectedFilter].offset = fli.y + storedTabListPosition[selectedFilter].listBoxY;
 					}

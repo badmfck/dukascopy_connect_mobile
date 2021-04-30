@@ -397,6 +397,7 @@ package com.dukascopy.connect.sys.nativeExtensionController {
 				}
 				case "webViewClose": 
 				{
+					echo("webview: webViewClose", e.level);
 					S_WEB_VIEW_CLOSED.invoke(e.level);
 					break;
 				}
@@ -495,6 +496,7 @@ package com.dukascopy.connect.sys.nativeExtensionController {
 				}
 				case "webViewSignal": {
 					
+					echo("webview: webViewSignal", e.level);
 					var webViewData:Object;
 					try
 					{
@@ -507,7 +509,7 @@ package com.dukascopy.connect.sys.nativeExtensionController {
 					}
 					catch (error:Error)
 					{
-						
+						ApplicationErrors.add();
 					}
 					
 					S_MRZ_STOPPED.invoke();
@@ -965,7 +967,7 @@ package com.dukascopy.connect.sys.nativeExtensionController {
 			{
 				navigateToURL(new URLRequest("app-settings:root=Privacy&path=LOCATION"));
 			}
-			else{
+			else if(Config.PLATFORM_ANDROID){
 				MobileGui.androidExtension.showAppSettings();
 			}
 		}
@@ -1042,14 +1044,17 @@ package com.dukascopy.connect.sys.nativeExtensionController {
 			}
 		}
 		
-		static public function showWebView(url:String, title:String, currentScreen:Class = null, currentScreenData:Object = null):void 
+		static public function showWebView(url:String, title:String, currentScreen:Class = null, currentScreenData:Object = null):Boolean 
 		{
+			echo("webview: showWebView", url);
 			if (Config.PLATFORM_ANDROID)
 			{
 				if (MobileGui.androidExtension != null)
 					MobileGui.androidExtension.showWebView(url, title, open_link_in_browser_mark);
 				else
 					ApplicationErrors.add();
+				
+				return true;
 			}
 			else
 			{
@@ -1063,10 +1068,12 @@ package com.dukascopy.connect.sys.nativeExtensionController {
 						}
 					);
 			}
+			return false;
 		}
 		
 		static public function callWebView(data:String, clear:Boolean):void 
 		{
+			echo("webview: callWebView", data);
 			if (MobileGui.androidExtension != null)
 				MobileGui.androidExtension.callwWebView(data, clear);
 		}
@@ -1349,6 +1356,7 @@ package com.dukascopy.connect.sys.nativeExtensionController {
 		
 		static public function showWebViewReaction(link:String, action:String, id:String):void 
 		{
+			echo("webview: showWebViewReaction", link);
 			if (Config.PLATFORM_ANDROID == true)
 			{
 				MobileGui.androidExtension.showWebViewReaction(link, action, id, "#" + (Style.color(Style.COLOR_BACKGROUND)).toString(16), "#" + (Style.color(Style.COLOR_ICON_SETTINGS)).toString(16));
@@ -1390,6 +1398,14 @@ package com.dukascopy.connect.sys.nativeExtensionController {
 		{
 			if (MobileGui.androidExtension != null)
 				MobileGui.androidExtension.stopCallSound();
+		}
+		
+		static public function detectLink(message:String, messageId:Number):void 
+		{
+			if (MobileGui.androidExtension != null)
+			{
+				MobileGui.androidExtension.detectLink(message, messageId);
+			}
 		}
 		
 		static private function onFileSelect(e:Event):void 

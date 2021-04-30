@@ -441,7 +441,7 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 				isSentByMe = (data.forwardedFromUserID == Auth.uid);
 		}
 		
-		public function draw(messageData:ChatMessageVO, itemWidth:int, listItem:ListItem = null, securityKey:Array = null):void {
+		public function draw(messageData:ChatMessageVO, itemWidth:int, listItem:ListItem = null, securityKey:Array = null, minWidth:int = -1):void {
 			data = messageData.systemMessageVO.invoiceVO;
 			
 			if (data == null)

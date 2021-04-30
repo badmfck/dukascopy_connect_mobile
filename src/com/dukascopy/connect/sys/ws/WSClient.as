@@ -133,7 +133,7 @@ import com.dukascopy.connect.MobileGui;
 			if (key == "web")
 			{
 				data.guestUID = Auth.uid;
-				data.guestName = "test name";
+				data.guestName = "Guest";
 				isGuestWasConnected=true;
 				lastGuestUID=Auth.uid;
 			}
@@ -147,7 +147,6 @@ import com.dukascopy.connect.MobileGui;
 					isGuestWasConnected=false;
 					PHP.call_statVI("switchGuest",lastGuestUID);
 				}
-
 			}
 			
 			send('auth', data );
@@ -375,7 +374,9 @@ import com.dukascopy.connect.MobileGui;
 			send("addAnswerInvoice", { chatUID:chatUID, text:invoiceString } );
 		}
 		
-		static public function call_sendTextMessage(chatUID:String, text:String, existingMid:Number = -1, addLocallyOnNetworkFailed:Boolean = true, senderId:String = null, doNotSendToWS:Boolean = false, userUID:String = null):Boolean {
+		static public function call_sendTextMessage(chatUID:String, text:String, existingMid:Number = -1, 
+													addLocallyOnNetworkFailed:Boolean = true, senderId:String = null, 
+													doNotSendToWS:Boolean = false, userUID:String = null, messageId:Object = null):Boolean {
 			GD.S_DEBUG_WS.invoke("WSC: trying to send msg");
 			wasMessage = true;
 			var needBackMessage:Boolean = false;
@@ -405,7 +406,12 @@ import com.dukascopy.connect.MobileGui;
 
 			if (needBackMessage == false)
 				return networkSendResult;
-
+			
+			if (networkSendResult == true && messageId != null)
+			{
+				messageId.id = mid;
+			}
+			
 			if (networkSendResult == true || addLocallyOnNetworkFailed == true) {
 				if (existingMid == -1) {
 					if (senderId != null) {

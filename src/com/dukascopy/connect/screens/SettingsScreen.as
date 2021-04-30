@@ -13,6 +13,7 @@ package com.dukascopy.connect.screens {
 	import com.dukascopy.connect.data.filter.FilterCategory;
 	import com.dukascopy.connect.data.screenAction.BaseAction;
 	import com.dukascopy.connect.data.screenAction.IScreenAction;
+	import com.dukascopy.connect.data.screenAction.customActions.CallSettingsAction;
 	import com.dukascopy.connect.data.screenAction.customActions.OpenUnjailPopupAction;
 	import com.dukascopy.connect.data.screenAction.customActions.SendTradeNotesRequestAction;
 	import com.dukascopy.connect.gui.lightbox.UI;
@@ -35,6 +36,7 @@ package com.dukascopy.connect.screens {
 	import com.dukascopy.connect.screens.dialogs.bottom.ListSelectionPopup;
 	import com.dukascopy.connect.screens.dialogs.bottom.ShareLinkPopup;
 	import com.dukascopy.connect.screens.dialogs.bottom.TransactionFilterPopup;
+	import com.dukascopy.connect.screens.dialogs.bottom.implementation.BottomConfirmPopup;
 	import com.dukascopy.connect.screens.dialogs.calendar.SelectDatePopup;
 	import com.dukascopy.connect.screens.dialogs.gifts.FlowerSticker;
 	import com.dukascopy.connect.screens.dialogs.paymentDialogs.FeedbackPopup;
@@ -1349,6 +1351,36 @@ package com.dukascopy.connect.screens {
 		}
 		
 		private function onLogoutTap():void {
+			
+			
+			
+			/*var popupData:PopupData = new PopupData();
+			var action:IScreenAction = new CallSettingsAction();
+			action.setData(Lang.openSettings);
+			popupData.action = action;
+			popupData.title = "Title";
+			popupData.text = "Need camera permission";
+			ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, BottomPopupScreen, popupData);
+			return;*/
+			
+			
+			/*ServiceScreenManager.showScreen(
+				ServiceScreenManager.TYPE_SCREEN,
+				BottomConfirmPopup,
+				{
+					rejectButton:Lang.openSettings,
+					callback:openSettings,
+					title:"Title",
+					message:"Need camera permission"
+				}
+			);
+			return;*/
+			
+			
+			
+			
+			
+			
 			/*var popupData:PopupData = new PopupData();
 			popupData.title = Lang.accountStatement;
 			popupData.data = new Object();
@@ -1357,6 +1389,11 @@ package com.dukascopy.connect.screens {
 			return;*/
 			echo("SettingsScreen", "onLogoutTap");
 			DialogManager.alert(Lang.textWarning, Lang.areYouSureLogout, onLogoutDialogClose, Lang.logout, Lang.textCancel);
+		}
+		
+		private function openSettings():void 
+		{
+			
 		}
 		
 		private function onTimeSelected(val:int, data:Object, timeData:Object):void 

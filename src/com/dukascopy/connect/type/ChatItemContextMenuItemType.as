@@ -15,6 +15,7 @@ package com.dukascopy.connect.type {
 		static public const SEND_GIFT:String = "sendGift";
 		static public const ENLARGE:String = "enlarge";
 		static public const MINIMIZE:String = "minimize";
+		static public const REPLY:String = "reply";
 		
 		public function ChatItemContextMenuItemType() { }
 	}

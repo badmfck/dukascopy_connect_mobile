@@ -30,7 +30,7 @@ package com.dukascopy.connect.gui.list {
 		private var _y:int;
 		
 		private var fieldLinkNames:Array;
-		private var wasLoading:Boolean;
+		public var wasLoading:Boolean;
 		private var loadedImages:Array = [];
 		private var unavaiablesImages:Array = [];
 		private var cachedImagesCounter:int = 0;
@@ -147,6 +147,7 @@ package com.dukascopy.connect.gui.list {
 								imageAvaiable = loadCachedImage(url, fieldLinkNames[n]);
 							}
 							if (imageAvaiable == false) {
+								trace("-- add", url);
 								unavaiablesImages.push([url,fieldLinkNames[n]]);
 							}
 							else
@@ -293,18 +294,22 @@ package com.dukascopy.connect.gui.list {
 				return;
 			if (wasLoading == true)
 				return;
-			wasLoading = true;
+			
 			var url:String;
 			var l:int = unavaiablesImages.length;
+			
 			for (var n:int = 0; n < l; n++) {
 				if (unavaiablesImages != null && unavaiablesImages[n] != null)
+				{
 					url = unavaiablesImages[n][0];
+				}
 				if (url == null || url.length == 0) {
 					unavaiablesImages.splice(n, 1);
 					n--;
 					l--;
 					continue;
 				}
+				wasLoading = true;
 				loadImage(url);
 			}
 		}
@@ -334,20 +339,20 @@ package com.dukascopy.connect.gui.list {
 				onImageLoaded(imgName);
 		}
 		
-		public function addImageFieldForLoading(name:String):void {
+		public function addImageFieldForLoading(name:String, ignore:Boolean = false):void {
 			var i:int;
 			var l:int;
 			if (fieldLinkNames != null) {
 				l = fieldLinkNames.length;
 				for (i = 0; i < l; i++) 
-					if (fieldLinkNames[i] == name)
+					if (fieldLinkNames[i] == name && !ignore)
 						return;
 			}
 			var wasInUnavaiable:Boolean = false;
 			if (unavaiablesImages != null) {
 				l = unavaiablesImages.length;
 				for (i = 0; i < l; i++) {
-					if (unavaiablesImages[i][1] == name) {
+					if (unavaiablesImages[i] != null && unavaiablesImages[i] is Array && (unavaiablesImages[i] as Array).length > 1 && unavaiablesImages[i][1] == name && !ignore) {
 						wasInUnavaiable = true;
 						return;
 					}
@@ -357,11 +362,15 @@ package com.dukascopy.connect.gui.list {
 				var tmp:Array = name.split(".");
 				var obj:Object = data;
 				for (var j:int = 0; j < tmp.length - 1; j++)
-					obj = obj[tmp[i]];
-				if (obj[tmp[j]] is Function)
-					unavaiablesImages.push([obj[tmp[j]](), name]);
-				else
-					unavaiablesImages.push([obj[tmp[j]], name]);
+				{
+					if (tmp[j] in obj)
+					{
+						if (obj[tmp[j]] is Function)
+							unavaiablesImages.push([obj[tmp[j]](), name]);
+						else
+							unavaiablesImages.push([obj[tmp[j]], name]);
+					}
+				}
 			}
 			fieldLinkNames ||= [];
 			fieldLinkNames.push(name);

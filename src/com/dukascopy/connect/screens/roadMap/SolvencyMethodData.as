@@ -15,6 +15,7 @@ package com.dukascopy.connect.screens.roadMap
 		static public const METHOD_CARD_DEPOSIT:String = "methodCardDeposit";
 		static public const METHOD_CRYPTO_DEPOSIT:String = "methodCryptoDeposit";
 		static public const METHOD_ASK_FRIEND:String = "methodAskFriend";
+		static public const METHOD_WIRE_DEPOSIT:String = "methodWireDeposit";
 		
 		public function SolvencyMethodData() 
 		{

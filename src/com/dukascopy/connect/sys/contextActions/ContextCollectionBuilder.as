@@ -146,7 +146,7 @@ package com.dukascopy.connect.sys.contextActions {
 					if (itemData == null)
 						break;
 					if ((itemData is ChatMessageVO))
-						actions.push(new ContextAction(HitZoneType.REPLY, Lang.reply.toUpperCase(), 0x93A2AE, ReplyIcon ));
+						actions.push(new ContextAction(HitZoneType.REPLY, Lang.reply.toUpperCase(), 0x93A2AE, ReplyIcon, ContextAction.TYPE_SWIPE ));
 					break;
 				}
 			}
