@@ -2739,6 +2739,9 @@ package com.dukascopy.connect.sys.bankManager {
 					}, {
 						text:"lang.menuInvestmentPortfolio",
 						action:"nav:investmentsList"
+					}, {
+						text:"lang.menuInvestmentCurrency",
+						action:"nav:investmentDisclaimer"
 					}
 				],
 				buttons: [

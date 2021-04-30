@@ -188,6 +188,7 @@ package com.dukascopy.connect.sys.bankManager {
 		static public var menuFromApplePay:String = "Apple Pay";
 		static public var menuBankTransfer:String = "Bank transfer";
 		static public var menuMainCurrency:String = "Select main currency";
+		static public var menuInvestmentCurrency:String = "Select investment currency";
 		static public var menuCardTransfer:String = "Card top up";
 		static public var menuHistory:String = "History";
 		static public var menuMCA:String = "MCA";

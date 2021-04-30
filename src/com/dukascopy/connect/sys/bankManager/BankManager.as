@@ -2214,8 +2214,11 @@ package com.dukascopy.connect.sys.bankManager {
 					needReturn = true;
 				}
 				if (lastBankMessageVO.item.type == "investments") {
-					if (investmentExist == false)
+					if (investmentExist == false) {
 						lastBankMessageVO.menu[1].disabled = true;
+					} else {
+						lastBankMessageVO.menu[3].disabled = true;
+					}
 				}
 				if (lastBankMessageVO.item.type == "walletSelect" || lastBankMessageVO.item.type == "walletSelectAll" || lastBankMessageVO.item.type == "walletSelectWithoutTotal") {
 					if (accountInfo == null) {
