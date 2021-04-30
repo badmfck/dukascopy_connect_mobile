@@ -563,6 +563,7 @@ package com.dukascopy.langs {
 		public static var cardOperation:String = "Card operation";
 		public static var TEXT_INVEST:String = "INVEST";
 		public static var TEXT_MERCHANT_TRANSFER:String = "Merchant Transfer";
+		public static var fundsReceived:String = "Funds received:";
 
 		public static var noCardsPlastic:String = "No Plastic cards";
 		public static var noCardsVirtual:String = "No Virtual cards";

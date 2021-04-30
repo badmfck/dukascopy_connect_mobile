@@ -1753,7 +1753,7 @@ package com.dukascopy.connect.sys.bankManager {
 				tempObject.bankBot = true;
 				tempObject.acc = history[i].instrument;
 				tempObject.amount = Number(history[i].quantity);
-				tempObject.desc = "Funds Invested:\n" + (Number(history[i].price) * Number(history[i].quantity)).toFixed(2) + " " + history[i].currency;
+				tempObject.desc = Lang.fundsReceived + "\n" + Number(history[i].pl).toFixed(2) + " " + history[i].currency;
 				tempObject.amountEnd = history[i].price;
 				tempObject.amountEndCurrency = history[i].currency;
 				tempObject.amountEndPreText = "Rate: ";
