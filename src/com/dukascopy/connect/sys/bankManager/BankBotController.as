@@ -1844,7 +1844,10 @@ package com.dukascopy.connect.sys.bankManager {
 		static private function onTradingAccountOpened(respondData:Object, hash:String):void {
 			if (preCheckForErrors(respondData, hash, null, "paymentsErrorDataNull") == true)
 				return;
-			sendBlock("openTradingAccountConfirmed");
+			if (respondData.success == true)
+				sendBlock("openTradingAccountConfirmed");
+			else
+				sendBlock("payError", Lang.tradingAccOpeningWait);
 		}
 		
 		static private function onInvestmentCurrencySetted(respondData:Object):void {

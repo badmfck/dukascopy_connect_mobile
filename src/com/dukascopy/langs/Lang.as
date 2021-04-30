@@ -2287,6 +2287,7 @@ package com.dukascopy.langs {
 		static public var max:String = "Max";
 		static public var monthlyFee:String = "Monthly fee";
 		static public var imageCorrupted:String = "The image is deleted or corrupted";
+		static public var tradingAccOpeningWait:String = "You have sent a request earlier today. Our representative will contact you shortly. Kindly wait";
 		
 		static public function updateKeys(keys:Object):void {
 			for (var n:String in keys) {
