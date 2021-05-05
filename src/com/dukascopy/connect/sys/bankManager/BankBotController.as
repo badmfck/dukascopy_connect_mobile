@@ -2250,7 +2250,7 @@ package com.dukascopy.connect.sys.bankManager {
 					tempObject.transaction = history[i];
 				} else if (history[i].TYPE == "INVESTMENT") {
 					if (accountNumber != null && accountNumber != "") {
-						if (history[i].FROM.charAt(0).toLowerCase() == "c")
+						if (history[i].FROM != null && history[i].FROM != "" && history[i].FROM.charAt(0).toLowerCase() == "c")
 							tempObject.mine = true;
 						else
 							tempObject.mine = false;
