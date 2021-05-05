@@ -1771,7 +1771,7 @@ package com.dukascopy.connect.sys.bankManager {
 			if ("textForUser" in giftData.additionalData == true && giftData.additionalData.textForUser != null)
 				msg = giftData.additionalData.textForUser.replace("@1", giftData.customValue  + " " + currency).replace("@2", ((giftData.user != null) ? giftData.user.getDisplayName() : "N/A"));
 			else
-				msg = "Send " + giftData.customValue + " " + currency + " to " + ((giftData.user != null) ? giftData.user.getDisplayName() : "N/A");
+				msg = Lang.sendMoneyTo.replace("@1", giftData.customValue + " " + currency).replace("@2", ((giftData.user != null) ? giftData.user.getDisplayName() : "N/A"));
 			var baVO:BankMessageVO = new BankMessageVO(msg);
 			baVO.setMine();
 			invokeAnswerSignal(baVO); 
@@ -1799,7 +1799,7 @@ package com.dukascopy.connect.sys.bankManager {
 			if ("textForUser1" in giftData.additionalData == true && giftData.additionalData.textForUser != null)
 				msg = giftData.additionalData.textForUser.replace("@1", giftData.customValue  + " " + currency).replace("@2", giftData.credit_account_number);
 			else
-				msg = "Send " + giftData.customValue + " " + currency + " to " + giftData.credit_account_number;
+				msg = Lang.sendMoneyTo.replace("@1", giftData.customValue + " " + currency).replace("@2", giftData.credit_account_number);
 			var baVO:BankMessageVO = new BankMessageVO(msg);
 			baVO.setMine();
 			invokeAnswerSignal(baVO);

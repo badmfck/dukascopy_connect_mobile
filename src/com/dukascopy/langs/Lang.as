@@ -195,6 +195,7 @@ package com.dukascopy.langs {
 		static public var selectUsers:String = "Select users:";
 		static public var selectUser:String = "Select user:";
 		static public var sendMoney:String = "Send Money";
+		static public var sendMoneyTo:String = "Send @1 to @2";
 		static public var sendInvoice:String = "Send Invoice";
 		static public var sendInvoiceTo:String = " send invoice to ";
 		static public var sendVoice:String = "Send Voice";
