@@ -1754,7 +1754,7 @@ package com.dukascopy.connect.sys.bankManager {
 				tempObject.acc = history[i].instrument;
 				tempObject.amount = Number(history[i].quantity);
 				if (history[i].type.toLowerCase() == "sell")
-					tempObject.desc = Lang.fundsReceived + " " + Math.abs((Number(history[i].price) * Number(history[i].quantity))).toFixed(2) + " " + history[i].currency + "\n" + Lang.fundsPL + " " + Number(history[i].pl).toFixed(2) + " " + history[i].currency;
+					tempObject.desc = Lang.fundsReceived + " " + Math.abs((Number(history[i].price) * Number(history[i].quantity))).toFixed(2) + " " + history[i].currency + "\n" + Lang.fundsPL + " " + ((Number(history[i].pl) > 0) ? "+" : "") + Number(history[i].pl).toFixed(2) + " " + history[i].currency;
 				else
 					tempObject.desc = Lang.fundsInvested + " " + (Number(history[i].price) * Number(history[i].quantity)).toFixed(2) + " " + history[i].currency;
 				tempObject.amountEnd = history[i].price;
