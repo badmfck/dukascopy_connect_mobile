@@ -975,11 +975,11 @@ package com.dukascopy.connect.sys.bankManager {
 				} else if (data.type == "paymentsInvoiceThirdparty") {
 					ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, ScreenAddInvoiceDialog, {callback:callBackAddInvoiceThirdparty, thirdparty:true}, 0.5, 0.5, 3);
 				} else if (data.type == "paymentsSelectContact") {
-					DialogManager.showDialog(SelectContactScreen, { title:Lang.selectContacts, callback:onSelectContact, searchText:Lang.TEXT_SEARCH_CONTACT, data:data }, ServiceScreenManager.TYPE_SCREEN );
+					DialogManager.showDialog(SelectContactScreen, { title:Lang.selectContacts, callback:onSelectContact, searchText:Lang.TEXT_SEARCH_CONTACT, data:data, dialog:true }, ServiceScreenManager.TYPE_SCREEN );
 				} else if (data.type == "paymentsSelectTemplate") {
 					DialogManager.showDialog(TransactionPresetsPopup, { transactionTemplates:transactionTemplates, data:data, deleteTemplate:deleteTemplate, callback:onSelectTemplate } );
 				} else if (data.type == "cryptoSelectContact") {
-					DialogManager.showDialog(SelectContactScreen, { title:Lang.selectContacts, callback:onSelectContactForCrypto, searchText:Lang.TEXT_SEARCH_CONTACT, data:data }, ServiceScreenManager.TYPE_SCREEN );
+					DialogManager.showDialog(SelectContactScreen, { title:Lang.selectContacts, callback:onSelectContactForCrypto, searchText:Lang.TEXT_SEARCH_CONTACT, data:data, dialog:true  }, ServiceScreenManager.TYPE_SCREEN );
 				} else if (data.type == "walletSelectCurrency") {
 					PayManager.callGetSystemOptions(
 						function ():void {
