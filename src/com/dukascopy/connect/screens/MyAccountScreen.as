@@ -532,17 +532,20 @@ package com.dukascopy.connect.screens {
 		private function onHistoryTradesLoaded(history:Array):void {
 			if (coinStatIndex == -1)
 				return;
-			list.getStock()[coinStatIndex].data.opened = true;
-			openedItems ||= [];
-			openedItems.push(list.getStock()[coinStatIndex].data);
-			list.updateItemByIndex(coinStatIndex);
 			var l:int = history.length;
 			if (l == 0)
 				return;
+			list.getStock()[coinStatIndex].data.opened = true;
+			list.getStock()[coinStatIndex].data.openedCount = l;
+			openedItems ||= [];
+			openedItems.push(list.getStock()[coinStatIndex].data);
+			list.updateItemByIndex(coinStatIndex);
 			if (l > 1) {
 				history[0].first = true;
 				history[l - 1].last = true;
 				history[int((l - 1) * .5)].showPrice = list.getStock()[coinStatIndex].data.raw.CUSTOM_DATA.avg_price;
+				history[int((l - 1) * .5)].coinStatIndex = coinStatIndex;
+				history[int((l - 1) * .5)].openedCount = l;
 			} else {
 				history[0].onlyOne = true;
 			}
@@ -1017,9 +1020,53 @@ package com.dukascopy.connect.screens {
 			}
 			if (data.type == "coinTrade") {
 				if (lhz == HitZoneType.CIRCLE) {
+					list.getStock()[data.coinStatIndex].data.opened = false;
+					for (var i:int = 0; i < data.openedCount; i++) {
+						list.getStock()[data.coinStatIndex + i + 1].data.opened = true;
+					}
+					if (walletItemIndex != -1)
+						walletItemIndex -= data.openedCount;
+					if (totalItemIndex != -1)
+						totalItemIndex -= data.openedCount;
+					if (totalSavingsItemIndex != -1)
+						totalSavingsItemIndex -= data.openedCount;
+					if (cardsItemIndex != -1)
+						cardsItemIndex -= data.openedCount;
+					if (investmentsItemIndex != -1)
+						investmentsItemIndex -= data.openedCount;
+					if (cryptoItemIndex != -1)
+						cryptoItemIndex -= data.openedCount;
+					if (otherItemIndex != -1)
+						otherItemIndex -= data.openedCount;
+					if (savingsItemIndex != -1)
+						savingsItemIndex -= data.openedCount;
+					list.refresh(true);
 					return;
 				}
-				if (BankManager.loadCoinTrades(data, n) == true) {
+				if ("openedCount" in data == true && data.openedCount != 0) {
+					data.opened = true;
+					for (var j:int = 0; j < data.openedCount; j++) {
+						list.getStock()[n + j + 1].data.opened = false;
+					}
+					if (walletItemIndex != -1)
+						walletItemIndex += data.openedCount;
+					if (totalItemIndex != -1)
+						totalItemIndex += data.openedCount;
+					if (totalSavingsItemIndex != -1)
+						totalSavingsItemIndex += data.openedCount;
+					if (cardsItemIndex != -1)
+						cardsItemIndex += data.openedCount;
+					if (investmentsItemIndex != -1)
+						investmentsItemIndex += data.openedCount;
+					if (cryptoItemIndex != -1)
+						cryptoItemIndex += data.openedCount;
+					if (otherItemIndex != -1)
+						otherItemIndex += data.openedCount;
+					if (savingsItemIndex != -1)
+						savingsItemIndex += data.openedCount;
+					list.refresh(true);
+					return;
+				} else if (BankManager.loadCoinTrades(data, n) == true) {
 					coinStatIndex = n;
 					return;
 				}
