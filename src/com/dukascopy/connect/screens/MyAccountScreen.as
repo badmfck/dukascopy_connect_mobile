@@ -543,9 +543,10 @@ package com.dukascopy.connect.screens {
 			if (l > 1) {
 				history[0].first = true;
 				history[l - 1].last = true;
-				history[int((l - 1) * .5)].showPrice = list.getStock()[coinStatIndex].data.raw.CUSTOM_DATA.avg_price;
-				history[int((l - 1) * .5)].coinStatIndex = coinStatIndex;
-				history[int((l - 1) * .5)].openedCount = l;
+				var center:int = (l - 1) * .5;
+				history[center].showPrice = list.getStock()[coinStatIndex].data.raw.CUSTOM_DATA.avg_price;
+				history[center].coinStatIndex = center;
+				history[center].openedCount = l;
 			} else {
 				history[0].onlyOne = true;
 			}
@@ -1020,9 +1021,10 @@ package com.dukascopy.connect.screens {
 			}
 			if (data.type == "coinTrade") {
 				if (lhz == HitZoneType.CIRCLE) {
-					list.getStock()[data.coinStatIndex].data.opened = false;
+					var coinStatId:int = n - data.coinStatIndex - 1;
+					list.getStock()[coinStatId].data.opened = false;
 					for (var i:int = 0; i < data.openedCount; i++) {
-						list.getStock()[data.coinStatIndex + i + 1].data.opened = true;
+						list.getStock()[coinStatId + i + 1].data.opened = true;
 					}
 					if (walletItemIndex != -1)
 						walletItemIndex -= data.openedCount;
