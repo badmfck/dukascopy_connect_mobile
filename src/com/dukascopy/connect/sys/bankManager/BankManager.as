@@ -3657,9 +3657,11 @@ package com.dukascopy.connect.sys.bankManager {
 			otherAccounts = data;
 			if (otherAccounts == null || otherAccounts.length == 0) {
 				BankBotController.getScenario().scenario.withdrawals.menu[5].disabled = true;
+				BankBotController.getScenario().scenario.sendMoney.menu[7].disabled = true;
 				BankBotController.getScenario().scenario.deposites.menu[6].disabled = true;
 			} else {
 				delete BankBotController.getScenario().scenario.withdrawals.menu[5].disabled;
+				delete BankBotController.getScenario().scenario.sendMoney.menu[7].disabled;
 				delete BankBotController.getScenario().scenario.deposites.menu[6].disabled;
 			}
 			otherAccounts.sort(otherAccountSort);
