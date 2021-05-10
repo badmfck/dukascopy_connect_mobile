@@ -693,13 +693,20 @@ package com.dukascopy.connect.screens {
 		
 		private function onSavingsLoaded():void {
 			var data:Array = BankManager.getSavingsAccounts();
+			var accCorrect:Array = [];
+			var l:int = data.length;
+			for (var i:int = 0; i < l; i++) {
+				if (Number(data[i].BALANCE) == 0)
+					continue;
+				accCorrect.push(data[i]);
+			}
 			var toBottom:Boolean;
-			if (data != null && data.length != 0) {
+			if (accCorrect != null && accCorrect.length != 0) {
 				if (savingsItemIndex != -1) {
 					list.updateItemByIndex(savingsItemIndex, false);
 				} else {
 					toBottom = checkScrollToBottom();
-					list.appendItem( { opened:false, accounts:data }, ListBankAccountSaving);
+					list.appendItem( { opened:false, accounts:accCorrect }, ListBankAccountSaving);
 					savingsItemIndex = list.getStock().length - 1;
 				}
 			}
