@@ -89,14 +89,9 @@ package com.dukascopy.connect.screens.layout
 			}
 			if (scrollStop != null)	{
 				scrollStop.y = 0;
-				scrollStop.y = int(scrollPanel.itemsHeight + getAppleBottomPadding() + getScrollBottomMargin());
+				scrollStop.y = int(scrollPanel.itemsHeight + Config.FINGER_SIZE * .5 + getAppleBottomPadding());
 			}
 			scrollPanel.update();
-		}
-		
-		protected function getScrollBottomMargin():int 
-		{
-			return Config.FINGER_SIZE * .5;
 		}
 		
 		private function getScrollBottomPadding():int 

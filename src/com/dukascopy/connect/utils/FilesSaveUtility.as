@@ -166,6 +166,7 @@ package com.dukascopy.connect.utils {
 					}
 					fl.createDirectory();
 				} catch (err:Error) {
+					trace("error", err.message, fl.url);
 					return false;
 				}
 				return true;

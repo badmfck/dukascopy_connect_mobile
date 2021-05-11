@@ -36,7 +36,7 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements.sections {
 		private var trueHeight:int;
 		public var isTotal:Boolean = false;
 		public var isLast:Boolean = false;
-		private var data:Object;
+		public var data:Object;
 		private var _isDisposed:Boolean = false;
 		
 		private var flagIcon:Bitmap;

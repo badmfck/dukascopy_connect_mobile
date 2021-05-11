@@ -374,7 +374,7 @@ package com.dukascopy.connect.screens.dialogs.bottom {
 		private function formatNum(value:Number, decimals:int):String 
 		{
 			var realPart:String = (Math.floor(value)).toString();
-			var decimalPart:String = (value - Math.floor(value)).toFixed(decimals);
+			var decimalPart:String = (value - Math.floor(value)).toPrecision(decimals);
 			decimalPart = decimalPart.slice(decimalPart.indexOf("."));
 			if (decimalPart.length < decimals)
 			{

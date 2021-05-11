@@ -169,6 +169,7 @@ package com.dukascopy.connect.sys.callManager
 		}
 		
 		static private function onCallInfoUpdated(r:PHPRespond):void {
+			trace(r);
 			r.dispose();
 		}
 		
@@ -177,6 +178,7 @@ package com.dukascopy.connect.sys.callManager
 		}
 		
 		static private function onCallInfoSent(r:PHPRespond):void {
+			trace(r);
 			r.dispose();
 		}
 		

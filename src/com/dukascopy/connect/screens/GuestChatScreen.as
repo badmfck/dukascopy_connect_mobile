@@ -212,7 +212,6 @@ package com.dukascopy.connect.screens {
 		private var emailEntered:Boolean;
 		private var userEmail:String;
 		private var userName:String;
-		private var systemMessageShown:Boolean;
 		protected var backColorClip:Sprite;
 		
 		public static const MAX_MESSAGE_LENGHT:int = 2000;
@@ -455,11 +454,7 @@ package com.dukascopy.connect.screens {
 					(chatInput as ChatInputAndroid).setY(MobileGui.stage.stageHeight - (chatInput as ChatInputAndroid).height);
 				}
 			}
-			
-			WS.disableGuestConnection();
-			Auth.clearAuthorization("", true);
-			
-			MobileGui.changeMainScreen(LoginScreen, {state:LoginScreen.STATE_CODE, phone:data.phone, currentPhone:data.currentPhone, country:data.country}, ScreenManager.DIRECTION_LEFT_RIGHT, 0);
+			MobileGui.changeMainScreen(LoginScreen, null, ScreenManager.DIRECTION_LEFT_RIGHT);
 		}
 		
 		private function onUWDisposed(uw:UserWriting):void {
@@ -489,6 +484,7 @@ package com.dukascopy.connect.screens {
 		}
 		
 		private function onMediaUploadReady(mediaData:MediaFileData):void {
+			trace("file:", "onMediaUploadReady");
 			if (mediaData.type == MediaFileData.MEDIA_TYPE_VIDEO) {
 				VideoUploader.uploadVideo(mediaData, ChatManager.getCurrentChat().uid, "", ChatManager.getCurrentChat().getImageString(), "123");
 			}
@@ -759,8 +755,6 @@ package com.dukascopy.connect.screens {
 		
 		private function onItemHold(data:Object, n:int):void {
 			echo("ChatScreen", "onItemHold", "");
-			return;
-			
 			if (!Config.PLATFORM_APPLE && (chatInput as ChatInputAndroid).softKeyboardActivated)
 				return;
 			if (!(data is ChatMessageVO))
@@ -1823,11 +1817,6 @@ package com.dukascopy.connect.screens {
 			if (list.data && list.data.length > 0)
 				return;
 			
-			if (systemMessageShown)
-			{
-				return;
-			}
-			systemMessageShown = true;
 			var userVO:UserVO = new UserVO();
 			userVO.setData({name:Lang.textSupport, avatar:LocalAvatars.SUPPORT})
 			
@@ -2296,11 +2285,10 @@ package com.dukascopy.connect.screens {
 		}
 		
 		override public function dispose():void {
-			echo("GuestChangScreen", "dispose", "");
+			echo("ChatScreen", "dispose", "");
 			if (_isDisposed == true)
 				return;
 			disposing = true;
-			
 			WS.S_CONNECTED.remove(onSocketReady);
 			
 			TweenMax.killTweensOf(backColorClip);

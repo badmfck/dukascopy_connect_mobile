@@ -738,6 +738,7 @@ package com.dukascopy.connect.screens.dialogs.gifts
 							lockNextButton = true;
 							
 							addLoader();
+							trace("dukascopy.test", "PAY");
 							var action:GiftByCardAction = new GiftByCardAction(giftData, isAccountAvaliable());
 							action.getSuccessSignal().add(onGiftByCardSent);
 							action.getFailSignal().add(onGiftByCardSentFail);
@@ -783,6 +784,8 @@ package com.dukascopy.connect.screens.dialogs.gifts
 				
 				addLoader();
 				
+				trace("dukascopy.test", "sendmoneyConfirmSimple");
+				
 				var action:GiftByCardAction = new GiftByCardAction(giftData, isAccountAvaliable());
 				action.getSuccessSignal().add(onGiftByCardSent);
 				action.getFailSignal().add(onGiftByCardSentFail);
@@ -792,6 +795,7 @@ package com.dukascopy.connect.screens.dialogs.gifts
 		
 		private function onGiftByCardSentFail(action:IScreenAction):void 
 		{
+			trace("dukascopy.test", "onGiftByCardSentFail");
 			removeLoder();
 			lockNextButton = false;
 			action.dispose();
@@ -800,6 +804,7 @@ package com.dukascopy.connect.screens.dialogs.gifts
 		
 		private function onGiftByCardSent(action:IScreenAction):void 
 		{
+			trace("dukascopy.test", "onGiftByCardSent");
 			removeLoder();
 			lockNextButton = false;
 			toState(STATE_GIFT_SENT);

@@ -15,7 +15,6 @@ package com.dukascopy.connect.sys.imageManager {
 	import com.dukascopy.connect.utils.ImageCrypterOld;
 	import com.dukascopy.langs.Lang;
 	import com.greensock.TweenMax;
-	import com.hurlant.util.Base64;
 	import com.telefision.sys.signals.Signal;
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
@@ -148,7 +147,19 @@ package com.dukascopy.connect.sys.imageManager {
 			imageWidth = bmp.width;
 			imageHeight = bmp.height;
 			
-			uploadImage(bmp, thumb, imageKey);
+			ImageCrypter.encrypt(bmp.encode(bmp.rect, new JPEGEncoderOptions(87)), imageKey, 
+				function(ba: ByteArray): void
+				{
+					bmp.dispose();
+					bmp = null;
+					ImageCrypter.encrypt(thumb.encode(thumb.rect, new JPEGEncoderOptions(87)), imageKey, 
+						function(ba2: ByteArray): void
+						{
+							thumb.dispose();
+							thumb = null;
+							onImagesCrypted(ba, ba2);
+						});
+				});
 		}
 		
 		private function onImagesCrypted(imageCrypted:ByteArray, thumbCrypted:ByteArray):void {
@@ -167,77 +178,8 @@ package com.dukascopy.connect.sys.imageManager {
 					pngImage.position = 0;
 					pngThumb.position = 0;
 					sendChunk();
-					
 				}, null, true);
 			}, null, true);
-		}
-		
-		private function uploadImage(bmp:ImageBitmapData, thumb:ImageBitmapData, imageKey:String):void 
-		{
-			if (Auth.key == "web")
-			{
-				uploadAsGuest(bmp, thumb);
-			}
-			else
-			{
-				ImageCrypter.encrypt(bmp.encode(bmp.rect, new JPEGEncoderOptions(87)), imageKey, 
-				function(ba: ByteArray): void
-				{
-					bmp.dispose();
-					bmp = null;
-					ImageCrypter.encrypt(thumb.encode(thumb.rect, new JPEGEncoderOptions(87)), imageKey, 
-						function(ba2: ByteArray): void
-						{
-							thumb.dispose();
-							thumb = null;
-							onImagesCrypted(ba, ba2);
-						});
-				});
-			}
-		}
-		
-		private function uploadAsGuest(bmp:ImageBitmapData, thumb:ImageBitmapData):void 
-		{
-			var pngImage:ByteArray = bmp.encode(bmp.rect, new JPEGEncoderOptions(87));
-			var base64:String = "data:image/jpeg;base64," + Base64.encodeByteArray(pngImage);
-			
-			var thumbImage:ByteArray = thumb.encode(thumb.rect, new JPEGEncoderOptions(87));
-			var base64Thumb:String = "data:image/jpeg;base64," + Base64.encodeByteArray(thumbImage);
-			
-			PHP.filesAddImage(chatUID, base64, base64Thumb, "image", onGuestImageUploaded);
-		}
-		
-		private function onGuestImageUploaded(r:PHPRespond):void
-		{
-			if (r.error == false)
-			{
-				currentImageUID = r.data.uid;
-				r.data.width = imageWidth;
-				r.data.height = imageHeight;
-				S_FILE_UPLOADED.invoke(this, r.data);
-				S_ON_FILE_UPLOAD_SUCCESS.invoke(this, r.data);
-				
-				completed(false);
-			}
-			else
-			{
-				completed(true);
-			}
-			r.dispose();
-				
-				
-				
-				/*data : Object {
-					checksum : "1f137942b70b78ed1bc3c3aa11e77630" 
-					filename : "img_60546fc2ba42f7.39951037.png" 
-					folder : 0 
-					height : 138 [0x8a] 
-					name : "image" 
-					size : 3308 [0xcec] 
-					type : "image/jpeg" 
-					uid : "0e715fa963eded6848255b8a4821b31aG" 
-					width : 138 [0x8a] 
-				}*/
 		}
 		
 		private function onBytesLoaded(e:Event):void {

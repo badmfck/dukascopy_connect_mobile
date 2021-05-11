@@ -369,7 +369,10 @@ package com.dukascopy.connect.screens {
 				BankManager.preSendMessage(bmVO.item);
 			}
 			if (lhz == HitZoneType.WALLET) {
-				bmVO.item.param = bmVO.additionalData[lastHitzoneObject.param];
+				if (bmVO.item.value == "SAVINGS")
+					bmVO.item.param = BankManager.getSavingAccountByNumber(lastHitzoneObject.param);
+				else
+					bmVO.item.param = BankManager.getAccountByNumber(lastHitzoneObject.param);
 				BankManager.preSendMessage(bmVO.item);
 				if (_isDisposed == false)
 					list.updateItemByIndex(n, false);
@@ -389,7 +392,7 @@ package com.dukascopy.connect.screens {
 					list.updateItemByIndex(n, false);
 			}
 			if (lhz == HitZoneType.INVESTMENT_ITEM) {
-				bmVO.item.param = BankManager.getInvestmentsArray()[lastHitzoneObject.param];
+				bmVO.item.param = BankManager.getInvestmentByAccount(lastHitzoneObject.param);
 				BankManager.preSendMessage(bmVO.item);
 				if (_isDisposed == false)
 					list.updateItemByIndex(n, false);

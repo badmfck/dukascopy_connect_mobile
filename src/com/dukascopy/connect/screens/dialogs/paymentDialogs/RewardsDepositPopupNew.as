@@ -780,7 +780,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 						
 						selectorBlockchainAccont.setSize(componentsWidth, Config.FINGER_SIZE * .8);
 						selectorBlockchainAccont.x = Config.DIALOG_MARGIN;
-						
+			
 						selectorBlockchainAccont.setValue(giftData.wallets[i]);
 						
 						drawBankTitle();

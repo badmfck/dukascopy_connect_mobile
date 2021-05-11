@@ -1239,7 +1239,7 @@ package com.dukascopy.langs {
 		static public var startVideoIdentification:String="Start";
 		static public var videoIdentificationDescription:String="You need to perform video identification to complete your registration. Please prepare your passport or ID card and press start button if you want to do video identification now.";
 		static public var videoIdentificationTitle:String = "ID Verification";
-		
+
 		static public var inJail:String = "In Jail";
 		static public var jailOver:String = "Jail Over";
 		static public var talkWithABankBot:String = "Talk with a Bank Bot";
@@ -1398,6 +1398,7 @@ package com.dukascopy.langs {
 		public static var textInvestmentDetails:String = "Investment details";
 		public static var textInvestmentQuantity:String = "Investment quantity:";
 		public static var textInvestmentAmount:String = "Investment amount:";
+		public static var textCurrentInvestmentAmount:String = "Current investment value:";
 		public static var textAveragePurchasePrice:String = "Average purchase price:";
 		public static var textCurrentProfitAndLoss:String = "Current profit & loss:";
 		static public var textInvestmentTransfered:String = "Investment transfered";
@@ -2089,6 +2090,7 @@ package com.dukascopy.langs {
 		static public var fingerprintLogin:String = "Fingerprint login";
 		static public var useFingerprint:String = "Use fingerprint";
 		static public var numberCopied:String = "Number copied";
+		static public var IBANCopied:String = "IBAN copied";
 		
 		static public var resetDate1Jan:String = "1st January";
 		static public var resetDate1Apr:String = "1st April";

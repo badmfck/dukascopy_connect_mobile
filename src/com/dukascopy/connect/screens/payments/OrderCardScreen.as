@@ -207,8 +207,9 @@ package com.dukascopy.connect.screens.payments {
 			iCurrency.setSize(_width - Config.DIALOG_MARGIN * 2, Config.FINGER_SIZE_DOT_75);
 			tfAccountsTitle.bitmapData = createLabelBMD(Lang.TEXT_PAY_WITH, FontSize.CAPTION_1);
 			iAccounts.setSize(_width - Config.DIALOG_MARGIN * 2, Config.FINGER_SIZE_DOT_75);
+			tfCommission.bitmapData = createLabelBMD(Lang.textCommission + ":", FontSize.BODY);
 			if (feeWaiting == true)
-				tfCommissionAmount.bitmapData = createLabelBMD(Lang.textCommission + ": " + Lang.loading + "…", FontSize.BODY);
+				tfCommissionAmount.bitmapData = createLabelBMD(Lang.loading + "…", FontSize.BODY);
 			if (tfDelivery != null)
 				tfDelivery.bitmapData = createLabelBMD(Lang.textCardDelivery, FontSize.CAPTION_1);
 			if (iDelivery != null)
@@ -242,7 +243,7 @@ package com.dukascopy.connect.screens.payments {
 				_width - Config.DIALOG_MARGIN * 2,
 				10,
 				true,
-				TextFormatAlign.LEFT,
+				TextFormatAlign.CENTER,
 				TextFieldAutoSize.LEFT,
 				fontSize,
 				true,
@@ -265,15 +266,18 @@ package com.dukascopy.connect.screens.payments {
 			tfAccountsTitle.y = iCurrency.y + iCurrency.height + Config.DOUBLE_MARGIN;
 			iAccounts.y = tfAccountsTitle.y + tfAccountsTitle.height;
 			if (paramsObj.type == CARD_TYPE_VIRTUAL) {
-				tfCommissionAmount.y = iAccounts.y + iAccounts.height + Config.MARGIN;
+				tfCommission.y = iAccounts.y + iAccounts.height + Config.DOUBLE_MARGIN;
+				tfCommissionAmount.y = tfCommission.y + tfCommission.height + Config.MARGIN;
 				drawDescription("");
 			} else {
 				if (tfDelivery != null && tfDelivery.parent != null) {
 					tfDelivery.y = iAccounts.y + iAccounts.height + Config.DOUBLE_MARGIN;
 					iDelivery.y = tfDelivery.y + tfDelivery.height;
-					tfCommissionAmount.y = iDelivery.y + iDelivery.height + Config.MARGIN;
+					tfCommission.y = iDelivery.y + iDelivery.height + Config.DOUBLE_MARGIN;
+					tfCommissionAmount.y = tfCommission.y + tfCommission.height + Config.MARGIN;
 				} else {
-					tfCommissionAmount.y = iAccounts.y + iAccounts.height + Config.MARGIN;
+					tfCommission.y = iAccounts.y + iAccounts.height + Config.DOUBLE_MARGIN;
+					tfCommissionAmount.y = tfCommission.y + tfCommission.height + Config.MARGIN;
 				}
 				
 				description.y = tfCommissionAmount.y + tfCommissionAmount.height + Config.DIALOG_MARGIN + Config.MARGIN;
@@ -606,7 +610,7 @@ package com.dukascopy.connect.screens.payments {
 			feeWaiting = true;
 			feeReceived = false;
 			lastCallIDFee = new Date().getTime().toString();
-			tfCommissionAmount.bitmapData = createLabelBMD(Lang.textCommission + ": " + Lang.loading + "…", FontSize.BODY);
+			tfCommissionAmount.bitmapData = createLabelBMD(Lang.loading + "…", FontSize.BODY);
 			PayManager.S_PPCARD_COMMISSION_RECEIVE.add(onCommissionReceived);
 			PayManager.callGetCardCommission(paramsObj.type, paramsObj.currency, paramsObj.debitCurrency, paramsObj.cardType, paramsObj.delivery, lastCallIDFee);
 		}
@@ -617,7 +621,7 @@ package com.dukascopy.connect.screens.payments {
 			feeWaiting = false;
 			feeReceived = true;
 			if (data == null) {
-				tfCommissionAmount.bitmapData = createLabelBMD(Lang.textCommission + ": " + "-", FontSize.BODY);
+				tfCommissionAmount.bitmapData = createLabelBMD("-", FontSize.BODY);
 				return;
 			}
 			var commissionText:String = "";
@@ -627,16 +631,9 @@ package com.dukascopy.connect.screens.payments {
 				commissionText = firstPart[0] + " " + firstPart[1];
 			else
 				commissionText = firstPart[0] + " " + firstPart[1] + " (" + secondPart[0] + " " + secondPart[1] + ")";
-			
-			if (data.length > 2)
-			{
-				commissionText += "\n" + Lang.monthlyFee + ": " + data[2][0] + " " + data[2][1];
-			}
-			
-			tfCommissionAmount.bitmapData = createLabelBMD(Lang.textCommission + ": " + commissionText, FontSize.BODY);
+			tfCommissionAmount.bitmapData = createLabelBMD(commissionText, FontSize.BODY);
 			PayManager.S_PPCARD_COMMISSION_RECEIVE.remove(onCommissionReceived);
 			checkForActivateContinueButton();
-			drawView();
 		}
 		
 		private function onContinueClick(...rest):void {
@@ -750,6 +747,9 @@ package com.dukascopy.connect.screens.payments {
 			if (iDelivery != null)
 				iDelivery.dispose();
 			iDelivery = null;
+			if (tfCommission != null)
+				UI.destroy(tfCommission);
+			tfCommission = null;
 			if (tfCommissionAmount != null)
 				UI.destroy(tfCommissionAmount);
 			tfCommissionAmount = null;

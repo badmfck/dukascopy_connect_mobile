@@ -173,6 +173,10 @@ package com.dukascopy.connect.sys.bankManager {
 					sendBlock(tmp[1], steps[steps.length - 1].val);
 					return;
 				}
+				if (tmp[1] == "paymentsWalletsAll") {
+					sendBlock(tmp[1], steps[steps.length - 2].val);
+					return;
+				}
 				if (tmp[1] == "paymentsDepositConfirm") {
 					onPaymentsDepositConfirm();
 					return;
@@ -456,7 +460,7 @@ package com.dukascopy.connect.sys.bankManager {
 					sendBlock(tmp[1], vals[0], vals[1]);
 					return;
 				}
-				if (tmp[1] == "investmentsList" || tmp[1] == "investmentsListSell") {
+				if (tmp[1] == "investmentsList" || tmp[1] == "investmentsListAll" || tmp[1] == "investmentsListSell") {
 					if (investmentsData == null) {
 						lastWaitingInvestmentsAction = tempAction;
 						callPaymentsMethod("investments");
@@ -1178,6 +1182,7 @@ package com.dukascopy.connect.sys.bankManager {
 				if (checkForPaymentsRequestExist(msg) == true)
 					return;
 				temp = msg.substr(command.length + 1).split("|!|");
+				var clb:Function = onHistoryLoaded;
 				if (temp.length > 2) {
 					if (temp[2].indexOf("USER") == 0)
 						lastPaymentsRequests[PaymentsManagerNew.callHistory(onHistoryLoaded, temp[0], temp[1], "", "", "", "", "", "", temp[2].substr(4))] = msg;
@@ -1754,6 +1759,7 @@ package com.dukascopy.connect.sys.bankManager {
 				tempObject.amountEndPreText = "Rate: ";
 				tempObject.time = Number(history[i].ts) * 1000;
 				tempObject.transaction = history[i];
+				tempObject.uid = history[i].uid;
 				tempObject.title = Lang.TEXT_INVESTMENT.substr(0, 1).toUpperCase() + Lang.TEXT_INVESTMENT.substr(1).toLowerCase();
 				objectForScreen.push(tempObject);
 			}
@@ -2094,13 +2100,16 @@ package com.dukascopy.connect.sys.bankManager {
 		}
 		
 		static private function onHistoryLoaded(respondData:Object, hash:String, accountNumber:String = null):void {
-			if (preCheckForErrors(respondData, hash, "requestRespond:history:") == true)
+			var requestAction:String = "history";
+			if (respondData.page != 1)
+				requestAction += "More";
+			if (preCheckForErrors(respondData, hash, "requestRespond:" + requestAction + ":") == true)
 				return;
 			if ("data" in respondData == false ||
 				respondData.data == null ||
 				respondData.data is Array == false ||
 				respondData.data.length == 0) {
-					S_ANSWER.invoke("requestRespond:history:");
+					S_ANSWER.invoke("requestRespond:" + requestAction + ":");
 					return;
 			}
 			var history:Array = respondData.data;
@@ -2309,7 +2318,7 @@ package com.dukascopy.connect.sys.bankManager {
 			}
 			
 			objectForScreen.reverse();
-			S_ANSWER.invoke("requestRespond:history:" + JSON.stringify(objectForScreen));
+			S_ANSWER.invoke("requestRespond:" + requestAction + ":" + JSON.stringify(objectForScreen));
 		}
 		
 		static private function getIBANByWalletNumber(accountNumber:String):String {
