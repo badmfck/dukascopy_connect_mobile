@@ -82,6 +82,7 @@ package com.dukascopy.connect.data.coinMarketplace
 		
 		public function getProposal(side:String, value:Number, priceLimit:Number = NaN):void 
 		{
+			trace("getProposal");
 			if (side == TradingOrder.SELL)
 			{
 				PayManager.callGetSystemOptions(function():void {

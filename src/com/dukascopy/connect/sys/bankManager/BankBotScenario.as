@@ -236,12 +236,12 @@ package com.dukascopy.connect.sys.bankManager {
 					}, {
 						text:"lang.buttonCancel",
 						action:"system:cancel"
-					} 
+					}
 				]
 			},
 			
 			cardDetails: {
-				desc:"lang.cardDetailsDesc",
+				desc:"lang.whatWant",
 				item: {
 					type:"showCardDetails",
 					selection:"@@1"
@@ -1026,6 +1026,31 @@ package com.dukascopy.connect.sys.bankManager {
 					value:"@@1",
 					action:"nav:walletOperations"
 				},
+				menu:[
+					{
+						text:"lang.menuAccountsAll",
+						action:"nav:paymentsWalletsAll"
+					}
+				],
+				buttons: [
+					{
+						text:"lang.buttonBack",
+						action:"cmd:back"
+					}, {
+						text:"lang.buttonCancel",
+						action:"system:cancel"
+					}
+				]
+			},
+			
+			paymentsWalletsAll: {
+				desc:"lang.accountsSelectDesc",
+				item: {
+					text:"lang.itemShowAccountOps",
+					type:"walletSelectAll",
+					value:"@@1",
+					action:"nav:walletOperations"
+				},
 				buttons: [
 					{
 						text:"lang.buttonBack",
@@ -1054,6 +1079,9 @@ package com.dukascopy.connect.sys.bankManager {
 						type:"walletStatement",
 						action:"nav:walletStatementAsFileConfirmed",
 						value:"@@1"
+					}, {
+						text:"lang.menuIBANCopy",
+						action:"app:copyIBAN"
 					}
 				],
 				buttons: [
@@ -2673,6 +2701,9 @@ package com.dukascopy.connect.sys.bankManager {
 			investments: {
 				desc:"lang.investmentsDesc",
 				menuLayout:"vertical",
+				item: {
+					type:"investments"
+				},
 				menu:[
 					{
 						text:"lang.menuInvestmentBuy",
@@ -2725,6 +2756,29 @@ package com.dukascopy.connect.sys.bankManager {
 					type:"investmentSelect",
 					action:"nav:investmentOperations"
 				},
+				menu:[
+					{
+						text:"lang.menuInvestmentPortfolioAll",
+						action:"nav:investmentsListAll"
+					}
+				],
+				buttons: [
+					{
+						text:"lang.buttonBack",
+						action:"cmd:back"
+					}, {
+						text:"lang.buttonCancel",
+						action:"system:cancel"
+					}
+				]
+			},
+			
+			investmentsListAll: {
+				desc:"lang.investmentsListDesc",
+				item: {
+					type:"investmentSelectAll",
+					action:"nav:investmentOperations"
+				},
 				buttons: [
 					{
 						text:"lang.buttonBack",
@@ -2771,6 +2825,13 @@ package com.dukascopy.connect.sys.bankManager {
 						text:"lang.menuHistory",
 						action:"app:historyInvestment",
 						selection:"@@2"
+					}, {
+						text:"lang.menuInvestmentBuy",
+						type:"paymentsInvestments",
+						textForUser1:"lang.itemInvestmentBuy1",
+						textForUser2:"lang.itemInvestmentBuy2",
+						action:"nav:investmentConfirm",
+						value:"@@2"
 					}, {
 						text:"lang.menuInvestmentSellAll",
 						action:"nav:investmentSellAllConfirm",

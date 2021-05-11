@@ -268,7 +268,8 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements {
 				sectionX,
 				sectionY,
 				hitZones,
-				(li.data.item != null && li.data.item.type == "walletSelectWithoutTotal") ? HitZoneType.WALLET_SELECT : HitZoneType.WALLET
+				(li.data.item != null && li.data.item.type == "walletSelectWithoutTotal") ? HitZoneType.WALLET_SELECT : HitZoneType.WALLET,
+				"ACCOUNT_NUMBER"
 			);
 			if (otherAccSections != null && otherAccSections.length != 0 && otherAccSections[0].parent != null) {
 				if (sectionY != 0)
@@ -428,7 +429,7 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements {
 					sectionY += investmentDetailsSections[i].getHeight();
 				}
 			}
-			sectionY = selectItem(investmentsSections, li.data.item, sectionX, sectionY, hitZones, HitZoneType.INVESTMENT_ITEM);
+			sectionY = selectItem(investmentsSections, li.data.item, sectionX, sectionY, hitZones, HitZoneType.INVESTMENT_ITEM, "ACCOUNT_NUMBER");
 			sectionY = selectItem(cardSections, li.data.item, sectionX, sectionY, hitZones, HitZoneType.CARD);
 			sectionY = selectItem(cryptoDealsSections, li.data.item, sectionX, sectionY, hitZones, HitZoneType.CRYPTO_DEAL);
 			if (limitSections != null && limitSections.length != 0 && limitSections[0].parent != null) {
@@ -547,14 +548,6 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements {
 						startTSY = sectionY;
 					}
 				}
-				/*graphics.drawRoundRect(
-					sectionX,
-					startTSY,
-					tradeStatSections[0].getWidth(),
-					sectionY - startTSY,
-					BankAccountElementSectionBase.CORNER_RADIUS_DOUBLE,
-					BankAccountElementSectionBase.CORNER_RADIUS_DOUBLE
-				);*/
 				graphics.endFill();
 			}
 			if (menuSections != null && menuSections.length != 0 && menuSections[0].parent != null) {
@@ -643,7 +636,7 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements {
 			return this;
 		}
 		
-		private function selectItem(sections:Array, data:Object, sx:int, sy:int, hitZones:Array, hitZonesType:String):int {
+		private function selectItem(sections:Array, data:Object, sx:int, sy:int, hitZones:Array, hitZonesType:String, field:String = null):int {
 			if (sections == null || sections.length == 0 || sections[0].parent == null)
 				return sy;
 			if (sy != 0)
@@ -716,7 +709,7 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements {
 				if ("isTotal" in sections[i] == false || sections[i].isTotal == false) {
 					hitZones.push( {
 						type: hitZonesType,
-						param: i,
+						param: (field == null) ? i : sections[i].data[field],
 						index:i,
 						x: sections[i].x,
 						y: sy, 
@@ -756,9 +749,7 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements {
 				for (var i:int = 0; i < l; i++) {
 					zone = zones[i];
 					if (zone.x <= itemTouchPoint.x && zone.y <= itemTouchPoint.y && zone.x + zone.width >= itemTouchPoint.x && zone.y + zone.height >= itemTouchPoint.y) {
-					//	selectedIndex = zones[i].param;
 						selectedIndex = zones[i].index;
-					//	selectedIndex = i;
 						break;
 					}
 				}
@@ -1405,7 +1396,7 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements {
 				walletSection.clearGraphics();
 				return res;
 			}
-			if (bmVO.item.type != "walletSelect" && bmVO.item.type != "walletSelectWithoutTotal")
+			if (bmVO.item.type != "walletSelect" && bmVO.item.type != "walletSelectAll" && bmVO.item.type != "walletSelectWithoutTotal")
 				return res;
 			if (bmVO.additionalData == null ||
 				bmVO.additionalData.length == 0)
@@ -1413,7 +1404,11 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements {
 			res = Config.MARGIN;
 			walletSections ||= [];
 			var l:int = bmVO.additionalData.length;
+			var count:int;
 			for (var i:int = 0; i < l; i++) {
+				if (bmVO.item.type != "walletSelectAll" && Number(bmVO.additionalData[i].BALANCE) == 0)
+					continue;
+				count++;
 				walletSection = new BAWalletSection();
 				walletSection.setData(bmVO.additionalData[i], sectionMenuWidth);
 				addChild(walletSection);
@@ -1431,19 +1426,10 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements {
 						walletSections.push(walletSection);
 						l++;
 					}
-				}/* else if (bmVO.item.value == "SAVINGS") {
-					if (BankManager.totalSavingAccounts != null) {
-						walletSection = new BAWalletSection();
-						walletSection.setData(BankManager.totalSavingAccounts, sectionMenuWidth);
-						walletSection.isTotal = true;
-						addChild(walletSection);
-						walletSections.push(walletSection);
-						l++;
-					}
-				}*/
+				}
 			}
 			if (walletSection != null) {
-				res += l * walletSection.getHeight();
+				res += count * walletSection.getHeight();
 				walletSection.clearGraphics();
 			}
 			return res;
@@ -1739,12 +1725,18 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements {
 			res = Config.MARGIN;
 			var investmentSection:BAInvestmentSection;
 			var i:int = 0;
-			if (bmVO.item.type == "investmentSelect" || bmVO.item.type == "paymentsInvestmentsSell") {
+			if (bmVO.item.type == "investmentSelect" || bmVO.item.type == "investmentSelectAll" || bmVO.item.type == "paymentsInvestmentsSell") {
 				if (bmVO.item.tapped == true)
 					tapped = true;
 				investmentsSections ||= [];
 				var l:int = BankManager.getInvestmentsArray() != null ? BankManager.getInvestmentsArray().length : 0;
+				var count:int = 0;
 				for (i = 0; i < l; i++) {
+					if (bmVO.item.type == "investmentSelect" || bmVO.item.type == "paymentsInvestmentsSell") {
+						if (Number(BankManager.getInvestmentsArray()[i].BALANCE) == 0)
+							continue;
+					}
+					count++;
 					investmentSection = new BAInvestmentSection();
 					investmentSection.setData(BankManager.getInvestmentsArray()[i], sectionMenuWidth);
 					addChild(investmentSection);
@@ -1759,9 +1751,9 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements {
 				investmentSection.clearGraphics();
 				addChild(investmentSection);
 				investmentsSections.push(investmentSection);
-				l++;
+				count++;
 				if (investmentSection != null)
-					res += l * investmentSection.getHeight();
+					res += count * investmentSection.getHeight();
 			} else if (bmVO.item.type == "showInvestment" && bmVO.item.selection != null) {
 				var investmentObject:Object = BankManager.getInvestmentByAccount(bmVO.item.selection);
 				if (investmentObject != null) {
@@ -1814,9 +1806,10 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements {
 				var investmentDetailsSection:BAInvestmentDetailSection;
 				var listData:Array = [
 					{ itype: "detail", title: Lang.textInvestmentQuantity, amount: detail.AMOUNT, currency: detail.INSTRUMENT },
+					{ itype: "detail", title: Lang.textAveragePurchasePrice, amount: Number(Math.round(Number(detail.AVG_OPEN_PRICE) * 100)/100).toFixed(2), currency: detail.REFERENCE_CURRENCY },
 					{ itype: "detail", title: Lang.textInvestmentAmount, amount: detail.REFERENCE_AMOUNT, currency: detail.REFERENCE_CURRENCY },
-					{ itype: "detail", title: Lang.textAveragePurchasePrice, amount: detail.AVG_OPEN_PRICE, currency: detail.REFERENCE_CURRENCY },
-					{ itype: "detail", title: Lang.textCurrentProfitAndLoss, amount: detail.CURRENT_PL, currency: detail.REFERENCE_CURRENCY }
+					{ itype: "detail", title: Lang.textCurrentProfitAndLoss, amount: detail.CURRENT_PL, currency: detail.REFERENCE_CURRENCY },
+					{ itype: "detail", title: Lang.textCurrentInvestmentAmount, amount: Number(detail.REFERENCE_AMOUNT) + Number(detail.CURRENT_PL), currency: detail.REFERENCE_CURRENCY }
 				];
 				for (var i:int = 0; i < listData.length; i++) {
 					investmentDetailsSection = new BAInvestmentDetailSection();

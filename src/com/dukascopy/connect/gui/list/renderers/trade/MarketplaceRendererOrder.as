@@ -200,7 +200,7 @@ package com.dukascopy.connect.gui.list.renderers.trade {
 		
 		protected function getMaxWidth(value:int):int 
 		{
-			return value * 0.73;
+			return value * 0.67;
 		}
 		
 		protected function setTexts(data:TradingOrder, maxWidth:int, originalWidth:int):void 
@@ -214,15 +214,6 @@ package com.dukascopy.connect.gui.list.renderers.trade {
 			amount.text = parseFloat((data.quantity * data.price).toFixed(6)).toString() + " " + data.currency;
 			price.text = "@" + parseFloat(data.priceString).toString() + " €";
 			coinsAmount.text = parseFloat(data.quantityString).toString() + " " + coinText;
-			
-			if (data.side == TradingOrder.SELL)
-			{
-				setChildIndex(coinsAmount, numChildren - 1);
-			}
-			else
-			{
-				setChildIndex(price, numChildren - 1);
-			}
 			
 			amount.width = amount.textWidth + 4;
 			price.width = price.textWidth + 4;

@@ -1,13 +1,11 @@
 package com.dukascopy.connect.sys.ws{
 	
 	import com.dukascopy.connect.Config;
-import com.dukascopy.connect.GD;
-import com.dukascopy.connect.MobileGui;
+	import com.dukascopy.connect.GD;
 	import com.dukascopy.connect.data.MessageData;
 	import com.dukascopy.connect.data.UserBanData;
 	import com.dukascopy.connect.data.location.Location;
 	import com.dukascopy.connect.gui.components.message.ToastMessage;
-	import com.dukascopy.connect.gui.lightbox.UI;
 	import com.dukascopy.connect.sys.auth.Auth;
 	import com.dukascopy.connect.sys.callManager.connection.WebRTCChannel;
 	import com.dukascopy.connect.sys.chatManager.ChatManager;
@@ -17,15 +15,13 @@ import com.dukascopy.connect.MobileGui;
 	import com.dukascopy.connect.sys.echo.echo;
 	import com.dukascopy.connect.sys.messagesController.MessagesController;
 	import com.dukascopy.connect.sys.nativeExtensionController.NativeExtensionController;
+	import com.dukascopy.connect.sys.php.PHP;
 	import com.dukascopy.connect.type.ErrorCode;
 	import com.dukascopy.connect.vo.users.adds.ChatUserVO;
 	import com.dukascopy.langs.Lang;
 	import com.dukascopy.langs.LangManager;
-	import com.telefision.sys.signals.Signal;
-	import flash.text.TextField;
-	import mx.core.Singleton;
-	import com.dukascopy.connect.sys.php.PHP;
 	import com.telefision.sys.etc.Print_r;
+	import com.telefision.sys.signals.Signal;
 	
 	/**
 	 * ...

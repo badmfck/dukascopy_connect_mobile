@@ -34,7 +34,6 @@ package com.dukascopy.connect.sys.bankManager {
 		
 		// MENU DESCRIPTIONS
 		static public var mainDesc:String = "What would you like to do?";
-		static public var cardDetailsDesc:String = "Card details";
 		static public var cardsDesc:String = "Please select card or other operation.";
 		static public var cardOpsDesc:String = "Please select card operation.";
 		static public var walletOpsDesc:String = "Please select account operation.";
@@ -200,6 +199,7 @@ package com.dukascopy.connect.sys.bankManager {
 		static public var menuToSavingAcc:String = "To Saving account";
 		static public var menuAccountHistory:String = "Last transactions log";
 		static public var menuAccountStat:String = "Account statistics";
+		static public var menuAccountsAll:String = "Show all accounts";
 		static public var menuCoinTradesStat:String = "Trades statistics";
 		static public var menuActiveOrdersStat:String = "Active orders statistics";
 		static public var menuTradesStatTotal:String = "Total";
@@ -222,6 +222,7 @@ package com.dukascopy.connect.sys.bankManager {
 		static public var menuInvestmentBuy:String = "Invest money";
 		static public var menuInvestmentSell:String = "Sell investments";
 		static public var menuInvestmentPortfolio:String = "My portfolio";
+		static public var menuInvestmentPortfolioAll:String = "Show all accounts";
 		static public var menuInvestmentDetails:String = "Details";
 		static public var menuInvestmentSellAll:String = "Sell all";
 		static public var menuInvestmentIndexes:String = "Indexes";
@@ -285,6 +286,7 @@ package com.dukascopy.connect.sys.bankManager {
 		static public var menuCardStatement:String = "Card statement";
 		static public var menuAccountStatement:String = "Account statement";
 		static public var menuCardNumberCopy:String = "Copy card number";
+		static public var menuIBANCopy:String = "Copy IBAN";
 		
 		static public var investmentIndex:String = "Index";
 		static public var investmentSilver:String = "Silver";

@@ -76,10 +76,9 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 		}
 		
 		public function draw(messageData:ChatMessageVO, maxWidth:int, listItem:ListItem = null, securityKey:Array = null):void {
-			var data:ChatSystemMsgVO = messageData.systemMessageVO;
 			if (currentData == data)
 				return;
-			
+			var data:ChatSystemMsgVO = messageData.systemMessageVO;
 			maxWidth = Math.min(maxWidth, Config.FINGER_SIZE * 6);
 			currentData = data;
 			create();

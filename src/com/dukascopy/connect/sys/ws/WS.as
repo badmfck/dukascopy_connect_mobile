@@ -86,7 +86,7 @@ import flash.utils.getTimer;
 		static private function onPhpAnyRequestSuccess():void {
 			if (canConnect() == false)
 				return;
-			if (_connected == false && _connecting == false && Auth.key != "web")
+			if (_connected == false && _connecting == false)
 			{
 				connect(false, "onPhpAnyRequestSuccess");
 			}
@@ -119,7 +119,7 @@ import flash.utils.getTimer;
 				return;
 			if (getTimer() - lastMessageTime >= pingDelay) {
 				echo("WS", "checkConnection", "Probably dead, NetworkManager.isConnected=" + NetworkManager.isConnected);
-				if (NetworkManager.isConnected == true && Auth.key != "web")
+				if (NetworkManager.isConnected == true)
 				{
 					connect(true, "checkConnection");
 				}
@@ -422,11 +422,6 @@ import flash.utils.getTimer;
 		{
 			allowGuestConnection = true;
 			connect();
-		}
-		
-		static public function disableGuestConnection():void 
-		{
-			allowGuestConnection = false;
 		}
 		
 		static private function onWSMessage(e:WebSocketEvent):void {

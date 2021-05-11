@@ -87,6 +87,7 @@ package com.dukascopy.connect.sys.connectionManager {
 		static private function checkPHP():void {
 			TweenMax.killDelayedCallsTo(checkPHP);
 			PHP.call_ping(function(r:PHPRespond):void {
+				trace("PHP checkPHP", r.error, r.errorMsg);
 				if (r.errorMsg == PHP.NETWORK_ERROR) {
 					TweenMax.delayedCall(5, checkPHP);
 					isOnline = false;

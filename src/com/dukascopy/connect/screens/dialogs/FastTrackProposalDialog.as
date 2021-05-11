@@ -79,6 +79,7 @@ package com.dukascopy.connect.screens.dialogs {
 		
 		private function onOptionCallback(selected:Boolean):void {
 			_doNotShowSelected = selected;
+			//trace("Do not show again:" + selected);
 		}
 		
 		override protected function fireCallbackFunctionWithValue(value:int):void 

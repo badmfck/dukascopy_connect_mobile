@@ -2,9 +2,9 @@ package com.dukascopy.connect.screens.serviceScreen {
 	
 	import assets.NewCloseIcon;
 
-import avmplus.finish;
+	import avmplus.finish;
 
-import com.dukascopy.connect.Config;
+	import com.dukascopy.connect.Config;
 	import com.dukascopy.connect.MobileGui;
 	import com.dukascopy.connect.gui.components.message.ToastMessage;
 	import com.dukascopy.connect.gui.lightbox.UI;
@@ -14,13 +14,13 @@ import com.dukascopy.connect.Config;
 	import com.dukascopy.connect.sys.serviceScreenManager.ServiceScreenManager;
 	import com.dukascopy.connect.sys.style.Style;
 	import com.dukascopy.connect.type.HitZoneType;
-import com.dukascopy.dccext.DCCExt;
-import com.dukascopy.dccext.wkWebKit.WKWebKit;
-import com.dukascopy.dccext.DCCExtCommand;
-import com.dukascopy.dccext.DCCExtMethod;
-import com.dukascopy.dccext.wkWebKit.WKWebKit;
+	import com.dukascopy.dccext.DCCExt;
+	import com.dukascopy.dccext.wkWebKit.WKWebKit;
+	import com.dukascopy.dccext.DCCExtCommand;
+	import com.dukascopy.dccext.DCCExtMethod;
+	import com.dukascopy.dccext.wkWebKit.WKWebKit;
 
-import flash.events.ErrorEvent;
+	import flash.events.ErrorEvent;
 	import flash.events.Event;
 	import flash.events.LocationChangeEvent;
 	import flash.geom.Point;
@@ -38,8 +38,6 @@ import flash.events.ErrorEvent;
 		private var closeButton:BitmapButton;
 		private var padding:int;
 		private var wkWebKit:WKWebKit;
-		private var lastURL:String;
-		 	
 
 		public function WebViewReactionPopup() {}
 		
@@ -77,7 +75,7 @@ import flash.events.ErrorEvent;
 		}
 		
 		private function onButtonCloseClick():void {
-			fireCallback(false, lastURL);
+			fireCallback(false, null);
 		}
 		
 		override public function activateScreen():void {
@@ -122,7 +120,6 @@ import flash.events.ErrorEvent;
 			tempRect.width = _width;
 			tempRect.height = _height - closeButton.y - closeButton.height - padding;
 
-			lastURL=data.link;
 
 			if(Config.PLATFORM_APPLE){
 				wkWebKit=WKWebKit.getInstance();
@@ -134,31 +131,27 @@ import flash.events.ErrorEvent;
 				return;
 			}
 
-			try{
-				webView = new StageWebView();
-				webView.viewPort = tempRect;
-				webView.stage = MobileGui.stage;
-				/*webView.viewPort = tempRect;
-				webView.stage = MobileGui.stage;*/
-				webView.loadURL(data.link);
-				webView.addEventListener(LocationChangeEvent.LOCATION_CHANGE, locationChange);
-				webView.addEventListener(LocationChangeEvent.LOCATION_CHANGING, locationChanging);
-				webView.addEventListener(ErrorEvent.ERROR, onWebViewError);
-			}catch(e:Error){
 
-			}
+			webView = new StageWebView();
+			webView.viewPort = tempRect;
+			webView.stage = MobileGui.stage;
+			/*webView.viewPort = tempRect;
+			webView.stage = MobileGui.stage;*/
+			webView.loadURL(data.link);
+			webView.addEventListener(LocationChangeEvent.LOCATION_CHANGE, locationChange);
+			webView.addEventListener(LocationChangeEvent.LOCATION_CHANGING, locationChanging);
+			webView.addEventListener(ErrorEvent.ERROR, onWebViewError);
 		}
 		
 		private function locationChange(e:LocationChangeEvent):void {
 			locationChanging(e);
-			lastURL=e.location;
 		}
 		
 		private function locationChanging(e:LocationChangeEvent):void {
 			if (checkLocation(e.location)) {
 				e.preventDefault();
 				e.stopPropagation();
-				lastURL=e.location;
+				
 				fireCallback(true, e.location);
 			}
 		}
@@ -174,16 +167,11 @@ import flash.events.ErrorEvent;
 		
 		private function close():void 
 		{
-			if (manager == DialogManager)
-			{
+			if (manager == DialogManager){
 				DialogManager.closeDialog();
-			}
-			else if(manager == ServiceScreenManager)
-			{
+			}else if(manager == ServiceScreenManager){
 				ServiceScreenManager.closeView();
-			}
-			else
-			{
+			}else{
 				ServiceScreenManager.closeView();
 			}
 		}
@@ -200,15 +188,13 @@ import flash.events.ErrorEvent;
 			
 		}
 		
-		private function destroyWebView():void {
+		public function destroyWebView():void {
 
 			if(Config.PLATFORM_APPLE){
 				if(wkWebKit!=null)
 					wkWebKit.close();
 				wkWebKit=null;
 			}
-
-			lastURL=null;
 
 			if(webView==null)
 				return;

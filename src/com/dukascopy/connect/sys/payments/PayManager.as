@@ -45,7 +45,7 @@ package com.dukascopy.connect.sys.payments {
 		
 		static public var S_NEED_AUTHORIZATION:Signal;
 		static public var S_INVALID_PASS_DIALOG_CLOSED:Signal;
-		static public var S_CANCEL_AUTH:Signal = new Signal("PayManager.S_CANCEL_AUTH");
+		static public var S_CANCEL_AUTH:Signal;
 		static public var S_ACCOUNT:Signal;
 		static public var S_ACCOUNT_RESPOND:Signal;
 		static public var S_ENTER_PASSWORD_DISMISS:Signal;
@@ -130,7 +130,7 @@ package com.dukascopy.connect.sys.payments {
 			_isInitialized = true;
 			S_ON_EXIT_PAYMENTS = new Signal("PayManager.S_ON_EXIT_PAYMENTS");
 			S_NEED_AUTHORIZATION = new Signal("PayManager.S_NEED_AUTHORIZATION");
-		//	S_CANCEL_AUTH = new Signal("PayManager.S_CANCEL_AUTH");
+			S_CANCEL_AUTH = new Signal("PayManager.S_CANCEL_AUTH");
 			S_INVALID_PASS_DIALOG_CLOSED = new Signal("PayManager.S_INVALID_PASS_DIALOG_CLOSED");
 			S_ACCOUNT = new Signal("PayManager.S_ACCOUNT");
 			S_ACCOUNT_RESPOND = new Signal("PayManager.S_ACCOUNT_RESPOND");
