@@ -452,12 +452,6 @@ package com.dukascopy.connect.sys.imageManager {
 		 */
 		static public function loadImage(url:String, callBack:Function, saveToDisk:Boolean = true, fromLocalStoreOnly:Boolean = false):Boolean
 		{
-				trace("LOAD", fromLocalStoreOnly, url);
-			if (url == "")
-			{
-				trace("123");
-			}
-			
 			if (url == null || url == "") {
 				if ((callBack as Function).length == 2) {
 					callBack(url, null);

@@ -1351,49 +1351,7 @@ package com.dukascopy.connect.screens {
 		}
 		
 		private function onLogoutTap():void {
-			
-			
-			
-			/*var popupData:PopupData = new PopupData();
-			var action:IScreenAction = new CallSettingsAction();
-			action.setData(Lang.openSettings);
-			popupData.action = action;
-			popupData.title = "Title";
-			popupData.text = "Need camera permission";
-			ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, BottomPopupScreen, popupData);
-			return;*/
-			
-			
-			/*ServiceScreenManager.showScreen(
-				ServiceScreenManager.TYPE_SCREEN,
-				BottomConfirmPopup,
-				{
-					rejectButton:Lang.openSettings,
-					callback:openSettings,
-					title:"Title",
-					message:"Need camera permission"
-				}
-			);
-			return;*/
-			
-			
-			
-			
-			
-			
-			/*var popupData:PopupData = new PopupData();
-			popupData.title = Lang.accountStatement;
-			popupData.data = new Object();
-			popupData.callback = onTimeSelected;
-			ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, BottomTimeSelectionScreen, popupData);
-			return;*/
-			echo("SettingsScreen", "onLogoutTap");
 			DialogManager.alert(Lang.textWarning, Lang.areYouSureLogout, onLogoutDialogClose, Lang.logout, Lang.textCancel);
-		}
-		
-		private function openSettings():void 
-		{
-			
 		}
 		
 		private function onTimeSelected(val:int, data:Object, timeData:Object):void 
