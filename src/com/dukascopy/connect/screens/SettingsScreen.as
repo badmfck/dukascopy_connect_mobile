@@ -13,7 +13,6 @@ package com.dukascopy.connect.screens {
 	import com.dukascopy.connect.data.filter.FilterCategory;
 	import com.dukascopy.connect.data.screenAction.BaseAction;
 	import com.dukascopy.connect.data.screenAction.IScreenAction;
-	import com.dukascopy.connect.data.screenAction.customActions.CallSettingsAction;
 	import com.dukascopy.connect.data.screenAction.customActions.OpenUnjailPopupAction;
 	import com.dukascopy.connect.data.screenAction.customActions.SendTradeNotesRequestAction;
 	import com.dukascopy.connect.gui.lightbox.UI;
