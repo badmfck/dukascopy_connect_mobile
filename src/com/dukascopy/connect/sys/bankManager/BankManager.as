@@ -2778,7 +2778,7 @@ package com.dukascopy.connect.sys.bankManager {
 				isCardHistory = false;
 				isInvestmentHistory = false;
 				if (historyAccount != "all")
-					historyAccCurrency = currency;
+					historyAccCurrency = getAccountByNumber(historyAccount).CURRENCY;
 				var notNull:Boolean = false;
 				if (history != null &&
 					historyAccount in history == true &&
@@ -2891,6 +2891,8 @@ package com.dukascopy.connect.sys.bankManager {
 			if (local == true) {
 				if (total != null) {
 					S_TOTAL.invoke(total, local);
+				} else {
+					S_TOTAL.invoke(totalAccounts, local);
 				}
 			} else
 				BankBotController.getAnswer("bot:bankbot payments:total");
@@ -2937,6 +2939,8 @@ package com.dukascopy.connect.sys.bankManager {
 				}
 				if (needToLoad == true)
 					BankBotController.getAnswer("bot:bankbot payments:cards");
+				else
+					S_CARDS.invoke(null, true);
 			} else
 				BankBotController.getAnswer("bot:bankbot payments:cards");
 		}
@@ -3493,8 +3497,20 @@ package com.dukascopy.connect.sys.bankManager {
 		}
 		
 		static public function get totalAccounts():Object {
-			if (totalAll == null || totalAll.length == 0)
-				return null;
+			if (totalAll == null || totalAll.length == 0) {
+				if (accountInfo != null && accountInfo.accounts != null && accountInfo.accounts.length > 0) {
+					var totalAcc:Object = {
+						"type": "total",
+						"IBAN": Lang.textTotalAccounts.toUpperCase(),
+						"BALANCE": 0,
+						"CURRENCY": accountInfo.consolidateCurrency
+					}
+					for (var j:int = 0; j < accountInfo.accounts.length; j++) {
+						totalAcc.BALANCE += Number(accountInfo.accounts[j].CONSOLIDATE_BALANCE);
+					}
+				}
+				return totalAcc;
+			}
 			var l:int = totalAll.length;
 			for (var i:int = 0; i < l; i++) {
 				if (totalAll[i].IBAN.toLowerCase().indexOf("accounts") != -1)

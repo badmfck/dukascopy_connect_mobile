@@ -90,7 +90,7 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements {
 					height: walletSections[0].getHeight(),
 					param: 0
 				} );
-			} else if (moreContainer.parent != null) {
+			} else if (moreContainer != null && moreContainer.parent != null) {
 				moreContainer.parent.removeChild(moreContainer);
 			}
 			

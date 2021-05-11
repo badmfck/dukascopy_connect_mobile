@@ -675,14 +675,13 @@ package com.dukascopy.connect.screens {
 			BankManager.getTotalServer(true);
 		}
 		
-		private function onTotalLoaded(data:Object, local:Boolean):void {
-			var total:Object = BankManager.getTotal();
+		private function onTotalLoaded(total:Object, local:Boolean):void {
 			if (total != null) {
 				if (totalItemIndex != -1) {
 					list.updateItemByIndex(totalItemIndex, false);
 				} else {
 					var toBottom:Boolean = checkScrollToBottom();
-					list.appendItem(BankManager.getTotal(), ListBankAccountBalance);
+					list.appendItem(total, ListBankAccountBalance);
 					totalItemIndex = list.getStock().length - 1;
 					if (toBottom == true)
 						list.scrollBottom(true);
