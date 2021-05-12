@@ -22,10 +22,7 @@ package com.dukascopy.connect.screens.dialogs {
 	import flash.text.TextFieldAutoSize;
 	import flash.text.TextFormatAlign;
 	
-	/**
-	 * ...
-	 * @author Ilya Shcherbakov. Telefision TEAM Riga.
-	 */
+	
 
 	public class ScreenAddInvoiceDialog extends ScreenAlertDialog {
 		
