@@ -38,6 +38,8 @@ package com.dukascopy.connect.screens.serviceScreen {
 		private var closeButton:BitmapButton;
 		private var padding:int;
 		private var wkWebKit:WKWebKit;
+		private var lastURL:String;
+
 
 		public function WebViewReactionPopup() {}
 		
@@ -75,7 +77,7 @@ package com.dukascopy.connect.screens.serviceScreen {
 		}
 		
 		private function onButtonCloseClick():void {
-			fireCallback(false, null);
+			fireCallback(false, lastURL);
 		}
 		
 		override public function activateScreen():void {
@@ -120,6 +122,7 @@ package com.dukascopy.connect.screens.serviceScreen {
 			tempRect.width = _width;
 			tempRect.height = _height - closeButton.y - closeButton.height - padding;
 
+			lastURL=data.link;
 
 			if(Config.PLATFORM_APPLE){
 				wkWebKit=WKWebKit.getInstance();
@@ -131,27 +134,31 @@ package com.dukascopy.connect.screens.serviceScreen {
 				return;
 			}
 
+			try{
+				webView = new StageWebView();
+				webView.viewPort = tempRect;
+				webView.stage = MobileGui.stage;
+				/*webView.viewPort = tempRect;
+				webView.stage = MobileGui.stage;*/
+				webView.loadURL(data.link);
+				webView.addEventListener(LocationChangeEvent.LOCATION_CHANGE, locationChange);
+				webView.addEventListener(LocationChangeEvent.LOCATION_CHANGING, locationChanging);
+				webView.addEventListener(ErrorEvent.ERROR, onWebViewError);
+			}catch(e:Error){
 
-			webView = new StageWebView();
-			webView.viewPort = tempRect;
-			webView.stage = MobileGui.stage;
-			/*webView.viewPort = tempRect;
-			webView.stage = MobileGui.stage;*/
-			webView.loadURL(data.link);
-			webView.addEventListener(LocationChangeEvent.LOCATION_CHANGE, locationChange);
-			webView.addEventListener(LocationChangeEvent.LOCATION_CHANGING, locationChanging);
-			webView.addEventListener(ErrorEvent.ERROR, onWebViewError);
+			}
 		}
 		
 		private function locationChange(e:LocationChangeEvent):void {
 			locationChanging(e);
+			lastURL=e.location;
 		}
 		
 		private function locationChanging(e:LocationChangeEvent):void {
 			if (checkLocation(e.location)) {
 				e.preventDefault();
 				e.stopPropagation();
-				
+				lastURL=e.location;
 				fireCallback(true, e.location);
 			}
 		}
@@ -167,11 +174,16 @@ package com.dukascopy.connect.screens.serviceScreen {
 		
 		private function close():void 
 		{
-			if (manager == DialogManager){
+			if (manager == DialogManager)
+			{
 				DialogManager.closeDialog();
-			}else if(manager == ServiceScreenManager){
+			}
+			else if(manager == ServiceScreenManager)
+			{
 				ServiceScreenManager.closeView();
-			}else{
+			}
+			else
+			{
 				ServiceScreenManager.closeView();
 			}
 		}
@@ -188,13 +200,15 @@ package com.dukascopy.connect.screens.serviceScreen {
 			
 		}
 		
-		public function destroyWebView():void {
+		private function destroyWebView():void {
 
 			if(Config.PLATFORM_APPLE){
 				if(wkWebKit!=null)
 					wkWebKit.close();
 				wkWebKit=null;
 			}
+
+			lastURL=null;
 
 			if(webView==null)
 				return;

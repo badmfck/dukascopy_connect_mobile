@@ -268,8 +268,7 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements {
 				sectionX,
 				sectionY,
 				hitZones,
-				(li.data.item != null && li.data.item.type == "walletSelectWithoutTotal") ? HitZoneType.WALLET_SELECT : HitZoneType.WALLET,
-				"ACCOUNT_NUMBER"
+				(li.data.item != null && li.data.item.type == "walletSelectWithoutTotal") ? HitZoneType.WALLET_SELECT : HitZoneType.WALLET
 			);
 			if (otherAccSections != null && otherAccSections.length != 0 && otherAccSections[0].parent != null) {
 				if (sectionY != 0)

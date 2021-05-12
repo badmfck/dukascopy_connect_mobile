@@ -223,15 +223,6 @@ package com.dukascopy.connect.sys.contactsManager {
 		
 		static private function addContact(cvo:ContactVO):void
 		{
-			/*if (con == null)
-			{
-				con = new Dictionary();
-			}
-			if (cvo.fxID == 154007)
-			{
-				trace("123");
-			}*/
-			
 			_contacts.push(cvo);
 		}
 		

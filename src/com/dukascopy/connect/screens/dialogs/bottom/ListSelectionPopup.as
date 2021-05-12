@@ -63,6 +63,11 @@ package com.dukascopy.connect.screens.dialogs.bottom
 		{
 			list.setWidthAndHeight(_width, getMaxContentHeight());
 			list.setData(itemsData, renderer);
+			updateListSize();
+		}
+
+		protected function updateListSize():void
+		{
 			list.setWidthAndHeight(_width, int(Math.min(getMaxContentHeight(), list.itemsHeight)));
 			if (list.itemsHeight > list.height)
 			{

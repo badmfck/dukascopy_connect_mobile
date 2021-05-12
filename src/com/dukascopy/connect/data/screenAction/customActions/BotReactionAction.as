@@ -98,7 +98,7 @@ package com.dukascopy.connect.data.screenAction.customActions {
 			if (success == true) {
 				onResult(getAction(url), getUrlData(url));
 			} else {
-				onResult("popup_closed");
+				onResult("popup_closed",url);
 			}
 		}
 		

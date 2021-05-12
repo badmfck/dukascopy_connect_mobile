@@ -238,7 +238,6 @@ import com.dukascopy.connect.MobileGui;
 		}
 		
 		static private function onConnectionChanged():void {
-			trace("dukascopy.test", "onConnectionChanged", NetworkManager.isConnected, latestChats != null);
 			if (NetworkManager.isConnected == false)
 				_inChat = false;
 			else if (currentChat != null && currentChat.isLocal() == false)
@@ -305,7 +304,6 @@ import com.dukascopy.connect.MobileGui;
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		static public function openChatByUID(chatUID:String):void {
-			trace("dukascopy.test", "openChatByUID", chatUID);
 			var existingChat:ChatVO = getChatByUID(chatUID);
 			if (existingChat != null && existingChat.uid != null && existingChat.uid.length != 0) {
 				openChatByVO(existingChat);
@@ -315,7 +313,6 @@ import com.dukascopy.connect.MobileGui;
 		}
 		
 		static public function openChatByUserUIDs(userUIDs:Array, createChatOnly:Boolean = false, caller:String = null):void {
-			trace("dukascopy.test", "openChatByUserUIDs", userUIDs);
 			var existingChat:ChatVO = getChatWithUsersList(userUIDs);
 			if (existingChat != null && existingChat.uid != null && existingChat.uid.length != 0) {
 				openChatByVO(existingChat, createChatOnly);
@@ -390,7 +387,6 @@ import com.dukascopy.connect.MobileGui;
 		
 		static private function onChatLoadedFromPHPAndOpen(phpRespond:PHPRespond):void {
 			echo("ChatManager", "onChatLoadedFromPHPAndOpen");
-			trace("dukascopy.test", "onChatLoadedFromPHPAndOpen", phpRespond.errorMsg);
  			if (phpRespond.error == true) {
 				
 				if (phpRespond.errorMsg.toLowerCase().indexOf('chat.04') != -1) {

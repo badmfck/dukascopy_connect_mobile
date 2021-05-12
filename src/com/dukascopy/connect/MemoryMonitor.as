@@ -17,7 +17,7 @@ package com.dukascopy.connect{
 	import flash.utils.Timer;
 	
 	/**
-	 * ABC
+	 * ...
 	 * @author ...
 	 */
 	public class MemoryMonitor extends Sprite{

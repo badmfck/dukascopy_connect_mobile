@@ -1731,7 +1731,7 @@ package com.dukascopy.connect.gui.list {
 			return true;
 		}
 		
-		public function scrollToIndex(index:int, offset:int, delay:Number = 0, withTween:Boolean = true):Boolean {
+		public function scrollToIndex(index:int, offset:int, delay:Number = 0):Boolean {
 			if (stock == null)
 				return false;
 			var l:int = stock.length;
@@ -1747,12 +1747,7 @@ package com.dukascopy.connect.gui.list {
 				newY = 0;
 			}
 			TweenMax.killTweensOf(box);
-			if (withTween) {
-				TweenMax.to(box, 0.5, { useFrames:false, y:newY, delay:delay, onUpdate:onMoved, onComplete:sbTweenMaxComplete} );
-			} else {
-				box.y = newY;
-				onMoved(true);
-			}
+			TweenMax.to(box, 0.5, { useFrames:false, y:newY, delay:delay, onUpdate:onMoved, onComplete:sbTweenMaxComplete} );
 			return true;
 		}
 		
