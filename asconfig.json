@@ -10,8 +10,12 @@
         "load-config": [
             "conf/project.xml"
         ],
+        "library-path": [
+            "src/swc/greensock.swc"
+        ],
         "debug": true,
         "output": "./bin/Dukascopy.swf"
+        
     },
 
     "airOptions": {
