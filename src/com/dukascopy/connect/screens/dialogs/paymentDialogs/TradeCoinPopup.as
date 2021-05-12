@@ -92,7 +92,8 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 		private var _lastCommissionCallID:String;
 		private var incomeText:Bitmap;
 		private var lastOrder:CoinTradeOrder;
-		
+		private var maxEurosAvaliable:Number;
+
 		public function TradeCoinPopup()
 		{
 			
@@ -126,6 +127,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 			scrollPanel.addObject(inputPrice);
 			
 			inputQuantity = new InputField();
+			inputQuantity.align = InputField.ALIGN_LEFT;
 			inputQuantity.onSelectedFunction = onInputSelected;
 			inputQuantity.onChangedFunction = onChangeInputPrice;
 			scrollPanel.addObject(inputQuantity);
@@ -235,7 +237,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 			ToastMessage.display(Lang.avaliableSoon);
 			return;
 			
-			DialogManager.showDialog(SelectContactScreen, {callback:onSelectContact, dialog:true});
+			DialogManager.showDialog(SelectContactScreen, { title:Lang.selectContacts, callback:onSelectContact, searchText:Lang.TEXT_SEARCH_CONTACT }, ServiceScreenManager.TYPE_SCREEN );
 		}
 		
 		private function onSelectContact(user:UserVO, data:Object):void {
@@ -418,13 +420,31 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 		private function onChangeInputPrice():void 
 		{
 		//	drawCommision();
+			updateMaxCoins();
+
 			if (checkDataValid() == true)
 			{
 				loadComission();
 			}
 		}
 		
-		private function loadComission():void 
+		private function updateMaxCoins():void
+		{
+			if (!isNaN(maxEurosAvaliable))
+			{
+				if (!isNaN(inputPrice.value) && inputPrice.value > 0)
+				{
+					var value:Number = maxEurosAvaliable/inputPrice.value;
+					inputQuantity.drawUnderlineValue(Lang.max + ": " + value.toFixed(4) + " " + Lang[TypeCurrency.DCO]);
+				}
+				else
+				{
+					inputQuantity.drawUnderlineValue(Lang.max + ": ...");
+				}
+			}
+		}
+
+		private function loadComission():void
 		{
 			if (screenData.type == TradingOrder.SELL && inputQuantity.value > 0 && inputPrice.value > 0)
 			{
@@ -533,7 +553,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 			}
 			else if (screenData.type == TradingOrder.BUY)
 			{
-				var maxEurosAvaliable:Number = 0;
+				maxEurosAvaliable = 0;
 				if (accounts.moneyAccounts != null && accounts.moneyAccounts.length > 0)
 				{
 					var euroAcc:Object;
@@ -645,11 +665,11 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 			
 			var price:Number = inputPrice.value;
 			
-			if (!isNaN(price) && price <= ConfigManager.config.COINS_CSC_LLF_PRICE_LIMIT && screenData.type == TradingOrder.BUY)
+			if (!isNaN(price) && price <= PayManager.systemOptions.coin_llf_price_limit && screenData.type == TradingOrder.BUY)
 			{
-				var text:String = Lang.coinBuyLowPriceWarning.replace("%@1", ConfigManager.config.COINS_CSC_LLF_PRICE_LIMIT);
-				text = text.replace("%@2", ConfigManager.config.COINS_CSC_LLF_EUR_PER_COIN);
-				text = text.replace("%@3", (ConfigManager.config.COINS_CSC_LLF_PRICE_LIMIT + 0.01).toString());
+				var text:String = Lang.coinBuyLowPriceWarning.replace("%@1", PayManager.systemOptions.coin_llf_price_limit);
+				text = text.replace("%@2", PayManager.systemOptions.coin_llf_eur_per_coin);
+				text = text.replace("%@3", (PayManager.systemOptions.coin_llf_price_limit + 0.01).toString());
 				DialogManager.alert(Lang.information, text, onCommissionPopup, Lang.confirmMyOrder, Lang.textBack);
 			}
 			else
@@ -886,7 +906,6 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 		
 		private function construct():void 
 		{
-			
 			var maxCoinsAvaliable:String;
 			if (screenData.type == TradingOrder.SELL && accounts.coinsAccounts != null && accounts.coinsAccounts.length > 0)
 			{

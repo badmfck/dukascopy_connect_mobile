@@ -626,13 +626,9 @@ package com.dukascopy.connect.screens.dialogs {
 				}
 				
 				return true;
-			}			
-						
+			}
 		}
 
-		private function callBackAlert():void {
-			DialogManager.showAddInvoice(null,TEMP_DATA);
-		}
 		override protected function btn1Clicked():void {
 			if (callback != null) {
 				fireCallbackFunctionWithValue(2);

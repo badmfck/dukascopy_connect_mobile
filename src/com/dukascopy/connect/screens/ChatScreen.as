@@ -235,6 +235,8 @@ package com.dukascopy.connect.screens {
 		private var unreadedMessages:int = 0;
 		private var lastReadedIndex:Number;
 		private var currentInvoiceAction:AddInvoiceAction;
+		private var cachedChatImages:Vector.<ChatMessageVO>;
+		private var lastFirstMessageNum:int;
 		protected var backColorClip:Sprite;
 		static public var scannPassTime:Number = 0;
 		
@@ -357,6 +359,7 @@ package com.dukascopy.connect.screens {
 			GlobalDate.S_NEW_DATE.add(refreshList);
 			LightBox.S_LIGHTBOX_OPENED.add(onLightboxOpen);
 			LightBox.S_LIGHTBOX_CLOSED.add(onLightboxClose);
+			LightBox.S_REQUEST_PREW_CONTENT.add(requestPrewMessages);
 			Puzzle.S_PUZZLE_OPENED.add(onLightboxOpen);
 			Puzzle.S_PUZZLE_CLOSED.add(onLightboxClose);
 			ImageUploader.S_FILE_UPLOAD_STATUS.add(onFileUploadedStatus);
@@ -436,30 +439,7 @@ package com.dukascopy.connect.screens {
 			NativeExtensionController.S_LOCATION.add(onMyLocation);
 			WSClient.S_LOCATION_UPDATE.add(onUserLocation);
 		}
-		
-		/*private function onLoyaltyChanged(loyalty:String):void {
-			if (loyalty == "gold") {
-				if (Calendar.viAppointmentData != null &&
-					Calendar.viAppointmentData.exist == true &&
-					Calendar.viAppointmentData.date != null) {
-						Calendar.cancelVIAppointment(Calendar.viAppointmentData.id);
-				}
-				lastLoyaltyStatus = "gold";
-				DialogManager.closeDialog();
-				ServiceScreenManager.closeView();
-				DialogManager.alert(Lang.congrats, Lang.fastTrackSuccess);
-				callStartVI();
-			}
-		}*/
-		
-		/*private function callStartVI():void {
-			tryReadyForVDID();
-		}*/
-		
-		/*private function updateViAppointment(success:Boolean = true, errorMessage:String = null):void {
-			checkForPhase();
-		}*/
-		
+
 		private function hidePreloader():void 
 		{
 			if (preloader != null)
@@ -1470,7 +1450,7 @@ package com.dukascopy.connect.screens {
 					historyLoadingState = true;
 					if (historyLoadingScroller != null)
 						historyLoadingScroller.startAnimation();
-					ChatManager.loadChatHistorycalMessages();
+					loadHistoricalMessages();
 				}
 			} else {
 				if (historyLoadingScroller != null)
@@ -1481,6 +1461,11 @@ package com.dukascopy.connect.screens {
 			}
 		}
 		
+		private function loadHistoricalMessages():void
+		{
+			ChatManager.loadChatHistorycalMessages();
+		}
+
 		private function showChatInput():void
 		{
 			var showPayButtons:Boolean = true;
@@ -1620,7 +1605,11 @@ package com.dukascopy.connect.screens {
 					if (isMine && editable)
 						menuItems.push( { fullLink:Lang.textEdit, id:ChatItemContextMenuItemType.EDIT } );
 				}
-				
+				else if (msgVO.typeEnum == ChatMessageType.FORWARDED)
+				{
+					menuItems.push( { fullLink:Lang.textCopy, id:ChatItemContextMenuItemType.COPY } );
+				}
+
 				var removeExist:Boolean = false;
 				
 				if (isMine) {
@@ -2151,6 +2140,7 @@ package com.dukascopy.connect.screens {
 							removeImageAction.setData(ImageContextMenuType.REMOVE_MESSAGE)
 							actions.push(removeImageAction);
 						}
+
 						LightBox.add(cmsgVO.imageURLWithKey, true, null, null, null, cmsgVO.imageThumbURLWithKey, actions);
 						LightBox.show(cmsgVO.imageURLWithKey, getTitleValue(), true);
 						deactivateScreen();
@@ -2182,8 +2172,19 @@ package com.dukascopy.connect.screens {
 						actions2.push(removeImageAction2);
 					}
 					
-					LightBox.add(cmsgVO.imageURLWithKey, true, null, null, null, cmsgVO.imageThumbURLWithKey, actions2);
+					var chatImages:Vector.<ChatMessageVO> = getChatImages();
+					var l:int = chatImages.length;
+					for (var i:int = 0; i < l; i++)
+					{
+						LightBox.add(chatImages[i].imageURLWithKey, true, null, null, null, chatImages[i].imageThumbURLWithKey, actions2);
+					}
+					if (ChatManager.getCurrentChat().messages != null && ChatManager.getCurrentChat().messages.length > 0 && ChatManager.getCurrentChat().messages[0].num > 1)
+					{
+						LightBox.allowPrewButton();
+					}
+
 					LightBox.show(cmsgVO.imageURLWithKey, getTitleValue(), true);
+
 					deactivateScreen();
 				} else if ((cmsgVO.linksArray != null && cmsgVO.linksArray.length > 0) || (cmsgVO.systemMessageVO != null && cmsgVO.systemMessageVO.forwardVO != null && cmsgVO.systemMessageVO.forwardVO.linksArray != null && cmsgVO.systemMessageVO.forwardVO.linksArray.length > 0)) {
 					if ((cmsgVO.linksArray != null && cmsgVO.linksArray.length > 1) || (cmsgVO.systemMessageVO != null && cmsgVO.systemMessageVO.forwardVO != null && cmsgVO.systemMessageVO.forwardVO.linksArray != null && cmsgVO.systemMessageVO.forwardVO.linksArray.length > 1)) {
@@ -2387,7 +2388,33 @@ package com.dukascopy.connect.screens {
 			}
 		}
 		
-		private function getMessageLinks(cmsgVO:ChatMessageVO):Array 
+		private function getChatImages():Vector.<ChatMessageVO>
+		{
+			/*if (cachedChatImages != null)
+			{
+				return cachedChatImages;
+			}*/
+			var result:Vector.<ChatMessageVO> = new Vector.<ChatMessageVO>();
+			if (ChatManager.getCurrentChat() != null)
+			{
+				var messages:Vector.<ChatMessageVO> = ChatManager.getCurrentChat().messages;
+				if (messages != null)
+				{
+					var l:int = messages.length;
+					for (var i:int = 0; i < l; i++)
+					{
+						if (messages[i].systemMessageVO != null && (messages[i].systemMessageVO.fileType == ChatSystemMsgVO.FILETYPE_IMG || messages[i].systemMessageVO.fileType == ChatSystemMsgVO.FILETYPE_IMG_CRYPTED))
+						{
+							result.push(messages[i]);
+						}
+					}
+				}
+				cachedChatImages = result;
+			}
+			return result;
+		}
+
+		private function getMessageLinks(cmsgVO:ChatMessageVO):Array
 		{
 			if (cmsgVO.linksArray != null && cmsgVO.linksArray.length > 0)
 			{
@@ -3247,7 +3274,6 @@ package com.dukascopy.connect.screens {
 						for (var j:int = 0; j < ChatManager.getCurrentChat().users.length; j++){
 							userBot = ChatManager.getCurrentChat().users[j];
 							if (userBot != null && userBot.userVO != null && userBot.userVO.type  == UserVO.TYPE_BOT){
-									//trace("Send to bot initial action Group");
 									var botAvatarCommandGroup:String = "start";					
 									var actionDataGroup:Object = {};
 									actionDataGroup.lang = LangManager.model.getCurrentLanguageID();
@@ -3498,9 +3524,9 @@ package com.dukascopy.connect.screens {
 				if (historyLoadingScroller != null)
 				{
 					historyLoadingScroller.hide();
-						}
-					}
 				}
+			}
+		}
 		
 		private function chatHasMessagesFromAnotherSide(listData:Array):Boolean {
 			var l:int = listData.length;
@@ -3524,6 +3550,12 @@ package com.dukascopy.connect.screens {
 			
 			_messagesLoaded = true;
 			var listPositionY:int = list.innerHeight;
+			var oldContentHeight:int = list.innerHeight;
+			if (LightBox.isShowing)
+			{
+				listPositionY = -list.getBoxY();
+			}
+
 			var messages:Vector.<ChatMessageVO> = ChatManager.getCurrentChat().messages;
 			var listData:Array = [];
 			/*if (messages[0].num > 1)
@@ -3544,9 +3576,44 @@ package com.dukascopy.connect.screens {
 				}
 			}
 			list.setData(listData, ListChatItem, ['avatarForChat', 'imageThumbURLWithKey'], null, ['imageThumbURLWithKey']);
-			list.setBoxY(-(list.innerHeight - listPositionY));
+
+			if (LightBox.isShowing)
+			{
+				list.setBoxY( -(list.innerHeight - oldContentHeight + listPositionY));
+			}
+			else
+			{
+				list.setBoxY( -(list.innerHeight - listPositionY));
+			}
+
+
+			if (LightBox.isShowing)
+			{
+				if (messages != null && messages.length > 0 && messages[0].num < 2)
+				{
+					LightBox.disablePrewButton();
+				}
+				else
+				{
+					updateLightboxDataset();
+				}
+			}
 		}
 		
+		private function updateLightboxDataset():void
+		{
+			cachedChatImages = null;
+			var chatImages:Vector.<ChatMessageVO> = getChatImages();
+			cachedChatImages = chatImages;
+			chatImages.reverse();
+			var l:int = chatImages.length;
+			for (var i:int = 0; i < l; i++)
+			{
+				LightBox.unshift(chatImages[i].imageURLWithKey, true, null, null, null, chatImages[i].imageThumbURLWithKey, null);
+			}
+			LightBox.checkPendingCalls();
+		}
+
 		private function setChatListSize(needScrollToBottom:Boolean = false):void {
 			if (_isDisposed == true)
 				return;
@@ -3578,8 +3645,31 @@ package com.dukascopy.connect.screens {
 				iuBox.y = userWritings.view.y - iuBox.height - Config.MARGIN;
 			}
 		}
-		
-		private function updateButtonsPositions(bottomY:int):int 
+
+		private function updateButtonsPositions(bottomY: int): int {
+			if (satisfyPublicAnswerButton != null) {
+				satisfyPublicAnswerButton.setPosition(_width - Config.FINGER_SIZE * 1.5 - Config.MARGIN * 2, bottomY - satisfyPublicAnswerButton.height - Config.MARGIN);
+			}
+
+			if (verificationButton != null) {
+				bottomY -= verificationButton.height;
+				verificationButton.y = chatInput.getView().y - verificationButton.height;
+			}
+
+			var position: int = bottomY;
+			if (reportButton != null) {
+				reportButton.setPosition(_width - Config.FINGER_SIZE * 1 - Config.MARGIN * 2, bottomY - reportButton.height - Config.MARGIN);
+				position -= reportButton.height - Config.FINGER_SIZE * .2;
+			}
+
+			if (scrollBottomButton != null) {
+				scrollBottomButton.y = (position - scrollBottomButton.height - Config.DIALOG_MARGIN * 0.7);
+			}
+
+			return bottomY;
+		}
+
+		/*private function updateButtonsPositions(bottomY:int):int
 		{
 			if (satisfyPublicAnswerButton != null) {
 				satisfyPublicAnswerButton.setPosition(_width - Config.FINGER_SIZE * 1.5 - Config.MARGIN * 2, bottomY - satisfyPublicAnswerButton.height - Config.MARGIN);
@@ -3590,18 +3680,19 @@ package com.dukascopy.connect.screens {
 				verificationButton.y = chatInput.getView().y - verificationButton.height;
 			}
 			
+			var position:int = bottomY;
 			if (reportButton != null) {
 				reportButton.setPosition(_width - Config.FINGER_SIZE * 1 - Config.MARGIN * 2, bottomY - reportButton.height - Config.MARGIN);
-				bottomY -= reportButton.height - Config.FINGER_SIZE*.2;
+				position -= reportButton.height - Config.FINGER_SIZE * .2;
 			}
 			
 			if (scrollBottomButton != null)
 			{
-				scrollBottomButton.y = (bottomY - scrollBottomButton.height - Config.DIALOG_MARGIN * 0.7);
+				scrollBottomButton.y = (position - scrollBottomButton.height - Config.DIALOG_MARGIN * 0.7);
 			}
 			
 			return bottomY;
-		}
+		}*/
 		
 		private function getAnswersOffset(bottomY:int):int {
 			if (ChatManager.getCurrentChat() == null ||
@@ -3875,6 +3966,7 @@ package com.dukascopy.connect.screens {
 			GlobalDate.S_NEW_DATE.remove(refreshList);
 			LightBox.S_LIGHTBOX_OPENED.remove(onLightboxOpen);
 			LightBox.S_LIGHTBOX_CLOSED.remove(onLightboxClose);
+			LightBox.S_REQUEST_PREW_CONTENT.remove(requestPrewMessages);
 			Puzzle.S_PUZZLE_OPENED.remove(onLightboxOpen);
 			Puzzle.S_PUZZLE_CLOSED.remove(onLightboxClose);
 			ImageUploader.S_FILE_UPLOAD_STATUS.remove(onFileUploadedStatus);
@@ -3949,6 +4041,25 @@ package com.dukascopy.connect.screens {
 			super.dispose();
 		}
 		
+		private function requestPrewMessages():void
+		{
+			var nextNum:int = 0;
+			if (ChatManager.getCurrentChat() != null && ChatManager.getCurrentChat().messages != null && ChatManager.getCurrentChat().messages.length > 0)
+			{
+				nextNum = ChatManager.getCurrentChat().messages[0].num;
+			}
+			if (lastFirstMessageNum == nextNum)
+			{
+				if (LightBox.isShowing)
+				{
+					LightBox.clearPending();
+				}
+				return;
+			}
+			lastFirstMessageNum = nextNum;
+			loadHistoricalMessages();
+		}
+
 		private function onChannelModeratorsChanged(eventType:String, channelUID:String):void {
 			var currentChatUID:String;
 			if ((data as ChatScreenData).chatVO) {

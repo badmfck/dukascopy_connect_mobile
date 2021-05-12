@@ -36,8 +36,15 @@ package com.hurlant.crypto.symmetric
 			var vector:ByteArray = getIV4d();
 			var tmp:ByteArray = new ByteArray;
 			for (var i:uint=0;i<src.length;i+=blockSize) {
-				tmp.position=0;
-				tmp.writeBytes(src, i, blockSize);
+				tmp.position = 0;
+				try{
+					tmp.writeBytes(src, i, blockSize);
+				}
+				catch (e:Error)
+				{
+
+				}
+
 				key.decrypt(src, i);
 				for (var j:uint=0;j<blockSize;j++) {
 					src[i+j] ^= vector[j];

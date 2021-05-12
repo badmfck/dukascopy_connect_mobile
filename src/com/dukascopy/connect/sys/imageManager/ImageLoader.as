@@ -409,6 +409,13 @@ package com.dukascopy.connect.sys.imageManager {
 				return;
 			}
 			
+			// image not found/delete
+			if (imageData.length == 330)
+			{
+				onLoadError();
+				return;
+			}
+
 			if (cryptKey)
 			{
 				var sourceData:ByteArray = new ByteArray();
