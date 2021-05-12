@@ -5,6 +5,7 @@ package {
 import com.dukascopy.connect.Config;
 import com.dukascopy.connect.MobileGui;
 import com.dukascopy.connect.sys.auth.Auth;
+import com.dukascopy.connect.sys.debug.RemoteDebugger;
 import com.dukascopy.connect.sys.echo.EchoParser;
 import com.dukascopy.connect.sys.echo.echo;
 import com.dukascopy.connect.sys.imageManager.ImageBitmapData;
@@ -38,9 +39,9 @@ public class Main extends Sprite {
 		public static var startTime:Number=new Date().getTime();
 
 		public function Main() {
+
 			timer = getTimer(); 
 			stage.quality = StageQuality.LOW;
-			
 			
 			stage.scaleMode = StageScaleMode.NO_SCALE;
 			stage.align = StageAlign.TOP_LEFT;

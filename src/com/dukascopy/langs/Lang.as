@@ -1243,11 +1243,17 @@ package com.dukascopy.langs {
 		static public var startVideoIdentification:String="Start";
 		static public var videoIdentificationDescription:String="You need to perform video identification to complete your registration. Please prepare your passport or ID card and press start button if you want to do video identification now.";
 		static public var videoIdentificationTitle:String = "ID Verification";
-		
+
 		static public var inJail:String = "In Jail";
 		static public var jailOver:String = "Jail Over";
 		static public var talkWithABankBot:String = "Talk with a Bank Bot";
 		static public var bankBot:String = "Bank's Bot";
+
+		static public var cameraRollPermissionRequest:String="No access to camera roll";
+		static public var cameraRollPermissionAvatarExplain:String="To use image as avatar from camera roll, please open Settings and provide permission.";
+		
+		static public var cameraPermissionRequest:String="No access to camera";
+		static public var cameraPermissionAvatarExplain:String="To take photos as avatar, please open Settings and provide permission.";
 		
 		static public var refCodesText:Object = {};
 		static public var lottoText:Object = {};

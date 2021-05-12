@@ -86,7 +86,7 @@ import flash.utils.getTimer;
 		static private function onPhpAnyRequestSuccess():void {
 			if (canConnect() == false)
 				return;
-			if (_connected == false && _connecting == false)
+			if (_connected == false && _connecting == false && Auth.key != "web")
 			{
 				connect(false, "onPhpAnyRequestSuccess");
 			}
@@ -424,6 +424,11 @@ import flash.utils.getTimer;
 			connect();
 		}
 		
+		static public function disableGuestConnection():void
+		{
+			allowGuestConnection = false;
+		}
+
 		static private function onWSMessage(e:WebSocketEvent):void {
 			clearTimeout();
 			lastMessageTime = getTimer();

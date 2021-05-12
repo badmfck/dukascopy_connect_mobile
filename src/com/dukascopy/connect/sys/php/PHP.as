@@ -40,7 +40,7 @@ package com.dukascopy.connect.sys.php {
 
 	public class PHP {
 		
-		static public var methodsWithoutKey:Array = ["config.get", "auth.serverTime", "geo.locate", "auth.requestCode", "auth.checkCode", "sms.verificationCall", "company.startChat", "auth.guest", "chat.hGetMessages"];
+		static public var methodsWithoutKey:Array = ["config.get", "auth.serverTime", "geo.locate", "auth.requestCode", "auth.checkCode", "sms.verificationCall", "company.startChat", "auth.guest", "chat.hGetMessages", "files.addImage"];
 		
 		static public var core:String = null;
 		static public const S_ERROR:Signal = new Signal("PHP.S_ERROR");
@@ -140,8 +140,8 @@ package com.dukascopy.connect.sys.php {
 		 * @param	userUIDS
 		 * @param	createChatOnly
 		 */
-		static public function call_stsGet(callBack:Function, promoCode:String, notaryFlow:Boolean,coolPhone:Boolean,birthDate:String):void {
-			call('sts.get', callBack,{params:{promocode:promoCode,birthDate:birthDate,coolphone:(coolPhone)?1:0,notaryflow:(notaryFlow)?1:0,version:Config.VERSION,platform:Config.PLATFORM}});
+		static public function call_stsGet(callBack:Function, promoCode:String, notaryFlow:Boolean,coolPhone:Boolean,birthDate:String,documentID:String,documentType:String):void {
+			call('sts.get', callBack,{params:{promocode:promoCode,documentID:documentID,documentType:documentType,birthDate:birthDate,coolphone:(coolPhone)?1:0,notaryflow:(notaryFlow)?1:0,version:Config.VERSION,platform:Config.PLATFORM}});
 		}
 		
 		static public function chat_start(callBack:Function, userUIDS:Array, createChatOnly:Boolean = false, caller:String = ""):void {
@@ -1201,6 +1201,21 @@ package com.dukascopy.connect.sys.php {
 			call('Pay.PayThirdParty', callBack, data );
 		}
 		
+		static public function filesAddImage(chatUID:String, image:String, thumb:String, title:String, callBack:Function):void
+		{
+			var data:Object = new Object();
+			data.key = "web";
+			data.chatUID = chatUID;
+			data.image = image;
+			data.thumb = thumb;
+			data.title = title;
+			data.b64 = true;
+			data.method = "files.addImage";
+			data.crypted = false;
+
+			call('files.addImage', callBack, data, Config.URL_PHP_CORE_SERVER_FILE);
+		}
+
 		static private function call(method:String, callBack:Function = null, data:Object = null,  url:String = null, rawRespond:Boolean = false, requestMethod:String = 'POST', crypt:Boolean = true, noAuthKey:Boolean = false, additionalData:Object = null):void {
 			if (Auth.key == "web" && methodsWithoutKey.indexOf(method) == -1 && rawRespond == false) {
 				
