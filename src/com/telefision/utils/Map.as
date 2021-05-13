@@ -1,5 +1,6 @@
 package com.telefision.utils
 {
+ 
     public class Map{
         private var valuesMap:Object={}; //{KEY_string, value_index} 
         private var keysMap:Object={}; // {KEY_string, key_index}
@@ -8,13 +9,18 @@ package com.telefision.utils
         private var name:String;
         static private var nameID:int=0;
         public function Map(name:String=null){
-            if(name!=null)
-                this.name=name;
-            else
-                this.name="MAP-"+(nameID++);
+            if(name==null)
+                name="Map-"+(nameID++);
+            this.name=name;
         }
 
-        public function setValue(key:String,value:Object):Map{
+        /**
+         * Add value to map
+         * @param key 
+         * @param value 
+         * @return map istance
+         */
+        protected function add(key:String,value:Object):Map{
             var valIndex:int=-1;
             if(key in valuesMap)
                 valIndex=valuesMap[key];
@@ -32,12 +38,21 @@ package com.telefision.utils
             return this;
         }
 
-        public function getValue(key:String):Object{
+        /**
+         * Get value from map by key
+         * @param key 
+         * @return value or null if value not exists
+         */
+        protected function getValue(key:String):Object{
             if(key in valuesMap)
                 return values[valuesMap[key]];
             return null;
         }
 
+        /**
+         * Create unmutable array with map values
+         * @return array with map values
+         */
         public function getValues():Array{
             var arr:Array=[];
             for each(var value:Object in values)
@@ -63,6 +78,10 @@ package com.telefision.utils
             }
         }
 
+        /**
+         * Create unmutable array of keys
+         * @return array of key values
+         */
         public function getKeys():Array{
             var arr:Array=[];
             for each(var value:Object in keys)
@@ -70,6 +89,20 @@ package com.telefision.utils
             return arr;
         }
 
+        /**
+         * Check if key exists in map
+         * @param key - string, key to check
+         * @return true if key exists
+         */
+        public function exists(key:String):Boolean{
+            return key in valuesMap
+        }
+
+        /**
+         * Remove element from map by key
+         * @param key to remove
+         * @return removed object or null if object wasnt found in map
+         */
         public function remove(key:String):Object{
             if(key in valuesMap){
                 var index:int=valuesMap[key];
@@ -86,6 +119,10 @@ package com.telefision.utils
             return null;
         }
 
+        /**
+         * Calculate map size
+         * @return map size
+         */
         public function get size():int{
             return values.length;
         }

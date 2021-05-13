@@ -14,6 +14,7 @@ public class GD {
 
 
 		// ESCROW
-		static public const S_ESCROW_DEALS_LOADED:Signal=new Signal(); // EscrowDealVO[] fires when all active escrow deals loaded from server
+		/*static public const S_ESCROW_DEALS_LOADED:Signal=new Signal(); // EscrowDealMap
+		static public const S_ESCROW_DEAL_CREATE_REQUEST:SignalEscrowDealCreateRequest=new SignalEscrowDealCreateRequest();*/
     }
 }

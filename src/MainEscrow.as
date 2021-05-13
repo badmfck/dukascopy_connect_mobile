@@ -1,9 +1,6 @@
 package {
 
 
-
-
-
 import flash.display.Sprite;
 import flash.display.StageQuality;
 import flash.display.StageScaleMode;
