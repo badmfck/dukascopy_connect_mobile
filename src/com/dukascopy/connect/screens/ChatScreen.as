@@ -91,7 +91,6 @@ package com.dukascopy.connect.screens {
 	import com.dukascopy.connect.sys.auth.Auth;
 	import com.dukascopy.connect.sys.calendar.Calendar;
 	import com.dukascopy.connect.sys.callManager.CallManager;
-	import com.dukascopy.connect.sys.chat.RichMessageDetector;
 	import com.dukascopy.connect.sys.chatManager.ChatManager;
 	import com.dukascopy.connect.sys.chatManager.ForwardingManager;
 	import com.dukascopy.connect.sys.chatManager.typesManagers.AnswersManager;
@@ -165,6 +164,8 @@ package com.dukascopy.connect.screens {
 	import flash.net.URLRequest;
 	import flash.net.navigateToURL;
 	import flash.text.TextFormatAlign;
+	import com.dukascopy.connect.sys.chat.RichMessageDetector;
+	import com.dukascopy.connect.sys.chat.RichMessageDetector;
 	
 	/**
 	 * @author Igor Bloom
