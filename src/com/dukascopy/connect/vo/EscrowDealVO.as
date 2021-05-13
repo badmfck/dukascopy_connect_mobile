@@ -21,6 +21,10 @@ package com.dukascopy.connect.vo
         private var raw:Object;
 
         public function EscrowDealVO(data:Object){
+            update(data);
+        }
+
+        public function update(data:Object):void{
             raw=data;
         }
 

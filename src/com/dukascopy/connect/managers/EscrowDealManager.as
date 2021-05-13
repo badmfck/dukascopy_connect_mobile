@@ -3,18 +3,28 @@ package com.dukascopy.connect.managers{
     import com.dukascopy.connect.GD;
     import com.dukascopy.connect.sys.Dispatcher;
     import com.dukascopy.connect.vo.EscrowDealVO;
+    import com.telefision.utils.maps.EscrowDealMap;
+    
 
     public class EscrowDealManager{
 
-        private var escrowDeals:Vector.<EscrowDealVO>=new Vector.<EscrowDealVO>();
+        private var escrowDeals:EscrowDealMap=new EscrowDealMap();
 
         public function EscrowDealManager(){
             loadDeals();
+
+            GD.S_ESCROW_DEAL_CREATE_REQUEST.add(onEscrowDealCreateRequest);
         }
 
+        private function onEscrowDealCreateRequest(req:EscrowDealCreateRequest):void{
+            
+        }
+
+        /**
+         * Load active deals
+         */
         private function loadDeals():void{
             //TODO: Server method - load deals, fire callback
-            trace("LOAD  DEALS")
             
             // TEMP DATA
             var data:Object=[
@@ -38,16 +48,19 @@ package com.dukascopy.connect.managers{
                 return;
 
             var l:int=(data as Array).length;
+
             for(var i:int=0;i<l;i++){
                 var deal:Object=data[i];
-          
+                if(!('uid' in deal) || deal.uid==null)
+                    continue;
+                var dealVO:EscrowDealVO=escrowDeals.getDeal(deal.uid);
+                if(dealVO==null)
+                    dealVO=new EscrowDealVO(deal);
+                dealVO.update(deal);
+                escrowDeals.addDeal(deal.uid,dealVO);
             }
 
-            GD.S_ESCROW_DEALS_LOADED.invoke([
-                new EscrowDealVO({uid:"123"}),
-                new EscrowDealVO({uid:"345"}),
-                new EscrowDealVO({uid:"567"}),
-            ]);
+            GD.S_ESCROW_DEALS_LOADED.invoke(escrowDeals);
         }
 
     }
