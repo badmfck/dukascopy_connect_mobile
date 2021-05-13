@@ -1753,7 +1753,10 @@ package com.dukascopy.connect.sys.bankManager {
 				tempObject.bankBot = true;
 				tempObject.acc = history[i].instrument;
 				tempObject.amount = Number(history[i].quantity);
-				tempObject.desc = "Funds Invested:\n" + (Number(history[i].price) * Number(history[i].quantity)).toFixed(2) + " " + history[i].currency;
+				if (history[i].type.toLowerCase() == "sell")
+					tempObject.desc = Lang.fundsReceived + " " + Math.abs((Number(history[i].price) * Number(history[i].quantity))).toFixed(2) + " " + history[i].currency + "\n" + Lang.fundsPL + " " + ((Number(history[i].pl) > 0) ? "+" : "") + Number(history[i].pl).toFixed(2) + " " + history[i].currency;
+				else
+					tempObject.desc = Lang.fundsInvested + " " + (Number(history[i].price) * Number(history[i].quantity)).toFixed(2) + " " + history[i].currency;
 				tempObject.amountEnd = history[i].price;
 				tempObject.amountEndCurrency = history[i].currency;
 				tempObject.amountEndPreText = "Rate: ";
@@ -1844,7 +1847,10 @@ package com.dukascopy.connect.sys.bankManager {
 		static private function onTradingAccountOpened(respondData:Object, hash:String):void {
 			if (preCheckForErrors(respondData, hash, null, "paymentsErrorDataNull") == true)
 				return;
-			sendBlock("openTradingAccountConfirmed");
+			if (respondData.success == true)
+				sendBlock("openTradingAccountConfirmed");
+			else
+				sendBlock("payError", Lang.tradingAccOpeningWait);
 		}
 		
 		static private function onInvestmentCurrencySetted(respondData:Object):void {
@@ -2247,7 +2253,7 @@ package com.dukascopy.connect.sys.bankManager {
 					tempObject.transaction = history[i];
 				} else if (history[i].TYPE == "INVESTMENT") {
 					if (accountNumber != null && accountNumber != "") {
-						if (history[i].FROM.charAt(0).toLowerCase() == "c")
+						if (history[i].FROM != null && history[i].FROM != "" && history[i].FROM.charAt(0).toLowerCase() == "c")
 							tempObject.mine = true;
 						else
 							tempObject.mine = false;
