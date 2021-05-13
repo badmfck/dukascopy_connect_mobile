@@ -103,6 +103,16 @@ package com.dukascopy.connect.screens.dialogs {
 		
 		private function onNextClick():void 
 		{
+			if (iCurrency.value == Lang.currency)
+			{
+				if (PayManager.systemOptions == null)
+				{
+					PayManager.callGetSystemOptions(null);
+				}
+				
+				return;
+			}
+			
 			close(1);
 			
 			/*if (iCurrency.value == Lang[TypeCurrency.DCO])
