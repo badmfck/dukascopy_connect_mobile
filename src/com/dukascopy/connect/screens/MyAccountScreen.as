@@ -532,17 +532,21 @@ package com.dukascopy.connect.screens {
 		private function onHistoryTradesLoaded(history:Array):void {
 			if (coinStatIndex == -1)
 				return;
-			list.getStock()[coinStatIndex].data.opened = true;
-			openedItems ||= [];
-			openedItems.push(list.getStock()[coinStatIndex].data);
-			list.updateItemByIndex(coinStatIndex);
 			var l:int = history.length;
 			if (l == 0)
 				return;
+			list.getStock()[coinStatIndex].data.opened = true;
+			list.getStock()[coinStatIndex].data.openedCount = l;
+			openedItems ||= [];
+			openedItems.push(list.getStock()[coinStatIndex].data);
+			list.updateItemByIndex(coinStatIndex);
 			if (l > 1) {
 				history[0].first = true;
 				history[l - 1].last = true;
-				history[int((l - 1) * .5)].showPrice = list.getStock()[coinStatIndex].data.raw.CUSTOM_DATA.avg_price;
+				var center:int = (l - 1) * .5;
+				history[center].showPrice = list.getStock()[coinStatIndex].data.raw.CUSTOM_DATA.avg_price;
+				history[center].coinStatIndex = center;
+				history[center].openedCount = l;
 			} else {
 				history[0].onlyOne = true;
 			}
@@ -671,14 +675,13 @@ package com.dukascopy.connect.screens {
 			BankManager.getTotalServer(true);
 		}
 		
-		private function onTotalLoaded(data:Object, local:Boolean):void {
-			var total:Object = BankManager.getTotal();
+		private function onTotalLoaded(total:Object, local:Boolean):void {
 			if (total != null) {
 				if (totalItemIndex != -1) {
 					list.updateItemByIndex(totalItemIndex, false);
 				} else {
 					var toBottom:Boolean = checkScrollToBottom();
-					list.appendItem(BankManager.getTotal(), ListBankAccountBalance);
+					list.appendItem(total, ListBankAccountBalance);
 					totalItemIndex = list.getStock().length - 1;
 					if (toBottom == true)
 						list.scrollBottom(true);
@@ -689,13 +692,20 @@ package com.dukascopy.connect.screens {
 		
 		private function onSavingsLoaded():void {
 			var data:Array = BankManager.getSavingsAccounts();
+			var accCorrect:Array = [];
+			var l:int = data.length;
+			for (var i:int = 0; i < l; i++) {
+				if (Number(data[i].BALANCE) == 0)
+					continue;
+				accCorrect.push(data[i]);
+			}
 			var toBottom:Boolean;
-			if (data != null && data.length != 0) {
+			if (accCorrect != null && accCorrect.length != 0) {
 				if (savingsItemIndex != -1) {
 					list.updateItemByIndex(savingsItemIndex, false);
 				} else {
 					toBottom = checkScrollToBottom();
-					list.appendItem( { opened:false, accounts:data }, ListBankAccountSaving);
+					list.appendItem( { opened:false, accounts:accCorrect }, ListBankAccountSaving);
 					savingsItemIndex = list.getStock().length - 1;
 				}
 			}
@@ -1017,9 +1027,54 @@ package com.dukascopy.connect.screens {
 			}
 			if (data.type == "coinTrade") {
 				if (lhz == HitZoneType.CIRCLE) {
+					var coinStatId:int = n - data.coinStatIndex - 1;
+					list.getStock()[coinStatId].data.opened = false;
+					for (var i:int = 0; i < data.openedCount; i++) {
+						list.getStock()[coinStatId + i + 1].data.opened = true;
+					}
+					if (walletItemIndex != -1)
+						walletItemIndex -= data.openedCount;
+					if (totalItemIndex != -1)
+						totalItemIndex -= data.openedCount;
+					if (totalSavingsItemIndex != -1)
+						totalSavingsItemIndex -= data.openedCount;
+					if (cardsItemIndex != -1)
+						cardsItemIndex -= data.openedCount;
+					if (investmentsItemIndex != -1)
+						investmentsItemIndex -= data.openedCount;
+					if (cryptoItemIndex != -1)
+						cryptoItemIndex -= data.openedCount;
+					if (otherItemIndex != -1)
+						otherItemIndex -= data.openedCount;
+					if (savingsItemIndex != -1)
+						savingsItemIndex -= data.openedCount;
+					list.refresh(true);
 					return;
 				}
-				if (BankManager.loadCoinTrades(data, n) == true) {
+				if ("openedCount" in data == true && data.openedCount != 0) {
+					data.opened = true;
+					for (var j:int = 0; j < data.openedCount; j++) {
+						list.getStock()[n + j + 1].data.opened = false;
+					}
+					if (walletItemIndex != -1)
+						walletItemIndex += data.openedCount;
+					if (totalItemIndex != -1)
+						totalItemIndex += data.openedCount;
+					if (totalSavingsItemIndex != -1)
+						totalSavingsItemIndex += data.openedCount;
+					if (cardsItemIndex != -1)
+						cardsItemIndex += data.openedCount;
+					if (investmentsItemIndex != -1)
+						investmentsItemIndex += data.openedCount;
+					if (cryptoItemIndex != -1)
+						cryptoItemIndex += data.openedCount;
+					if (otherItemIndex != -1)
+						otherItemIndex += data.openedCount;
+					if (savingsItemIndex != -1)
+						savingsItemIndex += data.openedCount;
+					list.refresh(true);
+					return;
+				} else if (BankManager.loadCoinTrades(data, n) == true) {
 					coinStatIndex = n;
 					return;
 				}

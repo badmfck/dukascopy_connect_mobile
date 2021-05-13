@@ -298,8 +298,6 @@ package com.dukascopy.connect.screens {
 				}
 				if (val.text == "@@1")
 					ToastMessage.display("Server is busy, please try later.");
-				else
-					ToastMessage.display(val.text);
 			} else if (val != BankManager.PWP_NOT_ENTERED) {
 				ToastMessage.display("Server is busy, please try later.");
 			} else {

@@ -769,12 +769,21 @@ package com.dukascopy.connect.sys.bankManager {
 							title = Lang.TEXT_WITHDRAWAL
 							giftData.fromAccounts = PayManager.accountInfo.accounts;
 							giftData.toAccounts = savingsAccounts;
-							//giftData.currencies = PayManager.systemOptions.currencyList;
+							giftData.transferType = OperationType.SAVING_MONEY_TRANSFER;
+						} else if (data.value == "TRADING") {
+							textFrom = Lang.fromMultiAccount;
+							textTo = Lang.toTradingAccount;
+							title = Lang.TEXT_WITHDRAWAL
+							giftData.fromAccounts = PayManager.accountInfo.accounts;
+							giftData.toAccounts = otherAccounts;
 							giftData.transferType = OperationType.SAVING_MONEY_TRANSFER;
 						} else if (data.value == "SMCA") {
 							giftData.fromAccounts = savingsAccounts;
 							giftData.toAccounts = PayManager.accountInfo.accounts;
-							//giftData.currencies = PayManager.systemOptions.currencyList;
+							giftData.transferType = OperationType.MCA_MONEY_TRANSFER;
+						} else if (data.value == "TMCA") {
+							giftData.fromAccounts = otherAccounts;
+							giftData.toAccounts = PayManager.accountInfo.accounts;
 							giftData.transferType = OperationType.MCA_MONEY_TRANSFER;
 						}
 						ServiceScreenManager.showScreen(
@@ -966,11 +975,11 @@ package com.dukascopy.connect.sys.bankManager {
 				} else if (data.type == "paymentsInvoiceThirdparty") {
 					ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, ScreenAddInvoiceDialog, {callback:callBackAddInvoiceThirdparty, thirdparty:true}, 0.5, 0.5, 3);
 				} else if (data.type == "paymentsSelectContact") {
-					DialogManager.showDialog(SelectContactScreen, { title:Lang.selectContacts, callback:onSelectContact, searchText:Lang.TEXT_SEARCH_CONTACT, data:data }, ServiceScreenManager.TYPE_SCREEN );
+					DialogManager.showDialog(SelectContactScreen, { title:Lang.selectContacts, callback:onSelectContact, searchText:Lang.TEXT_SEARCH_CONTACT, data:data, dialog:true }, ServiceScreenManager.TYPE_SCREEN );
 				} else if (data.type == "paymentsSelectTemplate") {
 					DialogManager.showDialog(TransactionPresetsPopup, { transactionTemplates:transactionTemplates, data:data, deleteTemplate:deleteTemplate, callback:onSelectTemplate } );
 				} else if (data.type == "cryptoSelectContact") {
-					DialogManager.showDialog(SelectContactScreen, { title:Lang.selectContacts, callback:onSelectContactForCrypto, searchText:Lang.TEXT_SEARCH_CONTACT, data:data }, ServiceScreenManager.TYPE_SCREEN );
+					DialogManager.showDialog(SelectContactScreen, { title:Lang.selectContacts, callback:onSelectContactForCrypto, searchText:Lang.TEXT_SEARCH_CONTACT, data:data, dialog:true  }, ServiceScreenManager.TYPE_SCREEN );
 				} else if (data.type == "walletSelectCurrency") {
 					PayManager.callGetSystemOptions(
 						function ():void {
@@ -983,6 +992,12 @@ package com.dukascopy.connect.sys.bankManager {
 							openCurrencySelectorAll(data);
 						}
 					);
+				} else if (data.type == "selectedAccCurrency") {
+					var acc:Object = getAccountByNumber(data.val);
+					if (acc == null)
+						return;
+					sendMessage("val:" + data.value + "|!|" + acc.CURRENCY);
+					sendMessage(data.action);
 				} else if (data.type == "cardActivate") {
 					DialogManager.showVerify(onCardActivationDialogClose, { account:data.value, additional:data } );
 				} else if (data.type == "cardNewActivate") {
@@ -1756,7 +1771,7 @@ package com.dukascopy.connect.sys.bankManager {
 			if ("textForUser" in giftData.additionalData == true && giftData.additionalData.textForUser != null)
 				msg = giftData.additionalData.textForUser.replace("@1", giftData.customValue  + " " + currency).replace("@2", ((giftData.user != null) ? giftData.user.getDisplayName() : "N/A"));
 			else
-				msg = "Send " + giftData.customValue + " " + currency + " to " + ((giftData.user != null) ? giftData.user.getDisplayName() : "N/A");
+				msg = Lang.sendMoneyTo.replace("@1", giftData.customValue + " " + currency).replace("@2", ((giftData.user != null) ? giftData.user.getDisplayName() : "N/A"));
 			var baVO:BankMessageVO = new BankMessageVO(msg);
 			baVO.setMine();
 			invokeAnswerSignal(baVO); 
@@ -1784,7 +1799,7 @@ package com.dukascopy.connect.sys.bankManager {
 			if ("textForUser1" in giftData.additionalData == true && giftData.additionalData.textForUser != null)
 				msg = giftData.additionalData.textForUser.replace("@1", giftData.customValue  + " " + currency).replace("@2", giftData.credit_account_number);
 			else
-				msg = "Send " + giftData.customValue + " " + currency + " to " + giftData.credit_account_number;
+				msg = Lang.sendMoneyTo.replace("@1", giftData.customValue + " " + currency).replace("@2", giftData.credit_account_number);
 			var baVO:BankMessageVO = new BankMessageVO(msg);
 			baVO.setMine();
 			invokeAnswerSignal(baVO);
@@ -2205,8 +2220,11 @@ package com.dukascopy.connect.sys.bankManager {
 					needReturn = true;
 				}
 				if (lastBankMessageVO.item.type == "investments") {
-					if (investmentExist == false)
+					if (investmentExist == false) {
 						lastBankMessageVO.menu[1].disabled = true;
+					} else {
+						lastBankMessageVO.menu[3].disabled = true;
+					}
 				}
 				if (lastBankMessageVO.item.type == "walletSelect" || lastBankMessageVO.item.type == "walletSelectAll" || lastBankMessageVO.item.type == "walletSelectWithoutTotal") {
 					if (accountInfo == null) {
@@ -2760,7 +2778,7 @@ package com.dukascopy.connect.sys.bankManager {
 				isCardHistory = false;
 				isInvestmentHistory = false;
 				if (historyAccount != "all")
-					historyAccCurrency = currency;
+					historyAccCurrency = getAccountByNumber(historyAccount).CURRENCY;
 				var notNull:Boolean = false;
 				if (history != null &&
 					historyAccount in history == true &&
@@ -2873,6 +2891,8 @@ package com.dukascopy.connect.sys.bankManager {
 			if (local == true) {
 				if (total != null) {
 					S_TOTAL.invoke(total, local);
+				} else {
+					S_TOTAL.invoke(totalAccounts, local);
 				}
 			} else
 				BankBotController.getAnswer("bot:bankbot payments:total");
@@ -2919,6 +2939,8 @@ package com.dukascopy.connect.sys.bankManager {
 				}
 				if (needToLoad == true)
 					BankBotController.getAnswer("bot:bankbot payments:cards");
+				else
+					S_CARDS.invoke(null, true);
 			} else
 				BankBotController.getAnswer("bot:bankbot payments:cards");
 		}
@@ -3242,9 +3264,9 @@ package com.dukascopy.connect.sys.bankManager {
 				BankBotController.getScenario().scenario.selectNewWalletCurrency.menu[1].disabled = true;
 			}
 			if (accountInfo.enableApplePay == true && Config.PLATFORM_APPLE == true) {
-				delete BankBotController.getScenario().scenario.deposites.menu[6].disabled;
+				delete BankBotController.getScenario().scenario.deposites.menu[7].disabled;
 			} else {
-				BankBotController.getScenario().scenario.deposites.menu[6].disabled = true;
+				BankBotController.getScenario().scenario.deposites.menu[7].disabled = true;
 			}
 			if (waitingBMVO != null) {
 				if (waitingBMVO.waitingType != "wallets" && waitingBMVO.waitingType != "limits")
@@ -3475,8 +3497,20 @@ package com.dukascopy.connect.sys.bankManager {
 		}
 		
 		static public function get totalAccounts():Object {
-			if (totalAll == null || totalAll.length == 0)
-				return null;
+			if (totalAll == null || totalAll.length == 0) {
+				if (accountInfo != null && accountInfo.accounts != null && accountInfo.accounts.length > 0) {
+					var totalAcc:Object = {
+						"type": "total",
+						"IBAN": Lang.textTotalAccounts.toUpperCase(),
+						"BALANCE": 0,
+						"CURRENCY": accountInfo.consolidateCurrency
+					}
+					for (var j:int = 0; j < accountInfo.accounts.length; j++) {
+						totalAcc.BALANCE += Number(accountInfo.accounts[j].CONSOLIDATE_BALANCE);
+					}
+				}
+				return totalAcc;
+			}
 			var l:int = totalAll.length;
 			for (var i:int = 0; i < l; i++) {
 				if (totalAll[i].IBAN.toLowerCase().indexOf("accounts") != -1)
@@ -3637,6 +3671,15 @@ package com.dukascopy.connect.sys.bankManager {
 		
 		static private function processOtherAccounts(data:Array):void {
 			otherAccounts = data;
+			if (otherAccounts == null || otherAccounts.length == 0) {
+				BankBotController.getScenario().scenario.withdrawals.menu[5].disabled = true;
+				BankBotController.getScenario().scenario.sendMoney.menu[7].disabled = true;
+				BankBotController.getScenario().scenario.deposites.menu[6].disabled = true;
+			} else {
+				delete BankBotController.getScenario().scenario.withdrawals.menu[5].disabled;
+				delete BankBotController.getScenario().scenario.sendMoney.menu[7].disabled;
+				delete BankBotController.getScenario().scenario.deposites.menu[6].disabled;
+			}
 			otherAccounts.sort(otherAccountSort);
 			if (waitingBMVO != null) {
 				if (waitingBMVO.waitingType != "homeS")

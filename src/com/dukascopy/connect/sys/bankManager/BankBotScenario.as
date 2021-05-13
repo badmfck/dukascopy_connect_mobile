@@ -899,7 +899,7 @@ package com.dukascopy.connect.sys.bankManager {
 					}, {
 						text:"lang.menuWithdrawalAccount",
 						keywords:"accounts,withdrawal",
-						action:"nav:withdrawals"
+						action:"nav:sendMoney"
 					}, {
 						text:"lang.menuMainCurrency",
 						textForUser:"lang.itemSelectMainCurrency",
@@ -1082,6 +1082,12 @@ package com.dukascopy.connect.sys.bankManager {
 					}, {
 						text:"lang.menuIBANCopy",
 						action:"app:copyIBAN"
+					}, {
+						text:"lang.menuShareIBAN",
+						value:"WIRE",
+						val:"@@1",
+						type:"selectedAccCurrency",
+						action:"nav:paymentsDepositConfirm"
 					}
 				],
 				buttons: [
@@ -1174,14 +1180,19 @@ package com.dukascopy.connect.sys.bankManager {
 						type:"sendMoneyOtherAcc",
 						value:"SAVINGS",
 						action:"nav:transferInternalConfirm"
+					}, {
+						disabled: true,
+						text:"lang.menuToTradingAcc",
+						type:"sendMoneyOtherAcc",
+						value:"TRADING",
+						action:"nav:transferInternalConfirm"
 					}
 				],
 				buttons: [
 					{
 						text:"lang.buttonBack",
 						action:"cmd:back"
-					},
-					{
+					}, {
 						text:"lang.buttonCancel",
 						action:"system:cancel"
 					}
@@ -1193,8 +1204,13 @@ package com.dukascopy.connect.sys.bankManager {
 				menuLayout:"vertical",
 				menu:[
 					{
-						text:"lang.menuFromCard",
-						action:"nav:cardUnload"
+						text:"lang.menuSendAnInvoice",
+						action:"nav:invoices"
+					}, {
+						text:"lang.menuBankTransfer",
+						value:"WIRE",
+						type:"selectCurrency",
+						action:"nav:paymentsDepositConfirm"
 					}, {
 						text:"Skrill",
 						value:"SKRILL",
@@ -1206,19 +1222,20 @@ package com.dukascopy.connect.sys.bankManager {
 						type:"paymentsDeposit",
 						action:"nav:paymentsDepositConfirm"
 					}, {
-						text:"lang.menuBankTransfer",
-						value:"WIRE",
-						type:"selectCurrency",
-						action:"nav:paymentsDepositConfirm"
-					}, {
-						text:"lang.menuSendAnInvoice",
-						action:"nav:invoices"
+						text:"lang.menuFromCard",
+						action:"nav:cardUnload"
 					}, {
 						disabled: true,
 						text:"lang.menuFromSavingAcc",
 						type:"sendMoneyOtherAcc",
 						value:"SMCA",
 						action:"nav:transferInternalConfirm"
+					}, {
+						disabled: true,
+						text:"lang.menuFromTradingAcc",
+						type:"sendMoneyOtherAcc",
+						value:"TMCA",
+						action:"nav:transferInternalConfirmT"
 					}, {
 						disabled: true,
 						text:"lang.menuFromApplePay",
@@ -1264,6 +1281,60 @@ package com.dukascopy.connect.sys.bankManager {
 			},
 			
 			sendMoney: {
+				desc:"lang.sendMoneyDesc",
+				menuLayout:"vertical",
+				menu:[
+					{
+						text:"lang.menuToChatmate",
+						keywords:"money,send,chat",
+						type:"paymentsSelectChatmate",
+						action:"nav:transactionConfirm"
+					}, {
+						text:"lang.menuBankTransfer",
+						type:"otherWithdrawal",
+						action:"nav:otherWithdrawalAcc"
+					}, {
+						text:"Skrill",
+						value:"SKRILL",
+						type:"otherWithdrawal",
+						action:"nav:otherWithdrawalWallets"
+					}, {
+						text:"Neteller",
+						value:"NETELLER",
+						type:"otherWithdrawal",
+						action:"nav:otherWithdrawalWallets"
+					}, {
+						text:"lang.menuToCard",
+						action:"nav:cardWithdrawal"
+					}, {
+						text:"lang.menuToPhone",
+						keywords:"money,send,phones",
+						textForUser:"lang.itemSendMoneyPhone",
+						type:"moneySendPhone",
+						action:"nav:transactionConfirm"
+					}, {
+						disabled: true,
+						text:"lang.menuToSavingAcc",
+						type:"sendMoneyOtherAcc",
+						value:"SAVINGS",
+						action:"nav:transferInternalConfirm"
+					}, {
+						disabled: true,
+						text:"lang.menuToTradingAcc",
+						type:"sendMoneyOtherAcc",
+						value:"TRADING",
+						action:"nav:transferInternalConfirm"
+					}
+				],
+				buttons: [
+					{
+						text:"lang.buttonCancel",
+						action:"system:cancel"
+					}
+				]
+			},
+			
+			sendMoney1: {
 				desc:"lang.sendMoneyDesc",
 				menuLayout:"vertical",
 				menu:[
@@ -1609,6 +1680,19 @@ package com.dukascopy.connect.sys.bankManager {
 			
 			transferInternalConfirm: {
 				desc:"lang.confirmInternalTransfer",
+				buttons: [
+					{
+						text:"lang.buttonCancel",
+						action:"system:cancel"
+					}, {
+						text:"lang.buttonConfirm",
+						action:"nav:transferInternalConfirmed"
+					}
+				]
+			},
+			
+			transferInternalConfirmT: {
+				desc:"lang.confirmInternalTransferT",
 				buttons: [
 					{
 						text:"lang.buttonCancel",
@@ -2714,6 +2798,9 @@ package com.dukascopy.connect.sys.bankManager {
 					}, {
 						text:"lang.menuInvestmentPortfolio",
 						action:"nav:investmentsList"
+					}, {
+						text:"lang.menuInvestmentCurrency",
+						action:"nav:investmentDisclaimer"
 					}
 				],
 				buttons: [
