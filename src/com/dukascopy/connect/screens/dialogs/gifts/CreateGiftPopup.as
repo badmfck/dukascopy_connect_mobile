@@ -782,7 +782,7 @@ package com.dukascopy.connect.screens.dialogs.gifts
 				lockNextButton = true;
 				
 				addLoader();
-				
+
 				var action:GiftByCardAction = new GiftByCardAction(giftData, isAccountAvaliable());
 				action.getSuccessSignal().add(onGiftByCardSent);
 				action.getFailSignal().add(onGiftByCardSentFail);

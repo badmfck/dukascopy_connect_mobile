@@ -31,7 +31,7 @@ package com.dukascopy.connect.gui.button {
 		private var box:Sprite;
 		private var tf:TextField;
 		private var titleClip:Bitmap;
-		
+
 		static private var arrowHeight:int;
 		static private var arrowCathetus:int;
 		
@@ -41,7 +41,7 @@ package com.dukascopy.connect.gui.button {
 		private var underlineColor:Number;
 		private var title:String;
 		private var container:Sprite;
-		
+
 		public function DDFieldButton(callBack:Function, value:String = "", showArrow:Boolean = true, underlineColor:Number = NaN, title:String = null) {
 			this._value = value;
 			this.arrowShow = showArrow;
@@ -68,7 +68,7 @@ package com.dukascopy.connect.gui.button {
 			
 			container = new Sprite();
 			titleClip = new Bitmap();
-			
+
 			box = new Sprite();
 			tf = UIFactory.createTextField(FontSize.BODY);
 			tf.textColor = Style.color(Style.COLOR_TEXT);
@@ -78,17 +78,17 @@ package com.dukascopy.connect.gui.button {
 			}
 			box.addChild(tf);
 			setOverlay(HitZoneType.MENU_MIDDLE_ELEMENT);
-			
+
 			if (title != null)
 			{
 				drawTitle(title);
 			}
-			
+
 			container.addChild(titleClip);
 			container.addChild(box);
 		}
-		
-		private function drawTitle(value:String):void 
+
+		private function drawTitle(value:String):void
 		{
 			if (titleClip.bitmapData)
 			{
@@ -97,10 +97,10 @@ package com.dukascopy.connect.gui.button {
 			}
 			if (value != null)
 			{
-				titleClip.bitmapData = TextUtils.createTextFieldData(value, Config.FINGER_SIZE * 3, 10, 
-																false, TextFormatAlign.LEFT, 
-																TextFieldAutoSize.LEFT, 
-																FontSize.SUBHEAD, 
+				titleClip.bitmapData = TextUtils.createTextFieldData(value, Config.FINGER_SIZE * 3, 10,
+																false, TextFormatAlign.LEFT,
+																TextFieldAutoSize.LEFT,
+																FontSize.SUBHEAD,
 																false, Style.color(Style.COLOR_SUBTITLE), Style.color(Style.COLOR_BUTTON_RED_DOWN), false, true);
 			}
 		}
@@ -127,11 +127,11 @@ package com.dukascopy.connect.gui.button {
 			setSize(w, h);
 		}
 		
-		public function getDefaultlabel():String 
+		public function getDefaultlabel():String
 		{
 			return Lang.textChoose + "...";
 		}
-		
+
 		public function setSize(w:int, h:int):void {
 			if (w < 1 || h < 1)
 				return;
@@ -140,7 +140,7 @@ package com.dukascopy.connect.gui.button {
 			this.h = h;
 			
 			var lineThickness:int = int(Math.max(1, Config.FINGER_SIZE * .03));
-			
+
 			if (generatedBitmap != null) {
 				if (generatedBitmap.height != h || generatedBitmap.width != w) {
 					generatedBitmap.dispose();
@@ -158,7 +158,7 @@ package com.dukascopy.connect.gui.button {
 			{
 				box.y = int(FontSize.SUBHEAD - Config.FINGER_SIZE * .1);
 				tf.y = Math.round((h - tf.height) * .5);
-				
+
 				resultheight = box.y + h - Config.FINGER_SIZE * .1 + lineThickness;
 				innerHeight = h - Config.FINGER_SIZE * .1;
 			}
@@ -168,19 +168,19 @@ package com.dukascopy.connect.gui.button {
 				innerHeight = h;
 				tf.y = (h - tf.height) * .5;
 			}
-			
+
 			box.graphics.clear();
 				box.graphics.beginFill(Style.color(Style.COLOR_BACKGROUND), 0);
 				box.graphics.drawRect(1, 1, w, h);
 				box.graphics.endFill();
 			//	box.graphics.lineStyle(lineThickness, underlineColor);
-			
+
 				box.graphics.beginFill(underlineColor);
 				box.graphics.drawRect(0, innerHeight - lineThickness, w, lineThickness);
 				box.graphics.endFill();
 			//	box.graphics.lineTo(w, innerHeight - lineThickness / 2);
 			//	box.graphics.lineStyle();
-			
+
 			trace("CURR", box.y + innerHeight - lineThickness);
 			
 			// arrow
@@ -202,11 +202,11 @@ package com.dukascopy.connect.gui.button {
 			} else {
 				generatedBitmap.fillRect(generatedBitmap.rect, 0);
 			}
+
+
+
 			
-			
-			
-			
-			
+
 			generatedBitmap.drawWithQuality(container, null, null, null, null, true, StageQuality.BEST);
 			
 			setBitmapData(generatedBitmap);

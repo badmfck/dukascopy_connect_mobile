@@ -65,8 +65,8 @@ package com.dukascopy.connect.screens.dialogs.bottom
 			list.setData(itemsData, renderer);
 			updateListSize();
 		}
-		
-		protected function updateListSize():void 
+
+		protected function updateListSize():void
 		{
 			list.setWidthAndHeight(_width, int(Math.min(getMaxContentHeight(), list.itemsHeight)));
 			if (list.itemsHeight > list.height)
@@ -124,11 +124,6 @@ package com.dukascopy.connect.screens.dialogs.bottom
 			TweenMax.delayedCall(0.2, close);
 		}
 		
-		protected function getSelectedData(item:Object):Object 
-		{
-			return item;
-		}
-		
 		override protected function animationFinished():void 
 		{
 			if (list != null)
@@ -137,10 +132,9 @@ package com.dukascopy.connect.screens.dialogs.bottom
 			}
 		}
 		
-		override protected function onRemove():void 
-		{
-			if (needCallback == true)
-			{
+		override protected function onRemove():void{
+			if (needCallback == true){
+
 				needCallback = false;
 				if (data != null && "callback" in data && data.callback != null && data.callback is Function)
 				{
@@ -158,6 +152,7 @@ package com.dukascopy.connect.screens.dialogs.bottom
 						{
 							data.callback(selectedItem, selectedNum);
 						}
+						data.callback(selectedItem, selectedNum);
 					}
 					else if((data.callback as Function).length == 3)
 					{
@@ -165,6 +160,10 @@ package com.dukascopy.connect.screens.dialogs.bottom
 					}
 				}
 			}
+		}
+
+		protected function getSelectedData(item:Object):Object{
+			return item;
 		}
 		
 		override public function dispose():void {

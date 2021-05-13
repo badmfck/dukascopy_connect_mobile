@@ -1410,12 +1410,12 @@ package com.dukascopy.connect.gui.lightbox
 				{
 					if (showDirection == -1)
 					{
-						// from left 
+						// from left
 						this.x = -originalWidth * initScale + leftOffset;
 					}
 					else
 					{
-						// from left 
+						// from left
 						this.x = _viewWidth + leftOffset;
 					}
 				}
@@ -1423,7 +1423,7 @@ package com.dukascopy.connect.gui.lightbox
 				{
 					animationTime = 0;
 				}
-				
+
 				checkBounds(animationTime);
 			}
 		}

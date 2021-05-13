@@ -23,24 +23,24 @@ package com.dukascopy.connect.screens.serviceScreen {
 		private var users:Array;
 		
 		public function SelectContactExtendedScreen() { }
-		
+
 		override public function initScreen(data:Object = null):void {
 			super.initScreen(data);
-			
+
 			PhonebookManager.S_PHONES.add(onPhonesLoaded);
 			PhonebookManager.getPhones();
 		}
-		
+
 		override public function dispose():void {
 			super.dispose();
 			
 			ChatManager.S_LATEST.remove(onLatestLoaded);
 			PhonebookManager.S_PHONES.remove(onPhonesLoaded);
-			
+
 			clearUsers();
 		}
 		
-		override protected function getSelectedData(item:Object):Object 
+		override protected function getSelectedData(item:Object):Object
 		{
 			if (item is ChatUserlistModel)
 			{
@@ -50,11 +50,11 @@ package com.dukascopy.connect.screens.serviceScreen {
 			{
 				return (item as ChatVO).users[0].userVO;
 			}
-			
+
 			return item;
 		}
-		
-		override protected function getHeight():int 
+
+		override protected function getHeight():int
 		{
 			return _height - Config.FINGER_SIZE * .5;
 		}

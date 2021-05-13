@@ -93,7 +93,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 		private var incomeText:Bitmap;
 		private var lastOrder:CoinTradeOrder;
 		private var maxEurosAvaliable:Number;
-		
+
 		public function TradeCoinPopup()
 		{
 			
@@ -421,14 +421,14 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 		{
 		//	drawCommision();
 			updateMaxCoins();
-			
+
 			if (checkDataValid() == true)
 			{
 				loadComission();
 			}
 		}
 		
-		private function updateMaxCoins():void 
+		private function updateMaxCoins():void
 		{
 			if (!isNaN(maxEurosAvaliable))
 			{
@@ -443,8 +443,8 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 				}
 			}
 		}
-		
-		private function loadComission():void 
+
+		private function loadComission():void
 		{
 			if (screenData.type == TradingOrder.SELL && inputQuantity.value > 0 && inputPrice.value > 0)
 			{

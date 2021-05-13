@@ -401,7 +401,7 @@ package com.dukascopy.connect.gui.input {
 			textField.x = padding + iboxPadd;
 			textField.width = _width - padding * 2-iboxPadd;
 			textField.y = Math.round((_height - textHeight) * .5);
-			
+
 			_view.addChild(textField);
 			
 			if (line != null)

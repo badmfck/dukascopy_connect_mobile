@@ -291,7 +291,7 @@ package com.dukascopy.connect.sys.dialogManager {
 			hasOpenedDialog = true;
 			S_SHOW.invoke(ScreenCreateChatByPhoneDialog, { callBack:callBack } );
 		}
-		
+
 		static public function showAddPuzzle(callBack:Function, obj:Object = null):void {
 			hasOpenedDialog = true;
 			currentScreenType = TYPE_DIALOG;

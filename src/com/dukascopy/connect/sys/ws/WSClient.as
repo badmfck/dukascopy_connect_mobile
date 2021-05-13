@@ -17,16 +17,18 @@ import com.dukascopy.connect.MobileGui;
 	import com.dukascopy.connect.sys.echo.echo;
 	import com.dukascopy.connect.sys.messagesController.MessagesController;
 	import com.dukascopy.connect.sys.nativeExtensionController.NativeExtensionController;
+	import com.dukascopy.connect.sys.php.PHP;
 	import com.dukascopy.connect.type.ErrorCode;
 	import com.dukascopy.connect.vo.users.adds.ChatUserVO;
 	import com.dukascopy.langs.Lang;
 	import com.dukascopy.langs.LangManager;
+	import com.telefision.sys.etc.Print_r;
 	import com.telefision.sys.signals.Signal;
 	import flash.text.TextField;
 	import mx.core.Singleton;
 	import com.dukascopy.connect.sys.php.PHP;
 	import com.telefision.sys.etc.Print_r;
-	
+
 	/**
 	 * ...
 	 * @author Igor Bloom. Telefision TEAM Riga.

@@ -152,6 +152,7 @@ package com.dukascopy.connect.sys.paymentsManagerNew {
 				return;
 			}
 			var res:Object = checkForError(respond);
+			res.page = respond.savedRequestData.data.page;
 			while (hashCallbacks.length != 0)
 				hashCallbacks.shift()(res, respond.savedRequestData.callID, respond.savedRequestData.accountNumber);
 			hashCallbacks = null;

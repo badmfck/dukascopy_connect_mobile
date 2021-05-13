@@ -167,12 +167,12 @@ package com.dukascopy.connect.sys.imageManager {
 					pngImage.position = 0;
 					pngThumb.position = 0;
 					sendChunk();
-					
+
 				}, null, true);
 			}, null, true);
 		}
 		
-		private function uploadImage(bmp:ImageBitmapData, thumb:ImageBitmapData, imageKey:String):void 
+		private function uploadImage(bmp:ImageBitmapData, thumb:ImageBitmapData, imageKey:String):void
 		{
 			if (Auth.key == "web")
 			{
@@ -180,12 +180,12 @@ package com.dukascopy.connect.sys.imageManager {
 			}
 			else
 			{
-				ImageCrypter.encrypt(bmp.encode(bmp.rect, new JPEGEncoderOptions(87)), imageKey, 
+				ImageCrypter.encrypt(bmp.encode(bmp.rect, new JPEGEncoderOptions(87)), imageKey,
 				function(ba: ByteArray): void
 				{
 					bmp.dispose();
 					bmp = null;
-					ImageCrypter.encrypt(thumb.encode(thumb.rect, new JPEGEncoderOptions(87)), imageKey, 
+					ImageCrypter.encrypt(thumb.encode(thumb.rect, new JPEGEncoderOptions(87)), imageKey,
 						function(ba2: ByteArray): void
 						{
 							thumb.dispose();
@@ -195,18 +195,18 @@ package com.dukascopy.connect.sys.imageManager {
 				});
 			}
 		}
-		
-		private function uploadAsGuest(bmp:ImageBitmapData, thumb:ImageBitmapData):void 
+
+		private function uploadAsGuest(bmp:ImageBitmapData, thumb:ImageBitmapData):void
 		{
 			var pngImage:ByteArray = bmp.encode(bmp.rect, new JPEGEncoderOptions(87));
 			var base64:String = "data:image/jpeg;base64," + Base64.encodeByteArray(pngImage);
-			
+
 			var thumbImage:ByteArray = thumb.encode(thumb.rect, new JPEGEncoderOptions(87));
 			var base64Thumb:String = "data:image/jpeg;base64," + Base64.encodeByteArray(thumbImage);
-			
+
 			PHP.filesAddImage(chatUID, base64, base64Thumb, "image", onGuestImageUploaded);
 		}
-		
+
 		private function onGuestImageUploaded(r:PHPRespond):void
 		{
 			if (r.error == false)
@@ -216,7 +216,7 @@ package com.dukascopy.connect.sys.imageManager {
 				r.data.height = imageHeight;
 				S_FILE_UPLOADED.invoke(this, r.data);
 				S_ON_FILE_UPLOAD_SUCCESS.invoke(this, r.data);
-				
+
 				completed(false);
 			}
 			else
@@ -224,22 +224,22 @@ package com.dukascopy.connect.sys.imageManager {
 				completed(true);
 			}
 			r.dispose();
-				
-				
-				
+
+
+
 				/*data : Object {
-					checksum : "1f137942b70b78ed1bc3c3aa11e77630" 
-					filename : "img_60546fc2ba42f7.39951037.png" 
-					folder : 0 
-					height : 138 [0x8a] 
-					name : "image" 
-					size : 3308 [0xcec] 
-					type : "image/jpeg" 
-					uid : "0e715fa963eded6848255b8a4821b31aG" 
-					width : 138 [0x8a] 
+					checksum : "1f137942b70b78ed1bc3c3aa11e77630"
+					filename : "img_60546fc2ba42f7.39951037.png"
+					folder : 0
+					height : 138 [0x8a]
+					name : "image"
+					size : 3308 [0xcec]
+					type : "image/jpeg"
+					uid : "0e715fa963eded6848255b8a4821b31aG"
+					width : 138 [0x8a]
 				}*/
 		}
-		
+
 		private function onBytesLoaded(e:Event):void {
 			var bmp:ImageBitmapData = new ImageBitmapData("123", (e.target as LoaderInfo).loader.content.width, (e.target as LoaderInfo).loader.content.height);
 			if (bmp)

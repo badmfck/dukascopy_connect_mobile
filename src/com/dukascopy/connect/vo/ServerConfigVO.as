@@ -130,6 +130,22 @@ package com.dukascopy.connect.vo {
 			return NaN;
 		}
 		
+		public function get COINS_CSC_LLF_PRICE_LIMIT():Number {
+			if (_raw == null)
+				return 1;
+			if ("COINS_CSC_LLF_PRICE_LIMIT" in _raw == true && isNaN(_raw.COINS_CSC_LLF_PRICE_LIMIT) != true)
+				return _raw.COINS_CSC_LLF_PRICE_LIMIT;
+			return 1;
+		}
+		
+		public function get COINS_CSC_LLF_EUR_PER_COIN():Number {
+			if (_raw == null)
+				return 0.2;
+			if ("COINS_CSC_LLF_EUR_PER_COIN" in _raw == true && isNaN(_raw.COINS_CSC_LLF_EUR_PER_COIN) != true)
+				return _raw.COINS_CSC_LLF_EUR_PER_COIN;
+			return 0.2;
+		}
+		
 		public function get cryptoRewardCoinRatio():Array {
 			if (_raw == null)
 				return null;

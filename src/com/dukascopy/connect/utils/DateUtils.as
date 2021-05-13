@@ -310,14 +310,11 @@ package com.dukascopy.connect.utils {
 		}
 		
 		static public function getTimeString(date:Date, onlyDate:Boolean = false, plusYears:int = 0, byUTC:Boolean = true, delimiter:String = "-", needSeconds:Boolean = false):String {
-			var month:String = (date.getUTCMonth() + 1).toString();
-			if (month.length == 1)
-				month = "0" + month;
-			var day:String = date.getUTCDate().toString();
-			if (day.length == 1)
-				day = "0" + day;
+			if (plusYears != 0)
+				date.setFullYear(date.getFullYear() + plusYears);
+			var dateString:String = getDateStringByFormat(date, "YYYY" + delimiter + "MM" + delimiter + "DD", byUTC);
 			if (onlyDate)
-				return (date.getFullYear() + plusYears) + delimiter + month + delimiter + day;
+				return dateString;
 			var minutes:String = date.getUTCMinutes().toString();
 			if (minutes.length == 1)
 				minutes = "0" + minutes;
@@ -332,18 +329,16 @@ package com.dukascopy.connect.utils {
 				var sec:String = (date.getSeconds()).toString();
 				if (sec.length == 1)
 					sec = "0" + sec;
-				return (date.getFullYear() + plusYears) + delimiter + month + delimiter + day + " " + hours + ":" + minutes + ":" + sec;
+				return dateString + " " + hours + ":" + minutes + ":" + sec;
 			}
-			return (date.getFullYear() + plusYears) + delimiter + month + delimiter + day + " " + hours + ":" + minutes;
+			return dateString + " " + hours + ":" + minutes;
 		}
 		
-		static public function month(month:int, year:int):String 
-		{
+		static public function month(month:int, year:int):String {
 			var index:int = (month - 1);
 			var monthkey:String = "month_" + index;
 			var result:String = Lang[monthkey];
-			if ((new Date()).getFullYear() != year)
-			{
+			if ((new Date()).getFullYear() != year) {
 				result += " " + year;
 			}
 			return result;

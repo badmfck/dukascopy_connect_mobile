@@ -3,7 +3,7 @@ package com.dukascopy.connect.sys.payments.vo {
 	public class SystemOptionsVO {
 		public var coin_llf_price_limit:Number;
 		public var coin_llf_eur_per_coin:Number;
-		
+
 		public var cardDepositCurrencies:Array;
 		public var cardWithdrawalCurrencies:Array;
 		
@@ -86,11 +86,11 @@ package com.dukascopy.connect.sys.payments.vo {
 			key = 'coin_llf_price_limit';
 			if (key in data == true)
 				coin_llf_price_limit = data[key];
-			
+
 			key = 'coin_llf_eur_per_coin';
 			if (key in data == true)
 				coin_llf_eur_per_coin = data[key];
-				
+
 			key = 'currency-list-investment-groups';
 			if (key in data == true)
 				investmentsByGroups = data[key];

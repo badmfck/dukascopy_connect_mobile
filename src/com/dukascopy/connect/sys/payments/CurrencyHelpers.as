@@ -143,7 +143,7 @@ package com.dukascopy.connect.sys.payments {
 					var rightPartLength:int  = value.length - dotIndex;					
 					leftPart = value.substring(0, dotIndex);
 					rightPart = value.substr(dotIndex + 1, rightPartLength);			
-					var rightPartAsNumber:Number = Number(rightPart);			
+					var rightPartAsNumber:Number = Number(rightPart);
 					if (rightPartAsNumber == 0){
 						return true;
 					}else{

@@ -624,12 +624,12 @@ package com.dukascopy.connect.screens.payments {
 				commissionText = firstPart[0] + " " + firstPart[1];
 			else
 				commissionText = firstPart[0] + " " + firstPart[1] + " (" + secondPart[0] + " " + secondPart[1] + ")";
-			
+
 			if (data.length > 2)
 			{
 				commissionText += "\n" + Lang.monthlyFee + ": " + data[2][0] + " " + data[2][1];
 			}
-			
+
 			tfCommissionAmount.bitmapData = createLabelBMD(Lang.textCommission + ": " + commissionText, FontSize.BODY);
 			PayManager.S_PPCARD_COMMISSION_RECEIVE.remove(onCommissionReceived);
 			checkForActivateContinueButton();

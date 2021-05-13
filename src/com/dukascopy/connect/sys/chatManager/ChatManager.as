@@ -532,6 +532,7 @@ import com.dukascopy.connect.MobileGui;
 		}
 		
 		static public function openChatByVO(cVO:ChatVO, createChatOnly:Boolean = false):void {
+			trace("dukascopy.test", "openChatByVO");
 			if (cVO == null)
 				return;
 			if (createChatOnly) {
@@ -1121,6 +1122,7 @@ import com.dukascopy.connect.MobileGui;
 				loadMessagesFromPHP(false);
 			}else {
 				echo("ChatManager", "loadChatMessages", 'Loading from sql');
+				trace("dukascopy.test", "loadChatMessages.onlyFromPHP currentChat=", currentChat.uid);
 				SQLite.call_getMessages(onMessagesLoadedFromSQLite, currentChat.uid);
 			}
 		}
@@ -1148,6 +1150,7 @@ import com.dukascopy.connect.MobileGui;
 		}
 		
 		static private function loadMessagesFromPHP(firstTime:Boolean = true):void {
+			trace("dukascopy.test", "loadMessagesFromPHP");
 			if (currentChat == null || currentChat.isDisposed == true)
 				return;
 			S_MESSAGES_LOADING_FROM_PHP.invoke();
@@ -1159,6 +1162,7 @@ import com.dukascopy.connect.MobileGui;
 		 * @param	r - PHPRespond
 		 */
 		static private function onMessagesLoaded(r:PHPRespond):void {
+			trace("dukascopy.test", "onMessagesLoaded from php, error=", r.error);
 			echo("ChatManager", "onMessagesLoaded", "START");
 			S_REMOTE_MESSAGES_STOP_LOADING.invoke();
 			if (currentChat == null || currentChat.uid == null) {
@@ -1412,10 +1416,12 @@ import com.dukascopy.connect.MobileGui;
 		}
 		
 		static public function getChats():void {
+			trace("dukascopy.test", "getChats");
 			getChatsFromStore();
 		}
 		
 		static private function getChatsFromStore():void {
+			trace("dukascopy.test", "getChatsFromStore");
 			if (chatsLoadingFromStore == true)
 				return;
 			if (chatsLoadedFromStore == true) {
@@ -1430,12 +1436,14 @@ import com.dukascopy.connect.MobileGui;
 		static private function onChatsLoadedFromStore(data:Object, err:Boolean):void {
 			chatsLoadingFromStore = false;
 			chatsLoadedFromStore = true;
+		//	trace("processUnreadedMessages 2", data);
 			if (err == false && data != null)
 				createUpdateChats(data);
 			getChatsFromPHP();
 		}
 		
 		static private function getChatsFromPHP(firstTime:Boolean = true):Boolean {
+			trace("dukascopy.test", "getChatsFromPHP");
 			if (chatsLoadingFromPHP == true)
 				return false;
 			if (firstTime == true && chatsLoadedFromPHP == true) {
@@ -1450,10 +1458,12 @@ import com.dukascopy.connect.MobileGui;
 		}
 		
 		static public function reloadLatests():void{
+			trace("dukascopy.test", "reloadLatests");
 			getChatsFromPHP();
 		}
 		
 		static private function onChatsLoadedFromPHP(phpRespond:PHPRespond):void {
+			trace("dukascopy.test", "onChatsLoadedFromPHP");
 			latestChatsLoaded = true;
 			S_SERVER_DATA_LOAD_END.invoke();
 			chatsLoadingFromPHP = false;
@@ -1479,6 +1489,7 @@ import com.dukascopy.connect.MobileGui;
 		}
 		
 		static private function createUpdateChats(data:Object, fromPHP:Boolean = false, firstTime:Boolean = false):void {
+			trace("dukascopy.test", "createUpdateChats", fromPHP);
 			latestChats ||= [];
 			var dataLatest:Array = data.latest;
 			if (dataLatest == null || dataLatest.length == 0) {
@@ -1559,6 +1570,7 @@ import com.dukascopy.connect.MobileGui;
 		}
 		
 		static public function addChatToLatest(cvo:ChatVO, needInvoke:Boolean = true):void {
+			trace("dukascopy.test", "addChatToLatest", cvo.uid);
 			if (cvo == null)
 				return;
 			if (cvo.type == ChatRoomType.CHANNEL) {
@@ -1581,6 +1593,7 @@ import com.dukascopy.connect.MobileGui;
 		
 		static public function updateLatestsInStore():void {
 			echo("ChatManager", "updateLatestsInStore", "START");
+		//	trace("processUnreadedMessages 0", isLoadedFromStore(), latestChats);
 			if (isLoadedFromStore() == false)
 				return;
 			if (latestChats == null)
@@ -1590,6 +1603,7 @@ import com.dukascopy.connect.MobileGui;
 			for (var i:int = 0; i < l; i++)
 				latestsChatsRawDataArray.push((latestChats[i] as ChatVO).getRawData());
 			var hash:String = MD5.hash(JSON.stringify(latestsChatsRawDataArray));
+		//	trace("processUnreadedMessages 1", latestsChatsRawDataArray);
 			Store.save(Store.VAR_CHATS, { hash:hash, latest:latestsChatsRawDataArray, ver:currentDataVersion } );
 			echo("ChatManager", "updateLatestsInStore", "END");
 		}
@@ -2439,6 +2453,7 @@ import com.dukascopy.connect.MobileGui;
 				if (data != null) {
 					if (currentChat != null) // Alexey added
 						currentChat.setPin(Crypter.decrypt(data as String, "123"));
+						trace("dukascopy.test", "getChatPin");
 						
 				} else {
 					if (currentChat != null) // Alexey added
@@ -2759,6 +2774,7 @@ import com.dukascopy.connect.MobileGui;
 		static public function activateChat():void {
 			if (currentChat == null)
 				return;
+			trace("dukascopy.test", "activateChat");
 			loadChatMessages();
 		}
 		
@@ -2841,6 +2857,7 @@ import com.dukascopy.connect.MobileGui;
 			sendCredentials();
 			PHP.api_readyForVIDID(
 				function(phpRespond:PHPRespond):void {
+					PHP.call_statVI("vidid_device",Auth.devID);
 					callback(!phpRespond.error);
 				},
 				currentChat.pid
@@ -2938,10 +2955,12 @@ import com.dukascopy.connect.MobileGui;
 		}
 		
 		static public function getLocalChat(messageData:Object):ChatVO {
+			trace("dukascopy.test", "getLocalChat");
 			return localChatSyncronizer.getLocalChatFromMessage(messageData);
 		}
 		
 		static public function getLocalChatByUID(chatUID:String):ChatVO {
+			trace("dukascopy.test", "getLocalChatByUID", chatUID);
 			return localChatSyncronizer.getLocalChatByUID(chatUID);
 		}
 		

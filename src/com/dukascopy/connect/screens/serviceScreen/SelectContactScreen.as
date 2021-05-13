@@ -33,32 +33,32 @@ package com.dukascopy.connect.screens.serviceScreen {
 		private var users:Array;
 		
 		public function SelectContactScreen() { }
-		
+
 		override public function initScreen(data:Object = null):void {
 			super.initScreen(data);
 			
 			_params.title = 'Select contacts';
 			_params.doDisposeAfterClose = true;
-			
+
 			PhonebookManager.S_PHONES.add(onPhonesLoaded);
 			PhonebookManager.getPhones();
 		}
-		
+
 		override public function dispose():void {
 			super.dispose();
 			
 			PhonebookManager.S_PHONES.remove(onPhonesLoaded);
-			
+
 			clearUsers();
 		}
 		
-		override protected function getSelectedData(item:Object):Object 
+		override protected function getSelectedData(item:Object):Object
 		{
 			if (item is ChatUserlistModel)
 			{
 				return (item as ChatUserlistModel).contact;
 			}
-			
+
 			return item;
 		}
 		
@@ -86,7 +86,7 @@ package com.dukascopy.connect.screens.serviceScreen {
 			list.setData(cDataNew, ListChatUsers);
 			cDataNew = null;
 			cData = null;
-			
+
 			updateListSize();
 		}
 		

@@ -119,7 +119,7 @@ import flash.utils.getTimer;
 				return;
 			if (getTimer() - lastMessageTime >= pingDelay) {
 				echo("WS", "checkConnection", "Probably dead, NetworkManager.isConnected=" + NetworkManager.isConnected);
-				if (NetworkManager.isConnected == true && Auth.key != "web")
+				if (NetworkManager.isConnected == true)
 				{
 					connect(true, "checkConnection");
 				}
@@ -260,9 +260,6 @@ import flash.utils.getTimer;
 				return IosWebSocket.getSocket(currentHost, "TelefisionMobile");
 			else if (Config.PLATFORM_ANDROID)
 				return AndroidWebSocket.getSocket(currentHost, "TelefisionMobile");
-			/*else{
-				new DesktopWS(currentHost,"");
-			}*/
 			return new WebSocket(currentHost,"TelefisionMobile");
 
 		}
@@ -429,11 +426,11 @@ import flash.utils.getTimer;
 			connect();
 		}
 		
-		static public function disableGuestConnection():void 
+		static public function disableGuestConnection():void
 		{
 			allowGuestConnection = false;
 		}
-		
+
 		static private function onWSMessage(e:WebSocketEvent):void {
 			clearTimeout();
 			lastMessageTime = getTimer();

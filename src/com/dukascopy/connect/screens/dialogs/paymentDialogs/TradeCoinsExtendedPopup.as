@@ -387,18 +387,18 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 			}
 		}
 		
-		/*private function showAdditionalCommissionAlert(undercomissionAmount:Number):void 
+		/*private function showAdditionalCommissionAlert(undercomissionAmount:Number):void
 		{
 			PayManager.callGetSystemOptions(displayAdditionalCommissionAlert);
 		}
-		
-		private function displayAdditionalCommissionAlert():void 
+
+		private function displayAdditionalCommissionAlert():void
 		{
 			if (_isDisposed)
 			{
 				return;
 			}
-			
+
 			var text:String = Lang.coinCommistionM1New.replace("@1", Math.round(undercomissionAmount * .2 * 100) / 100);
 			text = text.replace("@2", PayManager.systemOptions.coin_llf_price_limit);
 			DialogManager.alert(Lang.information, text, onCommissionPopup, Lang.iAgreeCreateOrder, Lang.iDontAgree);

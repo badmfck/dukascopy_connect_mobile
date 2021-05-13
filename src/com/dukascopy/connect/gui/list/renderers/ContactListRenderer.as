@@ -153,7 +153,7 @@ package com.dukascopy.connect.gui.list.renderers {
 			inviteButton.x = int(itemWidth - inviteButton.width - Config.MARGIN);
 			inviteButton.y = int((itemHeight - inviteButton.height) * .5);
 		}
-		
+
 		public function hideBack():void
 		{
 			if (bg != null && contains(bg))

@@ -26,7 +26,7 @@ package com.dukascopy.connect.screens.dialogs.bottom
 			search.setPadding(0);
 		}
 		
-		private function getSearchpromt():String 
+		private function getSearchpromt():String
 		{
 			if (data != null && "searchText" in data && data.searchText != null)
 			{
@@ -34,7 +34,7 @@ package com.dukascopy.connect.screens.dialogs.bottom
 			}
 			return Lang.TEXT_SEARCH_COUNTRY;
 		}
-		
+
 		private function onChanged():void {
 			var value:String = search.value.toLowerCase();
 			doSearch(value);
@@ -61,7 +61,7 @@ package com.dukascopy.connect.screens.dialogs.bottom
 		
 		override public function initScreen(data:Object = null):void {
 			super.initScreen(data);
-			search.setParams(getSearchpromt(), Input.MODE_INPUT);	
+			search.setParams(getSearchpromt(), Input.MODE_INPUT);
 			search.view.y = headerHeight;
 			search.width = _width - Config.DOUBLE_MARGIN * 2;
 			list.view.y = search.view.y + search.height;

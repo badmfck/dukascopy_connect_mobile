@@ -94,12 +94,12 @@ package com.dukascopy.connect.screens.layout
 			scrollPanel.update();
 		}
 		
-		protected function getScrollBottomMargin():int 
+		protected function getScrollBottomMargin():int
 		{
 			return Config.FINGER_SIZE * .5;
 		}
-		
-		private function getScrollBottomPadding():int 
+
+		private function getScrollBottomPadding():int
 		{
 			if (getBottomConfigHeight() > 0)
 			{

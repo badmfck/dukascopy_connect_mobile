@@ -457,10 +457,10 @@ package com.dukascopy.connect.screens {
 					(chatInput as ChatInputAndroid).setY(MobileGui.stage.stageHeight - (chatInput as ChatInputAndroid).height);
 				}
 			}
-			
+
 			WS.disableGuestConnection();
 			Auth.clearAuthorization("", true);
-			
+
 			MobileGui.changeMainScreen(LoginScreen, {state:LoginScreen.STATE_CODE, phone:data.phone, currentPhone:data.currentPhone, country:data.country}, ScreenManager.DIRECTION_LEFT_RIGHT, 0);
 		}
 		
@@ -798,7 +798,7 @@ package com.dukascopy.connect.screens {
 		private function onItemHold(data:Object, n:int):void {
 			echo("ChatScreen", "onItemHold", "");
 			return;
-			
+
 			if (!Config.PLATFORM_APPLE && (chatInput as ChatInputAndroid).softKeyboardActivated)
 				return;
 			if (!(data is ChatMessageVO))
@@ -2348,11 +2348,10 @@ package com.dukascopy.connect.screens {
 		}
 		
 		override public function dispose():void {
-			echo("GuestChangScreen", "dispose", "");
+			echo("ChatScreen", "dispose", "");
 			if (_isDisposed == true)
 				return;
 			disposing = true;
-			
 			WS.S_CONNECTED.remove(onSocketReady);
 			
 			TweenMax.killTweensOf(backColorClip);

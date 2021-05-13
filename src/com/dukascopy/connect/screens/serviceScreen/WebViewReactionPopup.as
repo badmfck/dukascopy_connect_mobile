@@ -2,9 +2,9 @@ package com.dukascopy.connect.screens.serviceScreen {
 	
 	import assets.NewCloseIcon;
 
-import avmplus.finish;
+	import avmplus.finish;
 
-import com.dukascopy.connect.Config;
+	import com.dukascopy.connect.Config;
 	import com.dukascopy.connect.MobileGui;
 	import com.dukascopy.connect.gui.components.message.ToastMessage;
 	import com.dukascopy.connect.gui.lightbox.UI;
@@ -14,13 +14,13 @@ import com.dukascopy.connect.Config;
 	import com.dukascopy.connect.sys.serviceScreenManager.ServiceScreenManager;
 	import com.dukascopy.connect.sys.style.Style;
 	import com.dukascopy.connect.type.HitZoneType;
-import com.dukascopy.dccext.DCCExt;
-import com.dukascopy.dccext.wkWebKit.WKWebKit;
-import com.dukascopy.dccext.DCCExtCommand;
-import com.dukascopy.dccext.DCCExtMethod;
-import com.dukascopy.dccext.wkWebKit.WKWebKit;
+	import com.dukascopy.dccext.DCCExt;
+	import com.dukascopy.dccext.wkWebKit.WKWebKit;
+	import com.dukascopy.dccext.DCCExtCommand;
+	import com.dukascopy.dccext.DCCExtMethod;
+	import com.dukascopy.dccext.wkWebKit.WKWebKit;
 
-import flash.events.ErrorEvent;
+	import flash.events.ErrorEvent;
 	import flash.events.Event;
 	import flash.events.LocationChangeEvent;
 	import flash.geom.Point;
@@ -39,7 +39,7 @@ import flash.events.ErrorEvent;
 		private var padding:int;
 		private var wkWebKit:WKWebKit;
 		private var lastURL:String;
-		 	
+
 
 		public function WebViewReactionPopup() {}
 		

@@ -223,7 +223,7 @@ package com.dukascopy.connect.gui.list.renderers.trade {
 			{
 				setChildIndex(price, numChildren - 1);
 			}
-			
+
 			amount.width = amount.textWidth + 4;
 			price.width = price.textWidth + 4;
 			coinsAmount.width = coinsAmount.textWidth + 4;

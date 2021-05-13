@@ -173,18 +173,20 @@ package com.dukascopy.connect.sys.payments {
 			var sha256:SHA256 = new SHA256();
 			var hmac:HMAC = new HMAC(sha256);
 			variables['_api_signature'] = Base64.encodeByteArray(hmac.compute(btSigKey, btSigBase));
-			if (Config.isTest() == true) {
-				_debugData.variables = { };
-				for (var n :String in variables) {
-					_debugData.variables[n] = variables[n];
-				}
-				_debugData.arr = [];
-				for (var j:int = 0; j < arr.length; j++) {
-					_debugData.arr.push(arr[j]);
-				}
-				_debugData.sigBase = signatureBase;
-			}
 			
+
+			_debugData.variables = { };
+			for (var n :String in variables) {
+				_debugData.variables[n] = variables[n];
+			}
+			_debugData.arr = [];
+			for (var j:int = 0; j < arr.length; j++) {
+				_debugData.arr.push(arr[j]);
+			}
+			_debugData.sigBase = signatureBase;
+			
+
+
 			arr.length = 0;
 			arr = null;
 			

@@ -63,7 +63,7 @@ package com.dukascopy.connect.gui.lightbox {
 		public static var S_LIGHTBOX_CLOSED:Signal = new Signal("LightBox.S_LIGHTBOX_CLOSED");
 		public static var S_LIGHTBOX_OPENED:Signal = new Signal("LightBox.S_LIGHTBOX_OPENED");
 		public static var S_REQUEST_PREW_CONTENT:Signal = new Signal("LightBox.S_REQUEST_PREW_CONTENT");
-		
+
 		//pool
 		private static var freeVOStock:Vector.<LightBoxItemVO> = new Vector.<LightBoxItemVO>;
 		private static var addedVOStock:Vector.<LightBoxItemVO> = new Vector.<LightBoxItemVO>;
@@ -593,7 +593,7 @@ package com.dukascopy.connect.gui.lightbox {
 		{
 			prewButtonAllowed = false;
 			prewCallPanding = false;
-			
+
 			cancelCurrentLoading();
 			echo("Lightbox", "onClose", "START");
 			disposeVOs();
@@ -707,7 +707,7 @@ package com.dukascopy.connect.gui.lightbox {
 			echo("Lightbox", "displayPrev", "END");
 		}
 		
-		static private function canPrew():Boolean 
+		static private function canPrew():Boolean
 		{
 			if (prewButtonAllowed)
 			{
@@ -715,7 +715,7 @@ package com.dukascopy.connect.gui.lightbox {
 			}
 			return hasPrevImage();
 		}
-		
+
 		/** HIDE TO RIGHT SIDE **/
 		private static function hideWithAnimationLeft():void
 		{					
@@ -805,7 +805,7 @@ package com.dukascopy.connect.gui.lightbox {
 		}
 		
 		private static function initPreloaderIfRequired():void {
-			
+
 		}
 		
 		private static function addPreloader():void {
@@ -819,7 +819,7 @@ package com.dukascopy.connect.gui.lightbox {
 			showLoadDescription(Lang.loading);
 		}
 		
-		static private function attachPreloader():void 
+		static private function attachPreloader():void
 		{
 			if (preloader == null)
 			{
@@ -897,10 +897,10 @@ package com.dukascopy.connect.gui.lightbox {
 			addedVOStock[addedVOStock.length] = newVO;
 		}
 		
-		public static function unshift(url:String, crypt:Boolean = false, name:String = "", 
-									okCallback:Function = null, 
-									cancelCallback:Function = null, 
-									smallPreview:String = null, 
+		public static function unshift(url:String, crypt:Boolean = false, name:String = "",
+									okCallback:Function = null,
+									cancelCallback:Function = null,
+									smallPreview:String = null,
 									imageActions:Vector.<IScreenAction> = null):void {
 			createView();
 			var cryptKey:String;
@@ -912,9 +912,9 @@ package com.dukascopy.connect.gui.lightbox {
 			}
 			else
 			{
-				
+
 			}
-			
+
 			if (exists(url)) {
 				//trace("Image :" + url +" alrady added to stock");
 				return;
@@ -931,7 +931,7 @@ package com.dukascopy.connect.gui.lightbox {
 			hash[url] = newVO;
 			addedVOStock.unshift(newVO);
 		}
-		
+
 		public static function showCommunityLink(userFxName:String):void
 		{
 			createView();
@@ -1514,7 +1514,7 @@ package com.dukascopy.connect.gui.lightbox {
 				loadingDescription.bitmapData = null;
 			}
 			loadingDescription.bitmapData = TextUtils.createTextFieldData(text, viewWidth - Config.DOUBLE_MARGIN * 2, 10, false, TextFormatAlign.LEFT, TextFieldAutoSize.LEFT, Config.FINGER_SIZE * .35, false, 0xFFFFFF, 0x000000, true);
-			
+
 			if (preloader != null)
 			{
 				loadingDescription.x = preloader.x - loadingDescription.width * .5;
@@ -1525,7 +1525,7 @@ package com.dukascopy.connect.gui.lightbox {
 				loadingDescription.x = viewWidth * .5 - loadingDescription.width * .5;
 				loadingDescription.y = viewHeight * .75;
 			}
-			
+
 			echo("Lightbox", "showLoadDescription", "END");
 		}
 		
@@ -1578,12 +1578,12 @@ package com.dukascopy.connect.gui.lightbox {
 			echo("Lightbox", "onImageLoadComplete", "END");
 		}
 		
-		static private function displayError():void 
+		static private function displayError():void
 		{
 			TweenMax.killDelayedCallsTo(showPreloader);
 			showLoadDescription(Lang.imageCorrupted);
 		}
-		
+
 		static private function retryLoadImage():void {
 			TweenMax.killDelayedCallsTo(loadMainImage);
 			
@@ -1643,7 +1643,7 @@ package com.dukascopy.connect.gui.lightbox {
 		private static var isDefaultButtonsEnabled:Boolean = true;
 		static private var prewButtonAllowed:Boolean;
 		static private var prewCallPanding:Boolean;
-		
+
 		private static function showDefaultButtons():void
 		{
 			isDefaultButtonsEnabled = true;
@@ -1728,7 +1728,7 @@ package com.dukascopy.connect.gui.lightbox {
 		private static function get totalLength():int { return addedVOStock.length; }
 		private static function hasNextImage():Boolean { return totalLength>1&& _currentIndex != totalLength - 1; }
 		private static function hasPrevImage():Boolean {
-			return totalLength > 1 && _currentIndex != 0; 
+			return totalLength > 1 && _currentIndex != 0;
 		}
 		public static  function get currentIndex():int { return _currentIndex; }
 		public static function set currentIndex(value:int):void {
@@ -1926,19 +1926,19 @@ package com.dukascopy.connect.gui.lightbox {
 			}
 		}
 		
-		static public function allowPrewButton():void 
+		static public function allowPrewButton():void
 		{
 			prewButtonAllowed = true;
 		}
-		
-		static public function checkPendingCalls():void 
+
+		static public function checkPendingCalls():void
 		{
 			removePreloader();
 			if (currentLightBoxVO != null)
 			{
 				_currentIndex = getIndexByURL(currentLightBoxVO.URL);
 			}
-			
+
 			setImagesCounter();
 			if (prewCallPanding)
 			{
@@ -1946,13 +1946,13 @@ package com.dukascopy.connect.gui.lightbox {
 				displayPrev();
 			}
 		}
-		
-		static public function disablePrewButton():void 
+
+		static public function disablePrewButton():void
 		{
 			prewButtonAllowed = false;
 			prewCallPanding = false;
 			removePreloader();
-			
+
 			if (prewPhotoButton != null)
 			{
 				if (hasPrevImage() == false)
@@ -1962,14 +1962,14 @@ package com.dukascopy.connect.gui.lightbox {
 				}
 			}
 		}
-		
-		static public function clearPending():void 
+
+		static public function clearPending():void
 		{
 			removePreloader();
 			prewCallPanding = false;
 			disablePrewButton();
 		}
-		
+
 		static private function setOrientation():void {
 			if (isShowing)
 				updateOrientation();

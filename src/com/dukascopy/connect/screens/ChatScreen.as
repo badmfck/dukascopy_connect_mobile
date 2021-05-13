@@ -444,7 +444,7 @@ package com.dukascopy.connect.screens {
 			NativeExtensionController.S_LOCATION.add(onMyLocation);
 			WSClient.S_LOCATION_UPDATE.add(onUserLocation);
 		}
-		
+
 		private function hidePreloader():void 
 		{
 			if (preloader != null)
@@ -1163,8 +1163,7 @@ package com.dukascopy.connect.screens {
 			updateChatBackground();
 		}
 		
-		private function updateBackground(backId:String):void
-		{
+		private function updateBackground(backId:String):void {
 			if (_isDisposed == true)
 				return;
 			if (backId) {
@@ -1196,10 +1195,9 @@ package com.dukascopy.connect.screens {
 						list.refresh();
 					}
 				}
-			} else {
+			} else
 				clearCurrentBackroundImage();
 			}
-		}
 		
 		private function onChatBackgroundLoaded(url:String, bmd:ImageBitmapData, success:Boolean):void {
 			if (_isDisposed == true)
@@ -1540,11 +1538,11 @@ package com.dukascopy.connect.screens {
 			}
 		}
 		
-		private function loadHistoricalMessages():void 
+		private function loadHistoricalMessages():void
 		{
 			ChatManager.loadChatHistorycalMessages();
 		}
-		
+
 		private function showChatInput():void
 		{
 			var showPayButtons:Boolean = true;
@@ -1692,6 +1690,11 @@ package com.dukascopy.connect.screens {
 					if (isMine && editable)
 						menuItems.push( { fullLink:Lang.textEdit, id:ChatItemContextMenuItemType.EDIT } );
 				}
+				else if (msgVO.typeEnum == ChatMessageType.FORWARDED)
+				{
+					menuItems.push( { fullLink:Lang.textCopy, id:ChatItemContextMenuItemType.COPY } );
+				}
+
 				if (messageType == ChatSystemMsgVO.TYPE_CHAT_SYSTEM) {
 					menuItems.push( { fullLink:Lang.textCopy, id:ChatItemContextMenuItemType.COPY } );
 				}
@@ -2238,7 +2241,7 @@ package com.dukascopy.connect.screens {
 							removeImageAction.setData(ImageContextMenuType.REMOVE_MESSAGE)
 							actions.push(removeImageAction);
 						}
-						
+
 						LightBox.add(cmsgVO.imageURLWithKey, true, null, null, null, cmsgVO.imageThumbURLWithKey, actions);
 						LightBox.show(cmsgVO.imageURLWithKey, getTitleValue(), true);
 						deactivateScreen();
@@ -2272,7 +2275,7 @@ package com.dukascopy.connect.screens {
 					
 					var chatImages:Vector.<ChatMessageVO> = getChatImages();
 					var l:int = chatImages.length;
-					for (var i:int = 0; i < l; i++) 
+					for (var i:int = 0; i < l; i++)
 					{
 						LightBox.add(chatImages[i].imageURLWithKey, true, null, null, null, chatImages[i].imageThumbURLWithKey, actions2);
 					}
@@ -2280,9 +2283,9 @@ package com.dukascopy.connect.screens {
 					{
 						LightBox.allowPrewButton();
 					}
-					
+
 					LightBox.show(cmsgVO.imageURLWithKey, getTitleValue(), true);
-					
+
 					deactivateScreen();
 				} else if ((cmsgVO.linksArray != null && cmsgVO.linksArray.length > 0) || (cmsgVO.systemMessageVO != null && cmsgVO.systemMessageVO.forwardVO != null && cmsgVO.systemMessageVO.forwardVO.linksArray != null && cmsgVO.systemMessageVO.forwardVO.linksArray.length > 0)) {
 					if ((cmsgVO.linksArray != null && cmsgVO.linksArray.length > 1) || (cmsgVO.systemMessageVO != null && cmsgVO.systemMessageVO.forwardVO != null && cmsgVO.systemMessageVO.forwardVO.linksArray != null && cmsgVO.systemMessageVO.forwardVO.linksArray.length > 1)) {
@@ -2486,7 +2489,7 @@ package com.dukascopy.connect.screens {
 			}
 		}
 		
-		private function getChatImages():Vector.<ChatMessageVO> 
+		private function getChatImages():Vector.<ChatMessageVO>
 		{
 			/*if (cachedChatImages != null)
 			{
@@ -2499,7 +2502,7 @@ package com.dukascopy.connect.screens {
 				if (messages != null)
 				{
 					var l:int = messages.length;
-					for (var i:int = 0; i < l; i++) 
+					for (var i:int = 0; i < l; i++)
 					{
 						if (messages[i].systemMessageVO != null && (messages[i].systemMessageVO.fileType == ChatSystemMsgVO.FILETYPE_IMG || messages[i].systemMessageVO.fileType == ChatSystemMsgVO.FILETYPE_IMG_CRYPTED))
 						{
@@ -2511,8 +2514,8 @@ package com.dukascopy.connect.screens {
 			}
 			return result;
 		}
-		
-		private function getMessageLinks(cmsgVO:ChatMessageVO):Array 
+
+		private function getMessageLinks(cmsgVO:ChatMessageVO):Array
 		{
 			if (cmsgVO.linksArray != null && cmsgVO.linksArray.length > 0)
 			{
@@ -3197,6 +3200,7 @@ package com.dukascopy.connect.screens {
 		
 		private function updateReportButton():void 
 		{
+			trace("updateReportButton", ChatManager.getCurrentChat().uid);
 			if (reportButton == null &&
 				ChatManager.getCurrentChat() != null && 
 				ChatManager.getCurrentChat().isLocalIncomeChat() == false && 
@@ -3653,7 +3657,7 @@ package com.dukascopy.connect.screens {
 			{
 				listPositionY = -list.getBoxY();
 			}
-			
+
 			var messages:Vector.<ChatMessageVO> = ChatManager.getCurrentChat().messages;
 			var listData:Array = [];
 			/*if (messages[0].num > 1)
@@ -3674,7 +3678,7 @@ package com.dukascopy.connect.screens {
 				}
 			}
 			list.setData(listData, ListChatItem, ['avatarForChat', 'imageThumbURLWithKey'], null, ['imageThumbURLWithKey']);
-			
+
 			if (LightBox.isShowing)
 			{
 				list.setBoxY( -(list.innerHeight - oldContentHeight + listPositionY));
@@ -3683,8 +3687,8 @@ package com.dukascopy.connect.screens {
 			{
 				list.setBoxY( -(list.innerHeight - listPositionY));
 			}
-			
-			
+
+
 			if (LightBox.isShowing)
 			{
 				if (messages != null && messages.length > 0 && messages[0].num < 2)
@@ -3698,20 +3702,20 @@ package com.dukascopy.connect.screens {
 			}
 		}
 		
-		private function updateLightboxDataset():void 
+		private function updateLightboxDataset():void
 		{
 			cachedChatImages = null;
 			var chatImages:Vector.<ChatMessageVO> = getChatImages();
 			cachedChatImages = chatImages;
 			chatImages.reverse();
 			var l:int = chatImages.length;
-			for (var i:int = 0; i < l; i++) 
+			for (var i:int = 0; i < l; i++)
 			{
 				LightBox.unshift(chatImages[i].imageURLWithKey, true, null, null, null, chatImages[i].imageThumbURLWithKey, null);
 			}
 			LightBox.checkPendingCalls();
 		}
-		
+
 		private function setChatListSize(needScrollToBottom:Boolean = false):void {
 			if (_isDisposed == true)
 				return;
@@ -3755,26 +3759,26 @@ package com.dukascopy.connect.screens {
 			if (satisfyPublicAnswerButton != null) {
 				satisfyPublicAnswerButton.setPosition(_width - Config.FINGER_SIZE * 1.5 - Config.MARGIN * 2, bottomY - satisfyPublicAnswerButton.height - Config.MARGIN);
 			}
-			
+
 			if (verificationButton != null) {
 				bottomY -= verificationButton.height;
 				verificationButton.y = chatInput.getView().y - verificationButton.height;
 			}
-			
+
 			var position: int = bottomY;
 			if (reportButton != null) {
 				reportButton.setPosition(_width - Config.FINGER_SIZE * 1 - Config.MARGIN * 2, bottomY - reportButton.height - Config.MARGIN);
 				position -= reportButton.height - Config.FINGER_SIZE * .2;
 			}
-			
+
 			if (scrollBottomButton != null) {
 				scrollBottomButton.y = (position - scrollBottomButton.height - Config.DIALOG_MARGIN * 0.7);
 			}
-	
+
 			return bottomY;
 		}
-		
-		/*private function updateButtonsPositions(bottomY:int):int 
+
+		/*private function updateButtonsPositions(bottomY:int):int
 		{
 			if (satisfyPublicAnswerButton != null) {
 				satisfyPublicAnswerButton.setPosition(_width - Config.FINGER_SIZE * 1.5 - Config.MARGIN * 2, bottomY - satisfyPublicAnswerButton.height - Config.MARGIN);
@@ -4157,24 +4161,24 @@ package com.dukascopy.connect.screens {
 			if (previewMessagesAction != null)
 				previewMessagesAction.dispose();
 			previewMessagesAction = null;
-			
+
 			if (forwardMessageButton != null)
 				forwardMessageButton.dispose();
 			forwardMessageButton = null;
-			
+
 			if (invoiceProcessView != null)
 			{
 				invoiceProcessView.dispose();
 				invoiceProcessView = null;
 			}
-			
+
 			_data = null;
 			//в функции dispose нужно добавить
 			NativeExtensionController.onChatScreenClosed();
 			super.dispose();
 		}
 		
-		private function requestPrewMessages():void 
+		private function requestPrewMessages():void
 		{
 			var nextNum:int = 0;
 			if (ChatManager.getCurrentChat() != null && ChatManager.getCurrentChat().messages != null && ChatManager.getCurrentChat().messages.length > 0)
@@ -4192,7 +4196,7 @@ package com.dukascopy.connect.screens {
 			lastFirstMessageNum = nextNum;
 			loadHistoricalMessages();
 		}
-		
+
 		private function onChannelModeratorsChanged(eventType:String, channelUID:String):void {
 			var currentChatUID:String;
 			if ((data as ChatScreenData).chatVO) {

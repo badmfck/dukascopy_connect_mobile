@@ -3,10 +3,8 @@ package com.dukascopy.connect {
 	import assets.JailedIllustrationClip;
 	import com.dukascopy.connect.data.ChatSettingsModel;
 	import com.dukascopy.connect.data.PopupData;
-	import com.dukascopy.connect.data.TextFieldSettings;
 	import com.dukascopy.connect.data.screenAction.IScreenAction;
 	import com.dukascopy.connect.data.screenAction.customActions.OpenBankAccountAction;
-	import com.dukascopy.connect.gui.components.CirclePreloader;
 	import com.dukascopy.connect.gui.components.HiddenOnlineIndicator;
 	import com.dukascopy.connect.gui.components.message.ToastMessage;
 	import com.dukascopy.connect.gui.input.Input;
@@ -37,8 +35,8 @@ package com.dukascopy.connect {
 	import com.dukascopy.connect.sys.chatManager.typesManagers.ChannelsManager;
 	import com.dukascopy.connect.sys.connectionManager.NetworkManager;
 	import com.dukascopy.connect.sys.contactsManager.ContactsManager;
-import com.dukascopy.connect.sys.debug.RemoteDebugger;
-import com.dukascopy.connect.sys.dialogManager.DialogManager;
+	import com.dukascopy.connect.sys.debug.RemoteDebugger;
+	import com.dukascopy.connect.sys.dialogManager.DialogManager;
 	import com.dukascopy.connect.sys.echo.echo;
 	import com.dukascopy.connect.sys.geolocation.GeolocationManager;
 	import com.dukascopy.connect.sys.imageManager.ImageManager;
@@ -52,8 +50,8 @@ import com.dukascopy.connect.sys.dialogManager.DialogManager;
 	import com.dukascopy.connect.sys.payments.PayManager;
 	import com.dukascopy.connect.sys.payments.PayNews;
 	import com.dukascopy.connect.sys.payments.PaymentsManager;
-import com.dukascopy.connect.sys.phoneWeightManager.PhoneWeightManager;
-import com.dukascopy.connect.sys.phonebookManager.PhonebookManager;
+	import com.dukascopy.connect.sys.phoneWeightManager.PhoneWeightManager;
+	import com.dukascopy.connect.sys.phonebookManager.PhonebookManager;
 	import com.dukascopy.connect.sys.php.PHP;
 	import com.dukascopy.connect.sys.pointerManager.PointerManager;
 	import com.dukascopy.connect.sys.promoEvents.PromoEvents;
@@ -78,8 +76,8 @@ import com.dukascopy.connect.sys.phonebookManager.PhonebookManager;
 	import com.dukascopy.connect.type.ChatInitType;
 	import com.dukascopy.connect.utils.RenderUtils;
 	import com.dukascopy.connect.vo.screen.ChatScreenData;
-import com.dukascopy.dccext.DCCExt;
-import com.dukascopy.dukascopyextension.DukascopyExtensionAndroid;
+	import com.dukascopy.dccext.DCCExt;
+	import com.dukascopy.dukascopyextension.DukascopyExtensionAndroid;
 	import com.dukascopy.langs.Lang;
 	import com.dukascopy.langs.LangManager;
 	import com.greensock.TweenMax;
@@ -89,11 +87,9 @@ import com.dukascopy.dukascopyextension.DukascopyExtensionAndroid;
 	import com.telefision.sys.signals.Signal;
 	import com.telefision.utils.Loop;
 	import connect.DukascopyExtension;
-
-import flash.desktop.Clipboard;
-
-import flash.desktop.ClipboardFormats;
-import flash.desktop.NativeApplication;
+	import flash.desktop.Clipboard;
+	import flash.desktop.ClipboardFormats;
+	import flash.desktop.NativeApplication;
 	import flash.display.FocusDirection;
 	import flash.display.Sprite;
 	import flash.display.Stage;
@@ -101,14 +97,13 @@ import flash.desktop.NativeApplication;
 	import flash.display.StageQuality;
 	import flash.events.Event;
 	import flash.events.KeyboardEvent;
-import flash.events.MouseEvent;
-import flash.events.StageOrientationEvent;
+	import flash.events.MouseEvent;
+	import flash.events.StageOrientationEvent;
 	import flash.system.System;
 	import flash.text.TextField;
 	import flash.text.TextFormat;
 	import flash.ui.Keyboard;
 	
-
 	public class MobileGui {
 		
 		static public const S_WS_EVENT:Signal = new Signal("WS.S_WS_EVENT");
@@ -180,9 +175,7 @@ import flash.events.StageOrientationEvent;
 		private function initComponents():void {
 			
 			if (Config.PLATFORM_APPLE)
-			{
 				DCCExt.init();
-			}
 			
 			Loop.init(stage);
 			RenderUtils.stageRef = stage;
@@ -275,23 +268,9 @@ import flash.events.StageOrientationEvent;
 			LangManager.init();
 			Auth.init();
 			
-			/*if (Config.isTF() == true) {
-				ni ||= new NetworkIndicator();
-				if (ni.parent == null)
-					stage.addChild(ni);
-			} else if (ni != null) {
-				ni.dispose();
-				ni = null;
-			}*/
-
 			container.addChild(new HiddenOnlineIndicator());
-
-
-
-			//debug_createWSLogger();
-
 		}
-
+		
 		private function debug_createWSLogger():void{
 			var tf:TextField = new TextField();
 			tf.defaultTextFormat = new TextFormat("Tahoma", Config.FINGER_SIZE_DOT_25);
@@ -856,13 +835,10 @@ import flash.events.StageOrientationEvent;
 		
 		private function onAuthNeedAuthorization():void {
 			authSreenShowed = true;
-			
-			if (centerScreen.currentScreenClass != LoginScreen)
-			{
+			if (centerScreen.currentScreenClass != LoginScreen) {
 				mainSM.clear();
 				changeMainScreen(LoginScreen);
 			}
-			
 			PaymentsManager.deactivate();
 		}
 		
@@ -962,18 +938,15 @@ import flash.events.StageOrientationEvent;
 		}
 		
 		static public function openMyAccountIfExist():void {
-
 			QuestionsManager.setInOut(false);
 			if (Auth.bank_phase != "ACC_APPROVED") {
 				MobileGui.showRoadMap();
 				return;
 			}
-
 			if (Config.BANKBOT == true || Auth.companyID == "08A29C35B3") {
 				changeMainScreen(MyAccountScreen);
 				return;
 			}
-
 			mainSM.show(RootScreen);
 		}
 		
@@ -1025,17 +998,13 @@ import flash.events.StageOrientationEvent;
 		static public function addReport(caller:String):void {
 			PHP.call_statVI("WrongChatOpen", caller);
 		}
-
-		static public function showRoadMap():void
-		{
+		
+		static public function showRoadMap():void {
 			changeMainScreen(RoadMapScreenNew, null);
 		}
 		
-		static public function traceText(text:String):void 
-		{
-		//	return;
-			if (testText == null)
-			{
+		static public function traceText(text:String):void {
+			if (testText == null) {
 				testText = new TextField();
 				stage.addChild(testText);
 				var tf:TextFormat = new TextFormat();
@@ -1055,7 +1024,6 @@ import flash.events.StageOrientationEvent;
 				
 			}
 			testText.appendText("\n" + text);
-		//	testText.scrollV = testText.maxScrollV;
 		}
 	}
 }

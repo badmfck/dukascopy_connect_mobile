@@ -121,12 +121,12 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 		public function getHeight(messageVO:ChatMessageVO, targetWidth:int,listItem:ListItem):uint {
 			if (messageVO == null)
 				return 0;
-			
+
 			if (messageVO.systemMessageVO != null && messageVO.systemMessageVO.type == "credentials")
 			{
 				return 0;
 			}
-			
+
 			var isLastMessageForwarded:Boolean = messageVO.typeEnum == ChatMessageType.FORWARDED;
 			var cryptedIconOffset:int = 0;
 			

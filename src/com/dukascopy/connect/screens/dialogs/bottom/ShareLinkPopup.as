@@ -94,7 +94,7 @@ package com.dukascopy.connect.screens.dialogs.bottom {
 			
 			link = new Sprite();
 			container.addChild(link);
-			
+
 			linkBitmap = new Bitmap();
 			link.addChild(linkBitmap);
 			
@@ -217,7 +217,7 @@ package com.dukascopy.connect.screens.dialogs.bottom {
 			super.initScreen(data);
 			
 			contentPadding = Config.DIALOG_MARGIN;
-			
+
 			drawShareButton();
 			drawSaveCodeButton();
 			
@@ -237,29 +237,29 @@ package com.dukascopy.connect.screens.dialogs.bottom {
 				);
 			}
 			
-			linkBitmap.bitmapData = TextUtils.createTextFieldData("<u>" + getLink() + "</u>", _width - Config.DIALOG_MARGIN * 3 - copyButton.width, 10, true, TextFormatAlign.LEFT, TextFieldAutoSize.LEFT, 
+			linkBitmap.bitmapData = TextUtils.createTextFieldData("<u>" + getLink() + "</u>", _width - Config.DIALOG_MARGIN * 3 - copyButton.width, 10, true, TextFormatAlign.LEFT, TextFieldAutoSize.LEFT,
 																	FontSize.BODY, true, Style.color(Style.COLOR_TEXT), Style.color(Style.COLOR_TEXT), false, true);
-			
-			linkTimeText.bitmapData = TextUtils.createTextFieldData(Lang.shereLinkLifeTime, _width - contentPadding*2, 10, true, 
+
+			linkTimeText.bitmapData = TextUtils.createTextFieldData(Lang.shereLinkLifeTime, _width - contentPadding*2, 10, true,
 																	TextFormatAlign.CENTER, TextFieldAutoSize.LEFT, 
 																	FontSize.CAPTION_1, true, Style.color(Style.COLOR_SUBTITLE),
 																	Style.color(Style.COLOR_BACKGROUND), false);
 			
-			
+
 			var codeHeight:int = _height - headerHeight - saveCodeButton.height - link.height - subtitle.height - linkTimeText.height - Config.DIALOG_MARGIN * 4 - Config.FINGER_SIZE * 1.5;
 			codeHeight = Math.max(Config.FINGER_SIZE, codeHeight);
-			
+
 			var freeSpace:int = (_height - headerHeight - saveCodeButton.height - link.height - subtitle.height - linkTimeText.height - Config.DIALOG_MARGIN * 4 - codeHeight) / 2;
-			
+
 			freeSpace = Math.max(Config.FINGER_SIZE*.3, freeSpace);
-			
+
 			var position:int = freeSpace + headerHeight;
-			
+
 			drawCode(codeHeight);
 			code.x = int(_width * .5 - code.width * .5);
 			code.y = position;
 			position += code.height + freeSpace;
-			
+
 			subtitle.y = position;
 			subtitle.x = Config.DIALOG_MARGIN;
 			position += subtitle.height + Config.DIALOG_MARGIN;
@@ -267,14 +267,14 @@ package com.dukascopy.connect.screens.dialogs.bottom {
 			link.x = Config.DIALOG_MARGIN;
 			link.y = position;
 			position += link.height + Config.DIALOG_MARGIN;
-			
+
 			copyButton.x = int(_width - copyButton.width - Config.DIALOG_MARGIN);
 			copyButton.y = int(link.y);
 			
 			linkTimeText.y = position;
 			linkTimeText.x = Config.DIALOG_MARGIN;
 			position += linkTimeText.height + Config.DIALOG_MARGIN;
-			
+
 			saveCodeButton.x = int(_width * .5 - saveCodeButton.width * .5);
 			saveCodeButton.y = position;
 		}
@@ -335,8 +335,8 @@ package com.dukascopy.connect.screens.dialogs.bottom {
 			saveCodeButton.activate();
 			PointerManager.addTap(link, openLink);
 		}
-		
-		private function openLink(e:Event = null):void 
+
+		private function openLink(e:Event = null):void
 		{
 			navigateToURL(new URLRequest(getLink()));
 		}

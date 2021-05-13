@@ -37,17 +37,17 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs.elements
 		private var selected:Boolean;
 		private var _align:String;
 		private var defaultValue:Number;
-		
-		public function get align():String 
+
+		public function get align():String
 		{
 			return _align;
 		}
-		
-		public function set align(value:String):void 
+
+		public function set align(value:String):void
 		{
 			_align = value;
 		}
-		
+
 		protected var title:Bitmap;
 		protected var valueField:Bitmap;
 		protected var underline:Bitmap;
@@ -233,7 +233,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs.elements
 				title.bitmapData = TextUtils.createTextFieldData(value, itemWidth, 10, 
 																false, TextFormatAlign.LEFT, 
 																TextFieldAutoSize.LEFT, 
-																FontSize.SUBHEAD, 
+																FontSize.SUBHEAD,
 																false, Style.color(Style.COLOR_SUBTITLE), backColor, false, true);
 			}
 		}
@@ -314,7 +314,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs.elements
 				underlineValue.x = int(itemWidth - underlineValue.width);
 			}
 			underlineValue.y = int(underline.y + Config.FINGER_SIZE * .16);
-			
+
 			trace("FIELD", int(input.view.y + input.height - Config.FINGER_SIZE * .1));
 		}
 		
@@ -553,7 +553,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs.elements
 				{
 					input.value = "";
 				}
-				
+
 				//trace(input.value.length);
 				if (input.getTextField().selectionBeginIndex == input.getTextField().selectionEndIndex && 
 					input.value != null && 
@@ -598,7 +598,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs.elements
                 {
                     if (valueString.length > 1 && (valueString.charAt(1) == "." || valueString.charAt(1) == ","))
                     {
-                        
+
                     }
                     else
                     {
@@ -606,7 +606,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs.elements
                     }
                 }
             }
-			
+
 			if (_onChangedFunction != null)
 			{
 				_onChangedFunction();

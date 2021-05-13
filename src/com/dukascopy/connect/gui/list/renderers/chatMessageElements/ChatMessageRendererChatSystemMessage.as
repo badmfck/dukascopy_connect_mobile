@@ -79,7 +79,7 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 			var data:ChatSystemMsgVO = messageData.systemMessageVO;
 			if (currentData == data)
 				return;
-			
+
 			maxWidth = Math.min(maxWidth, Config.FINGER_SIZE * 6);
 			currentData = data;
 			create();

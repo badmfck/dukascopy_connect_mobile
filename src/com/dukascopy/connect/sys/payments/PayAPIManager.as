@@ -518,7 +518,10 @@ package com.dukascopy.connect.sys.payments {
 				promoCode,
 				notaryflow,
 				coolPhone,
-				birthDate
+				birthDate,
+				mrzData.docNumber,
+				mrzData.docType
+
 			);
 			Auth.rtoStarted();
 		}

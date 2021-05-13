@@ -415,7 +415,7 @@ package com.dukascopy.connect.sys.imageManager {
 				onLoadError();
 				return;
 			}
-			
+
 			if (cryptKey)
 			{
 				var sourceData:ByteArray = new ByteArray();
