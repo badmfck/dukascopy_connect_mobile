@@ -1117,7 +1117,7 @@ package com.dukascopy.connect.screens {
 			if (list != null)
 			{
 				list.updateItem(msgVO, true, true);
-				if (ChatManager.getCurrentChat().messageID == msgVO.id && msgVO.systemMessageVO != null && )
+				if (ChatManager.getCurrentChat().messageID == msgVO.id && msgVO.systemMessageVO != null)
 				{
 					if (msgVO.systemMessageVO.method == ChatSystemMsgVO.METHOD_NEWS || 
 						msgVO.typeEnum == ChatSystemMsgVO.TYPE_INVOICE)
