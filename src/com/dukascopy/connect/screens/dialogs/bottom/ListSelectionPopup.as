@@ -101,9 +101,9 @@ package com.dukascopy.connect.screens.dialogs.bottom
 			}
 		}
 		
-		private function onItemTap(data:Object, n:int):void {
+		protected function onItemTap(data:Object, n:int):void {
 			needCallback = true;
-			selectedItem = data;
+			selectedItem = getSelectedData(data);
 			selectedNum = n;
 			if (list.data != null)
 			{
@@ -132,10 +132,9 @@ package com.dukascopy.connect.screens.dialogs.bottom
 			}
 		}
 		
-		override protected function onRemove():void 
-		{
-			if (needCallback == true)
-			{
+		override protected function onRemove():void{
+			if (needCallback == true){
+
 				needCallback = false;
 				if (data != null && "callback" in data && data.callback != null && data.callback is Function)
 				{
@@ -145,6 +144,14 @@ package com.dukascopy.connect.screens.dialogs.bottom
 					}
 					else if((data.callback as Function).length == 2)
 					{
+						if (data != null && "data" in data)
+						{
+							data.callback(selectedItem, data.data);
+						}
+						else
+						{
+							data.callback(selectedItem, selectedNum);
+						}
 						data.callback(selectedItem, selectedNum);
 					}
 					else if((data.callback as Function).length == 3)
@@ -153,6 +160,10 @@ package com.dukascopy.connect.screens.dialogs.bottom
 					}
 				}
 			}
+		}
+
+		protected function getSelectedData(item:Object):Object{
+			return item;
 		}
 		
 		override public function dispose():void {
