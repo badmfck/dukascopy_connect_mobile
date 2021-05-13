@@ -1993,6 +1993,11 @@ package com.dukascopy.connect.sys.bankManager {
 				
 				return;
 			}
+			if (!isNaN(errorCode) && errorCode == 1)
+			{
+				sendBlock("payError", BankManager.PWP_NOT_ENTERED);
+				return;
+			}
 			if (PayConfig.PAY_SESSION_ID == "") {
 				sendBlock("payError", BankManager.PWP_NOT_ENTERED);
 				return;
@@ -2045,7 +2050,7 @@ package com.dukascopy.connect.sys.bankManager {
 			}
 		}
 		
-		static private function onPasswordChangeSuccess(requestData:Object):void 
+		static private function onPasswordChangeSuccess(requestData:Object):void   
 		{
 			var responseData:Object = new Object();
 			responseData.data = new Object();

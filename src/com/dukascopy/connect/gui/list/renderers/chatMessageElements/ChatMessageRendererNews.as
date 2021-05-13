@@ -61,7 +61,7 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements
 		
 		public function ChatMessageRendererNews()
 		{
-			textBoxRadius = Math.ceil(Config.FINGER_SIZE * .1);
+			textBoxRadius = Math.ceil(Style.size(Style.MESSAGE_RADIUS));;
 		}
 		
 		public function getSelectedHitzone(itemTouchPoint:Point, listItem:ListItem):HitZoneData
@@ -196,7 +196,7 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements
 			return mainHeight;
 		}
 		
-		public function draw(messageData:ChatMessageVO, maxWidth:int, listItem:ListItem = null, securityKey:Array = null):void
+		public function draw(messageData:ChatMessageVO, maxWidth:int, listItem:ListItem = null, securityKey:Array = null, minWidth:int = -1):void
 		{
 			var data:ChatSystemMsgVO = messageData.systemMessageVO;
 			
@@ -228,13 +228,18 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements
 				topAreaHeight = maxWidth;
 				topAreaColor = 0x93A2AE;
 				image.transform.colorTransform = baseTint;
+				title.textColor = Style.color(Style.COLOR_BACKGROUND);
 			}else{
 				if (data.newsVO.image != null){
-					topAreaHeight = Config.FINGER_SIZE * 2.2;
+					topAreaHeight = Config.FINGER_SIZE * 3.2;
 					image.transform.colorTransform = imageTint;
+					title.textColor = Style.color(Style.COLOR_BACKGROUND);
 				}
-				
-				topAreaColor = 0x232B36;
+				else
+				{
+					topAreaColor = 0xFFFFFF;
+					title.textColor = Style.color(Style.COLOR_TEXT);
+				}
 			}
 			
 			if (data.newsVO.image != null){
@@ -262,7 +267,11 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements
 					topAreaHeight = title.y + title.height + verticalPadding * 1.5;
 				}
 				
-				position = title.y + title.height + verticalPadding * 2;
+				position = title.y + title.height + verticalPadding;
+				if (data.newsVO.image != null)
+				{
+					position += verticalPadding;
+				}
 			}
 			
 			if (text != null) {
@@ -298,6 +307,7 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements
 			}
 			
 			if (data.newsVO.link != null){
+				position += Config.FINGER_SIZE * .1;
 				linkClip.visible = true;
 				linkText.text = TextUtils.getServerName(data.newsVO.link);
 				linkText.width = Math.min(linkText.textWidth + 4, maxWidth - linkPadding * 3 + linkIcon.width - horizontalPadding * 2);

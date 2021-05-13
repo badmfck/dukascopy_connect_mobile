@@ -188,7 +188,7 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 			//return height;
 		}
 		
-		override public function draw(messageData:ChatMessageVO, maxWidth:int, listItem:ListItem = null, securityKey:Array = null):void {
+		override public function draw(messageData:ChatMessageVO, maxWidth:int, listItem:ListItem = null, securityKey:Array = null, minWidth:int = -1):void {
 			currentMessage = messageData;
 			
 			tipsText.visible = false;

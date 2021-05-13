@@ -63,6 +63,11 @@ package com.dukascopy.connect.sys.payments.vo {
 		//private var _ccWithdrawal:Boolean;
 		
 		static private var wasSend:Boolean=false;
+		private var _address_card:String;
+		private var _city_card:String;
+		private var _country_card:String;
+		private var _zip_card:String;
+		
 		public function AccountInfoVO() {
 			// BAD PRACTICE! (sorry)
 			if(!wasSend){
@@ -90,6 +95,20 @@ package com.dukascopy.connect.sys.payments.vo {
 			key = "EMAIL";
 			if (key in data == true)
 				_email = data[key];
+			//---------------------------
+			key = "CARD_DELIVERY_COUNTRY";
+			if (key in data == true)
+				_country_card = data[key];
+			key = "CARD_DELIVERY_ADDRESS";
+			if (key in data == true)
+				_address_card = data[key];
+			key = "CARD_DELIVERY_ZIP";
+			if (key in data == true)
+				_zip_card = data[key];
+			key = "CARD_DELIVERY_CITY";
+			if (key in data == true)
+				_city_card = data[key];
+			//---------------------------
 			key = "COUNTRY";
 			if (key in data == true)
 				_country = data[key];
@@ -102,6 +121,8 @@ package com.dukascopy.connect.sys.payments.vo {
 			key = "CITY";
 			if (key in data == true)
 				_city = data[key];
+			
+			
 			key = "limits";
 			if (key in data == true)
 				setLimits(data[key]);
@@ -229,6 +250,27 @@ package com.dukascopy.connect.sys.payments.vo {
 		public function get enableSaving():Boolean { return _enableSaving; }
 		public function get enableTrading():Boolean { return _enableTrading; }
 		public function get enableApplePay():Boolean { return _enableApplePay; }
+		
+		public function get address_card():String 
+		{
+			return _address_card;
+		}
+		
+		public function get city_card():String 
+		{
+			return _city_card;
+		}
+		
+		public function get country_card():String 
+		{
+			return _country_card;
+		}
+		
+		public function get zip_card():String 
+		{
+			return _zip_card;
+		}
+		
 		public function get updatePersonalInfo():Boolean { return _updatePersonalInfo; }
 	}
 }

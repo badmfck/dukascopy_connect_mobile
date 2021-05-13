@@ -5,9 +5,11 @@ package com.dukascopy.connect.gui.list.renderers.listItemContextItem
 	import com.dukascopy.connect.gui.lightbox.UI;
 	import com.dukascopy.connect.sys.contextActions.ContextAction;
 	import com.dukascopy.connect.sys.imageManager.ImageBitmapData;
+	import com.dukascopy.connect.sys.style.Style;
 	import com.dukascopy.connect.type.HitZoneType;
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
+	import flash.display.SpreadMethod;
 	import flash.display.Sprite;
 	import flash.display.StageQuality;
 	import flash.geom.ColorTransform;
@@ -25,11 +27,15 @@ package com.dukascopy.connect.gui.list.renderers.listItemContextItem
 		private var hitzones:Array;
 		private var itemWidth:int;
 		private var lastData:Vector.<ContextAction>;
+		private var swipeIcon:Sprite;
 		
 		public function ListItemContextClip() 
 		{
 			content = new Bitmap();
 			addChild(content);
+			
+			swipeIcon = new Sprite()
+			addChild(swipeIcon);
 		}
 		
 		public function setData(data:Vector.<ContextAction>):void
@@ -40,21 +46,84 @@ package com.dukascopy.connect.gui.list.renderers.listItemContextItem
 		public function draw(itemHeight:int, itemWidth:int):void
 		{
 			this.itemWidth = itemWidth;
-			if (currentItemHeight != itemHeight || lastData != data)
+			
+			if (isSwipe(data))
 			{
 				currentItemHeight = itemHeight;
-				reBuild();
+				reBuildSwipe();
 			}
+			else
+			{
+				if (currentItemHeight != itemHeight || lastData != data)
+				{
+					currentItemHeight = itemHeight;
+					reBuild();
+				}
+			}
+		}
+		
+		private function reBuildSwipe():void 
+		{
+			clear();
+			if (!data)
+			{
+				return;
+			}
+			if (lastData == data)
+			{
+				
+			}
+			else
+			{
+				clearSwipe();
+				lastData = data;
+				
+				if (data != null && data.length > 0 && data[0] != null && data[0].icon != null)
+				{
+					var icon:Sprite = new data[0].icon();
+					var iconSize:int = Config.FINGER_SIZE * .5;
+					iconSize = 1;
+					UI.scaleToFit(icon, iconSize, iconSize);
+					UI.colorize(icon, Style.color(Style.COLOR_ICON_SETTINGS));
+					
+					swipeIcon.addChild(icon);
+					swipeIcon.graphics.beginFill(0, 0);
+					swipeIcon.graphics.drawRect(0, 0, Config.FINGER_SIZE, 1);
+					swipeIcon.graphics.endFill();
+					
+					icon.x = int(Config.FINGER_SIZE * .5 - icon.width * .5);
+					icon.y = int(currentItemHeight * .5 - icon.height * .5);
+				}
+			}
+		}
+		
+		private function clearSwipe():void 
+		{
+			if (swipeIcon != null)
+			{
+				swipeIcon.removeChildren();
+				swipeIcon.graphics.clear();
+			}
+		}
+		
+		private function isSwipe(data:Vector.<ContextAction>):Boolean 
+		{
+			if (data != null && data.length > 0 && data[0].reactionType == ContextAction.TYPE_SWIPE)
+			{
+				return true;
+			}
+			return false;
 		}
 		
 		public function getWidth():int 
 		{
-			return content.width;
+			return Math.max(content.width, swipeIcon.width);
 		}
 		
 		private function reBuild():void 
 		{
 			clear();
+			clearSwipe();
 			if (!data)
 			{
 				return;
@@ -130,6 +199,32 @@ package com.dukascopy.connect.gui.list.renderers.listItemContextItem
 				UI.destroy(content);
 			}
 			hitzones = null;
+		}
+		
+		public function onResize(itemWidth:Number):void 
+		{
+			if (isSwipeNow())
+			{
+				var icon:Sprite;
+				if (swipeIcon != null && swipeIcon.numChildren > 0 && swipeIcon.getChildAt(0) is Sprite)
+				{
+					icon = swipeIcon.getChildAt(0) as Sprite;
+					
+					var iconSize:int = Math.max(1, itemWidth * .5);
+					UI.scaleToFit(icon, iconSize, iconSize);
+					icon.x = int(Config.FINGER_SIZE * .5 - icon.width * .5);
+					icon.y = int(currentItemHeight * .5 - icon.height * .5);
+				}
+			}
+		}
+		
+		public function isSwipeNow():Boolean 
+		{
+			if (data != null && data.length > 0 && data[0].reactionType == ContextAction.TYPE_SWIPE)
+			{
+				return true;
+			}
+			return false;
 		}
 	}
 }

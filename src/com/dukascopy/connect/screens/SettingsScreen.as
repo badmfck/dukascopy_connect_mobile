@@ -35,6 +35,7 @@ package com.dukascopy.connect.screens {
 	import com.dukascopy.connect.screens.dialogs.bottom.ListSelectionPopup;
 	import com.dukascopy.connect.screens.dialogs.bottom.ShareLinkPopup;
 	import com.dukascopy.connect.screens.dialogs.bottom.TransactionFilterPopup;
+	import com.dukascopy.connect.screens.dialogs.bottom.implementation.BottomConfirmPopup;
 	import com.dukascopy.connect.screens.dialogs.calendar.SelectDatePopup;
 	import com.dukascopy.connect.screens.dialogs.gifts.FlowerSticker;
 	import com.dukascopy.connect.screens.dialogs.paymentDialogs.FeedbackPopup;
@@ -1349,13 +1350,6 @@ package com.dukascopy.connect.screens {
 		}
 		
 		private function onLogoutTap():void {
-			/*var popupData:PopupData = new PopupData();
-			popupData.title = Lang.accountStatement;
-			popupData.data = new Object();
-			popupData.callback = onTimeSelected;
-			ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, BottomTimeSelectionScreen, popupData);
-			return;*/
-			echo("SettingsScreen", "onLogoutTap");
 			DialogManager.alert(Lang.textWarning, Lang.areYouSureLogout, onLogoutDialogClose, Lang.logout, Lang.textCancel);
 		}
 		

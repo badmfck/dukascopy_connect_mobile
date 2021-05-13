@@ -121,7 +121,7 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 			return calculatedHeight;
 		}
 		
-		public function draw(messageVO:ChatMessageVO, maxWidth:int, listItem:ListItem = null, securityKey:Array = null):void {
+		public function draw(messageVO:ChatMessageVO, maxWidth:int, listItem:ListItem = null, securityKey:Array = null, minWidth:int = -1):void {
 			_birdOverMenu = false;
 			currentData = messageVO.systemMessageVO;
 			var isMine:Boolean = Auth.uid == messageVO.userUID;
@@ -248,7 +248,12 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 			if (txt == "")
 				txt = Lang.deletedMessage;
 			txt = txt.replace(/\t/g, " ");
-			var res:int = megaText.setText(targetWidth, txt, messageColor, fontSize, "#" + ct.color, 1.5, messageVO.wasSmile);
+			var textSize:int = fontSize;
+			if (messageVO.renderInfo != null && messageVO.renderInfo.renderInforenderBigFont == true)
+			{
+				textSize = textSize * 1.4;
+			}
+			var res:int = megaText.setText(targetWidth, txt, messageColor, textSize, "#" + ct.color, 1.5, messageVO.wasSmile);
 			messageVO.wasSmile = megaText.getWasSmile() ? 2 : 1;
 			
 			res += additioanlRes;

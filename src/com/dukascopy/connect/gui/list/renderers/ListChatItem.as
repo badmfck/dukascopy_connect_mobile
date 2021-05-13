@@ -19,6 +19,7 @@ package com.dukascopy.connect.gui.list.renderers {
 	import com.dukascopy.connect.gui.list.renderers.chatMessageElements.ChatMessageRendererInvoice;
 	import com.dukascopy.connect.gui.list.renderers.chatMessageElements.ChatMessageRendererMoney;
 	import com.dukascopy.connect.gui.list.renderers.chatMessageElements.ChatMessageRendererNews;
+	import com.dukascopy.connect.gui.list.renderers.chatMessageElements.ChatMessageRendererReply;
 	import com.dukascopy.connect.gui.list.renderers.chatMessageElements.ChatMessageRendererSticker;
 	import com.dukascopy.connect.gui.list.renderers.chatMessageElements.ChatMessageRendererSystemMessage;
 	import com.dukascopy.connect.gui.list.renderers.chatMessageElements.ChatMessageRendererText;
@@ -154,6 +155,7 @@ package com.dukascopy.connect.gui.list.renderers {
 		
 		private var missDCIcon:Sprite;
 		private var avatarPosition:Rectangle;
+		private var replyRenderer:ChatMessageRendererReply;
 		
 		public function ListChatItem() {
 			colorTransform = new ColorTransform();
@@ -366,6 +368,12 @@ package com.dukascopy.connect.gui.list.renderers {
 			}
 			var messageData:ChatMessageVO = listItem.data as ChatMessageVO;
 			parseMessage(messageData);
+			
+			if (isReply(messageData))
+			{
+				addReplayRenderer();
+			}
+			
 			if (messageData.systemMessageVO != null &&
 				messageData.systemMessageVO.type != null) {
 					if (messageData.systemMessageVO.method != null && messageData.systemMessageVO.method.toLowerCase() == "vi") {
@@ -435,9 +443,32 @@ package com.dukascopy.connect.gui.list.renderers {
 				}
 			}
 			
+			if (replyRenderer != null && isReply(messageData))
+			{
+				h += replyRenderer.getHeight(messageData, maxItemWidth, listItem);
+			}
+			
 			/*if (listItem.list.data!=null && listItem.num == listItem.list.data.length - 1)
 				h += smallGap * 5;*/
 			return Math.min(8000, h);
+		}
+		
+		private function addReplayRenderer():void 
+		{
+			if (replyRenderer == null)
+			{
+				replyRenderer = new ChatMessageRendererReply();
+				addChild(replyRenderer);
+			}
+		}
+		
+		private function isReply(messageData:ChatMessageVO):Boolean 
+		{
+			if (messageData != null && messageData.systemMessageVO != null && messageData.systemMessageVO.replayMessage != null)
+			{
+				return true;
+			}
+			return false;
 		}
 		
 		private function needShowUsername(messageData:ChatMessageVO, listItem:ListItem):Boolean{
@@ -477,6 +508,8 @@ package com.dukascopy.connect.gui.list.renderers {
 				if (messageData.systemMessageVO == null)
 					return MESSAGE_TYPE_TEXT;
 			}
+			if (messageData.typeEnum == ChatMessageType.REPLY)
+				return MESSAGE_TYPE_TEXT;
 			if (messageData.typeEnum == ChatMessageType.STICKER)
 				return MESSAGE_TYPE_STICKER;
 			if (messageData.typeEnum == ChatSystemMsgVO.TYPE_LOCAL_QUESTION)
@@ -719,6 +752,18 @@ package com.dukascopy.connect.gui.list.renderers {
 			
 			tfUsername.y = 0;
 			
+			if (isReply(messageData))
+			{
+				addReplayRenderer();
+				replyRenderer.visible = true;
+			}
+			
+			/*if (isReply(messageData))
+			{
+				addReplayRenderer();
+				replyRenderer.visible = true;
+			}*/
+			
 			if (renderer) {
 				renderer.visible = true;
 				var imageKey:Array;
@@ -726,7 +771,19 @@ package com.dukascopy.connect.gui.list.renderers {
 				{
 					imageKey = ChatManager.getCurrentChat().imageKey;
 				}
-				renderer.draw(messageData, maxItemWidth, data, imageKey);
+				
+				var replyMinWidth:int = -1;
+				if (isReply(messageData))
+				{
+					addReplayRenderer();
+					replyMinWidth = replyRenderer.getContentWidth(messageData);
+					if (replyMinWidth > maxItemWidth)
+					{
+						replyMinWidth = maxItemWidth;
+					}
+				}
+				
+				renderer.draw(messageData, maxItemWidth, data, imageKey, replyMinWidth);
 				
 				if (messageType == MESSAGE_TYPE_SYSTEM_MESSAGE || messageType == MESSAGE_TYPE_CHAT_SYSTEM_MESSAGE || messageType == MESSAGE_TYPE_TIPS_WINNER || messageType == MESSAGE_TYPE_CALL)
 				{
@@ -787,12 +844,51 @@ package com.dukascopy.connect.gui.list.renderers {
 					{
 						tfUsername.text = userName;
 					}
-					renderer.y = tfUsername.y + usernameH + Config.FINGER_SIZE * .04 + data.elementYPosition;
+					
+					
+					if (isReply(messageData))
+					{
+						addReplayRenderer();
+						replyRenderer.draw(messageData, renderer.getWidth(), data);
+						replyRenderer.visible = true;
+						replyRenderer.x = renderer.x;
+						replyRenderer.y = tfUsername.y + usernameH + Config.FINGER_SIZE * .04 + data.elementYPosition;
+						renderer.y = int(replyRenderer.y + replyRenderer.getContentHeight());
+						setChildIndex(renderer as Sprite, numChildren - 1);
+					}
+					else
+					{
+						renderer.y = tfUsername.y + usernameH + Config.FINGER_SIZE * .04 + data.elementYPosition;
+						
+						if (replyRenderer != null)
+						{
+							replyRenderer.visible = false;
+						}
+					}
+					
 					tfUsername.x = renderer.x;
 				}
 				else
 				{
-					renderer.y = data.elementYPosition;
+					if (isReply(messageData))
+					{
+						addReplayRenderer();
+						replyRenderer.draw(messageData, renderer.getWidth(), data);
+						replyRenderer.visible = true;
+						replyRenderer.x = renderer.x;
+						replyRenderer.y = data.elementYPosition;
+						renderer.y = int(replyRenderer.y + replyRenderer.getContentHeight());
+						setChildIndex(renderer as Sprite, numChildren - 1);
+					}
+					else
+					{
+						renderer.y = data.elementYPosition;
+						
+						if (replyRenderer != null)
+						{
+							replyRenderer.visible = false;
+						}
+					}
 				}
 				
 				tfUsername.y = data.elementYPosition;
@@ -1102,6 +1198,13 @@ package com.dukascopy.connect.gui.list.renderers {
 				
 				if (needUpdateHitzones)
 				{
+					if (isReply(messageData) && replyRenderer != null && replyRenderer.visible)
+					{
+						hitZones.push( { type: HitZoneType.REPLY_MESSAGE, x: replyRenderer.x, y: replyRenderer.y, 
+										width: replyRenderer.width, height: replyRenderer.getContentHeight() } );						
+					}
+					
+					
 					renderer.updateHitzones(hitZones);
 					
 					if (data.getHitZones() == null)
@@ -1343,6 +1446,9 @@ package com.dukascopy.connect.gui.list.renderers {
 		
 		private function hideRenderers():void
 		{
+			if (replyRenderer != null)
+				replyRenderer.visible = false;
+			
 			if (_chatMessageStickerRenderer != null)
 				_chatMessageStickerRenderer.visible = false;
 			
@@ -1573,6 +1679,12 @@ package com.dukascopy.connect.gui.list.renderers {
 			if (messageType != null) {
 				var hitZoneType:String;
 				if (messageType == MESSAGE_TYPE_TEXT) {
+					hitZoneType = HitZoneType.MESSAGE_TEXT;
+				}
+				else if (messageType == MESSAGE_TYPE_BOT_COMMAND) {
+					hitZoneType = HitZoneType.MESSAGE_TEXT;
+				}
+				else if (messageType == MESSAGE_TYPE_BOT_MENU) {
 					hitZoneType = HitZoneType.MESSAGE_TEXT;
 				}
 				else if (messageType == MESSAGE_TYPE_UPDLOAD_IMAGE) {

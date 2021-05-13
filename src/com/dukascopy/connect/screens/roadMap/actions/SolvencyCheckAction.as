@@ -23,10 +23,11 @@ package com.dukascopy.connect.screens.roadMap.actions
 		private var lastSelectedCode:String;
 		private var needCallback:Boolean;
 		public var allowZBX:Boolean = false;
+		public var price:String;
 		
-		public function SolvencyCheckAction() 
+		public function SolvencyCheckAction(priceValue:String) 
 		{
-			
+			price = priceValue;
 		}
 		
 		override public function dispose():void {
@@ -59,7 +60,8 @@ package com.dukascopy.connect.screens.roadMap.actions
 					allowZBX:allowZBX,
 					title:Lang.verificationMethods,
 					callback:methodSelected,
-					selected:selectedMethod
+					selected:selectedMethod,
+					price:price
 				}
 			);
 		}
@@ -91,6 +93,10 @@ package com.dukascopy.connect.screens.roadMap.actions
 			else if (method == SolvencyMethodData.METHOD_CARD_DEPOSIT)
 			{
 				code = "CARD";
+			}
+			else if (method == SolvencyMethodData.METHOD_WIRE_DEPOSIT)
+			{
+				code = "WIRE";
 			}
 			
 			if (code != null)
@@ -134,7 +140,8 @@ package com.dukascopy.connect.screens.roadMap.actions
 				VerifyCryptodepositPopup,
 				{
 					title:Lang.verifyWithCtyptoDeposit,
-					callback:verifyCtyptoClosed
+					callback:verifyCtyptoClosed,
+					price:price
 				}
 			);
 		}
