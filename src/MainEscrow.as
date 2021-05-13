@@ -15,7 +15,7 @@ import flash.system.Capabilities;
 import flash.events.UncaughtErrorEvent;
 import com.greensock.TweenMax;
 import com.dukascopy.connect.managers.EscrowDealManager;
-import com.adobe.protocols.dict.events.ErrorEvent;
+
 
 [SWF(backgroundColor="#ffffff")]
 public class MainEscrow extends Sprite {
