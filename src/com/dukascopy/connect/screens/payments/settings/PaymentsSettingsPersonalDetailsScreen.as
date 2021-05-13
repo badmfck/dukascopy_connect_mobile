@@ -594,7 +594,7 @@ package com.dukascopy.connect.screens.payments.settings {
 				cancelButton.tapCallback = onCancelClick;
 				addObject(cancelButton);
 				
-				var textSettings:TextFieldSettings = new TextFieldSettings(Lang.textSave, Style.color(Style.COLOR_BACKGROUND), FontSize.BODY, TextFormatAlign.CENTER);
+				var textSettings:TextFieldSettings = new TextFieldSettings(Lang.textSave, Color.WHITE, FontSize.BODY, TextFormatAlign.CENTER);
 				var buttonBitmap:ImageBitmapData = TextUtils.createbutton(textSettings, Color.GREEN, 1, -1, NaN, ((_width - padding * 3) * .5), -1, Style.size(Style.SIZE_BUTTON_CORNER));
 				saveButton.setBitmapData(buttonBitmap, true);
 				

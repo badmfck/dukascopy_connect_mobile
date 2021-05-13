@@ -6,17 +6,14 @@ package com.dukascopy.connect.screens.dialogs.bottom {
 	import com.dukascopy.connect.Config;
 	import com.dukascopy.connect.GD;
 	import com.dukascopy.connect.data.TextFieldSettings;
-	import com.dukascopy.connect.data.screenAction.IScreenAction;
 	import com.dukascopy.connect.data.screenAction.customActions.SaveImageAction;
 	import com.dukascopy.connect.gui.components.QRCodeImage;
 	import com.dukascopy.connect.gui.components.WhiteToastSmall;
-	import com.dukascopy.connect.gui.input.Input;
 	import com.dukascopy.connect.gui.lightbox.IBitmapProvider;
 	import com.dukascopy.connect.gui.lightbox.UI;
 	import com.dukascopy.connect.gui.menuVideo.BitmapButton;
-	import com.dukascopy.connect.screens.dialogs.paymentDialogs.elements.InputField;
 	import com.dukascopy.connect.sys.imageManager.ImageBitmapData;
-	import com.dukascopy.connect.sys.nativeExtensionController.NativeExtensionController;
+	import com.dukascopy.connect.sys.pointerManager.PointerManager;
 	import com.dukascopy.connect.sys.style.FontSize;
 	import com.dukascopy.connect.sys.style.Style;
 	import com.dukascopy.connect.sys.style.presets.Color;
@@ -28,10 +25,10 @@ package com.dukascopy.connect.screens.dialogs.bottom {
 	import flash.display.Bitmap;
 	import flash.display.Graphics;
 	import flash.display.Sprite;
-	import flash.filesystem.File;
-	import flash.filesystem.FileStream;
+	import flash.events.Event;
+	import flash.net.URLRequest;
+	import flash.net.navigateToURL;
 	import flash.text.TextFieldAutoSize;
-	import flash.text.TextFormat;
 	import flash.text.TextFormatAlign;
 	
 	/**
@@ -46,7 +43,8 @@ package com.dukascopy.connect.screens.dialogs.bottom {
 		private var shareButton:BitmapButton;
 		private var saveCodeButton:BitmapButton;
 		private var needCallback:Boolean;
-		private var link:InputField;
+		private var link:Sprite;
+		private var linkBitmap:Bitmap;
 		private var toast:WhiteToastSmall;
 		private var code:Bitmap;
 		
@@ -94,15 +92,11 @@ package com.dukascopy.connect.screens.dialogs.bottom {
 			copyButton.setBitmapData(UI.getSnapshot(UI.colorize(icon, Style.color(Style.COLOR_ICON_SETTINGS))));
 			UI.destroy(icon);
 			
-			var tf:TextFormat = new TextFormat();
-			tf.size = FontSize.BODY;
-			tf.color = Style.color(Style.COLOR_SUBTITLE);
-			tf.font = Config.defaultFontName;
-			
-			link = new InputField( -1, Input.MODE_INPUT);
-			link.setPadding(0);
+			link = new Sprite();
 			container.addChild(link);
-			link.updateTextFormat(tf);
+
+			linkBitmap = new Bitmap();
+			link.addChild(linkBitmap);
 			
 			code = new Bitmap();
 			container.addChild(code);
@@ -222,6 +216,8 @@ package com.dukascopy.connect.screens.dialogs.bottom {
 		override public function initScreen(data:Object = null):void {
 			super.initScreen(data);
 			
+			contentPadding = Config.DIALOG_MARGIN;
+
 			drawShareButton();
 			drawSaveCodeButton();
 			
@@ -233,7 +229,7 @@ package com.dukascopy.connect.screens.dialogs.bottom {
 					true,
 					TextFormatAlign.CENTER,
 					TextFieldAutoSize.LEFT,
-					FontSize.SUBHEAD,
+					FontSize.BODY,
 					true,
 					Style.color(Style.COLOR_TEXT),
 					Style.color(Style.COLOR_BACKGROUND),
@@ -241,37 +237,44 @@ package com.dukascopy.connect.screens.dialogs.bottom {
 				);
 			}
 			
-			linkTimeText.bitmapData = TextUtils.createTextFieldData(Lang.shereLinkLifeTime, _width - contentPadding*2, 10, true, 
+			linkBitmap.bitmapData = TextUtils.createTextFieldData("<u>" + getLink() + "</u>", _width - Config.DIALOG_MARGIN * 3 - copyButton.width, 10, true, TextFormatAlign.LEFT, TextFieldAutoSize.LEFT,
+																	FontSize.BODY, true, Style.color(Style.COLOR_TEXT), Style.color(Style.COLOR_TEXT), false, true);
+
+			linkTimeText.bitmapData = TextUtils.createTextFieldData(Lang.shereLinkLifeTime, _width - contentPadding*2, 10, true,
 																	TextFormatAlign.CENTER, TextFieldAutoSize.LEFT, 
 																	FontSize.CAPTION_1, true, Style.color(Style.COLOR_SUBTITLE),
 																	Style.color(Style.COLOR_BACKGROUND), false);
 			
-			var position:int = headerHeight + Config.FINGER_SIZE * .4;
-			subtitle.y = position;
-			subtitle.x = int(_width * .5 - subtitle.width * .5);
-			position += subtitle.height + Config.FINGER_SIZE * .4;
-			
-			link.draw(_width - contentPadding * 2 - copyButton.width - Config.FINGER_SIZE * .2, null, null, null, null, Style.color(Style.COLOR_BACKGROUND));
-			link.valueString = getLink();
-			link.x = contentPadding;
-			link.y = position;
-			position += link.height + Config.FINGER_SIZE * .1;
-			copyButton.x = int(_width - copyButton.width - contentPadding);
-			copyButton.y = int(link.y + link.height * .5 - copyButton.height * .5);
-			
-			linkTimeText.y = position;
-			linkTimeText.x = int(_width * .5 - linkTimeText.width * .5);
-			position += linkTimeText.height + Config.FINGER_SIZE * .4;
-			
-			shareButton.y = position;
-			shareButton.x = int(_width * .5 - shareButton.width * .5);
-			position += shareButton.height + Config.FINGER_SIZE * .4;
-			
-			position += Config.FINGER_SIZE * 0.6;
-			drawCode(_height - position - Config.FINGER_SIZE * 1.3 - saveCodeButton.height - Config.DOUBLE_MARGIN);
+
+			var codeHeight:int = _height - headerHeight - saveCodeButton.height - link.height - subtitle.height - linkTimeText.height - Config.DIALOG_MARGIN * 4 - Config.FINGER_SIZE * 1.5;
+			codeHeight = Math.max(Config.FINGER_SIZE, codeHeight);
+
+			var freeSpace:int = (_height - headerHeight - saveCodeButton.height - link.height - subtitle.height - linkTimeText.height - Config.DIALOG_MARGIN * 4 - codeHeight) / 2;
+
+			freeSpace = Math.max(Config.FINGER_SIZE*.3, freeSpace);
+
+			var position:int = freeSpace + headerHeight;
+
+			drawCode(codeHeight);
 			code.x = int(_width * .5 - code.width * .5);
 			code.y = position;
-			position += code.height + Config.FINGER_SIZE * .5;
+			position += code.height + freeSpace;
+
+			subtitle.y = position;
+			subtitle.x = Config.DIALOG_MARGIN;
+			position += subtitle.height + Config.DIALOG_MARGIN;
+			
+			link.x = Config.DIALOG_MARGIN;
+			link.y = position;
+			position += link.height + Config.DIALOG_MARGIN;
+
+			copyButton.x = int(_width - copyButton.width - Config.DIALOG_MARGIN);
+			copyButton.y = int(link.y);
+			
+			linkTimeText.y = position;
+			linkTimeText.x = Config.DIALOG_MARGIN;
+			position += linkTimeText.height + Config.DIALOG_MARGIN;
+
 			saveCodeButton.x = int(_width * .5 - saveCodeButton.width * .5);
 			saveCodeButton.y = position;
 		}
@@ -297,7 +300,7 @@ package com.dukascopy.connect.screens.dialogs.bottom {
 				
 				for (var row : int = 0; row < qr.getModuleCount(); row++) {
 					for (var col : int = 0; col < qr.getModuleCount(); col++) {
-						g.beginFill( (qr.isDark(row, col)? Color.GREY_DARK : 0xffffff) );
+						g.beginFill( (qr.isDark(row, col)? Style.color(Style.COLOR_TEXT) : Style.color(Style.COLOR_BACKGROUND)) );
 						g.drawRect(cs * col, cs * row,  cs, cs);
 						g.endFill();
 					}
@@ -330,7 +333,12 @@ package com.dukascopy.connect.screens.dialogs.bottom {
 			copyButton.activate();
 			shareButton.activate();
 			saveCodeButton.activate();
-			link.activate();
+			PointerManager.addTap(link, openLink);
+		}
+
+		private function openLink(e:Event = null):void
+		{
+			navigateToURL(new URLRequest(getLink()));
 		}
 		
 		override public function deactivateScreen():void {
@@ -341,7 +349,7 @@ package com.dukascopy.connect.screens.dialogs.bottom {
 			copyButton.deactivate();
 			shareButton.deactivate();
 			saveCodeButton.deactivate();
-			link.deactivate();
+			PointerManager.removeTap(link, openLink);
 		}
 		
 		override protected function onRemove():void 
@@ -383,6 +391,11 @@ package com.dukascopy.connect.screens.dialogs.bottom {
 				UI.destroy(code);
 				code = null;
 			}
+			if (linkBitmap != null)
+			{
+				UI.destroy(linkBitmap);
+				linkBitmap = null;
+			}
 			if (copyButton != null)
 			{
 				copyButton.dispose();
@@ -405,7 +418,7 @@ package com.dukascopy.connect.screens.dialogs.bottom {
 			}
 			if (link != null)
 			{
-				link.dispose();
+				UI.destroy(link);
 				link = null;
 			}
 		}

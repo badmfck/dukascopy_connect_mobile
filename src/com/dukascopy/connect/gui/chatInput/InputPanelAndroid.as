@@ -414,7 +414,6 @@ package com.dukascopy.connect.gui.chatInput
 		
 		public function show(defaultText:String):void
 		{
-			trace("dukascopy.test", "INPUT.show");
 			if (Config.PLATFORM_ANDROID)
 			{
 				MobileGui.androidExtension.callChatInput(SHOW_INPUT, {text:defaultText});

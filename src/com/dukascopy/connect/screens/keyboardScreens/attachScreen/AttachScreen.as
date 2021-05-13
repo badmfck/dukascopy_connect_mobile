@@ -140,7 +140,7 @@ package com.dukascopy.connect.screens.keyboardScreens.attachScreen {
 			sendGiftAction.setData(Lang.sendGift);
 			
 			actions.push(callCameraAction);
-			if (ChatManager.getCurrentChat() != null)
+			if (ChatManager.getCurrentChat() != null && Auth.key != "web")
 			{
 				var attachFileAction:IScreenAction = new AttachDocumentAction(ChatManager.getCurrentChat().uid);
 				attachFileAction.setData(Lang.attachDocument);

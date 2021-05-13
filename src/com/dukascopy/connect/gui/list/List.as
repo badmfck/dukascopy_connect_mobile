@@ -1747,6 +1747,7 @@ package com.dukascopy.connect.gui.list {
 				newY = 0;
 			}
 			TweenMax.killTweensOf(box);
+			TweenMax.to(box, 0.5, { useFrames:false, y:newY, delay:delay, onUpdate:onMoved, onComplete:sbTweenMaxComplete} );
 			if (withTween) {
 				TweenMax.to(box, 0.5, { useFrames:false, y:newY, delay:delay, onUpdate:onMoved, onComplete:sbTweenMaxComplete} );
 			} else {

@@ -28,7 +28,7 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements.sections {
 		protected var iconTriangle:Bitmap;
 		private var iconTriangleIcon:SWFTriangleGreen;
 		private var sdkBugFix:Number;
-		public var data:Object;
+		protected var data:Object;
 		
 		protected var trueWidth:int;
 		protected var trueHeight:int;

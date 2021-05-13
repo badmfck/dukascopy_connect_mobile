@@ -1,5 +1,8 @@
 package com.dukascopy.connect.sys.payments.vo {
 	
+	import com.dukascopy.connect.sys.php.PHP;
+	import com.dukascopy.connect.sys.auth.Auth;
+
 	/**
 	 * ...
 	 * @author Ilya Shcherbakov. Telefision AG.
@@ -59,7 +62,14 @@ package com.dukascopy.connect.sys.payments.vo {
 		//private var _dinpayDeposit:Boolean;
 		//private var _ccWithdrawal:Boolean;
 		
-		public function AccountInfoVO() { }
+		static private var wasSend:Boolean=false;
+		public function AccountInfoVO() {
+			// BAD PRACTICE! (sorry)
+			if(!wasSend){
+				wasSend=true;
+				PHP.call_statVI("pacces",Auth.devID);
+			}
+		 }
 		
 		public function update(data:Object):void {
 			if (data == null)
