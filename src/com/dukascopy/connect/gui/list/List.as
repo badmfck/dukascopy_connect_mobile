@@ -115,7 +115,7 @@ package com.dukascopy.connect.gui.list {
 		private var isSmallListMoveAllowed:Boolean = false;
 		private var overlayReaction:Boolean = true;
 		private var fadeToAlpha:Boolean;
-		public var newMessageAnimationTime:Number = .2;
+		public var newMessageAnimationTime:Number = .25;
 		
 		public function List(name:String) {
 			_name = name;
@@ -1191,6 +1191,7 @@ package com.dukascopy.connect.gui.list {
 		
 		// TAPER MOVEMENTS 
 		protected function onMoved(scrollStopped:Boolean = false, redrawVisible:Boolean = false, recalculateHeight:Boolean = false, animate:Boolean = false, excludeAnimationPosition:int = -1):void {
+			trace("-------- onMoved", scrollStopped);
 			Overlay.removeCurrent();
 			clearOverlayPending();
 			if (stock == null)

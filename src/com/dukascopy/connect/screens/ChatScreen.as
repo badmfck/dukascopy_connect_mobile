@@ -1117,9 +1117,13 @@ package com.dukascopy.connect.screens {
 			if (list != null)
 			{
 				list.updateItem(msgVO, true, true);
-				if (ChatManager.getCurrentChat().messageID == msgVO.id)
+				if (ChatManager.getCurrentChat().messageID == msgVO.id && msgVO.systemMessageVO != null && )
 				{
-					list.scrollBottom(false);
+					if (msgVO.systemMessageVO.method == ChatSystemMsgVO.METHOD_NEWS || 
+						msgVO.typeEnum == ChatSystemMsgVO.TYPE_INVOICE)
+					{
+						list.scrollBottom(false);
+					}
 				}
 			}
 		}
