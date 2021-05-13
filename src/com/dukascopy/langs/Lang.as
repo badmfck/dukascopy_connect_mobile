@@ -195,6 +195,7 @@ package com.dukascopy.langs {
 		static public var selectUsers:String = "Select users:";
 		static public var selectUser:String = "Select user:";
 		static public var sendMoney:String = "Send Money";
+		static public var sendMoneyTo:String = "Send @1 to @2";
 		static public var sendInvoice:String = "Send Invoice";
 		static public var sendInvoiceTo:String = " send invoice to ";
 		static public var sendVoice:String = "Send Voice";
@@ -563,6 +564,9 @@ package com.dukascopy.langs {
 		public static var cardOperation:String = "Card operation";
 		public static var TEXT_INVEST:String = "INVEST";
 		public static var TEXT_MERCHANT_TRANSFER:String = "Merchant Transfer";
+		public static var fundsReceived:String = "Funds received:";
+		public static var fundsPL:String = "Profit/Loss:";
+		public static var fundsInvested:String = "Funds invested:";
 
 		public static var noCardsPlastic:String = "No Plastic cards";
 		public static var noCardsVirtual:String = "No Virtual cards";
@@ -2175,6 +2179,7 @@ package com.dukascopy.langs {
 		static public var saveToGallery:String = "Save image";
 		static public var fromMultiAccount:String = "From Multi-currency account";
 		static public var toSavingAccount:String = "To Saving account";
+		static public var toTradingAccount:String = "To Trading account";
 		static public var fromSavingAccount:String = "From Saving account";
 		static public var toMultiAccount:String = "To Multi-currency account";
 		static public var savings:String = "Savings";
@@ -2309,6 +2314,7 @@ package com.dukascopy.langs {
 		static public var reply:String = "Reply";
 		static public var addressbookPermisionRequired:String = "Permission required";
 		static public var provideAccessToContacts:String = "Please provide access to your contact list";
+		static public var tradingAccOpeningWait:String = "You have sent a request earlier today. Our representative will contact you shortly. Kindly wait";
 		
 		static public var wireDepositDescription:String = "The next step of your account opening is an initial deposit of %@.\nTo proceed, please make a wire transfer of %@ indicating your phone number in the transfer description. The Bank will deposit these funds to your account upon its approval.";
 		static public var solvency_wire_deposit:String = "Wire transfer";

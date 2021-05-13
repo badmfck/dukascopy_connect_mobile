@@ -453,14 +453,14 @@ package com.dukascopy.connect {
 				if (canOpenChat == false) {
 					var popupData:PopupData = new PopupData();
 					var action:IScreenAction = new OpenBankAccountAction();
-					var txt_Action:String=Lang.openBankAccount;
-					var txt_title:String=Lang.noBankAccount;
-					var txt_text:String=Lang.cantStartChatWithoutBankAccount;
-					if(Auth.bank_phase.toLowerCase()=="acc_approved") {
+					var txt_Action:String = Lang.openBankAccount;
+					var txt_title:String = Lang.noBankAccount;
+					var txt_text:String = Lang.cantStartChatWithoutBankAccount;
+					if (Auth.bank_phase.toLowerCase() == "acc_approved") {
 						// NOT ENOUGHT POINTS BUT ACCOUNT EXISTS
-						txt_Action=Lang.openBankAccount;
-						txt_title=Lang.notEnoughtLoyaltyPoints;
-						txt_text=Lang.cantStartChatWithoutLoyaltyPoints;
+						txt_Action = Lang.openBankAccount;
+						txt_title = Lang.notEnoughtLoyaltyPoints;
+						txt_text = Lang.cantStartChatWithoutLoyaltyPoints;
 					}
 					action.setData(txt_Action);
 					popupData.action = action;

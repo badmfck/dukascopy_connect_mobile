@@ -323,6 +323,10 @@ package com.dukascopy.connect.screens.dialogs {
 					var result:Object = new Object();
 					result.amount = inputAmount.value;
 					result.currency = iCurrency.value;
+					if (data != null && "additionalData" in data)
+					{
+						result.additionalData = data.additionalData;
+					}
 					if (commentField.text != getCommentPromt())
 					{
 						result.message = commentField.text;

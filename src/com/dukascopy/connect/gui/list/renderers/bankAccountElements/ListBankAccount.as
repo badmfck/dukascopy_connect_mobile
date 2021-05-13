@@ -137,7 +137,7 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements {
 			
 			addCircle = new Shape();
 			addCircle.graphics.beginFill(0);
-			addCircle.graphics.drawCircle(0, 0, 10);
+			addCircle.graphics.drawCircle(10, 10, 10);
 			addCircle.graphics.endFill();
 			
 			addTF = new TextField();
@@ -325,18 +325,18 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements {
 							ct.color = 0x728FCF;
 							addCircle.transform.colorTransform = ct;
 							addCircle.width = addCircle.height = Config.FINGER_SIZE_DOT_75;
-							addCircle.x = pt.y;
-							addCircle.y = sectionText.y + sectionText.height * .5;
+							addCircle.x = pt.y - addCircle.width * .5;
+							addCircle.y = int(sectionText.y + sectionText.getTrueHeight() * .5 - addCircle.height * .5);
 							addChild(addTF);
 							addTF.text = li.data.showPrice;
-							addTF.x = addCircle.x - addCircle.width * .5;
-							addTF.y = addCircle.y + int((addCircle.height - addTF.height) * .5) - addCircle.height * .5;
+							addTF.x = addCircle.x;
+							addTF.y = addCircle.y + int((addCircle.height - addTF.height) * .5);
 							addTF.width = addCircle.width;
 							li.setHitZones( [ {
 								type: HitZoneType.CIRCLE,
 								param: 0,
-								x: addCircle.x - addCircle.width * .5,
-								y: addCircle.y - addCircle.height * .5, 
+								x: addCircle.x,
+								y: addCircle.y, 
 								width: Config.FINGER_SIZE_DOT_75,
 								height: Config.FINGER_SIZE_DOT_75
 							} ] );
@@ -351,12 +351,12 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements {
 							ct1.color = 0xA3B6E0;
 							addCircle.transform.colorTransform = ct1;
 							addCircle.width = addCircle.height = Config.FINGER_SIZE * .4;
-							addCircle.x = int(sectionAccount.x + sectionAccount.BIRD_SIZE);
-							addCircle.y = sectionText.y + sectionText.height * .5;
+							addCircle.x = int(sectionAccount.x + sectionAccount.BIRD_SIZE - addCircle.width * .5);
+							addCircle.y = int(sectionText.y + sectionText.getTrueHeight() * .5 - addCircle.height * .5);
 							addChild(addTF);
 							addTF.text = li.data.raw.CUSTOM_DATA.total_trades;
-							addTF.x = addCircle.x - addCircle.width * .5;
-							addTF.y = addCircle.y + int((addCircle.height - addTF.height) * .5) - addCircle.height * .5;
+							addTF.x = addCircle.x;
+							addTF.y = addCircle.y + int((addCircle.height - addTF.height) * .5);
 							addTF.width = addCircle.width;
 						}
 					}
