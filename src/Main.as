@@ -37,8 +37,6 @@ public class Main extends Sprite {
 		public static var timer:Number;
 		public static var startTime:Number=new Date().getTime();
 
-		// MERGED!
-
 		public function Main() {
 
 			timer = getTimer(); 
