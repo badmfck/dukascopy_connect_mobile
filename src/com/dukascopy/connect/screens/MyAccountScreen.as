@@ -692,6 +692,10 @@ package com.dukascopy.connect.screens {
 		
 		private function onSavingsLoaded():void {
 			var data:Array = BankManager.getSavingsAccounts();
+			if (data == null) {
+				onOtherLoaded();
+				return;
+			}
 			var accCorrect:Array = [];
 			var l:int = data.length;
 			for (var i:int = 0; i < l; i++) {
