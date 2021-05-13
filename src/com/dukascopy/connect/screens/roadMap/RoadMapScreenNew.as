@@ -45,6 +45,7 @@ package com.dukascopy.connect.screens.roadMap {
 	import com.dukascopy.connect.utils.TextUtils;
 	import com.dukascopy.connect.vo.screen.ChatScreenData;
 	import com.dukascopy.langs.Lang;
+	import com.dukascopy.langs.LangManager;
 	import com.greensock.TweenMax;
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
@@ -125,6 +126,8 @@ package com.dukascopy.connect.screens.roadMap {
 		private var showTime:Number = 0.3;
 		private var tabsHeight:Number;
 		private var depositAction:InitialDepositAction;
+		private var depositPriceNum:Number;
+		private var depositPriceCurrency:String;
 			
 		public function RoadMapScreenNew() {}
 		
@@ -275,7 +278,7 @@ package com.dukascopy.connect.screens.roadMap {
 			
 			var item_registration_form   :RoadmapStepData = new RoadmapStepData(RoadmapStepData.STEP_REGISTRATION_FORM,   Lang.roadmap_fillRegistrationForm);
 			var item_document_scan       :RoadmapStepData = new RoadmapStepData(RoadmapStepData.STEP_DOCUMENT_SCAN,       Lang.roadmap_documentScan);
-			var item_initial_Deposit     :RoadmapStepData = new RoadmapStepData(RoadmapStepData.STEP_DEPOSIT,             Lang.roadmap_initialDeposit);
+			var item_initial_Deposit     :RoadmapStepData = new RoadmapStepData(RoadmapStepData.STEP_DEPOSIT,             getDepositText());
 			var item_select_card         :RoadmapStepData = new RoadmapStepData(RoadmapStepData.STEP_SELECT_CARD,         Lang.roadmap_selectCard);
 			var item_videoidentification :RoadmapStepData = new RoadmapStepData(RoadmapStepData.STEP_VIDEOIDENTIFICATION, Lang.roadmap_identityVerification);
 			var item_approve_account     :RoadmapStepData = new RoadmapStepData(RoadmapStepData.STEP_APPROVE_ACCOUNT,     Lang.roadmap_approveAccount);
@@ -287,7 +290,7 @@ package com.dukascopy.connect.screens.roadMap {
 			item_select_card.action = new SelectCardAction();
 			item_initial_Deposit.action = getInitialDepositAction(depositPrice);
 			item_videoidentification.action = new StartVideoidentificationAction(getEntryPoint());
-			item_solvency_check.action = getSolvencyCheckAction();
+			item_solvency_check.action = getSolvencyCheckAction(depositPrice);
 			
 			item_solvency_check.action.getSuccessSignal().add(onSolvencySuccess);
 			item_solvency_check.action.getFailSignal().add(onSolvencyFail);
@@ -395,6 +398,7 @@ package com.dukascopy.connect.screens.roadMap {
 					break;
 				}
 				case BankPhaze.NOTARY:
+				case BankPhaze.WIRE_DEPOSIT:
 				{
 					item_registration_form.status   = RoadmapStepData.STATE_DONE;
 					item_select_card.status         = RoadmapStepData.STATE_DONE;
@@ -439,7 +443,7 @@ package com.dukascopy.connect.screens.roadMap {
 						items.push(item_select_card);
 						items.push(item_initial_Deposit);
 					}
-					else if (Auth.bank_phase == BankPhaze.NOTARY)
+					else if (Auth.bank_phase == BankPhaze.NOTARY || Auth.bank_phase == BankPhaze.WIRE_DEPOSIT)
 					{
 						items.push(item_select_card);
 						items.push(item_initial_Deposit);
@@ -485,6 +489,15 @@ package com.dukascopy.connect.screens.roadMap {
 			drawItems(items);
 		}
 		
+		private function getDepositText():String
+		{
+			if (Auth.bank_phase == BankPhaze.WIRE_DEPOSIT)
+			{
+				return Lang.roadmap_wireDeposit;
+			}
+			return Lang.roadmap_initialDeposit;
+		}
+		
 		private function getInitialDepositAction(depositPrice:String):InitialDepositAction 
 		{
 			if (depositAction == null)
@@ -515,11 +528,15 @@ package com.dukascopy.connect.screens.roadMap {
 			return Config.EP_VI_DEF;
 		}
 		
-		private function getSolvencyCheckAction():SolvencyCheckAction 
+		private function getSolvencyCheckAction(depositPrice:String):SolvencyCheckAction 
 		{
 			if (solvencyAction == null)
 			{
-				solvencyAction = new SolvencyCheckAction()
+				solvencyAction = new SolvencyCheckAction(depositPrice)
+			}
+			else
+			{
+				solvencyAction.price = depositPrice;
 			}
 			return solvencyAction;
 		}
@@ -584,8 +601,12 @@ package com.dukascopy.connect.screens.roadMap {
 			
 			textFriend = new Bitmap();
 			scroll.addObject(textFriend);
+			
+			var textValue:String = Lang.askFriendDescription;
+			textValue = LangManager.replace(/%@/g, textValue, depositPrice);
+			
 			textFriend.bitmapData = TextUtils.createTextFieldData(
-				Lang.askFriendDescription,
+				textValue,
 				_width - Config.DIALOG_MARGIN*2,
 				10,
 				true,
@@ -624,7 +645,16 @@ package com.dukascopy.connect.screens.roadMap {
 		
 		private function onButtonOkClick():void 
 		{
-			MobileGui.changeMainScreen(RootScreen, {selectedTab:RootScreen.CONTACTS_SCREEN_ID, additionalData:{buttonText:Lang.askFriendInvoice, amount:30, currency:TypeCurrency.EUR, comment:Lang.friendInvoiceComment, confirm:Lang.friendInvoiceConfirm}});
+			var textValue:String = Lang.friendInvoiceConfirm_2;
+			textValue = LangManager.replace(/%@/g, textValue, depositPriceNum + " " + depositPriceCurrency);
+			
+			MobileGui.changeMainScreen(RootScreen, {selectedTab:RootScreen.CONTACTS_SCREEN_ID, 
+													additionalData:{
+															buttonText:Lang.askFriendInvoice, 
+															amount:depositPriceNum, 
+															currency:depositPriceCurrency, 
+															comment:Lang.friendInvoiceComment, 
+															confirm:textValue}});
 		}
 		
 		private function onDocumentScanSuccess():void 
@@ -923,6 +953,8 @@ package com.dukascopy.connect.screens.roadMap {
 				if (respond.data != null && ("price" in respond.data) == true && ("currency" in respond.data) == true)
 				{
 					depositPrice = respond.data.price + " " + respond.data.currency;
+					depositPriceNum = respond.data.price;
+					depositPriceCurrency = respond.data.currency;
 				}
 				
 				loadRefCodeStatus();

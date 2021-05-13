@@ -12,13 +12,8 @@ package com.dukascopy.connect.vo.chat
 		public var text:String;
 		public var image:String;
 		public var original:String;
-		public var link:String;
+		private var _link:String;
 		public var type:int = 0;
-		
-		public static const TYPE_VIDEO:String = "video";
-		public static const TYPE_IMAGE:String = "image";
-		
-		public static var regexp:RegExp = new RegExp("vp.*\/.{32}\/.{8}\/");
 		
 		public static const TYPE_INSTAGRAM:int = 1;
 		
@@ -36,7 +31,7 @@ package com.dukascopy.connect.vo.chat
 				if ("title" in rawData && rawData.title != null) {
 					title = rawData.title;
 				}
-				if ("img" in rawData && rawData.img != null) {
+				if ("img" in rawData && rawData.img != null && rawData.img != "") {
 					image = rawData.img;
 				}
 				if ("url" in rawData && rawData.url != null) {
@@ -50,16 +45,28 @@ package com.dukascopy.connect.vo.chat
 					contentType = rawData.content_type;
 				}
 				
-				if (image != null && image.indexOf("instagram") !=  -1) {
+				/*if (image != null && image.indexOf("instagram") !=  -1) {
 					type = TYPE_INSTAGRAM;
 					image = Config.URL_PHP_CORE_SERVER + "?method=img.get&url=" + escape(image) + "&key=web";
 					if (original != null) {
 						original = Config.URL_PHP_CORE_SERVER + "?method=img.get&url=" + escape(original) + "&key=web";
 					}
-					
-				//	image = image.replace(regexp, "");
-				}
+				}*/
 			}
+		}
+		
+		public function get link():String 
+		{
+			if (_link != null && _link.indexOf("http://") == -1 && _link.indexOf("https://") == -1)
+			{
+				return "https://" + _link;
+			}
+			return _link;
+		}
+		
+		public function set link(value:String):void 
+		{
+			_link = value;
 		}
 	}
 }

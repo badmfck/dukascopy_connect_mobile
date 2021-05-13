@@ -26,6 +26,7 @@ import com.dukascopy.connect.MobileGui;
 	import com.dukascopy.connect.sys.applicationShop.product.ShopProduct;
 	import com.dukascopy.connect.sys.auth.Auth;
 	import com.dukascopy.connect.sys.callManager.CallManager;
+	import com.dukascopy.connect.sys.chat.RichMessageDetector;
 	import com.dukascopy.connect.sys.chatManager.typesManagers.AnswersManager;
 	import com.dukascopy.connect.sys.chatManager.typesManagers.ChannelsManager;
 	import com.dukascopy.connect.sys.connectionManager.NetworkManager;
@@ -239,7 +240,11 @@ import com.dukascopy.connect.MobileGui;
 		
 		static private function onConnectionChanged():void {
 			if (NetworkManager.isConnected == false)
+			{
+				echo("conection", "disconnect");
+				needToUpdate = true;
 				_inChat = false;
+			}
 			else if (currentChat != null && currentChat.isLocal() == false)
 			{
 				if (currentChat.incomeLocal == true && NetworkManager.isConnected == true)
@@ -254,6 +259,8 @@ import com.dukascopy.connect.MobileGui;
 			
 			if (NetworkManager.isConnected == true)
 			{
+				echo("conection", "connected. needToUpdate: " + needToUpdate);
+				
 				if (needToUpdate == true)
 				{
 					needToUpdate = false;
@@ -555,12 +562,12 @@ import com.dukascopy.connect.MobileGui;
 					return;
 				}
 			}
-			var loadLocalMessages:Boolean = true;
+			var onlyFromPHP:Boolean = false;
 			if (Auth.key == "web")
 			{
-				loadLocalMessages = false;
+				onlyFromPHP = true;
 			}
-			loadChatMessages(!loadLocalMessages);
+			loadChatMessages(onlyFromPHP);
 		}
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1783,16 +1790,17 @@ import com.dukascopy.connect.MobileGui;
 			doNotSendToWS:Boolean = false,
 			msgID:Number = -1,
 			notSendCallback:Function = null,
-			credentials:Boolean = false):void {
+			credentials:Boolean = false):Number {
+				
 				if (txt == null || txt.length == 0)
-					return;
+					return -1;
 				var chatVO:ChatVO;
 				if (chatUID == null)
 					chatVO = currentChat;
 				else
 					chatVO = getChatByUID(chatUID);
 				if (chatVO == null)
-					return;
+					return -1;
 				var isAnswer:Boolean = false;
 				if (chatVO.type == ChatRoomType.QUESTION) {
 					isAnswer = true;
@@ -1801,7 +1809,7 @@ import com.dukascopy.connect.MobileGui;
 					var qVO:QuestionVO = chatVO.getQuestion();
 					if (chatVO.hasQuestionAnswer == false && qVO != null && qVO.answersCount >= qVO.answersMaxCount) {
 						DialogManager.alert(Lang.textWarning, Lang.questionToManyAnswers);
-						return;
+						return -1;
 					}
 				}
 				var isCommand:Boolean = false;
@@ -1810,16 +1818,24 @@ import com.dukascopy.connect.MobileGui;
 					msgID = 0;
 					text = "/" + text;
 				}
-				var networkSendResult:Boolean = WSClient.call_sendTextMessage(chatVO.uid, text, msgID, !isAnswer, senderId, doNotSendToWS);
+				var messageId:Object = new Object();
+				var networkSendResult:Boolean = WSClient.call_sendTextMessage(chatVO.uid, text, msgID, !isAnswer, senderId, doNotSendToWS, null, messageId);
 				if (networkSendResult == false && isAnswer == true && doNotSendToWS == false) {
 					ToastMessage.display(Lang.sendMessageFail);
 					if (notSendCallback != null)
 						notSendCallback();
-					return;
+					return -1;
 				}
 				if (networkSendResult == true && chatVO.type == ChatRoomType.COMPANY && chatVO.pid > 0) {
 					WSClient.call_entryPointStart(chatVO.pid, chatVO.uid, text);
 				}
+				
+				var messageIdResult:Number = -1;
+				if (messageId != null && "id" in messageId)
+				{
+					messageIdResult = messageId.id;
+				}
+				return messageIdResult;
 		}
 		
 		static public function sendMessagePuzzle(txt:String, chatUID:String = null, senderId:String = null, doNotSendToWS:Boolean = false, msgID:Number = -1):void {
@@ -2301,7 +2317,13 @@ import com.dukascopy.connect.MobileGui;
 
 			if (isMine && mid > 0) {
 				var updatedMsg:ChatMessageVO = currentChat.updateMessage(data, true);
+				
 				if (updatedMsg != null) {
+					if ("mid" in data)
+					{
+						RichMessageDetector.newMessage(updatedMsg, currentChat, data.mid);
+					}
+					
 					S_MESSAGE_UPDATED.invoke(updatedMsg);
 					updatedMsg = null;
 					return;

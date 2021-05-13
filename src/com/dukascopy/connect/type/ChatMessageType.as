@@ -21,5 +21,6 @@ package com.dukascopy.connect.type {
 		static public const UPLOADING_IMAGE:String = "uploadingImage";
 		static public const ADDITIONAL_QUESTION_MESSAGES:String = "additionalQuestionMessages";
 		static public const LOCAL:String = "local";
+		static public const REPLY:String = "typeReply";
 	}
 }

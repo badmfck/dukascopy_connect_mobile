@@ -5,9 +5,11 @@ package com.dukascopy.connect.sys.contextActions {
 	import assets.KickIcon;
 	import assets.ModeratorIcon;
 	import assets.ModeretorRemoveIcon;
+	import assets.ReplyIcon;
 	import com.dukascopy.connect.Config;
 	import com.dukascopy.connect.gui.list.renderers.ChannelBannedUserListRenderer;
 	import com.dukascopy.connect.gui.list.renderers.ChannelUserListRenderer;
+	import com.dukascopy.connect.gui.list.renderers.ListChatItem;
 	import com.dukascopy.connect.gui.list.renderers.ListChatUsers;
 	import com.dukascopy.connect.gui.list.renderers.ListConversation;
 	import com.dukascopy.connect.gui.list.renderers.ListQuestionRenderer;
@@ -20,6 +22,7 @@ package com.dukascopy.connect.sys.contextActions {
 	import com.dukascopy.connect.type.ChatRoomType;
 	import com.dukascopy.connect.type.HitZoneType;
 	import com.dukascopy.connect.type.UserType;
+	import com.dukascopy.connect.vo.ChatMessageVO;
 	import com.dukascopy.connect.vo.users.adds.ChatUserVO;
 	import com.dukascopy.connect.vo.ChatUserlistModel;
 	import com.dukascopy.connect.vo.ChatVO;
@@ -137,6 +140,13 @@ package com.dukascopy.connect.sys.contextActions {
 						break;
 					if ((itemData is ChatUserVO) && (itemData as ChatUserVO).banned)
 						actions.push(new ContextAction(HitZoneType.UNBAN, Lang.removeBan.toUpperCase(), 0x93A2AE, KickIcon ));
+					break;
+				}
+				case ListChatItem: {
+					if (itemData == null)
+						break;
+					if ((itemData is ChatMessageVO))
+						actions.push(new ContextAction(HitZoneType.REPLY, Lang.reply.toUpperCase(), 0x93A2AE, ReplyIcon, ContextAction.TYPE_SWIPE ));
 					break;
 				}
 			}

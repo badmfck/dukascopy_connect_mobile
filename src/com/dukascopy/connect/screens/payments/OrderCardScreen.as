@@ -8,7 +8,6 @@ package com.dukascopy.connect.screens.payments {
 	import com.dukascopy.connect.gui.button.DDFieldButton;
 	import com.dukascopy.connect.gui.components.AddressPanel;
 	import com.dukascopy.connect.gui.lightbox.UI;
-	import com.dukascopy.connect.gui.list.renderers.ListLinkWithIcon;
 	import com.dukascopy.connect.gui.list.renderers.ListPayCardType;
 	import com.dukascopy.connect.gui.list.renderers.ListPayCurrency;
 	import com.dukascopy.connect.gui.list.renderers.ListPayWalletItem;
@@ -18,13 +17,11 @@ package com.dukascopy.connect.screens.payments {
 	import com.dukascopy.connect.gui.tabs.FilterTabs;
 	import com.dukascopy.connect.gui.topBar.TopBarScreen;
 	import com.dukascopy.connect.screens.base.BaseScreen;
-	import com.dukascopy.connect.screens.dialogs.ScreenPayDialog;
 	import com.dukascopy.connect.screens.dialogs.bottom.ListSelectionPopup;
 	import com.dukascopy.connect.sys.dialogManager.DialogManager;
 	import com.dukascopy.connect.sys.imageManager.ImageBitmapData;
 	import com.dukascopy.connect.sys.payments.PayManager;
 	import com.dukascopy.connect.sys.payments.PaymentsManager;
-	import com.dukascopy.connect.sys.serviceScreenManager.ServiceScreenManager;
 	import com.dukascopy.connect.sys.style.FontSize;
 	import com.dukascopy.connect.sys.style.Style;
 	import com.dukascopy.connect.sys.style.presets.Color;

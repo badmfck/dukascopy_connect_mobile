@@ -14,6 +14,7 @@ package com.dukascopy.connect.sys.phonebookManager {
 	import com.dukascopy.connect.data.screenAction.customActions.OpenSupportChatAction;
 	import com.dukascopy.connect.data.screenAction.customActions.PayWithCardAction;
 	import com.dukascopy.connect.data.screenAction.customActions.TradingChannelAction;
+	import com.dukascopy.connect.sys.addressbook.Addressbook;
 	import com.dukascopy.connect.sys.applicationError.ApplicationErrors;
 	import com.dukascopy.connect.sys.auth.Auth;
 	import com.dukascopy.connect.sys.contactsManager.ContactsManager;
@@ -33,7 +34,6 @@ package com.dukascopy.connect.sys.phonebookManager {
 	import com.dukascopy.connect.vo.users.adds.ContactVO;
 	import com.dukascopy.connect.vo.users.adds.PhonebookUserVO;
 	import com.dukascopy.langs.Lang;
-	import com.freshplanet.ane.airaddressbook.AirAddressBook;
 	import com.freshplanet.ane.airaddressbook.AirAddressBookContactsEvent;
 	import com.greensock.TweenMax;
 	import com.telefision.sys.signals.Signal;
@@ -251,21 +251,25 @@ package com.dukascopy.connect.sys.phonebookManager {
 		}*/
 		
 		public static function getPhonebook():void {
-			if (!AirAddressBook.isSupported) {
+			echo("book:", "getPhonebook");
+			if (!Addressbook.isSupported) {
 				phonesGetted = true;
 				return;
 			}
-			if (AirAddressBook.getInstance().hasPermission() == 0) {
+			if (Addressbook.hasPermission() == 0) {
 				phonesGetted = true;
 				//DialogManager.alert(Lang.permissionInfo, Lang.acsessToContactsDenied);
 				return;
 			}
+			echo("book:", "getPhonebook 2");
 			_phones = null;
-			AirAddressBook.getInstance().addEventListener(AirAddressBook.CONTACTS_UPDATED, onPhonebookReceived);
-			AirAddressBook.getInstance().addEventListener(AirAddressBook.JOB_FINISHED, onPhonebookFinished);
-			AirAddressBook.getInstance().addEventListener(AirAddressBook.ACCESS_DENIED, onPhonebookDeniedDummy);
-			AirAddressBook.getInstance().initCache([]);
-			AirAddressBook.getInstance().check(1000);
+			Addressbook.addEventListener(Addressbook.CONTACTS_UPDATED, onPhonebookReceived);
+			Addressbook.addEventListener(Addressbook.JOB_FINISHED, onPhonebookFinished);
+			Addressbook.addEventListener(Addressbook.ACCESS_DENIED, onPhonebookDeniedDummy);
+			Addressbook.initCache([]);
+			Addressbook.check(1000);
+			
+			echo("book:", "getPhonebook 3");
 		}
 		
 		public static function onPhonebookAccessDenied():void {
@@ -273,26 +277,33 @@ package com.dukascopy.connect.sys.phonebookManager {
 		}
 		
 		static public function get isHasPermissionToContacts():Boolean {
-			if (!AirAddressBook.isSupported)
+			if (!Addressbook.isSupported)
 				return true;
-			if (AirAddressBook.getInstance().hasPermission() == 0)
+			if (Addressbook.hasPermission() == 0)
 				return false;
 			return true;
 		}
 		
 		static private function onPhonebookDeniedDummy(e:Event):void {
+			echo("book:", "onPhonebookDeniedDummy");
 		}
 		
 		static private function onPhonebookFinished(e:Event):void {
+			
+			echo("book:", "onPhonebookFinished");
+			
 			if (_phones == null)
 				_phones = [];
 			repositionContactsIfExists();
 		}
 		
 		static private function onPhonebookReceived(e:AirAddressBookContactsEvent):void {
+			
+			echo("book:", "onPhonebookReceived");
+			
 			var data:Object = e.contactsData;
 			var regexp:RegExp = /[\u00A9]+/g;
-			AirAddressBook.getInstance().removeEventListener(AirAddressBook.CONTACTS_UPDATED, onPhonebookReceived);
+			Addressbook.removeEventListener(Addressbook.CONTACTS_UPDATED, onPhonebookReceived);
 			_phones = [];
 			var phoneNumbers:Array = [];
 			

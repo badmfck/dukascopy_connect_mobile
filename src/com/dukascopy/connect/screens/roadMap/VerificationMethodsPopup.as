@@ -28,6 +28,7 @@ package com.dukascopy.connect.screens.roadMap {
 	import com.dukascopy.connect.type.HitZoneType;
 	import com.dukascopy.connect.utils.TextUtils;
 	import com.dukascopy.langs.Lang;
+	import com.dukascopy.langs.LangManager;
 	import com.greensock.TweenMax;
 	import flash.desktop.Clipboard;
 	import flash.desktop.ClipboardFormats;
@@ -51,6 +52,7 @@ package com.dukascopy.connect.screens.roadMap {
 		private var paddind:int;
 		private var clips:Vector.<SolencyMethodClip>;
 		private var lastSelectedItem:SolencyMethodClip;
+		public var price:String;
 		
 		public function VerificationMethodsPopup() { }
 		
@@ -67,6 +69,11 @@ package com.dukascopy.connect.screens.roadMap {
 		
 		override public function initScreen(data:Object = null):void {
 			super.initScreen(data);
+			
+			if (data != null && "price" in data)
+			{
+				price = data.price;
+			}
 			
 			drawTitle();
 			drawSteps();
@@ -137,22 +144,38 @@ package com.dukascopy.connect.screens.roadMap {
 		
 		private function createStepsData():Vector.<SolvencyMethodData> 
 		{
+			var textValue:String;
+			
 			var methodsData:Vector.<SolvencyMethodData> = new Vector.<SolvencyMethodData>();
 			
 			var methodCardDeposit:SolvencyMethodData = new SolvencyMethodData();
 			methodCardDeposit.title = Lang.solvency_card_deposit;
-			methodCardDeposit.subtitle = Lang.solvency_card_deposit_description;
+			textValue = Lang.solvency_card_deposit_description_2;
+			textValue = LangManager.replace(/%@/g, textValue, price);
+			methodCardDeposit.subtitle = textValue;
 			methodCardDeposit.selected = false;
 			methodCardDeposit.icon = CardDepositIcon;
 			methodCardDeposit.type = SolvencyMethodData.METHOD_CARD_DEPOSIT;
 			methodsData.push(methodCardDeposit);
+			
+			var methodCardWireDeposit:SolvencyMethodData = new SolvencyMethodData();
+			methodCardWireDeposit.title = Lang.solvency_wire_deposit;
+			textValue = Lang.solvency_wire_deposit_description;
+			textValue = LangManager.replace(/%@/g, textValue, price);
+			methodCardWireDeposit.subtitle = textValue;
+			methodCardWireDeposit.selected = false;
+			methodCardWireDeposit.icon = CardDepositIcon;
+			methodCardWireDeposit.type = SolvencyMethodData.METHOD_WIRE_DEPOSIT;
+			methodsData.push(methodCardWireDeposit);
 			
 			var methodCryptoDeposit:SolvencyMethodData
 			if (data != null && "allowZBX" in data && data.allowZBX == true)
 			{
 				methodCryptoDeposit = new SolvencyMethodData();
 				methodCryptoDeposit.title = Lang.solvency_crypto_deposit;
-				methodCryptoDeposit.subtitle = Lang.solvency_crypto_deposit_description;
+				textValue = Lang.solvency_crypto_deposit_description_2;
+				textValue = LangManager.replace(/%@/g, textValue, price);
+				methodCryptoDeposit.subtitle = textValue;
 				methodCryptoDeposit.selected = false;
 				methodCryptoDeposit.icon = CryptoDepositIcon;
 				methodCryptoDeposit.type = SolvencyMethodData.METHOD_CRYPTO_DEPOSIT;
@@ -162,7 +185,9 @@ package com.dukascopy.connect.screens.roadMap {
 			var methodAskFriend:SolvencyMethodData;
 			methodAskFriend = new SolvencyMethodData();
 			methodAskFriend.title = Lang.solvency_ask_friend;
-			methodAskFriend.subtitle = Lang.solvency_ask_friend_description;
+			textValue = Lang.solvency_ask_friend_description_2;
+			textValue = LangManager.replace(/%@/g, textValue, price);
+			methodAskFriend.subtitle = textValue;
 			methodAskFriend.selected = false;
 			methodAskFriend.icon = AskFriendIcon;
 			methodAskFriend.type = SolvencyMethodData.METHOD_ASK_FRIEND;
@@ -186,6 +211,13 @@ package com.dukascopy.connect.screens.roadMap {
 					if (methodAskFriend != null)
 					{
 						methodAskFriend.selected = true;
+					}
+				}
+				else if (data.selected == SolvencyMethodData.METHOD_WIRE_DEPOSIT)
+				{
+					if (methodCardWireDeposit != null)
+					{
+						methodCardWireDeposit.selected = true;
 					}
 				}
 			}

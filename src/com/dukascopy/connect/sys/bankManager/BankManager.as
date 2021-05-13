@@ -1745,7 +1745,7 @@ package com.dukascopy.connect.sys.bankManager {
 				((_initData.user != null) ? _initData.user.uid : "") + "|!|" + 
 				paramsObj.message
 			);
-			sendMessage(paramsObj.additionalData.additionalData.action);
+			sendMessage(paramsObj.additionalData.action);
 		}
 		
 		static private function callBackAddInvoiceThirdparty(i:int, paramsObj:Object):void {
@@ -2101,7 +2101,19 @@ package com.dukascopy.connect.sys.bankManager {
 					if ("command" in lastBankMessageVO.item == true) {
 						backScreenData["command"] = lastBankMessageVO.item.command;
 					}
-					MobileGui.changeMainScreen(
+					
+					
+					var nativeWindow:Boolean = NativeExtensionController.showWebView(
+																					lastBankMessageVO.item.value, 
+																					Lang.TEXT_DEPOSIT, 
+																					MobileGui.centerScreen.currentScreenClass, 
+																					backScreenData);
+					if (nativeWindow && "command" in lastBankMessageVO.item == true)
+					{
+					//	echo("!!!!!!!!", lastBankMessageVO.item.command);
+						sendMessage(lastBankMessageVO.item.command);
+					}
+					/*MobileGui.changeMainScreen( 
 						WebViewScreen,
 						{
 							title:Lang.TEXT_DEPOSIT,
@@ -2109,7 +2121,7 @@ package com.dukascopy.connect.sys.bankManager {
 							link:lastBankMessageVO.item.value,
 							backScreenData:backScreenData
 						}
-					);
+					);*/
 					return;
 				}
 				if (lastBankMessageVO.item.type == "passwordEnter")

@@ -266,7 +266,7 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 			back.graphics.endFill();
 		}
 		
-		public function draw(messageData:ChatMessageVO, maxWidth:int, listItem:ListItem = null, securityKey:Array = null):void
+		public function draw(messageData:ChatMessageVO, maxWidth:int, listItem:ListItem = null, securityKey:Array = null, minWidth:int = -1):void
 		{
 			var data:GiftData = messageData.systemMessageVO.giftVO;
 			giftContainer.removeChildren();

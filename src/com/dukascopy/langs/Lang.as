@@ -2059,7 +2059,7 @@ package com.dukascopy.langs {
 		static public var accountStatement:String = "Account statement";
 		static public var select:String = "Select";
 		static public var mcaOpenRestricted:String = "It is not possible to open an MCA account for you at the moment. Please contact Support team representative for details";
-		static public var initialDepositDescription:String = "The next step of your account opening is an initial deposit of 25 EUR. To procced, please enter your card details. The bank will withdraw 25 EUR from your card and deposit these funds to our account upon it`s approval.";
+		static public var initialDepositDescription:String = "The next step of your account opening is an initial deposit of %@.\nTo proceed, please enter your card details. The Bank will withdraw %@ from your card and deposit these funds to your account upon its approval.";
 		static public var initialDeposit:String = "Initial deposit";
 		static public var payInvoice:String = "Send money by invoice";
 		static public var linkCard:String = "Link card";
@@ -2201,18 +2201,31 @@ package com.dukascopy.langs {
 		static public var selectVerificationMethod:String = "Select one of the following verification methods";
 		static public var verificationMethods:String = "Verification methods";
 		
+		
+		
 		static public var solvency_card_deposit:String = "Card deposit";
-		static public var solvency_card_deposit_description:String = "Deposit 30 EUR from your card";
+		//deprecated
+	//	static public var solvency_card_deposit_description:String = "Deposit 30 EUR from your card";
+		
 		static public var solvency_crypto_deposit:String = "Crypto deposit";
-		static public var solvency_crypto_deposit_description:String = "Deposit amount in crptocurrency equal to 30 EUR";
+		//deprecated
+	//	static public var solvency_crypto_deposit_description:String = "Deposit amount in crptocurrency equal to 30 EUR";
+		
 		static public var solvency_ask_friend:String = "Ask your friend";
-		static public var solvency_ask_friend_description:String = "You can ask your friends to send you 30 EUR";
+		//deprecated
+	//	static public var solvency_ask_friend_description:String = "You can ask your friends to send you 30 EUR";
+		
+		
+		
 		static public var toVerifyCryptodepositYouNeed:String = "To verify with a cryptocurrency deposit you need to";
+		
 		static public var openAccountZBX:String = "Open an account with ZBX.";
-		static public var depositeOnZBXAccount:String = "Deposit the equivalent of 30 EUR or more in any cryptocurrency to you ZBX account.";
+		//deprecated
+	//	static public var depositeOnZBXAccount:String = "Deposit the equivalent of 30 EUR or more in any cryptocurrency to you ZBX account.";
 		static public var grandPermissionToZBXAccount:String = "Grant a permission to Dukascopy Bank to check the balance of your account in ZBX.";
 		static public var verifyWithCtyptoDeposit:String = "Verify with Crypto Deposit";
 		static public var askAFriend:String = "Ask a friend";
+		//deprecated
 		static public var askFriendDescription:String = "You can ask a friend to send you 30 EUR directly in the chat. After you receive the requested amount, you will be automatically redirected to the next step. Click on the button bellow to see which of your contacts already has a Multi-Currency account with Dukascopy.";
 		static public var solvencyVerificatoinSuccess:String = "Solvency verification has been successfully completed";
 		static public var solvencyVerificatoinFail:String = "Solvency verification cannot be completed. Make sure you have an active account with ZBX or that the balance is sufficient to pass solvency check";
@@ -2256,7 +2269,8 @@ package com.dukascopy.langs {
 		static public var uploading:String = "Uploading...";
 		static public var uploads:String = "upload(s)";
 		
-		static public var zbxAbout:String = "You need to register on ZBX.one and top up your ZBX account in the amount of 30 EUR.\nAfter that, you need to return to the Dukascopy Connect 911 application and continue your registration with Dukascopy Bank by clicking on the 'Proceed' button.\nDukascopy will check if your ZBX account has 30 EUR (or equivalent) and if this verification is successful, you will proceed to the next step.";
+		//deprecated
+	//	static public var zbxAbout:String = "You need to register on ZBX.one and top up your ZBX account in the amount of 30 EUR.\nAfter that, you need to return to the Dukascopy Connect 911 application and continue your registration with Dukascopy Bank by clicking on the 'Proceed' button.\nDukascopy will check if your ZBX account has 30 EUR (or equivalent) and if this verification is successful, you will proceed to the next step.";
 		static public var changed:String = "changed";
 		static public var saveChangesQuestion:String = "Save changes?";
 		static public var accountInfoUpdated:String = "You application for personal information update has been filed successfully";
@@ -2283,7 +2297,8 @@ package com.dukascopy.langs {
 		static public var quarterLimitDescription:String = "Defines the maximum amount of your regular income that can be deposited into your Multi-Currency Account within a quarter.";
 		static public var totalLimitDescription:String = "Defines the maximum amount of funds that can be kept on your account at a time.";
 		static public var friendInvoiceComment:String = "Initial deposit for my account opening";
-		static public var friendInvoiceConfirm:String = "Are you sure you want to request 30 EUR from this contact for your account opening";
+		//deprecated
+	//	static public var friendInvoiceConfirm:String = "Are you sure you want to request 30 EUR from this contact for your account opening";
 		static public var askFriendInvoice:String = "Send invoice";
 		static public var pleaseConfirm:String = "Please confirm";
 		static public var startSupportChat:String = "Chat with support";
@@ -2296,7 +2311,23 @@ package com.dukascopy.langs {
 		static public var max:String = "Max";
 		static public var monthlyFee:String = "Monthly fee";
 		static public var imageCorrupted:String = "The image is deleted or corrupted";
+		static public var reply:String = "Reply";
+		static public var addressbookPermisionRequired:String = "Permission required";
+		static public var provideAccessToContacts:String = "Please provide access to your contact list";
 		static public var tradingAccOpeningWait:String = "You have sent a request earlier today. Our representative will contact you shortly. Kindly wait";
+		
+		static public var wireDepositDescription:String = "The next step of your account opening is an initial deposit of %@.\nTo proceed, please make a wire transfer of %@ indicating your phone number in the transfer description. The Bank will deposit these funds to your account upon its approval.";
+		static public var solvency_wire_deposit:String = "Wire transfer";
+		static public var solvency_wire_deposit_description:String = "Deposit %@ by wire transfer";
+		
+		static public var solvency_card_deposit_description_2:String = "Deposit %@ from your card";
+		static public var solvency_crypto_deposit_description_2:String = "Deposit amount in crptocurrency equal to %@";
+		static public var solvency_ask_friend_description_2:String = "You can ask your friends to send you %@";
+		static public var askFriendDescription_2:String = "You can ask a friend to send you %@ directly in the chat. After you receive the requested amount, you will be automatically redirected to the next step. Click on the button bellow to see which of your contacts already has a Multi-Currency account with Dukascopy.";
+		static public var depositeOnZBXAccount_2:String = "Deposit the equivalent of %@ or more in any cryptocurrency to you ZBX account.";
+		static public var friendInvoiceConfirm_2:String = "Are you sure you want to request %@ from this contact for your account opening";
+		static public var zbxAbout_2:String = "You need to register on ZBX.one and top up your ZBX account in the amount of %@.\nAfter that, you need to return to the Dukascopy Connect 911 application and continue your registration with Dukascopy Bank by clicking on the 'Proceed' button.\nDukascopy will check if your ZBX account has %@ (or equivalent) and if this verification is successful, you will proceed to the next step.";
+		static public var roadmap_wireDeposit:String = "Wire transfer";
 		
 		static public function updateKeys(keys:Object):void {
 			for (var n:String in keys) {

@@ -24,6 +24,7 @@ package com.dukascopy.connect.screens.roadMap {
 	import com.dukascopy.connect.type.HitZoneType;
 	import com.dukascopy.connect.utils.TextUtils;
 	import com.dukascopy.langs.Lang;
+	import com.dukascopy.langs.LangManager;
 	import com.greensock.TweenMax;
 	import com.greensock.easing.Power3;
 	import flash.display.Bitmap;
@@ -150,7 +151,14 @@ package com.dukascopy.connect.screens.roadMap {
 		}
 		
 		private function showZBXAbout():void {
-			DialogManager.alert(Lang.information, Lang.zbxAbout);
+			
+			var textValue:String = Lang.zbxAbout_2;
+			if (data != null && "price" in data)
+			{
+				textValue = LangManager.replace(/%@/g, textValue, data.price);
+			}
+			
+			DialogManager.alert(Lang.information, textValue);
 		}
 		
 		private function onTogglerTap():void {
@@ -406,8 +414,14 @@ package com.dukascopy.connect.screens.roadMap {
 				false, true
 			);
 			
+			var textValue:String = Lang.depositeOnZBXAccount_2;
+			if (data != null && "price" in data)
+			{
+				textValue = LangManager.replace(/%@/g, textValue, data.price);
+			}
+			
 			step_2.bitmapData = TextUtils.createTextFieldData(
-				Lang.depositeOnZBXAccount,
+				textValue,
 				getTextWidth(),
 				10,
 				true,

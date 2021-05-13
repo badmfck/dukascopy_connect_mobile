@@ -14,7 +14,7 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 	public interface IMessageRenderer {
 		
 		function getHeight(messageVO:ChatMessageVO, maxWidth:int, listItem:ListItem):uint;
-		function draw(messageData:ChatMessageVO, maxWidth:int, listItem:ListItem = null, securityKey:Array = null):void;
+		function draw(messageData:ChatMessageVO, maxWidth:int, listItem:ListItem = null, securityKey:Array = null, minWidth:int = -1):void;
 		function getWidth():uint;
 		function getBackColor():Number;
 		function updateHitzones(itemHitzones:Array):void;

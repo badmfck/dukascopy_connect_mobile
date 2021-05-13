@@ -43,6 +43,7 @@ package com.dukascopy.connect.gui.list {
 		public var S_SHOW_UPPER_CONTENT:Signal = new Signal('List.S_SHOW_UPPER_CONTENT');
 		public var S_HIDE_UPPER_CONTENT:Signal = new Signal('List.S_HIDE_UPPER_CONTENT');
 		public var S_UP:Signal = new Signal('List.S_UP');
+		public var S_ITEM_SWIPE:Signal = new Signal('List.S_ITEM_SWIPE');
 		
 		protected var _innerHeight:int;
 		
@@ -204,7 +205,7 @@ package com.dukascopy.connect.gui.list {
 				if (!item)
 					return;
 				TweenMax.killTweensOf(item);
-				TweenMax.to(item, contextMenuTimeHide, { x: 0, onComplete: function():void { unblockListScroll(); }} );
+				TweenMax.to(item, contextMenuTimeHide, { x: 0, onUpdate:onContextHideAnimation, onComplete: function():void { unblockListScroll(); }} );
 			}
 		}
 		
@@ -235,6 +236,10 @@ package com.dukascopy.connect.gui.list {
 					contextItem.y = _view.globalToLocal(box.localToGlobal(new Point(0, item.y))).y;
 					blockListScroll();
 				}
+				else if (inContextMovingPhaze)
+				{
+					contextItem.onResize(Math.min(position, Config.FINGER_SIZE));
+				}
 				
 				if (lastItemTouchXPosition - position < 0) {
 					TweenMax.killTweensOf(item);
@@ -259,14 +264,24 @@ package com.dukascopy.connect.gui.list {
 					if (lastContextDirection == "opening") {
 						if (item.x < -Config.FINGER_SIZE_DOT_25) {
 							TweenMax.killTweensOf(item);
-							TweenMax.to(item, contextMenuTimeShow, { x: -contextItem.getWidth(), onComplete:function():void { setContextHitzone(lastItemTouchedIndex); inMovementPhase = false; } } );
+							
+							if (contextItem.isSwipeNow())
+							{
+								callSwipeAction(lastItemTouchedIndex);
+								TweenMax.to(item, contextMenuTimeShow, { x: 0, onUpdate:onContextHideAnimation, onComplete:function():void { unblockListScroll(); inMovementPhase = false; } } );
+							}
+							else
+							{
+								TweenMax.to(item, contextMenuTimeShow, { x: -contextItem.getWidth(), onComplete:function():void { setContextHitzone(lastItemTouchedIndex); inMovementPhase = false; } } );
+							}
+							
 							blockListScroll();
 							return;
 						}
 						else if(item.x < 0) {
 							blockListScroll();
 							TweenMax.killTweensOf(item);
-							TweenMax.to(item, contextMenuTimeHide, { x: 0, onComplete: function():void { unblockListScroll(); inMovementPhase = false; }} );
+							TweenMax.to(item, contextMenuTimeHide, { x: 0, onUpdate:onContextHideAnimation, onComplete: function():void { unblockListScroll(); inMovementPhase = false; }} );
 							return;
 						} else {
 							unblockListScroll(); 
@@ -277,12 +292,19 @@ package com.dukascopy.connect.gui.list {
 						if (item.x > -(contextItem.getWidth()-Config.FINGER_SIZE_DOT_25)) {
 							blockListScroll();
 							TweenMax.killTweensOf(item);
-							TweenMax.to(item, contextMenuTimeHide, { x: 0, onComplete: function():void { unblockListScroll(); inMovementPhase = false; }} );
+							TweenMax.to(item, contextMenuTimeHide, { x: 0, onUpdate:onContextHideAnimation, onComplete: function():void { unblockListScroll(); inMovementPhase = false; }} );
 							return;
 						}
 						else if(item.x < 0){
 							TweenMax.killTweensOf(item);
-							TweenMax.to(item, contextMenuTimeShow, { x: -contextItem.getWidth(), onComplete:function():void { setContextHitzone(lastItemTouchedIndex); inMovementPhase = false; } } );
+							if (contextItem.isSwipeNow())
+							{
+								TweenMax.to(item, contextMenuTimeShow, { x: 0, onComplete:function():void { unblockListScroll(); inMovementPhase = false; } } );
+							}
+							else
+							{
+								TweenMax.to(item, contextMenuTimeShow, { x: -contextItem.getWidth(), onComplete:function():void { setContextHitzone(lastItemTouchedIndex); inMovementPhase = false; } } );
+							}
 							blockListScroll();
 							return;
 						} else {
@@ -295,6 +317,13 @@ package com.dukascopy.connect.gui.list {
 				}
 				
 				inContextMovingPhaze = false;
+			}
+		}
+		
+		private function callSwipeAction(index:int):void 
+		{
+			if (lastItemTouchedIndex != -1) {
+				S_ITEM_SWIPE.invoke(stock[lastItemTouchedIndex]);
 			}
 		}
 		
@@ -402,13 +431,21 @@ package com.dukascopy.connect.gui.list {
 					if (inContextMovingPhaze && item && item.x != 0) {
 						if (item.x < -contextItem.getWidth()*.5) {
 							TweenMax.killTweensOf(item);
-							TweenMax.to(item, contextMenuTimeShow, { x: -contextItem.getWidth() } );
+							
+							if (contextItem != null && contextItem.isSwipeNow())
+							{
+								TweenMax.to(item, contextMenuTimeHide, { x: 0, onUpdate:onContextHideAnimation, onComplete: function():void { unblockListScroll(); }} );
+							}
+							else
+							{
+								TweenMax.to(item, contextMenuTimeShow, { x: -contextItem.getWidth() } );
+							}
 							blockListScroll();
 							return;
 						} else {
 							blockListScroll();
 							TweenMax.killTweensOf(item);
-							TweenMax.to(item, contextMenuTimeHide, { x: 0, onComplete: function():void { unblockListScroll(); }} );
+							TweenMax.to(item, contextMenuTimeHide, { x: 0, onUpdate:onContextHideAnimation, onComplete: function():void { unblockListScroll(); }} );
 							return;
 						}
 					} else {
@@ -419,6 +456,26 @@ package com.dukascopy.connect.gui.list {
 			}
 			if (S_UP != null)
 				S_UP.invoke();
+		}
+		
+		private function onContextHideAnimation():void 
+		{
+			if (isDisposed)
+			{
+				return;
+			}
+			if (contextItem != null && contextItem.visible == true)
+			{
+				var item:ListItemView
+				if (stock[lastItemTouchedIndex] && stock[lastItemTouchedIndex].liView)
+				{
+					item = stock[lastItemTouchedIndex].liView;
+				}
+				if (item)
+				{
+					contextItem.onResize(Math.min(-item.x, Config.FINGER_SIZE));
+				}
+			}
 		}
 		
 		private function blockListScroll():void {
@@ -939,11 +996,19 @@ package com.dukascopy.connect.gui.list {
 					return;
 				}
 				if (stock[n].liView != null && stock[n].liView.parent != null && stock[n].liView.visible == true)
+				{
 					stock[n].draw(_width);
+					stock[n].scrollStoppedShow();
+				}
 				return;
 			}
 			var oldH:int = stock[n].height;
 			stock[n].recalculateHeight();
+			stock[n].wasLoading = false;
+			stock[n].addImageFieldForLoading("imageThumbURLWithKey", true);
+			stock[n].scrollStoppedShow();
+			if (inMovementPhase == false)
+				onMoved(true, false, false, false);
 			var newH:int = stock[n].height;
 			if (oldH != newH || anyway == true)
 				refresh(true, obligatory);
@@ -951,13 +1016,13 @@ package com.dukascopy.connect.gui.list {
 				refresh(false);
 		}
 		
-		public function updateItem(obj:Object, needToRecalculateHeight:Boolean = true):void {
+		public function updateItem(obj:Object, needToRecalculateHeight:Boolean = true, anyway:Boolean = false):void {
 			if (data != null)
 			{
 				var l:int = data.length;
 				for (var n:int = 0; n < l; n++) {
 					if (data[n] == obj){
-						updateItemByIndex(n, needToRecalculateHeight, true);
+						updateItemByIndex(n, needToRecalculateHeight, true, anyway);
 						return;
 					}
 				}
@@ -1594,6 +1659,9 @@ package com.dukascopy.connect.gui.list {
 			if (S_UP != null)
 				S_UP.dispose();
 			S_UP = null;
+			if (S_ITEM_SWIPE != null)
+				S_ITEM_SWIPE.dispose();
+			S_ITEM_SWIPE = null;
 		}
 		
 		/**
@@ -1703,7 +1771,7 @@ package com.dukascopy.connect.gui.list {
 			return firstVisibleItemIndex;
 		}
 		
-		public function scrollToItem(field:String, value:Object, offset:int):Boolean {
+		public function scrollToItem(field:String, value:Object, offset:int, animate:Boolean = false):Boolean {
 			if (stock == null)
 				return false;
 			var l:int = stock.length;
@@ -1727,7 +1795,16 @@ package com.dukascopy.connect.gui.list {
 			{
 				newY = 0;
 			}
-			setBoxY(newY);
+			if (animate)
+			{
+				TweenMax.killTweensOf(box);
+				TweenMax.to(box, 0.5, { useFrames:false, y:newY, onUpdate:onMoved, onComplete:sbTweenMaxComplete} );
+			}
+			else
+			{
+				setBoxY(newY);
+			}
+			
 			return true;
 		}
 		
@@ -1747,7 +1824,7 @@ package com.dukascopy.connect.gui.list {
 				newY = 0;
 			}
 			TweenMax.killTweensOf(box);
-			TweenMax.to(box, 0.5, { useFrames:false, y:newY, delay:delay, onUpdate:onMoved, onComplete:sbTweenMaxComplete} );
+			
 			if (withTween) {
 				TweenMax.to(box, 0.5, { useFrames:false, y:newY, delay:delay, onUpdate:onMoved, onComplete:sbTweenMaxComplete} );
 			} else {

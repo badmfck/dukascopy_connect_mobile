@@ -413,7 +413,7 @@ package com.dukascopy.connect.gui.components
 				addressData = new CardDeliveryAddress();
 				if (PayManager.accountInfo != null)
 				{
-					addressData.country = PayManager.accountInfo.country;
+					addressData.country = getAccountCountry(); 
 				}
 				addressData.address = streetInput.valueString;
 				addressData.city = cityInput.valueString;
@@ -430,6 +430,42 @@ package com.dukascopy.connect.gui.components
 			//	draw(itemWidth);
 				collapse();
 			}
+		}
+		
+		private function getAccountCountry():String 
+		{
+			if (PayManager.accountInfo.country_card != null)
+			{
+				return PayManager.accountInfo.country_card;
+			}
+			return PayManager.accountInfo.country;
+		}
+		
+		private function getAccountCity():String 
+		{
+			if (PayManager.accountInfo.city_card != null)
+			{
+				return PayManager.accountInfo.city_card;
+			}
+			return PayManager.accountInfo.city;
+		}
+		
+		private function getAccountAddress():String 
+		{
+			if (PayManager.accountInfo.address_card != null)
+			{
+				return PayManager.accountInfo.address_card;
+			}
+			return PayManager.accountInfo.address;
+		}
+		
+		private function getAccountZip():String 
+		{
+			if (PayManager.accountInfo.zip_card != null)
+			{
+				return PayManager.accountInfo.zip_card;
+			}
+			return PayManager.accountInfo.zip;
 		}
 		
 		private function validate():Boolean
@@ -617,7 +653,7 @@ package com.dukascopy.connect.gui.components
 			}
 			if (PayManager.accountInfo != null)
 			{
-				return PayManager.accountInfo.country;
+				return getAccountCountry();
 			}
 			return "";
 		}
@@ -638,7 +674,7 @@ package com.dukascopy.connect.gui.components
 			{
 				return addressData.address + ", \n" + addressData.city + ", " + addressData.code + " \n" + getCountry(addressData.country);
 			}
-			return PayManager.accountInfo.address + ",\n" + PayManager.accountInfo.city + ", " + PayManager.accountInfo.zip + "\n" + getCountry(PayManager.accountInfo.country);
+			return getAccountAddress() + ",\n" + getAccountCity() + ", " + getAccountZip() + "\n" + getCountry(getAccountCountry());
 		}
 		
 		private function updateMask():void

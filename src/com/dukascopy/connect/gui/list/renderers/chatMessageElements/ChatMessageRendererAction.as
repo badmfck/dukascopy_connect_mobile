@@ -137,7 +137,7 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 			return Math.max(tf.textHeight, iconSize) + vTextMargin * 2 + additionalHeight;
 		}
 		
-		public function draw(messageData:ChatMessageVO, maxWidth:int, listItem:ListItem = null, securityKey:Array = null):void {
+		public function draw(messageData:ChatMessageVO, maxWidth:int, listItem:ListItem = null, securityKey:Array = null, minWidth:int = -1):void {
 			var action:IScreenAction = messageData.action;
 			
 			setIconByClass(action.getIconClass());

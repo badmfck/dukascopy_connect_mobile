@@ -705,14 +705,11 @@ package com.dukascopy.connect {
 					return;
 				}
 				if (shows == true || (SoftKeyboard.getInstance() != null && SoftKeyboard.getInstance().isShowed == true)) {
-					trace("onSoftKeyboard", "3");
 					if (Config.PLATFORM_ANDROID) {
-						trace("onSoftKeyboard", "4", SoftKeyboard.extensionKeyboardHeightDetected, SoftKeyboard.detectedKeyboardHeight);
 						if (SoftKeyboard.extensionKeyboardHeightDetected) {
 							_softKeyboardHeight = SoftKeyboard.detectedKeyboardHeight;
 							onStageResize();
 						} else {
-							trace("onSoftKeyboard", "4");
 							SoftKeyboard.S_REAL_HEIGHT_DETECTED.add(onAndroidKeyboardHeightDetected);
 							SoftKeyboard.startDetectHeight();
 						}

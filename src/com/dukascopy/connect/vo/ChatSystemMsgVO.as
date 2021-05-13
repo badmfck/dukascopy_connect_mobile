@@ -17,6 +17,7 @@ package com.dukascopy.connect.vo {
 	import com.dukascopy.connect.vo.chat.FileMessageVO;
 	import com.dukascopy.connect.vo.chat.MoneyTransferMessageVO;
 	import com.dukascopy.connect.vo.chat.NewsMessageVO;
+	import com.dukascopy.connect.vo.chat.ReplayMessageVO;
 	import com.dukascopy.connect.vo.users.UserVO;
 	import com.dukascopy.connect.vo.users.adds.ChatUserVO;
 	import com.dukascopy.connect.vo.chat.PuzzleMessageVO;
@@ -103,6 +104,13 @@ package com.dukascopy.connect.vo {
 		static public const METHOD_VI_START:String = "VIStart";
 		static public const METHOD_VI_COMPLETE:String = "VIComplete";
 		
+		static public const REPLAY_START_BOUND:String = "{quote ";
+		static public const REPLAY_END_BOUND:String = "{quote}";
+		static public const REPLAY_END_BOUND_FIXED:String = "</quote>";
+		static public const REPLAY_START_BOUND_FIXED:String = "<quote ";
+		static public const TYPE_REPLY:String = "typeReply";
+		static public const TYPE_LINK_PREVIEW:String = "typeLinkPreview";
+		
 		private var _type:String;
 		private var _method:String;
 		private var _title:String;
@@ -139,6 +147,7 @@ package com.dukascopy.connect.vo {
 		private var _rateBotWebView:RateBotData;
 		
 		public var rateBotMessage:Boolean;
+		public var replayMessage:ReplayMessageVO;
 		
 		public function ChatSystemMsgVO(data:Object = null, chatUid:String = null, messageId:Number = NaN) {
 			if (data)
@@ -448,6 +457,11 @@ package com.dukascopy.connect.vo {
 		public function get title():String { return _title; }
 		public function get method():String { return _method; }
 		public function get type():String { return _type; }
+		
+		public function set type(value:String):void 
+		{
+			_type = value;
+		}
 		public function get fileType():String { return _fileType; }
 		public function get imageHeight():int { return _imageHeight; }
 		public function get imageWidth():int { return _imageWidth; }
@@ -510,6 +524,9 @@ package com.dukascopy.connect.vo {
 		public function get text():String {
 			if (_text != null)
 				return _text;
+			if (_type == TYPE_REPLY && replayMessage != null && replayMessage.text != null) {
+				return replayMessage.text;
+			}
 			if (_type == TYPE_911) {
 				if (_method == METHOD_911_NOT_SATISFY)
 					_text = Lang.yourAnswerISNTCorrect;

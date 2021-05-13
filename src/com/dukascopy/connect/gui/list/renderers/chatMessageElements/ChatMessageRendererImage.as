@@ -307,7 +307,7 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 			return maxWidth;
 		}
 		
-		public function draw(messageVO:ChatMessageVO, targetWidth:int, listItem:ListItem = null, securityKey:Array = null):void {
+		public function draw(messageVO:ChatMessageVO, targetWidth:int, listItem:ListItem = null, securityKey:Array = null, minWidth:int = -1):void {
 			_isImageReady = false;
 			this.targetWidth = targetWidth;
 			

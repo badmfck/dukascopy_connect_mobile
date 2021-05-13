@@ -7,12 +7,14 @@ package com.dukascopy.connect.screens.roadMap.actions
 	import com.dukascopy.connect.screens.dialogs.bottom.implementation.BottomAlertPopup;
 	import com.dukascopy.connect.screens.dialogs.bottom.implementation.BottomConfirmPopup;
 	import com.dukascopy.connect.sys.applicationError.ApplicationErrors;
+	import com.dukascopy.connect.sys.auth.Auth;
 	import com.dukascopy.connect.sys.dialogManager.DialogManager;
 	import com.dukascopy.connect.sys.php.PHP;
 	import com.dukascopy.connect.sys.php.PHPRespond;
 	import com.dukascopy.connect.sys.serviceScreenManager.ServiceScreenManager;
 	import com.dukascopy.connect.sys.store.Store;
 	import com.dukascopy.connect.sys.style.Style;
+	import com.dukascopy.connect.type.BankPhaze;
 	import com.dukascopy.langs.Lang;
 	import com.dukascopy.langs.LangManager;
 	/**
@@ -54,13 +56,18 @@ package com.dukascopy.connect.screens.roadMap.actions
 			if (inProgress == false && proceed == true)
 			{
 				inProgress = true;
-				PHP.call_loyaltyRegister(onLoyaltyRegister);
+				var service:String;
+				if (Auth.bank_phase == BankPhaze.WIRE_DEPOSIT)
+				{
+					service = "wire";
+				}
+				PHP.call_loyaltyRegister(onLoyaltyRegister, service);
 			}
 		}
 		
 		private function showDescription():void 
 		{
-			var textValue:String = Lang.initialDepositDescription;
+			var textValue:String = getDescription();
 			textValue = LangManager.replace(/%@/g, textValue, price);
 			
 			ServiceScreenManager.showScreen(
@@ -75,6 +82,15 @@ package com.dukascopy.connect.screens.roadMap.actions
 				}
 			);
 			
+		}
+		
+		private function getDescription():String 
+		{
+			if (Auth.bank_phase == BankPhaze.WIRE_DEPOSIT)
+			{
+				return Lang.wireDepositDescription;
+			}
+			return Lang.initialDepositDescription;
 		}
 		
 		private function onLoyaltyRegister(respond:PHPRespond):void {

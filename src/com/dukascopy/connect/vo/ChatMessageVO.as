@@ -18,6 +18,7 @@ package com.dukascopy.connect.vo {
 	import com.dukascopy.connect.type.ChatMessageReactionType;
 	import com.dukascopy.connect.utils.ImageCrypterOld;
 	import com.dukascopy.connect.vo.chat.ChatMessageReaction;
+	import com.dukascopy.connect.vo.chat.ReplayMessageVO;
 	import com.dukascopy.connect.vo.users.UserVO;
 	import com.dukascopy.connect.vo.users.adds.ChatUserVO;
 	import com.dukascopy.langs.Lang;
@@ -292,6 +293,15 @@ package com.dukascopy.connect.vo {
 					}
 				}
 			}
+			
+			if (_text != null && _text.indexOf(ChatSystemMsgVO.REPLAY_START_BOUND) == 0 && _text.indexOf(ChatSystemMsgVO.REPLAY_END_BOUND) != -1)
+			{
+				var replayVO:ReplayMessageVO = new ReplayMessageVO(_text);
+				_systemMessageVO = new ChatSystemMsgVO(null, chatUID, id);
+				_systemMessageVO.replayMessage = replayVO;
+				_systemMessageVO.type = ChatSystemMsgVO.TYPE_REPLY;
+				_text = replayVO.text;
+			}
 		}
 		
 		private function detectLink(str:String):String {					
@@ -435,7 +445,16 @@ package com.dukascopy.connect.vo {
 			_userUID = value;
 		}
 		public function get delivery():String { return _delivery; }
-		public function get text():String { return (_systemMessageVO != null) ? _systemMessageVO.text : _text; }
+		public function get text():String {
+			if (_systemMessageVO != null)
+			{
+				if (_systemMessageVO.type == ChatSystemMsgVO.TYPE_REPLY)
+				{
+					return _text;
+				}
+			}
+			return (_systemMessageVO != null) ? _systemMessageVO.text : _text; 
+		}
 		public function get textSmall():String { return (_systemMessageVO != null) ? _systemMessageVO.textSmall : _text; }
 		public function get unparsedText():String { return _text; }
 		public function get typeEnum():String {return (_systemMessageVO != null) ? _systemMessageVO.type : ChatSystemMsgVO.TYPE_TEXT; }
