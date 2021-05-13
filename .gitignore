@@ -6,5 +6,6 @@
 *.bat
 *.sh
 *.as3proj
+.idea
 bin/Dukascopy.swf
 bin/Desktop.xml

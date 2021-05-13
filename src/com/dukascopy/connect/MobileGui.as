@@ -413,9 +413,9 @@ package com.dukascopy.connect {
 				NativeApplication.nativeApplication.exit();
 		}
 		
-		public static function changeMainScreen(screen:Class, data:Object = null, directon:int = 0):void {
+		public static function changeMainScreen(screen:Class, data:Object = null, directon:int = 0, time:Number = 0.3):void {
 			if (screen == LoginScreen) {
-				S_MAIN_SCREEN_CHANGE.invoke(screen, data, directon);
+				S_MAIN_SCREEN_CHANGE.invoke(screen, data, directon, 1, time);
 				return;
 			}
 			var screenLabel:String;
@@ -513,7 +513,7 @@ package com.dukascopy.connect {
 			}
 		}
 		
-		private function onMainScreenChangeInvoke(screen:Class, data:Object = null, direction:int = 0, currentScreenEndAlpha:Number = 1):void {
+		private function onMainScreenChangeInvoke(screen:Class, data:Object = null, direction:int = 0, currentScreenEndAlpha:Number = 1, time:Number = 0.3):void {
 			echo("MobileGui", "onMainScreenChangeInvoke", "");
 			var fromPayments:Boolean = PayManager.isInsidePaymentsScreenNow;
 			PayManager.isInsidePaymentsScreenNow = false;
@@ -524,7 +524,7 @@ package com.dukascopy.connect {
 					return;
 				mainSM.show(RootScreen);
 			}
-			mainSM.show(screen, data, direction, 0.3, currentScreenEndAlpha);
+			mainSM.show(screen, data, direction, time, currentScreenEndAlpha);
 		}
 		
 		private function onDialogShow(dialog:Class, params:Object = null, transparency:Number = .5):void {
