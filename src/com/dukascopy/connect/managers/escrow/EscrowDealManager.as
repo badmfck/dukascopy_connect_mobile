@@ -1,22 +1,30 @@
-package com.dukascopy.connect.managers{
+package com.dukascopy.connect.managers.escrow{
 
     import com.dukascopy.connect.GD;
     import com.dukascopy.connect.sys.Dispatcher;
     import com.dukascopy.connect.vo.EscrowDealVO;
     import com.telefision.utils.maps.EscrowDealMap;
+    import com.telefision.utils.SimpleLoader;
     
 
     public class EscrowDealManager{
 
         private var escrowDeals:EscrowDealMap=new EscrowDealMap();
-
+        private var id:String="EscrowDealManager";
         public function EscrowDealManager(){
             loadDeals();
 
-            GD.S_ESCROW_DEAL_CREATE_REQUEST.add(onEscrowDealCreateRequest);
-        }
-
-        private function onEscrowDealCreateRequest(req:EscrowDealCreateRequest):void{
+            // CREATE ESCROW DEAL
+            GD.S_ESCROW_DEAL_CREATE_REQUEST.add(function(req:EscrowDealCreateRequest):void{
+                // DO CALL
+                new SimpleLoader(
+                    "https://loki.telefision.com/master/",
+                    {
+                        key:"web",
+                        method:"escrow.startDeal"
+                    },
+                function(data:String,error:String):void{});
+            },this);
             
         }
 

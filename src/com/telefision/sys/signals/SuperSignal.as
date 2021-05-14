@@ -4,8 +4,8 @@ package com.telefision.sys.signals
 
         private var disposed:Boolean=false;
         private var busy:Boolean=false;
-        private var methods:Array=[];
-        private var delays:Array=[];
+        private var methods:/*SuperSignalVO*/Array=[];
+        private var delays:/*SuperSignalDelaysVO*/Array=[];
         private var invokes:Array=[];
         private var name:String;
         private static var nextID:int=0;
@@ -24,13 +24,15 @@ package com.telefision.sys.signals
          * @param id - listener id (null by deafult)
          * @return callback
          */
-        protected function _add(callback:Function,context:Object=null,id:Object=null):Function{
+        public function add(callback:Function,context:Object=null,id:Object=null):Function{
             if(disposed || methods==null)
                 return callback;
             // check if callback already exists
-            for each(var value:SuperSignalVO in methods){
-                if(value.callback===callback)
-                    return callback;
+            if(methods!=null){
+                for each(var value:SuperSignalVO in methods){
+                    if(value.callback===callback)
+                        return callback;
+                }
             }
             var ssvo:SuperSignalVO=new SuperSignalVO(callback,context,id);
             if(busy){
@@ -46,7 +48,7 @@ package com.telefision.sys.signals
          * @param ...rest 
          */
         protected function _invoke(...rest):void{
-            if(disposed)
+            if(disposed || methods==null)
                 return;
             if(busy){
                 invokes.push(rest);
@@ -61,16 +63,34 @@ package com.telefision.sys.signals
                     continue;
                 if(!(ssvo.callback is Function) || ssvo==null)
                     continue;
-                ssvo.callback.call(ssvo.context,rest);
+                ssvo.callback.apply(ssvo.context,rest);
             }
             busy=false;
 
-            for each(var val:SuperSignalDelayedVO in delays){
-                if(val.side==0)
-                    _add(val.vo.callback,val.vo.context,val.vo.id);
-                else
-                    remove(val.vo.callback);
+            if(disposed){
+                dispose();
+                return;
             }
+
+            // add or remove
+            if(delays!=null){
+                for each(var val:SuperSignalDelayedVO in delays){
+                    if(val.side==0)
+                        add(val.vo.callback,val.vo.context,val.vo.id);
+                    else
+                        _remove(val.value,val.key);
+                }
+                delays=[];
+            }
+
+            // delayed invokes
+            if(invokes!=null){
+                for each(var invokeData:Array in invokes){
+                    _invoke.apply(this,invokeData);
+                }
+                invokes=[];
+            }
+
         }
 
         /**
@@ -113,6 +133,14 @@ package com.telefision.sys.signals
          * @return true if was removed
          */
         private function _remove(value:Object,name:String):Boolean{
+            if(disposed)
+                return true;
+
+            if(busy){
+                delays.push(new SuperSignalDelayedVO(null,1,value,name))
+                return true;
+            }
+
             var l:int=methods.length;
             var res:Boolean=false;
             for(var i:int=0;i<l;i++){
@@ -133,11 +161,30 @@ package com.telefision.sys.signals
 
         public function dispose():void{
             disposed=true;
+            if(busy)
+                return;
             clear();
+            methods=null;
+            delays=null;
+            invokes=null;
         }
 
         public function clear():void{
+            
+            if(methods!=null){
+                for each(var ssvo:SuperSignalVO in methods)
+                    ssvo.clear();
+                methods=[];
+            }
 
+            if(delays!=null){
+                for each(var del:SuperSignalDelayedVO in delays)
+                    del.clear();
+                delays=[];
+            }
+
+            if(invokes!=null)
+                invokes=[];
         }
         
     }
@@ -152,13 +199,28 @@ class SuperSignalVO{
         this.context=context;
         this.id=id;
     }
+    public function clear():void{
+        callback=null;
+        context=null;
+        id=null;
+    }
 }
 
 class SuperSignalDelayedVO{
     public var vo:SuperSignalVO;
     public var side:int=0; // 0 - add, 1 - remove
-    public function SuperSignalDelayedVO(vo:SuperSignalVO,side:int){
+    public var key:String; // key - param name for compare when remove
+    public var value:Object; // 0 - param for compare when remove
+    public function SuperSignalDelayedVO(vo:SuperSignalVO,side:int,value:Object=null,key:String=null){
         this.vo=vo;
         this.side=side;
+        this.value=value;
+        this.key=key;
+    }
+    public function clear():void{
+        vo=null;
+        side=0;
+        key=null;
+        value=null;
     }
 }
