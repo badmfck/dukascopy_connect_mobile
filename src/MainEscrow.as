@@ -11,7 +11,10 @@ import flash.ui.MultitouchInputMode;
 import flash.system.Capabilities;
 import flash.events.UncaughtErrorEvent;
 import com.greensock.TweenMax;
-import com.dukascopy.connect.managers.EscrowDealManager;
+import com.dukascopy.connect.managers.escrow.EscrowDealManager;
+import com.dukascopy.connect.GD;
+import com.dukascopy.connect.managers.escrow.EscrowDealCreateRequest;
+import com.dukascopy.connect.managers.escrow.EscrowDealSide;
 
 
 [SWF(backgroundColor="#ffffff")]
@@ -29,10 +32,25 @@ public class MainEscrow extends Sprite {
 				this.loaderInfo.uncaughtErrorEvents.addEventListener(UncaughtErrorEvent.UNCAUGHT_ERROR, onGlobalError);
 
 			TweenMax.delayedCall(2, start, null, true);
+
 		}
 		
 		private function start():void{
             new EscrowDealManager();
+
+			TweenMax.delayedCall(2,function():void{
+
+				GD.S_ESCROW_DEAL_CREATE_REQUEST.invoke(
+					new EscrowDealCreateRequest()
+					.setChatUID("WrD8DMW0DHWo")
+					.setInstrument("btc")
+					.setMcaCcy("eur")
+					.setPrimAmount(0.0531)
+					.setSecAmount(23.32)
+					.setSide(EscrowDealSide.BUY)
+				)
+
+			},null,true);
 		}
 		
 		public static function onGlobalError(e:UncaughtErrorEvent = null):void {
