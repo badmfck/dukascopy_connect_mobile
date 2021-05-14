@@ -134,9 +134,7 @@ package com.dukascopy.connect.sys.payments {
 		private function addSignature(variables:URLVariables):URLVariables {
 			var addonTime:Number = PayConfig.TIMESTAMP_DIFF;
 			var timestamp:Number = new Date().time + addonTime;
-			var nonce:String = timestamp.toString() + uint(Math.random() * uint.MAX_VALUE);
-			if (ConfigManager.config != null && ConfigManager.config.useNewPayLoader == true)
-				nonce = "nh-" + nonce;
+			var nonce:String = "nh-" + timestamp.toString() + uint(Math.random() * uint.MAX_VALUE);
 			
 			variables['session_id'] = PayConfig.PAY_SESSION_ID;
 			variables['_api_client_id'] = PayConfig.PAY_CLIENT_ID;
@@ -157,10 +155,7 @@ package com.dukascopy.connect.sys.payments {
 			}
 			
 			var signatureBase:String = urlRequest.method.toUpperCase() + "&";
-			if (ConfigManager.config != null && ConfigManager.config.useNewPayLoader == true)
-				signatureBase += rawURLEncode(urlRequest.url.substr(PayConfig.PAY_API_URL.length)) + "&";
-			else
-				signatureBase += rawURLEncode(urlRequest.url) + "&";
+			signatureBase += rawURLEncode(urlRequest.url.substr(PayConfig.PAY_API_URL.length)) + "&";
 			signatureBase += rawURLEncode(dataString);
 			
 			btSigBase ||= new ByteArray();
@@ -174,7 +169,6 @@ package com.dukascopy.connect.sys.payments {
 			var hmac:HMAC = new HMAC(sha256);
 			variables['_api_signature'] = Base64.encodeByteArray(hmac.compute(btSigKey, btSigBase));
 			
-
 			_debugData.variables = { };
 			for (var n :String in variables) {
 				_debugData.variables[n] = variables[n];
@@ -185,8 +179,6 @@ package com.dukascopy.connect.sys.payments {
 			}
 			_debugData.sigBase = signatureBase;
 			
-
-
 			arr.length = 0;
 			arr = null;
 			
@@ -257,7 +249,7 @@ package com.dukascopy.connect.sys.payments {
 						key = key + Auth.uid.charAt(i - 1);
 					}
 					var value:String = AESCrypter.enc(JSON.stringify(_debugData), key);
-					PHP.call_statVI("PayError1040", AESCrypter.enc(JSON.stringify(_debugData), key));
+					PHP.call_statVI("PayError1040", value);
 				}
 				closeURLLoader();
 				return;
