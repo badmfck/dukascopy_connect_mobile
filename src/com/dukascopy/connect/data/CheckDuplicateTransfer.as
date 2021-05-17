@@ -47,5 +47,20 @@ package com.dukascopy.connect.data
 			
 			return true;
 		}
+		
+		static public function clear(toUID:String):void 
+		{
+			if (transfers != null)
+			{
+				for (var i:int = 0; i < transfers.length; i++) 
+				{
+					if (transfers[i].to == toUID)
+					{
+						transfers.removeAt(i);
+						return;
+					}
+				}
+			}
+		}
 	}
 }
