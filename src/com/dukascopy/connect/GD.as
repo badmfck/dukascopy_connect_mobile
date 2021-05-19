@@ -1,6 +1,7 @@
 package com.dukascopy.connect {
 import com.telefision.sys.signals.Signal;
 import com.dukascopy.connect.managers.escrow.S_EscrowDealCreateRequest;
+import com.dukascopy.connect.managers.webview.S_WebViewRequest;
 
 public class GD {
         static public const S_PAYPASS_BACK_CLICK:Signal=new Signal();
@@ -17,5 +18,8 @@ public class GD {
 		// ESCROW
 		static public const S_ESCROW_DEALS_LOADED:Signal=new Signal(); // EscrowDealMap
 		static public const S_ESCROW_DEAL_CREATE_REQUEST:S_EscrowDealCreateRequest=new S_EscrowDealCreateRequest();
+
+		// Web view
+		static public const S_WEBVIEW_REQUEST:S_WebViewRequest=new S_WebViewRequest();
     }
 }

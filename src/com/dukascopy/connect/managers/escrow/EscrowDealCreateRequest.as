@@ -10,6 +10,7 @@ package com.dukascopy.connect.managers.escrow
         private var _mca_ccy:String;// - mca валюта за которую покупают инструмент (EUR)
         private var _sec_amount:Number;// - стоимость, которую платят за инструмент (1023.12)
         private var _side:EscrowDealSide;// - сторона на которой выступает инициатор сделки
+        private var _msgID:int;// - id message с оффером
 
         public function get chatUID():String{return _chatUID}
         public function get instrument():String{return _instrument}
@@ -17,14 +18,16 @@ package com.dukascopy.connect.managers.escrow
         public function get sec_amount():Number{return _sec_amount}
         public function get mca_ccy():String{return mca_ccy}
         public function get side():EscrowDealSide{return _side}
+        public function get msgID():int{return _msgID}
 
-        public function EscrowDealCreateRequest(chatUID:String=null,instrument:String=null,primAmount:Number=0,mcaCcy:String=null,secAmount:Number=0,side:EscrowDealSide=null){
+        public function EscrowDealCreateRequest(chatUID:String=null,instrument:String=null,primAmount:Number=0,mcaCcy:String=null,secAmount:Number=0,side:EscrowDealSide=null,msgID:int=0){
             this._chatUID=chatUID;
             this._instrument=instrument;
             this._prim_amount=primAmount;
             this._sec_amount=secAmount;
             this._mca_ccy=mcaCcy;
             this._side=side;
+            this._msgID=msgID;
         }
 
         public function setChatUID(val:String):EscrowDealCreateRequest{
@@ -55,6 +58,11 @@ package com.dukascopy.connect.managers.escrow
             this._side=val;
             return this;
         }
+
+        public function setMsgID(id:int):EscrowDealCreateRequest{
+            _msgID=id;
+            return this;
+        }
         
         public function toObject():Object{
             return {
@@ -63,7 +71,8 @@ package com.dukascopy.connect.managers.escrow
                 prim_amount:_prim_amount,
                 mca_ccy:_mca_ccy,
                 sec_amount:_sec_amount,
-                side:_side.value
+                side:_side.value,
+                msg_id:_msgID
             }
         }
 
