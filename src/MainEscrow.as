@@ -15,6 +15,9 @@ import com.dukascopy.connect.managers.escrow.EscrowDealManager;
 import com.dukascopy.connect.GD;
 import com.dukascopy.connect.managers.escrow.EscrowDealCreateRequest;
 import com.dukascopy.connect.managers.escrow.EscrowDealSide;
+import com.forms.FormComponent;
+import com.dukascopy.connect.managers.webview.WebViewManager;
+import com.forms.Form;
 
 
 [SWF(backgroundColor="#ffffff")]
@@ -36,7 +39,9 @@ public class MainEscrow extends Sprite {
 		}
 		
 		private function start():void{
+
             new EscrowDealManager();
+			new WebViewManager();
 
 			TweenMax.delayedCall(2,function():void{
 
@@ -48,7 +53,23 @@ public class MainEscrow extends Sprite {
 					.setPrimAmount(0.0531)
 					.setSecAmount(23.32)
 					.setSide(EscrowDealSide.BUY)
+					.setMsgID(0)
 				)
+
+
+				var doc:XML=<body id="body">
+				
+					<div layout="horizontal" id="box" height="40">
+						<div id="txt1"> 1 </div>
+						<div id="txt2"> 2 </div>
+					</div>
+
+				</body>
+
+
+				var form:Form=new Form(doc);
+				addChild(form.view);
+				form.setSize(stage.stageWidth,stage.stageHeight);
 
 			},null,true);
 		}
