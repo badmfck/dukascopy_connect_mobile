@@ -66,6 +66,21 @@ public class MainEscrow extends Sprite {
 				setEscrowForm();
 
 
+
+				var doc:XML=<body id="body">
+				
+					<div layout="horizontal" id="box" height="40">
+						<div id="txt1"> 1 </div>
+						<div id="txt2"> 2 </div>
+					</div>
+
+				</body>
+
+
+				var form:Form=new Form(doc);
+				addChild(form.view);
+				form.setSize(stage.stageWidth,stage.stageHeight);
+
 			},null,true);
 		}
 		
