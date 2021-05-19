@@ -290,8 +290,8 @@ package com.dukascopy.connect.screens.roadMap {
 			item_select_card.action = new SelectCardAction();
 			item_initial_Deposit.action = getInitialDepositAction(depositPrice);
 			item_videoidentification.action = new StartVideoidentificationAction(getEntryPoint());
-			item_solvency_check.action = getSolvencyCheckAction(depositPrice);
 			
+			item_solvency_check.action = getSolvencyCheckAction(depositPrice);
 			item_solvency_check.action.getSuccessSignal().add(onSolvencySuccess);
 			item_solvency_check.action.getFailSignal().add(onSolvencyFail);
 			

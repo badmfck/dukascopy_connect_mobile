@@ -218,7 +218,6 @@ package com.dukascopy.connect.gui.button
 				var baseSize:Number = FontSize.AMOUNT;
 				var captionSize:Number = Config.FINGER_SIZE * 0.28;
 				
-				var balance:String;
 				var balanceLeft:String;
 				var balanceRight:String;
 				
@@ -251,23 +250,29 @@ package com.dukascopy.connect.gui.button
 					currency = instrumentValue;
 				}
 				
+				var balance:Number = 0;
+				var reserved:Number = 0;
+				
 				if ("BALANCE" in data && data.BALANCE != null)
 				{
-					balance = data.BALANCE;
-					if ("RESERVED" in data)
-					{
-						balance = (parseFloat(data.BALANCE) - parseFloat(data.RESERVED)).toFixed(4);
-					}
-					if (balance != null && balance.indexOf(".") == -1)
-					{
-						balanceLeft = balance;
-						balanceRight = "";
-					}
-					else
-					{
-						balanceLeft = balance.substring(0, balance.indexOf("."));
-						balanceRight = balance.substr(balance.indexOf(".") + 1);
-					}
+					balance = parseFloat(data.BALANCE);
+				}
+				if ("RESERVED" in data && data.RESERVED != null)
+				{
+					reserved = parseFloat(data.RESERVED);
+				}
+				var resultSum:Number = balance - reserved;
+				
+				if (resultSum == Math.round(resultSum))
+				{
+					balanceLeft = resultSum.toString();
+					balanceRight = "";
+				}
+				else
+				{
+					var balanceString:String = resultSum.toFixed(4);
+					balanceLeft = balanceString.substring(0, balanceString.indexOf("."));
+					balanceRight = balanceString.substr(balanceString.indexOf(".") + 1);
 				}
 				
 				var accountNumber:String;
