@@ -57,13 +57,21 @@ public class MainEscrow extends Sprite {
 				)
 
 
-				var doc:XML=<body id="body">
-				
-					<div layout="horizontal" id="box" height="40">
+				var doc:XML = <body id="body">
+					
+					<div layout="horizontal" id="box">
 						<div id="txt1"> 1 </div>
-						<div id="txt2"> 2 </div>
+						<div id="txt2">
+							TEXT
+							<div>2</div>
+							<div>3</div>
+							TEXT
+						</div>
 					</div>
-
+					
+					<div height="100%" width="50%" id="percenage1">TEST 3</div>
+					
+					<div>TEST 5</div>
 				</body>
 
 

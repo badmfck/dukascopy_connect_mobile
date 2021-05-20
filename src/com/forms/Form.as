@@ -3,7 +3,9 @@ package com.forms
     import flash.xml.XMLDocument;
     
     public class Form extends FormComponent{
-        public function Form(xml:XML){
+        private var scaleFactor:int=1;
+        public function Form(xml:XML,scaleFactor:int=1){
+            this.scaleFactor=scaleFactor;
             super(new XMLDocument(xml).firstChild);
         }
         

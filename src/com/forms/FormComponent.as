@@ -4,6 +4,7 @@ package com.forms{
     import flash.xml.XMLNode;
     import flash.display.DisplayObjectContainer;
     import flash.display.DisplayObject;
+    import flash.html.__HTMLScriptArray;
     
 
     public class FormComponent{
@@ -40,6 +41,8 @@ package com.forms{
                 var c:FormComponent;
                 if(node.nodeType==3){
                     var txt:String=node.nodeValue.replace(/[\s\n\t\r]/gm,"");
+                    if(txt.indexOf("//<!--")==0)
+                        continue;
                     if(txt.length==0)
                         continue;
                     c=new FormText(node);
@@ -99,7 +102,7 @@ package com.forms{
         }
 
         protected function getParentSize(side:String):int{
-            var p:FormComponent=parent;
+            /*var p:FormComponent=parent;
             var result:int=0;
 
             // MATCH PARENT
@@ -107,25 +110,42 @@ package com.forms{
                 if(p.style[side]>-1)
                     return p.style[side];
                 p=p.parent;
-            }
+            }*/
 
-            return result;
+            return parent.bounds["display_"+side];
+
+            //return result;
         }
 
-        protected function redraw():void{
+        protected function redraw(percentOffsetW:int=-1,percentOffsetH:int=-1):void{
             
             // SETUP SIZE
-            bounds.display_width=style.width>0?style.width:0;
-            bounds.display_height=style.height>0?style.height:0;
-
+            bounds.display_width=style.width>0?style.width:-2;
+            bounds.display_height=style.height>0?style.height:-2;
+            
+            if(id=="body")
+                trace('123');
             // check parent style & setup dimm
             if(parent!=null){
+                var parentH:int=getParentSize("height")
+                var parentW:int=getParentSize("width")
                 if(style.width==-1 && parent.style.layout.toString()==FormLayout.VERTICAL){
-                    bounds.display_width=getParentSize("width");
-                    bounds.display_height=-1; // wrap content, set value after layout
+                    bounds.display_width=parentW;
+                    if(style.height<0)
+                        bounds.display_height=-1; // wrap content, set value after layout
                 }else if(style.height==-1 && parent.style.layout.toString()==FormLayout.HORIZONTAL){
-                    bounds.display_height=getParentSize("height");
-                    bounds.display_width=-1; // wrap content, set value after layout
+                    bounds.display_height=parentH;
+                    if(style.width<0)
+                        bounds.display_width=-1; // wrap content, set value after layout
+                }
+                // percentage
+                if(style.isHeightPercentage){
+                    if(parentH>-1 && percentOffsetH)
+                        bounds.display_height=Math.round((style.height/100)*(parentH-percentOffsetH));
+                }
+                if(style.isWidthPrecentage){
+                    if(parentW>-1 && percentOffsetW)
+                        bounds.display_width=Math.round((style.width/100)*(parentW-percentOffsetW));
                 }
             }
             
@@ -133,28 +153,95 @@ package com.forms{
             if(nodeType==3){
                 // TODO: textField sizes
                 bounds.width=100;
-                bounds.height=20;
+                bounds.height=30;
                 bounds.display_width=100;
-                bounds.display_height=20;
+                bounds.display_height=bounds.height;
             }else{
 
+                var percentagesChidldren:Array=[];
+                
                 // setup layout
-
                 var nextPos:int=0;
                 var maxSize:int=0;
+                var lastSize:int=0;
                 for each(var c:FormComponent in _components){
+                    
+                    var obj:Object=null;
+                    if(c.style.isHeightPercentage){
+                        if(obj==null)
+                            obj={}
+                        obj.child=c;
+                        obj.height=true;
+                    }
+                    
+                    if(c.style.isWidthPrecentage){
+                        if(obj==null)
+                            obj={}
+                        obj.child=c;
+                        obj.width=true;
+                    }
+
+                    if(obj!=null){
+                       percentagesChidldren.push(obj)
+                       continue;
+                    }
+
+
                     c.redraw(); // build child
                     c.view[style.layout.axis]=nextPos; // setup position
                     nextPos+=c.bounds[style.layout.side]; // inc position
                     if(c.bounds[style.layout.oppositeSide]>maxSize)
                         maxSize=c.bounds[style.layout.oppositeSide]
                 }
+
                 bounds[style.layout.side]=nextPos;
+
+                if(percentagesChidldren.length==0){
+                    if(bounds[style.layout.side]<bounds['display_'+style.layout.side])
+                        bounds[style.layout.side]=bounds["display_"+style.layout.side]
+                }
+
                 bounds[style.layout.oppositeSide]=maxSize;
 
                 // setup wrap content for display size
                 if(bounds['display_'+style.layout.oppositeSide]<0)
                     bounds['display_'+style.layout.oppositeSide]=maxSize;
+                if(bounds['display_'+style.layout.side]<0)
+                    bounds['display_'+style.layout.side]=bounds[style.layout.side];
+
+                // percentage
+                // TODO: horizontal layout percentage
+                if(percentagesChidldren.length>0){
+                    nextPos=0;
+                    for each(c in _components){
+                        
+                        for each(var pC:Object in percentagesChidldren){
+                            if(pC.child==c){
+                                var poffsetW:int=pC.width==true && bounds.display_width!=bounds.width?bounds.width:-1;
+                                var poffsetH:int=pC.height==true && bounds.display_height!=bounds.height?bounds.height:-1;
+                                c.redraw(poffsetW,poffsetH);
+                                break;
+                            }
+                        }
+                        
+
+                        c.view[style.layout.axis]=nextPos; // setup position
+                        nextPos+=c.bounds[style.layout.side]; // inc position
+                        if(c.bounds[style.layout.oppositeSide]>maxSize)
+                            maxSize=c.bounds[style.layout.oppositeSide]
+                    }
+                    bounds[style.layout.side]=nextPos;
+                    if(bounds[style.layout.side]<bounds['display_'+style.layout.side])
+                        bounds[style.layout.side]=bounds["display_"+style.layout.side]
+
+                    bounds[style.layout.oppositeSide]=maxSize;
+
+                    // setup wrap content for display size
+                    if(bounds['display_'+style.layout.oppositeSide]<0)
+                        bounds['display_'+style.layout.oppositeSide]=maxSize;
+                    if(bounds['display_'+style.layout.side]<0)
+                        bounds['display_'+style.layout.side]=bounds[style.layout.side];
+                    }
             }
 
             if(bounds.width==0){
