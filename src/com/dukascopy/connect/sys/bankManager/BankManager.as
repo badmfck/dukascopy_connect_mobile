@@ -409,6 +409,8 @@ package com.dukascopy.connect.sys.bankManager {
 			} else if ("investmentDisclaimer" in _initData == true && _initData.investmentDisclaimer == true) {
 				msgDisplay = Lang.showMeInvestmentMenu;
 				msg = "nav:investments";
+			} else if ("investmentOps" in _initData == true && _initData.investmentOps == true) {
+				sendMessage("nav:investmentOperations:" + _initData.acc.ACCOUNT_NUMBER + "|!|" + _initData.acc.INSTRUMENT);
 			}
 			if (msgDisplay != null) {
 				var baVO:BankMessageVO = new BankMessageVO(msgDisplay);

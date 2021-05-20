@@ -454,9 +454,14 @@ package com.dukascopy.connect.sys.bankManager {
 					}
 				}
 				if (tmp[1] == "investmentOperations") {
-					if (steps == null)
-						return;
-					vals = steps[steps.length - 1].val.split("|!|");
+					if (steps == null) {
+						if (tmp.length == 3)
+							vals = tmp[2].split("|!|");
+						else
+							return;
+					} else {
+						vals = steps[steps.length - 1].val.split("|!|");
+					}
 					sendBlock(tmp[1], vals[0], vals[1]);
 					return;
 				}
@@ -482,14 +487,15 @@ package com.dukascopy.connect.sys.bankManager {
 				if (tmp[1] == "investmentDetails") {
 					vals = steps[steps.length - 2].val.split("|!|");
 					var instrument:String = vals[1];
-					if (instrument == null) return;
-					if (investmentDetailsData[instrument] == null) {
+					if (instrument == null)
+						return;
+					//if (investmentDetailsData[instrument] == null) {
 						lastWaitingInvestmentDetailsAction = tempAction;
 						callPaymentsMethod("investmentDetails:" + instrument);
-					} else {
-						tmp[1] = "investmentDetails";
-						sendBlock(tmp[1], instrument);
-					}
+					//} else {
+					//	tmp[1] = "investmentDetails";
+					//	sendBlock(tmp[1], instrument);
+					//}
 					return;
 				}
 				if (tmp[1] == "investmentSellConfirmed") {
@@ -2161,10 +2167,15 @@ package com.dukascopy.connect.sys.bankManager {
 					tempObject.userAccNumber = history[i].RECEIVER_CUSTOMER_NUMBER;
 					tempObject.user = UsersManager.getUserBy(history[i].TO);
 					if (tempObject.user == null) {
-						// Илья, всегда закрывай IF, такое нельзя проябывать ©bloom
-						if (history[i].TO && history[i].TO.indexOf("+") == 0){
-							tempObject.phone = history[i].TO;
-							tempObject.action = "repeatSendMoneyPhone";
+						if (history[i].TO != null) {
+							if (history[i].TO.indexOf("+") == 0) {
+								tempObject.phone = history[i].TO;
+								tempObject.action = "repeatSendMoneyPhone";
+							} else {
+								tempObject.login = history[i].TO;
+							}
+						} else {
+							echo("BankBotController", "onHistoryLoaded", "FROM filed is null", true);
 						}
 					}
 					tempObject.acc = history[i].CURRENCY;
@@ -2175,17 +2186,17 @@ package com.dukascopy.connect.sys.bankManager {
 					} else {
 						tempObject.mine = false;
 						tempObject.userAccNumber = history[i].SENDER_CUSTOMER_NUMBER;
-
 						tempObject.user = UsersManager.getUserBy(history[i].FROM); // from can be null
-
 						if (tempObject.user == null) {
-							// Илья, всегда закрывай IF, такое нельзя проябывать ©bloom
-							// если from == null то и user==null
-							if (history[i].FROM!=null && history[i].FROM.indexOf("+") == 0) {
-								tempObject.phone = history[i].FROM;
-								tempObject.action = "repeatSendMoneyPhone";
-							}else{
-								echo("BankBotController","onHistoryLoaded","FROM filed is null",true);
+							if (history[i].FROM != null) {
+								if (history[i].FROM.indexOf("+") == 0) {
+									tempObject.phone = history[i].FROM;
+									tempObject.action = "repeatSendMoneyPhone";
+								} else {
+									tempObject.login = history[i].TO;
+								}
+							} else {
+								echo("BankBotController", "onHistoryLoaded", "FROM filed is null", true);
 							}
 						}
 						if (history[i].CODE_SECURED == true && history[i].STATUS != "COMPLETED") {
