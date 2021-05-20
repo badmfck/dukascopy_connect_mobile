@@ -10,7 +10,11 @@ package com.forms
         }
         override protected function createView(xml:XMLNode):void{
             _view=new TextField();
-            (_view as TextField).text=xml.nodeValue;
+            var txt:String=xml.nodeValue;
+            txt=txt.replace(/^[\s\n\t\r]/gm,"");
+            txt=txt.replace(/[\s\n\t\r]$/gm,"");
+            txt=txt.replace(/ {2,}/gm,"");
+            (_view as TextField).text=txt;
         }
     }
 }
