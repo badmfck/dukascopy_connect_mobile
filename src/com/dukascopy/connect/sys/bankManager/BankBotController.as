@@ -456,14 +456,18 @@ package com.dukascopy.connect.sys.bankManager {
 					}
 				}
 				if (tmp[1] == "investmentOperations") {
-					if (steps == null) {
-						if (tmp.length == 3)
-							vals = tmp[2].split("|!|");
-						else
-							return;
-					} else {
-						vals = steps[steps.length - 1].val.split("|!|");
-					}
+					if (steps == null)
+						return;
+					vals = steps[steps.length - 1].val.split("|!|");
+					sendBlock(tmp[1], vals[0], vals[1]);
+					return;
+				}
+				if (tmp[1] == "investmentOperationsAdd") {
+					if (tmp.length == 3)
+						vals = tmp[2].split("|!|");
+					else
+						return;
+					firstData = tmp[2];
 					sendBlock(tmp[1], vals[0], vals[1]);
 					return;
 				}
