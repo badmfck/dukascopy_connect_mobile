@@ -68,26 +68,32 @@ public class MainEscrow extends Sprite {
 
 
 				var doc:XML = <body id="body">
-					
 					<div layout="horizontal" id="box">
 						<div id="txt1"> 1 </div>
-						<div id="txt2">
+						<div id="txt2" width="100%">
 							TEXT
 							<div>2</div>
 							<div>3</div>
 							TEXT
 						</div>
 					</div>
-					
 					<div height="100%" width="50%" id="percenage1">TEST 3</div>
-					
 					<div>TEST 5</div>
+					<button primary="true">PEW PEW</button>
 				</body>
 
 
-				var form:Form=new Form(doc);
+				var form:Form=new Form(doc,1);
 				addChild(form.view);
 				form.setSize(stage.stageWidth,stage.stageHeight);
+
+				var cmp:FormComponent=form.getComponentByID("percentage1");
+				if(cmp){
+					cmp.onTap=function():void{
+						trace("COMP TAPPED");
+					}
+				}
+
 
 			},null,true);
 		}

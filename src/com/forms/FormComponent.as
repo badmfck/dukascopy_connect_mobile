@@ -569,6 +569,7 @@ package com.forms{
                     return;
             }
 
+        protected function draw():void{
             // draw env
             if(_view is Sprite){
                 var spr:Sprite=_view as Sprite;
@@ -612,6 +613,7 @@ package com.forms{
             }
             return null;
         }
+
 
         protected function removeFromStage():void{
             parent=null;
