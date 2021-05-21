@@ -410,7 +410,7 @@ package com.dukascopy.connect.sys.bankManager {
 				msgDisplay = Lang.showMeInvestmentMenu;
 				msg = "nav:investments";
 			} else if ("investmentOps" in _initData == true && _initData.investmentOps == true) {
-				sendMessage("nav:investmentOperationsAdd:" + _initData.acc.ACCOUNT_NUMBER + "|!|" + _initData.acc.INSTRUMENT);
+				sendMessage("nav:investmentOperationsAdd:" + _initData.investmentAcc.ACCOUNT_NUMBER + "|!|" + _initData.investmentAcc.INSTRUMENT);
 			}
 			if (msgDisplay != null) {
 				var baVO:BankMessageVO = new BankMessageVO(msgDisplay);
