@@ -6,7 +6,7 @@ package com.forms
     public class FormText extends FormComponent{
 
         public function FormText(xml:XMLNode){
-            super(xml);
+            super(xml,null);
         }
         override protected function createView(xml:XMLNode):void{
             _view=new TextField();
