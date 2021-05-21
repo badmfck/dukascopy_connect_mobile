@@ -410,7 +410,7 @@ package com.dukascopy.connect.sys.bankManager {
 				msgDisplay = Lang.showMeInvestmentMenu;
 				msg = "nav:investments";
 			} else if ("investmentOps" in _initData == true && _initData.investmentOps == true) {
-				sendMessage("nav:investmentOperations:" + _initData.acc.ACCOUNT_NUMBER + "|!|" + _initData.acc.INSTRUMENT);
+				sendMessage("nav:investmentOperationsAdd:" + _initData.acc.ACCOUNT_NUMBER + "|!|" + _initData.acc.INSTRUMENT);
 			}
 			if (msgDisplay != null) {
 				var baVO:BankMessageVO = new BankMessageVO(msgDisplay);
@@ -1104,7 +1104,12 @@ package com.dukascopy.connect.sys.bankManager {
 					sendMessage("val:" + data.param.ACCOUNT_NUMBER + "|!|" + data.param.INSTRUMENT);
 					sendMessage(msg);
 				} else if (data.type == "investmentDetails") {
-					
+					data.tapped = true;
+					baVO = new BankMessageVO(data.text);
+					baVO.setMine();
+					invokeAnswerSignal(baVO);
+					sendMessage("val:" + data.selection1);
+					sendMessage(msg);
 				} else if (data.type == "paymentsInvestmentHistory") {
 					
 				} else if (data.type == "demoOpen") {

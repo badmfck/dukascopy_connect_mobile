@@ -2907,7 +2907,9 @@ package com.dukascopy.connect.sys.bankManager {
 					{
 						text:"lang.menuInvestmentDetails",
 						action:"nav:investmentDetails",
-						selection:"@@1"
+						type:"investmentDetails",
+						selection:"@@1",
+						selection1:"@@2"
 					}, {
 						text:"lang.menuHistory",
 						action:"app:historyInvestment",
@@ -2942,6 +2944,48 @@ package com.dukascopy.connect.sys.bankManager {
 					}, {
 						text:"lang.buttonCancel",
 						action:"system:cancel"
+					}
+				]
+			},
+			
+			investmentOperationsAdd: {
+				desc:"lang.investmentDesc",
+				item: {
+					type:"showInvestment",
+					selection:"@@1"
+				},
+				menuLayout:"vertical",
+				menu:[
+					{
+						text:"lang.menuInvestmentDetails",
+						action:"nav:investmentDetails",
+						type:"investmentDetails",
+						selection:"@@1",
+						selection1:"@@2"
+					}, {
+						text:"lang.menuHistory",
+						action:"app:back"
+					}, {
+						text:"lang.menuInvestmentBuy",
+						type:"paymentsInvestments",
+						textForUser1:"lang.itemInvestmentBuy1",
+						textForUser2:"lang.itemInvestmentBuy2",
+						action:"nav:investmentConfirm",
+						value:"@@2"
+					}, {
+						text:"lang.menuInvestmentSellAll",
+						action:"nav:investmentSellAllConfirm",
+						type:"paymentsInvestmentsSellAll",
+						textForUser1:"lang.itemInvestmentSell1",
+						selection:"@@1"
+					}, {
+						text:"lang.menuInvestmentDeliveryBC",
+						type:"BCWithdrawalInvestment",
+						action:"nav:bcDeliveryConfirm",
+						textForUser:"lang.itemInvestmentDeliveryBC",
+						selection:"@@2",
+						selectionAcc:"@@1",
+						disabled:true
 					}
 				]
 			},
