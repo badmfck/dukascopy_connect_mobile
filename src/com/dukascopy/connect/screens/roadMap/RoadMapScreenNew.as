@@ -602,7 +602,7 @@ package com.dukascopy.connect.screens.roadMap {
 			textFriend = new Bitmap();
 			scroll.addObject(textFriend);
 			
-			var textValue:String = Lang.askFriendDescription;
+			var textValue:String = Lang.askFriendDescription_2;
 			textValue = LangManager.replace(/%@/g, textValue, depositPrice);
 			
 			textFriend.bitmapData = TextUtils.createTextFieldData(

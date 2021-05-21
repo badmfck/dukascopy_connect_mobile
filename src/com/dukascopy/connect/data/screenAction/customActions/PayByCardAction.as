@@ -9,6 +9,7 @@ package com.dukascopy.connect.data.screenAction.customActions {
 	import com.dukascopy.connect.screens.dialogs.ScreenPayWebviewDialog;
 	import com.dukascopy.connect.sys.chatManager.ChatManager;
 	import com.dukascopy.connect.sys.dialogManager.DialogManager;
+	import com.dukascopy.connect.sys.echo.echo;
 	import com.dukascopy.connect.sys.errors.ErrorLocalizer;
 	import com.dukascopy.connect.sys.nativeExtensionController.NativeExtensionController;
 	import com.dukascopy.connect.sys.php.PHP;
@@ -20,6 +21,7 @@ package com.dukascopy.connect.data.screenAction.customActions {
 	import com.dukascopy.connect.vo.users.UserVO;
 	import com.dukascopy.langs.Lang;
 	import com.dukascopy.langs.LangManager;
+	import com.greensock.TweenMax;
 	import flash.events.StatusEvent;
 	
 	/**
@@ -51,7 +53,7 @@ package com.dukascopy.connect.data.screenAction.customActions {
 		}
 		
 		public function execute():void {
-			
+			TweenMax.killDelayedCallsTo(onSuccess);
 			user = UsersManager.getUserByUID(userUID);
 			if (user != null)
 			{
@@ -59,8 +61,18 @@ package com.dukascopy.connect.data.screenAction.customActions {
 			}
 			else
 			{
+				onFail();
 				ToastMessage.display(Lang.errorUserNotFound);
 				dispose();
+			}
+		}
+		
+		private function onFail():void 
+		{
+			TweenMax.killDelayedCallsTo(onSuccess);
+			if (S_ACTION_FAIL != null)
+			{
+				S_ACTION_FAIL.invoke();
 			}
 		}
 		
@@ -84,11 +96,14 @@ package com.dukascopy.connect.data.screenAction.customActions {
 				{
 					ToastMessage.display(Lang.serverError);
 				}
-				
+				onFail();
 				dispose();
 			}
 			else
 			{
+				TweenMax.killDelayedCallsTo(onSuccess);
+				TweenMax.delayedCall(1.5, onSuccess);
+				
 				var currentLang:String = LangManager.model.getCurrentLanguageID();
 				if (currentLang == "fr" ||
 					currentLang == "ru" ||
@@ -124,11 +139,21 @@ package com.dukascopy.connect.data.screenAction.customActions {
 					);
 				}
 			}
-			r.dispose();
+		//	r.dispose();
+		}
+		
+		private function onSuccess():void 
+		{
+			TweenMax.killDelayedCallsTo(onSuccess);
+			if (S_ACTION_SUCCESS != null)
+			{
+				S_ACTION_SUCCESS.invoke();
+			}
 		}
 		
 		private function onWebViewInvoiceCallback(success:Boolean, popupData:Object):void
 		{
+			onFail();
 			if (disposed == true)
 			{
 				return;
@@ -153,6 +178,7 @@ package com.dukascopy.connect.data.screenAction.customActions {
 		private function extensionAndroidStatusHandler(e:StatusEvent):void
 		{
 			if (e.code == "webViewClose") {
+				echo("webView.flash", e.level);
 				if (e.level != null && e.level.indexOf("status=success")> -1) {
 					finishInvoice(message);
 				}
@@ -162,6 +188,7 @@ package com.dukascopy.connect.data.screenAction.customActions {
 		
 		override public function dispose():void
 		{
+			TweenMax.killDelayedCallsTo(onSuccess);
 			super.dispose();
 			if (MobileGui.androidExtension != null)
 			{

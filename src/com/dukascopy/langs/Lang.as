@@ -2226,7 +2226,7 @@ package com.dukascopy.langs {
 		static public var verifyWithCtyptoDeposit:String = "Verify with Crypto Deposit";
 		static public var askAFriend:String = "Ask a friend";
 		//deprecated
-		static public var askFriendDescription:String = "You can ask a friend to send you 30 EUR directly in the chat. After you receive the requested amount, you will be automatically redirected to the next step. Click on the button bellow to see which of your contacts already has a Multi-Currency account with Dukascopy.";
+	//	static public var askFriendDescription:String = "You can ask a friend to send you 30 EUR directly in the chat. After you receive the requested amount, you will be automatically redirected to the next step. Click on the button bellow to see which of your contacts already has a Multi-Currency account with Dukascopy.";
 		static public var solvencyVerificatoinSuccess:String = "Solvency verification has been successfully completed";
 		static public var solvencyVerificatoinFail:String = "Solvency verification cannot be completed. Make sure you have an active account with ZBX or that the balance is sufficient to pass solvency check";
 		static public var zbxRequestTryLater:String = "You have already request a balance few moments ago, please try again later";
