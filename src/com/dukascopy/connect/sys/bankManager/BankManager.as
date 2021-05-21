@@ -1546,12 +1546,35 @@ package com.dukascopy.connect.sys.bankManager {
 			return null;
 		}
 		
+		static public function getAccountByNumberAll(val:String):Object {
+			var acc:Object = getAccountByNumber(val);
+			if (acc != null)
+				return acc;
+			acc = getSavingAccountByNumber(val);
+			if (acc != null)
+				return acc;
+			acc = getCryptoAccountByNumber(val);
+			if (acc != null)
+				return acc;
+			return null;
+		}
+		
 		static public function getAccountByNumber(val:String):Object {
 			if (accountInfo == null || accountInfo.accounts == null)
 				return null;
 			for (var i:int = 0; i < accountInfo.accounts.length; i++) {
 				if (accountInfo.accounts[i].ACCOUNT_NUMBER == val)
 					return accountInfo.accounts[i];
+			}
+			return null;
+		}
+		
+		static public function getCryptoAccountByNumber(val:String):Object {
+			if (cryptoAccounts == null)
+				return null;
+			for (var i:int = 0; i < cryptoAccounts.length; i++) {
+				if (cryptoAccounts[i].ACCOUNT_NUMBER == val)
+					return cryptoAccounts[i];
 			}
 			return null;
 		}
@@ -2796,8 +2819,11 @@ package com.dukascopy.connect.sys.bankManager {
 				}
 				isCardHistory = false;
 				isInvestmentHistory = false;
-				if (historyAccount != "all")
-					historyAccCurrency = getAccountByNumber(historyAccount).CURRENCY;
+				if (historyAccount != "all") {
+					var account:Object = getAccountByNumberAll(historyAccount);
+					if (account != null)
+						historyAccCurrency = account.CURRENCY;
+				}
 				var notNull:Boolean = false;
 				if (history != null &&
 					historyAccount in history == true &&
