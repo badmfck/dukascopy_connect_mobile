@@ -17,8 +17,8 @@ package com.dukascopy.connect.screens.roadMap {
 	import com.dukascopy.connect.gui.lightbox.IBitmapProvider;
 	import com.dukascopy.connect.gui.lightbox.UI;
 	import com.dukascopy.connect.gui.menuVideo.BitmapButton;
-	import com.dukascopy.connect.screens.dialogs.bottom.AnimatedTitlePopup;
-	import com.dukascopy.connect.screens.dialogs.bottom.ScrollAnimatedTitlePopup;
+	import com.dukascopy.connect.screens.dialogs.bottom.base.AnimatedTitlePopup;
+	import com.dukascopy.connect.screens.dialogs.bottom.base.ScrollAnimatedTitlePopup;
 	import com.dukascopy.connect.screens.dialogs.paymentDialogs.elements.InputField;
 	import com.dukascopy.connect.sys.imageManager.ImageBitmapData;
 	import com.dukascopy.connect.sys.nativeExtensionController.NativeExtensionController;

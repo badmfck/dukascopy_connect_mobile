@@ -26,8 +26,8 @@ package com.dukascopy.connect.sys.bankManager {
 	import com.dukascopy.connect.screens.dialogs.CreateTemplateDialog;
 	import com.dukascopy.connect.screens.dialogs.ScreenAddInvoiceDialog;
 	import com.dukascopy.connect.screens.dialogs.ScreenPayDialog;
-	import com.dukascopy.connect.screens.dialogs.bottom.ListSelectionPopup;
-	import com.dukascopy.connect.screens.dialogs.bottom.SearchListSelectionPopup;
+	import com.dukascopy.connect.screens.dialogs.bottom.base.ListSelectionPopup;
+	import com.dukascopy.connect.screens.dialogs.bottom.base.SearchListSelectionPopup;
 	import com.dukascopy.connect.screens.dialogs.bottom.ShareLinkPopup;
 	import com.dukascopy.connect.screens.dialogs.gifts.CreateGiftPopup;
 	import com.dukascopy.connect.screens.dialogs.paymentDialogs.BuyCommodityPopup;

@@ -12,6 +12,7 @@ package com.dukascopy.connect.screens.dialogs.bottom {
 	import com.dukascopy.connect.gui.lightbox.IBitmapProvider;
 	import com.dukascopy.connect.gui.lightbox.UI;
 	import com.dukascopy.connect.gui.menuVideo.BitmapButton;
+	import com.dukascopy.connect.screens.dialogs.bottom.base.AnimatedTitlePopup;
 	import com.dukascopy.connect.sys.imageManager.ImageBitmapData;
 	import com.dukascopy.connect.sys.pointerManager.PointerManager;
 	import com.dukascopy.connect.sys.style.FontSize;

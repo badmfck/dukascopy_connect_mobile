@@ -16,7 +16,7 @@ package com.dukascopy.connect.gui.components
 	import com.dukascopy.connect.gui.menuVideo.BitmapButton;
 	import com.dukascopy.connect.screens.dialogs.ScreenLinksDialog;
 	import com.dukascopy.connect.screens.dialogs.ScreenPayDialog;
-	import com.dukascopy.connect.screens.dialogs.bottom.ListSelectionPopup;
+	import com.dukascopy.connect.screens.dialogs.bottom.base.ListSelectionPopup;
 	import com.dukascopy.connect.screens.dialogs.paymentDialogs.elements.InputField;
 	import com.dukascopy.connect.sys.dialogManager.DialogManager;
 	import com.dukascopy.connect.sys.imageManager.ImageBitmapData;

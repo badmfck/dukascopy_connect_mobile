@@ -5,7 +5,7 @@ package com.dukascopy.connect.screens.dialogs {
 	import com.dukascopy.connect.data.escrow.EscrowDealData;
 	import com.dukascopy.connect.gui.input.Input;
 	import com.dukascopy.connect.gui.menuVideo.BitmapButton;
-	import com.dukascopy.connect.screens.dialogs.bottom.ScrollAnimatedTitlePopup;
+	import com.dukascopy.connect.screens.dialogs.bottom.base.ScrollAnimatedTitlePopup;
 	import com.dukascopy.connect.screens.dialogs.paymentDialogs.elements.InputField;
 	import com.dukascopy.connect.sys.imageManager.ImageBitmapData;
 	import com.dukascopy.connect.sys.style.FontSize;

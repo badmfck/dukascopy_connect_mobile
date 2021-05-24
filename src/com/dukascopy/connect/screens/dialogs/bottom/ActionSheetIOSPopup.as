@@ -1,6 +1,7 @@
 package com.dukascopy.connect.screens.dialogs.bottom 
 {
 	import com.dukascopy.connect.Config;
+	import com.dukascopy.connect.screens.dialogs.bottom.base.BottomPopup;
 	import com.dukascopy.connect.sys.applicationError.ApplicationErrors;
 	import com.dukascopy.connect.sys.style.Style;
 	import com.dukascopy.langs.Lang;

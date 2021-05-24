@@ -11,7 +11,7 @@ package com.dukascopy.connect.screens.dialogs.bottom.implementation {
 	import com.dukascopy.connect.gui.lightbox.UI;
 	import com.dukascopy.connect.gui.menuVideo.BitmapButton;
 	import com.dukascopy.connect.gui.menuVideo.BitmapToggleSwitch;
-	import com.dukascopy.connect.screens.dialogs.bottom.ScrollAnimatedTitlePopup;
+	import com.dukascopy.connect.screens.dialogs.bottom.base.ScrollAnimatedTitlePopup;
 	import com.dukascopy.connect.sys.dialogManager.DialogManager;
 	import com.dukascopy.connect.sys.imageManager.ImageBitmapData;
 	import com.dukascopy.connect.sys.php.PHP;

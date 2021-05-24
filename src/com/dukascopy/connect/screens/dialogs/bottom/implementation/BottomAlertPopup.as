@@ -4,7 +4,7 @@ package com.dukascopy.connect.screens.dialogs.bottom.implementation {
 	import com.dukascopy.connect.data.TextFieldSettings;
 	import com.dukascopy.connect.gui.lightbox.UI;
 	import com.dukascopy.connect.gui.menuVideo.BitmapButton;
-	import com.dukascopy.connect.screens.dialogs.bottom.ScrollAnimatedTitlePopup;
+	import com.dukascopy.connect.screens.dialogs.bottom.base.ScrollAnimatedTitlePopup;
 	import com.dukascopy.connect.sys.imageManager.ImageBitmapData;
 	import com.dukascopy.connect.sys.style.FontSize;
 	import com.dukascopy.connect.sys.style.Style;

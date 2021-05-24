@@ -18,7 +18,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 	import com.dukascopy.connect.screens.base.BaseScreen;
 	import com.dukascopy.connect.screens.dialogs.ScreenLinksDialog;
 	import com.dukascopy.connect.screens.dialogs.ScreenPayDialog;
-	import com.dukascopy.connect.screens.dialogs.bottom.ListSelectionPopup;
+	import com.dukascopy.connect.screens.dialogs.bottom.base.ListSelectionPopup;
 	import com.dukascopy.connect.screens.payments.card.TypeCurrency;
 	import com.dukascopy.connect.sys.applicationShop.commodity.Commodity;
 	import com.dukascopy.connect.sys.applicationShop.commodity.CommodityType;

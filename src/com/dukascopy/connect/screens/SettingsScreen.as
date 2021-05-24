@@ -31,8 +31,8 @@ package com.dukascopy.connect.screens {
 	import com.dukascopy.connect.screens.dialogs.QueuePopup;
 	import com.dukascopy.connect.screens.dialogs.QueueUnderagePopup;
 	import com.dukascopy.connect.screens.dialogs.UseFingerprintDialog;
-	import com.dukascopy.connect.screens.dialogs.bottom.AnimatedTitlePopup;
-	import com.dukascopy.connect.screens.dialogs.bottom.ListSelectionPopup;
+	import com.dukascopy.connect.screens.dialogs.bottom.base.AnimatedTitlePopup;
+	import com.dukascopy.connect.screens.dialogs.bottom.base.ListSelectionPopup;
 	import com.dukascopy.connect.screens.dialogs.bottom.ShareLinkPopup;
 	import com.dukascopy.connect.screens.dialogs.bottom.TransactionFilterPopup;
 	import com.dukascopy.connect.screens.dialogs.bottom.implementation.BottomConfirmPopup;

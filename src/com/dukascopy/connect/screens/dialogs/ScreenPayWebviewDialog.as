@@ -2,7 +2,7 @@ package com.dukascopy.connect.screens.dialogs {
 	
 	import com.dukascopy.connect.Config;
 	import com.dukascopy.connect.MobileGui;
-	import com.dukascopy.connect.screens.dialogs.bottom.AnimatedTitlePopup;
+	import com.dukascopy.connect.screens.dialogs.bottom.base.AnimatedTitlePopup;
 	import com.dukascopy.connect.sys.echo.echo;
 	import com.greensock.TweenMax;
 	import flash.events.ErrorEvent;

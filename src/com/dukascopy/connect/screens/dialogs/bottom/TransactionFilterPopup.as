@@ -26,6 +26,7 @@ package com.dukascopy.connect.screens.dialogs.bottom
 	import com.dukascopy.connect.gui.lightbox.UI;
 	import com.dukascopy.connect.gui.menuVideo.BitmapButton;
 	import com.dukascopy.connect.gui.tabs.FilterTabs;
+	import com.dukascopy.connect.screens.dialogs.bottom.base.BottomPopup;
 	import com.dukascopy.connect.screens.dialogs.calendar.DatePicker;
 	import com.dukascopy.connect.screens.payments.card.TypeCurrency;
 	import com.dukascopy.connect.sys.applicationError.ApplicationErrors;

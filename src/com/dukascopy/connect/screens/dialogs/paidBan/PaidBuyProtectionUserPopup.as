@@ -18,7 +18,7 @@ package com.dukascopy.connect.screens.dialogs.paidBan {
 	import com.dukascopy.connect.gui.scrollPanel.ScrollPanel;
 	import com.dukascopy.connect.screens.base.BaseScreen;
 	import com.dukascopy.connect.screens.dialogs.ScreenPayDialog;
-	import com.dukascopy.connect.screens.dialogs.bottom.ListSelectionPopup;
+	import com.dukascopy.connect.screens.dialogs.bottom.base.ListSelectionPopup;
 	import com.dukascopy.connect.screens.payments.card.TypeCurrency;
 	import com.dukascopy.connect.sys.applicationError.ApplicationErrors;
 	import com.dukascopy.connect.sys.applicationShop.serverTask.PaidBanProtectionRequestData;
