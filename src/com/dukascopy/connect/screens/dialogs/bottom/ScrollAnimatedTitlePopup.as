@@ -93,7 +93,13 @@ package com.dukascopy.connect.screens.dialogs.bottom
 			
 			scrollBottom.y = 0;
 			updateContentPositions();
-			scrollBottom.y = scrollPanel.itemsHeight + Config.APPLE_BOTTOM_OFFSET;
+			var position:int = scrollPanel.itemsHeight + Config.APPLE_BOTTOM_OFFSET;
+			if (Config.APPLE_BOTTOM_OFFSET < Config.FINGER_SIZE * .3)
+			{
+				position += Config.FINGER_SIZE * .3 - Config.APPLE_BOTTOM_OFFSET;
+			}
+			
+			scrollBottom.y = position;
 		}
 		
 		protected function updateContentPositions():void 

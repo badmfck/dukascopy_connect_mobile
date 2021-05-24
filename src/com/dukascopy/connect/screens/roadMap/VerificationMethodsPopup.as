@@ -102,7 +102,7 @@ package com.dukascopy.connect.screens.roadMap {
 			if (_isDisposed == true)
 				return;
 			
-			scrollBottom.y = scrollPanel.itemsHeight + Config.APPLE_BOTTOM_OFFSET + Config.FINGER_SIZE * .3;
+		//	scrollBottom.y = scrollPanel.itemsHeight + Config.APPLE_BOTTOM_OFFSET;
 			super.drawView();
 		}
 		
