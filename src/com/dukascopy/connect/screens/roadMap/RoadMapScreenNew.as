@@ -91,10 +91,10 @@ package com.dukascopy.connect.screens.roadMap {
 			{ id:"refreshBtn", img:Style.icon(Style.ICON_REFRESH), callback:onRefresh, imgColor:Style.color(Style.TOP_BAR_ICON_COLOR) }
 		];
 		
-		private const REGISTRATION_TYPE_STANDART:String = "standart";
-		private const REGISTRATION_TYPE_DEPOSIT:String = "deposit";
-		private const REGISTRATION_TYPE_DEPOSIT_CARD:String = "deposit_card";
-		private const REGISTRATION_TYPE_SOLVENCY_CHECK:String = "zbx_check";
+		public static const REGISTRATION_TYPE_STANDART:String = "standart";
+		public static const REGISTRATION_TYPE_DEPOSIT:String = "deposit";
+		public static const REGISTRATION_TYPE_DEPOSIT_CARD:String = "deposit_card";
+		public static const REGISTRATION_TYPE_SOLVENCY_CHECK:String = "zbx_check";
 		
 		static public const TAB_ACCOUNT_MCA:String = "tabAccountMca";
 		static public const TAB_ACCOUNT_TRADE_CH:String = "tabAccountTradeCh";
@@ -537,12 +537,13 @@ package com.dukascopy.connect.screens.roadMap {
 		{
 			if (solvencyAction == null)
 			{
-				solvencyAction = new SolvencyCheckAction(depositPrice)
+				solvencyAction = new SolvencyCheckAction(depositPrice);
 			}
 			else
 			{
 				solvencyAction.price = depositPrice;
 			}
+			solvencyAction.regType = registrationType;
 			return solvencyAction;
 		}
 		
