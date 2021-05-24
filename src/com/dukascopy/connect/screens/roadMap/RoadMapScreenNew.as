@@ -452,6 +452,11 @@ package com.dukascopy.connect.screens.roadMap {
 				}
 				else
 				{
+					if (item_solvency_check != null && item_solvency_check.action != null)
+					{
+						(item_solvency_check.action as SolvencyCheckAction).allowZBX = false;
+					}
+					
 					if (Auth.bank_phase == BankPhaze.DOCUMENT_SCAN)
 					{
 						items.push(item_document_scan);
