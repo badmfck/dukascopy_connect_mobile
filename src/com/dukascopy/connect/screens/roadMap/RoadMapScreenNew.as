@@ -4,6 +4,7 @@ package com.dukascopy.connect.screens.roadMap {
 	import assets.ShadowClip;
 	import com.dukascopy.connect.Config;
 	import com.dukascopy.connect.MobileGui;
+	import com.dukascopy.connect.data.SolvencyCheckType;
 	import com.dukascopy.connect.data.TextFieldSettings;
 	import com.dukascopy.connect.data.TransactionData;
 	import com.dukascopy.connect.gui.components.CirclePreloader;
@@ -117,8 +118,6 @@ package com.dukascopy.connect.screens.roadMap {
 		private var textFriend:Bitmap;
 		private var solvencyAction:SolvencyCheckAction;
 		private var needRemoveFriends:Boolean;
-	//	private var registrationType = REGISTRATION_TYPE_DEPOSIT;
-	//	private var registrationType = REGISTRATION_TYPE_DEPOSIT_CARD;
 		private var tabs:FilterTabs;
 		private var selectedFilter:String = TAB_ACCOUNT_MCA;
 		private var locked:Boolean;
@@ -128,6 +127,8 @@ package com.dukascopy.connect.screens.roadMap {
 		private var depositAction:InitialDepositAction;
 		private var depositPriceNum:Number;
 		private var depositPriceCurrency:String;
+		
+		static public var lastSolvencyMethod:String;
 			
 		public function RoadMapScreenNew() {}
 		
@@ -290,8 +291,8 @@ package com.dukascopy.connect.screens.roadMap {
 			item_select_card.action = new SelectCardAction();
 			item_initial_Deposit.action = getInitialDepositAction(depositPrice);
 			item_videoidentification.action = new StartVideoidentificationAction(getEntryPoint());
-			item_solvency_check.action = getSolvencyCheckAction(depositPrice);
 			
+			item_solvency_check.action = getSolvencyCheckAction(depositPrice);
 			item_solvency_check.action.getSuccessSignal().add(onSolvencySuccess);
 			item_solvency_check.action.getFailSignal().add(onSolvencyFail);
 			
@@ -495,6 +496,10 @@ package com.dukascopy.connect.screens.roadMap {
 			{
 				return Lang.roadmap_wireDeposit;
 			}
+			if (lastSolvencyMethod == SolvencyCheckType.WIRE)
+			{
+				return Lang.roadmap_wireDeposit;
+			}
 			return Lang.roadmap_initialDeposit;
 		}
 		
@@ -602,7 +607,7 @@ package com.dukascopy.connect.screens.roadMap {
 			textFriend = new Bitmap();
 			scroll.addObject(textFriend);
 			
-			var textValue:String = Lang.askFriendDescription;
+			var textValue:String = Lang.askFriendDescription_2;
 			textValue = LangManager.replace(/%@/g, textValue, depositPrice);
 			
 			textFriend.bitmapData = TextUtils.createTextFieldData(
