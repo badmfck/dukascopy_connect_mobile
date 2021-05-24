@@ -158,15 +158,24 @@ package com.dukascopy.connect.screens.roadMap {
 			methodCardDeposit.type = SolvencyMethodData.METHOD_CARD_DEPOSIT;
 			methodsData.push(methodCardDeposit);
 			
-			var methodCardWireDeposit:SolvencyMethodData = new SolvencyMethodData();
-			methodCardWireDeposit.title = Lang.solvency_wire_deposit;
-			textValue = Lang.solvency_wire_deposit_description;
-			textValue = LangManager.replace(/%@/g, textValue, price);
-			methodCardWireDeposit.subtitle = textValue;
-			methodCardWireDeposit.selected = false;
-			methodCardWireDeposit.icon = CardDepositIcon;
-			methodCardWireDeposit.type = SolvencyMethodData.METHOD_WIRE_DEPOSIT;
-			methodsData.push(methodCardWireDeposit);
+			var allowWire:Boolean = true;
+			if (data != null && "regType" in data && data.regType == RoadMapScreenNew.REGISTRATION_TYPE_DEPOSIT)
+			{
+				allowWire = false;
+			}
+			if (allowWire)
+			{
+				var methodCardWireDeposit:SolvencyMethodData = new SolvencyMethodData();
+				methodCardWireDeposit.title = Lang.solvency_wire_deposit;
+				textValue = Lang.solvency_wire_deposit_description;
+				textValue = LangManager.replace(/%@/g, textValue, price);
+				methodCardWireDeposit.subtitle = textValue;
+				methodCardWireDeposit.selected = false;
+				methodCardWireDeposit.icon = CardDepositIcon;
+				methodCardWireDeposit.type = SolvencyMethodData.METHOD_WIRE_DEPOSIT;
+				methodsData.push(methodCardWireDeposit);
+			}
+			
 			
 			var methodCryptoDeposit:SolvencyMethodData
 			if (data != null && "allowZBX" in data && data.allowZBX == true)

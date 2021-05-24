@@ -26,6 +26,7 @@ package com.dukascopy.connect.screens.roadMap.actions
 		private var needCallback:Boolean;
 		public var allowZBX:Boolean = false;
 		public var price:String;
+		public var regType:String;
 		
 		public function SolvencyCheckAction(priceValue:String) 
 		{
@@ -66,6 +67,7 @@ package com.dukascopy.connect.screens.roadMap.actions
 					title:Lang.verificationMethods,
 					callback:methodSelected,
 					selected:selectedMethod,
+					regType:regType,
 					price:price
 				}
 			);
