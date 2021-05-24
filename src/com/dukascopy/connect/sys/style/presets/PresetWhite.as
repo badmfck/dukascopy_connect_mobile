@@ -6,6 +6,7 @@ package com.dukascopy.connect.sys.style.presets
 	import assets.AttachImageIcon;
 	import assets.AttachInvoiceIcon;
 	import assets.AttachPayIcon;
+	import assets.CreateDealIcon;
 	import assets.FilterSmallIcon;
 	import assets.FingerprintInfo;
 	import assets.JailIcon;
@@ -309,6 +310,7 @@ package com.dukascopy.connect.sys.style.presets
 			this[Style.ROADMAP_ILLUSTRATION] = RoadmapImage;
 			this[Style.PAYMENT_VISA] = VisaClip;
 			this[Style.TRANSFER_ILLUSTRATION] = TransferIllustration;
+			this[Style.ICON_ATTACH_DEAL] = CreateDealIcon;
 		}
 	}
 }

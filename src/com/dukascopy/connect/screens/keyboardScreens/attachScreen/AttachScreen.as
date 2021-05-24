@@ -4,6 +4,7 @@ package com.dukascopy.connect.screens.keyboardScreens.attachScreen {
 	import com.dukascopy.connect.data.screenAction.IScreenAction;
 	import com.dukascopy.connect.data.screenAction.customActions.AddInvoiceAction;
 	import com.dukascopy.connect.data.screenAction.customActions.AttachDocumentAction;
+	import com.dukascopy.connect.data.screenAction.customActions.CreateCoinTradeAction;
 	import com.dukascopy.connect.data.screenAction.customActions.CreatePuzzleAction;
 	import com.dukascopy.connect.data.screenAction.customActions.OpenCameraAction;
 	import com.dukascopy.connect.data.screenAction.customActions.OpenGalleryAction;
@@ -16,8 +17,10 @@ package com.dukascopy.connect.screens.keyboardScreens.attachScreen {
 	import com.dukascopy.connect.sys.chatManager.ChatManager;
 	import com.dukascopy.connect.sys.connectionManager.NetworkManager;
 	import com.dukascopy.connect.sys.payments.PayConfig;
+	import com.dukascopy.connect.sys.payments.PayManager;
 	import com.dukascopy.connect.sys.style.Style;
 	import com.dukascopy.connect.sys.ws.WS;
+	import com.dukascopy.connect.type.BankPhaze;
 	import com.dukascopy.connect.type.ChatRoomType;
 	import com.dukascopy.connect.vo.screen.AttachScreenData;
 	import com.dukascopy.langs.Lang;
@@ -136,6 +139,9 @@ package com.dukascopy.connect.screens.keyboardScreens.attachScreen {
 			var puzzle:IScreenAction = new CreatePuzzleAction();
 			puzzle.setData(Lang.textPuzzle);
 			
+			var tradeAction:IScreenAction = new CreateCoinTradeAction();
+			tradeAction.setData(Lang.escrow);
+			
 			var sendGiftAction:IScreenAction = new OpenGiftsAction();
 			sendGiftAction.setData(Lang.sendGift);
 			
@@ -148,9 +154,18 @@ package com.dukascopy.connect.screens.keyboardScreens.attachScreen {
 			}
 			
 		//	actions.push(callGalleryAction);
-			if (ChatManager.getCurrentChat() != null && ChatManager.getCurrentChat().type != ChatRoomType.COMPANY && ChatManager.getCurrentChat().type != ChatRoomType.CHANNEL && ChatManager.getCurrentChat().type != ChatRoomType.GROUP)
+			/*if (ChatManager.getCurrentChat() != null && ChatManager.getCurrentChat().type != ChatRoomType.COMPANY && ChatManager.getCurrentChat().type != ChatRoomType.CHANNEL && ChatManager.getCurrentChat().type != ChatRoomType.GROUP)
 			{
 				actions.push(puzzle);
+			}*/
+			
+			if (ChatManager.getCurrentChat() != null && 
+				ChatManager.getCurrentChat().type != ChatRoomType.COMPANY && 
+				ChatManager.getCurrentChat().type != ChatRoomType.CHANNEL && 
+				ChatManager.getCurrentChat().type != ChatRoomType.GROUP &&
+				Auth.bank_phase == BankPhaze.ACC_APPROVED)
+			{
+				actions.push(tradeAction);
 			}
 			
 		//	actions.push(composeVoiceMessageAction);

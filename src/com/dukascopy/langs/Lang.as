@@ -2328,6 +2328,8 @@ package com.dukascopy.langs {
 		static public var friendInvoiceConfirm_2:String = "Are you sure you want to request %@ from this contact for your account opening";
 		static public var zbxAbout_2:String = "You need to register on ZBX.one and top up your ZBX account in the amount of %@.\nAfter that, you need to return to the Dukascopy Connect 911 application and continue your registration with Dukascopy Bank by clicking on the 'Proceed' button.\nDukascopy will check if your ZBX account has %@ (or equivalent) and if this verification is successful, you will proceed to the next step.";
 		static public var roadmap_wireDeposit:String = "Wire transfer";
+		static public var makeOffer:String = "Make offer";
+		static public var escrow:String = "Escrow";
 		
 		static public function updateKeys(keys:Object):void {
 			for (var n:String in keys) {

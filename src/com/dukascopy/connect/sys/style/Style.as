@@ -1,5 +1,6 @@
 package com.dukascopy.connect.sys.style 
 {
+	import assets.TransferIllustrationDark;
 	import com.dukascopy.connect.sys.style.presets.Preset;
 	import com.dukascopy.connect.sys.style.presets.PresetDark;
 	import com.dukascopy.connect.sys.style.presets.PresetDefault;
@@ -211,6 +212,7 @@ package com.dukascopy.connect.sys.style
 		static public const ROADMAP_ILLUSTRATION:String = "roadmapIllustration";
 		static public const PAYMENT_VISA:String = "paymentVisa";
 		static public const TRANSFER_ILLUSTRATION:String = "transferIllustration";
+		static public const ICON_ATTACH_DEAL:String = "ICON_ATTACH_DEAL";
 		
 		static private var preset:Preset;
 		

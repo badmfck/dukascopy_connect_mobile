@@ -58,7 +58,7 @@ package com.dukascopy.connect.screens.dialogs.bottom
 		{
 			var radius:int = Config.FINGER_SIZE * .22;
 			
-			backgroundContent.graphics.beginFill(Style.color(Style.COLOR_POPUP_HEADER));
+			backgroundContent.graphics.beginFill(getHeaderColor());
 			backgroundContent.graphics.drawRoundRectComplex(0, 0, _width, headerHeight, radius, radius, 0, 0);
 			backgroundContent.graphics.endFill();
 			
@@ -67,6 +67,15 @@ package com.dukascopy.connect.screens.dialogs.bottom
 			backgroundContent.graphics.endFill();
 			backgroundContent.y = _height;
 			background.alpha = 0;
+		}
+		
+		private function getHeaderColor():uint 
+		{
+			if (data != null && "headerColor" in data && !isNaN(Number(data.headerColor)))
+			{
+				return Number(data.headerColor);
+			}
+			return Style.color(Style.COLOR_POPUP_HEADER);
 		}
 		
 		override protected function createView():void {

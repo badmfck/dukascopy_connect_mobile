@@ -1,14 +1,18 @@
 package com.dukascopy.connect.data.screenAction.customActions {
 	
+	import com.dukascopy.connect.Config;
+	import com.dukascopy.connect.data.escrow.EscrowDealData;
+	import com.dukascopy.connect.data.escrow.EscrowMessageData;
 	import com.dukascopy.connect.data.screenAction.IScreenAction;
 	import com.dukascopy.connect.data.screenAction.ScreenAction;
-	import com.dukascopy.connect.screens.dialogs.ScreenAddInvoiceDialog;
+	import com.dukascopy.connect.screens.dialogs.CreateEscrowScreen;
+	import com.dukascopy.connect.sys.applicationError.ApplicationErrors;
 	import com.dukascopy.connect.sys.auth.Auth;
 	import com.dukascopy.connect.sys.chatManager.ChatManager;
-	import com.dukascopy.connect.sys.dialogManager.DialogManager;
 	import com.dukascopy.connect.sys.serviceScreenManager.ServiceScreenManager;
 	import com.dukascopy.connect.sys.style.Style;
 	import com.dukascopy.connect.sys.usersManager.UsersManager;
+	import com.dukascopy.connect.sys.ws.WSClient;
 	import com.dukascopy.connect.type.InvoiceStatus;
 	import com.dukascopy.connect.utils.TextUtils;
 	import com.dukascopy.connect.vo.ChatVO;
@@ -16,7 +20,6 @@ package com.dukascopy.connect.data.screenAction.customActions {
 	import com.dukascopy.connect.vo.chat.ChatMessageInvoiceData;
 	import com.dukascopy.connect.vo.users.adds.ChatUserVO;
 	import com.dukascopy.langs.Lang;
-	import com.greensock.TweenMax;
 
 	/**
 	 * ...
@@ -25,159 +28,66 @@ package com.dukascopy.connect.data.screenAction.customActions {
 	
 	public class CreateCoinTradeAction extends ScreenAction implements IScreenAction {
 		
-		private var currentData:Object;
-		
-		public var amount:Number;
-		public var currency:String;
-		public var comment:String;
-		public var confirm:String;
-		public var disposeAction:Boolean = true;
-		public var blockInputs:Boolean = false;
+		public var chat:ChatVO;
 		
 		public function CreateCoinTradeAction() {
-			setIconClass(Style.icon(Style.ICON_ATTACH_INVOICE));
+			setIconClass(Style.icon(Style.ICON_ATTACH_DEAL));
 		}
 		
 		public function execute():void {
 			
-			var invoiceData:Object = new Object();
-			invoiceData.amount = amount;
-			invoiceData.currency = currency;
-			invoiceData.message = comment;
-			invoiceData.confirm = confirm;
-			invoiceData.block = blockInputs;
-			invoiceData.callback = callBackAddInvoice;
-
-			var currentChat:ChatVO = ChatManager.getCurrentChat();
-			if (currentChat != null)
-			{
-				var chatUser:ChatUserVO = UsersManager.getInterlocutor(currentChat);
-				invoiceData.user = chatUser.userVO;
-			}
-
-			ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, ScreenAddInvoiceDialog, invoiceData, 0.5, 0.5, 3);
-
-			if (disposeAction)
-			{
-				dispose();
-			}
+			var screenData:Object = new Object();
+			screenData.title = Lang.makeOffer;
+			screenData.headerColor = Style.color(Style.COLOR_BACKGROUND);
+			ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, CreateEscrowScreen, screenData);
 		}
 		
-		private function callBackAddInvoice(i:int, paramsObj:Object):void {
-			if (i != 1)
+		private function callBackCreateDeal(dealData:EscrowDealData):void {
+			if (chat != null && ChatManager.getCurrentChat() && chat.uid == ChatManager.getCurrentChat().uid)
 			{
-				if (S_ACTION_FAIL != null)
+				if (dealData != null)
 				{
-					S_ACTION_FAIL.invoke();
+					sendDeal(dealData);
 				}
-				return;
-			}
-			var currentChat:ChatVO = ChatManager.getCurrentChat();
-			if (currentChat == null)
-			{
-				if (S_ACTION_FAIL != null)
+				else
 				{
-					S_ACTION_FAIL.invoke();
+					ApplicationErrors.add();
+					onFail();
 				}
-				return;
-			}
-			var chatUser:ChatUserVO = UsersManager.getInterlocutor(currentChat);
-			if (chatUser == null)
-			{
-				if (S_ACTION_FAIL != null)
-				{
-					S_ACTION_FAIL.invoke();
-				}
-				return;
-			}
-			
-			if (confirm != null)
-			{
-				currentData = paramsObj;
-				
-				TweenMax.delayedCall(1, showConfirm, null, true);
 			}
 			else
 			{
-				send(paramsObj);
+				ApplicationErrors.add();
+				onFail();
 			}
 		}
 		
-		private function showConfirm():void 
+		private function onFail():void 
 		{
-			DialogManager.alert(Lang.pleaseConfirm, confirm, onConfirmCallback, Lang.textOk, Lang.textBack);
-		}
-		
-		private function onConfirmCallback(i:int):void 
-		{
-			if (i != 1)
+			if (S_ACTION_FAIL != null)
 			{
-				if (S_ACTION_FAIL != null)
-				{
-					S_ACTION_FAIL.invoke();
-				}
-				return;
+				S_ACTION_FAIL.invoke();
 			}
-			send(currentData);
 		}
 		
-		private function send(paramsObj:Object):void 
+		private function sendDeal(dealData:EscrowDealData):void 
 		{
-			var currentChat:ChatVO = ChatManager.getCurrentChat();
-			if (currentChat == null)
-			{
-				if (S_ACTION_FAIL != null)
-				{
-					S_ACTION_FAIL.invoke();
-				}
-				return;
-			}
-			var chatUser:ChatUserVO = UsersManager.getInterlocutor(currentChat);
+			var chatUser:ChatUserVO = UsersManager.getInterlocutor(chat);
 			if (chatUser == null)
 			{
-				if (S_ACTION_FAIL != null)
-				{
-					S_ACTION_FAIL.invoke();
-				}
+				onFail();
 				return;
 			}
+			var messageData:EscrowMessageData = new EscrowMessageData();
+			messageData.price = dealData.price;
+			messageData.amount = dealData.amount;
 			
-			var qVO:QuestionVO = currentChat.getQuestion();
-			var fromIncognitoQuestion:Boolean = (qVO != null && qVO.incognito == true && qVO.userUID == Auth.uid);
-			var myPhone:String = "+" + Auth.countryCode + Auth.getMyPhone();
-			var myUserName:String = "";
-			if (fromIncognitoQuestion){
-				myUserName = "Secret";
-			}else{
-				myUserName  = TextUtils.checkForNumber(Auth.username);				
-			}
+			var text:String = messageData.toJsonString();
+			WSClient.call_sendTextMessage(chat.uid, Config.BOUNDS_INVOICE + ChatManager.cryptTXT(text));
 			
-			if (paramsObj != null &&
-				"amount" in paramsObj == true &&
-				"currency" in paramsObj == true) {
-					var data:ChatMessageInvoiceData = ChatMessageInvoiceData.create(Number(paramsObj.amount),
-						paramsObj.currency,
-						paramsObj.message,
-						myUserName,
-						Auth.uid,
-						(chatUser.secretMode == true) ? "Secret" : chatUser.name,
-						chatUser.uid,
-						myPhone,
-						InvoiceStatus.NEW
-					);
-					ChatManager.sendInvoiceByData(data);
-				if (S_ACTION_SUCCESS != null)
-				{
-					S_ACTION_SUCCESS.invoke();
-				}
-				
-			}
-			else
+			if (S_ACTION_SUCCESS != null)
 			{
-				if (S_ACTION_FAIL != null)
-				{
-					S_ACTION_FAIL.invoke();
-				}
+				S_ACTION_SUCCESS.invoke();
 			}
 		}
 	}

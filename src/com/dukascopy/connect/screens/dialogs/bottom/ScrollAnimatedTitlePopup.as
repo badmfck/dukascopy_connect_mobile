@@ -83,7 +83,12 @@ package com.dukascopy.connect.screens.dialogs.bottom
 			super.initScreen(data);
 			
 			scrollPanel.view.y = headerHeight;
-			scrollPanel.setWidthAndHeight(_width, getHeight() - headerHeight);
+			scrollPanel.setWidthAndHeight(_width, getHeight() - headerHeight - getBottomPadding());
+		}
+		
+		protected function getBottomPadding():int 
+		{
+			return 0;
 		}
 		
 		override protected function drawView():void {
