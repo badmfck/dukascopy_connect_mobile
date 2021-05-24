@@ -1,5 +1,6 @@
 package com.dukascopy.connect.screens.roadMap.actions 
 {
+	import com.dukascopy.connect.GD;
 	import com.dukascopy.connect.data.screenAction.BaseAction;
 	import com.dukascopy.connect.data.screenAction.IAction;
 	import com.dukascopy.connect.gui.components.message.ToastMessage;
@@ -44,11 +45,14 @@ package com.dukascopy.connect.screens.roadMap.actions
 		
 		public function remove():void 
 		{
+			GD.S_STOP_LOAD.invoke();
 			super.dispose();
 		}
 		
-		override public function dispose():void {
-			
+		override public function dispose():void
+		{
+			GD.S_STOP_LOAD.invoke();
+		//	super.dispose();
 		}
 		
 		private function getLink(proceed:Boolean = true):void 
@@ -61,6 +65,7 @@ package com.dukascopy.connect.screens.roadMap.actions
 				{
 					service = "wire";
 				}
+				GD.S_START_LOAD.invoke();
 				PHP.call_loyaltyRegister(onLoyaltyRegister, service);
 			}
 		}
@@ -77,11 +82,19 @@ package com.dukascopy.connect.screens.roadMap.actions
 					illustration:Style.icon(Style.TRANSFER_ILLUSTRATION),
 					rejectButton:Lang.textBack,
 					callback:getLink,
-					title:Lang.initialDeposit,
+					title:getTitle(),
 					message:textValue
 				}
 			);
-			
+		}
+		
+		private function getTitle():String 
+		{
+			if (Auth.bank_phase == BankPhaze.WIRE_DEPOSIT)
+			{
+				return Lang.solvency_wire_deposit;
+			}
+			return Lang.initialDeposit;
 		}
 		
 		private function getDescription():String 
@@ -94,6 +107,7 @@ package com.dukascopy.connect.screens.roadMap.actions
 		}
 		
 		private function onLoyaltyRegister(respond:PHPRespond):void {
+			GD.S_STOP_LOAD.invoke();
 			if (disposed == false)
 			{
 				if (respond.error == true) {

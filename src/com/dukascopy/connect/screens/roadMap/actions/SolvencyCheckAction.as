@@ -1,8 +1,10 @@
 package com.dukascopy.connect.screens.roadMap.actions 
 {
+	import com.dukascopy.connect.data.SolvencyCheckType;
 	import com.dukascopy.connect.data.screenAction.BaseAction;
 	import com.dukascopy.connect.data.screenAction.IAction;
 	import com.dukascopy.connect.gui.components.message.ToastMessage;
+	import com.dukascopy.connect.screens.roadMap.RoadMapScreenNew;
 	import com.dukascopy.connect.screens.roadMap.SolvencyMethodData;
 	import com.dukascopy.connect.screens.roadMap.VerificationMethodsPopup;
 	import com.dukascopy.connect.screens.roadMap.VerifyCryptodepositPopup;
@@ -51,7 +53,10 @@ package com.dukascopy.connect.screens.roadMap.actions
 			}
 			var selectedMethod:String;
 			if (err == false && data != null)
+			{
 				selectedMethod = data;
+				RoadMapScreenNew.lastSolvencyMethod = selectedMethod;
+			}
 			
 			ServiceScreenManager.showScreen(
 				ServiceScreenManager.TYPE_SCREEN,
@@ -84,23 +89,24 @@ package com.dukascopy.connect.screens.roadMap.actions
 			var code:String;
 			if (method == SolvencyMethodData.METHOD_ASK_FRIEND)
 			{
-				code = "DONATE";
+				code = SolvencyCheckType.DONATE;
 			}
 			else if (method == SolvencyMethodData.METHOD_CRYPTO_DEPOSIT)
 			{
-				code = "ZBX";
+				code = SolvencyCheckType.ZBX;
 			}
 			else if (method == SolvencyMethodData.METHOD_CARD_DEPOSIT)
 			{
-				code = "CARD";
+				code = SolvencyCheckType.CARD;
 			}
 			else if (method == SolvencyMethodData.METHOD_WIRE_DEPOSIT)
 			{
-				code = "WIRE";
+				code = SolvencyCheckType.WIRE;
 			}
 			
 			if (code != null)
 			{
+				RoadMapScreenNew.lastSolvencyMethod = code;
 				PHP.call_selectSolvencyMethod(onSolvencySaved, code);
 			}
 			else

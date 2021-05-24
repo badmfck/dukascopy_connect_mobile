@@ -4,6 +4,7 @@ package com.dukascopy.connect.screens.roadMap {
 	import assets.ShadowClip;
 	import com.dukascopy.connect.Config;
 	import com.dukascopy.connect.MobileGui;
+	import com.dukascopy.connect.data.SolvencyCheckType;
 	import com.dukascopy.connect.data.TextFieldSettings;
 	import com.dukascopy.connect.data.TransactionData;
 	import com.dukascopy.connect.gui.components.CirclePreloader;
@@ -117,8 +118,6 @@ package com.dukascopy.connect.screens.roadMap {
 		private var textFriend:Bitmap;
 		private var solvencyAction:SolvencyCheckAction;
 		private var needRemoveFriends:Boolean;
-	//	private var registrationType = REGISTRATION_TYPE_DEPOSIT;
-	//	private var registrationType = REGISTRATION_TYPE_DEPOSIT_CARD;
 		private var tabs:FilterTabs;
 		private var selectedFilter:String = TAB_ACCOUNT_MCA;
 		private var locked:Boolean;
@@ -128,6 +127,8 @@ package com.dukascopy.connect.screens.roadMap {
 		private var depositAction:InitialDepositAction;
 		private var depositPriceNum:Number;
 		private var depositPriceCurrency:String;
+		
+		static public var lastSolvencyMethod:String;
 			
 		public function RoadMapScreenNew() {}
 		
@@ -492,6 +493,10 @@ package com.dukascopy.connect.screens.roadMap {
 		private function getDepositText():String
 		{
 			if (Auth.bank_phase == BankPhaze.WIRE_DEPOSIT)
+			{
+				return Lang.roadmap_wireDeposit;
+			}
+			if (lastSolvencyMethod == SolvencyCheckType.WIRE)
 			{
 				return Lang.roadmap_wireDeposit;
 			}

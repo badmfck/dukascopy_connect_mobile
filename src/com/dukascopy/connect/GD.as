@@ -8,6 +8,9 @@ public class GD {
 		static public const S_DEBUG_WS:Signal = new Signal();
 		static public const S_LOG_WS:Signal = new Signal();
 		static public const S_NET_DEBUG:Signal = new Signal();
+		
+		static public const S_START_LOAD:Signal = new Signal();
+		static public const S_STOP_LOAD:Signal = new Signal();
 
 
 		// ESCROW

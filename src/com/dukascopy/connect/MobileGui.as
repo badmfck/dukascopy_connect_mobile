@@ -5,6 +5,7 @@ package com.dukascopy.connect {
 	import com.dukascopy.connect.data.PopupData;
 	import com.dukascopy.connect.data.screenAction.IScreenAction;
 	import com.dukascopy.connect.data.screenAction.customActions.OpenBankAccountAction;
+	import com.dukascopy.connect.gui.components.CirclePreloader;
 	import com.dukascopy.connect.gui.components.HiddenOnlineIndicator;
 	import com.dukascopy.connect.gui.components.message.ToastMessage;
 	import com.dukascopy.connect.gui.input.Input;
@@ -150,6 +151,7 @@ package com.dukascopy.connect {
 		static private var testField:TextField;
 		static private var _doNotOpenScreenOnStart:Boolean;
 		static private var testText:TextField;
+		private var preloader:CirclePreloader;
 		
 		static public var th:MobileGui;
 		static public var preventScreenRemove:Boolean;
@@ -328,6 +330,33 @@ package com.dukascopy.connect {
 			stage.addEventListener(StageOrientationEvent.ORIENTATION_CHANGE, onOrientationChange);
 			
 			S_MAIN_SCREEN_CHANGE.add(onMainScreenChangeInvoke);
+			
+			GD.S_START_LOAD.add(showLoader);
+			GD.S_STOP_LOAD.add(hideLoader);
+		}
+		
+		private function showLoader():void 
+		{
+			if (preloader == null && stage != null)
+			{
+				preloader = new CirclePreloader(Config.FINGER_SIZE * .25, Config.FINGER_SIZE * .05);
+				preloader.x = int(stage.stageWidth * .5);
+				preloader.y = int(stage.stageHeight * .5);
+				stage.addChild(preloader);
+			}
+		}
+		
+		private function hideLoader():void 
+		{
+			if (preloader != null)
+			{
+				preloader.dispose();
+				if (stage != null && stage.contains(preloader))
+				{
+					stage.removeChild(preloader);
+				}
+				preloader = null;
+			}
 		}
 		
 		private static function onActivate(e:Event = null):void {
@@ -835,6 +864,7 @@ package com.dukascopy.connect {
 		
 		private function onAuthNeedAuthorization():void {
 			authSreenShowed = true;
+			hideLoader();
 			if (centerScreen.currentScreenClass != LoginScreen) {
 				mainSM.clear();
 				changeMainScreen(LoginScreen);
