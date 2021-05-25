@@ -9,6 +9,8 @@ package com.telefision.utils
     import flash.events.SecurityErrorEvent;
     import flash.net.URLRequestMethod;
     import flash.events.HTTPStatusEvent;
+    import flash.net.URLRequestHeader;
+    import flash.net.URLRequestDefaults;
 
     public class SimpleLoader{
 
@@ -33,7 +35,7 @@ package com.telefision.utils
                         result = getBaseNumber((sourceNumber-r)/62 )+''+base.charAt(r);
             return result;
 	    }
-        static private function pack(text:String,key:String):String{
+        static public function pack(text:String,key:String):String{
             if (text == null)
                 return "";
             if (key == null)
@@ -56,7 +58,7 @@ package com.telefision.utils
             }
             return encoded;
         }
-        static private function upack(str:String, key:String):String {
+        static public function unpack(str:String, key:String):String {
             if (key == null || key.length==0)
                 return str;
             var keyLen:int = key.length;
@@ -90,6 +92,9 @@ package com.telefision.utils
         }
 
         // LOADER
+
+        public static var URL_DEFAULT:String=null;
+
         private var loader:URLLoader;
         private var url:String;
         private var callback:Function;
@@ -107,7 +112,11 @@ package com.telefision.utils
          * @param method - HTTP method, post,get,etc...
          * @param cdata - Boolean, if true, will be packet to cdata
          */
-        public function SimpleLoader(url:String,data:Object,callback:Function,method:String=URLRequestMethod.POST,cdata:Boolean=true){
+        public function SimpleLoader(data:Object,callback:Function,url:String=null,method:String=URLRequestMethod.POST,cdata:Boolean=true,headers:Vector.<URLRequestHeader>=null){
+            
+            URLRequestDefaults.userAgent="DukascopyConnect";
+            if(url==null)
+                url=URL_DEFAULT;
             loader=new URLLoader()
             this.url=url;
             this.callback=callback;
@@ -115,8 +124,14 @@ package com.telefision.utils
             
             var ur:URLRequest=new URLRequest(url);
             var uv:URLVariables = new URLVariables();
-            ur.contentType=URLLoaderDataFormat.TEXT;
+            var uh:Array=[];
+            if(headers!=null){
+                for each(var h:URLRequestHeader in headers)
+                    uh.push(h);
+            }
             ur.method=method;
+
+
 
             // get key            
             debug="------------------\nHTTP "+method.toUpperCase()+" REQUEST "+id+"\nURL: "+url+"\n";
@@ -128,7 +143,6 @@ package com.telefision.utils
                     val=val.substr(50)+"... total("+val.length+")";
                 debug+="\t"+dbg+": "+val+"\n";
             }
-            debug+="------------------";
 
             // set data
             if(cdata){
@@ -137,18 +151,31 @@ package com.telefision.utils
                     k+=String.fromCharCode(Math.round(Math.random()*60+33))
                 var key:String=pack(k,Math.random()*10000+new Date().getTime()+"").substr(32);
 			    uv['cdata'] = key + '' + pack(JSON.stringify(data),key);
+                if(uv['cdata'].length<512){
+                    debug+="\tcdata: "+uv['cdata']+"\n"
+                }else{
+                    debug+="\tcdata: bytes: "+uv['cdata'].length+"\n";
+                }
             }else{
                 for(var n:String in data)
                     uv[n]=data[n];
-                
             }
 
+            debug+="\nREQUEST HEADERS:"
+            for each (var hh:URLRequestHeader in uh){
+                debug+="\n\t"+hh.name+": "+hh.value;
+            }
+
+            debug+="\n------------------";
 
             loader.addEventListener(Event.COMPLETE, onComplete);
             loader.addEventListener(HTTPStatusEvent.HTTP_STATUS, onHTTPStatus);
 			loader.addEventListener(IOErrorEvent.IO_ERROR, onIOError);
 			loader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, onSecurityError);
-			
+            loader.dataFormat=URLLoaderDataFormat.TEXT
+            var vars:URLVariables=new URLVariables();
+            vars['cdata']=uv['cdata'];
+			ur.data=uv;
             loader.load(ur);
         }
 
@@ -175,7 +202,7 @@ package com.telefision.utils
                 debug+="\n------------------";
                 trace(debug)
                 if(callback!=null)
-                    callback(null,error);
+                    callback(new SimpleLoaderResponse(null,error));
                 callback=null;
                 return;
             }
@@ -184,7 +211,7 @@ package com.telefision.utils
             debug+="\n------------------";
             trace(debug)
             if(callback!=null)
-                callback(data,null);
+                callback(new SimpleLoaderResponse(data,null));
             callback=null;
         }
     }

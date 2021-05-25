@@ -1,0 +1,27 @@
+<body id="body">
+   
+    <div backgroundColor="#363D4D">
+        <div color="#FFFFFF">LOGO</div>
+        <div>500 DUK+</div>
+        <div>3.52 € per coin</div>
+        <div>To pay for crypto 1 650.2 €</div>
+        <div>Refundable fee (3%) 52.8 €</div>
+        <div>Amount blocked 1 707.2 €</div>
+    </div>
+
+
+    <div height="40%" width="50%" id="percenage1">TEST 3</div>
+    <div height="60%" padding="20" id="percenage2">
+        <div height="50%">4</div>
+    </div>
+    <div padding="20"><div>padded</div></div>
+
+    <div layout="horizontal" id="btnsBox">
+        <space size="10"/>
+        <button type="primary" id="btnEscrowCreate" width="50%">ACCEPT</button>
+        <space size="10"/>
+        <button type="secondary" id="btnEscrowCancel" width="50%">CANCEL</button>
+        <space size="10"/>
+    </div>
+    <div></div>
+</body>
