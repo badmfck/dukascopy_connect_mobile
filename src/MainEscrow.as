@@ -66,36 +66,31 @@ public class MainEscrow extends Sprite {
 				setEscrowForm();
 
 
-
-				var doc:XML = <body id="body">
-					<div layout="horizontal" id="box">
-						<div id="txt1"> 1 </div>
-						<div id="txt2" width="100%">
-							TEXT
-							<div>2</div>
-							<div>3</div>
-							TEXT
-						</div>
-					</div>
-					<div height="100%" width="50%" id="percenage1">TEST 3</div>
-					<div>TEST 5</div>
-					<button primary="true">PEW PEW</button>
-				</body>
+				setEscrowForm();
 
 
-				var form:Form=new Form(doc,1);
-				addChild(form.view);
-				form.setSize(stage.stageWidth,stage.stageHeight);
+			},null,true);
+		}
+		
+		private function setEscrowForm():void{
 
-				var cmp:FormComponent=form.getComponentByID("percentage1");
+			var form:Form=new Form(File.applicationDirectory.resolvePath("forms"+File.separator+"escrowForm.xml"),3);
+			stage.addEventListener(KeyboardEvent.KEY_DOWN,function(e:KeyboardEvent):void{
+                if(e.keyCode==Keyboard.R && (e.commandKey || e.ctrlKey))
+					form.reload();
+            })
+			addChild(form.view);
+			form.setSize(stage.stageWidth,stage.stageHeight);
+			form.onDocumentLoaded=function():void{
+				
+
+				var cmp:FormComponent=form.getComponentByID("btnCreateEscrow");
 				if(cmp){
 					cmp.onTap=function():void{
 						trace("COMP TAPPED");
 					}
 				}
-
-
-			},null,true);
+			}
 		}
 		
 		private function setEscrowForm():void{

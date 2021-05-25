@@ -332,6 +332,14 @@ package com.forms{
                     }
                 }
             }
+
+            if(style.layout.toString()==FormLayout.VERTICAL){
+                if(bounds.display_width>0 && parent!=null && parent.style!=null)
+                    bounds.display_width-=parent.style.padding.left+parent.style.padding.right
+            }else{
+                if(bounds.display_height>0 && parent!=null && parent.style!=null)
+                    bounds.display_height-=parent.style.padding.top+parent.style.padding.bottom
+            }
             
          
          if(parent!=null && parent.style!=null){
@@ -543,6 +551,21 @@ package com.forms{
             c.view.x+=res.x;
             c.view.y+=res.y;
             return res;
+        }
+
+        /**
+         * Setup align & padding
+         */
+        protected function setupAlign(c:FormComponent):void{
+            if(style.align.value==FormAlign.CENTER_CENTER){
+                if(style.layout.toString()==FormLayout.VERTICAL){
+                    //vertical align:
+                    var y:int=Math.round((c.bounds.display_height-bounds.display_height)*.5)
+                    //c.view.y=y;
+                    var x:int=Math.round((bounds.display_width-c.bounds.display_width)*.5)
+                    c.view.x=x;
+                }
+            }            
         }
 
         /**
