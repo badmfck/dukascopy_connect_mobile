@@ -12,8 +12,8 @@ package com.dukascopy.connect.screens.payments.settings {
 	import com.dukascopy.connect.gui.list.renderers.ListCountrySimple;
 	import com.dukascopy.connect.gui.menuVideo.BitmapButton;
 	import com.dukascopy.connect.gui.tools.HorizontalPreloader;
-	import com.dukascopy.connect.screens.dialogs.bottom.base.SearchListSelectionPopup;
 	import com.dukascopy.connect.screens.dialogs.paymentDialogs.elements.InputField;
+	import com.dukascopy.connect.screens.dialogs.x.base.bottom.SearchListSelectionPopup;
 	import com.dukascopy.connect.screens.layout.ScrollScreen;
 	import com.dukascopy.connect.sys.dialogManager.DialogManager;
 	import com.dukascopy.connect.sys.imageManager.ImageBitmapData;

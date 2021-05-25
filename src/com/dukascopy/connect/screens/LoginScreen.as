@@ -22,8 +22,8 @@ package com.dukascopy.connect.screens {
 	import com.dukascopy.connect.gui.menuVideo.BitmapButton;
 	import com.dukascopy.connect.screens.base.BaseScreen;
 	import com.dukascopy.connect.screens.dialogs.ScreenCountryPicker;
-	import com.dukascopy.connect.screens.dialogs.bottom.base.ListSelectionPopup;
-	import com.dukascopy.connect.screens.dialogs.bottom.base.SearchListSelectionPopup;
+	import com.dukascopy.connect.screens.dialogs.x.base.bottom.ListSelectionPopup;
+	import com.dukascopy.connect.screens.dialogs.x.base.bottom.SearchListSelectionPopup;
 	import com.dukascopy.connect.screens.serviceScreen.BottomContextMenuScreen;
 	import com.dukascopy.connect.screens.serviceScreen.Overlay;
 	import com.dukascopy.connect.sys.auth.Auth;

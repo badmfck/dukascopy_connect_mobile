@@ -11,7 +11,7 @@ package com.dukascopy.connect.gui.invoiceProcess
 	import com.dukascopy.connect.gui.list.renderers.ListPayWalletItem;
 	import com.dukascopy.connect.gui.menuVideo.BitmapButton;
 	import com.dukascopy.connect.gui.menuVideo.BitmapToggleSwitch;
-	import com.dukascopy.connect.screens.dialogs.bottom.base.ListSelectionPopup;
+	import com.dukascopy.connect.screens.dialogs.x.base.bottom.ListSelectionPopup;
 	import com.dukascopy.connect.screens.layout.ScrollScreen;
 	import com.dukascopy.connect.screens.payments.card.TypeCurrency;
 	import com.dukascopy.connect.sys.applicationError.ApplicationErrors;

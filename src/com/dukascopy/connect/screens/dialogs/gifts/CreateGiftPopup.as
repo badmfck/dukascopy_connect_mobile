@@ -29,7 +29,7 @@ package com.dukascopy.connect.screens.dialogs.gifts
 	import com.dukascopy.connect.gui.preloader.Preloader;
 	import com.dukascopy.connect.screens.base.BaseScreen;
 	import com.dukascopy.connect.screens.dialogs.ScreenPayDialog;
-	import com.dukascopy.connect.screens.dialogs.bottom.base.ListSelectionPopup;
+	import com.dukascopy.connect.screens.dialogs.x.base.bottom.ListSelectionPopup;
 	import com.dukascopy.connect.screens.payments.card.TypeCurrency;
 	import com.dukascopy.connect.screens.payments.managers.SendMoneySecureCodeItem;
 	import com.dukascopy.connect.sys.Gifts;

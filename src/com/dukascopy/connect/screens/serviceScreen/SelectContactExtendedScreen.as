@@ -3,7 +3,7 @@ package com.dukascopy.connect.screens.serviceScreen {
 	import com.dukascopy.connect.Config;
 	import com.dukascopy.connect.gui.list.renderers.ListChatUsers;
 	import com.dukascopy.connect.gui.list.renderers.ListConversation;
-	import com.dukascopy.connect.screens.dialogs.bottom.base.SearchListSelectionPopup;
+	import com.dukascopy.connect.screens.dialogs.x.base.bottom.SearchListSelectionPopup;
 	import com.dukascopy.connect.sys.chatManager.ChatManager;
 	import com.dukascopy.connect.sys.phonebookManager.PhonebookManager;
 	import com.dukascopy.connect.type.ChatRoomType;

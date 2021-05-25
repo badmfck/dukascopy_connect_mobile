@@ -31,11 +31,10 @@ package com.dukascopy.connect.screens {
 	import com.dukascopy.connect.screens.dialogs.QueuePopup;
 	import com.dukascopy.connect.screens.dialogs.QueueUnderagePopup;
 	import com.dukascopy.connect.screens.dialogs.UseFingerprintDialog;
-	import com.dukascopy.connect.screens.dialogs.bottom.base.AnimatedTitlePopup;
-	import com.dukascopy.connect.screens.dialogs.bottom.base.ListSelectionPopup;
-	import com.dukascopy.connect.screens.dialogs.bottom.ShareLinkPopup;
-	import com.dukascopy.connect.screens.dialogs.bottom.TransactionFilterPopup;
-	import com.dukascopy.connect.screens.dialogs.bottom.implementation.BottomConfirmPopup;
+	import com.dukascopy.connect.screens.dialogs.x.base.bottom.AnimatedTitlePopup;
+	import com.dukascopy.connect.screens.dialogs.x.base.bottom.ListSelectionPopup;
+	import com.dukascopy.connect.screens.dialogs.x.base.content.ShareLinkPopup;
+	import com.dukascopy.connect.screens.dialogs.x.base.content.TransactionFilterPopup;
 	import com.dukascopy.connect.screens.dialogs.calendar.SelectDatePopup;
 	import com.dukascopy.connect.screens.dialogs.gifts.FlowerSticker;
 	import com.dukascopy.connect.screens.dialogs.paymentDialogs.FeedbackPopup;

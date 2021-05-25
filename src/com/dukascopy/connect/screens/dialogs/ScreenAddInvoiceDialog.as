@@ -11,7 +11,7 @@ package com.dukascopy.connect.screens.dialogs {
 	import com.dukascopy.connect.gui.list.renderers.ListPayCurrency;
 	import com.dukascopy.connect.gui.menuVideo.BitmapButton;
 	import com.dukascopy.connect.gui.textedit.TextComposer;
-	import com.dukascopy.connect.screens.dialogs.bottom.base.ListSelectionPopup;
+	import com.dukascopy.connect.screens.dialogs.x.base.bottom.ListSelectionPopup;
 	import com.dukascopy.connect.screens.dialogs.paymentDialogs.elements.InputField;
 	import com.dukascopy.connect.screens.layout.ScrollScreen;
 	import com.dukascopy.connect.screens.payments.card.TypeCurrency;

@@ -21,7 +21,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 	import com.dukascopy.connect.gui.tools.HorizontalPreloader;
 	import com.dukascopy.connect.screens.base.BaseScreen;
 	import com.dukascopy.connect.screens.dialogs.ScreenPayDialog;
-	import com.dukascopy.connect.screens.dialogs.bottom.base.ListSelectionPopup;
+	import com.dukascopy.connect.screens.dialogs.x.base.bottom.ListSelectionPopup;
 	import com.dukascopy.connect.sys.applicationError.ApplicationErrors;
 	import com.dukascopy.connect.sys.dialogManager.DialogManager;
 	import com.dukascopy.connect.sys.imageManager.ImageBitmapData;

@@ -6,7 +6,7 @@ package com.dukascopy.connect.gui.button
 	import com.dukascopy.connect.gui.list.renderers.ListLink;
 	import com.dukascopy.connect.gui.menuVideo.BitmapButton;
 	import com.dukascopy.connect.screens.dialogs.ScreenLinksDialog;
-	import com.dukascopy.connect.screens.dialogs.bottom.base.ListSelectionPopup;
+	import com.dukascopy.connect.screens.dialogs.x.base.bottom.ListSelectionPopup;
 	import com.dukascopy.connect.sys.dialogManager.DialogManager;
 	import com.dukascopy.connect.sys.imageManager.ImageBitmapData;
 	import com.dukascopy.connect.sys.serviceScreenManager.ServiceScreenManager;

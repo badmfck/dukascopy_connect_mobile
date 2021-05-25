@@ -29,7 +29,7 @@ package com.dukascopy.connect.screens {
 	import com.dukascopy.connect.screens.base.BaseScreen;
 	import com.dukascopy.connect.screens.base.ScreenManager;
 	import com.dukascopy.connect.screens.dialogs.HeaderAlert;
-	import com.dukascopy.connect.screens.dialogs.bottom.TransactionFilterPopup;
+	import com.dukascopy.connect.screens.dialogs.x.base.content.TransactionFilterPopup;
 	import com.dukascopy.connect.screens.dialogs.paymentDialogs.BlockedAccountScreen;
 	import com.dukascopy.connect.screens.dialogs.paymentDialogs.PaymentsUnavaliableScreen;
 	import com.dukascopy.connect.screens.payments.settings.PaymentsSettingsScreen;
