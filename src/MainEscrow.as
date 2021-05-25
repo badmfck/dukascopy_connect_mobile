@@ -18,6 +18,9 @@ import com.dukascopy.connect.managers.escrow.EscrowDealSide;
 import com.forms.FormComponent;
 import com.dukascopy.connect.managers.webview.WebViewManager;
 import com.forms.Form;
+import flash.filesystem.File;
+import flash.events.KeyboardEvent;
+import flash.ui.Keyboard;
 
 
 [SWF(backgroundColor="#ffffff")]
@@ -47,47 +50,43 @@ public class MainEscrow extends Sprite {
 
 				GD.S_ESCROW_DEAL_CREATE_REQUEST.invoke(
 					new EscrowDealCreateRequest()
-					.setChatUID("WrD8DMW0DHWo")
+					.setChatUID("WLDZD8WFWBIsWQWx")
 					.setInstrument("btc")
 					.setMcaCcy("eur")
 					.setPrimAmount(0.0531)
 					.setSecAmount(23.32)
 					.setSide(EscrowDealSide.BUY)
-					.setMsgID(0)
+					.setMsgID(101)
 				)
+				
 
-
-				var doc:XML = <body id="body">
-					<div layout="horizontal" id="box">
-						<div id="txt1"> 1 </div>
-						<div id="txt2" width="100%">
-							TEXT
-							<div>2</div>
-							<div>3</div>
-							TEXT
-						</div>
-					</div>
-					<div height="100%" width="50%" id="percenage1">TEST 3</div>
-					<div>TEST 5</div>
-					<button primary="true">PEW PEW</button>
-				</body>
-
-
-				var form:Form=new Form(doc,1);
-				addChild(form.view);
-				form.setSize(stage.stageWidth,stage.stageHeight);
-
-				var cmp:FormComponent=form.getComponentByID("percentage1");
-				if(cmp){
-					cmp.onTap=function():void{
-						trace("COMP TAPPED");
-					}
-				}
+				setEscrowForm();
 
 
 			},null,true);
 		}
 		
+		private function setEscrowForm():void{
+
+			var form:Form=new Form(File.applicationDirectory.resolvePath("forms"+File.separator+"escrowForm.xml"),3);
+			stage.addEventListener(KeyboardEvent.KEY_DOWN,function(e:KeyboardEvent):void{
+                if(e.keyCode==Keyboard.R && (e.commandKey || e.ctrlKey))
+					form.reload();
+            })
+			addChild(form.view);
+			form.setSize(stage.stageWidth,stage.stageHeight);
+			form.onDocumentLoaded=function():void{
+				
+
+				var cmp:FormComponent=form.getComponentByID("btnCreateEscrow");
+				if(cmp){
+					cmp.onTap=function():void{
+						trace("COMP TAPPED");
+					}
+				}
+			}
+		}
+
 		public static function onGlobalError(e:UncaughtErrorEvent = null):void {
             if (e != null) {
 				e.preventDefault();

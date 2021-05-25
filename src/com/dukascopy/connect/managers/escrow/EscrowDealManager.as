@@ -5,6 +5,7 @@ package com.dukascopy.connect.managers.escrow{
     import com.dukascopy.connect.vo.EscrowDealVO;
     import com.telefision.utils.maps.EscrowDealMap;
     import com.telefision.utils.SimpleLoader;
+    import com.telefision.utils.SimpleLoaderResponse;
     
 
     public class EscrowDealManager{
@@ -12,41 +13,40 @@ package com.dukascopy.connect.managers.escrow{
         private var escrowDeals:EscrowDealMap=new EscrowDealMap();
         private var id:String="EscrowDealManager";
         public function EscrowDealManager(){
+            
+            SimpleLoader.URL_DEFAULT="https://loki.telefision.com/master/";
+
             loadDeals();
 
             // CREATE ESCROW DEAL
             GD.S_ESCROW_DEAL_CREATE_REQUEST.add(function(req:EscrowDealCreateRequest):void{
-                // DO CALL
+                var escrowRequest:Object=req.toObject();
+                escrowRequest.key="e41ae903d332b69f490d604474c7ca633cd8835f";
+                escrowRequest.method="Escrow.StartDeal"
                 new SimpleLoader(
-                    "https://loki.telefision.com/master/",
-                    {
-                        key:"web",
-                        method:"escrow.startDeal"
-                    },
-                function(data:String,error:String):void{});
+                    escrowRequest,
+                    function(resp:SimpleLoaderResponse):void{
+                       trace(resp);
+                    }
+                );
             },this);
+
+            GD.S_ESCROW_DEALS_REQUEST.add(function():void{
+                loadDeals();
+            })
             
         }
+
+       
 
         /**
          * Load active deals
          */
         private function loadDeals():void{
             //TODO: Server method - load deals, fire callback
-            
-            // TEMP DATA
-            var data:Object=[
-                {
-                    uid:"abc1"
-                },
-                {
-                    uid:"cde2"
-                },
-                {
-                    uid:"efg3"
-                }
-            ]
-            onDealsLoaded(data);
+            new SimpleLoader({},function(resp:SimpleLoaderResponse):void{
+                
+            })
         }
 
         private function onDealsLoaded(data:Object):void{

@@ -4,12 +4,17 @@ package com.forms.components
     import flash.xml.XMLNode;
     import com.forms.Form;
     import com.forms.FormStyle;
+    import com.forms.FormAlign;
+    import flash.display.Sprite;
 
     public class FormButton extends FormComponent{
         public function FormButton(xml:XMLNode,form:Form){
-            predefinedStyle=new FormStyle();
-            predefinedStyle.background.color=0xFF0000;
-            super(xml,form);
+            super(xml,form,{
+                backgroundColor:"#FFCC00",
+                align:FormAlign.CENTER_CENTER,
+                padding:"10"
+            });
+            (_view as Sprite).buttonMode=true;
         }
 
         override protected function draw():void{
