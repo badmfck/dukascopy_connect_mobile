@@ -333,6 +333,7 @@ package com.forms{
                 }
             }
 
+         
             if(style.layout.toString()==FormLayout.VERTICAL){
                 if(bounds.display_width>0 && parent!=null && parent.style!=null)
                     bounds.display_width-=parent.style.padding.left+parent.style.padding.right
@@ -340,6 +341,10 @@ package com.forms{
                 if(bounds.display_height>0 && parent!=null && parent.style!=null)
                     bounds.display_height-=parent.style.padding.top+parent.style.padding.bottom
             }
+        }
+
+        protected function redraw(percentOffsetW:int=-1,percentOffsetH:int=-1):void{
+            calculateBounds(percentOffsetW,percentOffsetH);
             
          
          if(parent!=null && parent.style!=null){
@@ -637,6 +642,17 @@ package com.forms{
             return null;
         }
 
+        protected function getFontSize():FormTextSize{
+            var p:FormComponent=this;
+            if(nodeType!=1)
+                p=parent;
+            while(p!=null){
+                if(p.style.fontSize.isSet)
+                    return p.style.fontSize;
+                p=p.parent;
+            }
+            return null;
+        }
 
         protected function removeFromStage():void{
             parent=null;

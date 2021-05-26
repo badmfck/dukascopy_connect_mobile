@@ -84,7 +84,7 @@ public class MainEscrow extends Sprite {
 			form.onDocumentLoaded=function():void{
 				
 
-				var cmp:FormComponent=form.getComponentByID("btnCreateEscrow");
+				var cmp:FormComponent=form.getComponentByID("btnEscrowCreate");
 				if(cmp){
 					cmp.onTap=function():void{
 						trace("COMP TAPPED");
