@@ -17,6 +17,7 @@ package com.forms{
     import flash.system.Capabilities;
     import flash.utils.Timer;
     import flash.events.TimerEvent;
+    import flash.display.LineScaleMode;
 
     public class FormComponent{
 
@@ -211,7 +212,7 @@ package com.forms{
                 }
                 _add(c,-1,false);
             }
-            if(onDocumentLoaded!=null && onDocumentLoaded is Function)
+            if(onDocumentLoaded!=null && onDocumentLoaded is Function && this is Form)
                 onDocumentLoaded();
         }
 
@@ -273,27 +274,21 @@ package com.forms{
         protected function getParentSize(side:String):int{
             /*var p:FormComponent=parent;
             var result:int=0;
-
             // MATCH PARENT
             while(p!=null){
                 if(p.style[side]>-1)
                     return p.style[side];
                 p=p.parent;
             }*/
-
             return parent.bounds["display_"+side];
-
             //return result;
         }
 
-        protected function redraw(percentOffsetW:int=-1,percentOffsetH:int=-1):void{
-            
+        protected function calculateBounds(percentOffsetW:int,percentOffsetH:int):void{
             // SETUP SIZE
             bounds.display_width=style.width>0?style.width:-2;
             bounds.display_height=style.height>0?style.height:-2;
             
-            if(id=="btnEscrowCreate")
-                trace('123');
             // check parent style & setup dimm
             if(parent!=null){
                 var parentH:int=getParentSize("height")
@@ -330,6 +325,7 @@ package com.forms{
                 }
             }
 
+         
             if(style.layout.toString()==FormLayout.VERTICAL){
                 if(bounds.display_width>0 && parent!=null && parent.style!=null)
                     bounds.display_width-=parent.style.padding.left+parent.style.padding.right
@@ -337,6 +333,10 @@ package com.forms{
                 if(bounds.display_height>0 && parent!=null && parent.style!=null)
                     bounds.display_height-=parent.style.padding.top+parent.style.padding.bottom
             }
+        }
+
+        protected function redraw(percentOffsetW:int=-1,percentOffsetH:int=-1):void{
+            calculateBounds(percentOffsetW,percentOffsetH);
             
             
             var percentagesChidldren:Array=[];
@@ -345,6 +345,7 @@ package com.forms{
             var nextPos:int=style.layout.toString()==FormLayout.VERTICAL?style.padding.top:style.padding.left;
             var maxSize:int=0;
             var lastSize:int=0;
+            var offset:Object;
             for each(var c:FormComponent in _components){
 
                 var obj:Object=null;
@@ -375,6 +376,11 @@ package com.forms{
                 nextPos+=c.bounds[style.layout.side]; // inc position
                 if(c.bounds[style.layout.oppositeSide]>maxSize)
                     maxSize=c.bounds[style.layout.oppositeSide]
+
+                // do offset
+                offset=setupOffset(c);
+                nextPos+=offset[style.layout.axis];
+                
             }
             nextPos+=style.layout.toString()==FormLayout.VERTICAL?style.padding.bottom:style.padding.right;
             bounds[style.layout.side]=nextPos;
@@ -390,15 +396,23 @@ package com.forms{
             bounds[style.layout.oppositeSide]=maxSize;
 
             // setup wrap content for display size
-            if(bounds['display_'+style.layout.oppositeSide]<0)
+            if(bounds['display_'+style.layout.oppositeSide]<0){
+                if(style.layout.toString()==FormLayout.VERTICAL)
+                    maxSize+=style.padding.left+style.padding.right;
+                else
+                    maxSize+=style.padding.top+style.padding.bottom;
+
                 bounds['display_'+style.layout.oppositeSide]=maxSize;
-            else
+                bounds[style.layout.oppositeSide]=maxSize;
+            }else{
                 bounds[style.layout.oppositeSide]=bounds['display_'+style.layout.oppositeSide];
-            if(bounds['display_'+style.layout.side]<0)
+            }
+            if(bounds['display_'+style.layout.side]<0){
+               
                 bounds['display_'+style.layout.side]=bounds[style.layout.side];
-            /*else
-                bounds[style.layout.side]=bounds['display_'+style.layout.side];
-            */
+                
+            }
+            
             // move bounds to display size, if display size > 0
             
             if(percentagesChidldren.length>0){
@@ -419,6 +433,11 @@ package com.forms{
                     nextPos+=c.bounds[style.layout.side]; // inc position
                     if(c.bounds[style.layout.oppositeSide]>maxSize)
                         maxSize=c.bounds[style.layout.oppositeSide]
+
+                    // do offset
+                    offset=setupOffset(c);
+                    nextPos+=offset[style.layout.axis];
+                    
                 }
                 nextPos+=style.layout.toString()==FormLayout.VERTICAL?style.padding.bottom:style.padding.right;
                 bounds[style.layout.side]=nextPos;
@@ -439,6 +458,24 @@ package com.forms{
             draw();
         }
 
+        protected function setupOffset(c:FormComponent):Object{
+            var res:Object={x:0,y:0}
+            if(c.style==null)
+                return res;
+
+            res.x=c.style.xOffset;
+            res.y=c.style.yOffset;
+            if(c.style.xOffsetPercents)
+                res.x=(c.style.xOffset/100)*c.bounds.display_width;
+            
+            if(c.style.yOffsetPercents)
+               res.y=(c.style.yOffset/100)*c.bounds.display_height
+
+            c.view.x+=res.x;
+            c.view.y+=res.y;
+            return res;
+        }
+
         /**
          * Setup align & padding
          */
@@ -456,17 +493,56 @@ package com.forms{
 
         protected function draw():void{
             
-            if(onDraw!=null && onDraw is Function && onDraw.length==2)
-                onDraw(_view,bounds);
+            _view.alpha=style.opacity;
+
+            if(onDraw!=null && onDraw is Function && onDraw.length==2){
+                if(!onDraw(_view,bounds))
+                    return;
+            }
 
             // draw env
             if(_view is Sprite){
                 var spr:Sprite=_view as Sprite;
                 spr.graphics.beginFill(style.background.color,style.background.alpha);
-                spr.graphics.drawRect(0,0,bounds.display_width,bounds.display_height);
+                spr.graphics.lineStyle(1,Math.round(Math.random()*0xFFFFFF),1,true,LineScaleMode.NONE)
+
+                spr.graphics.drawRoundRectComplex(
+                    0,
+                    0,
+                    bounds.display_width,
+                    bounds.display_height,
+                    style.borderRadius.top,
+                    style.borderRadius.right,
+                    style.borderRadius.left,
+                    style.borderRadius.bottom
+                );
             }
         }
 
+
+        protected function getColor():FormColor{
+            var p:FormComponent=this;
+            if(nodeType!=1)
+                p=parent;
+            while(p!=null){
+                if(p.style.color.isSet)
+                    return p.style.color;
+                p=p.parent;
+            }
+            return null;
+        }
+
+        protected function getFontSize():FormTextSize{
+            var p:FormComponent=this;
+            if(nodeType!=1)
+                p=parent;
+            while(p!=null){
+                if(p.style.fontSize.isSet)
+                    return p.style.fontSize;
+                p=p.parent;
+            }
+            return null;
+        }
 
         protected function removeFromStage():void{
             parent=null;
