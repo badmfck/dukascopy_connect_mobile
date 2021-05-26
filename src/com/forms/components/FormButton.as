@@ -12,7 +12,8 @@ package com.forms.components
             super(xml,form,{
                 backgroundColor:"#FFCC00",
                 align:FormAlign.CENTER_CENTER,
-                padding:"10"
+                padding:"10",
+                borderRadius:"10"
             });
             (_view as Sprite).buttonMode=true;
         }

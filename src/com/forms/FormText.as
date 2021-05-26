@@ -18,7 +18,7 @@ package com.forms
             txt=txt.replace(/[\s\n\t\r]$/gm,"");
             txt=txt.replace(/ {2,}/gm,"");
             (_view as TextField).text=txt;
-            (_view as TextField).setTextFormat(new TextFormat("Tahoma",12));
+            //(_view as TextField).setTextFormat(new TextFormat("Tahoma",12));
         }
 
         override protected function redraw(percentOffsetW:int = -1, percentOffsetH:int = -1):void{
@@ -32,7 +32,28 @@ package com.forms
             tf.mouseWheelEnabled=false;
             tf.tabEnabled=false;
             tf.cacheAsBitmap=true;
+
+            // get color
+            var fc:FormColor=getColor();
+            var color:uint=0;
+            var alpha:Number=1;
+            if(fc!=null){
+                color=fc.color;
+                alpha=fc.alpha;
+            }
+
+            // get size
+            var fs:FormTextSize=getFontSize();
+            var size:int=11;
+            if(fs!=null){
+                size=fs.size;
+            }
+
+            var ta:TextFormat=new TextFormat("Tahoma",size,color);
+
+            tf.setTextFormat(ta);
             
+    
 
             // parent width
             var pW:int=getParentSize("width");
@@ -48,7 +69,7 @@ package com.forms
             }else
                 tf.width=textWidth;
 
-            tf.height=tf.textHeight+2;
+            tf.height=tf.textHeight+4;
 
             bounds.width=tf.width
             bounds.height=tf.height
