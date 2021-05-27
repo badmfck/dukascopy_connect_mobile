@@ -1209,7 +1209,7 @@ package com.dukascopy.connect.sys.auth {
 		//	return BankPhaze.VIDID;
 			return _eu_phase; }
 		static public function get bank_phase():String {
-			return BankPhaze.SOLVENCY_CHECK;
+			return BankPhaze.ACC_APPROVED;
 			if (_bank_phase == BankPhaze.SCAN)
 			{
 				return BankPhaze.SOLVENCY_CHECK;

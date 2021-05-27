@@ -5,19 +5,14 @@ package com.dukascopy.connect.data.screenAction.customActions {
 	import com.dukascopy.connect.data.escrow.EscrowMessageData;
 	import com.dukascopy.connect.data.screenAction.IScreenAction;
 	import com.dukascopy.connect.data.screenAction.ScreenAction;
-	import com.dukascopy.connect.screens.dialogs.CreateEscrowScreen;
+	import com.dukascopy.connect.screens.dialogs.escrow.StartEscrowScreen;
 	import com.dukascopy.connect.sys.applicationError.ApplicationErrors;
-	import com.dukascopy.connect.sys.auth.Auth;
 	import com.dukascopy.connect.sys.chatManager.ChatManager;
 	import com.dukascopy.connect.sys.serviceScreenManager.ServiceScreenManager;
 	import com.dukascopy.connect.sys.style.Style;
 	import com.dukascopy.connect.sys.usersManager.UsersManager;
 	import com.dukascopy.connect.sys.ws.WSClient;
-	import com.dukascopy.connect.type.InvoiceStatus;
-	import com.dukascopy.connect.utils.TextUtils;
 	import com.dukascopy.connect.vo.ChatVO;
-	import com.dukascopy.connect.vo.QuestionVO;
-	import com.dukascopy.connect.vo.chat.ChatMessageInvoiceData;
 	import com.dukascopy.connect.vo.users.adds.ChatUserVO;
 	import com.dukascopy.langs.Lang;
 
@@ -37,9 +32,7 @@ package com.dukascopy.connect.data.screenAction.customActions {
 		public function execute():void {
 			
 			var screenData:Object = new Object();
-			screenData.title = Lang.makeOffer;
-			screenData.headerColor = Style.color(Style.COLOR_BACKGROUND);
-			ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, CreateEscrowScreen, screenData);
+			ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, StartEscrowScreen);
 		}
 		
 		private function callBackCreateDeal(dealData:EscrowDealData):void {

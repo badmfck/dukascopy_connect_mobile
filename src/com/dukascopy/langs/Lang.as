@@ -2331,6 +2331,12 @@ package com.dukascopy.langs {
 		static public var makeOffer:String = "Make offer";
 		static public var escrow:String = "Escrow";
 		
+		static public var wantSellCrypto:String = "I WANT TO SELL CRYPTO";
+		static public var wantBuyCrypto:String = "I WANT TO BUY CRYPTO";
+		static public var escrow_description:String = "You can use Dukascopy Bank as intermediary providing an escrow service to secure exchange of crypto currencies versus fiat.";
+		static public var escrow_about_service_url:String = "https://dukascopy.com";
+		static public var aboutService:String = "About service";
+		
 		static public function updateKeys(keys:Object):void {
 			for (var n:String in keys) {
 				if (n.indexOf("REFERAL_") == 0) {

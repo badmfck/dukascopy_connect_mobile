@@ -321,6 +321,9 @@ package com.dukascopy.connect.sys.style.presets
 			this[Style.PAYMENT_VISA] = VisaClipWhite;
 			this[Style.TRANSFER_ILLUSTRATION] = TransferIllustrationDark;
 			this[Style.ICON_ATTACH_DEAL] = CreateDealIconDark;
+			this[Style.COLOR_BUTTON_OUTLINE] = Color.GREY_LIGHT;
+			this[Style.FLOAT_POOPUP_RADIUS] = int(Config.FINGER_SIZE * .4);
+			this[Style.BUTTON_PADDING] = int(Config.FINGER_SIZE * .2);
 		}
 	}
 }

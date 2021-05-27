@@ -213,6 +213,9 @@ package com.dukascopy.connect.sys.style
 		static public const PAYMENT_VISA:String = "paymentVisa";
 		static public const TRANSFER_ILLUSTRATION:String = "transferIllustration";
 		static public const ICON_ATTACH_DEAL:String = "ICON_ATTACH_DEAL";
+		static public const COLOR_BUTTON_OUTLINE:String = "colorButtonOutline";
+		static public const FLOAT_POOPUP_RADIUS:String = "floatPoopupRadius";
+		static public const BUTTON_PADDING:String = "buttonPadding";
 		
 		static private var preset:Preset;
 		
