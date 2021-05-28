@@ -162,8 +162,7 @@ package com.dukascopy.connect.screens.keyboardScreens.attachScreen {
 			if (ChatManager.getCurrentChat() != null && 
 				ChatManager.getCurrentChat().type != ChatRoomType.COMPANY && 
 				ChatManager.getCurrentChat().type != ChatRoomType.CHANNEL && 
-				ChatManager.getCurrentChat().type != ChatRoomType.GROUP &&
-				Auth.bank_phase == BankPhaze.ACC_APPROVED)
+				ChatManager.getCurrentChat().type != ChatRoomType.GROUP)
 			{
 				actions.push(tradeAction);
 			}

@@ -5,13 +5,17 @@ package com.dukascopy.connect.data.screenAction.customActions {
 	import com.dukascopy.connect.data.escrow.EscrowMessageData;
 	import com.dukascopy.connect.data.screenAction.IScreenAction;
 	import com.dukascopy.connect.data.screenAction.ScreenAction;
+	import com.dukascopy.connect.screens.dialogs.escrow.RegisterEscrowScreen;
 	import com.dukascopy.connect.screens.dialogs.escrow.StartEscrowScreen;
 	import com.dukascopy.connect.sys.applicationError.ApplicationErrors;
+	import com.dukascopy.connect.sys.auth.Auth;
 	import com.dukascopy.connect.sys.chatManager.ChatManager;
+	import com.dukascopy.connect.sys.dialogManager.DialogManager;
 	import com.dukascopy.connect.sys.serviceScreenManager.ServiceScreenManager;
 	import com.dukascopy.connect.sys.style.Style;
 	import com.dukascopy.connect.sys.usersManager.UsersManager;
 	import com.dukascopy.connect.sys.ws.WSClient;
+	import com.dukascopy.connect.type.BankPhaze;
 	import com.dukascopy.connect.vo.ChatVO;
 	import com.dukascopy.connect.vo.users.adds.ChatUserVO;
 	import com.dukascopy.langs.Lang;
@@ -31,8 +35,14 @@ package com.dukascopy.connect.data.screenAction.customActions {
 		
 		public function execute():void {
 			
-			var screenData:Object = new Object();
-			ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, StartEscrowScreen);
+			if (Auth.bank_phase == BankPhaze.ACC_APPROVED)
+			{
+				ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, StartEscrowScreen);
+			}
+			else
+			{
+				ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, RegisterEscrowScreen);
+			}
 		}
 		
 		private function callBackCreateDeal(dealData:EscrowDealData):void {

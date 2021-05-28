@@ -2336,6 +2336,12 @@ package com.dukascopy.langs {
 		static public var escrow_description:String = "You can use Dukascopy Bank as intermediary providing an escrow service to secure exchange of crypto currencies versus fiat.";
 		static public var escrow_about_service_url:String = "https://dukascopy.com";
 		static public var aboutService:String = "About service";
+		static public var openMcaAccount:String = "OPEN MCA ACCOUNT";
+		static public var register_mca_description:String = "For getting access to the service, register a Multi-currency account that will be used for payments processing.";
+		static public var create_buy_offer:String = "Create Buy offer";
+		static public var create_sell_offer:String = "Create Sell offer";
+		static public var crypto:String = "Crypto";
+		static public var linkage_required:String = "Linkage required";
 		
 		static public function updateKeys(keys:Object):void {
 			for (var n:String in keys) {

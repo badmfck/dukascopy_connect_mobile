@@ -287,7 +287,7 @@ package com.dukascopy.connect.sys.style.presets
 			this[Style.ICON_FACE_ID] = FaceIdIcon;
 			this[Style.CONTROL_TEXT_SIZE] = Config.FINGER_SIZE * .3;
 			this[Style.CONTROL_TEXT_SMALL_SIZE] = Config.FINGER_SIZE * .25;
-			this[Style.SIZE_BUTTON_CORNER] = Config.FINGER_SIZE * .22;
+			this[Style.SIZE_BUTTON_CORNER] = Config.FINGER_SIZE * .3;
 			this[Style.SIZE_BUTTON_HEIGHT] = Config.FINGER_SIZE * .8;
 			this[Style.COLOR_TEXT_DISABLE] = Color.GREY_LIGHT;
 			this[Style.CONTROL_INACTIVE] = Color.GREY_LIGHT;
