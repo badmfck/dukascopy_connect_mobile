@@ -2342,6 +2342,8 @@ package com.dukascopy.langs {
 		static public var create_sell_offer:String = "Create Sell offer";
 		static public var crypto:String = "Crypto";
 		static public var linkage_required:String = "Linkage required";
+		static public var deviation_from_market:String = "% deviation from the market price";
+		static public var fixed_price:String = "Fixed price";
 		
 		static public function updateKeys(keys:Object):void {
 			for (var n:String in keys) {
