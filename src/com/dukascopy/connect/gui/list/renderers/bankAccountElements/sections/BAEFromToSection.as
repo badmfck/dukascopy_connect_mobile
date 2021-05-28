@@ -96,15 +96,16 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements.sections {
 			if (data.mine == true) {
 				leftTextField.text = "To:";
 				if ("user" in data == false || data.user == null) {
-					if ("phone" in data == true)
+					if ("phone" in data == true) {
 						rightTextField.text = data.phone;
-					else if (data.acc == "DCO" && data.userAccNumber == BankManager.rewardAccount) {
+					} else if ("login" in data == true) {
+						rightTextField.text = data.login;
+					} else if (data.acc == "DCO" && data.userAccNumber == BankManager.rewardAccount) {
 						rightTextField.text = "Reward Deposit";
 					} else {
 						rightTextField.text = "N/A";
 						//!TODO: костыль, необходимо более чёткое понимание типа транзакции в пользу банка;
-						if (data.desc != null && data.desc == Lang.paidQuestionAward)
-						{
+						if (data.desc != null && data.desc == Lang.paidQuestionAward) {
 							rightTextField.text = "Dukascopy";
 						}
 					}
@@ -122,10 +123,13 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements.sections {
 			} else {
 				leftTextField.text = "From:";
 				if ("user" in data == false || data.user == null) {
-					if ("phone" in data == true)
+					if ("phone" in data == true) {
 						rightTextField.text = data.phone;
-					else
+					} else if ("login" in data == true) {
+						rightTextField.text = data.login;
+					} else {
 						rightTextField.text = "N/A";
+					}
 				} else
 					rightTextField.text = data.user.getDisplayName();
 				if (avatar.parent != null)

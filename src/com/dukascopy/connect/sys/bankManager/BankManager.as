@@ -408,6 +408,8 @@ package com.dukascopy.connect.sys.bankManager {
 			} else if ("investmentDisclaimer" in _initData == true && _initData.investmentDisclaimer == true) {
 				msgDisplay = Lang.showMeInvestmentMenu;
 				msg = "nav:investments";
+			} else if ("investmentOps" in _initData == true && _initData.investmentOps == true) {
+				sendMessage("nav:investmentOperationsAdd:" + _initData.investmentAcc.ACCOUNT_NUMBER + "|!|" + _initData.investmentAcc.INSTRUMENT);
 			}
 			if (msgDisplay != null) {
 				var baVO:BankMessageVO = new BankMessageVO(msgDisplay);
@@ -1101,7 +1103,12 @@ package com.dukascopy.connect.sys.bankManager {
 					sendMessage("val:" + data.param.ACCOUNT_NUMBER + "|!|" + data.param.INSTRUMENT);
 					sendMessage(msg);
 				} else if (data.type == "investmentDetails") {
-					
+					data.tapped = true;
+					baVO = new BankMessageVO(data.text);
+					baVO.setMine();
+					invokeAnswerSignal(baVO);
+					sendMessage("val:" + data.selection1);
+					sendMessage(msg);
 				} else if (data.type == "paymentsInvestmentHistory") {
 					
 				} else if (data.type == "demoOpen") {
@@ -1538,12 +1545,35 @@ package com.dukascopy.connect.sys.bankManager {
 			return null;
 		}
 		
+		static public function getAccountByNumberAll(val:String):Object {
+			var acc:Object = getAccountByNumber(val);
+			if (acc != null)
+				return acc;
+			acc = getSavingAccountByNumber(val);
+			if (acc != null)
+				return acc;
+			acc = getCryptoAccountByNumber(val);
+			if (acc != null)
+				return acc;
+			return null;
+		}
+		
 		static public function getAccountByNumber(val:String):Object {
 			if (accountInfo == null || accountInfo.accounts == null)
 				return null;
 			for (var i:int = 0; i < accountInfo.accounts.length; i++) {
 				if (accountInfo.accounts[i].ACCOUNT_NUMBER == val)
 					return accountInfo.accounts[i];
+			}
+			return null;
+		}
+		
+		static public function getCryptoAccountByNumber(val:String):Object {
+			if (cryptoAccounts == null)
+				return null;
+			for (var i:int = 0; i < cryptoAccounts.length; i++) {
+				if (cryptoAccounts[i].ACCOUNT_NUMBER == val)
+					return cryptoAccounts[i];
 			}
 			return null;
 		}
@@ -2788,8 +2818,11 @@ package com.dukascopy.connect.sys.bankManager {
 				}
 				isCardHistory = false;
 				isInvestmentHistory = false;
-				if (historyAccount != "all")
-					historyAccCurrency = getAccountByNumber(historyAccount).CURRENCY;
+				if (historyAccount != "all") {
+					var account:Object = getAccountByNumberAll(historyAccount);
+					if (account != null)
+						historyAccCurrency = account.CURRENCY;
+				}
 				var notNull:Boolean = false;
 				if (history != null &&
 					historyAccount in history == true &&

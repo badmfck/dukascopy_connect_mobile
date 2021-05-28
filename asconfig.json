@@ -18,12 +18,14 @@
         
     },
 
+    
+
     "airOptions": {
 		"extdir": [
 			"lib/ane"
 		]
 	},
 
-    "mainClass": "Main",
+    "mainClass": "MainEscrow",
     "application":"conf/desktop.xml"
 }

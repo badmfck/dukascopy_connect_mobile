@@ -65,6 +65,7 @@ package com.dukascopy.connect.sys.bankManager {
 		
 		static private var nonSessionCounter:int;
 		static private var save:Boolean = true;
+		static private var firstData:Object = null;
 		
 		static public var accountInfo:Object;
 		static public var cryptoAccounts:Object;
@@ -117,6 +118,7 @@ package com.dukascopy.connect.sys.bankManager {
 					waitForPass = false;
 					steps = null;
 					stepsOld = null;
+					firstData = null;
 					S_ANSWER.invoke("app:actionCompleted");
 					sendBlock("main");
 					return;
@@ -460,6 +462,15 @@ package com.dukascopy.connect.sys.bankManager {
 					sendBlock(tmp[1], vals[0], vals[1]);
 					return;
 				}
+				if (tmp[1] == "investmentOperationsAdd") {
+					if (tmp.length == 3)
+						vals = tmp[2].split("|!|");
+					else
+						return;
+					firstData = tmp[2];
+					sendBlock(tmp[1], vals[0], vals[1]);
+					return;
+				}
 				if (tmp[1] == "investmentsList" || tmp[1] == "investmentsListAll" || tmp[1] == "investmentsListSell") {
 					if (investmentsData == null) {
 						lastWaitingInvestmentsAction = tempAction;
@@ -480,16 +491,11 @@ package com.dukascopy.connect.sys.bankManager {
 					return;
 				}
 				if (tmp[1] == "investmentDetails") {
-					vals = steps[steps.length - 2].val.split("|!|");
-					var instrument:String = vals[1];
-					if (instrument == null) return;
-					if (investmentDetailsData[instrument] == null) {
-						lastWaitingInvestmentDetailsAction = tempAction;
-						callPaymentsMethod("investmentDetails:" + instrument);
-					} else {
-						tmp[1] = "investmentDetails";
-						sendBlock(tmp[1], instrument);
-					}
+					vals = steps[steps.length - 1].val.split("|!|");
+					var instrument:String = vals[0];
+					if (instrument == null)
+						return;
+					callPaymentsMethod("investmentDetails:" + instrument);
 					return;
 				}
 				if (tmp[1] == "investmentSellConfirmed") {
@@ -629,9 +635,14 @@ package com.dukascopy.connect.sys.bankManager {
 						return;
 					}
 					var obj:Object = steps.pop();
-					if ("nav" in obj == true)
-						getAnswer("bot:bankbot nav:" + obj.nav);
-					else if ("cmd" in obj)
+					if ("nav" in obj == true) {
+						if (steps == null || steps.length == 0) {
+							getAnswer("bot:bankbot nav:" + obj.nav + ":" + firstData);
+							firstData = null;
+						} else {
+							getAnswer("bot:bankbot nav:" + obj.nav);
+						}
+					} else if ("cmd" in obj)
 						getAnswer("bot:bankbot cmd:" + obj.cmd + ":" + obj.value);
 					return;
 				} else if (tmp[1] == "last") {
@@ -1431,6 +1442,7 @@ package com.dukascopy.connect.sys.bankManager {
 			if ("back" in data == false || data.back != false) {
 				if ("isLast" in data == true || data.isLast == true) {
 					steps = null;
+					firstData = null;
 					S_ANSWER.invoke("app:actionCompleted");
 				} else if ("isError" in data == true) {
 					
@@ -1548,6 +1560,7 @@ package com.dukascopy.connect.sys.bankManager {
 		static public function reset():void {
 			steps = null;
 			stepsOld = null;
+			firstData = null;
 			lastPaymentsRequests = null;
 		}
 		
@@ -1719,10 +1732,7 @@ package com.dukascopy.connect.sys.bankManager {
 				investmentDetailsData[respondData.INSTRUMENT] = respondData;
 			}
 			S_ANSWER.invoke("requestRespond:investmentDetailsCompleted:" + JSON.stringify(respondData));
-			if (lastWaitingInvestmentDetailsAction != null) {
-				getAnswer(lastWaitingInvestmentDetailsAction);
-				lastWaitingInvestmentDetailsAction = null;
-			}
+			sendBlock("investmentDetails", respondData.INSTRUMENT);
 		}
 		
 		static private function onInvestmentHistoryLoaded(respondData:Object, hash:String):void {
@@ -2161,10 +2171,15 @@ package com.dukascopy.connect.sys.bankManager {
 					tempObject.userAccNumber = history[i].RECEIVER_CUSTOMER_NUMBER;
 					tempObject.user = UsersManager.getUserBy(history[i].TO);
 					if (tempObject.user == null) {
-						// Илья, всегда закрывай IF, такое нельзя проябывать ©bloom
-						if (history[i].TO && history[i].TO.indexOf("+") == 0){
-							tempObject.phone = history[i].TO;
-							tempObject.action = "repeatSendMoneyPhone";
+						if (history[i].TO != null) {
+							if (history[i].TO.indexOf("+") == 0) {
+								tempObject.phone = history[i].TO;
+								tempObject.action = "repeatSendMoneyPhone";
+							} else {
+								tempObject.login = history[i].TO;
+							}
+						} else {
+							echo("BankBotController", "onHistoryLoaded", "FROM filed is null", true);
 						}
 					}
 					tempObject.acc = history[i].CURRENCY;
@@ -2175,17 +2190,17 @@ package com.dukascopy.connect.sys.bankManager {
 					} else {
 						tempObject.mine = false;
 						tempObject.userAccNumber = history[i].SENDER_CUSTOMER_NUMBER;
-
 						tempObject.user = UsersManager.getUserBy(history[i].FROM); // from can be null
-
 						if (tempObject.user == null) {
-							// Илья, всегда закрывай IF, такое нельзя проябывать ©bloom
-							// если from == null то и user==null
-							if (history[i].FROM!=null && history[i].FROM.indexOf("+") == 0) {
-								tempObject.phone = history[i].FROM;
-								tempObject.action = "repeatSendMoneyPhone";
-							}else{
-								echo("BankBotController","onHistoryLoaded","FROM filed is null",true);
+							if (history[i].FROM != null) {
+								if (history[i].FROM.indexOf("+") == 0) {
+									tempObject.phone = history[i].FROM;
+									tempObject.action = "repeatSendMoneyPhone";
+								} else {
+									tempObject.login = history[i].TO;
+								}
+							} else {
+								echo("BankBotController", "onHistoryLoaded", "FROM filed is null", true);
 							}
 						}
 						if (history[i].CODE_SECURED == true && history[i].STATUS != "COMPLETED") {

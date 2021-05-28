@@ -8,6 +8,7 @@ package com.dukascopy.connect.data.screenAction.customActions {
 	import com.dukascopy.connect.screens.serviceScreen.WebViewReactionPopup;
 	import com.dukascopy.connect.sys.applicationError.ApplicationErrors;
 	import com.dukascopy.connect.sys.chatManager.ChatManager;
+	import com.dukascopy.connect.sys.echo.echo;
 	import com.dukascopy.connect.sys.nativeExtensionController.NativeExtensionController;
 	import com.dukascopy.connect.sys.serviceScreenManager.ServiceScreenManager;
 	import flash.events.StatusEvent;
@@ -72,11 +73,13 @@ package com.dukascopy.connect.data.screenAction.customActions {
 						}
 						case "close": 
 						{
-							onResult("popup_closed");
+						//	echo("RRRRR.popup_closed", args.url);
+							onResult("popup_closed", args.url);
 							break;
 						}
 						case "remove": 
 						{
+						//	echo("RRRRR.remove", args.url);
 							if (disposed == false) {
 								onResult("popup_closed");
 							}

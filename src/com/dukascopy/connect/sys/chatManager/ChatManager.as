@@ -2774,7 +2774,7 @@ import com.dukascopy.connect.MobileGui;
 		static public function activateChat():void {
 			if (currentChat == null)
 				return;
-			trace("dukascopy.test", "activateChat");
+		//	trace("dukascopy.test", "activateChat");
 			loadChatMessages();
 		}
 		

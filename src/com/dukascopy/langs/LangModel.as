@@ -402,7 +402,7 @@ import flash.system.Capabilities;
 		 * Выбор языка по его ID.
 		 */
 		public function selectLangByIndex(id:int, callback:Function = null):void {
-			if (availableLanguages == null)
+			if (availableLanguages == null || availableLanguages[id] == null)
 				return;
 			var langID:String = availableLanguages[id].id;
 			WSClient.call_setLang(langID); // send language to websocket

@@ -253,7 +253,7 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements {
 					avatar.y = sectionY + sectionText.height - avatarSizeDouble;
 					sectionText.x = Config.FINGER_SIZE;
 				}
-				sectionY = sectionText.getTrueHeight();
+				sectionY += sectionText.getTrueHeight();
 			}
 			var hitZones:Array;
 			var i:int;
@@ -1760,6 +1760,7 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements {
 					investmentSection = new BAInvestmentSection();
 					investmentSection.setData(investmentObject, sectionMenuWidth);
 					addChild(investmentSection);
+					investmentsSections ||= [];
 					investmentsSections.push(investmentSection);
 					if (investmentSection != null) {
 						investmentSection.clearGraphics();

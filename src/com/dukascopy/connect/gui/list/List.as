@@ -1191,7 +1191,6 @@ package com.dukascopy.connect.gui.list {
 		
 		// TAPER MOVEMENTS 
 		protected function onMoved(scrollStopped:Boolean = false, redrawVisible:Boolean = false, recalculateHeight:Boolean = false, animate:Boolean = false, excludeAnimationPosition:int = -1):void {
-			trace("-------- onMoved", scrollStopped);
 			Overlay.removeCurrent();
 			clearOverlayPending();
 			if (stock == null)
@@ -1816,7 +1815,7 @@ package com.dukascopy.connect.gui.list {
 			if (index == l)
 				return false;
 			var newY:Number = -(stock[index].y - offset);
-			if (newY + box.height + additionalBottomHeight < _height)
+			if (newY + box.height + additionalBottomHeight < _height) 
 			{
 				newY = _height - box.height - additionalBottomHeight;
 			}

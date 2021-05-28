@@ -924,10 +924,10 @@ package com.dukascopy.connect.screens {
 				}
 				if ("ACCOUNT_NUMBER" in data.accounts[lastHitzoneObject.param] == true && data.accounts[lastHitzoneObject.param].ACCOUNT_NUMBER != null) {
 					if (BankManager.getHistoryAccount() == data.accounts[lastHitzoneObject.param].INSTRUMENT) {
-						BankManager.openChatBotScreen( { bankBot:true }, true);
+						BankManager.openChatBotScreen( { investmentOps: true, investmentAcc:data.accounts[lastHitzoneObject.param] }, true);
 						return;
 					}
-					if ("CONSOLIDATE_BALANCE" in data == false) {
+					if ("CONSOLIDATE_BALANCE" in data.accounts[lastHitzoneObject.param] == false) {
 						BankManager.openChatBotScreen( { investmentDisclaimer: true }, true);
 						return;
 					}
