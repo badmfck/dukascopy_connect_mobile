@@ -9,7 +9,7 @@ package com.forms
     
     public class Form extends FormComponent{
         private var disposed:Boolean=false;
-        private var scaleFactor:int=1;
+        private var _scaleFactor:Number=1;
         private var form:Form;
         private var registeredComponents:Object={};
         private var doRedraw:Boolean=false;
@@ -20,7 +20,9 @@ package com.forms
         public function Form(xml:*,scaleFactor:Number=1){
             if(Capabilities.isDebugger && (Capabilities.os.toLowerCase().indexOf("mac")!=-1 || Capabilities.os.toLowerCase().indexOf("win")!=-1))
                 scaleFactor/=2.7;
-            this.scaleFactor=scaleFactor;
+            //TODO: remove
+            scaleFactor=1.4;
+            _scaleFactor=scaleFactor;
             _avaiableComponentRenderers.push(new FormRegisteredComponent("button",FormButton));
             _avaiableComponentRenderers.push(new FormRegisteredComponent("space",FormSpace));
             _avaiableComponentRenderers.push(new FormRegisteredComponent("graph",FormGraph));
@@ -47,10 +49,10 @@ package com.forms
                 doRedraw=true;
                 return;
             }
-            style.width=width/scaleFactor;
-            style.height=height/scaleFactor;
-            _view.scaleX=scaleFactor;
-            _view.scaleY=scaleFactor;
+            style.width=width/_scaleFactor;
+            style.height=height/_scaleFactor;
+           // _view.scaleX=_scaleFactor;
+           // _view.scaleY=_scaleFactor;
             redraw();
         }
 
@@ -91,6 +93,10 @@ package com.forms
         override public function destroy():void{
             super.destroy();
             onDocumentLoaded=null;
+        }
+
+        public function get scaleFactor():Number{
+            return _scaleFactor;
         }
     }
 }

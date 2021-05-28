@@ -1,7 +1,6 @@
 package com.dukascopy.connect.sys.tapper {
 	
 	import com.dukascopy.connect.Config;
-	import com.dukascopy.connect.sys.echo.echo;
 	import com.dukascopy.connect.sys.pointerManager.PointerManager;
 	import com.telefision.sys.signals.Signal;
 	import com.telefision.utils.Loop;

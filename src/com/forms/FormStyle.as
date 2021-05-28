@@ -20,6 +20,7 @@ package com.forms
         public var yOffset:int=0;
         public var xOffsetPercents:Boolean=false;
         public var yOffsetPercents:Boolean=false;
+        public var overflow:String="none";
         private var values:Object;
 
         public function FormStyle(xml:XMLNode=null,predefinedStyle:Object=null):void{
@@ -60,6 +61,7 @@ package com.forms
             setupOpacity();
             setupBorderRadius();
             setupOffsets();
+            setupOverflow();
             parseSize();
 
             values=null;
@@ -150,6 +152,12 @@ package com.forms
                 borderRadius=new FormBorderRadius(p,p,p,p);
             }
         }
+
+        private function setupOverflow():void{
+            if(values['overflow']!=null)
+                overflow=values['overflow']
+        }
+
 
         private function setupOffsets():void{
             xOffset=0;

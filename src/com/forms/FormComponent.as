@@ -18,6 +18,7 @@ package com.forms{
     import flash.utils.Timer;
     import flash.events.TimerEvent;
     import flash.display.LineScaleMode;
+    import flash.text.FontStyle;
 
     public class FormComponent{
 
@@ -28,11 +29,14 @@ package com.forms{
         private var _id:String=null;
         public function get id():String{return _id}
         protected var _view:DisplayObject;
+        protected var box:Sprite;
         public function get view():DisplayObject{return _view;}
         private var _components:Vector.<FormComponent>=new Vector.<FormComponent>();
         private var form:Form;
         protected var parent:FormComponent=null;
-        protected var destroyed:Boolean=false
+        protected var destroyed:Boolean=false;
+        private var mask:Sprite;
+        private var scroller:FormScroller;
 
 
         // listeners
@@ -47,6 +51,8 @@ package com.forms{
         public function FormComponent(xml:*,form:Form,predefinedStyle:Object=null){
             
             _view=new Sprite();
+            box=new Sprite();
+            
             this.form=form;
             if(xml is XML){
                 onXMLReady(new XMLDocument(xml).firstChild,predefinedStyle);
@@ -232,8 +238,10 @@ package com.forms{
         public function add(component:FormComponent,index:int=-1):void{
             _add(component,index,true);
         }
-
         private function _add(component:FormComponent,index:int,doRebuild:Boolean):void{
+            if(box.parent==null){
+                (_view as DisplayObjectContainer).addChild(box);
+            }
             var found:Boolean=false;
             var l:int=_components.length;
             for(var i:int=0;i<l;i++){
@@ -247,10 +255,10 @@ package com.forms{
             component.removeFromStage();
             if(index>-1){
                 _components.insertAt(index,component)
-                (_view as DisplayObjectContainer).addChildAt(component.view,index);
+                box.addChildAt(component.view,index);
             }else{
                 _components.push(component);
-                (_view as DisplayObjectContainer).addChild(component.view);
+                box.addChild(component.view);
             }
             component.parent=this;
             if(doRebuild)
@@ -324,21 +332,31 @@ package com.forms{
                     }
                 }
             }
-
+            
          
+         if(parent!=null && parent.style!=null){
             if(style.layout.toString()==FormLayout.VERTICAL){
-                if(bounds.display_width>0 && parent!=null && parent.style!=null)
+                if(bounds.display_width>0)
                     bounds.display_width-=parent.style.padding.left+parent.style.padding.right
             }else{
-                if(bounds.display_height>0 && parent!=null && parent.style!=null)
+                
+                if(bounds.display_height>0)
                     bounds.display_height-=parent.style.padding.top+parent.style.padding.bottom
+                if(bounds.display_width>0)
+                    bounds.display_width-=parent.style.padding.right+parent.style.padding.left
+                
             }
+         }
         }
 
         protected function redraw(percentOffsetW:int=-1,percentOffsetH:int=-1):void{
+            
+             if(id=="percenage2"){      
+                trace("PEW PEW!")
+            }
+            
             calculateBounds(percentOffsetW,percentOffsetH);
-            
-            
+
             var percentagesChidldren:Array=[];
             
             // setup layout
@@ -373,7 +391,7 @@ package com.forms{
                 c.view[style.layout.axis]=nextPos; // setup position
                 c.view[style.layout.oppositeAxis]=style.layout.toString()==FormLayout.VERTICAL?style.padding.left:style.padding.top;
                 setupAlign(c);
-                nextPos+=c.bounds[style.layout.side]; // inc position
+                nextPos+=c.bounds["display_"+style.layout.side]; // inc position
                 if(c.bounds[style.layout.oppositeSide]>maxSize)
                     maxSize=c.bounds[style.layout.oppositeSide]
 
@@ -382,6 +400,9 @@ package com.forms{
                 nextPos+=offset[style.layout.axis];
                 
             }
+
+          
+
             nextPos+=style.layout.toString()==FormLayout.VERTICAL?style.padding.bottom:style.padding.right;
             bounds[style.layout.side]=nextPos;
 
@@ -396,6 +417,7 @@ package com.forms{
             bounds[style.layout.oppositeSide]=maxSize;
 
             // setup wrap content for display size
+            if(percentagesChidldren.length==0){
             if(bounds['display_'+style.layout.oppositeSide]<0){
                 if(style.layout.toString()==FormLayout.VERTICAL)
                     maxSize+=style.padding.left+style.padding.right;
@@ -411,6 +433,7 @@ package com.forms{
                
                 bounds['display_'+style.layout.side]=bounds[style.layout.side];
                 
+            }
             }
             
             // move bounds to display size, if display size > 0
@@ -430,15 +453,15 @@ package com.forms{
                     c.view[style.layout.axis]=nextPos; // setup position
                     c.view[style.layout.oppositeAxis]=style.layout.toString()==FormLayout.VERTICAL?style.padding.left:style.padding.top;
                     setupAlign(c);
-                    nextPos+=c.bounds[style.layout.side]; // inc position
+                    nextPos+=c.bounds["display_"+style.layout.side]; // inc position
                     if(c.bounds[style.layout.oppositeSide]>maxSize)
                         maxSize=c.bounds[style.layout.oppositeSide]
 
                     // do offset
                     offset=setupOffset(c);
                     nextPos+=offset[style.layout.axis];
-                    
                 }
+            
                 nextPos+=style.layout.toString()==FormLayout.VERTICAL?style.padding.bottom:style.padding.right;
                 bounds[style.layout.side]=nextPos;
                 if(bounds[style.layout.side]<bounds['display_'+style.layout.side])
@@ -447,15 +470,61 @@ package com.forms{
                 bounds[style.layout.oppositeSide]=maxSize;
 
                 // setup wrap content for display size
-                if(bounds['display_'+style.layout.oppositeSide]<0)
+                if(bounds['display_'+style.layout.oppositeSide]<0){
                     bounds['display_'+style.layout.oppositeSide]=maxSize;
+                }
 
                 if(bounds['display_'+style.layout.side]<0)
                     bounds['display_'+style.layout.side]=bounds[style.layout.side];
             }
 
-            // SETUP ALIGN
+            if (style!=null && style.layout.toString()==FormLayout.VERTICAL
+                && bounds.height>bounds.display_height){
+                setupScroll(style.layout.axis);
+            }else{
+                if(mask!=null){
+                    mask.graphics.clear();
+                    if(mask.parent!=null)
+                        mask.parent.removeChild(mask)
+                    _view.mask=null;
+                    mask=null;
+                    
+                    box.x=0;
+                    box.y=0;
+                }
+                if(scroller!=null)
+                    scroller.dispose()
+                scroller=null;
+            }
+            
             draw();
+        }
+
+        protected function setupScroll(axis:String):void{
+            if(style.overflow!="scroll" && style.overflow!="hidden")
+                return;
+            if(mask==null){
+                mask=new Sprite();
+                view.mask=mask;
+                
+                (view as DisplayObjectContainer).addChild(mask)
+            }
+            mask.graphics.beginFill(0xFF0000,.8);
+            mask.graphics.drawRect(0,0,bounds.display_width,bounds.display_height);
+            if(style.overflow=="hidden"){
+                if(scroller)
+                    scroller.dispose()
+                scroller=null
+                box.x=0;
+                box.y=0;
+                return;
+            }
+            
+            //SCROLL
+            if(scroller==null)
+                scroller=new FormScroller(view,box,mask,axis,form.scaleFactor);
+            scroller.setBounds(bounds);
+            
         }
 
         protected function setupOffset(c:FormComponent):Object{
@@ -563,6 +632,9 @@ package com.forms{
             style=null;
             bounds=null;
             onDraw=null;
+            if(scroller!=null) 
+                scroller.dispose();
+            scroller=null;
         }
     }
 }
