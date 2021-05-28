@@ -36,7 +36,7 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements {
 	
 	/**
 	 * ...
-	 * @author Ilya Shcherbakov. Telefision TEAM Riga.
+	 * @author Ilya Shcherbakov. Telefision TEAM Riga. TEST
 	 */
 	
 	public class ListBankAccount extends BaseRenderer implements IListRenderer {

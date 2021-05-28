@@ -169,7 +169,10 @@
         <activity android:name="com.dukascopy.dukascopyextension.activity.SpeechGoogleActivity" android:theme="@style/Theme.Transparent"/>
         <activity android:name="com.dukascopy.dukascopyextension.activity.mrz.MRZctivity" android:screenOrientation="landscape" android:theme="@android:style/Theme.Holo.NoActionBar.Fullscreen"/>
         <activity android:name="com.dukascopy.dukascopyextension.activity.CameraPermissionActivity" android:theme="@style/Theme.Transparent"/>
-        <activity android:name="com.dukascopy.dukascopyextension.activity.WebViewActivity" android:theme="@style/AppTheme.SimpleTheme"/>
+        <activity android:name="com.dukascopy.dukascopyextension.activity.WebViewActivity" 
+				  android:theme="@style/AppTheme.SimpleTheme" 
+				  android:excludeFromRecents="true"
+				  android:launchMode="singleInstance"/>
         <activity android:name="com.dukascopy.dukascopyextension.activity.NotificationActivity" android:theme="@style/AppTheme.NoActionBar"/>
         <activity android:name="com.dukascopy.dukascopyextension.media.file.PickFileActivity" android:theme="@style/Theme.Transparent"/>
         <meta-data

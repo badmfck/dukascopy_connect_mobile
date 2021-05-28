@@ -147,7 +147,6 @@ package com.dukascopy.connect.gui.list {
 								imageAvaiable = loadCachedImage(url, fieldLinkNames[n]);
 							}
 							if (imageAvaiable == false) {
-								trace("-- add", url);
 								unavaiablesImages.push([url,fieldLinkNames[n]]);
 							}
 							else

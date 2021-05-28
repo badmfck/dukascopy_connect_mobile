@@ -115,7 +115,7 @@ package com.dukascopy.connect.gui.list {
 		private var isSmallListMoveAllowed:Boolean = false;
 		private var overlayReaction:Boolean = true;
 		private var fadeToAlpha:Boolean;
-		public var newMessageAnimationTime:Number = .2;
+		public var newMessageAnimationTime:Number = .25;
 		
 		public function List(name:String) {
 			_name = name;
@@ -1815,7 +1815,7 @@ package com.dukascopy.connect.gui.list {
 			if (index == l)
 				return false;
 			var newY:Number = -(stock[index].y - offset);
-			if (newY + box.height + additionalBottomHeight < _height)
+			if (newY + box.height + additionalBottomHeight < _height) 
 			{
 				newY = _height - box.height - additionalBottomHeight;
 			}

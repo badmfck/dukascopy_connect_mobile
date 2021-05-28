@@ -2059,7 +2059,7 @@ package com.dukascopy.langs {
 		static public var accountStatement:String = "Account statement";
 		static public var select:String = "Select";
 		static public var mcaOpenRestricted:String = "It is not possible to open an MCA account for you at the moment. Please contact Support team representative for details";
-		static public var initialDepositDescription:String = "The next step of your account opening is an initial deposit of %@.\nTo proceed, please enter your card details. The Bank will withdraw %@ from your card and deposit these funds to your account upon its approval.";
+		static public var initialDepositDescription:String = "The next step of your account opening is an initial deposit of %@.<br/>To proceed, please enter your card details. The Bank will withdraw %@ from your card and deposit these funds to your account upon its approval.";
 		static public var initialDeposit:String = "Initial deposit";
 		static public var payInvoice:String = "Send money by invoice";
 		static public var linkCard:String = "Link card";
@@ -2226,7 +2226,7 @@ package com.dukascopy.langs {
 		static public var verifyWithCtyptoDeposit:String = "Verify with Crypto Deposit";
 		static public var askAFriend:String = "Ask a friend";
 		//deprecated
-		static public var askFriendDescription:String = "You can ask a friend to send you 30 EUR directly in the chat. After you receive the requested amount, you will be automatically redirected to the next step. Click on the button bellow to see which of your contacts already has a Multi-Currency account with Dukascopy.";
+	//	static public var askFriendDescription:String = "You can ask a friend to send you 30 EUR directly in the chat. After you receive the requested amount, you will be automatically redirected to the next step. Click on the button bellow to see which of your contacts already has a Multi-Currency account with Dukascopy.";
 		static public var solvencyVerificatoinSuccess:String = "Solvency verification has been successfully completed";
 		static public var solvencyVerificatoinFail:String = "Solvency verification cannot be completed. Make sure you have an active account with ZBX or that the balance is sufficient to pass solvency check";
 		static public var zbxRequestTryLater:String = "You have already request a balance few moments ago, please try again later";
@@ -2316,7 +2316,7 @@ package com.dukascopy.langs {
 		static public var provideAccessToContacts:String = "Please provide access to your contact list";
 		static public var tradingAccOpeningWait:String = "You have sent a request earlier today. Our representative will contact you shortly. Kindly wait";
 		
-		static public var wireDepositDescription:String = "The next step of your account opening is an initial deposit of %@.\nTo proceed, please make a wire transfer of %@ indicating your phone number in the transfer description. The Bank will deposit these funds to your account upon its approval.";
+		static public var wireDepositDescription:String = "The next step of your account opening is an initial deposit of %@.<br/>To proceed, please make a wire transfer of %@ indicating your phone number in the transfer description. The Bank will deposit these funds to your account upon its approval.";
 		static public var solvency_wire_deposit:String = "Wire transfer";
 		static public var solvency_wire_deposit_description:String = "Deposit %@ by wire transfer";
 		

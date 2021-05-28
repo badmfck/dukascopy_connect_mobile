@@ -2,6 +2,7 @@ package com.dukascopy.connect.sys.payments {
 	
 	import com.dukascopy.connect.Config;
 	import com.dukascopy.connect.MobileGui;
+	import com.dukascopy.connect.data.CheckDuplicateTransfer;
 	import com.dukascopy.connect.gui.lightbox.UI;
 	import com.dukascopy.connect.screens.ChatScreen;
 	import com.dukascopy.connect.screens.base.ScreenManager;
@@ -664,12 +665,18 @@ package com.dukascopy.connect.sys.payments {
 				markAsAcepted( respond.savedRequestData.callID);				
 				failedInvoiceData = null;
 			}else{			
-				
+				 
 				if (respond.hasAuthorizationError){					
-					failedInvoiceData = respond.savedRequestData;		
+					failedInvoiceData = respond.savedRequestData;
 					PayManager.validateAuthorization(respond);	
 					PayManager.clearSavedData();// for not to call again from PyaManager but call here
-					
+					if (respond.savedRequestData != null && "data" in respond.savedRequestData && respond.savedRequestData.data != null)
+					{
+						if ("to" in respond.savedRequestData.data && respond.savedRequestData.data.to != null)
+						{
+							CheckDuplicateTransfer.clear(respond.savedRequestData.data.to);
+						}
+					}
 				}else if (respond.errorCode == 3408){//3408	PWP operation amount limit reached	see PWP mode
 					trace("HANLE PWP ERROR 3408");
 					failedInvoiceData = respond.savedRequestData;

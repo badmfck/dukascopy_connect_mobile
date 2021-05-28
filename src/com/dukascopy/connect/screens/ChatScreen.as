@@ -242,6 +242,7 @@ package com.dukascopy.connect.screens {
 		private var cachedChatImages:Vector.<ChatMessageVO>;
 		private var lastFirstMessageNum:int;
 		private var replyPanel:ReplyMessagePanel;
+		private var payByCardAction:PayByCardAction;
 		protected var backColorClip:Sprite;
 		static public var scannPassTime:Number = 0;
 		
@@ -1117,9 +1118,13 @@ package com.dukascopy.connect.screens {
 			if (list != null)
 			{
 				list.updateItem(msgVO, true, true);
-				if (ChatManager.getCurrentChat().messageID == msgVO.id)
+				if (ChatManager.getCurrentChat().messageID == msgVO.id && msgVO.systemMessageVO != null)
 				{
-					list.scrollBottom(false);
+					if (msgVO.systemMessageVO.method == ChatSystemMsgVO.METHOD_NEWS || 
+						msgVO.typeEnum == ChatSystemMsgVO.TYPE_INVOICE)
+					{
+						list.scrollBottom(false);
+					}
 				}
 			}
 		}
@@ -2426,12 +2431,18 @@ package com.dukascopy.connect.screens {
 					}
 					else
 					{
-						var action:PayByCardAction = new PayByCardAction(
-																	displayingMessage.systemMessageVO.invoiceVO.fromUserUID, 
-																	displayingMessage.systemMessageVO.invoiceVO.currency, 
-																	displayingMessage.systemMessageVO.invoiceVO.amount,
-																	displayingMessage, displayingMessage.systemMessageVO.invoiceVO.message, PayAPIManager.hasSwissAccount);
-						action.execute();
+						if (payByCardAction == null)
+						{
+							showPreloader();
+							payByCardAction = new PayByCardAction(
+																		displayingMessage.systemMessageVO.invoiceVO.fromUserUID, 
+																		displayingMessage.systemMessageVO.invoiceVO.currency, 
+																		displayingMessage.systemMessageVO.invoiceVO.amount,
+																		displayingMessage, displayingMessage.systemMessageVO.invoiceVO.message, PayAPIManager.hasSwissAccount);
+							payByCardAction.getSuccessSignal().add(onPayActionSuccess);
+							payByCardAction.getFailSignal().add(onPayActionFail);
+							payByCardAction.execute();
+						}
 					}
 				}
 			} else if (lhz == HitZoneType.CANCEL) {
@@ -2488,6 +2499,35 @@ package com.dukascopy.connect.screens {
 			{
 				Overlay.displayTouch(overlayTouch);
 			}
+		}
+		
+		private function onPayActionFail():void 
+		{
+			hidePreloader();
+			removePayAction();
+		}
+		
+		private function removePayAction():void 
+		{
+			if (payByCardAction != null)
+			{
+				if (payByCardAction.getSuccessSignal())
+				{
+					payByCardAction.getSuccessSignal().remove(onPayActionSuccess);
+				}
+				if (payByCardAction.getFailSignal())
+				{
+					payByCardAction.getFailSignal().remove(onPayActionFail);
+				}
+				payByCardAction.dispose();
+				payByCardAction = null;
+			}
+		}
+		
+		private function onPayActionSuccess():void 
+		{
+			hidePreloader();
+			removePayAction();
 		}
 		
 		private function getChatImages():Vector.<ChatMessageVO>
@@ -4047,7 +4087,7 @@ package com.dukascopy.connect.screens {
 			if (_isDisposed == true)
 				return;
 			disposing = true;
-			
+			removePayAction();
 			cachedChatImages = null;
 		//	clearWaitingTimeout();
 			TweenMax.killTweensOf(backColorClip);
