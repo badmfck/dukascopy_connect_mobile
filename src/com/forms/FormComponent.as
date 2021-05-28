@@ -332,19 +332,24 @@ package com.forms{
                     }
                 }
             }
-
+            
          
+         if(parent!=null && parent.style!=null){
             if(style.layout.toString()==FormLayout.VERTICAL){
-                if(bounds.display_width>0 && parent!=null && parent.style!=null)
+                if(bounds.display_width>0)
                     bounds.display_width-=parent.style.padding.left+parent.style.padding.right
             }else{
-                if(bounds.display_height>0 && parent!=null && parent.style!=null)
+                
+                if(bounds.display_height>0)
                     bounds.display_height-=parent.style.padding.top+parent.style.padding.bottom
+                if(bounds.display_width>0)
+                    bounds.display_width-=parent.style.padding.right+parent.style.padding.left
+                
             }
+         }
         }
 
         protected function redraw(percentOffsetW:int=-1,percentOffsetH:int=-1):void{
-            calculateBounds(percentOffsetW,percentOffsetH);
             
          
          if(parent!=null && parent.style!=null){
