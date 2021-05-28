@@ -3,9 +3,11 @@ package com.forms
     
     import flash.text.TextField;
     import flash.text.TextFormat;
+    import flash.text.TextFieldAutoSize;
 
     public class FormText extends FormComponent{
         private var text:String=""
+        private var parsed:String="";
         public function FormText(txt:String){
             text=txt;
             super(null,null);
@@ -17,7 +19,7 @@ package com.forms
             txt=txt.replace(/^[\s\n\t\r]/gm,"");
             txt=txt.replace(/[\s\n\t\r]$/gm,"");
             txt=txt.replace(/ {2,}/gm,"");
-            (_view as TextField).text=txt;
+            parsed=txt;
             //(_view as TextField).setTextFormat(new TextFormat("Tahoma",12));
         }
 
@@ -32,6 +34,12 @@ package com.forms
             tf.mouseWheelEnabled=false;
             tf.tabEnabled=false;
             tf.cacheAsBitmap=true;
+            tf.multiline=true;
+            tf.wordWrap=true;
+            tf.autoSize=TextFieldAutoSize.LEFT
+
+            //tf.width=2000;
+            tf.text=parsed;
 
             // get color
             var fc:FormColor=getColor();
@@ -53,12 +61,13 @@ package com.forms
 
             tf.setTextFormat(ta);
             
-    
+            if(parsed.indexOf("Please")!=-1)
+                trace(123);
 
             // parent width
             var pW:int=getParentSize("width");
             var elipsis:Boolean=false;
-            var textWidth:int=tf.textWidth+4;
+            var textWidth:int=tf.textWidth+5;
 
             if(pW>0){
                 if(textWidth>pW){

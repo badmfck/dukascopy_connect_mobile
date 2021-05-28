@@ -46,11 +46,22 @@
 
 
     <div height="100%" padding="20" id="percenage2">
-        <div height="50%">4</div>
+        
+        <div height="100%" id="bigtext" backgroundColor="#00FF00" overflow="scroll">
+            <div>Please note that the refundable fee (3%) will become non-refundable if you neither confirm the receipt of crypto nor request an investigation during 24 hours</div>
+            <div>Please note that the refundable fee (3%) will become non-refundable if you neither confirm the receipt of crypto nor request an investigation during 24 hours</div>
+            <div>Please note that the refundable fee (3%) will become non-refundable if you neither confirm the receipt of crypto nor request an investigation during 24 hours</div>
+            <div>Please note that the refundable fee (3%) will become non-refundable if you neither confirm the receipt of crypto nor request an investigation during 24 hours</div>
+            <div>Please note that the refundable fee (3%) will become non-refundable if you neither confirm the receipt of crypto nor request an investigation during 24 hours</div>
+            <div>Please note that the refundable fee (3%) will become non-refundable if you neither confirm the receipt of crypto nor request an investigation during 24 hours</div>
+            <div>Please note that the refundable fee (3%) will become non-refundable if you neither confirm the receipt of crypto nor request an investigation during 24 hours </div>
+            <div>Please note that the refundable fee (3%) will become non-refundable if you neither confirm the receipt of crypto nor request an investigation during 24 hours </div>
+        </div>
+
     </div>
     <div padding="20"><div>padded</div></div>
 
-    <div layout="horizontal" id="btnsBox">
+    <div layout="horizontal" id="btnsBox" backgroundColor="#FF0000" >
         <space size="10"/>
         <button type="primary" id="btnEscrowCreate" width="50%">ACCEPT</button>
         <space size="10"/>

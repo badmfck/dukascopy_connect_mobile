@@ -21,6 +21,7 @@ import com.forms.Form;
 import flash.filesystem.File;
 import flash.events.KeyboardEvent;
 import flash.ui.Keyboard;
+import com.dukascopy.connect.managers.escrow.test.EscrowTest;
 
 
 [SWF(backgroundColor="#ffffff")]
@@ -44,11 +45,13 @@ public class MainEscrow extends Sprite {
 		private function start():void{
 
             new EscrowDealManager();
+			new EscrowTest();
+
 			new WebViewManager();
 
 			TweenMax.delayedCall(2,function():void{
 
-				GD.S_ESCROW_DEAL_CREATE_REQUEST.invoke(
+				/*GD.S_ESCROW_DEAL_CREATE_REQUEST.invoke(
 					new EscrowDealCreateRequest()
 					.setChatUID("WLDZD8WFWBIsWQWx")
 					.setInstrument("btc")
@@ -57,7 +60,7 @@ public class MainEscrow extends Sprite {
 					.setSecAmount(23.32)
 					.setSide(EscrowDealSide.BUY)
 					.setMsgID(101)
-				)
+				)*/
 				
 
 				setEscrowForm();
