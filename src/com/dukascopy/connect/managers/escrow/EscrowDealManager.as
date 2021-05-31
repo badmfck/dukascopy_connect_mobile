@@ -78,8 +78,12 @@ package com.dukascopy.connect.managers.escrow{
                 for each(var i:EscrowInstrument in tmp)
                     arr.push(i.code);
 
-                // TODO: SEND TO SERVER, GET RESPONSE, REBUILD INSTRUMENTS
+                
+                GD.S_ESCROW_WALLETS_REQUEST.invoke(function(wallets:Object):void{
+                    
+                })
 
+                // TODO: SEND TO SERVER, GET RESPONSE, REBUILD INSTRUMENTS
                 //FAKE
                 var timer:Timer=new Timer(1000,1);
                 var dis:Dispatcher=new Dispatcher(timer)
@@ -95,6 +99,7 @@ package com.dukascopy.connect.managers.escrow{
             })
 
             // Escrow get offer calculation
+            // instrument, price, amount
         }
 
 
