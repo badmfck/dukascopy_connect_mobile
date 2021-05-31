@@ -9,7 +9,7 @@ package com.forms
     
     public class Form extends FormComponent{
         private var disposed:Boolean=false;
-        private var _scaleFactor:Number=1;
+        
         private var form:Form;
         private var registeredComponents:Object={};
         private var doRedraw:Boolean=false;
@@ -17,17 +17,11 @@ package com.forms
         private var _height:int=-1;
         private var _avaiableComponentRenderers:Vector.<FormRegisteredComponent>=new Vector.<FormRegisteredComponent>();
         
-        public function Form(xml:*,scaleFactor:Number=1){
-            if(Capabilities.isDebugger && (Capabilities.os.toLowerCase().indexOf("mac")!=-1 || Capabilities.os.toLowerCase().indexOf("win")!=-1))
-                scaleFactor/=2.7;
-            //TODO: remove
-            scaleFactor=1.4;
-            _scaleFactor=scaleFactor;
+        public function Form(xml:*){
             _avaiableComponentRenderers.push(new FormRegisteredComponent("button",FormButton));
             _avaiableComponentRenderers.push(new FormRegisteredComponent("space",FormSpace));
             _avaiableComponentRenderers.push(new FormRegisteredComponent("graph",FormGraph));
             super(xml,this);
-         
         }
 
         override public function reload():void{
@@ -42,6 +36,9 @@ package com.forms
         
         public function setSize(width:int,height:int):void{
 
+            
+            
+
             _width=width;
             _height=height;
 
@@ -49,10 +46,24 @@ package com.forms
                 doRedraw=true;
                 return;
             }
-            style.width=width/_scaleFactor;
-            style.height=height/_scaleFactor;
-           // _view.scaleX=_scaleFactor;
-           // _view.scaleY=_scaleFactor;
+
+            var formSize:int=-1;
+            
+            if(attributes!=null && "formSize" in attributes && attributes.formSize!=null)
+                formSize=parseInt(attributes.formSize);
+            
+            var w:int=formSize;
+            var h:int=Math.round((formSize*_height)/_width);
+            style.width=w;
+            style.height=h;
+
+            var scaleFactor:Number=_width/w;
+            trace(scaleFactor);
+
+            //style.width=width/_scaleFactor;
+            //style.height=height/_scaleFactor;
+            _view.scaleX=scaleFactor;
+            _view.scaleY=scaleFactor;
             redraw();
         }
 
@@ -93,10 +104,6 @@ package com.forms
         override public function destroy():void{
             super.destroy();
             onDocumentLoaded=null;
-        }
-
-        public function get scaleFactor():Number{
-            return _scaleFactor;
         }
     }
 }

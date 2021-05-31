@@ -170,23 +170,19 @@ package com.telefision.sys.signals
         }
 
         public function clear():void{
-            
             if(methods!=null){
                 for each(var ssvo:SuperSignalVO in methods)
                     ssvo.clear();
                 methods=[];
             }
-
             if(delays!=null){
                 for each(var del:SuperSignalDelayedVO in delays)
                     del.clear();
                 delays=[];
             }
-
             if(invokes!=null)
                 invokes=[];
         }
-        
     }
 }
 

@@ -37,6 +37,7 @@ package com.forms{
         protected var destroyed:Boolean=false;
         private var mask:Sprite;
         private var scroller:FormScroller;
+        protected var attributes:Object=null;
 
 
         // listeners
@@ -168,6 +169,7 @@ package com.forms{
         private function onXMLReady(xml:XMLNode,predefinedStyle:Object):void{
             nodeName=xml.nodeName;
             nodeType=xml.nodeType;
+            attributes=xml.attributes;
             
             if(xml.attributes!=null && ("id" in xml.attributes)){
                 _id=xml.attributes["id"];
@@ -522,7 +524,7 @@ package com.forms{
             
             //SCROLL
             if(scroller==null)
-                scroller=new FormScroller(view,box,mask,axis,form.scaleFactor);
+                scroller=new FormScroller(view,box,mask,axis);
             scroller.setBounds(bounds);
             
         }

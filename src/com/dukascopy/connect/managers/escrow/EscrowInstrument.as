@@ -1,11 +1,10 @@
 package com.dukascopy.connect.managers.escrow{
 
-    import com.adobe.images.BitString;
-
     public class EscrowInstrument{
+        
         private var _name:String;
         private var _wallet:String;
-        private var _price:Number;
+        private var _price:Number; //ASK
         private var _code:String;
         private var precision:int=2;
         

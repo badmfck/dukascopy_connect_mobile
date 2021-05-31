@@ -7,6 +7,7 @@ package com.forms
     import flash.events.TimerEvent;
     import flash.display.Sprite;
 
+
     public class FormScroller{
         private var target:DisplayObject;
         private var eventTarget:DisplayObject;
@@ -22,6 +23,10 @@ package com.forms
 
         private var tx:int=0;
         private var ty:int=0;
+  
+        private var movingSpeed:Number=0;
+        private var fading:Number = .9;
+        
 
         private var speedTimer:Timer;
         private var speedTimerY:int;
@@ -30,13 +35,12 @@ package com.forms
         private var speedLastTick:Number=0;
 
         private var mDown:String=MouseEvent.MOUSE_DOWN;
-        private var scaleFactor:Number=1;
         
-        public function FormScroller(eventTarget:DisplayObject,target:DisplayObject,mask:DisplayObject,axis:String,scaleFactor:Number){
+        
+        public function FormScroller(eventTarget:DisplayObject,target:DisplayObject,mask:DisplayObject,axis:String){
             this.target=target;
             this.mask=mask;
             this.eventTarget=eventTarget;
-            this.scaleFactor=scaleFactor;
             eventTarget.addEventListener(mDown,onMDown)
             maxSideOffsetY=mask.height*.4
         }
@@ -48,6 +52,7 @@ package com.forms
         private function onMDown(e:MouseEvent):void{
             if(eventTarget.stage==null)
                 return;
+            moving=true;
             eventTarget.stage.addEventListener(MouseEvent.MOUSE_MOVE,onMouseMove)
             eventTarget.stage.addEventListener(MouseEvent.MOUSE_UP,onMouseUp)
             if(!frameAdded){
@@ -59,24 +64,34 @@ package com.forms
             startMX=target.stage.mouseX;//*scaleFactor;
             startMY=target.stage.mouseY;//*scaleFactor;
             speedTimerSY=eventTarget.stage.mouseY;//*scaleFactor;
+            ty=startY+(target.stage.mouseY-startMY);
             setTimer();
         }
 
         private function onMouseUp(e:MouseEvent):void{
             eventTarget.stage.removeEventListener(MouseEvent.MOUSE_MOVE,onMouseMove)
             eventTarget.stage.removeEventListener(MouseEvent.MOUSE_UP,onMouseUp)
+            ty=startY+(target.stage.mouseY-startMY);
             moving=false;
             clearTimer();
             
             var spr:Sprite=new Sprite();
             
 
-            trace(">"+speedY,new Date().getTime()-speedLastTick);
+            // GOT 58 pixels in 14 secs
+            // time 30;
+
+            
+            movingSpeed=speedY/30;
+           
         }
+
+        
 
         private function onMouseMove(e:MouseEvent):void{
             moving=true;
-            target.y=startY+(target.stage.mouseY-startMY);
+            //target.y=startY+(target.stage.mouseY-startMY);
+            ty=startY+(target.stage.mouseY-startMY);
         }
 
         private function setTimer():void{
@@ -108,6 +123,14 @@ package com.forms
 
         private function onFrame(e:Event):void{
             speedTimerY=speedTimerSY-eventTarget.stage.mouseY;
+            var speed:Number=.2;
+            if(moving){
+                target.y+=(ty-target.y)*speed;
+            }else{
+                movingSpeed*=fading;
+                target.y+=(movingSpeed*fading) + 5;
+            }
+            target.y=Math.round(target.y);
         }
 
         public function dispose():void{

@@ -9,6 +9,8 @@ import com.dukascopy.connect.managers.escrow.S_EscrowInstruments;
 import com.dukascopy.connect.managers.escrow.signals.S_EscrowPrice;
 import com.dukascopy.connect.managers.escrow.signals.S_EscrowManagerAvailable;
 import com.dukascopy.connect.managers.escrow.signals.S_EscrowPricesRequest;
+import com.dukascopy.connect.managers.escrow.signals.S_EscrowMoneyHoldRequest;
+import com.dukascopy.connect.managers.escrow.signals.S_EscrowWalletsRequest;
 
 public class GD {
         static public const S_PAYPASS_BACK_CLICK:Signal=new Signal();
@@ -24,10 +26,13 @@ public class GD {
 
 		// ESCROW
 		static public const S_ESCROW_MANAGER_AVAILABLE:S_EscrowManagerAvailable=new S_EscrowManagerAvailable(); // EscrowDealMap
-		static public const S_ESCROW_DEALS_LOADED:Signal=new Signal(); // EscrowDealMap
+		static public const S_ESCROW_DEALS_LOADED:Signal=new Signal(); 
 		static public const S_ESCROW_DEAL_CREATE_REQUEST:S_EscrowDealCreateRequest=new S_EscrowDealCreateRequest();
 		static public const S_ESCROW_DEALS_REQUEST:S_EscrowDealsRequest=new S_EscrowDealsRequest();
 		static public const S_ESCROW_DEAL_FORM_REQUEST:SuperSignal=new SuperSignal();
+		static public const S_ESCROW_MONEY_HOLD_REQUEST:S_EscrowMoneyHoldRequest=new S_EscrowMoneyHoldRequest();
+		static public const S_ESCROW_WALLETS_REQUEST:S_EscrowWalletsRequest=new S_EscrowWalletsRequest();
+
 		static public const S_ESCROW_INSTRUMENTS_REQUEST:S_EscrowRequestInstruments=new S_EscrowRequestInstruments();
 		static public const S_ESCROW_INSTRUMENTS:S_EscrowInstruments=new S_EscrowInstruments();
 		static public const S_ESCROW_PRICE:S_EscrowPrice=new S_EscrowPrice();

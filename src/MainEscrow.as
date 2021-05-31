@@ -46,7 +46,6 @@ public class MainEscrow extends Sprite {
 
             new EscrowDealManager();
 			new EscrowTest();
-
 			new WebViewManager();
 
 			TweenMax.delayedCall(2,function():void{
@@ -71,7 +70,7 @@ public class MainEscrow extends Sprite {
 		
 		private function setEscrowForm():void{
 
-			var form:Form=new Form(File.applicationDirectory.resolvePath("forms"+File.separator+"escrowForm.xml"),3);
+			var form:Form=new Form(File.applicationDirectory.resolvePath("forms"+File.separator+"escrowForm.xml"));
 			stage.addEventListener(KeyboardEvent.KEY_DOWN,function(e:KeyboardEvent):void{
                 if(e.keyCode==Keyboard.R && (e.commandKey || e.ctrlKey))
 					form.reload();
@@ -99,9 +98,6 @@ public class MainEscrow extends Sprite {
 						return;
 				}
 			}
-
 		}
-
 	}
-	
 }
