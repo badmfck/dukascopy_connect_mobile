@@ -2237,6 +2237,7 @@ package com.dukascopy.connect.gui.lightbox {
 					icon = invJPN;
 					break;
 				case "DCO":
+				case "DUK+":
 					invDCO ||= new SWFInvestmentDCO();
 					icon = invDCO;
 					break;

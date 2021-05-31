@@ -272,6 +272,8 @@ package com.dukascopy.connect.sys.style.presets
 			this[Style.COLOR_BUTTON_OUTLINE] = Color.GREY_LIGHT;
 			this[Style.FLOAT_POOPUP_RADIUS] = int(Config.FINGER_SIZE * .6);
 			this[Style.BUTTON_PADDING] = int(Config.FINGER_SIZE * .23);
+			this[Style.COLOR_BUTTON_ACCENT] = Color.GREY_DARK;
+			this[Style.COLOR_SEEK_BACK] = Color.GREY_SSL;
 		}
 	}
 }

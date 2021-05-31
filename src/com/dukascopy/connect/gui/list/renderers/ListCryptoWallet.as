@@ -2,10 +2,9 @@ package com.dukascopy.connect.gui.list.renderers {
 	
 	import com.dukascopy.connect.Config;
 	import com.dukascopy.connect.data.CountriesData;
-	import com.dukascopy.connect.data.escrow.CryptoWalletData;
-	import com.dukascopy.connect.data.escrow.CryptoWalletStatus;
 	import com.dukascopy.connect.gui.lightbox.UI;
 	import com.dukascopy.connect.gui.list.ListItem;
+	import com.dukascopy.connect.managers.escrow.EscrowInstrument;
 	import com.dukascopy.connect.sys.assets.Assets;
 	import com.dukascopy.connect.sys.imageManager.ImageManager;
 	import com.dukascopy.connect.sys.style.FontSize;
@@ -42,9 +41,9 @@ package com.dukascopy.connect.gui.list.renderers {
 		
 		override protected function getItemData(data:Object):Object 
 		{
-			if (data is CryptoWalletData)
+			if (data is EscrowInstrument)
 			{
-				return (data as CryptoWalletData).title;
+				return (data as EscrowInstrument).name;
 			}
 			return data;
 		}
@@ -52,14 +51,14 @@ package com.dukascopy.connect.gui.list.renderers {
 		override public function getView(li:ListItem, h:int, w:int, highlight:Boolean = false):IBitmapDrawable {
 			super.getView(li, h, w, highlight);
 			
-			var data:CryptoWalletData = li.data as CryptoWalletData;
-			tfName.text = data.title;
+			var data:EscrowInstrument = li.data as EscrowInstrument;
+			tfName.text = data.name;
 			var walletText:String;
-			if (data.status == CryptoWalletStatus.ready && data.address != null)
+			if (data.isLinked && data.wallet != null)
 			{
-				walletText = data.address;
+				walletText = data.wallet;
 			}
-			else if (data.status == CryptoWalletStatus.linkageRequired)
+			else if (!data.isLinked)
 			{
 				walletText = "<font color='#CD3F43'>" + Lang.linkage_required + "</font>";
 			}
@@ -80,9 +79,9 @@ package com.dukascopy.connect.gui.list.renderers {
 		override protected function drawIcon(li:ListItem, h:int):void 
 		{
 			flagIcon.removeChildren();
-			if (li.data != null && li.data is CryptoWalletData){
+			if (li.data != null && li.data is EscrowInstrument){
 				flagIcon.visible = true;
-				var flagAsset:Sprite = UI.getInvestIconByInstrument((li.data as CryptoWalletData).code);
+				var flagAsset:Sprite = UI.getInvestIconByInstrument((li.data as EscrowInstrument).code);
 				UI.scaleToFit(flagAsset, ICON_SIZE, ICON_SIZE);
 				flagIcon.addChild(flagAsset);
 				

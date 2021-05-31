@@ -2344,6 +2344,19 @@ package com.dukascopy.langs {
 		static public var linkage_required:String = "Linkage required";
 		static public var deviation_from_market:String = "% deviation from the market price";
 		static public var fixed_price:String = "Fixed price";
+		static public var declare_blockchain:String = "For getting access to external blockchain operations, you need to declare your wallet address in this blockchain <font color='#CD3F43'>(read more)</font>";
+		static public var declare_blockchain_description_url:String = "http://google.com";
+		static public var indicative_price:String = "Indicative price:";
+		static public var current_price:String = "Current price";
+		static public var below:String = "Below";
+		static public var above:String = "Above";
+		static public var to_pay_for_crypto:String = "To pay for crypto";
+		static public var refundable_fee:String = "Refundable fee";
+		static public var amount_to_be_debited:String = "Amount to be debited";
+		
+		static public var to_get_for_crypto:String = "To get for crypto";
+		static public var commission_crypto:String = "Сommission";
+		static public var amount_to_be_credited:String = "Amount to be credited";
 		
 		static public function updateKeys(keys:Object):void {
 			for (var n:String in keys) {

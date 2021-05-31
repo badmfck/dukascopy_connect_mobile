@@ -216,6 +216,8 @@ package com.dukascopy.connect.sys.style
 		static public const COLOR_BUTTON_OUTLINE:String = "colorButtonOutline";
 		static public const FLOAT_POOPUP_RADIUS:String = "floatPoopupRadius";
 		static public const BUTTON_PADDING:String = "buttonPadding";
+		static public const COLOR_BUTTON_ACCENT:String = "COLOR_BUTTON_ACCENT";
+		static public const COLOR_SEEK_BACK:String = "colorSeekBack";
 		
 		static private var preset:Preset;
 		

@@ -13,6 +13,7 @@ package com.dukascopy.connect {
 	import com.dukascopy.connect.gui.networkIndicator.NetworkIndicator;
 	import com.dukascopy.connect.gui.puzzle.Puzzle;
 	import com.dukascopy.connect.gui.tools.ImagePreviewCrop;
+	import com.dukascopy.connect.managers.escrow.EscrowDealManager;
 	import com.dukascopy.connect.screens.ChatScreen;
 	import com.dukascopy.connect.screens.LoginScreen;
 	import com.dukascopy.connect.screens.MyAccountScreen;
@@ -212,6 +213,8 @@ package com.dukascopy.connect {
 			UserExtensionsManager.init();
 			Calendar.init();
 			SoftKeyboard.startDetectHeight();
+			
+			new EscrowDealManager();
 
 			/*if(Config.PLATFORM_WINDOWS)
 				stage.addChild(new MemoryMonitor());*/

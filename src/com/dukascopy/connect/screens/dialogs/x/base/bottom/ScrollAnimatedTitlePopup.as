@@ -3,9 +3,11 @@ package com.dukascopy.connect.screens.dialogs.x.base.bottom
 	import com.dukascopy.connect.Config;
 	import com.dukascopy.connect.gui.lightbox.UI;
 	import com.dukascopy.connect.gui.scrollPanel.ScrollPanel;
+	import com.dukascopy.connect.gui.tools.HorizontalPreloader;
 	import com.dukascopy.connect.screens.dialogs.x.base.bottom.AnimatedTitlePopup;
 	import com.dukascopy.connect.sys.applicationError.ApplicationErrors;
 	import com.dukascopy.connect.sys.style.Style;
+	import com.dukascopy.connect.sys.style.presets.Color;
 	import flash.display.DisplayObject;
 	import flash.display.Sprite;
 	/**
@@ -17,6 +19,7 @@ package com.dukascopy.connect.screens.dialogs.x.base.bottom
 		protected var scrollPanel:ScrollPanel;
 		protected var scrollBottom:Sprite;
 		private var scrollUp:Sprite;
+		private var horizontalLoader:HorizontalPreloader;
 		
 		public function ScrollAnimatedTitlePopup() 
 		{
@@ -46,6 +49,26 @@ package com.dukascopy.connect.screens.dialogs.x.base.bottom
 		override protected function animationFinished():void 
 		{
 			updateScroll();
+		}
+		
+		protected function showPreloader():void
+		{
+			if (horizontalLoader == null)
+			{
+				horizontalLoader = new HorizontalPreloader(Color.GREEN);
+				horizontalLoader.setSize(_width, int(Config.FINGER_SIZE * .07));
+				container.addChild(horizontalLoader);
+				horizontalLoader.y = headerHeight;
+			}
+			horizontalLoader.start();
+		}
+		
+		protected function hidePreloader():void
+		{
+			if (horizontalLoader != null)
+			{
+				horizontalLoader.stop();
+			}
 		}
 		
 		protected function updateScroll():void
@@ -84,7 +107,15 @@ package com.dukascopy.connect.screens.dialogs.x.base.bottom
 			super.initScreen(data);
 			
 			scrollPanel.view.y = headerHeight;
+			updateScrollSize();
+		}
+		
+		protected function updateScrollSize():void
+		{
+			scrollBottom.y = 0;
 			scrollPanel.setWidthAndHeight(_width, getHeight() - headerHeight - getBottomPadding());
+			scrollBottom.y = scrollPanel.itemsHeight + Config.APPLE_BOTTOM_OFFSET;
+			scrollPanel.update();
 		}
 		
 		protected function getBottomPadding():int 
@@ -99,6 +130,7 @@ package com.dukascopy.connect.screens.dialogs.x.base.bottom
 			
 			scrollBottom.y = 0;
 			updateContentPositions();
+			updateScrollSize();
 			scrollBottom.y = scrollPanel.itemsHeight + Config.APPLE_BOTTOM_OFFSET;
 		}
 		
@@ -140,6 +172,11 @@ package com.dukascopy.connect.screens.dialogs.x.base.bottom
 			{
 				UI.destroy(scrollUp);
 				scrollUp = null;
+			}
+			if (horizontalLoader != null)
+			{
+				horizontalLoader.dispose();
+				horizontalLoader = null;
 			}
 		}
 	}
