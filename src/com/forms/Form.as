@@ -6,6 +6,7 @@ package com.forms
     import flash.xml.XMLNode;
     import flash.system.Capabilities;
     import com.forms.components.FormGraph;
+    import com.forms.components.FormInput;
     
     public class Form extends FormComponent{
         private var disposed:Boolean=false;
@@ -21,6 +22,7 @@ package com.forms
             _avaiableComponentRenderers.push(new FormRegisteredComponent("button",FormButton));
             _avaiableComponentRenderers.push(new FormRegisteredComponent("space",FormSpace));
             _avaiableComponentRenderers.push(new FormRegisteredComponent("graph",FormGraph));
+            _avaiableComponentRenderers.push(new FormRegisteredComponent("input",FormInput));
             super(xml,this);
         }
 

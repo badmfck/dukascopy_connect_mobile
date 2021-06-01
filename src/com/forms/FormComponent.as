@@ -19,6 +19,7 @@ package com.forms{
     import flash.events.TimerEvent;
     import flash.display.LineScaleMode;
     import flash.text.FontStyle;
+    import flash.events.MouseEvent;
 
     public class FormComponent{
 
@@ -38,13 +39,24 @@ package com.forms{
         private var mask:Sprite;
         private var scroller:FormScroller;
         protected var attributes:Object=null;
-
+        protected var enableChilds:Boolean=true;
 
         // listeners
         public var onDraw:Function=null; // calls each time when component renders, onDraw(view,bounds):Boolean, when returns false, default draw procedure will be stopped
         public var onDocumentLoaded:Function=null; // call when xml loaded & parsed
         private var _onTap:Function=null;
-        public function set onTap(val:Function):void{ _onTap=val; }
+        public function set onTap(val:Function):void{
+            if(val==null)
+                _view.removeEventListener(MouseEvent.CLICK,onMouseClick);
+            if(val!=null && _onTap==null && val is Function)
+                _view.addEventListener(MouseEvent.CLICK,onMouseClick);
+
+            if(!(val is Function)){
+                trace("Error! can't add non-function callback to tap")
+                return;
+            }
+             _onTap=val;
+        }
         
         private var fdis:Dispatcher;
         private var filePath:String=null;
@@ -77,6 +89,17 @@ package com.forms{
                 // NO XML
                 if(onDocumentLoaded!=null && onDocumentLoaded is Function)
                     onDocumentLoaded();
+            }
+        }
+
+        private function onMouseClick(e:MouseEvent):void{
+            if(_onTap!=null && _onTap is Function){
+                if(_onTap.length==0)
+                    _onTap();
+                if(_onTap.length==1)
+                    _onTap(this)
+                if(_onTap.length==2)
+                    _onTap(this,e)
             }
         }
 
@@ -180,12 +203,22 @@ package com.forms{
             createView(xml);
         }
 
+        private function callDocumentLoaded():void{
+            if(onDocumentLoaded!=null && onDocumentLoaded is Function && this is Form)
+                onDocumentLoaded();
+        }
+
         protected function createView(xml:XMLNode):void{
-            
+
             if(_components.length>0){
                 for each(var cc:FormComponent in _components)
                     cc.destroy();
                 _components=new Vector.<FormComponent>();
+            }
+
+            if(!enableChilds){
+                callDocumentLoaded();
+                return;
             }
 
 
@@ -194,10 +227,10 @@ package com.forms{
                 var txtNode:FormText=createTextNode(xml.nodeValue)
                 if(txtNode!=null)
                     _add(txtNode,-1,false);
-                if(onDocumentLoaded!=null && onDocumentLoaded is Function)
-                    onDocumentLoaded();
+                callDocumentLoaded();
                 return;
             }
+            
 
             var childs:Array=xml.childNodes;
             for each(var node:XMLNode in childs){
@@ -220,8 +253,7 @@ package com.forms{
                 }
                 _add(c,-1,false);
             }
-            if(onDocumentLoaded!=null && onDocumentLoaded is Function && this is Form)
-                onDocumentLoaded();
+            callDocumentLoaded();
         }
 
         private function createTextNode(txt:String):FormText{
@@ -352,29 +384,7 @@ package com.forms{
         }
 
         protected function redraw(percentOffsetW:int=-1,percentOffsetH:int=-1):void{
-            
-         
-         if(parent!=null && parent.style!=null){
-            if(style.layout.toString()==FormLayout.VERTICAL){
-                if(bounds.display_width>0)
-                    bounds.display_width-=parent.style.padding.left+parent.style.padding.right
-            }else{
-                
-                if(bounds.display_height>0)
-                    bounds.display_height-=parent.style.padding.top+parent.style.padding.bottom
-                if(bounds.display_width>0)
-                    bounds.display_width-=parent.style.padding.right+parent.style.padding.left
-                
-            }
-         }
-        }
-
-        protected function redraw(percentOffsetW:int=-1,percentOffsetH:int=-1):void{
-            
-             if(id=="percenage2"){      
-                trace("PEW PEW!")
-            }
-            
+           
             calculateBounds(percentOffsetW,percentOffsetH);
 
             var percentagesChidldren:Array=[];
@@ -565,20 +575,7 @@ package com.forms{
             return res;
         }
 
-        /**
-         * Setup align & padding
-         */
-        protected function setupAlign(c:FormComponent):void{
-            if(style.align.value==FormAlign.CENTER_CENTER){
-                if(style.layout.toString()==FormLayout.VERTICAL){
-                    //vertical align:
-                    var y:int=Math.round((c.bounds.display_height-bounds.display_height)*.5)
-                    //c.view.y=y;
-                    var x:int=Math.round((bounds.display_width-c.bounds.display_width)*.5)
-                    c.view.x=x;
-                }
-            }            
-        }
+        
 
         /**
          * Setup align & padding
@@ -604,7 +601,6 @@ package com.forms{
                     return;
             }
 
-        protected function draw():void{
             // draw env
             if(_view is Sprite){
                 var spr:Sprite=_view as Sprite;
@@ -637,19 +633,7 @@ package com.forms{
             return null;
         }
 
-        protected function getFontSize():FormTextSize{
-            var p:FormComponent=this;
-            if(nodeType!=1)
-                p=parent;
-            while(p!=null){
-                if(p.style.fontSize.isSet)
-                    return p.style.fontSize;
-                p=p.parent;
-            }
-            return null;
-        }
-
-        protected function getFontSize():FormTextSize{
+          protected function getFontSize():FormTextSize{
             var p:FormComponent=this;
             if(nodeType!=1)
                 p=parent;
