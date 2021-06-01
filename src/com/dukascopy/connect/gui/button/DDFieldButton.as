@@ -251,13 +251,13 @@ package com.dukascopy.connect.gui.button {
 			}
 			if (clearIcon)
 			{
-				clearIcon();
+				clearIconFun();
 			}
 			
 			selectedData = null;
 		}
 		
-		private function clearIcon():void 
+		private function clearIconFun():void 
 		{
 			if (icon != null)
 			{

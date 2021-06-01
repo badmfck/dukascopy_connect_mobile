@@ -4,16 +4,21 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 	import com.dukascopy.connect.GD;
 	import com.dukascopy.connect.data.SelectorItemData;
 	import com.dukascopy.connect.data.TextFieldSettings;
+	import com.dukascopy.connect.data.coinMarketplace.PaymentsAccountsProvider;
 	import com.dukascopy.connect.data.escrow.EscrowDealData;
 	import com.dukascopy.connect.data.escrow.TradeDirection;
+	import com.dukascopy.connect.gui.button.DDAccountButton;
 	import com.dukascopy.connect.gui.button.DDFieldButton;
+	import com.dukascopy.connect.gui.components.message.ToastMessage;
 	import com.dukascopy.connect.gui.components.radio.RadioGroup;
 	import com.dukascopy.connect.gui.input.Input;
 	import com.dukascopy.connect.gui.lightbox.UI;
 	import com.dukascopy.connect.gui.list.renderers.ListCryptoWallet;
+	import com.dukascopy.connect.gui.list.renderers.ListPayWalletItem;
 	import com.dukascopy.connect.gui.menuVideo.BitmapButton;
 	import com.dukascopy.connect.managers.escrow.EscrowDealManager;
 	import com.dukascopy.connect.managers.escrow.EscrowInstrument;
+	import com.dukascopy.connect.screens.dialogs.ScreenPayDialog;
 	import com.dukascopy.connect.screens.dialogs.paymentDialogs.elements.InputField;
 	import com.dukascopy.connect.screens.dialogs.x.base.bottom.ListSelectionPopup;
 	import com.dukascopy.connect.screens.dialogs.x.base.bottom.ScrollAnimatedTitlePopup;
@@ -23,6 +28,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 	import com.dukascopy.connect.sys.imageManager.ImageBitmapData;
 	import com.dukascopy.connect.sys.pointerManager.PointerManager;
 	import com.dukascopy.connect.sys.serviceScreenManager.ServiceScreenManager;
+	import com.dukascopy.connect.sys.softKeyboard.SoftKeyboard;
 	import com.dukascopy.connect.sys.style.FontSize;
 	import com.dukascopy.connect.sys.style.Style;
 	import com.dukascopy.connect.sys.style.presets.Color;
@@ -47,6 +53,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		
 		private const STATE_START:String = "STATE_START";
 		private const STATE_REGISTER:String = "STATE_REGISTER";
+		private const STATE_FINISH:String = "STATE_FINISH";
 		
 		private var inputAmount:InputField;
 		private var inputPrice:InputField;
@@ -54,9 +61,8 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		private var nextButton:BitmapButton;
 		
 		private var needCallback:Boolean;
-		private var dealDetails:EscrowDealData;
 		
-		private var selectorCurrency:DDFieldButton;
+		private var selectorInstrument:DDFieldButton;
 		private var selectedCrypto:EscrowInstrument;
 		private var radio:RadioGroup;
 		private var radioSelection:Vector.<SelectorItemData>;
@@ -74,6 +80,16 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		private var dataLoaded:Boolean;
 		private var instruments:Vector.<EscrowInstrument>;
 		private var currencySign:String;
+		private var selectorAccont:DDAccountButton;
+		private var selectedFiatAccount:Object;
+		private var sendButton:BitmapButton;
+		private var backButton:BitmapButton;
+		private var accounts:PaymentsAccountsProvider;
+		private var blockchainTitle:Bitmap;
+		private var blockchainBack:Sprite;
+		private var blockchainAddress:Bitmap;
+		private var terms:TermsChecker;
+		private var offerData:EscrowDealData;
 		
 		public function CreateEscrowScreen() { }
 		
@@ -83,9 +99,16 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			createNextButton();
 			createInputAmount();
 			createInputPrice();
-			createCurrencySelector();
+			createInstrumentSelector();
 			createRadio();
 			createPriceSelector();
+			createAccountSelector();
+		}
+		
+		private function createAccountSelector():void 
+		{
+			selectorAccont = new DDAccountButton(openWalletSelector, Lang.TEXT_SELECT_ACCOUNT, true, -1);
+			addItem(selectorAccont);
 		}
 		
 		private function createBalance():void 
@@ -124,7 +147,17 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		
 		private function onPriceChange(value:Number):void 
 		{
+			setPrice(value);
+		}
+		
+		private function setPrice(value:Number):void 
+		{
 			selectedPrice = value;
+			if (isNaN(selectedPrice))
+			{
+				selectedPrice = 0;
+			}
+			
 			updateBalance();
 		}
 		
@@ -162,9 +195,13 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 				{
 					result = "€";
 				}
-				else if (Lang[currencySign] != null)
+				else if (Lang[currencySign] != null && Lang[currencySign] != "")
 				{
 					result = Lang[currencySign];
+				}
+				else
+				{
+					result = currencySign;
 				}
 			}
 			return result;
@@ -222,21 +259,20 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			}
 		}
 		
-		private function createCurrencySelector():void 
+		private function createInstrumentSelector():void 
 		{
-			selectorCurrency = new DDFieldButton(selectCurrencyTap, "", true, NaN, Lang.crypto);
-			addItem(selectorCurrency);
+			selectorInstrument = new DDFieldButton(selectInstrumentTap, "", true, NaN, Lang.crypto);
+			addItem(selectorInstrument);
 		}
 		
-		private function selectCurrencyTap():void 
+		private function selectInstrumentTap():void 
 		{
-			var currencies:Vector.<EscrowInstrument> = getCurrencies();
-			if (currencies != null && currencies.length > 0)
+			if (instruments != null && instruments.length > 0)
 			{
 				DialogManager.showDialog(
 					ListSelectionPopup,
 					{
-						items:currencies,
+						items:instruments,
 						title:Lang.selectCurrency,
 						renderer:ListCryptoWallet,
 						callback:onCurrencySelected
@@ -252,11 +288,8 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			{
 				return;
 			}
-			selectedCrypto = value;
-			selectedPrice = selectedCrypto.price;
-			inputPrice.value = selectedPrice;
-			selectorCurrency.setValueExtend(selectedCrypto.name, selectedCrypto, getIcon(selectedCrypto));
-			
+			selectInstrument(value);
+			priceSelector.draw(_width - contentPadding * 2, -5, 5, 0, selectedPrice, getCurrency());
 			if (!selectedCrypto.isLinked && state != STATE_REGISTER)
 			{
 				toState(STATE_REGISTER);
@@ -266,6 +299,23 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 				toState(STATE_START);
 			}
 			updateBalance();
+		}
+		
+		private function getInstrument():String
+		{
+			var result:String = "";
+			if (selectedCrypto != null)
+			{
+				if (Lang[selectedCrypto.code] != null)
+				{
+					result = Lang[selectedCrypto.code];
+				}
+				else
+				{
+					result = selectedCrypto.code;
+				}
+			}
+			return result;
 		}
 		
 		private function getIcon(instrument:EscrowInstrument):Sprite 
@@ -282,12 +332,15 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 				
 				if (state == STATE_REGISTER)
 				{
+					addItem(selectorInstrument);
 					createRegisterBlockchainClips();
 					drawRegisterBlock();
 					activateRegisterClips();
 				}
 				else if (state == STATE_START)
 				{
+					addItem(selectorInstrument);
+					addItem(selectorAccont);
 					addItem(radio);
 					addItem(inputAmount);
 					addItem(balance);
@@ -303,14 +356,265 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 					container.addChild(nextButton);
 					activateStartState();
 				}
+				else if (state == STATE_FINISH)
+				{
+					createFinishState();
+					activateFinishState();
+				}
 				
 				updateScrollSize();
 				updatePositions();
 			}
 		}
 		
+		private function activateFinishState():void 
+		{
+			sendButton.activate();
+			backButton.activate();
+			terms.activate();
+		}
+		
+		private function createFinishState():void 
+		{
+			var textSettings:TextFieldSettings;
+			var buttonBitmap:ImageBitmapData;
+			if (sendButton == null)
+			{
+				sendButton = new BitmapButton();
+				sendButton.setStandartButtonParams();
+				sendButton.tapCallback = onSendClick;
+				sendButton.disposeBitmapOnDestroy = true;
+				sendButton.setDownScale(1);
+				sendButton.setOverlay(HitZoneType.BUTTON);
+				
+				textSettings = new TextFieldSettings(Lang.send_offer, Style.color(Style.COLOR_BACKGROUND), FontSize.BODY, TextFormatAlign.CENTER);
+				buttonBitmap = TextUtils.createbutton(textSettings, Color.GREEN, 1, -1, NaN, getButtonWidth(), Style.size(Style.BUTTON_PADDING), Style.size(Style.SIZE_BUTTON_CORNER));
+				sendButton.setBitmapData(buttonBitmap, true);
+			}
+			container.addChild(sendButton);
+			
+			if (backButton == null)
+			{
+				backButton = new BitmapButton();
+				backButton.setStandartButtonParams();
+				backButton.tapCallback = onBackClick;
+				backButton.disposeBitmapOnDestroy = true;
+				backButton.setDownScale(1);
+				backButton.setOverlay(HitZoneType.BUTTON);
+				
+				textSettings = new TextFieldSettings(Lang.textBack.toUpperCase(), Style.color(Style.COLOR_TEXT), FontSize.BODY, TextFormatAlign.CENTER);
+				buttonBitmap = TextUtils.createbutton(textSettings, Style.color(Style.COLOR_BACKGROUND), 1, -1, Style.color(Style.COLOR_BUTTON_OUTLINE), getButtonWidth(), Style.size(Style.BUTTON_PADDING), Style.size(Style.SIZE_BUTTON_CORNER));
+				backButton.setBitmapData(buttonBitmap, true);
+			}
+			container.addChild(backButton);
+			
+			if (blockchainTitle == null)
+			{
+				blockchainTitle = new Bitmap();
+			}
+			if (blockchainTitle.bitmapData != null)
+			{
+				blockchainTitle.bitmapData.dispose();
+				blockchainTitle.bitmapData = null;
+			}
+			blockchainTitle.bitmapData = TextUtils.createTextFieldData(Lang.my_blockchain_address, _width - contentPadding * 2, 10, true,
+																	TextFormatAlign.LEFT, TextFieldAutoSize.LEFT, 
+																	FontSize.SUBHEAD, true, Style.color(Style.COLOR_SUBTITLE),
+																	Style.color(Style.COLOR_SEPARATOR));
+			addItem(blockchainTitle);
+			
+			if (blockchainBack == null)
+			{
+				blockchainBack = new Sprite();
+			}
+			addItem(blockchainBack);
+			
+			if (blockchainAddress == null)
+			{
+				blockchainAddress = new Bitmap();
+			}
+			if (blockchainAddress.bitmapData != null)
+			{
+				blockchainAddress.bitmapData.dispose();
+				blockchainAddress.bitmapData = null;
+			}
+			blockchainAddress.bitmapData = TextUtils.createTextFieldData(selectedCrypto.wallet, _width - contentPadding * 4, 10, true,
+																	TextFormatAlign.LEFT, TextFieldAutoSize.LEFT, 
+																	FontSize.TITLE_2, true, Style.color(Style.COLOR_SUBTITLE),
+																	Style.color(Style.COLOR_SEPARATOR));
+			addItem(blockchainAddress);
+			
+			blockchainBack.graphics.clear();
+			blockchainBack.graphics.beginFill(Style.color(Style.COLOR_SEPARATOR));
+			blockchainBack.graphics.drawRect(0, 0, _width - contentPadding * 2, blockchainAddress.height + contentPadding * 2);
+			blockchainBack.graphics.endFill();
+			
+			if (terms == null)
+			{
+				terms = new TermsChecker(onTermsChecker);
+				terms.draw(_width, Lang.escrow_terms_accept, Lang.escrow_terms_link);
+			}
+			addItem(terms);
+		}
+		
+		private function onTermsChecker():void 
+		{
+			
+		}
+		
+		private function selectDefaultAccount():void 
+		{
+			var accountsArray:Array = accounts.moneyAccounts;
+			
+			var filteredAccounts:Array = filterAccountsByPrices(accountsArray);
+			
+			var preselectedAccount:Object;
+			if (filteredAccounts.length > 0)
+			{
+				preselectedAccount = filteredAccounts[0];
+			}
+			var preferredCurrency:String = TypeCurrency.USD;
+			for (var i:int = 0; i < filteredAccounts.length; i++) 
+			{
+				if (filteredAccounts.CURRENCY == preferredCurrency)
+				{
+					preselectedAccount = filteredAccounts[i];
+					break;
+				}
+			}
+			if (preselectedAccount != null)
+			{
+				selectedFiatAccount = preselectedAccount;
+				selectorAccont.setValue(selectedFiatAccount);
+			}
+		}
+		
+		private function filterAccountsByPrices(accountsArray:Array):Array 
+		{
+			return accountsArray;
+			//TODO:;
+			
+			var result:Array = new Array();
+			/*if (prices != null)
+			{
+				for (var i:int = 0; i < accountsArray.length; i++) 
+				{
+					for (var j:int = 0; j < instruments.length; j++) 
+					{
+						if (accountsArray[i].CURRENCY == instruments[j].)
+						{
+							
+						}
+					}
+				}
+			}*/
+			return result;
+		}
+		
+		private function onAccountsReady():void 
+		{
+			if (_isDisposed)
+			{
+				return;
+			}
+			hidePreloader();
+			onDataReady();
+		}
+		
+		private function onAccountsFail():void 
+		{
+			if (_isDisposed)
+			{
+				return;
+			}
+			hidePreloader();
+			ToastMessage.display(Lang.needToByAuthorized);
+		}
+		
+		private function onBackClick():void 
+		{
+			if (state == STATE_FINISH)
+			{
+				toState(STATE_START);
+			}
+		}
+		
+		private function onSendClick():void 
+		{
+			if (terms != null)
+			{
+				if (terms.isSelected())
+				{
+					offerData = new EscrowDealData();
+					offerData.price = selectedPrice;
+					offerData.direction = selectedDirection;
+					offerData.amount = inputAmount.value;
+					needCallback = true;
+					close();
+				}
+				else
+				{
+					ToastMessage.display(Lang.need_accept_terms);
+				}
+			}
+			else
+			{
+				ApplicationErrors.add();
+			}
+		}
+		
+		private function openWalletSelector():void 
+		{
+			selectorAccont.valid();
+			if (dataLoaded)
+			{
+				SoftKeyboard.closeKeyboard();
+				if (inputAmount != null)
+				{
+					inputAmount.forceFocusOut();
+				}
+				if (inputPrice != null)
+				{
+					inputPrice.forceFocusOut();
+				}
+				
+				if (accounts.ready)
+				{
+					var wallets:Array = accounts.moneyAccounts;
+					if (wallets != null && wallets.length > 0)
+					{
+						DialogManager.showDialog(
+							ListSelectionPopup,
+							{
+								items:wallets,
+								title:Lang.TEXT_SELECT_ACCOUNT,
+								renderer:ListPayWalletItem,
+								callback:onWalletFiatSelect
+							}, ServiceScreenManager.TYPE_SCREEN
+						);
+						
+					//	DialogManager.showDialog(ScreenPayDialog, {callback: onWalletFiatSelect, data: wallets, itemClass: ListPayWalletItem, label: Lang.TEXT_SELECT_ACCOUNT});
+					}
+				}
+				else
+				{
+					accounts.getData();
+				}
+			}
+		}
+		
+		private function onWalletFiatSelect(account:Object, cleanCurrent:Boolean = false):void
+		{
+			if (account != null)
+			{
+				selectedFiatAccount = account;
+				selectorAccont.setValue(account);
+			}
+		}
+			
 		private function activateStartState():void 
 		{
+			selectorAccont.activate();
 			radio.activate();
 			nextButton.activate();
 			inputAmount.activate();
@@ -404,6 +708,8 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 				removeItem(inputPrice);
 				removeItem(priceSelector);
 				removeItem(balance);
+				removeItem(selectorInstrument);
+				removeItem(selectorAccont);
 				deactivateStartState();
 			}
 			else if (state == STATE_REGISTER)
@@ -419,20 +725,41 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 				
 				deactivateRegisterClips();
 			}
+			else if (state == STATE_FINISH)
+			{
+				if (container.contains(backButton))
+				{
+					container.removeChild(backButton);
+				}
+				else
+				{
+					ApplicationErrors.add();
+				}
+				
+				if (container.contains(sendButton))
+				{
+					container.removeChild(sendButton);
+				}
+				else
+				{
+					ApplicationErrors.add();
+				}
+				
+				removeItem(blockchainAddress);
+				removeItem(blockchainBack);
+				removeItem(blockchainTitle);
+				removeItem(terms);
+			}
 		}
 		
 		private function deactivateStartState():void 
 		{
+			selectorAccont.deactivate();
 			radio.deactivate();
 			nextButton.deactivate();
 			inputAmount.deactivate();
 			inputPrice.deactivate();
 			priceSelector.deactivate();
-		}
-		
-		private function onCancelClick():void 
-		{
-			onBack();
 		}
 		
 		override public function onBack(e:Event = null):void {
@@ -452,7 +779,40 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		
 		private function onNextClick():void 
 		{
-			if (dataValid())
+			if (state == STATE_START)
+			{
+				var dataValid:Boolean = true;
+				
+				if (selectedFiatAccount == null)
+				{
+					selectorAccont.invalid();
+					dataValid = false;
+				}
+				if (!dataLoaded)
+				{
+					dataValid = false;
+				}
+				if (isNaN(selectedPrice) || selectedPrice == 0)
+				{
+					if (controlPriceSelected == inputPrice)
+					{
+						inputPrice.invalid();
+					}
+					dataValid = false;
+				}
+				if (isNaN(inputAmount.value) || inputAmount.value == 0)
+				{
+					inputAmount.invalid();
+					dataValid = false;
+				}
+				
+				if (dataValid)
+				{
+					toState(STATE_FINISH);
+				}
+			}
+			
+			/*if (dataValid())
 			{
 				needCallback = true;
 				
@@ -461,7 +821,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 				dealDetails.amount = inputAmount.value;
 				
 				close();
-			}
+			}*/
 		}
 		
 		private function dataValid():Boolean 
@@ -503,25 +863,27 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		
 		private function onPriceInputChange():void 
 		{
-			selectedPrice = inputPrice.value;
-			updateBalance();
+			inputPrice.valid();
+			setPrice(inputPrice.value);
 		}
 		
 		private function onAmountChange():void 
 		{
+			inputAmount.valid();
 			updateBalance();
 		}
 		
 		override public function initScreen(data:Object = null):void {
 			super.initScreen(data);
 			
-			currencySign = TypeCurrency.EUR;
+			currencySign = TypeCurrency.USD;
 			
 			if (data != null && "selectedDirection" in data && data.selectedDirection != null)
 			{
 				selectedDirection = data.selectedDirection as TradeDirection;
 			}
 			priceSelector.direction = selectedDirection;
+			priceSelector.draw(_width - contentPadding * 2, -5, 5, 0, selectedPrice, getCurrency());
 			
 			drawControls();
 			createBalance();
@@ -529,10 +891,10 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			updatePositions();
 			updateScroll();
 			
-			loadData();
+			loadInstruments();
 		}
 		
-		private function loadData():void 
+		private function loadInstruments():void 
 		{
 			dataLoaded = false;
 			showPreloader();
@@ -542,15 +904,31 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		
 		private function instrumentsLoaded(instruments:Vector.<EscrowInstrument>):void 
 		{
-			dataLoaded = true;
-			hidePreloader();
+			if (isDisposed)
+			{
+				return;
+			}
 			this.instruments = instruments;
-			onDataReady();
+			loadPrices();
 		}
 		
-		private function getCurrencies():Vector.<EscrowInstrument> 
+		private function loadPrices():void 
 		{
-			return instruments;
+			GD.S_ESCROW_PRICE.add(pricesLoaded);
+			GD.S_ESCROW_PRICES_REQUEST.invoke();
+		}
+		
+		private function pricesLoaded(ei:EscrowInstrument):void 
+		{
+			//!TODO: другой сигнал!, этот перенаправить
+			if (isDisposed)
+			{
+				return;
+			}
+			trace("123");
+			dataLoaded = true;
+			
+			getAccounts();
 		}
 		
 		override protected function getBottomPadding():int 
@@ -582,13 +960,17 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			{
 				position = Config.FINGER_SIZE * .2;
 				
-				selectorCurrency.x = contentPadding;
-				selectorCurrency.y = position;
-				position += selectorCurrency.height + contentPaddingV;
+				selectorInstrument.x = contentPadding;
+				selectorInstrument.y = position;
+				position += selectorInstrument.height + contentPaddingV;
 				
 				inputAmount.x = contentPadding;
 				inputAmount.y = position;
 				position += inputAmount.height + contentPaddingV;
+				
+				selectorAccont.x = contentPadding;
+				selectorAccont.y = position;
+				position += selectorAccont.height + contentPaddingV;
 				
 				radio.x = contentPadding;
 				radio.y = position;
@@ -624,9 +1006,41 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			{
 				position = Config.FINGER_SIZE * .2;
 				
-				selectorCurrency.x = contentPadding;
-				selectorCurrency.y = position;
-				position += selectorCurrency.height + contentPaddingV;
+				selectorInstrument.x = contentPadding;
+				selectorInstrument.y = position;
+				position += selectorInstrument.height + contentPaddingV;
+			}
+			else if (state == STATE_FINISH)
+			{
+				position = Config.FINGER_SIZE * .3;
+				
+				blockchainTitle.x = contentPadding;
+				blockchainTitle.y = position;
+				position += blockchainTitle.height + contentPaddingV * .3;
+				
+				blockchainBack.x = contentPadding;
+				blockchainBack.y = position;
+				blockchainAddress.x = contentPadding * 2;
+				blockchainAddress.y = position + contentPadding;
+				position += blockchainBack.height + contentPaddingV * 2;
+				
+				terms.x = contentPadding;
+				terms.y = position;
+				position += terms.height + contentPaddingV * 2;
+				
+				balance.x = int(_width * .5 - balance.width * .5);
+				balance.y = position;
+				
+				if (getHeight() - nextButton.height - contentPadding - balance.height - scrollPanel.view.y - contentPaddingV > position)
+				{
+					balance.y = getHeight() - nextButton.height - contentPadding - balance.height - scrollPanel.view.y - contentPaddingV;
+				}
+				
+				backButton.x = contentPadding;
+				backButton.y = int(getHeight() - nextButton.height - contentPadding);
+				
+				sendButton.x = contentPadding;
+				sendButton.y = int(backButton.y - sendButton.height - contentPadding);
 			}
 		}
 		
@@ -638,7 +1052,9 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			radio.draw(radioSelection, _width);
 			radio.select(radioSelection[0]);
 			
-			selectorCurrency.setSize(_width - contentPadding * 2, Config.FINGER_SIZE * 1.0);
+			selectorAccont.setSize(_width - contentPadding * 2, Config.FINGER_SIZE * .8);
+			
+			selectorInstrument.setSize(_width - contentPadding * 2, Config.FINGER_SIZE * 1.0);
 			
 			var textSettings:TextFieldSettings = new TextFieldSettings(Lang.textNext.toUpperCase(), Style.color(Style.COLOR_TEXT), FontSize.BODY, TextFormatAlign.CENTER);
 			var buttonBitmap:ImageBitmapData = TextUtils.createbutton(textSettings, Style.color(Style.COLOR_BACKGROUND), 1, -1, Style.color(Style.COLOR_BUTTON_OUTLINE), getButtonWidth(), Style.size(Style.BUTTON_PADDING), Style.size(Style.SIZE_BUTTON_CORNER));
@@ -650,28 +1066,65 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		
 		public function onDataReady():void
 		{
-			var currencies:Vector.<EscrowInstrument> = getCurrencies();
-			if (currencies != null && currencies.length > 0)
+			if (isDisposed)
 			{
-				selectedCrypto = currencies[0];
-				selectorCurrency.setValueExtend(selectedCrypto.name, selectedCrypto, getIcon(selectedCrypto));
+				return;
 			}
-			selectedPrice = selectedCrypto.price;
-			inputPrice.value = selectedPrice;
+			hidePreloader();
+			dataLoaded = true;
 			
-			if (state == STATE_START)
+			if (instruments != null && instruments.length > 0)
 			{
-				priceSelector.draw(_width - contentPadding * 2, -5, 5, 0, selectedPrice, TypeCurrency.EUR);
+				selectInstrument(instruments[0]);
+				
+				if (state == STATE_START)
+				{
+					priceSelector.draw(_width - contentPadding * 2, -5, 5, 0, selectedPrice, getCurrency());
+				}
 			}
+			else
+			{
+				ApplicationErrors.add();
+			}
+			selectDefaultAccount();
 			updateBalance();
 			updatePositions();
+		}
+		
+		private function getAccounts():void 
+		{
+			if (accounts == null)
+			{
+				accounts = new PaymentsAccountsProvider(onAccountsReady, false, onAccountsFail);
+				if (accounts.ready)
+				{
+					onDataReady();
+				}
+				else
+				{
+					accounts.getData();
+				}
+			}
+		}
+		
+		private function selectInstrument(escrowInstrument:EscrowInstrument):void 
+		{
+			selectedCrypto = escrowInstrument;
+			
+			selectorInstrument.setValueExtend(selectedCrypto.name, selectedCrypto, getIcon(selectedCrypto));
+			setPrice(selectedCrypto.price);
+			inputPrice.value = selectedPrice;
+			
+			var underlineText:String = Lang.current_price_of_instrument.replace(Lang.regExtValue, getInstrument()) + " = " + selectedCrypto.price + " " + getCurrency();
+			inputPrice.drawUnderlineValue(underlineText);
 		}
 		
 		private function showFixedPriceControl():void 
 		{
 			controlPriceSelected = inputPrice;
-			selectedPrice = inputPrice.value;
-			updateBalance();
+			setPrice(inputPrice.value);
+			updatePositions();
+			
 			removeItem(priceSelector);
 			addItem(inputPrice);
 		}
@@ -681,9 +1134,9 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			controlPriceSelected = priceSelector;
 			if (!isNaN(priceSelector.getPrice()))
 			{
-				selectedPrice = priceSelector.getPrice();
-				updateBalance();
+				setPrice(priceSelector.getPrice());
 			}
+			updatePositions();
 			
 			removeItem(inputPrice);
 			addItem(priceSelector);
@@ -721,8 +1174,12 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			{
 				activateRegisterClips();
 			}
+			else if (state == STATE_FINISH)
+			{
+				activateFinishState();
+			}
 			
-			selectorCurrency.activate();
+			selectorInstrument.activate();
 		}
 		
 		override public function deactivateScreen():void {
@@ -739,8 +1196,19 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			{
 				deactivateRegisterClips();
 			}
+			else if (state == STATE_FINISH)
+			{
+				deactivateFinishState();
+			}
 			
-			selectorCurrency.deactivate();
+			selectorInstrument.deactivate();
+		}
+		
+		private function deactivateFinishState():void 
+		{
+			sendButton.deactivate();
+			backButton.deactivate();
+			terms.deactivate();
 		}
 		
 		override protected function onRemove():void 
@@ -748,9 +1216,9 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			if (needCallback == true)
 			{
 				needCallback = false;
-				if (data != null && "callback" in data && data.callback != null && data.callback is Function && (data.callback as Function).length == 1 && dealDetails != null)
+				if (data != null && "callback" in data && data.callback != null && data.callback is Function && (data.callback as Function).length == 1 && offerData != null)
 				{
-					(data.callback as Function)(dealDetails);
+					(data.callback as Function)(offerData);
 				}
 			}
 		}
@@ -760,10 +1228,10 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			
 			GD.S_ESCROW_INSTRUMENTS.remove(instrumentsLoaded);
 			
-			if (selectorCurrency != null)
+			if (selectorInstrument != null)
 			{
-				selectorCurrency.dispose();
-				selectorCurrency = null;
+				selectorInstrument.dispose();
+				selectorInstrument = null;
 			}
 			if (inputAmount != null)
 			{
@@ -780,10 +1248,10 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 				nextButton.dispose();
 				nextButton = null;
 			}
-			if (selectorCurrency != null)
+			if (selectorInstrument != null)
 			{
-				selectorCurrency.dispose();
-				selectorCurrency = null;
+				selectorInstrument.dispose();
+				selectorInstrument = null;
 			}
 			if (radio != null)
 			{
@@ -825,7 +1293,48 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 				balance.dispose();
 				balance = null;
 			}
+			if (selectorAccont != null)
+			{
+				selectorAccont.dispose();
+				selectorAccont = null;
+			}
+			if (sendButton != null)
+			{
+				sendButton.dispose();
+				sendButton = null;
+			}
+			if (backButton != null)
+			{
+				backButton.dispose();
+				backButton = null;
+			}
+			if (accounts != null)
+			{
+				accounts.dispose();
+				accounts = null;
+			}
+			if (blockchainTitle != null)
+			{
+				UI.destroy(blockchainTitle);
+				blockchainTitle = null;
+			}
+			if (blockchainBack != null)
+			{
+				UI.destroy(blockchainBack);
+				blockchainBack = null;
+			}
+			if (blockchainAddress != null)
+			{
+				UI.destroy(blockchainAddress);
+				blockchainAddress = null;
+			}
+			if (terms != null)
+			{
+				terms.dispose();
+				terms = null;
+			}
 			
+			selectedFiatAccount = null;
 			dealDetails = null;
 			selectedCrypto = null;
 			radioSelection = null;

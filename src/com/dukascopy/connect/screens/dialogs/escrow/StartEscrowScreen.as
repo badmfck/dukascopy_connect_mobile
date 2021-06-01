@@ -208,28 +208,12 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		{
 			if (selectedDirection != null)
 			{
-				var screenData:Object = new Object();
-				if (selectedDirection == TradeDirection.buy)
+				if (data != null && "callback" in data && data.callback != null && data.callback is Function && (data.callback as Function).length == 1)
 				{
-					screenData.title = Lang.create_buy_offer;
+					(data.callback as Function)(selectedDirection);
 				}
-				else if (selectedDirection == TradeDirection.sell)
-				{
-					screenData.title = Lang.create_sell_offer;
-				}
-				screenData.selectedDirection = selectedDirection;
 				selectedDirection = null;
-				ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, CreateEscrowScreen, screenData);
 			}
-			
-			/*if (needCallback == true)
-			{
-				needCallback = false;
-				if (data != null && "callback" in data && data.callback != null && data.callback is Function && (data.callback as Function).length == 1 && dealDetails != null)
-				{
-					(data.callback as Function)(dealDetails);
-				}
-			}*/
 		}
 		
 		override public function dispose():void {

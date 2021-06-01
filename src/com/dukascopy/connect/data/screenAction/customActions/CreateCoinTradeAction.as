@@ -3,8 +3,11 @@ package com.dukascopy.connect.data.screenAction.customActions {
 	import com.dukascopy.connect.Config;
 	import com.dukascopy.connect.data.escrow.EscrowDealData;
 	import com.dukascopy.connect.data.escrow.EscrowMessageData;
+	import com.dukascopy.connect.data.escrow.TradeDirection;
 	import com.dukascopy.connect.data.screenAction.IScreenAction;
 	import com.dukascopy.connect.data.screenAction.ScreenAction;
+	import com.dukascopy.connect.screens.dialogs.escrow.CreateEscrowScreen;
+	import com.dukascopy.connect.screens.dialogs.escrow.FinishEscrowOfferScreen;
 	import com.dukascopy.connect.screens.dialogs.escrow.RegisterEscrowScreen;
 	import com.dukascopy.connect.screens.dialogs.escrow.StartEscrowScreen;
 	import com.dukascopy.connect.sys.applicationError.ApplicationErrors;
@@ -37,12 +40,39 @@ package com.dukascopy.connect.data.screenAction.customActions {
 			
 			if (Auth.bank_phase == BankPhaze.ACC_APPROVED)
 			{
-				ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, StartEscrowScreen);
+				ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, StartEscrowScreen, {callback:createOffer});
 			}
 			else
 			{
 				ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, RegisterEscrowScreen);
 			}
+		}
+		
+		private function createOffer(selectedDirection:TradeDirection):void 
+		{
+			var screenData:Object = new Object();
+			if (selectedDirection == TradeDirection.buy)
+			{
+				screenData.title = Lang.create_buy_offer;
+			}
+			else if (selectedDirection == TradeDirection.sell)
+			{
+				screenData.title = Lang.create_sell_offer;
+			}
+			screenData.selectedDirection = selectedDirection;
+			screenData.callback = createEscrowOffer;
+			
+			ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, CreateEscrowScreen, screenData);
+		}
+		
+		private function createEscrowOffer(offer:EscrowDealData):void 
+		{
+			ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, FinishEscrowOfferScreen, {offer:offer, callback:finishOffer});
+		}
+		
+		private function finishOffer():Object 
+		{
+			trace("123");
 		}
 		
 		private function callBackCreateDeal(dealData:EscrowDealData):void {
