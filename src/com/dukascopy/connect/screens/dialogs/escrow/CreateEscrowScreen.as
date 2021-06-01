@@ -1335,7 +1335,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			}
 			
 			selectedFiatAccount = null;
-			dealDetails = null;
+			offerData = null;
 			selectedCrypto = null;
 			radioSelection = null;
 		}

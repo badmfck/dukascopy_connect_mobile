@@ -70,7 +70,7 @@ package com.dukascopy.connect.data.screenAction.customActions {
 			ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, FinishEscrowOfferScreen, {offer:offer, callback:finishOffer});
 		}
 		
-		private function finishOffer():Object 
+		private function finishOffer():void 
 		{
 			trace("123");
 		}
