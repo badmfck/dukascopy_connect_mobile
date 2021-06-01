@@ -1,10 +1,10 @@
 package com.dukascopy.connect.managers.escrow{
 
     public class EscrowInstrument{
-        
+
         private var _name:String;
         private var _wallet:String;
-        private var _price:Number; //ASK
+        private var _price:Object; //ASK
         private var _code:String;
         private var precision:int=2;
         
@@ -21,8 +21,7 @@ package com.dukascopy.connect.managers.escrow{
                     this.precision=p;
             }else if(!isNaN(precision))
                 this.precision=precision;
-            if(!updatePrice(price))
-                price=0;
+            updatePrice(price)
         }
 
         public function get name():String{
@@ -37,7 +36,7 @@ package com.dukascopy.connect.managers.escrow{
             return _code;
         }
 
-        public function get price():Number{
+        public function get price():Object{
             return _price;
         }
 
@@ -45,29 +44,37 @@ package com.dukascopy.connect.managers.escrow{
             return _wallet!=null;
         }
 
-        public function updatePrice(val:*):Boolean{
-            var p:Number=-1;
-            if(val is String){
-                try{
-                    p=parseFloat(val);
-                }catch(e:Error){
-                    return false;
-                }
-            }else if(!isNaN(val))
-                p=val;
+        public function updatePrice(val:Object):void{
+            var newPrice:Object=null;
+            for(var i:String in val){
+                var v:*=val[i];
+                var p:Number=-1;
+                if(v is String){
+                    try{
+                        p=parseFloat(v);
+                    }catch(e:Error){}
+                }else if(!isNaN(v))
+                    p=v;
 
-            if(isNaN(p) || p==-1)
-                return false;
+                if(isNaN(p) || p==-1)
+                    continue;
 
-            if(p==_price)
-                return false;
-
-            _price=parseFloat(p.toFixed(precision));
-            return true;
+                p=parseFloat(p.toFixed(precision));
+                if(newPrice==null)
+                    newPrice={};
+                newPrice[i]=p;
+            }
+            _price=newPrice;
         }
 
         public function toString():String{
-            return name+" ("+code+") at "+price+" (precision: "+precision+"), wallet: "+((wallet!=null)?wallet:"No linked wallet");
+            var p:String="";
+            for(var i:String in _price){
+                if(p.length>0)
+                    p+="\n\t\t"
+                p+=i+": "+_price[i];
+            }
+            return "\n"+name+" ("+code+") at\n\t\t"+p+"\n\tprecision: "+precision+",\n\twallet: "+((wallet!=null)?wallet:"No linked wallet");
         }
     }
 }

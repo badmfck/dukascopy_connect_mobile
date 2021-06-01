@@ -66,9 +66,19 @@ package com.dukascopy.connect.managers.escrow.test
                 if(changed==arr.length){
                     trace('TEST.prices - COMPLETE')
                     GD.S_ESCROW_PRICE.clearID("escrowTests")
+                    testAllPrices();
                 }
             },this,"escrowTests")
             GD.S_ESCROW_PRICES_REQUEST.invoke(arr)
+        }
+
+        private function testAllPrices():void{
+            trace("TEST.allPrices - START")
+            GD.S_ESCROW_PRICE.add(function(instrument:EscrowInstrument):void{
+                    trace('TEST.allPrices - COMPLETE')
+                    GD.S_ESCROW_PRICE.clearID("escrowTests")
+            },this,"escrowTests")
+            GD.S_ESCROW_PRICES_REQUEST.invoke()
         }
 
     }

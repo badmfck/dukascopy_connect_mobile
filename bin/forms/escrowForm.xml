@@ -17,7 +17,7 @@
             </graph>
         </div>
 
-        <!-- COMMENT -->
+        <!-- COMMENT  -->
         <space size="20"/>
 
         <div fontSize="28" width="auto">500 DUK+</div>
@@ -60,7 +60,7 @@
 
     </div>
     <div padding="20"><div>padded</div></div>
-
+    
     <div layout="horizontal" id="btnsBox" backgroundColor="#FF0000" >
         <space size="10"/>
         <button type="primary" id="btnEscrowCreate" width="50%">ACCEPT</button>
@@ -68,5 +68,5 @@
         <button type="secondary" id="btnEscrowCancel" width="50%">CANCEL</button>
         <space size="10"/>
     </div>
-    <space size="40"/>
+    <space size="40" />
 </body>
