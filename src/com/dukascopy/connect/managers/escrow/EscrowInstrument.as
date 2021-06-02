@@ -4,7 +4,7 @@ package com.dukascopy.connect.managers.escrow{
 
         private var _name:String;
         private var _wallet:String;
-        private var _price:Object; //ASK
+        private var _price:Vector.<EscrowPrice>=new Vector.<EscrowPrice>(); //ASK
         private var _code:String;
         private var precision:int=2;
         
@@ -36,7 +36,7 @@ package com.dukascopy.connect.managers.escrow{
             return _code;
         }
 
-        public function get price():Object{
+        public function get price():Vector.<EscrowPrice>{
             return _price;
         }
 
@@ -45,7 +45,8 @@ package com.dukascopy.connect.managers.escrow{
         }
 
         public function updatePrice(val:Object):void{
-            var newPrice:Object=null;
+            var newPrice:Vector.<EscrowPrice>=new Vector.<EscrowPrice>();
+            
             for(var i:String in val){
                 var v:*=val[i];
                 var p:Number=-1;
@@ -60,19 +61,21 @@ package com.dukascopy.connect.managers.escrow{
                     continue;
 
                 p=parseFloat(p.toFixed(precision));
+
                 if(newPrice==null)
-                    newPrice={};
-                newPrice[i]=p;
+                    newPrice=new Vector.<EscrowPrice>();
+                newPrice.push(new EscrowPrice(i,p));
             }
+
             _price=newPrice;
         }
 
         public function toString():String{
             var p:String="";
-            for(var i:String in _price){
+            for each(var i:EscrowPrice in _price){
                 if(p.length>0)
                     p+="\n\t\t"
-                p+=i+": "+_price[i];
+                p+=i;
             }
             return "\n"+name+" ("+code+") at\n\t\t"+p+"\n\tprecision: "+precision+",\n\twallet: "+((wallet!=null)?wallet:"No linked wallet");
         }
