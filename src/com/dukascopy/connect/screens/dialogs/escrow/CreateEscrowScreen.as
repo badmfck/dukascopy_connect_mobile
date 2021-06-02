@@ -549,6 +549,9 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 					offerData.price = selectedPrice;
 					offerData.direction = selectedDirection;
 					offerData.amount = inputAmount.value;
+					offerData.instrument = selectedCrypto.code;
+					//!TODO:;
+					offerData.currency = selectedFiatAccount.CURRENCY;
 					needCallback = true;
 					close();
 				}
@@ -1220,6 +1223,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 				{
 					(data.callback as Function)(offerData);
 				}
+				offerData = null;
 			}
 		}
 		
@@ -1335,7 +1339,6 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			}
 			
 			selectedFiatAccount = null;
-			offerData = null;
 			selectedCrypto = null;
 			radioSelection = null;
 		}

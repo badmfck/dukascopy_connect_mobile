@@ -178,7 +178,7 @@ package com.dukascopy.connect.screens.dialogs.x.base.bottom
 		}
 		
 		private function remove():void {
-			onRemove();
+			
 			if (manager == DialogManager)
 			{
 				DialogManager.closeDialog();
@@ -191,6 +191,7 @@ package com.dukascopy.connect.screens.dialogs.x.base.bottom
 			{
 				ServiceScreenManager.closeView();
 			}
+			onRemove();
 		}
 		
 		protected function onRemove():void 

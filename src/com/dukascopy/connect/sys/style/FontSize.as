@@ -17,6 +17,8 @@ package com.dukascopy.connect.sys.style
 		static public const CAPTION_1:int = Config.FINGER_SIZE * .22;
 		// 20 pt
 		static public const TITLE_2:int = Config.FINGER_SIZE * .35;
+		// 22 pt
+		static public const TITLE_3:int = Config.FINGER_SIZE * .385;
 		static public const AMOUNT:int = Config.FINGER_SIZE * .35;
 		
 		public function FontSize() 

@@ -13,6 +13,7 @@ package com.dukascopy.connect.gui.list.renderers {
 	import com.dukascopy.connect.gui.list.renderers.chatMessageElements.ChatMessageRendererBotMenu;
 	import com.dukascopy.connect.gui.list.renderers.chatMessageElements.ChatMessageRendererCall;
 	import com.dukascopy.connect.gui.list.renderers.chatMessageElements.ChatMessageRendererChatSystemMessage;
+	import com.dukascopy.connect.gui.list.renderers.chatMessageElements.ChatMessageRendererEscrow;
 	import com.dukascopy.connect.gui.list.renderers.chatMessageElements.ChatMessageRendererFile;
 	import com.dukascopy.connect.gui.list.renderers.chatMessageElements.ChatMessageRendererGift;
 	import com.dukascopy.connect.gui.list.renderers.chatMessageElements.ChatMessageRendererImage;
@@ -80,6 +81,7 @@ package com.dukascopy.connect.gui.list.renderers {
 		static public const MESSAGE_TYPE_TIPS_WINNER:String = "messageTypeTipsWinner";
 		static public const MESSAGE_TYPE_NEWS:String = "messageTypeNews";
 		static public const MESSAGE_TYPE_CALL:String = "messageTypeCall";
+		static public const MESSAGE_TYPE_ESCROW:String = "MESSAGE_TYPE_ESCROW";
 		
 		static private var COLOR_BG_WHITE:uint = 0xFFFFFF;
 		
@@ -111,6 +113,7 @@ package com.dukascopy.connect.gui.list.renderers {
 		private var _chatMessageTipsWinnerRenderer:ChatMessageRendererTipsWinner;
 		private var _chatMessageNewsRenderer:ChatMessageRendererNews;
 		private var _chatMessageCallRenderer:ChatMessageRendererCall;
+		private var _chatMessageEscrowRenderer:ChatMessageRendererEscrow;
 		
 		private var avatarSize:int = 50;
 		private var minHeight:int = 50;
@@ -557,6 +560,9 @@ package com.dukascopy.connect.gui.list.renderers {
 				}
 				return MESSAGE_TYPE_CHAT_SYSTEM_MESSAGE;
 			}
+			if (messageData.typeEnum == ChatSystemMsgVO.TYPE_ESCROW_OFFER){
+					return MESSAGE_TYPE_ESCROW;
+			}
 			if (messageData.typeEnum == ChatSystemMsgVO.TYPE_GIFT)
 				return MESSAGE_TYPE_GIFT;
 			if (messageData.typeEnum == ChatSystemMsgVO.TYPE_MONEY)
@@ -627,6 +633,9 @@ package com.dukascopy.connect.gui.list.renderers {
 				}
 				case MESSAGE_TYPE_CALL: {
 					return chatMessageCallRenderer;
+				}
+				case MESSAGE_TYPE_ESCROW: {
+					return chatMessageEscrowRenderer;
 				}
 				default: {
 					return chatMessageTextRenderer;
@@ -1499,6 +1508,9 @@ package com.dukascopy.connect.gui.list.renderers {
 			
 			if (_chatMessageNewsRenderer != null)
 				_chatMessageNewsRenderer.visible = false;
+			
+			if (_chatMessageEscrowRenderer != null)
+				_chatMessageEscrowRenderer.visible = false;
 		}
 		
 		public function isLastSelfMessageInStack(listItem:ListItem):Boolean
@@ -1636,6 +1648,10 @@ package com.dukascopy.connect.gui.list.renderers {
 				_chatMessageNewsRenderer.dispose();
 				_chatMessageNewsRenderer = null;
 			}
+			if (_chatMessageEscrowRenderer != null) {
+				_chatMessageEscrowRenderer.dispose();
+				_chatMessageEscrowRenderer = null;
+			}
 			
 			if (permanentBanMark != null)
 				UI.destroy(permanentBanMark);
@@ -1717,6 +1733,9 @@ package com.dukascopy.connect.gui.list.renderers {
 				}
 				else if (messageType == MESSAGE_TYPE_VOICE) {
 					hitZoneType = HitZoneType.MESSAGE_IMAGE;
+				}
+				else if (messageType == MESSAGE_TYPE_ESCROW) {
+					hitZoneType = HitZoneType.MESSAGE_TEXT;
 				}
 				
 				
@@ -1877,6 +1896,16 @@ package com.dukascopy.connect.gui.list.renderers {
 				addChild(_chatMessageCallRenderer);
 			}
 			return _chatMessageCallRenderer;
+		}
+		
+		private function get chatMessageEscrowRenderer():ChatMessageRendererEscrow
+		{
+			if (_chatMessageEscrowRenderer == null)
+			{
+				_chatMessageEscrowRenderer = new ChatMessageRendererEscrow();
+				addChild(_chatMessageEscrowRenderer);
+			}
+			return _chatMessageEscrowRenderer;
 		}
 		
 		private function get chatMessageNewsRenderer():ChatMessageRendererNews

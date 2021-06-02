@@ -140,6 +140,7 @@ package com.dukascopy.connect.screens.keyboardScreens.attachScreen {
 			puzzle.setData(Lang.textPuzzle);
 			
 			var tradeAction:IScreenAction = new CreateCoinTradeAction();
+			(tradeAction as CreateCoinTradeAction).chat = ChatManager.getCurrentChat();
 			tradeAction.setData(Lang.escrow);
 			
 			var sendGiftAction:IScreenAction = new OpenGiftsAction();

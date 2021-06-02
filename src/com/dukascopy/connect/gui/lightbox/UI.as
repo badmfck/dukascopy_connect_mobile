@@ -2778,5 +2778,34 @@ package com.dukascopy.connect.gui.lightbox {
 		{
 			return Math.max(1, int(Config.FINGER_SIZE * .036));
 		}
+		
+		static public function getCryptoIconClass(instrument:String):Class 
+		{
+			switch (instrument) {
+				case "LTC":
+				{
+					return SWFInvestmentLTC;
+					break;
+				}
+					
+				case "BTC":
+				{
+					return SWFInvestmentBTC;
+					break;
+				}
+				case "ETH":
+				{
+					return SWFInvestmentETH;
+					break;	
+				}
+				case "DCO":
+				case "DUK+":
+				{
+					return SWFInvestmentDCO;
+					break;
+				}
+			}
+			return null;
+		}
 	}
 }

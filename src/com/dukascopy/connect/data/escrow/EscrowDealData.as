@@ -9,6 +9,8 @@ package com.dukascopy.connect.data.escrow
 		public var price:Number;
 		public var amount:Number;
 		public var direction:TradeDirection;
+		public var currency:String;
+		public var instrument:String;
 		
 		public function EscrowDealData() 
 		{

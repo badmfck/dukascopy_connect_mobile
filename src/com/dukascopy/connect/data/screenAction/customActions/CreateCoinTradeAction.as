@@ -3,6 +3,7 @@ package com.dukascopy.connect.data.screenAction.customActions {
 	import com.dukascopy.connect.Config;
 	import com.dukascopy.connect.data.escrow.EscrowDealData;
 	import com.dukascopy.connect.data.escrow.EscrowMessageData;
+	import com.dukascopy.connect.data.escrow.EscrowStatus;
 	import com.dukascopy.connect.data.escrow.TradeDirection;
 	import com.dukascopy.connect.data.screenAction.IScreenAction;
 	import com.dukascopy.connect.data.screenAction.ScreenAction;
@@ -19,6 +20,8 @@ package com.dukascopy.connect.data.screenAction.customActions {
 	import com.dukascopy.connect.sys.usersManager.UsersManager;
 	import com.dukascopy.connect.sys.ws.WSClient;
 	import com.dukascopy.connect.type.BankPhaze;
+	import com.dukascopy.connect.vo.ChatMessageVO;
+	import com.dukascopy.connect.vo.ChatSystemMsgVO;
 	import com.dukascopy.connect.vo.ChatVO;
 	import com.dukascopy.connect.vo.users.adds.ChatUserVO;
 	import com.dukascopy.langs.Lang;
@@ -67,20 +70,11 @@ package com.dukascopy.connect.data.screenAction.customActions {
 		
 		private function createEscrowOffer(offer:EscrowDealData):void 
 		{
-			ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, FinishEscrowOfferScreen, {offer:offer, callback:finishOffer});
-		}
-		
-		private function finishOffer():void 
-		{
-			trace("123");
-		}
-		
-		private function callBackCreateDeal(dealData:EscrowDealData):void {
 			if (chat != null && ChatManager.getCurrentChat() && chat.uid == ChatManager.getCurrentChat().uid)
 			{
-				if (dealData != null)
+				if (offer != null)
 				{
-					sendDeal(dealData);
+					sendDeal(offer);
 				}
 				else
 				{
@@ -93,6 +87,13 @@ package com.dukascopy.connect.data.screenAction.customActions {
 				ApplicationErrors.add();
 				onFail();
 			}
+			
+			ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, FinishEscrowOfferScreen, {offer:offer, callback:finishOffer});
+		}
+		
+		private function finishOffer():void 
+		{
+			trace("123");
 		}
 		
 		private function onFail():void 
@@ -112,8 +113,21 @@ package com.dukascopy.connect.data.screenAction.customActions {
 				return;
 			}
 			var messageData:EscrowMessageData = new EscrowMessageData();
+			messageData.type = ChatSystemMsgVO.TYPE_ESCROW_OFFER;
 			messageData.price = dealData.price;
 			messageData.amount = dealData.amount;
+			messageData.currency = dealData.currency;
+			messageData.instrument = dealData.instrument;
+			messageData.direction = dealData.direction.type;
+			
+			if (dealData.direction == TradeDirection.buy)
+			{
+				messageData.status = EscrowStatus.buy_new;
+			}
+			else
+			{
+				messageData.status = EscrowStatus.sell_new;
+			}
 			
 			var text:String = messageData.toJsonString();
 			WSClient.call_sendTextMessage(chat.uid, Config.BOUNDS_INVOICE + ChatManager.cryptTXT(text));

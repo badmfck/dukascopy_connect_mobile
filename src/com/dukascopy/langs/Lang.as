@@ -2361,12 +2361,17 @@ package com.dukascopy.langs {
 		static public var send_offer:String = "SEND OFFER";
 		static public var my_blockchain_address:String = "My blockchain address";
 		static public var escrow_terms_link:String = "http://google.com";
-		static public var escrow_terms_accept:String = "<font color='#CD3F43'>Terms & conditions</font> read and accepted <font color='#CD3F43'>🡕</font>";
+		static public var escrow_terms_accept:String = "<font color='#CD3F43'>Terms & conditions</font> read and accepted <font color='#CD3F43'>🡭</font>";
 		static public var need_accept_terms:String = "!!!";
 		static public var you_sent_buy_offer:String = "You sent a Buy offer!";
 		static public var you_sent_sell_offer:String = "Your sell offer has been sent!";
 		static public var sent_buy_offer_description:String = "Please note that %@1 were blocked  on your MCA account.<br/><br/>%@2 has %@3 minutes to accept your offer. If it is not accepted within %@4 minutes, the offer is canceled automatically and the fiat funds on your account get unblocked.<br/><br/>Until the offer is confirmed by the %@5, you can cancel it at any moment, without penalties.";
 		static public var sent_sell_offer_description:String = "%@1 has %@2 minutes to accept your offer. Once it is accepted you will have %@3 minutes to send the crypto. Please get prepared in advance.<br/><br/>If it is not accepted within %@4 minutes, the offer is canceled automatically.<br/><br/>Until the offer is confirmed by the %@5, you can cancel it at any moment, without penalties.";
+		static public var ok_understood:String = "OK, I UNDERSTOOD";
+		static public var escrow_offer_message:String = "Escrow offer";
+		static public var escrow_buy_offer:String = "BUY offer";
+		static public var escrow_sell_offer:String = "SELL offer";
+		static public var price_per_coin:String = "%@ per coin";
 		
 		static public function updateKeys(keys:Object):void {
 			for (var n:String in keys) {
