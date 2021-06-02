@@ -50,11 +50,7 @@ public class MainEscrow extends Sprite {
 			new WebViewManager();
 
 			TweenMax.delayedCall(2,function():void{
-				
-
 				setEscrowForm();
-
-
 			},null,true);
 		}
 		
