@@ -1,0 +1,21 @@
+<body formSize="416" margin="40 10 30 10" padding="0 10 0 10" fontSize="15">
+    <space size="100"/>
+
+    <div layout="horizontal" height="100%">
+
+        <div width="50%">
+            BUYER
+            <input id="buyerKey" prompt="Type buyer key"/>
+            <button id="buyerGetDeals">GET DEALSs</button>
+            <button id="buyerCreateOffer">CREATE OFFER</button>
+        </div>
+        <space size="10"/>
+        <div width="50%">
+            SELLER
+            <input id="sellerKey" prompt="Type seller key" value="123"/>
+            
+        </div>
+    </div>
+
+    <space size="40"/>
+</body>

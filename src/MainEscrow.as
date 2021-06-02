@@ -22,6 +22,7 @@ import flash.filesystem.File;
 import flash.events.KeyboardEvent;
 import flash.ui.Keyboard;
 import com.dukascopy.connect.managers.escrow.test.EscrowTest;
+import com.dukascopy.connect.managers.escrow.test.EscrowTestForm;
 
 
 [SWF(backgroundColor="#ffffff")]
@@ -46,49 +47,17 @@ public class MainEscrow extends Sprite {
 
             new EscrowDealManager();
 			new EscrowTest();
-
 			new WebViewManager();
 
 			TweenMax.delayedCall(2,function():void{
-
-				/*GD.S_ESCROW_DEAL_CREATE_REQUEST.invoke(
-					new EscrowDealCreateRequest()
-					.setChatUID("WLDZD8WFWBIsWQWx")
-					.setInstrument("btc")
-					.setMcaCcy("eur")
-					.setPrimAmount(0.0531)
-					.setSecAmount(23.32)
-					.setSide(EscrowDealSide.BUY)
-					.setMsgID(101)
-				)*/
-				
-
 				setEscrowForm();
-
-
 			},null,true);
 		}
 		
 		private function setEscrowForm():void{
-
-			var form:Form=new Form(File.applicationDirectory.resolvePath("forms"+File.separator+"escrowForm.xml"),3);
-			stage.addEventListener(KeyboardEvent.KEY_DOWN,function(e:KeyboardEvent):void{
-                if(e.keyCode==Keyboard.R && (e.commandKey || e.ctrlKey))
-					form.reload();
-            })
-			addChild(form.view);
-			form.setSize(stage.stageWidth,stage.stageHeight);
-			form.onDocumentLoaded=function():void{
-				
-
-				var cmp:FormComponent=form.getComponentByID("btnEscrowCreate");
-				if(cmp){
-					cmp.onTap=function():void{
-						trace("COMP TAPPED");
-					}
-				}
-			}
+			addChild(new EscrowTestForm());
 		}
+		
 
 		public static function onGlobalError(e:UncaughtErrorEvent = null):void {
             if (e != null) {
@@ -99,9 +68,6 @@ public class MainEscrow extends Sprite {
 						return;
 				}
 			}
-
 		}
-
 	}
-	
 }

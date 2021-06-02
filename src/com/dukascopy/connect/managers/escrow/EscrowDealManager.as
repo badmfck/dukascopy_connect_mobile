@@ -78,8 +78,12 @@ package com.dukascopy.connect.managers.escrow{
                 for each(var i:EscrowInstrument in tmp)
                     arr.push(i.code);
 
-                // TODO: SEND TO SERVER, GET RESPONSE, REBUILD INSTRUMENTS
+                
+                GD.S_ESCROW_WALLETS_REQUEST.invoke(function(wallets:Object):void{
+                    
+                })
 
+                // TODO: SEND TO SERVER, GET RESPONSE, REBUILD INSTRUMENTS
                 //FAKE
                 var timer:Timer=new Timer(1000,1);
                 var dis:Dispatcher=new Dispatcher(timer)
@@ -87,7 +91,7 @@ package com.dukascopy.connect.managers.escrow{
                     dis.clear();
                     var fake:Object={};
                     for each(var code:String in arr)
-                        fake[code]=Math.random()*10000;
+                        fake[code]={eur:Math.random()*10000,usd:Math.random()*10000,chf:Math.random()*10000}
                     parsePrices(fake)
                 })
                 
@@ -95,6 +99,7 @@ package com.dukascopy.connect.managers.escrow{
             })
 
             // Escrow get offer calculation
+            // instrument, price, amount
         }
 
 
@@ -110,10 +115,10 @@ package com.dukascopy.connect.managers.escrow{
             dis.add(TimerEvent.TIMER_COMPLETE,function(e:TimerEvent):void{
                 dis.clear();
                 parseInstruments([
-                    {code:"DUK+",precision:2,name:"Dukascoin",wallet:"3849tjknvdknjs094kvjknwv",price:Math.random()*4},
-                    {code:"ETH",precision:4,name:"Etherium",wallet:"dsv324fqww232AAAvewevwknjs094kvjknwv",price:Math.random()*100},
-                    {code:"BTC",precision:"6",name:"Bitcoin",wallet:"AcAdewf43tgsfwfwewvvjknwv",price:Math.random()*50000},
-                    {code:"USDT",precision:3,name:"Tether",wallet:null,price:Math.random()*1000},
+                    {code:"DUK+",precision:2,name:"Dukascoin",wallet:"3849tjknvdknjs094kvjknwv",price:{eur:Math.random()*4,usd:Math.random()*4,"chf":Math.random()*4}},
+                    {code:"ETH",precision:4,name:"Etherium",wallet:"dsv324fqww232AAAvewevwknjs094kvjknwv",price:{eur:Math.random()*100,usd:Math.random()*100,"chf":Math.random()*100}},
+                    {code:"BTC",precision:"6",name:"Bitcoin",wallet:"AcAdewf43tgsfwfwewvvjknwv",price:{eur:Math.random()*50000,usd:Math.random()*50000,"chf":Math.random()*5000}},
+                    {code:"USDT",precision:3,name:"Tether",wallet:null,price:{"eur":Math.random()*1000,"usd":Math.random()*1000,"chf":Math.random()*1000}},
                 ]);
                 isInstrumentLoading=false;
                 timeInstrumentRequest=new Date().getTime();
@@ -123,6 +128,8 @@ package com.dukascopy.connect.managers.escrow{
 
 
         }
+
+       
 
         /**
          * Parse response width avaialable instruments from server.
@@ -156,7 +163,6 @@ package com.dukascopy.connect.managers.escrow{
          * @param data - key-value object where key is instrument code, value is price
          */
         private function parsePrices(data:Object):void{
-            var instrumentsWasChanged:Boolean=false;
             for(var key:String in data){
                 // get instrument by code
                 var ei:EscrowInstrument=getInstrumentByCode(key);
@@ -164,13 +170,11 @@ package com.dukascopy.connect.managers.escrow{
                     trace("Error, Instrument not found: "+key);
                     return;
                 }
-                if(ei.updatePrice(data[key])){
-                    GD.S_ESCROW_PRICE.invoke(ei);
-                    instrumentsWasChanged=true;
-                }
+                ei.updatePrice(data[key])
+                GD.S_ESCROW_PRICE.invoke(ei);
             }
-            if(instrumentsWasChanged)
-                GD.S_ESCROW_INSTRUMENTS.invoke(instruments);
+
+            GD.S_ESCROW_INSTRUMENTS.invoke(instruments);
         }
 
         private function getInstrumentByCode(code:String):EscrowInstrument{
