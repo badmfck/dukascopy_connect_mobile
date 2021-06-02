@@ -50,14 +50,7 @@ public class MainEscrow extends Sprite {
 			new WebViewManager();
 
 			TweenMax.delayedCall(2,function():void{
-				
-
 				setEscrowForm();
-
-
-				setEscrowForm();
-
-
 			},null,true);
 		}
 		
@@ -65,26 +58,6 @@ public class MainEscrow extends Sprite {
 			addChild(new EscrowTestForm());
 		}
 		
-		private function setEscrowForm():void{
-
-			var form:Form=new Form(File.applicationDirectory.resolvePath("forms"+File.separator+"escrowForm.xml"),3);
-			stage.addEventListener(KeyboardEvent.KEY_DOWN,function(e:KeyboardEvent):void{
-                if(e.keyCode==Keyboard.R && (e.commandKey || e.ctrlKey))
-					form.reload();
-            })
-			addChild(form.view);
-			form.setSize(stage.stageWidth,stage.stageHeight);
-			form.onDocumentLoaded=function():void{
-				
-
-				var cmp:FormComponent=form.getComponentByID("btnEscrowCreate");
-				if(cmp){
-					cmp.onTap=function():void{
-						trace("COMP TAPPED");
-					}
-				}
-			}
-		}
 
 		public static function onGlobalError(e:UncaughtErrorEvent = null):void {
             if (e != null) {
