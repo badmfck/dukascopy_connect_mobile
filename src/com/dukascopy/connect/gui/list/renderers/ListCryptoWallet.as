@@ -53,6 +53,18 @@ package com.dukascopy.connect.gui.list.renderers {
 			
 			var data:EscrowInstrument = li.data as EscrowInstrument;
 			tfName.text = data.name;
+			
+			var text:String = data.name;
+			var code:String = data.code;
+			if (Lang[code] != null && Lang[code] != "")
+			{
+				code = Lang[code];
+			}
+			if (text != code)
+			{
+				text += " (" + code + ")";
+			}
+			
 			var walletText:String;
 			if (data.isLinked && data.wallet != null)
 			{
@@ -82,14 +94,23 @@ package com.dukascopy.connect.gui.list.renderers {
 			if (li.data != null && li.data is EscrowInstrument){
 				flagIcon.visible = true;
 				var flagAsset:Sprite = UI.getInvestIconByInstrument((li.data as EscrowInstrument).code);
-				UI.scaleToFit(flagAsset, ICON_SIZE, ICON_SIZE);
-				flagIcon.addChild(flagAsset);
+				if (flagAsset != null)
+				{
+					UI.scaleToFit(flagAsset, ICON_SIZE, ICON_SIZE);
+					flagIcon.addChild(flagAsset);
+					
+					flagIcon.y = int(h * .5 - ICON_SIZE * .5 - Config.FINGER_SIZE * .01);
+					flagIcon.x = padding;
+					
+					tfName.x = flagIcon.x + flagIcon.width + padding;
+					tfLabel.x = flagIcon.x + flagIcon.width + padding;
+				}
+				else
+				{
+					tfName.x = padding;
+					tfLabel.x = padding;
+				}
 				
-				flagIcon.y = int(h * .5 - ICON_SIZE * .5 - Config.FINGER_SIZE * .01);
-				flagIcon.x = padding;
-				
-				tfName.x = flagIcon.x + flagIcon.width + padding;
-				tfLabel.x = flagIcon.x + flagIcon.width + padding;
 			}else{
 				tfName.x = padding;
 				tfLabel.x = padding;

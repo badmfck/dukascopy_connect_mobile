@@ -911,8 +911,12 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			{
 				return;
 			}
-			this.instruments = instruments;
-			loadPrices();
+			GD.S_ESCROW_INSTRUMENTS.remove(instrumentsLoaded);
+			if (this.instruments == null)
+			{
+				this.instruments = instruments;
+				loadPrices();
+			}
 		}
 		
 		private function loadPrices():void 
@@ -928,6 +932,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			{
 				return;
 			}
+			GD.S_ESCROW_PRICE.remove(pricesLoaded);
 			trace("123");
 			dataLoaded = true;
 			
@@ -1115,7 +1120,17 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			selectedCrypto = escrowInstrument;
 			
 			selectorInstrument.setValueExtend(selectedCrypto.name, selectedCrypto, getIcon(selectedCrypto));
-			setPrice(selectedCrypto.price);
+			
+			//!TODO:;
+			if (selectedCrypto.price != null)
+			{
+				setPrice(selectedCrypto.price["USD"]);
+			}
+			else
+			{
+				ApplicationErrors.add();
+			}
+			
 			inputPrice.value = selectedPrice;
 			
 			var underlineText:String = Lang.current_price_of_instrument.replace(Lang.regExtValue, getInstrument()) + " = " + selectedCrypto.price + " " + getCurrency();

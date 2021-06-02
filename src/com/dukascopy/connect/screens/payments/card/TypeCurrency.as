@@ -31,6 +31,7 @@ package com.dukascopy.connect.screens.payments.card {
 		
 		static public const ETH:String = "ETH";
 		static public const BTC:String = "BTC";
+		static public const USDT:String = "USDT";
 
 		public function TypeCurrency() { }
 	}
