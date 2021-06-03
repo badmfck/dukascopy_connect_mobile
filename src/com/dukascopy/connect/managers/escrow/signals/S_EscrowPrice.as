@@ -1,7 +1,7 @@
 package com.dukascopy.connect.managers.escrow.signals
 {
     import com.telefision.sys.signals.SuperSignal;
-    import com.dukascopy.connect.managers.escrow.EscrowInstrument;
+    import com.dukascopy.connect.managers.escrow.vo.EscrowInstrument;
 
     public class S_EscrowPrice extends SuperSignal{
         public function S_EscrowPrice(){

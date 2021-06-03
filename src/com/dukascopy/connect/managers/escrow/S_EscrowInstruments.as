@@ -1,6 +1,7 @@
 package com.dukascopy.connect.managers.escrow
 {
     import com.telefision.sys.signals.SuperSignal;
+    import com.dukascopy.connect.managers.escrow.vo.EscrowInstrument;
 
     public class S_EscrowInstruments extends SuperSignal{
         public function S_EscrowInstruments(){
