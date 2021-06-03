@@ -8,7 +8,7 @@ package com.dukascopy.connect.managers.escrow.vo{
         private var _code:String;
         private var precision:int=2;
         
-        public function EscrowInstrument(name:String,wallet:String,precision:*,code:String,price:Number){
+        public function EscrowInstrument(name:String,wallet:String,precision:*,code:String,price:Object){
             _name=name;
             _wallet=wallet;
             _code=code;

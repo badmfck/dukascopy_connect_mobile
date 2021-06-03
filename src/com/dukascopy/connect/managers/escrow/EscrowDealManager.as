@@ -140,15 +140,9 @@ package com.dukascopy.connect.managers.escrow{
             var tmp:Vector.<EscrowInstrument>=new Vector.<EscrowInstrument>();
             for each(var i:Object in data){
                 if("name" in i && "wallet" in i && "price" in i && "code" in i && "precision" in i){
-                    var price:Number=0;
-                    try{price=parseFloat(i.price);
-                    }catch(e:Error){}
-                    if(isNaN(price))
-                        price=0;
-                    var ei:EscrowInstrument=new EscrowInstrument(i.name,i.wallet,i.precision,i.code,price) 
+                    var ei:EscrowInstrument=new EscrowInstrument(i.name,i.wallet,i.precision,i.code,i.price) 
                     tmp.push(ei);
-                    if(price>0)
-                        GD.S_ESCROW_PRICE.invoke(ei);
+                    GD.S_ESCROW_PRICE.invoke(ei);
                 }else{
                     trace("Error, wrong packet! no proper data in escrow instrument");
                 }

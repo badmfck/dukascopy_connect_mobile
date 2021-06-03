@@ -471,6 +471,24 @@ package com.dukascopy.connect.sys.bankManager {
 					sendBlock(tmp[1], vals[0], vals[1]);
 					return;
 				}
+				if (tmp[1] == "investmentOperationsAdd") {
+					if (tmp.length == 3)
+						vals = tmp[2].split("|!|");
+					else
+						return;
+					firstData = tmp[2];
+					sendBlock(tmp[1], vals[0], vals[1]);
+					return;
+				}
+				if (tmp[1] == "investmentOperationsAdd") {
+					if (tmp.length == 3)
+						vals = tmp[2].split("|!|");
+					else
+						return;
+					firstData = tmp[2];
+					sendBlock(tmp[1], vals[0], vals[1]);
+					return;
+				}
 				if (tmp[1] == "investmentsList" || tmp[1] == "investmentsListAll" || tmp[1] == "investmentsListSell") {
 					if (investmentsData == null) {
 						lastWaitingInvestmentsAction = tempAction;

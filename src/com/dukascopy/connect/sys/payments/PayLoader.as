@@ -1,20 +1,13 @@
 package com.dukascopy.connect.sys.payments {
 
-	import com.dukascopy.connect.Config;
-	import com.dukascopy.connect.MobileGui;
 	import com.dukascopy.connect.data.screenAction.customActions.DownloadFileAction;
-	import com.dukascopy.connect.gui.components.WhiteToast;
-	import com.dukascopy.connect.gui.lightbox.UI;
 	import com.dukascopy.connect.sys.auth.Auth;
-	import com.dukascopy.connect.sys.configManager.ConfigManager;
 	import com.dukascopy.connect.sys.connectionManager.NetworkManager;
-	import com.dukascopy.connect.sys.dialogManager.DialogManager;
 	import com.dukascopy.connect.sys.echo.echo;
 	import com.dukascopy.connect.sys.php.PHP;
 	import com.dukascopy.connect.vo.chat.FileMessageVO;
 	import com.dukascopy.langs.Lang;
 	import com.dukascopy.langs.LangManager;
-	import com.greensock.TweenMax;
 	import com.hurlant.crypto.hash.HMAC;
 	import com.hurlant.crypto.hash.SHA256;
 	import com.hurlant.util.Base64;
@@ -28,7 +21,6 @@ package com.dukascopy.connect.sys.payments {
 	import flash.net.URLStream;
 	import flash.net.URLVariables;
 	import flash.utils.ByteArray;
-	import gibberishAES.AESCrypter;
 	
 	/**
 	 * This class send request to Payments API and automatically add language param "l"
@@ -74,8 +66,6 @@ package com.dukascopy.connect.sys.payments {
 			}
 			urlRequest.requestHeaders.push(new URLRequestHeader("Device-UID", Auth.devID));
 			if (method === URLRequestMethod.DELETE) {
-				// Cтавим  header о подмене DELETE на POST и подменяем метод на POST,
-				// иначе на некоторых платформах не передаются переменные.
 				urlRequest.requestHeaders.push(new URLRequestHeader("X-HTTP-Method-Override", URLRequestMethod.DELETE));
 				urlRequest.method = URLRequestMethod.POST;
 			}
@@ -91,7 +81,6 @@ package com.dukascopy.connect.sys.payments {
 				urlLoader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, onSecurityError);
 				urlLoader.addEventListener(HTTPStatusEvent.HTTP_STATUS, onHTTPStatus);
 				urlLoader.addEventListener(HTTPStatusEvent.HTTP_RESPONSE_STATUS, onHTTPStatus);
-				echo("PayLoader (" + id + ")", "load", "\n	url: " + urlRequest.url + "\n	method: " + method + "\n	data:\n" + UI.tracedObj(urlRequest.data));
 				urlLoader.load(urlRequest);
 			} else
 				callback(respond.setData(true, Lang.noInternetConnection, null, -2));
@@ -122,8 +111,6 @@ package com.dukascopy.connect.sys.payments {
 			_savedRequestData.method = method;
 			_savedRequestData.callBack = callBack;
 			respond.setSavedRequestData(_savedRequestData);
-			
-			echo("PayLoader", "loadAsFile", "\n" + urlRequest.url + "\n" + UI.tracedObj(urlRequest.data));
 			
 			var fmVO:FileMessageVO = new FileMessageVO();
 			fmVO.title = "paymentsReport";
@@ -242,14 +229,15 @@ package com.dukascopy.connect.sys.payments {
 				var errorCode:int = data.code != null ? data.code : -1;
 				callback(respond.setData(true, data.error, data, errorCode));
 				if (errorCode == 1040) {
-					if (Config.isTest() == true)
+					/*if (Config.isTest() == true)
 						displayMessage("Error 1040: " + data.error);
 					var key:String = Auth.uid;
 					for (var i:int = Auth.uid.length; i > 0; i--) {
 						key = key + Auth.uid.charAt(i - 1);
 					}
 					var value:String = AESCrypter.enc(JSON.stringify(_debugData), key);
-					PHP.call_statVI("PayError1040", value);
+					PHP.call_statVI("PayError1040", value);*/
+					PHP.call_statVI("PayError1040", "");
 				}
 				closeURLLoader();
 				return;
@@ -258,7 +246,7 @@ package com.dukascopy.connect.sys.payments {
 			closeURLLoader();
 		}
 		
-		private var toast:WhiteToast;
+		/*private var toast:WhiteToast;
 		private function displayMessage(message:String):void {
 			var toastTime:Number = 5;
 			toast = new WhiteToast(message, MobileGui.stage.stageWidth, MobileGui.stage.stageHeight, null, toastTime);
@@ -274,7 +262,7 @@ package com.dukascopy.connect.sys.payments {
 				}
 				toast = null;
 			}
-		}
+		}*/
 		
 		private function callback(payRespond:PayRespond):void {
 			echo("PayLoader (" + id + ")", "callback", "");

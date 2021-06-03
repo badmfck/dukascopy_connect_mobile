@@ -4119,4 +4119,4 @@ package com.dukascopy.connect.sys.bankManager {
 			return true;
 		}
 	}
-}
+}
