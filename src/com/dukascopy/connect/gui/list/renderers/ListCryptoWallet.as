@@ -4,7 +4,7 @@ package com.dukascopy.connect.gui.list.renderers {
 	import com.dukascopy.connect.data.CountriesData;
 	import com.dukascopy.connect.gui.lightbox.UI;
 	import com.dukascopy.connect.gui.list.ListItem;
-	import com.dukascopy.connect.managers.escrow.EscrowInstrument;
+	import com.dukascopy.connect.managers.escrow.vo.EscrowInstrument;
 	import com.dukascopy.connect.sys.assets.Assets;
 	import com.dukascopy.connect.sys.imageManager.ImageManager;
 	import com.dukascopy.connect.sys.style.FontSize;

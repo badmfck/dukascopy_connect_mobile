@@ -580,7 +580,11 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 				{
 					field = "CURRENCY";
 				}
-				selectorCurrency.setValue(account[field]);
+				
+				var targetCurrency:String = account[field];
+				targetCurrency = validate(targetCurrency);
+				
+				selectorCurrency.setValue(targetCurrency);
 			}
 			if (account != null || cleanCurrent == true)
 			{
@@ -592,6 +596,39 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 			//	autofillCard();
 			}
 			checkCommision();
+		}
+		
+		private function validate(targetCurrency:String):String 
+		{
+			var avaliable:Array = getCurrencies();
+			if (avaliable != null)
+			{
+				var valid:Boolean = false;
+				for (var i:int = 0; i < avaliable.length; i++) 
+				{
+					if (avaliable[i] == targetCurrency)
+					{
+						valid = true;
+						break;
+					}
+				}
+				if (valid)
+				{
+					return targetCurrency;
+				}
+				else if(avaliable.length > 0)
+				{
+					for (var j:int = 0; j < avaliable.length; j++) 
+					{
+						if (avaliable[j] == TypeCurrency.USD) 
+						{
+							return TypeCurrency.USD;
+						}
+					}
+					return avaliable[0];
+				}
+			}
+			return targetCurrency;
 		}
 		
 		private function drawNoCardsMessage():void 

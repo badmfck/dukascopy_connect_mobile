@@ -17,7 +17,8 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 	import com.dukascopy.connect.gui.list.renderers.ListPayWalletItem;
 	import com.dukascopy.connect.gui.menuVideo.BitmapButton;
 	import com.dukascopy.connect.managers.escrow.EscrowDealManager;
-	import com.dukascopy.connect.managers.escrow.EscrowInstrument;
+	import com.dukascopy.connect.managers.escrow.vo.EscrowInstrument;
+	import com.dukascopy.connect.managers.escrow.vo.EscrowPrice;
 	import com.dukascopy.connect.screens.dialogs.ScreenPayDialog;
 	import com.dukascopy.connect.screens.dialogs.paymentDialogs.elements.InputField;
 	import com.dukascopy.connect.screens.dialogs.x.base.bottom.ListSelectionPopup;
@@ -464,9 +465,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		
 		private function selectDefaultAccount():void 
 		{
-			var accountsArray:Array = accounts.moneyAccounts;
-			
-			var filteredAccounts:Array = filterAccountsByPrices(accountsArray);
+			var filteredAccounts:Array = getAccounts();
 			
 			var preselectedAccount:Object;
 			if (filteredAccounts.length > 0)
@@ -489,25 +488,31 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			}
 		}
 		
+		private function getAccounts():Array 
+		{
+			var accountsArray:Array = accounts.moneyAccounts;
+			return filterAccountsByPrices(accountsArray);
+		}
+		
 		private function filterAccountsByPrices(accountsArray:Array):Array 
 		{
 			return accountsArray;
-			//TODO:;
 			
 			var result:Array = new Array();
-			/*if (prices != null)
+			if (selectedCrypto != null && selectedCrypto.price != null)
 			{
+				var prices:Vector.<EscrowPrice> = selectedCrypto.price;
 				for (var i:int = 0; i < accountsArray.length; i++) 
 				{
-					for (var j:int = 0; j < instruments.length; j++) 
+					for (var j:int = 0; j < prices.length; j++) 
 					{
-						if (accountsArray[i].CURRENCY == instruments[j].)
+						if (accountsArray[i].CURRENCY == prices[j].name)
 						{
-							
+							result.push(accountsArray[i]);
 						}
 					}
 				}
-			}*/
+			}
 			return result;
 		}
 		
@@ -915,11 +920,12 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			if (this.instruments == null)
 			{
 				this.instruments = instruments;
-				loadPrices();
+				dataLoaded = true;
+				loadAccounts();
 			}
 		}
 		
-		private function loadPrices():void 
+		/*private function loadPrices():void 
 		{
 			GD.S_ESCROW_PRICE.add(pricesLoaded);
 			GD.S_ESCROW_PRICES_REQUEST.invoke();
@@ -937,7 +943,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			dataLoaded = true;
 			
 			getAccounts();
-		}
+		}*/
 		
 		override protected function getBottomPadding():int 
 		{
@@ -1095,11 +1101,12 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 				ApplicationErrors.add();
 			}
 			selectDefaultAccount();
+			updatePrice();
 			updateBalance();
 			updatePositions();
 		}
 		
-		private function getAccounts():void 
+		private function loadAccounts():void 
 		{
 			if (accounts == null)
 			{
@@ -1117,24 +1124,47 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		
 		private function selectInstrument(escrowInstrument:EscrowInstrument):void 
 		{
-			selectedCrypto = escrowInstrument;
+			selectCrypto(escrowInstrument);
 			
 			selectorInstrument.setValueExtend(selectedCrypto.name, selectedCrypto, getIcon(selectedCrypto));
 			
-			//!TODO:;
-			if (selectedCrypto.price != null)
+			updatePrice();
+		}
+		
+		private function updatePrice():void 
+		{
+			var price:Number = getPrice();
+			if (!isNaN(price))
 			{
-				setPrice(selectedCrypto.price["USD"]);
+				setPrice(price);
+				inputPrice.value = selectedPrice;
+				
+				var underlineText:String = Lang.current_price_of_instrument.replace(Lang.regExtValue, getInstrument()) + " = " + selectedCrypto.price + " " + getCurrency();
+				inputPrice.drawUnderlineValue(underlineText);
 			}
-			else
+		}
+		
+		private function getPrice():Number 
+		{
+			var price:Number;
+			if (selectedCrypto != null && selectedCrypto.price != null && selectedFiatAccount != null)
 			{
-				ApplicationErrors.add();
+				for (var i:int = 0; i < selectCrypto.price.length; i++) 
+				{
+					if (selectedCrypto.price[i].name == selectedFiatAccount.CURRENCY)
+					{
+						price = selectedCrypto.price[i].value;
+						break;
+					}
+				}
 			}
-			
-			inputPrice.value = selectedPrice;
-			
-			var underlineText:String = Lang.current_price_of_instrument.replace(Lang.regExtValue, getInstrument()) + " = " + selectedCrypto.price + " " + getCurrency();
-			inputPrice.drawUnderlineValue(underlineText);
+			return price;
+		}
+		
+		private function selectCrypto(escrowInstrument:EscrowInstrument):void 
+		{
+			//!TODO: подписаться на смену прайса?
+			selectedCrypto = escrowInstrument;
 		}
 		
 		private function showFixedPriceControl():void 
