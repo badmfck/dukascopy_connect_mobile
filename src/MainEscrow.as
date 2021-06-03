@@ -57,6 +57,7 @@ public class MainEscrow extends Sprite {
 		private function setEscrowForm():void{
 			addChild(new EscrowTestForm());
 		}
+		
 
 		public static function onGlobalError(e:UncaughtErrorEvent = null):void {
             if (e != null) {

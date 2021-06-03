@@ -608,6 +608,8 @@ package com.forms{
             return res;
         }
 
+        
+
         /**
          * Setup align & padding
          */
@@ -664,7 +666,7 @@ package com.forms{
             return null;
         }
 
-        protected function getFontSize():FormTextSize{
+          protected function getFontSize():FormTextSize{
             var p:FormComponent=this;
             if(nodeType!=1)
                 p=parent;

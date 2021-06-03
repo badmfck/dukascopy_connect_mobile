@@ -175,7 +175,11 @@ package com.telefision.sys.signals
                     ssvo.clear();
                 methods=[];
             }
-            
+            if(delays!=null){
+                for each(var del:SuperSignalDelayedVO in delays)
+                    del.clear();
+                delays=[];
+            }
             if(invokes!=null)
                 invokes=[];
         }

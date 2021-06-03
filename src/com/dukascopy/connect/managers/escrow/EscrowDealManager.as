@@ -130,6 +130,8 @@ package com.dukascopy.connect.managers.escrow{
 
         }
 
+       
+
         /**
          * Parse response width avaialable instruments from server.
          * @param data - array of objects width name, wallet, price and code

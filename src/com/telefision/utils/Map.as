@@ -8,6 +8,10 @@ package com.telefision.utils
         private var keys:Vector.<String>=new Vector.<String>();
         private var name:String;
         static private var nameID:int=0;
+        /**
+         * 
+         * @param name, optional string, map name.
+         */
         public function Map(name:String=null){
             if(name==null)
                 name="Map-"+(nameID++);
