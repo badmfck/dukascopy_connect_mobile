@@ -364,5 +364,13 @@ package com.dukascopy.connect.vo {
 				return _raw.APPLICATIONS;
 			return localData;
 		}
+		
+		public function get bankCacheMinute():int {
+			if (_raw == null)
+				return -1;
+			if ("BANK_CACHE_MINUTE" in _raw == true)
+				return _raw.BANK_CACHE_MINUTE;
+			return -1;
+		}
 	}
 }

@@ -2,6 +2,7 @@ package com.dukascopy.connect.sys.bankManager {
 	
 	import assets.ExchangeIcon;
 	import com.dukascopy.connect.Config;
+	import com.dukascopy.connect.GD;
 	import com.dukascopy.connect.MobileGui;
 	import com.dukascopy.connect.data.CoinTradeOrder;
 	import com.dukascopy.connect.data.GiftData;
@@ -2971,8 +2972,10 @@ package com.dukascopy.connect.sys.bankManager {
 					S_ALL_DATA.invoke(false, true);
 				if (needToLoad == true)
 					BankBotController.getAnswer("bot:bankbot payments:home");
-			} else
+			} else {
+				GD.S_BANK_CACHE_ACCOUNT_INFO_REQUEST.invoke(onHomeLoaded);
 				BankBotController.getAnswer("bot:bankbot payments:home");
+			}
 		}
 		
 		static public function getCards(local:Boolean = true, needToLoad:Boolean = false):void {
@@ -3672,12 +3675,18 @@ package com.dukascopy.connect.sys.bankManager {
 												callback:function(result:String):void{}})*/
 		}
 		
-		static private function onHomeLoaded(homeJSON:String):void {
+		static private function onHomeLoaded(homeJSON:String, fromELS:Boolean = false):void {
+			if (fromELS == false) {
+				GD.S_BANK_CACHE_ACCOUNT_INFO_SAVE.invoke(homeJSON);
+				trace();
+			} else if (homeJSON == null) {
+				return;
+			}
 			var data:Object = null;
 			try {
 				data = JSON.parse(homeJSON);
 			} catch (e:Error) {
-				S_ALL_DATA.invoke(true, false);
+				S_ALL_DATA.invoke(true, fromELS);
 				return;
 			}
 			processAccount(data);
@@ -3711,7 +3720,7 @@ package com.dukascopy.connect.sys.bankManager {
 					savingsAccountLoaded = true;
 					processSavingsAccounts(data["savings"]);
 			}
-			S_ALL_DATA.invoke(false, false);
+			S_ALL_DATA.invoke(false, fromELS);
 		}
 		
 		static private function processOtherAccounts(data:Array):void {

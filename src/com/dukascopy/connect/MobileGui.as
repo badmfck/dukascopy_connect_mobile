@@ -27,6 +27,7 @@ package com.dukascopy.connect {
 	import com.dukascopy.connect.sys.GlobalDate;
 	import com.dukascopy.connect.sys.applicationShop.Shop;
 	import com.dukascopy.connect.sys.auth.Auth;
+	import com.dukascopy.connect.sys.bankManager.BankCacheManager;
 	import com.dukascopy.connect.sys.bankManager.BankManager;
 	import com.dukascopy.connect.sys.calendar.Calendar;
 	import com.dukascopy.connect.sys.callManager.CallManager;
@@ -212,6 +213,7 @@ package com.dukascopy.connect {
 			UserExtensionsManager.init();
 			Calendar.init();
 			SoftKeyboard.startDetectHeight();
+			BankCacheManager.init();
 
 			/*if(Config.PLATFORM_WINDOWS)
 				stage.addChild(new MemoryMonitor());*/
