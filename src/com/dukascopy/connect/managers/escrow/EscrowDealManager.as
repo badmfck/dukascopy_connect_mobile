@@ -8,6 +8,7 @@ package com.dukascopy.connect.managers.escrow{
     import com.telefision.utils.SimpleLoaderResponse;
     import flash.utils.Timer;
     import flash.events.TimerEvent;
+    import com.dukascopy.connect.managers.escrow.vo.EscrowInstrument;
     
 
     /**

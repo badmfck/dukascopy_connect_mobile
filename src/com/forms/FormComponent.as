@@ -41,6 +41,8 @@ package com.forms{
         protected var attributes:Object=null;
         protected var enableChilds:Boolean=true;
 
+        private var controller:IFormController=null;
+
         // listeners
         public var onDraw:Function=null; // calls each time when component renders, onDraw(view,bounds):Boolean, when returns false, default draw procedure will be stopped
         public var onDocumentLoaded:Function=null; // call when xml loaded & parsed
@@ -108,6 +110,36 @@ package com.forms{
                 return
             trace('Reload file: '+filePath);
             loadFile(new File(filePath),{});
+        }
+
+        public function attachController(controller:IFormController):void{
+            
+            if(this.controller!=null && this.controller!=controller)
+                this.controller.removeControllerLinkages();
+
+            if(controller==null){
+                this.controller=null;
+                return;
+            }
+
+            this.controller=controller;
+            linkComponentsToController(_components)
+        }
+
+        private function linkComponentsToController(comps:Vector.<FormComponent>):void{
+            if(controller==null || comps==null || comps.length==0)
+                return;
+            for each(var c:FormComponent in comps){
+                if(c.id!=null && c.id in this.controller){
+                    try{
+                        this.controller[c.id]=c;
+                    }catch(e:Error){
+                        trace("Can't add element to controller");
+                    }
+                }
+                if(c!=null && c._components.length>0)
+                    linkComponentsToController(c._components);
+            }
         }
 
         private function loadFile(file:File,predefinedStyle:Object):void{
@@ -294,7 +326,11 @@ package com.forms{
                 _components.push(component);
                 box.addChild(component.view);
             }
+            
             component.parent=this;
+
+           // attachControllerUpward(component);
+
             if(doRebuild)
                 rebuild();
         }
@@ -366,21 +402,18 @@ package com.forms{
                     }
                 }
             }
-            
          
-         if(parent!=null && parent.style!=null){
-            if(style.layout.toString()==FormLayout.VERTICAL){
-                if(bounds.display_width>0)
-                    bounds.display_width-=parent.style.padding.left+parent.style.padding.right
-            }else{
-                
-                if(bounds.display_height>0)
-                    bounds.display_height-=parent.style.padding.top+parent.style.padding.bottom
-                if(bounds.display_width>0)
-                    bounds.display_width-=parent.style.padding.right+parent.style.padding.left
-                
+            if(parent!=null && parent.style!=null){
+                if(style.layout.toString()==FormLayout.VERTICAL){
+                    if(bounds.display_width>0)
+                        bounds.display_width-=parent.style.padding.left+parent.style.padding.right
+                }else{
+                    if(bounds.display_height>0)
+                        bounds.display_height-=parent.style.padding.top+parent.style.padding.bottom
+                    if(bounds.display_width>0)
+                        bounds.display_width-=parent.style.padding.right+parent.style.padding.left
+                }
             }
-         }
         }
 
         protected function redraw(percentOffsetW:int=-1,percentOffsetH:int=-1):void{
@@ -665,6 +698,9 @@ package com.forms{
             if(scroller!=null) 
                 scroller.dispose();
             scroller=null;
+            if(controller)
+                controller.removeControllerLinkages();
+            controller=null;
         }
     }
 }

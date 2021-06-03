@@ -4,7 +4,7 @@ package com.dukascopy.connect.managers.escrow.test
     import flash.utils.Timer;
     import com.dukascopy.connect.sys.Dispatcher;
     import flash.events.TimerEvent;
-    import com.dukascopy.connect.managers.escrow.EscrowInstrument;
+    import com.dukascopy.connect.managers.escrow.vo.EscrowInstrument;
 
     public class EscrowTest{
         

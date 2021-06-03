@@ -1,5 +1,5 @@
-package com.dukascopy.connect.managers.escrow
-{
+package com.dukascopy.connect.managers.escrow.vo{
+    
     public class EscrowPrice{
         public var name:String;
         public var value:Number;
