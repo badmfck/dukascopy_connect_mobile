@@ -234,7 +234,7 @@ package com.dukascopy.connect.gui.list.renderers.trade {
 				date.visible = false;
 			}
 			
-			if (data.min_trade == data.quantity)
+			if (data.fillOrKill)
 			{
 				comment.visible = true;
 				if (data.side == TradingOrder.BUY)

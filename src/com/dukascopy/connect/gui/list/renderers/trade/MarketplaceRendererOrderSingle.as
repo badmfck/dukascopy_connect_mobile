@@ -280,7 +280,7 @@ package com.dukascopy.connect.gui.list.renderers.trade {
 				date.visible = false;
 			}
 			
-			if (data.min_trade == data.quantity)
+			if (data.fillOrKill)
 			{
 				comment.width = originalWidth - padding;
 				comment.height = comment.textHeight + 4;

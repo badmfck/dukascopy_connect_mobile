@@ -2448,7 +2448,7 @@ package com.dukascopy.connect.sys.bankManager {
 			if (tor == null || tor.orders == null || tor.orders.length == 0)
 				return false;
 			var order:TradingOrder = tor.orders[0];
-			if (tor.quantity < order.min_trade)
+			if (order.fillOrKill && tor.quantity < order.quantity)
 				return false;
 			BankBotController.getAnswer(
 				"bot:bankbot payments:tradeCoins:" + 
@@ -4120,4 +4120,4 @@ package com.dukascopy.connect.sys.bankManager {
 			return true;
 		}
 	}
-}
+}

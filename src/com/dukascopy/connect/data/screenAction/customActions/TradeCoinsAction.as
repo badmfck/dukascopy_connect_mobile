@@ -63,7 +63,7 @@ package com.dukascopy.connect.data.screenAction.customActions {
 				currentRequest.orders = [request.orders[currentOrderIndex]];
 				
 				var quantity:Number;
-				if ((request.orders[currentOrderIndex] as TradingOrder).min_trade == (request.orders[currentOrderIndex] as TradingOrder).quantity) {
+				if ((request.orders[currentOrderIndex] as TradingOrder).fillOrKill) {
 					quantity = (request.orders[currentOrderIndex] as TradingOrder).quantity;
 					if (quantity > request.quantity - currentQuantity) {
 						processNext();

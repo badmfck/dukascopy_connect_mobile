@@ -876,7 +876,7 @@ package com.dukascopy.connect.sys.paymentsManagerNew {
 				}
 				var dta:Object = { coin:coin, currency:currency, side:side, price:price, quantity:quantity, activate:true };
 				if (fullOrder == true)
-					dta.min_trade = quantity;
+					dta.fill_or_kill = true;
 				if (for_account != "")
 					dta.for_account = for_account;
 				if (good_till != 0)

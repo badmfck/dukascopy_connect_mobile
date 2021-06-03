@@ -28,7 +28,7 @@ package com.dukascopy.connect.data.coinMarketplace
 		public var trades_count:Number;
 		public var uid:String;
 		public var updated:Number;
-		public var min_trade:Number;
+	//	public var min_trade:Number;
 		public var max_trade:Number;
 		public var quantity:Number;
 		public var quantityString:String;

@@ -187,9 +187,9 @@ package com.dukascopy.connect.data.coinMarketplace
 						}
 					}
 					
-					if (order.min_trade == order.quantity)
+					if (order.fillOrKill)
 					{
-						if (targetValue - currentQuantity >= order.min_trade)
+						if (targetValue - currentQuantity >= order.quantity)
 						{
 							resultArray.push(order);
 							currentQuantity += order.quantity;
