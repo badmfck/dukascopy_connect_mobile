@@ -86,10 +86,7 @@ package com.dukascopy.connect.screens.dialogs.bankBot
 			DialogManager.showDialog(ScreenPayDialog, {callback: callBackSelectCurrency, data: PayManager.systemOptions.currencyList, itemClass: ListPayCurrency, label: Lang.selectCurrency});
 		}
 		
-		private function callBackSelectCurrency(val:Object):void{
-			Print_r.show(val);
-			
-		}
+		private function callBackSelectCurrency(val:Object):void { }
 		
 		override protected function drawView():void{
 			super.drawView();
