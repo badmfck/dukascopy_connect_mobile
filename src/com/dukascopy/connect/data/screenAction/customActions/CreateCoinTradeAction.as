@@ -122,7 +122,7 @@ package com.dukascopy.connect.data.screenAction.customActions {
 			
 			if (dealData.direction == TradeDirection.buy)
 			{
-				messageData.status = EscrowStatus.buy_new;
+				messageData.status = EscrowStatus.buy_new; 
 			}
 			else
 			{
