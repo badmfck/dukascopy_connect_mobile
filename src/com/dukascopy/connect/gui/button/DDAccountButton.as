@@ -5,6 +5,9 @@ package com.dukascopy.connect.gui.button
 	import com.dukascopy.connect.gui.menuVideo.BitmapButton;
 	import com.dukascopy.connect.screens.payments.card.TypeCurrency;
 	import com.dukascopy.connect.sys.imageManager.ImageBitmapData;
+	import com.dukascopy.connect.sys.payments.CurrencyHelpers;
+	import com.dukascopy.connect.sys.payments.PayManager;
+	import com.dukascopy.connect.sys.payments.PaymentsManager;
 	import com.dukascopy.connect.sys.style.FontSize;
 	import com.dukascopy.connect.sys.style.Style;
 	import com.dukascopy.connect.sys.style.presets.Color;
@@ -270,7 +273,12 @@ package com.dukascopy.connect.gui.button
 				}
 				else
 				{
-					var balanceString:String = resultSum.toFixed(4);
+					var decimals:int = 2;
+					if (PayManager.systemOptions != null && PayManager.systemOptions.currencyDecimalRules != null && !isNaN(PayManager.systemOptions.currencyDecimalRules[currencyOrigin]))
+					{
+						decimals = PayManager.systemOptions.currencyDecimalRules[currencyOrigin];
+					}
+					var balanceString:String = resultSum.toFixed(decimals);
 					balanceLeft = balanceString.substring(0, balanceString.indexOf("."));
 					balanceRight = balanceString.substr(balanceString.indexOf(".") + 1);
 				}

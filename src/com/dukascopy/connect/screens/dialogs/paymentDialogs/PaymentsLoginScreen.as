@@ -156,7 +156,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs {
 			input.fontFamily = Config.defaultFontName;
 			input.stage = MobileGui.stage;
 			input.displayAsPassword = true;
-		//	input.text = "123456a";
+			input.text = "123456a";
 			
 			var hLineBitmapData:ImageBitmapData = UI.getHorizontalLine(3, Style.color(Style.COLOR_TEXT));
 			inputBottom = new Bitmap(hLineBitmapData);

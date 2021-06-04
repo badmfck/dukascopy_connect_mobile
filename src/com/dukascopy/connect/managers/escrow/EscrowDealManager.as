@@ -116,10 +116,10 @@ package com.dukascopy.connect.managers.escrow{
             dis.add(TimerEvent.TIMER_COMPLETE,function(e:TimerEvent):void{
                 dis.clear();
                 parseInstruments([
-                    {code:"DUK+",precision:2,name:"Dukascoin",wallet:"3849tjknvdknjs094kvjknwv",price:{eur:Math.random()*4,usd:Math.random()*4,"chf":Math.random()*4}},
-                    {code:"ETH",precision:4,name:"Etherium",wallet:"dsv324fqww232AAAvewevwknjs094kvjknwv",price:{eur:Math.random()*100,usd:Math.random()*100,"chf":Math.random()*100}},
-                    {code:"BTC",precision:"6",name:"Bitcoin",wallet:"AcAdewf43tgsfwfwewvvjknwv",price:{eur:Math.random()*50000,usd:Math.random()*50000,"chf":Math.random()*5000}},
-                    {code:"USDT",precision:3,name:"Tether",wallet:null,price:{"eur":Math.random()*1000,"usd":Math.random()*1000,"chf":Math.random()*1000}},
+                    {code:"DUK+",precision:2,name:"Dukascoin",wallet:"3849tjknvdknjs094kvjknwv",price:{EUR:Math.random()*4,USD:Math.random()*4,CHF:Math.random()*4}},
+                    {code:"ETH",precision:4,name:"Etherium",wallet:"dsv324fqww232AAAvewevwknjs094kvjknwv",price:{EUR:Math.random()*100,USD:Math.random()*100,CHF:Math.random()*100}},
+                    {code:"BTC",precision:"6",name:"Bitcoin",wallet:"AcAdewf43tgsfwfwewvvjknwv",price:{EUR:Math.random()*50000,USD:Math.random()*50000,CHF:Math.random()*5000}},
+                    {code:"USDT",precision:3,name:"Tether",wallet:null,price:{EUR:Math.random()*1000,USD:Math.random()*1000,CHF:Math.random()*1000}},
                 ]);
                 isInstrumentLoading=false;
                 timeInstrumentRequest=new Date().getTime();

@@ -27,6 +27,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 	import com.dukascopy.connect.sys.applicationError.ApplicationErrors;
 	import com.dukascopy.connect.sys.dialogManager.DialogManager;
 	import com.dukascopy.connect.sys.imageManager.ImageBitmapData;
+	import com.dukascopy.connect.sys.payments.PayManager;
 	import com.dukascopy.connect.sys.pointerManager.PointerManager;
 	import com.dukascopy.connect.sys.serviceScreenManager.ServiceScreenManager;
 	import com.dukascopy.connect.sys.softKeyboard.SoftKeyboard;
@@ -168,17 +169,24 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			
 			var values:Vector.<String> = new Vector.<String>();
 			var currency:String = getCurrency();
+			
+			var decimals:int = 2;
+			if (PayManager.systemOptions != null && PayManager.systemOptions.currencyDecimalRules != null && !isNaN(PayManager.systemOptions.currencyDecimalRules[currencySign]))
+			{
+				decimals = PayManager.systemOptions.currencyDecimalRules[currencySign];
+			}
+			
 			if (selectedDirection == TradeDirection.buy)
 			{
-				values.push((getAmount() * selectedPrice).toFixed(2) + " " + currency);
-				values.push((getAmount() * selectedPrice * .3).toFixed(2) + " " + currency);
-				values.push((getAmount() * selectedPrice * .3 + getAmount() * selectedPrice).toFixed(2) + " " + currency);
+				values.push((getAmount() * selectedPrice).toFixed(decimals) + " " + currency);
+				values.push((getAmount() * selectedPrice * .3).toFixed(decimals) + " " + currency);
+				values.push((getAmount() * selectedPrice * .3 + getAmount() * selectedPrice).toFixed(decimals) + " " + currency);
 			}
 			else
 			{
-				values.push((getAmount() * selectedPrice).toFixed(2) + " " + currency);
-				values.push((getAmount() * selectedPrice * .3).toFixed(2) + " " + currency);
-				values.push((getAmount() * selectedPrice - getAmount() * selectedPrice * .3).toFixed(2) + " " + currency);
+				values.push((getAmount() * selectedPrice).toFixed(decimals) + " " + currency);
+				values.push((getAmount() * selectedPrice * .3).toFixed(decimals) + " " + currency);
+				values.push((getAmount() * selectedPrice - getAmount() * selectedPrice * .3).toFixed(decimals) + " " + currency);
 			}
 			
 			balance.draw(_width, values);
@@ -484,6 +492,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			if (preselectedAccount != null)
 			{
 				selectedFiatAccount = preselectedAccount;
+				
 				selectorAccont.setValue(selectedFiatAccount);
 			}
 		}
@@ -512,6 +521,10 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 						}
 					}
 				}
+			}
+			else
+			{
+				result = accountsArray;
 			}
 			return result;
 		}
@@ -998,11 +1011,11 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 				
 				if (controlPriceSelected == inputPrice)
 				{
-					position += inputPrice.height + contentPaddingV;
+					position += inputPrice.height + contentPaddingV * 1.5;
 				}
 				else
 				{
-					position += priceSelector.height + contentPaddingV;
+					position += priceSelector.height + contentPaddingV * 1.5;
 				}
 				
 				balance.x = int(_width * .5 - balance.width * .5);
@@ -1090,11 +1103,6 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			if (instruments != null && instruments.length > 0)
 			{
 				selectInstrument(instruments[0]);
-				
-				if (state == STATE_START)
-				{
-					priceSelector.draw(_width - contentPadding * 2, -5, 5, 0, selectedPrice, getCurrency());
-				}
 			}
 			else
 			{
@@ -1102,6 +1110,10 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			}
 			selectDefaultAccount();
 			updatePrice();
+			if (state == STATE_START)
+			{
+				priceSelector.draw(_width - contentPadding * 2, -5, 5, 0, selectedPrice, getCurrency());
+			}
 			updateBalance();
 			updatePositions();
 		}
@@ -1139,7 +1151,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 				setPrice(price);
 				inputPrice.value = selectedPrice;
 				
-				var underlineText:String = Lang.current_price_of_instrument.replace(Lang.regExtValue, getInstrument()) + " = " + selectedCrypto.price + " " + getCurrency();
+				var underlineText:String = Lang.current_price_of_instrument.replace(Lang.regExtValue, getInstrument()) + " = " + price + " " + getCurrency();
 				inputPrice.drawUnderlineValue(underlineText);
 			}
 		}
@@ -1149,15 +1161,33 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			var price:Number;
 			if (selectedCrypto != null && selectedCrypto.price != null && selectedFiatAccount != null)
 			{
-				for (var i:int = 0; i < selectCrypto.price.length; i++) 
+				for (var i:int = 0; i < selectedCrypto.price.length; i++) 
 				{
 					if (selectedCrypto.price[i].name == selectedFiatAccount.CURRENCY)
 					{
+						currencySign = selectedFiatAccount.CURRENCY;
 						price = selectedCrypto.price[i].value;
 						break;
 					}
 				}
+				if (isNaN(price))
+				{
+					for (var j:int = 0; j < selectedCrypto.price.length; j++) 
+					{
+						if (selectedCrypto.price[j].name == TypeCurrency.USD)
+						{
+							currencySign = TypeCurrency.USD;
+							price = selectedCrypto.price[j].value;
+						}
+					}
+					if (isNaN(price) && selectedCrypto.price.length > 0)
+					{
+						currencySign = selectedCrypto.price[0].name;
+						price = selectedCrypto.price[0].value;
+					}
+				}
 			}
+			
 			return price;
 		}
 		
