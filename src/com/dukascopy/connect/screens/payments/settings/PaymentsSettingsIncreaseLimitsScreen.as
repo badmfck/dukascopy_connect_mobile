@@ -228,54 +228,33 @@ package com.dukascopy.connect.screens.payments.settings {
 			PayManager.callGetSystemOptions(processRequest);
 		}
 		
-		private function processRequest():void 
-		{
+		private function processRequest():void {
 			if (_isDisposed) {
 				return;
 			}
-			if (locked == true)
-			{
+			if (locked == true) {
 				return;
 			}
-			
-			if (requestSent)
-			{
+			if (requestSent) {
 				onBack();
 			}
-			
-			if (dataValid())
-			{
+			if (dataValid()) {
 				showPreloader();
 				lock();
-				
 				var request:Object = new Object();
-				
-				if (regularType.isSelected())
-				{
+				if (regularType.isSelected()) {
 					request.limit_type = "incoming_quarterly_limit";
-				}
-				else if (accumulatedType.isSelected())
-				{
-					if (amountInput.value > PayManager.systemOptions.equityLimitThreshold)
-					{
+				} else if (accumulatedType.isSelected()) {
+					if (amountInput.value > PayManager.systemOptions.equityLimitThreshold) {
 						request.limit_type = "equity_limit";
-						request.open_savings = true;
-						/*{
-							
-							Your request to open Savings account has been submitted successfully. Please check your email for further instructions.
-						}*/
-					}
-					else
-					{
+					} else {
 						request.limit_type = "equity_limit";
-						request.open_savings = false;
-						
-					//	Your request to increase Equity limit has been submitted successfully. Please check your email for further instructions.*/
 					}
 				}
+				request.amount = amountInput.valueString;
+				request.currency = "USD";
 				PayManager.S_LIMITS_INCREASE_RESPOND.add(onDataUpdated);
 				PayManager.S_LIMITS_INCREASE_ERROR.add(onDataUpdateError);
-				
 				PayManager.callLimitsIncrease(request);
 			}
 		}
