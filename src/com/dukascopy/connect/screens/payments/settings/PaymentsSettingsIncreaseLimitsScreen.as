@@ -149,7 +149,7 @@ package com.dukascopy.connect.screens.payments.settings {
 				if (regularType.isSelected())
 				{
 					text = Lang.increaseLimits_quarterlyLimitIncrease;
-					text = LangManager.replace(Lang.regExtValue, text, (PayManager.systemOptions.incomingQuarterlyLimitCoefficient*amountInput.value).toString() + " " + TypeCurrency.USD);
+					//text = LangManager.replace(Lang.regExtValue, text, (PayManager.systemOptions.incomingQuarterlyLimitCoefficient*amountInput.value).toString() + " " + TypeCurrency.USD);
 					displayMessage(text);
 				}
 				else if (accumulatedType.isSelected())
