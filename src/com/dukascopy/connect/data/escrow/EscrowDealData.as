@@ -11,6 +11,7 @@ package com.dukascopy.connect.data.escrow
 		public var direction:TradeDirection;
 		public var currency:String;
 		public var instrument:String;
+		public var accountNumber:String;
 		
 		public function EscrowDealData() 
 		{

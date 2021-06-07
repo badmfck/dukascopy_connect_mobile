@@ -1,20 +1,24 @@
 package com.dukascopy.connect.data.screenAction.customActions {
 	
+	import assets.StarIcon3;
 	import com.dukascopy.connect.Config;
+	import com.dukascopy.connect.data.AlertScreenData;
 	import com.dukascopy.connect.data.escrow.EscrowDealData;
 	import com.dukascopy.connect.data.escrow.EscrowMessageData;
+	import com.dukascopy.connect.data.escrow.EscrowSettings;
 	import com.dukascopy.connect.data.escrow.EscrowStatus;
 	import com.dukascopy.connect.data.escrow.TradeDirection;
 	import com.dukascopy.connect.data.screenAction.IScreenAction;
 	import com.dukascopy.connect.data.screenAction.ScreenAction;
 	import com.dukascopy.connect.screens.dialogs.escrow.CreateEscrowScreen;
-	import com.dukascopy.connect.screens.dialogs.escrow.FinishEscrowOfferScreen;
+	import com.dukascopy.connect.screens.dialogs.x.base.float.FloatAlert;
 	import com.dukascopy.connect.screens.dialogs.escrow.RegisterEscrowScreen;
 	import com.dukascopy.connect.screens.dialogs.escrow.StartEscrowScreen;
 	import com.dukascopy.connect.sys.applicationError.ApplicationErrors;
 	import com.dukascopy.connect.sys.auth.Auth;
 	import com.dukascopy.connect.sys.chatManager.ChatManager;
 	import com.dukascopy.connect.sys.dialogManager.DialogManager;
+	import com.dukascopy.connect.sys.payments.PayManager;
 	import com.dukascopy.connect.sys.serviceScreenManager.ServiceScreenManager;
 	import com.dukascopy.connect.sys.style.Style;
 	import com.dukascopy.connect.sys.usersManager.UsersManager;
@@ -88,7 +92,56 @@ package com.dukascopy.connect.data.screenAction.customActions {
 				onFail();
 			}
 			
-			ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, FinishEscrowOfferScreen, {offer:offer, callback:finishOffer});
+			var chatUser:ChatUserVO = UsersManager.getInterlocutor(chat);
+			var userName:String = Lang.user;
+			if (chatUser != null)
+			{
+				userName = chatUser.userVO.getDisplayName();
+			}
+			
+			var screenData:AlertScreenData = new AlertScreenData();
+			screenData.icon = StarIcon3;
+			screenData.callback = finishOffer;
+			
+			var decimals:int = 2;
+			if (PayManager.systemOptions != null && PayManager.systemOptions.currencyDecimalRules != null && !isNaN(PayManager.systemOptions.currencyDecimalRules[offer.currency]))
+			{
+				decimals = PayManager.systemOptions.currencyDecimalRules[offer.currency];
+			}
+			
+			var sum:String;
+			var description:String;
+			if (offer.direction == TradeDirection.buy)
+			{
+				sum = (offer.amount * offer.price * EscrowSettings.refundableFee + offer.amount * offer.price).toFixed(decimals) + " " + offer.currency;
+				description = Lang.sent_buy_offer_description;
+				description = description.replace("%@1", sum);
+				description = description.replace("%@2", userName);
+				description = description.replace("%@3", EscrowSettings.offerMaxTime);
+				description = description.replace("%@4", EscrowSettings.offerMaxTime);
+				description = description.replace("%@5", userName);
+				screenData.text = description;
+			}
+			else
+			{
+				sum = (offer.amount * offer.price -offer.amount * offer.price * EscrowSettings.commission).toFixed(decimals) + " " + offer.currency;
+				description = Lang.sent_sell_offer_description;
+				description = description.replace("%@1", userName);
+				description = description.replace("%@2", EscrowSettings.offerMaxTime);
+				description = description.replace("%@3", EscrowSettings.dealMaxTime);
+				description = description.replace("%@4", EscrowSettings.offerMaxTime);
+				description = description.replace("%@5", userName);
+				screenData.text = description;
+			}
+			
+			if (offer.direction == TradeDirection.buy)
+				screenData.title = Lang.you_sent_buy_offer;
+			else
+				screenData.title = Lang.you_sent_sell_offer;
+			
+			screenData.button = Lang.ok_understood;
+			
+			ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, FloatAlert, screenData);
 		}
 		
 		private function finishOffer():void 

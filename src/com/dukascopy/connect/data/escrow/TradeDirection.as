@@ -8,7 +8,7 @@ package com.dukascopy.connect.data.escrow
 	{
 		private var _type:String;
 		public static const BUY_TYPE:String = "buy";
-		public static const SELL_TYPE:String = "buy";
+		public static const SELL_TYPE:String = "sell";
 		
 		public static const buy:TradeDirection = new TradeDirection(TradeDirection.BUY_TYPE);
 		public static const sell:TradeDirection = new TradeDirection(TradeDirection.SELL_TYPE);

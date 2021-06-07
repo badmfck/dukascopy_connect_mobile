@@ -2372,6 +2372,10 @@ package com.dukascopy.langs {
 		static public var escrow_buy_offer:String = "BUY offer";
 		static public var escrow_sell_offer:String = "SELL offer";
 		static public var price_per_coin:String = "%@ per coin";
+		static public var sec:String = "sec";
+		static public var min:String = " min";
+		static public var offer_expired:String = "offer expired";
+		static public var left:String = "left";
 		
 		static public function updateKeys(keys:Object):void {
 			for (var n:String in keys) {

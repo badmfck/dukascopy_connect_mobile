@@ -6,6 +6,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 	import com.dukascopy.connect.data.TextFieldSettings;
 	import com.dukascopy.connect.data.coinMarketplace.PaymentsAccountsProvider;
 	import com.dukascopy.connect.data.escrow.EscrowDealData;
+	import com.dukascopy.connect.data.escrow.EscrowSettings;
 	import com.dukascopy.connect.data.escrow.TradeDirection;
 	import com.dukascopy.connect.gui.button.DDAccountButton;
 	import com.dukascopy.connect.gui.button.DDFieldButton;
@@ -165,8 +166,6 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		
 		private function updateBalance():void 
 		{
-			//!TODO:fee;
-			
 			var values:Vector.<String> = new Vector.<String>();
 			var currency:String = getCurrency();
 			
@@ -176,17 +175,18 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 				decimals = PayManager.systemOptions.currencyDecimalRules[currencySign];
 			}
 			
+			var amount:Number = getAmount();
 			if (selectedDirection == TradeDirection.buy)
 			{
-				values.push((getAmount() * selectedPrice).toFixed(decimals) + " " + currency);
-				values.push((getAmount() * selectedPrice * .3).toFixed(decimals) + " " + currency);
-				values.push((getAmount() * selectedPrice * .3 + getAmount() * selectedPrice).toFixed(decimals) + " " + currency);
+				values.push((amount * selectedPrice).toFixed(decimals) + " " + currency);
+				values.push((amount * selectedPrice * EscrowSettings.refundableFee).toFixed(decimals) + " " + currency);
+				values.push((amount * selectedPrice * EscrowSettings.refundableFee + amount * selectedPrice).toFixed(decimals) + " " + currency);
 			}
 			else
 			{
-				values.push((getAmount() * selectedPrice).toFixed(decimals) + " " + currency);
-				values.push((getAmount() * selectedPrice * .3).toFixed(decimals) + " " + currency);
-				values.push((getAmount() * selectedPrice - getAmount() * selectedPrice * .3).toFixed(decimals) + " " + currency);
+				values.push((amount * selectedPrice).toFixed(decimals) + " " + currency);
+				values.push((amount * selectedPrice * EscrowSettings.commission).toFixed(decimals) + " " + currency);
+				values.push((amount * selectedPrice - amount * selectedPrice * EscrowSettings.commission).toFixed(decimals) + " " + currency);
 			}
 			
 			balance.draw(_width, values);
@@ -568,8 +568,11 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 					offerData.direction = selectedDirection;
 					offerData.amount = inputAmount.value;
 					offerData.instrument = selectedCrypto.code;
-					//!TODO:;
-					offerData.currency = selectedFiatAccount.CURRENCY;
+					offerData.currency = currencySign;
+					if (selectedFiatAccount != null)
+					{
+						offerData.accountNumber = selectedFiatAccount.ACCOUNT_NUMBER;
+					}
 					needCallback = true;
 					close();
 				}
