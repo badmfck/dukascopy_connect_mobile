@@ -1408,6 +1408,16 @@ package com.dukascopy.connect.sys.nativeExtensionController {
 			}
 		}
 		
+		static public function getTimezoneId():String 
+		{
+			var result:String;
+			if (Config.PLATFORM_ANDROID && MobileGui.androidExtension != null)
+			{
+				result = MobileGui.androidExtension.getTimezoneId();
+			}
+			return result;
+		}
+		
 		static private function onFileSelect(e:Event):void 
 		{
 			var path:String = (e.target as File).nativePath;

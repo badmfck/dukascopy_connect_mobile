@@ -158,6 +158,7 @@ package com.dukascopy.connect.screens.dialogs.bottom
 					{
 						data.callback(selectedItem);
 					}
+					selectedItem = null;
 				}
 			}
 		}
@@ -170,8 +171,6 @@ package com.dukascopy.connect.screens.dialogs.bottom
 			super.dispose();
 			
 			TweenMax.killDelayedCallsTo(close);
-			
-			selectedItem = false;
 			
 			if (list != null)
 			{
