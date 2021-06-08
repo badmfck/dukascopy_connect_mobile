@@ -1,4 +1,5 @@
 package com.dukascopy.connect.utils {
+	
 	import com.dukascopy.connect.managers.els.ELSManager;
 	import com.dukascopy.connect.managers.els.IELSManager;
 	
@@ -9,7 +10,11 @@ package com.dukascopy.connect.utils {
 	
 	public class Services {
 		
-		public static var ELS:IELSManager = new ELSManager();
-		
+		private static var _ELS:IELSManager;
+		public static function get ELS():IELSManager {
+			if (_ELS == null)
+				_ELS = new ELSManager();
+			return _ELS;
+		}
 	}
 }

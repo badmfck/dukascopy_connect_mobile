@@ -2224,7 +2224,7 @@ package com.dukascopy.connect.sys.bankManager {
 									tempObject.phone = history[i].FROM;
 									tempObject.action = "repeatSendMoneyPhone";
 								} else {
-									tempObject.login = history[i].TO;
+									tempObject.login = history[i].FROM;
 								}
 							} else {
 								echo("BankBotController", "onHistoryLoaded", "FROM filed is null", true);
