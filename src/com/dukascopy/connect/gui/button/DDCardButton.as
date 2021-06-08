@@ -145,6 +145,10 @@ package com.dukascopy.connect.gui.button {
 					tfRight.htmlText = "";
 				} else {
 					var balance:String = data.available || "";
+					if (Number(data.available) == 0)
+					{
+						balance = "0";
+					}
 					var dotIndex:int = balance.indexOf(".");
 					var balanceLeft:String = "";
 					var balanceRight:String = "";
@@ -188,7 +192,7 @@ package com.dukascopy.connect.gui.button {
 					
 					//tf.text = formatedAccountNumber;
 					
-					tfRight.htmlText = "<font color='#000' size='" + baseSize+ "'><b>" +balanceLeft + "</b></font>" +"<font color='#000' size='" + captionSize+ "'><b>" +balanceRight + "</b></font>"+
+					tfRight.htmlText = "<font color='#000' size='" + baseSize+ "'>" +balanceLeft + "</font>" +"<font color='#000' size='" + captionSize+ "'>" +balanceRight + "</font>"+
 					"  "+ currency;
 					//tfRight.width = this.w * .4;
 					tfRight.x = this.w -(tfRight.width) - Config.DOUBLE_MARGIN;

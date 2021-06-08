@@ -634,9 +634,15 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 				{
 					for (var j:int = 0; j < avaliable.length; j++) 
 					{
-						if (avaliable[j] == TypeCurrency.USD) 
+						var prefCurrency:String = TypeCurrency.USD;
+						if (selectorCard.getValue() != null && selectorCard.getValue().currency != null)
 						{
-							return TypeCurrency.USD;
+							prefCurrency = selectorCard.getValue().currency;
+						}
+						
+						if (avaliable[j] == prefCurrency) 
+						{
+							return prefCurrency;
 						}
 					}
 					return avaliable[0];
