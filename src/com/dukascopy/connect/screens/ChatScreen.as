@@ -4207,12 +4207,6 @@ package com.dukascopy.connect.screens {
 				forwardMessageButton.dispose();
 			forwardMessageButton = null;
 
-			if (invoiceProcessView != null)
-			{
-				invoiceProcessView.dispose();
-				invoiceProcessView = null;
-			}
-
 			_data = null;
 			//в функции dispose нужно добавить
 			NativeExtensionController.onChatScreenClosed();

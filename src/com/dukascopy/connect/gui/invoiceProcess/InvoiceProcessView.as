@@ -390,7 +390,7 @@ package com.dukascopy.connect.gui.invoiceProcess
 			if (currentTask != null && currentTask.handleInCustomScreenName != ""){
 				return;
 			}
-			_inTransactionProcess  = false;	
+			_inTransactionProcess = false;	
 			if(DialogManager.hasOpenedDialog)
 				DialogManager.closeDialog();			
 			removeEvents();
@@ -507,9 +507,11 @@ package com.dukascopy.connect.gui.invoiceProcess
 				selectorDebitAccont.activate();
 			}
 			if (_commissionReady && !_inTransactionProcess){ // and not in transaction 
+				btnSend.alpha = 1;
 				btnSend.show(.3, 0, true, 0.95);
 				btnSend.activate();
 			}else{
+				btnSend.alpha = 0.4;
 			//	btnSend.hide();
 			}
 			
@@ -531,7 +533,7 @@ package com.dukascopy.connect.gui.invoiceProcess
 				}
 			}
 			
-			if (active)
+			if (active && !_inTransactionProcess)
 			{
 				btnSend.alpha = 1;
 				btnSend.activate();
@@ -612,6 +614,7 @@ package com.dukascopy.connect.gui.invoiceProcess
 					// on Error -> Display Error 
 				}			
 			}
+			updateSendButtonVisibility();
 		}
 		
 		override public function onBack(e:Event = null):void {
@@ -760,18 +763,19 @@ package com.dukascopy.connect.gui.invoiceProcess
 				//updateSendButtonVisibility();
 			//}
 			// check if we are inside View !? 				
-			if (respond.hasAuthorizationError){
+			if (respond.hasAuthorizationError || respond.errorCode == 3408 || respond.errorCode == 3409) {
 				// if canceled authorization then close processing invoice
 				return;	
 			}
 			if (respond.error){
-				_inTransactionProcess  = false;
+				_inTransactionProcess = false;
 				selectorDebitAccont.activate();
 				hidePreloader();
 			}else{
-				_inTransactionProcess  = false;
+				_inTransactionProcess = false;
 				hidePreloader();
 			}
+			updateSendButtonVisibility();
 		}
 		
 		//===========================================================================================================
