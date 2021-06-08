@@ -2,6 +2,7 @@ package com.dukascopy.connect.sys.payments {
 	
 	import com.dukascopy.connect.data.CardDeliveryAddress;
 	import com.dukascopy.connect.data.CheckDuplicateTransfer;
+	import com.dukascopy.connect.sys.echo.echo;
 	import com.dukascopy.langs.Lang;
 	import com.dukascopy.langs.LangManager;
 	import flash.net.URLRequestMethod;
@@ -627,6 +628,7 @@ package com.dukascopy.connect.sys.payments {
 			
 			if (CheckDuplicateTransfer.addTransfer(data) == false)
 			{
+				echo("money.call_putMoneySendAdvanced", "CheckDuplicateTransfer");
 				if (_callback != null)
 				{
 					var respond:PayRespond = new PayRespond(null);
