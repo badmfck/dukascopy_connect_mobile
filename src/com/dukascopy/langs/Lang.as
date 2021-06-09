@@ -2376,6 +2376,8 @@ package com.dukascopy.langs {
 		static public var min:String = " min";
 		static public var offer_expired:String = "offer expired";
 		static public var left:String = "left";
+		static public var buy_offer_awaiting_acceptance:String = "BUY offer is awaiting acceptance";
+		static public var sell_offer_awaiting_acceptance:String = "SELL offer is awaiting acceptance";
 		
 		static public function updateKeys(keys:Object):void {
 			for (var n:String in keys) {
