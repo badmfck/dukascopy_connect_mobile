@@ -28,6 +28,7 @@ package com.dukascopy.connect.sys.nativeExtensionController {
 	import com.dukascopy.connect.sys.style.Style;
 	import com.dukascopy.connect.sys.touchID.TouchIDManager;
 	import com.dukascopy.connect.sys.ws.WS;
+	import com.dukascopy.connect.type.ChatRoomType;
 	import com.dukascopy.connect.utils.FilesSaveUtility;
 	import com.dukascopy.connect.vo.ChatMessageVO;
 	import com.dukascopy.connect.vo.ChatVO;
@@ -1248,17 +1249,30 @@ package com.dukascopy.connect.sys.nativeExtensionController {
 				}
 				else
 				{
+					var userName:String = "";
 					if ("user_name" in messageData)
 					{
 						if ("anonymous" in messageData && messageData.anonymous == true)
 						{
-							messageObject.messageFrom = Lang.textIncognito;
+							userName = Lang.textIncognito;
 						}
 						else
 						{
-							messageObject.messageFrom = messageData.user_name;
+							userName = messageData.user_name;
 						}
 					}
+					
+					if (chatModel && chatModel.type == ChatRoomType.COMPANY) {
+						if (chatModel.title != null)
+						{
+							userName = chatModel.title;
+						}
+						else
+						{
+							userName = Lang.textSupport;
+						}
+					}
+					messageObject.messageFrom = userName;
 					
 					if ("user_avatar" in messageData)
 					{
