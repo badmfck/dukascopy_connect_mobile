@@ -998,6 +998,8 @@ package com.dukascopy.connect.sys.bankManager {
 				} else if (data.type == "selectedAccCurrency") {
 					var acc:Object = getAccountByNumber(data.val);
 					if (acc == null)
+						acc = getSavingAccountByNumber(data.val);
+					if (acc == null)
 						return;
 					sendMessage("val:" + data.value + "|!|" + acc.CURRENCY);
 					sendMessage(data.action);
