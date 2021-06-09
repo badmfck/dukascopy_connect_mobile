@@ -664,12 +664,15 @@ package com.dukascopy.connect.sys.payments {
 		 * @param    type
 		 * @param    callID
 		 */
-		static public function callGetDepositCommission(amount:Number, currency:String, type:String = "DINPAY" /* PPCARD*/, callID:String = ""):void {
+		static public function callGetDepositCommission(amount:Number, currency:String, type:String = "DINPAY" /* PPCARD*/, callID:String = "", id:String = null):void {
 			if (!NetworkManager.isConnected) {
 				showAlert(Lang.textError, Lang.noInternetConnection);
 				return;
 			}
-			PayServer.call_getMoneyDepositCommission(onDepositCommissionRespond, amount, currency, type, callID);
+			if (type == "CC")
+				PayServer.call_getMoneyDepositCommissionLinked(onDepositCommissionRespond, amount, currency, id, callID);
+			else
+				PayServer.call_getMoneyDepositCommission(onDepositCommissionRespond, amount, currency, type, callID);
 		}
 		
 		static private function onDepositCommissionRespond(respond:PayRespond):void {

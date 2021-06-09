@@ -483,7 +483,7 @@ package com.dukascopy.connect.sys.payments {
 				data.cvv = cvv;
 				data.closable = 0;
 			}
-			var php:PayLoader = call("money/deposit" + ((cvv != null) ? "/mcard" : ""), _callback, data, URLRequestMethod.PUT);
+			var php:PayLoader = call("money/deposit" + ((cvv != null) ? "/linked-card" : ""), _callback, data, URLRequestMethod.PUT);
 			if (php.savedRequestData != null)
 				php.savedRequestData.callID = _callID;
 		}
@@ -524,6 +524,9 @@ package com.dukascopy.connect.sys.payments {
 		 * 
 		 * This method generates link to PGateway Bank withdrawal form. See description:
 		 * https://intranet.dukascopy.dom/wiki/pages/viewpage.action?pageId=132317192
+		 * 
+		 * This method initiates withdrawal process to linked card. See description:
+		 * https://intranet.dukascopy.dom/wiki/pages/viewpage.action?pageId=135430220
 		 */
 		static public function call_putMoneyWithdrawal(_callback:Function, _from:Number, _type:String, _amount:Number, _currency:String, _card:String, _swift:String, _callID:String= ""):void {
 			var requestObject:Object ;
@@ -535,6 +538,8 @@ package com.dukascopy.connect.sys.payments {
 			if (_type == "WIRE") {
 				action = "money/withdrawal/bank-transfer";
 				requestObject.swift = _swift;
+			} else if (_type == "CARD") {
+					action = "money/withdrawal/linked-card";
 			} else {
 				requestObject.type = _type;
 				if (_type == "PPCARD") {
@@ -577,6 +582,16 @@ package com.dukascopy.connect.sys.payments {
 		 */
 		static public function call_getMoneyDepositCommission(_callback:Function, _amount:Number, _currency:String, _type:String, _callID:String = ""):void {
 			var php:PayLoader = call("money/deposit/commission", _callback, { amount:_amount, currency:_currency, type:_type }, URLRequestMethod.GET);
+			if (php.savedRequestData != null)
+				php.savedRequestData.callID = _callID;
+		}
+		
+		/**
+		 * Will be returned commission value which will be applied to deposit transaction. See description:
+		 * https://intranet.dukascopy.dom/wiki/pages/viewpage.action?pageId=84050017
+		 */
+		static public function call_getMoneyDepositCommissionLinked(_callback:Function, _amount:Number, _currency:String, _card:String, _callID:String = ""):void {
+			var php:PayLoader = call("money/deposit/commission/linked-card", _callback, { amount:_amount, currency:_currency, card:_card }, URLRequestMethod.GET);
 			if (php.savedRequestData != null)
 				php.savedRequestData.callID = _callID;
 		}

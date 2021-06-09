@@ -811,8 +811,7 @@ package com.dukascopy.connect.screens.payments.settings {
 			super.drawView();
 			
 			var selectedInput:InputField = getSelectedControl();
-			if (selectedInput != null && !isVisible(selectedInput))
-			{
+			if (selectedInput != null && !isVisible(selectedInput)) {
 				scrollToPosition(selectedInput.y - Config.MARGIN * 2);
 			}
 		}
