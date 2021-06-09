@@ -776,7 +776,8 @@ package com.dukascopy.connect.sys.bankManager {
 						} else if (data.value == "TRADING") {
 							textFrom = Lang.fromMultiAccount;
 							textTo = Lang.toTradingAccount;
-							title = Lang.TEXT_WITHDRAWAL
+							title = Lang.TEXT_WITHDRAWAL;
+							giftData.currencyAvaliable = false;
 							giftData.fromAccounts = PayManager.accountInfo.accounts;
 							giftData.toAccounts = otherAccounts;
 							giftData.transferType = OperationType.SAVING_MONEY_TRANSFER;
@@ -785,6 +786,8 @@ package com.dukascopy.connect.sys.bankManager {
 							giftData.toAccounts = PayManager.accountInfo.accounts;
 							giftData.transferType = OperationType.MCA_MONEY_TRANSFER;
 						} else if (data.value == "TMCA") {
+							textFrom = Lang.fromTradingAccount;
+							giftData.currencyAvaliable = false;
 							giftData.fromAccounts = otherAccounts;
 							giftData.toAccounts = PayManager.accountInfo.accounts;
 							giftData.transferType = OperationType.MCA_MONEY_TRANSFER;
