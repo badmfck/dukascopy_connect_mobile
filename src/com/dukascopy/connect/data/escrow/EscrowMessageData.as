@@ -10,7 +10,7 @@ package com.dukascopy.connect.data.escrow
 	{
 		public var price:Number;
 		public var amount:Number;
-		public var direction:String;
+		public var direction:TradeDirection;
 		public var type:String;
 		public var status:EscrowStatus;
 		public var currency:String;
@@ -36,7 +36,7 @@ package com.dukascopy.connect.data.escrow
 			}
 			if ("direction" in data)
 			{
-				direction = data.direction;
+				direction = TradeDirection.getDirection(data.direction);
 			}
 			if ("currency" in data)
 			{
@@ -58,14 +58,22 @@ package com.dukascopy.connect.data.escrow
 			result.price = price;
 			result.amount = amount;
 			result.type = type;
-			result.direction = direction;
+			if (direction != null)
+			{
+				result.direction = direction.type;
+			}
+			else
+			{
+				ApplicationErrors.add("direction");
+			}
+			
 			if (status != null)
 			{
 				result.status = status.value;
 			}
 			else
 			{
-				ApplicationErrors.add();
+				ApplicationErrors.add("status");
 			}
 			result.currency = currency;
 			result.instrument = instrument;

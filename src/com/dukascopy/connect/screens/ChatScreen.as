@@ -19,6 +19,7 @@ package com.dukascopy.connect.screens {
 	import com.dukascopy.connect.data.ScanPassportResult;
 	import com.dukascopy.connect.data.SoundStatusData;
 	import com.dukascopy.connect.data.UserBanData;
+	import com.dukascopy.connect.data.escrow.EscrowScreenNavigation;
 	import com.dukascopy.connect.data.location.Location;
 	import com.dukascopy.connect.data.screenAction.IScreenAction;
 	import com.dukascopy.connect.data.screenAction.customActions.AddInvoiceAction;
@@ -2233,6 +2234,8 @@ package com.dukascopy.connect.screens {
 					NativeExtensionController.showVideo(cmsgVO.systemMessageVO.videoVO, getTitleValue());
 				} else if (cmsgVO.systemMessageVO != null && cmsgVO.systemMessageVO.fileType == ChatSystemMsgVO.FILETYPE_GENERAL) {
 					downloadFile(cmsgVO.systemMessageVO);
+				} else if (cmsgVO.systemMessageVO != null && cmsgVO.systemMessageVO.type == ChatSystemMsgVO.TYPE_ESCROW_OFFER) {
+					EscrowScreenNavigation.showScreen(cmsgVO.systemMessageVO.escrow);
 				}
 				else if (cmsgVO.systemMessageVO != null && cmsgVO.systemMessageVO.fileType == ChatSystemMsgVO.FILETYPE_PUZZLE_CRYPTED && cmsgVO.systemMessageVO.puzzleVO != null) {
 					var url:String = cmsgVO.imageURLWithKey;

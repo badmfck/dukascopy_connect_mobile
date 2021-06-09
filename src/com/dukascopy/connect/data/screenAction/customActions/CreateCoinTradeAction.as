@@ -171,16 +171,8 @@ package com.dukascopy.connect.data.screenAction.customActions {
 			messageData.amount = dealData.amount;
 			messageData.currency = dealData.currency;
 			messageData.instrument = dealData.instrument;
-			messageData.direction = dealData.direction.type;
-			
-			if (dealData.direction == TradeDirection.buy)
-			{
-				messageData.status = EscrowStatus.buy_new; 
-			}
-			else
-			{
-				messageData.status = EscrowStatus.sell_new;
-			}
+			messageData.direction = dealData.direction;
+			messageData.status = EscrowStatus.deal_created; 
 			
 			var text:String = messageData.toJsonString();
 			WSClient.call_sendTextMessage(chat.uid, Config.BOUNDS_INVOICE + ChatManager.cryptTXT(text));
