@@ -41,6 +41,7 @@ package com.dukascopy.connect.screens.payments.settings {
 			btnIncrease.setOverlay(HitZoneType.BUTTON);
 			btnIncrease.tapCallback = onIncreaseButtonClick;
 			btnIncrease.disposeBitmapOnDestroy = true;
+			btnIncrease.alpha = .7;
 			view.addChild(btnIncrease);
 		}
 		
@@ -98,12 +99,12 @@ package com.dukascopy.connect.screens.payments.settings {
 			drawButton();
 			
 			PaymentsManager.activate();
-			if (PayManager.accountInfo == null) {
+			//if (PayManager.accountInfo == null) {
 				showPreloader();
 				PayManager.callGetAccountInfo(fillData);
-			} else {
+			/*} else {
 				fillData();
-			}
+			}*/
 			drawView();
 		}
 		
@@ -114,6 +115,12 @@ package com.dukascopy.connect.screens.payments.settings {
 			if (PayManager.accountInfo == null) {
 				onBack();
 				return;
+			}
+			if (PayManager.accountInfo.limitsIncreaseRequest == true) {
+				if (btnIncrease != null) {
+					btnIncrease.activate();
+					btnIncrease.alpha = 1;
+				}
 			}
 			_vectItems = new <ItemVerificationLimit>[];
 			var itemVL:ItemVerificationLimit;
@@ -131,16 +138,12 @@ package com.dukascopy.connect.screens.payments.settings {
 			super.activateScreen();
 			if (_isDisposed == true)
 				return;
-			if (btnIncrease != null)
-				btnIncrease.activate();
 		}
 		
 		override public function deactivateScreen():void {
 			super.deactivateScreen();
 			if (_isDisposed == true)
 				return;
-			if (btnIncrease != null)
-				btnIncrease.deactivate();
 		}
 		
 		override public function dispose():void {

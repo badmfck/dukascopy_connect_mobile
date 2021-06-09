@@ -36,6 +36,7 @@ package com.dukascopy.connect.sys.payments.vo {
 		private var _enableTrading:Boolean = false;
 		private var _enableApplePay:Boolean = false;
 		private var _updatePersonalInfo:Boolean = false;
+		private var _limitsIncreaseRequest:Boolean = false;
 		
 		private var _virtualMC:Boolean = false;
 		private var _plasticMC:Boolean = false;
@@ -72,7 +73,7 @@ package com.dukascopy.connect.sys.payments.vo {
 			// BAD PRACTICE! (sorry)
 			if(!wasSend){
 				wasSend=true;
-				PHP.call_statVI("pacces",Auth.devID);
+				PHP.call_statVI("pacces", Auth.devID);
 			}
 		 }
 		
@@ -134,39 +135,42 @@ package com.dukascopy.connect.sys.payments.vo {
 			key = "settings";
 			if (key in data == true)
 				updateSettings(data[key]);
-			key = "disable_prepaid_cards"
+			key = "disable_prepaid_cards";
 			if (key in data == true)
 				_disablePrepaidCards = data[key];
-			key = "enable-investments"
+			key = "enable-investments";
 			if (key in data == true)
 				_enableInvestments = data[key];
-			key = "ETH_ADDRESS"
+			key = "ETH_ADDRESS";
 			if (key in data == true)
 				_ethAddress = data[key];
-			key = "BTC_ADDRESS"
+			key = "BTC_ADDRESS";
 			if (key in data == true)
 				_btcAddress = data[key];
-			key = "enable-corner-virtual-mc"
+			key = "enable-corner-virtual-mc";
 			if (key in data == true)
 				_virtualMC = data[key];
-			key = "enable-corner-plastic-mc"
+			key = "enable-corner-plastic-mc";
 			if (key in data == true)
 				_plasticMC = data[key];
-			key = "enable-corner-expedited"
+			key = "enable-corner-expedited";
 			if (key in data == true)
 				_deliveryExpedited = data[key];
-			key = "enable-savings"
+			key = "enable-savings";
 			if (key in data == true)
 				_enableSaving = data[key];
-			key = "enable-fiat-trading"
+			key = "enable-fiat-trading";
 			if (key in data == true)
 				_enableTrading = data[key];
-			key = "enable-apple-pay"
+			key = "enable-apple-pay";
 			if (key in data == true)
 				_enableApplePay = data[key];
-			key = "update-personal-info"
+			key = "update-personal-info";
 			if (key in data == true)
 				_updatePersonalInfo = data[key];
+			key = "limits_increase_request";
+			if (key in data == true)
+				_limitsIncreaseRequest = data[key];
 			
 			updateTime = new Date().getTime();
 		}
@@ -272,5 +276,6 @@ package com.dukascopy.connect.sys.payments.vo {
 		}
 		
 		public function get updatePersonalInfo():Boolean { return _updatePersonalInfo; }
+		public function get limitsIncreaseRequest():Boolean { return _limitsIncreaseRequest; }
 	}
 }
