@@ -172,7 +172,7 @@ package com.dukascopy.connect.data.screenAction.customActions {
 			messageData.currency = dealData.currency;
 			messageData.instrument = dealData.instrument;
 			messageData.direction = dealData.direction;
-			messageData.status = EscrowStatus.deal_created; 
+			messageData.status = EscrowStatus.offer_created; 
 			
 			var text:String = messageData.toJsonString();
 			WSClient.call_sendTextMessage(chat.uid, Config.BOUNDS_INVOICE + ChatManager.cryptTXT(text));
