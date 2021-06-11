@@ -3577,7 +3577,7 @@ package com.dukascopy.connect.sys.bankManager {
 				return null;
 			var res:Object = {
 				CURRENCY: savingsAccounts[0].CONSOLIDATE_CURRENCY,
-				IBAN: "TOTAL ACCOUNTS",
+				IBAN: Lang.textTotalCash,
 				type: "total",
 				opened: false,
 				moreFnc: getTotalSavingsAll
