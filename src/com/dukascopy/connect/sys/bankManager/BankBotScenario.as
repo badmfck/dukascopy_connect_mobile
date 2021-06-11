@@ -1227,12 +1227,14 @@ package com.dukascopy.connect.sys.bankManager {
 					}, {
 						disabled: true,
 						text:"lang.menuFromSavingAcc",
+						textForUser:"lang.itemExchange",
 						type:"sendMoneyOtherAcc",
 						value:"SMCA",
 						action:"nav:transferInternalConfirm"
 					}, {
 						disabled: true,
 						text:"lang.menuFromTradingAcc",
+						textForUser:"lang.itemExchange",
 						type:"sendMoneyOtherAcc",
 						value:"TMCA",
 						action:"nav:transferInternalConfirmT"
