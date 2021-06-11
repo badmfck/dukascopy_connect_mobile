@@ -15,7 +15,7 @@ package com.dukascopy.connect.utils
 			
 		}
 		
-		static public function formatAmount(amount:Number, currency:String):String 
+		static public function formatAmount(amount:Number, currency:String, removeCurrency:Boolean = false):String 
 		{
 			if (isNaN(amount))
 			{
@@ -31,12 +31,18 @@ package com.dukascopy.connect.utils
 				decimals = CurrencyHelpers.getMaxDecimalCount(currency);
 			}
 			
-			var resultCurrency:String = currency;
-			if (Lang[resultCurrency] != null)
+			var result:String = amount.toFixed(decimals);
+			if (currency != null && !removeCurrency)
 			{
-				resultCurrency = Lang[resultCurrency];
+				var resultCurrency:String = currency;
+				if (Lang[resultCurrency] != null)
+				{
+					resultCurrency = Lang[resultCurrency];
+				}
+				result += " " + resultCurrency;
 			}
-			return amount.toFixed(decimals) + " " + resultCurrency;
+			
+			return result;
 		}
 	}
 }

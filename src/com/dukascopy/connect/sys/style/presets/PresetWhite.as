@@ -316,6 +316,8 @@ package com.dukascopy.connect.sys.style.presets
 			this[Style.BUTTON_PADDING] = int(Config.FINGER_SIZE * .23);
 			this[Style.COLOR_BUTTON_ACCENT] = Color.GREY_DARK;
 			this[Style.COLOR_SEEK_BACK] = Color.GREY_SSL;
+			this[Style.COLOR_TEXT_RED_DARK] = Color.RED_DARK;
+			this[Style.COLOR_RED_LIGHT] = Color.RED_LIGHT;
 		}
 	}
 }

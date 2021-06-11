@@ -218,6 +218,8 @@ package com.dukascopy.connect.sys.style
 		static public const BUTTON_PADDING:String = "buttonPadding";
 		static public const COLOR_BUTTON_ACCENT:String = "COLOR_BUTTON_ACCENT";
 		static public const COLOR_SEEK_BACK:String = "colorSeekBack";
+		static public const COLOR_TEXT_RED_DARK:String = "colorTextRedDark";
+		static public const COLOR_RED_LIGHT:String = "colorRedLight";
 		
 		static private var preset:Preset;
 		

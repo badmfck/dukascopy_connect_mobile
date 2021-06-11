@@ -1,6 +1,7 @@
 package com.dukascopy.connect.gui.payments {
 	
 	import com.dukascopy.connect.Config;
+	import com.dukascopy.connect.sys.style.Style;
 	import com.dukascopy.connect.sys.theme.AppTheme;
 	import com.dukascopy.langs.Lang;
 
@@ -142,7 +143,7 @@ package com.dukascopy.connect.gui.payments {
 		public function disable():void {
 			_enabled = false;
 			tfLabel.textColor = 0x999999;
-			birdColor = AppTheme.GREY_MEDIUM;
+			birdColor = Style.color(Style.COLOR_SUBTITLE);
 			drawView();
 		}
 		

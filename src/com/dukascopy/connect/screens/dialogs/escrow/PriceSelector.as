@@ -3,12 +3,15 @@ package com.dukascopy.connect.screens.dialogs.escrow
 	import assets.TooltipBottom;
 	import com.dukascopy.connect.Config;
 	import com.dukascopy.connect.data.escrow.TradeDirection;
+	import com.dukascopy.connect.gui.button.DDFieldButton;
 	import com.dukascopy.connect.gui.components.seekbar.Seekbar;
 	import com.dukascopy.connect.gui.lightbox.UI;
+	import com.dukascopy.connect.managers.escrow.vo.EscrowPrice;
 	import com.dukascopy.connect.screens.payments.card.TypeCurrency;
 	import com.dukascopy.connect.sys.style.FontSize;
 	import com.dukascopy.connect.sys.style.Style;
 	import com.dukascopy.connect.sys.style.presets.Color;
+	import com.dukascopy.connect.utils.NumberFormat;
 	import com.dukascopy.connect.utils.TextUtils;
 	import com.dukascopy.langs.Lang;
 	import flash.display.Bitmap;
@@ -42,6 +45,8 @@ package com.dukascopy.connect.screens.dialogs.escrow
 		private var priceCurrent:Bitmap;
 		private var onChange:Function;
 		private var selectedValue:Number;
+		private var onPriceChanged:Function;
+		private var selectorCurrency:DDFieldButton;
 		
 		public function PriceSelector(onChange:Function) 
 		{
@@ -196,6 +201,16 @@ package com.dukascopy.connect.screens.dialogs.escrow
 			drawPercent(currentValue);
 			drawCurrentPrice();
 			
+			updatePositions();
+			
+			if (selectorCurrency != null)
+			{
+				selectorCurrency.setValue(currencySign);
+			}
+		}
+		
+		private function updatePositions():void 
+		{
 			var position:int = 0;
 			
 			price.y = position;
@@ -218,6 +233,22 @@ package com.dukascopy.connect.screens.dialogs.escrow
 			currency.y = int(priceCurrent.y + priceCurrent.height - currency.height);
 			priceCurrent.x = int(itemWidth * .5 - (priceCurrent.width + currency.width + Config.FINGER_SIZE * .15) * .5);
 			currency.x = int(priceCurrent.x + priceCurrent.width + Config.FINGER_SIZE * .15);
+			
+			positionCurrencySelector();
+			
+		}
+		
+		private function positionCurrencySelector():void 
+		{
+			if (selectorCurrency != null)
+			{
+				selectorCurrency.x = int(priceCurrent.x + priceCurrent.width + Config.FINGER_SIZE * .15);
+				
+				var position:int = selectorCurrency.getFieldPosition();
+				var h:int = selectorCurrency.getFieldHeight();
+				
+				selectorCurrency.y = int(priceCurrent.y + priceCurrent.height - position - h);
+			}
 		}
 		
 		private function drawCurrentPrice():void 
@@ -229,14 +260,22 @@ package com.dukascopy.connect.screens.dialogs.escrow
 					priceCurrent.bitmapData.dispose();
 					priceCurrent.bitmapData = null;
 				}
-				priceCurrent.bitmapData = TextUtils.createTextFieldData(priceValue.toFixed(2), itemWidth, 10, true,
+				priceCurrent.bitmapData = TextUtils.createTextFieldData(NumberFormat.formatAmount(priceValue, getCurrency(), true), itemWidth, 10, true,
 																		TextFormatAlign.LEFT, TextFieldAutoSize.LEFT, 
 																		FontSize.BODY, true, Style.color(Style.COLOR_TEXT),
 																		Style.color(Style.COLOR_BACKGROUND));
-				currency.bitmapData = TextUtils.createTextFieldData(getCurrency() , itemWidth, 10, true,
+				if (currency.bitmapData != null)
+				{
+					currency.bitmapData.dispose();
+					currency.bitmapData = null;
+				}
+				if (selectorCurrency == null)
+				{
+					currency.bitmapData = TextUtils.createTextFieldData(getCurrency() , itemWidth, 10, true,
 																		TextFormatAlign.LEFT, TextFieldAutoSize.LEFT, 
 																		FontSize.BODY, true, Style.color(Style.COLOR_TEXT),
 																		Style.color(Style.COLOR_BACKGROUND));
+				}
 			}
 		}
 		
@@ -346,17 +385,26 @@ package com.dukascopy.connect.screens.dialogs.escrow
 		public function activate():void 
 		{
 			seekBar.activate();
+			if (selectorCurrency != null)
+			{
+				selectorCurrency.activate();
+			}
 		}
 		
 		public function deactivate():void 
 		{
 			seekBar.deactivate();
+			if (selectorCurrency != null)
+			{
+				selectorCurrency.deactivate();
+			}
 		}
 		
 		public function dispose():void 
 		{
 			direction = null;
 			onChange = null;
+			onPriceChanged = null;
 			
 			if (title != null)
 			{
@@ -417,6 +465,39 @@ package com.dukascopy.connect.screens.dialogs.escrow
 			{
 				seekBar.dispose();
 				seekBar = null;
+			}
+			if (selectorCurrency != null)
+			{
+				selectorCurrency.dispose();
+				selectorCurrency = null;
+			}
+		}
+		
+		public function setPrices(currencySign:String, onPriceChanged:Function):void 
+		{
+			createCurrencySelector();
+			this.onPriceChanged = onPriceChanged;
+			selectorCurrency.setValue(currencySign);
+		}
+		
+		private function createCurrencySelector():void 
+		{
+			if (selectorCurrency == null)
+			{
+				selectorCurrency = new DDFieldButton(selectCurrencyTap, "", true, NaN, null, FontSize.BODY);
+				selectorCurrency.setSize(int(Config.FINGER_SIZE * 1.2), Config.FINGER_SIZE * 0.6);
+				addChild(selectorCurrency);
+				selectorCurrency.activate();
+				
+				positionCurrencySelector();
+			}
+		}
+		
+		private function selectCurrencyTap():void 
+		{
+			if (onPriceChanged != null)
+			{
+				onPriceChanged();
 			}
 		}
 		

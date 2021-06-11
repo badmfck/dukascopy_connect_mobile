@@ -16,6 +16,7 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 	import com.dukascopy.connect.sys.style.FontSize;
 	import com.dukascopy.connect.sys.style.Style;
 	import com.dukascopy.connect.sys.style.presets.Color;
+	import com.dukascopy.connect.type.HitZoneType;
 	import com.dukascopy.connect.vo.AnimatedZoneVO;
 	import com.dukascopy.connect.vo.ChatMessageVO;
 	import com.dukascopy.connect.vo.ChatSystemMsgVO;
@@ -109,7 +110,7 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 		}
 		
 		public function updateHitzones(itemHitzones:Array):void {
-			
+			itemHitzones.push( { type:HitZoneType.BALLOON, x:x , y:y, width: back.width, height: back.height } );
 		}
 		
 		public function getBackColor():Number {
@@ -216,7 +217,7 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 				messageData.systemMessageVO.type == ChatSystemMsgVO.TYPE_ESCROW_OFFER && 
 				messageData.systemMessageVO.escrow != null)
 			{
-				setTexts(messageData.systemMessageVO.escrow, maxWidth);
+				setTexts(messageData.systemMessageVO.escrow, maxWidth, messageData);
 				return int(price.y + price.height + paddingV);
 			}
 			else {
@@ -224,15 +225,16 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 			}
 		}
 		
-		private function setTexts(data:EscrowMessageData, maxWidth:int):void 
+		private function setTexts(data:EscrowMessageData, maxWidth:int, messageData:ChatMessageVO):void 
 		{
 			title.width = maxTextWidth;
-			title.text = getTitleText(data.status, data.direction);
+			title.text = getTitleText(data.status, data.direction, messageData);
 			title.width = title.textWidth + 5;
 			title.height = title.textHeight + 5;
 			
 			amount.width = maxTextWidth - iconSize - Config.FINGER_SIZE * .15;
 			amount.text = getAmountText(data);
+			amount.textColor = getAmountColor(data.status, messageData);
 			amount.width = amount.textWidth + 5;
 			amount.height = amount.textHeight + 5;
 			
@@ -240,10 +242,29 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 			
 			price.width = maxTextWidth;
 			price.text = getPriceText(data);
+			price.textColor = getAmountColor(data.status, messageData);
 			price.width = price.textWidth + 5;
 			price.height = price.textHeight + 5;
 			
 			price.y = int(amount.y + amount.height + paddingV * 0.2);
+		}
+		
+		private function getAmountColor(status:EscrowStatus, messageData:ChatMessageVO):Number 
+		{
+			var result:Number = Style.color(Style.COLOR_TEXT);
+			switch (status)
+			{
+				case EscrowStatus.offer_created:
+				{
+					if (EscrowScreenNavigation.isExpired(messageData.systemMessageVO.escrow, messageData.created))
+					{
+						result =  Style.color(Style.COLOR_SUBTITLE);
+					}
+					
+					break;
+				}
+			}
+			return result;
 		}
 		
 		private function getPriceText(data:EscrowMessageData):String 
@@ -281,14 +302,18 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 			return result;
 		}
 		
-		private function getTitleText(status:EscrowStatus, direction:TradeDirection):String 
+		private function getTitleText(status:EscrowStatus, direction:TradeDirection, messageData:ChatMessageVO):String 
 		{
 			var result:String = "";
 			switch (status)
 			{
 				case EscrowStatus.offer_created:
 				{
-					if (direction == TradeDirection.buy)
+					if (EscrowScreenNavigation.isExpired(messageData.systemMessageVO.escrow, messageData.created))
+					{
+						result = Lang.offer_expired;
+					}
+					else if (direction == TradeDirection.buy)
 					{
 						result = Lang.escrow_buy_offer;
 					}
@@ -310,11 +335,11 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 				messageData.systemMessageVO.type == ChatSystemMsgVO.TYPE_ESCROW_OFFER && 
 				messageData.systemMessageVO.escrow != null)
 			{
-				setTexts(messageData.systemMessageVO.escrow, maxWidth);
+				setTexts(messageData.systemMessageVO.escrow, maxWidth, messageData);
 				
 				var resultHeight:int = price.y + price.height + paddingV;
 				
-				var leftColor:Number = getSideColor(messageData.systemMessageVO.escrow.status, messageData.systemMessageVO.escrow.direction);
+				var leftColor:Number = getSideColor(messageData.systemMessageVO.escrow.status, messageData.systemMessageVO.escrow.direction, messageData);
 				
 				back.graphics.clear();
 				
@@ -368,7 +393,10 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 					time.width = leftSideSize - Config.FINGER_SIZE * .1 * 2;
 					if (EscrowScreenNavigation.isExpired(messageData.systemMessageVO.escrow, messageData.created))
 					{
-						time.text = Lang.offer_expired;
+						iconFail.visible = true;
+						iconTime.visible = false;
+						time.visible = false;
+					//	time.text = Lang.offer_expired;
 					}
 					else
 					{
@@ -385,7 +413,6 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 				{
 					time.visible = false;
 				}
-				
 			}
 		}
 		
@@ -418,13 +445,17 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 			return null;
 		}
 		
-		private function getSideColor(status:EscrowStatus, direction:TradeDirection):Number 
+		private function getSideColor(status:EscrowStatus, direction:TradeDirection, messageData:ChatMessageVO):Number 
 		{
 			switch(status)
 			{
 				case EscrowStatus.offer_created:
 				{
-					if (direction == TradeDirection.buy)
+					if (EscrowScreenNavigation.isExpired(messageData.systemMessageVO.escrow, messageData.created))
+					{
+						return Color.GREY;
+					}
+					else if (direction == TradeDirection.buy)
 					{
 						return Color.GREEN;
 					}

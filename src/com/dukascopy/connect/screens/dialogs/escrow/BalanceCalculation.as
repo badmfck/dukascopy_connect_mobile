@@ -42,24 +42,46 @@ package com.dukascopy.connect.screens.dialogs.escrow
 		
 		public function draw(itemWidth:int, values:Vector.<String>):void
 		{
-			if (clips.length != values.length)
+			if (clips != null)
 			{
-				ApplicationErrors.add();
-			}
-			else
-			{
-				var maxWidth:int = 0;
-				var position:int = 0;
-				for (var i:int = 0; i < clips.length; i++) 
+				var i:int;
+				if (values.length == 0)
 				{
-					drawClip(itemWidth, clips[i], values[i], titles[i], colors[i]);
-					clips[i].y = position;
-					position += clips[i].height + Config.FINGER_SIZE * .12;
-					maxWidth = Math.max(maxWidth, clips[i].width);
+					for (i = 0; i < clips.length; i++) 
+					{
+						if (contains(clips[i]))
+						{
+							removeChild(clips[i]);
+						}
+						UI.destroy(clips[i]);
+					}
 				}
-				for (var j:int = 0; j < clips.length; j++) 
+				else if (values.length <= clips.length)
 				{
-					clips[j].x = maxWidth * .5 - clips[j].width * .5;
+					var maxWidth:int = 0;
+					var position:int = 0;
+					for (i = 0; i < clips.length; i++) 
+					{
+						drawClip(itemWidth, clips[i], values[i], titles[i], colors[i]);
+						clips[i].y = position;
+						position += clips[i].height + Config.FINGER_SIZE * .12;
+						maxWidth = Math.max(maxWidth, clips[i].width);
+					}
+					for (var j:int = 0; j < clips.length; j++) 
+					{
+						clips[j].x = maxWidth * .5 - clips[j].width * .5;
+					}
+				}
+				if (values.length < clips.length)
+				{
+					for (i = clips.length - values.length - 1; i < clips.length; i++) 
+					{
+						if (contains(clips[i]))
+						{
+							removeChild(clips[i]);
+						}
+						UI.destroy(clips[i]);
+					}
 				}
 			}
 		}

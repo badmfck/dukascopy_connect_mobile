@@ -42,6 +42,7 @@ package com.dukascopy.connect.screens.dialogs.x.base.float
 		protected var scrollBottom:Sprite;
 		private var scrollUp:Sprite;
 		private var mainPadding:Number;
+		private var topColorClip:Sprite;
 		protected var colorDelimiterPosition:int = -1;
 		
 		protected var topColor:Number = Style.color(Style.COLOR_BACKGROUND);
@@ -68,6 +69,14 @@ package com.dukascopy.connect.screens.dialogs.x.base.float
 			
 			scrollPanel.view.y = closeButton.y + closeButton.height + Config.FINGER_SIZE * .1;
 			
+			recreateLayout();
+			
+			container.alpha = 0;
+			backgroundContent.alpha = 0;
+		}
+		
+		protected function recreateLayout():void 
+		{
 			drawContent();
 			updateContentPositions();
 			updateScroll();
@@ -80,14 +89,11 @@ package com.dukascopy.connect.screens.dialogs.x.base.float
 			var startPosition:int = _height - backgroundContent.height - mainPadding - Config.APPLE_BOTTOM_OFFSET;
 			container.y = startPosition;
 			backgroundContent.y = startPosition;
-			
-			container.alpha = 0;
-			backgroundContent.alpha = 0;
 		}
 		
 		protected function drawContent():void 
 		{
-			
+			// to override;
 		}
 		
 		override protected function createView():void {
@@ -203,7 +209,7 @@ package com.dukascopy.connect.screens.dialogs.x.base.float
 				TweenMax.to(backAnimation, showTime, { height:backEndHeight, onUpdate:redrawBack, ease:Back.easeOut });
 				
 				TweenMax.to(backgroundContent, showTime * .5, { alpha:1 } );
-				TweenMax.to(container, showTime, { alpha:1 } );
+				TweenMax.to(container, showTime * .5, { alpha:1 } );
 				
 				TweenMax.to(backgroundContent, showTime, { y:endPositionBack, ease:Back.easeOut } );
 				TweenMax.to(container, showTime, { y:endPositionContent, ease:Back.easeOut, onComplete:animationFinished} );
@@ -241,12 +247,38 @@ package com.dukascopy.connect.screens.dialogs.x.base.float
 			}
 			else
 			{
-				backgroundContent.graphics.beginFill(topColor);
-				backgroundContent.graphics.drawRoundRectComplex(0, 0, getWidth(), colorPosition, radius * .5, radius * .5, 0, 0);
-				backgroundContent.graphics.endFill();
-				backgroundContent.graphics.beginFill(bottomColor);
-				backgroundContent.graphics.drawRoundRectComplex(0, colorPosition, getWidth(), heightValue - colorPosition, 0, 0, radius * .5, radius * .5);
-				backgroundContent.graphics.endFill();
+				if (topColor != Style.color(Style.COLOR_BACKGROUND) && bottomColor == Style.color(Style.COLOR_BACKGROUND))
+				{
+					if (topColorClip == null)
+					{
+						topColorClip = new Sprite();
+						topColorClip.graphics.beginFill(topColor);
+						topColorClip.graphics.drawRect(0, 0, getWidth(), colorPosition - scrollPanel.view.y);
+						topColorClip.graphics.endFill();
+						addItem(topColorClip);
+						toBack(topColorClip);
+					}
+					if (scrollPanel != null)
+					{
+						scrollPanel.blockTopOvermove();
+					}
+					backgroundContent.graphics.beginFill(bottomColor);
+					backgroundContent.graphics.drawRoundRect(0, 0, getWidth(), heightValue, radius, radius);
+					backgroundContent.graphics.endFill();
+					
+					backgroundContent.graphics.beginFill(topColor);
+					backgroundContent.graphics.drawRoundRectComplex(0, 0, getWidth(), scrollPanel.view.y, radius * .5, radius * .5, 0, 0);
+					backgroundContent.graphics.endFill();
+				}
+				else
+				{
+					backgroundContent.graphics.beginFill(topColor);
+					backgroundContent.graphics.drawRoundRectComplex(0, 0, getWidth(), colorPosition, radius * .5, radius * .5, 0, 0);
+					backgroundContent.graphics.endFill();
+					backgroundContent.graphics.beginFill(bottomColor);
+					backgroundContent.graphics.drawRoundRectComplex(0, colorPosition, getWidth(), heightValue - colorPosition, 0, 0, radius * .5, radius * .5);
+					backgroundContent.graphics.endFill();
+				}
 			}
 		}
 		
@@ -358,6 +390,18 @@ package com.dukascopy.connect.screens.dialogs.x.base.float
 			return getMaxBackHeight() - contentPadding - closeButton.y - closeButton.height - Config.FINGER_SIZE * .1;
 		}
 		
+		protected function toBack(item:DisplayObject):void 
+		{
+			if (scrollPanel != null)
+			{
+				scrollPanel.toBack(item);
+			}
+			else
+			{
+				ApplicationErrors.add();
+			}
+		}
+		
 		public function addItem(item:DisplayObject):void 
 		{
 			if (scrollPanel != null)
@@ -430,6 +474,11 @@ package com.dukascopy.connect.screens.dialogs.x.base.float
 			{
 				UI.destroy(scrollUp);
 				scrollUp = null;
+			}
+			if (topColorClip != null)
+			{
+				UI.destroy(topColorClip);
+				topColorClip = null;
 			}
 		}
 	}

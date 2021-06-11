@@ -6,9 +6,9 @@ package com.dukascopy.connect.data.escrow
 	 */
 	public class EscrowSettings 
 	{
-		static private var _refundableFee:Number = 0.3;
-		static private var _commission:Number = 0.3;
-		static public var offerMaxTime:Number = 5;
+		static private var _refundableFee:Number = 0.03;
+		static private var _commission:Number = 0.03;
+		static public var offerMaxTime:Number = 200;
 		static public var dealMaxTime:Number = 30;
 		
 		static public function get commission():Number 

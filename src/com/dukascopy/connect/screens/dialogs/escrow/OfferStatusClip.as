@@ -1,6 +1,7 @@
 package com.dukascopy.connect.screens.dialogs.escrow 
 {
 	import com.dukascopy.connect.Config;
+	import com.dukascopy.connect.gui.lightbox.UI;
 	import com.dukascopy.connect.sys.style.FontSize;
 	import com.dukascopy.connect.sys.style.presets.Color;
 	import com.dukascopy.connect.utils.TextUtils;
@@ -20,8 +21,8 @@ package com.dukascopy.connect.screens.dialogs.escrow
 		
 		public function OfferStatusClip() 
 		{
-			contentPadding = Config.FINGER_SIZE * .2;
-			contentPaddingV = Config.FINGER_SIZE * .1;
+			contentPadding = Config.FINGER_SIZE * .35;
+			contentPaddingV = Config.FINGER_SIZE * .16;
 			
 			field = new Bitmap();
 			addChild(field);
@@ -29,7 +30,12 @@ package com.dukascopy.connect.screens.dialogs.escrow
 		
 		public function dispose():void 
 		{
-			
+			graphics.clear();
+			if (field != null)
+			{
+				UI.destroy(field);
+				field = null;
+			}
 		}
 		
 		public function draw(itemWidth:Number, text:String, color:Number):void 
@@ -44,8 +50,15 @@ package com.dukascopy.connect.screens.dialogs.escrow
 				
 				field.bitmapData = TextUtils.createTextFieldData(text, itemWidth - contentPadding * 2, 10, true,
 																	TextFormatAlign.LEFT, TextFieldAutoSize.LEFT, 
-																	FontSize.TITLE_28, true, Color.WHITE,
-																	Color.BLACK, false);
+																	FontSize.SUBHEAD, true, Color.WHITE,
+																	color, false);
+				graphics.clear();
+				var itemHeight:int = field.height + contentPaddingV * 2;
+				graphics.beginFill(color);
+				graphics.drawRoundRect(0, 0, field.width + contentPadding * 2, itemHeight, itemHeight, itemHeight);
+				graphics.endFill();
+				field.x = contentPadding;
+				field.y = contentPaddingV;
 			}
 		}
 	}

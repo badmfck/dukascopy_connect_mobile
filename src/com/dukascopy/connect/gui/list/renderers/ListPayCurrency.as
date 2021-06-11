@@ -88,6 +88,7 @@ package com.dukascopy.connect.gui.list.renderers {
 					originalCurrency = data.label as String;
 					tfLabel.text = data.label as String;
 				}
+				
 			}
 			if (Lang["currency_" + originalCurrency] != null)
 			{
@@ -106,7 +107,9 @@ package com.dukascopy.connect.gui.list.renderers {
 		
 		protected function updatePositions(h:int, w:int):void 
 		{
-			tfLabel.y = int(h * .5 - tfLabel.height - Config.FINGER_SIZE * .1);
+		//	tfLabel.y = int(h * .5 - tfLabel.height - Config.FINGER_SIZE * .1);
+		//!TODO:?
+			tfLabel.y = Math.round((h - tfLabel.textHeight) * .5);
 			tfLabel.width = w - tfLabel.x - padding;
 			tfLabel.x = int(w - padding - tfLabel.width);
 		}

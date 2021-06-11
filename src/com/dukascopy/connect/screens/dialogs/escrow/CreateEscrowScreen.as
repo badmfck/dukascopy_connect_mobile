@@ -7,6 +7,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 	import com.dukascopy.connect.data.coinMarketplace.PaymentsAccountsProvider;
 	import com.dukascopy.connect.data.escrow.EscrowDealData;
 	import com.dukascopy.connect.data.escrow.EscrowSettings;
+	import com.dukascopy.connect.data.escrow.PriceVO;
 	import com.dukascopy.connect.data.escrow.TradeDirection;
 	import com.dukascopy.connect.gui.button.DDAccountButton;
 	import com.dukascopy.connect.gui.button.DDFieldButton;
@@ -15,6 +16,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 	import com.dukascopy.connect.gui.input.Input;
 	import com.dukascopy.connect.gui.lightbox.UI;
 	import com.dukascopy.connect.gui.list.renderers.ListCryptoWallet;
+	import com.dukascopy.connect.gui.list.renderers.ListPayCurrency;
 	import com.dukascopy.connect.gui.list.renderers.ListPayWalletItem;
 	import com.dukascopy.connect.gui.menuVideo.BitmapButton;
 	import com.dukascopy.connect.managers.escrow.EscrowDealManager;
@@ -93,6 +95,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		private var blockchainAddress:Bitmap;
 		private var terms:TermsChecker;
 		private var offerData:EscrowDealData;
+		private var selectorCurrency:DDFieldButton;
 		
 		public function CreateEscrowScreen() { }
 		
@@ -105,7 +108,6 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			createInstrumentSelector();
 			createRadio();
 			createPriceSelector();
-			createAccountSelector();
 		}
 		
 		private function createAccountSelector():void 
@@ -121,7 +123,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			if (selectedDirection == TradeDirection.buy)
 			{
 				balanceTexts.push(Lang.to_pay_for_crypto);
-				balanceTexts.push(Lang.refundable_fee);
+				balanceTexts.push(Lang.refundable_fee.replace("%@", (EscrowSettings.refundableFee*100) + "%"));
 				balanceTexts.push(Lang.amount_to_be_debited);
 				
 				colors.push(Style.color(Style.COLOR_SUBTITLE));
@@ -131,7 +133,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			else
 			{
 				balanceTexts.push(Lang.to_get_for_crypto);
-				balanceTexts.push(Lang.commission_crypto);
+				balanceTexts.push(Lang.commission_crypto.replace("%@", (EscrowSettings.commission*100) + "%"));
 				balanceTexts.push(Lang.amount_to_be_credited);
 				
 				colors.push(Style.color(Style.COLOR_SUBTITLE));
@@ -274,6 +276,49 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			addItem(selectorInstrument);
 		}
 		
+		private function createCurrencySelector():void 
+		{
+			selectorCurrency = new DDFieldButton(selectCurrencyTap, "", true, NaN, null, FontSize.AMOUNT);
+			addItem(selectorCurrency);
+		}
+		
+		private function callBackSelectCurrency(currency:String):void
+		{
+			if (currency != null)
+			{
+				currencySign = currency;
+				selectorCurrency.setValue(currencySign);
+				updatePrice();
+				
+				priceSelector.draw(_width - contentPadding * 2, -5, 5, 0, selectedPrice, getCurrency());
+			}
+		}
+		
+		private function selectCurrencyTap():void 
+		{
+			if (selectedCrypto != null && selectedCrypto.price != null && selectedCrypto.price.length > 0)
+			{
+				var currencies:Array = new Array();
+				for (var i:int = 0; i < selectedCrypto.price.length; i++) 
+				{
+					currencies.push(selectedCrypto.price[i].name);
+				}
+				DialogManager.showDialog(
+						ListSelectionPopup,
+						{
+							items:currencies,
+							title:Lang.selectCurrency,
+							renderer:ListPayCurrency,
+							callback:callBackSelectCurrency
+						}, ServiceScreenManager.TYPE_SCREEN
+					);
+			}
+			else
+			{
+				ApplicationErrors.add();
+			}
+		}
+		
 		private function selectInstrumentTap():void 
 		{
 			if (instruments != null && instruments.length > 0)
@@ -348,6 +393,10 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 				}
 				else if (state == STATE_START)
 				{
+					if (selectorCurrency != null)
+					{
+						addItem(selectorCurrency);
+					}
 					addItem(selectorInstrument);
 					addItem(selectorAccont);
 					addItem(radio);
@@ -499,8 +548,16 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		
 		private function getAccounts():Array 
 		{
-			var accountsArray:Array = accounts.moneyAccounts;
-			return filterAccountsByPrices(accountsArray);
+			if (accounts != null)
+			{
+				var accountsArray:Array = accounts.moneyAccounts;
+				return filterAccountsByPrices(accountsArray);
+			}
+			else
+			{
+				ApplicationErrors.add();
+			}
+			return null;
 		}
 		
 		private function filterAccountsByPrices(accountsArray:Array):Array 
@@ -638,7 +695,15 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			
 		private function activateStartState():void 
 		{
-			selectorAccont.activate();
+			if (selectorAccont != null)
+			{
+				selectorAccont.activate();
+			}
+			if (selectorCurrency != null)
+			{
+				selectorCurrency.activate();
+			}
+			
 			radio.activate();
 			nextButton.activate();
 			inputAmount.activate();
@@ -734,6 +799,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 				removeItem(balance);
 				removeItem(selectorInstrument);
 				removeItem(selectorAccont);
+				removeItem(selectorCurrency);
 				deactivateStartState();
 			}
 			else if (state == STATE_REGISTER)
@@ -778,7 +844,15 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		
 		private function deactivateStartState():void 
 		{
-			selectorAccont.deactivate();
+			if (selectorAccont != null)
+			{
+				selectorAccont.deactivate();
+			}
+			if (selectorCurrency != null)
+			{
+				selectorCurrency.deactivate();
+			}
+			
 			radio.deactivate();
 			nextButton.deactivate();
 			inputAmount.deactivate();
@@ -807,7 +881,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			{
 				var dataValid:Boolean = true;
 				
-				if (selectedFiatAccount == null)
+				if (selectedDirection == TradeDirection.buy && selectedFiatAccount == null)
 				{
 					selectorAccont.invalid();
 					dataValid = false;
@@ -906,6 +980,16 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			{
 				selectedDirection = data.selectedDirection as TradeDirection;
 			}
+			
+			if (selectedDirection == TradeDirection.buy)
+			{
+				createAccountSelector();
+			}
+			else if (selectedDirection == TradeDirection.sell)
+			{
+				createCurrencySelector();
+			}
+			
 			priceSelector.direction = selectedDirection;
 			priceSelector.draw(_width - contentPadding * 2, -5, 5, 0, selectedPrice, getCurrency());
 			
@@ -937,7 +1021,15 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			{
 				this.instruments = instruments;
 				dataLoaded = true;
-				loadAccounts();
+				if (selectedDirection == TradeDirection.buy)
+				{
+					loadAccounts();
+				}
+				else
+				{
+					hidePreloader();
+					onDataReady();
+				}
 			}
 		}
 		
@@ -998,9 +1090,12 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 				inputAmount.y = position;
 				position += inputAmount.height + contentPaddingV;
 				
-				selectorAccont.x = contentPadding;
-				selectorAccont.y = position;
-				position += selectorAccont.height + contentPaddingV;
+				if (selectorAccont != null)
+				{
+					selectorAccont.x = contentPadding;
+					selectorAccont.y = position;
+					position += selectorAccont.height + contentPaddingV;
+				}
 				
 				radio.x = contentPadding;
 				radio.y = position;
@@ -1011,6 +1106,15 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 				
 				inputPrice.x = contentPadding;
 				inputPrice.y = position;
+				
+				var inputWidth:int = _width - contentPadding * 2;
+				if (selectorCurrency != null)
+				{
+					inputWidth -= int(selectorCurrency.fullWidth + Config.FINGER_SIZE * .15);
+					selectorCurrency.x = int(_width - contentPadding - selectorCurrency.width);
+					selectorCurrency.y = int(inputPrice.y + inputPrice.linePosition() - selectorCurrency.linePosition());
+				}
+				inputPrice.draw(inputWidth, Lang.pricePerCoin, inputPrice.value, inputPrice.getUnderlineValue());
 				
 				if (controlPriceSelected == inputPrice)
 				{
@@ -1082,7 +1186,10 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			radio.draw(radioSelection, _width);
 			radio.select(radioSelection[0]);
 			
-			selectorAccont.setSize(_width - contentPadding * 2, Config.FINGER_SIZE * .8);
+			if (selectorAccont != null)
+			{
+				selectorAccont.setSize(_width - contentPadding * 2, Config.FINGER_SIZE * .8);
+			}
 			
 			selectorInstrument.setSize(_width - contentPadding * 2, Config.FINGER_SIZE * 1.0);
 			
@@ -1091,7 +1198,15 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			nextButton.setBitmapData(buttonBitmap, true);
 			
 			inputAmount.draw(_width - contentPadding * 2, Lang.textAmount, 0);
-			inputPrice.draw(_width - contentPadding * 2, Lang.pricePerCoin, 0);
+			
+			var inputWidth:int = _width - contentPadding * 2;
+			if (selectorCurrency != null)
+			{
+				selectorCurrency.setSize(int(Config.FINGER_SIZE * 1.2), Config.FINGER_SIZE * 0.6);
+				inputWidth -= int(selectorCurrency.fullWidth + Config.FINGER_SIZE * .15);
+			}
+			
+			inputPrice.draw(inputWidth, Lang.pricePerCoin, 0);
 		}
 		
 		public function onDataReady():void
@@ -1111,7 +1226,35 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			{
 				ApplicationErrors.add();
 			}
-			selectDefaultAccount();
+			if (selectedDirection == TradeDirection.buy)
+			{
+				selectDefaultAccount();
+			}
+			else
+			{
+				if (priceSelector != null)
+				{
+					if (selectedCrypto != null)
+					{
+						selectCurrencyFromPrices();
+						setCurrencyInControls();
+					}
+					else
+					{
+						ApplicationErrors.add("selectedCrypto null");
+					}
+				}
+				else
+				{
+					ApplicationErrors.add("priceSelector null");
+				}
+			}
+			
+			refreshPrice();
+		}
+		
+		private function refreshPrice():void 
+		{
 			updatePrice();
 			if (state == STATE_START)
 			{
@@ -1119,6 +1262,51 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			}
 			updateBalance();
 			updatePositions();
+		}
+		
+		private function setCurrencyInControls():void 
+		{
+			if (currencySign != null && selectorCurrency != null)
+			{
+				selectorCurrency.setValue(currencySign);
+			}
+			priceSelector.setPrices(currencySign, selectCurrencyTap);
+		}
+		
+		private function selectCurrencyFromPrices():void 
+		{
+			if (selectedCrypto != null && selectedCrypto.price != null)
+			{
+				var preferredCurrency:String = TypeCurrency.USD;
+				var exist:Boolean;
+				for (var i:int = 0; i < selectedCrypto.price.length; i++) 
+				{
+					if (selectedCrypto.price[i].name == preferredCurrency)
+					{
+						exist = true;
+						break;
+					}
+				}
+				if (exist)
+				{
+					currencySign = preferredCurrency;
+				}
+				else
+				{
+					if (selectedCrypto.price.length > 0)
+					{
+						currencySign = selectedCrypto.price[0].name;
+					}
+					else
+					{
+						ApplicationErrors.add();
+					}
+				}
+			}
+			else
+			{
+				ApplicationErrors.add("selectedCrypto null");
+			}
 		}
 		
 		private function loadAccounts():void 
@@ -1162,31 +1350,60 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		private function getPrice():Number 
 		{
 			var price:Number;
-			if (selectedCrypto != null && selectedCrypto.price != null && selectedFiatAccount != null)
+			if (selectedCrypto != null && selectedCrypto.price != null)
 			{
-				for (var i:int = 0; i < selectedCrypto.price.length; i++) 
+				if (selectedDirection == TradeDirection.buy)
 				{
-					if (selectedCrypto.price[i].name == selectedFiatAccount.CURRENCY)
+					if (selectedFiatAccount != null)
 					{
-						currencySign = selectedFiatAccount.CURRENCY;
-						price = selectedCrypto.price[i].value;
-						break;
-					}
-				}
-				if (isNaN(price))
-				{
-					for (var j:int = 0; j < selectedCrypto.price.length; j++) 
-					{
-						if (selectedCrypto.price[j].name == TypeCurrency.USD)
+						for (var i:int = 0; i < selectedCrypto.price.length; i++) 
 						{
-							currencySign = TypeCurrency.USD;
-							price = selectedCrypto.price[j].value;
+							if (selectedCrypto.price[i].name == selectedFiatAccount.CURRENCY)
+							{
+								currencySign = selectedFiatAccount.CURRENCY;
+								price = selectedCrypto.price[i].value;
+								break;
+							}
+						}
+						if (isNaN(price))
+						{
+							for (var j:int = 0; j < selectedCrypto.price.length; j++) 
+							{
+								if (currencySign == null && selectedCrypto.price[j].name == TypeCurrency.USD)
+								{
+									currencySign = TypeCurrency.USD;
+									price = selectedCrypto.price[j].value;
+								}
+							}
+							if (isNaN(price) && selectedCrypto.price.length > 0)
+							{
+								currencySign = selectedCrypto.price[0].name;
+								price = selectedCrypto.price[0].value;
+							}
 						}
 					}
-					if (isNaN(price) && selectedCrypto.price.length > 0)
+				}
+				else if (selectedDirection == TradeDirection.sell)
+				{
+					if (currencySign != null)
 					{
-						currencySign = selectedCrypto.price[0].name;
-						price = selectedCrypto.price[0].value;
+						var selectedPrice:EscrowPrice;
+						for (var k:int = 0; k < selectedCrypto.price.length; k++) 
+						{
+							if (selectedCrypto.price[k].name == currencySign)
+							{
+								selectedPrice = selectedCrypto.price[k];
+								break;
+							}
+						}
+						if (selectedPrice != null)
+						{
+							price = selectedPrice.value;
+						}
+						else
+						{
+							ApplicationErrors.add();
+						}
 					}
 				}
 			}
@@ -1204,6 +1421,10 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		{
 			controlPriceSelected = inputPrice;
 			setPrice(inputPrice.value);
+			if (selectorCurrency != null)
+			{
+				addItem(selectorCurrency);
+			}
 			updatePositions();
 			
 			removeItem(priceSelector);
@@ -1216,6 +1437,10 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			if (!isNaN(priceSelector.getPrice()))
 			{
 				setPrice(priceSelector.getPrice());
+			}
+			if (selectorCurrency != null)
+			{
+				removeItem(selectorCurrency);
 			}
 			updatePositions();
 			
@@ -1389,6 +1614,11 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			{
 				backButton.dispose();
 				backButton = null;
+			}
+			if (selectorCurrency != null)
+			{
+				selectorCurrency.dispose();
+				selectorCurrency = null;
 			}
 			if (accounts != null)
 			{
