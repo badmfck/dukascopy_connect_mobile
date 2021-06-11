@@ -7,6 +7,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 	import com.dukascopy.connect.data.escrow.EscrowScreenNavigation;
 	import com.dukascopy.connect.data.escrow.EscrowSettings;
 	import com.dukascopy.connect.data.escrow.EscrowStatus;
+	import com.dukascopy.connect.data.escrow.OfferCommand;
 	import com.dukascopy.connect.data.escrow.TradeDirection;
 	import com.dukascopy.connect.gui.lightbox.UI;
 	import com.dukascopy.connect.gui.menuVideo.BitmapButton;
@@ -43,13 +44,11 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		private var time:TimeClip;
 		private var illustration:Bitmap;
 		
-		private var needOpenAccount:Boolean;
 		private var escrowOffer:EscrowMessageData;
-		private var alertBlock:Sprite;
-		private var alertArrow:Sprite;
-		private var alertText:Bitmap;
+		private var alertText:AlertTextArea;
 		private var offerCreatedTime:Number;
 		private var chatmate:String;
+		private var command:OfferCommand;
 		
 		public function EscrowOfferScreen() { }
 		
@@ -92,9 +91,13 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			recreateLayout();
 		}
 		
-		private function onRegisterClick():void 
+		private function onButtonClick():void 
 		{
-			needOpenAccount = true;
+			if (!EscrowScreenNavigation.isExpired(escrowOffer, offerCreatedTime))
+			{
+				command = OfferCommand.cancel;
+			}
+			
 			close();
 		}
 		
@@ -106,7 +109,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		{
 			button = new BitmapButton();
 			button.setStandartButtonParams();
-			button.tapCallback = onRegisterClick;
+			button.tapCallback = onButtonClick;
 			button.disposeBitmapOnDestroy = true;
 			button.setDownScale(1);
 			button.setOverlay(HitZoneType.BUTTON);
@@ -240,42 +243,18 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			{
 				if (escrowOffer.direction == TradeDirection.sell)
 				{
-					if (alertBlock == null)
+					if (alertText == null)
 					{
-						var text:String = Lang.escrow_send_obligation_penalty;
-						alertBlock = new Sprite();
-						addItem(alertBlock);
-						
-						alertText = new Bitmap();
-						alertBlock.addChild(alertText);
-						
-						alertArrow = new LinkIcon3();
-						UI.colorize(alertArrow, Color.RED);
-						UI.scaleToFit(alertArrow, int(Config.FINGER_SIZE * .26), int(Config.FINGER_SIZE * .26));
-						alertBlock.addChild(alertArrow);
-						
-						var textPadding:int = Config.FINGER_SIZE * .22;
-						var textPaddingV:int = Config.FINGER_SIZE * .22;
-						alertText.bitmapData = TextUtils.createTextFieldData(text, getWidth() - contentPadding * 2 - textPadding * 3 - alertArrow.width, 10, true,
-																		TextFormatAlign.LEFT, TextFieldAutoSize.LEFT, 
-																		FontSize.SUBHEAD, true, Style.color(Style.COLOR_TEXT_RED_DARK),
-																		Style.color(Style.COLOR_RED_LIGHT), false);
-						alertText.x  = textPadding;
-						alertText.y  = textPaddingV;
-						
-						alertArrow.x = int(getWidth() - contentPadding * 2 - textPadding - alertArrow.width);
-						alertArrow.y = int(alertText.y + alertText.height * .5 - alertArrow.height * .5);
-						
-						alertBlock.graphics.beginFill(Style.color(Style.COLOR_RED_LIGHT), 0.1);
-						alertBlock.graphics.drawRect(0, 0, getWidth() - contentPadding * 2, alertText.height + textPaddingV * 2);
-						alertBlock.graphics.endFill();
+						alertText = new AlertTextArea();
+						addItem(alertText);
+						alertText.draw(getWidth() - contentPadding * 2, Lang.escrow_send_obligation_penalty, Lang.escrow_send_obligation_penalty_url);
 					}
 					
 				}
 			}
 			else
 			{
-				removeItem(alertBlock);
+				removeItem(alertText);
 			}
 		}
 		
@@ -443,11 +422,11 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			description.y = position;
 			position += description.height + contentPaddingV * 1.5;
 			
-			if (alertBlock != null)
+			if (alertText != null)
 			{
-				alertBlock.x = contentPadding;
-				alertBlock.y = position;
-				position += alertBlock.height + contentPaddingV;
+				alertText.x = contentPadding;
+				alertText.y = position;
+				position += alertText.height + contentPaddingV;
 			}
 			
 			if (escrowOffer != null && !EscrowScreenNavigation.isExpired(escrowOffer, offerCreatedTime))
@@ -505,15 +484,10 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			}
 			
 			button.activate();
-			if (alertBlock != null)
+			if (alertText != null)
 			{
-				PointerManager.addTap(alertBlock, openPenaltyDescriptionURL);
+				alertText.activate();
 			}
-		}
-		
-		private function openPenaltyDescriptionURL(event:Event):void 
-		{
-			navigateToURL(new URLRequest(Lang.escrow_send_obligation_penalty_url));
 		}
 		
 		override public function deactivateScreen():void {
@@ -523,18 +497,18 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			}
 			
 			button.deactivate();
-			if (alertBlock != null)
+			if (alertText != null)
 			{
-				PointerManager.removeTap(alertBlock, openPenaltyDescriptionURL);
+				alertText.deactivate();
 			}
 		}
 		
 		override protected function onRemove():void 
 		{
-			if (needOpenAccount == true)
+			if (command != null && "callback" in data && data.callback != null && data.callback is Function && (data.callback as Function).length == 1)
 			{
-				needOpenAccount = false;
-				MobileGui.openMyAccountIfExist();
+				(data.callback as Function)(command);
+				command = null;
 			}
 		}
 		
@@ -578,20 +552,20 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 				UI.destroy(description);
 				description = null;
 			}
-			if (alertBlock != null)
+			if (alertText != null)
 			{
-				UI.destroy(alertBlock);
-				alertBlock = null;
-			}
-			if (alertArrow != null)
-			{
-				UI.destroy(alertArrow);
-				alertArrow = null;
+				alertText.dispose();
+				alertText = null;
 			}
 			if (alertText != null)
 			{
 				UI.destroy(alertText);
 				alertText = null;
+			}
+			if (amount != null)
+			{
+				UI.destroy(amount);
+				amount = null;
 			}
 		}
 	}

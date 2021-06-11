@@ -2,6 +2,7 @@ package com.dukascopy.connect.screens.dialogs.x.base.float
 {
 	import assets.NewCloseIcon;
 	import com.dukascopy.connect.Config;
+	import com.dukascopy.connect.gui.components.CirclePreloader;
 	import com.dukascopy.connect.gui.lightbox.UI;
 	import com.dukascopy.connect.gui.menuVideo.BitmapButton;
 	import com.dukascopy.connect.gui.scrollPanel.ScrollPanel;
@@ -15,6 +16,7 @@ package com.dukascopy.connect.screens.dialogs.x.base.float
 	import com.dukascopy.connect.type.HitZoneType;
 	import com.greensock.TweenMax;
 	import com.greensock.easing.Back;
+	import com.greensock.easing.Power1;
 	import com.greensock.easing.Power2;
 	import flash.display.Bitmap;
 	import flash.display.DisplayObject;
@@ -43,6 +45,7 @@ package com.dukascopy.connect.screens.dialogs.x.base.float
 		private var scrollUp:Sprite;
 		private var mainPadding:Number;
 		private var topColorClip:Sprite;
+		private var preloader:CirclePreloader;
 		protected var colorDelimiterPosition:int = -1;
 		
 		protected var topColor:Number = Style.color(Style.COLOR_BACKGROUND);
@@ -436,6 +439,56 @@ package com.dukascopy.connect.screens.dialogs.x.base.float
 			
 		}
 		
+		protected function hidePreloader():void 
+		{
+			if (!isDisposed)
+			{
+				TweenMax.to(container, 0.2, {ease:Power1.easeIn, colorTransform:{brightness: 1}});
+				TweenMax.to(backgroundContent, 0.2, {ease:Power1.easeIn, colorTransform:{brightness: 1}});
+				if (preloader != null)
+				{
+					preloader.dispose();
+					if (view != null)
+					{
+						view.removeChild(preloader);
+					}
+					preloader = null;
+				}
+			}
+			else
+			{
+				ApplicationErrors.add();
+			}
+		}
+		
+		protected function showPreloader():void 
+		{
+			if (!isDisposed)
+			{
+				TweenMax.to(container, 0.2, {ease:Power1.easeIn, colorTransform:{brightness: 1.3}});
+				TweenMax.to(backgroundContent, 0.2, {ease:Power1.easeIn, colorTransform:{brightness: 1.3}});
+				if (preloader == null)
+				{
+					preloader = new CirclePreloader();
+					if (view != null)
+					{
+						view.addChild(preloader);
+					}
+					else
+					{
+						ApplicationErrors.add();
+					}
+					
+					preloader.x = int(container.x + container.width * .5);
+					preloader.y = int(container.x + container.height * .5);
+				}
+			}
+			else
+			{
+				ApplicationErrors.add();
+			}
+		}
+		
 		override public function dispose():void {
 			super.dispose();
 			TweenMax.killDelayedCallsTo(close);
@@ -479,6 +532,11 @@ package com.dukascopy.connect.screens.dialogs.x.base.float
 			{
 				UI.destroy(topColorClip);
 				topColorClip = null;
+			}
+			if (preloader != null)
+			{
+				preloader.dispose();
+				preloader = null;
 			}
 		}
 	}

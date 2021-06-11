@@ -1,5 +1,6 @@
 package com.dukascopy.connect.data.escrow 
 {
+	import com.dukascopy.connect.screens.dialogs.escrow.AcceptOfferScreen;
 	import com.dukascopy.connect.screens.dialogs.escrow.EscrowOfferScreen;
 	import com.dukascopy.connect.sys.applicationError.ApplicationErrors;
 	import com.dukascopy.connect.sys.auth.Auth;
@@ -26,7 +27,7 @@ package com.dukascopy.connect.data.escrow
 				var screenData:Object = new Object();
 				screenData.escrowOffer = escrow;
 				screenData.created = message.created;
-				screenData.callback = onSelfOfferCommand;
+				
 				if (userVO != null)
 				{
 					screenData.userName = userVO.getDisplayName();
@@ -36,16 +37,17 @@ package com.dukascopy.connect.data.escrow
 					screenData.userName = Lang.chatmate;
 				}
 				
-				
 				if (escrow.status == EscrowStatus.offer_created)
 				{
 					if (message.userUID == Auth.uid)
 					{
+						screenData.callback = onSelfOfferCommand;
 						ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, EscrowOfferScreen, screenData);
 					}
 					else
 					{
-						//!TODO:;
+						screenData.callback = onOfferCommand;
+						ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, AcceptOfferScreen, screenData);
 					}
 					
 				}
@@ -65,6 +67,18 @@ package com.dukascopy.connect.data.escrow
 			else
 			{
 				ApplicationErrors.add();
+			}
+		}
+		
+		static private function onOfferCommand(command:OfferCommand = null):void 
+		{
+			if (command == OfferCommand.accept)
+			{
+				//!TODO:;
+			}
+			else if (command == OfferCommand.reject)
+			{
+				//!TODO:;
 			}
 		}
 		

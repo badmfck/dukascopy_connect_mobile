@@ -2390,6 +2390,12 @@ package com.dukascopy.langs {
 		static public var amount_of_transaction:String = "Amount of transaction";
 		static public var time_left:String = "%@ left";
 		static public var chatmate:String = "chatmate";
+		static public var accept_offer:String = "ACCEPT OFFER";
+		static public var reject_offer:String = "REJECT OFFER";
+		static public var sell_offer_accept_description:String = "After accepting the offer, you will have %@ minutes to send the crypto to the buyer's wallet.";
+		static public var buy_offer_accept_description:String = "If it is not accepted within %@ minutes, the offer is canceled automatically. Once the offer is accepted, the fiat funds will be debited from your account.";
+		static public var credit_to:String = "Credit to";
+		static public var pay_from_account:String = "Pay from account";
 		
 		static public function updateKeys(keys:Object):void {
 			for (var n:String in keys) {

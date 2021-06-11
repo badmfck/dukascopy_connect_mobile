@@ -54,15 +54,19 @@ package com.dukascopy.connect.gui.button
 		private var ammountColor:Number;
 		
 		private var description:Bitmap;
+		private var accountTitle:Bitmap;
 		private var isInvestment:Boolean;
 		private var underlineColor:Number;
+		private var title:String;
+		private var container:Sprite;
 		
-		public function DDAccountButton(callBack:Function, data:Object = null/*, defaultLabel:String = ""*/, showArrow:Boolean = true, ammountColor:Number=-1, underlineColor:Number = NaN)
+		public function DDAccountButton(callBack:Function, data:Object = null/*, defaultLabel:String = ""*/, showArrow:Boolean = true, ammountColor:Number=-1, underlineColor:Number = NaN, title:String = null)
 		{
 			super();
 			this.ammountColor = ammountColor;
 			this.underlineColor = underlineColor;
 			this.showArrow = showArrow;
+			this.title = title;
 			/*this.defaultLabel = defaultLabel == ""? Lang.textChoose+"..." : defaultLabel;*/
 			updateDefaultLabel();
 			
@@ -78,7 +82,10 @@ package com.dukascopy.connect.gui.button
 			cancelOnVerticalMovement = true;
 			tapCallback = callBack;
 			
+			container = new Sprite();
+			
 			box = new Sprite();
+			container.addChild(box);
 			tf = UIFactory.createTextField();
 			tf.textColor = Style.color(Style.COLOR_SUBTITLE);
 			//tf.border = true;
@@ -93,6 +100,9 @@ package com.dukascopy.connect.gui.button
 			
 			icon = new Bitmap();
 			box.addChild(icon);
+			
+			accountTitle = new Bitmap();
+			container.addChild(accountTitle);
 			
 			description = new Bitmap();
 			box.addChild(description);
@@ -109,6 +119,19 @@ package com.dukascopy.connect.gui.button
 			description.bitmapData = TextUtils.createTextFieldData(Lang.amountAvaliable, w, 10, false, 
 															TextFormatAlign.LEFT, TextFieldAutoSize.LEFT, 
 															FontSize.CAPTION_1, false, Style.color(Style.COLOR_SUBTITLE), 
+															Style.color(Style.COLOR_BACKGROUND), false, true);
+		}
+		
+		public function drawTitle():void
+		{
+			if (accountTitle.bitmapData != null)
+			{
+				accountTitle.bitmapData.dispose();
+				accountTitle.bitmapData = null;
+			}
+			accountTitle.bitmapData = TextUtils.createTextFieldData(title, w, 10, false, 
+															TextFormatAlign.LEFT, TextFieldAutoSize.LEFT, 
+															FontSize.SUBHEAD, false, Style.color(Style.COLOR_SUBTITLE), 
 															Style.color(Style.COLOR_BACKGROUND), false, true);
 		}
 		
@@ -137,7 +160,7 @@ package com.dukascopy.connect.gui.button
 			
 			if (generatedBitmap == null)
 			{
-				generatedBitmap = new ImageBitmapData("DDAccountButton.generatedBitmap", w, h + Config.FINGER_SIZE * .4, true, 0);
+				generatedBitmap = new ImageBitmapData("DDAccountButton.generatedBitmap", w, h + Config.FINGER_SIZE * .4 + FontSize.SUBHEAD + Config.FINGER_SIZE*.07, true, 0);
 			}
 			else
 			{
@@ -175,6 +198,15 @@ package com.dukascopy.connect.gui.button
 		//	tf.x = (w - xOffset);
 			tf.x = 0;
 			drawDescription();
+			if (title != null)
+			{
+				drawTitle();
+				box.y = int(accountTitle.height + Config.FINGER_SIZE * .07);
+			}
+			else
+			{
+				box.y = 0;
+			}
 			
 			if (data == null)
 			{
@@ -192,7 +224,7 @@ package com.dukascopy.connect.gui.button
 					icon.bitmapData.dispose();
 					icon.bitmapData = null;
 				}
-				generatedBitmap.drawWithQuality(box, null, null, null, null, true, StageQuality.BEST);
+				generatedBitmap.drawWithQuality(container, null, null, null, null, true, StageQuality.BEST);
 			}
 			else if (data is String)
 			{
@@ -207,7 +239,7 @@ package com.dukascopy.connect.gui.button
 				description.x = int(w - description.width);
 				description.y = int(tf.y + tf.height + Config.FINGER_SIZE * .3);
 				
-				generatedBitmap.drawWithQuality(box, null, null, null, null, true, StageQuality.BEST);
+				generatedBitmap.drawWithQuality(container, null, null, null, null, true, StageQuality.BEST);
 			}
 			else if (data is Object)
 			{
@@ -375,7 +407,7 @@ package com.dukascopy.connect.gui.button
 						icon.bitmapData = null;
 					}
 					icon.bitmapData = UI.renderAsset(iconAsset, ICON_SIZE, ICON_SIZE, false, "DDAccountButton.icon");
-					tf.x = ICON_SIZE + Config.DOUBLE_MARGIN;
+					tf.x = int(ICON_SIZE + Config.FINGER_SIZE * .2);
 					tf.width = tfRight.x - ICON_SIZE-Config.DOUBLE_MARGIN;
 				}
 				else{
@@ -383,13 +415,13 @@ package com.dukascopy.connect.gui.button
 				}
 				
 				icon.x = 0;
-				icon.y = h * .5 - ICON_SIZE * .5;
+				icon.y = int(h * .5 - ICON_SIZE * .5);
 				
 				description.visible = true;
 				description.x = int(w - description.width);
 				description.y = int(tf.y + tf.height + Config.FINGER_SIZE * .3);
 				
-				generatedBitmap.drawWithQuality(box, null, null, null, null, true, StageQuality.BEST);
+				generatedBitmap.drawWithQuality(container, null, null, null, null, true, StageQuality.BEST);
 			}
 			
 			//generatedBitmap.drawWithQuality(box, null, null, null, null, true, StageQuality.BEST);
@@ -432,6 +464,16 @@ package com.dukascopy.connect.gui.button
 			{
 				UI.destroy(description);
 				description = null;
+			}
+			if (accountTitle != null)
+			{
+				UI.destroy(accountTitle);
+				accountTitle = null;
+			}
+			if (container != null)
+			{
+				UI.destroy(container);
+				container = null;
 			}
 			
 			super.dispose();
