@@ -2396,6 +2396,11 @@ package com.dukascopy.langs {
 		static public var buy_offer_accept_description:String = "If it is not accepted within %@ minutes, the offer is canceled automatically. Once the offer is accepted, the fiat funds will be debited from your account.";
 		static public var credit_to:String = "Credit to";
 		static public var pay_from_account:String = "Pay from account";
+		static public var please_select_credit_account:String = "Please select account to be credited";
+		static public var offer_accepted_by_seller:String = "Offer is accepted by the Seller";
+		static public var offer_accepted_by_buyer:String = "Offer is accepted by the Buyer";
+		static public var offer_was_cancelled:String = "Offer was cancelled";
+		static public var offer_was_rejected:String = "Offer was rejected";
 		
 		static public function updateKeys(keys:Object):void {
 			for (var n:String in keys) {

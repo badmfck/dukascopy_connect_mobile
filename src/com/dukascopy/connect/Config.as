@@ -48,8 +48,8 @@ package com.dukascopy.connect {
 		
 /* PRE * /
 		static public const URL_PHP_CORE_SERVER:String = 'https://pre-dccapi.dukascopy.com/';
-        static public const URL_WS_HOST_1:String = "wss://ws.dukascopy.online"; //192.168.240.142; // 144 или 142
-        static public const URL_WS_HOST_2:String = "wss://ws.dukascopy.ch"; //192.168.240.142; // 144 или 142
+        static public const URL_WS_HOST_1:String = "wss://ws-pre.dukascopy.com/"; //192.168.240.142; // 144 или 142
+        static public const URL_WS_HOST_2:String = "wss://ws-pre.dukascopy.com/"; //192.168.240.142; // 144 или 142
 		static public const URL_MEDIA_VI:String = "rtmp://socket.dukascopy.com/recognition";
 		
 		static public const URL_FXCOMM_PROFILE:String = "https://www.dukascopy.com/fxcomm/profile/?nickname=";

@@ -19,6 +19,8 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 	import com.dukascopy.connect.type.HitZoneType;
 	import com.dukascopy.connect.utils.NumberFormat;
 	import com.dukascopy.connect.utils.TextUtils;
+	import com.dukascopy.connect.vo.ChatMessageVO;
+	import com.dukascopy.connect.vo.ChatVO;
 	import com.dukascopy.langs.Lang;
 	import flash.display.Bitmap;
 	import flash.display.Sprite;
@@ -49,6 +51,8 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		private var offerCreatedTime:Number;
 		private var chatmate:String;
 		private var command:OfferCommand;
+		private var chat:ChatVO;
+		private var message:ChatMessageVO;
 		
 		public function EscrowOfferScreen() { }
 		
@@ -129,6 +133,14 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			if ("userName" in data && data.userName != null)
 			{
 				chatmate = data.userName;
+			}
+			if ("chat" in data && data.chat != null)
+			{
+				chat = data.chat as ChatVO;
+			}
+			if ("message" in data && data.message != null)
+			{
+				message = data.message as ChatMessageVO;
 			}
 			
 			super.initScreen(data);
@@ -505,17 +517,18 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		
 		override protected function onRemove():void 
 		{
-			if (command != null && "callback" in data && data.callback != null && data.callback is Function && (data.callback as Function).length == 1)
+			if (command != null && "callback" in data && data.callback != null && data.callback is Function && (data.callback as Function).length == 4)
 			{
-				(data.callback as Function)(command);
+				(data.callback as Function)(escrowOffer, message, chat, command);
 				command = null;
+				chat = null;
+				message = null;
+				escrowOffer = null;
 			}
 		}
 		
 		override public function dispose():void {
 			super.dispose();
-			
-			escrowOffer = null;
 			
 			if (button != null)
 			{

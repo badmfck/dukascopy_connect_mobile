@@ -86,12 +86,12 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 			textFormatTitle.font = Config.defaultFontName;
 			textFormatTitle.size = FontSize.SUBHEAD;
 			textFormatTitle.color = Style.color(Style.COLOR_SUBTITLE);
-			textFormatTitle.align = TextFormatAlign.CENTER;
+			textFormatTitle.align = TextFormatAlign.LEFT;
 			
 			textFormatAmount.font = Config.defaultFontName;
 			textFormatAmount.size = FontSize.TITLE_3;
 			textFormatAmount.color = Style.color(Style.COLOR_TEXT);
-			textFormatAmount.align = TextFormatAlign.CENTER;
+			textFormatAmount.align = TextFormatAlign.LEFT;
 			
 			textFormatPrice.font = Config.defaultFontName;
 			textFormatPrice.size = FontSize.SUBHEAD;
@@ -158,12 +158,12 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 			addChild(iconAlert);
 			UI.scaleToFit(iconAlert, iconSize, iconSize);
 			
-			iconSize = Config.FINGER_SIZE * .4;
+			iconSize = Config.FINGER_SIZE * .5;
 			iconFail = new EscrowFail();
 			addChild(iconFail);
 			UI.scaleToFit(iconFail, iconSize, iconSize);
 			
-			iconSize = Config.FINGER_SIZE * .4;
+			iconSize = Config.FINGER_SIZE * .64;
 			iconSuccess = new EscrowSuccess();
 			addChild(iconSuccess);
 			UI.scaleToFit(iconSuccess, iconSize, iconSize);
@@ -263,6 +263,16 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 					
 					break;
 				}
+				case EscrowStatus.offer_rejected:
+				{
+					result =  Style.color(Style.COLOR_SUBTITLE);
+					break;
+				}
+				case EscrowStatus.offer_cancelled:
+				{
+					result =  Style.color(Style.COLOR_SUBTITLE);
+					break;
+				}
 			}
 			return result;
 		}
@@ -305,15 +315,19 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 		private function getTitleText(status:EscrowStatus, direction:TradeDirection, messageData:ChatMessageVO):String 
 		{
 			var result:String = "";
+			if (EscrowScreenNavigation.isExpired(messageData.systemMessageVO.escrow, messageData.created))
+			{
+				result = Lang.offer_expired;
+			}
+			else
+			{
+				
+			}
 			switch (status)
 			{
 				case EscrowStatus.offer_created:
 				{
-					if (EscrowScreenNavigation.isExpired(messageData.systemMessageVO.escrow, messageData.created))
-					{
-						result = Lang.offer_expired;
-					}
-					else if (direction == TradeDirection.buy)
+					if (direction == TradeDirection.buy)
 					{
 						result = Lang.escrow_buy_offer;
 					}
@@ -321,6 +335,31 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 					{
 						result = Lang.escrow_sell_offer;
 					}
+					
+					break;
+				}
+				case EscrowStatus.offer_accepted:
+				{
+					if (direction == TradeDirection.buy)
+					{
+						result = Lang.offer_accepted_by_seller;
+					}
+					else if(direction == TradeDirection.sell)
+					{
+						result = Lang.offer_accepted_by_buyer;
+					}
+					
+					break;
+				}
+				case EscrowStatus.offer_rejected:
+				{
+					result = Lang.offer_was_rejected;
+					
+					break;
+				}
+				case EscrowStatus.offer_cancelled:
+				{
+					result = Lang.offer_was_cancelled;
 					
 					break;
 				}
@@ -351,29 +390,7 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 				back.graphics.drawRoundRectComplex(leftSideSize, 0, mainWidth - leftSideSize, resultHeight, 0, radiusBack, 0, radiusBack);
 				back.graphics.endFill();
 				
-				var IconClass:Class = getIconClass(messageData.systemMessageVO.escrow);
-				if (IconClass != null)
-				{
-					if (iconCoin == null || !(iconCoin is IconClass))
-					{
-						UI.destroy(iconCoin);
-						iconCoin = new IconClass() as Sprite;
-						UI.scaleToFit(iconCoin, iconSize, iconSize);
-						addChild(iconCoin);
-						iconCoin.x = leftSideSize + padding;
-						iconCoin.y = int(amount.y + amount.height * .5 - iconCoin.height * .5);
-					}
-					iconCoin.visible = true;
-					amount.x = leftSideSize + padding + iconSize + Config.FINGER_SIZE*.15;
-				}
-				else
-				{
-					amount.x = leftSideSize + padding;
-					if (iconCoin != null)
-					{
-						iconCoin.visible = false;
-					}
-				}
+				
 				
 				iconTime.visible = false;
 				iconAlert.visible = false;
@@ -409,11 +426,102 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 					time.x = int(leftSideSize * .5 - time.width * .5);
 					time.y = int(resultHeight * .5 + Config.FINGER_SIZE * .05);
 				}
+				else if (messageData.systemMessageVO.escrow.status == EscrowStatus.offer_accepted)
+				{
+					iconTime.visible = false;
+					time.visible = false;
+					if (EscrowScreenNavigation.isExpired(messageData.systemMessageVO.escrow, messageData.created))
+					{
+						iconFail.visible = true;
+						UI.colorize(iconSuccess, getIconColor(messageData.systemMessageVO.escrow.status, messageData.systemMessageVO.escrow.direction, messageData));
+					}
+					else
+					{
+						iconSuccess.visible = true;
+						UI.colorize(iconSuccess, getIconColor(messageData.systemMessageVO.escrow.status, messageData.systemMessageVO.escrow.direction, messageData));
+					}
+				}
+				else if (messageData.systemMessageVO.escrow.status == EscrowStatus.offer_rejected)
+				{
+					iconTime.visible = false;
+					time.visible = false;
+					iconFail.visible = true;
+					UI.colorize(iconSuccess, getIconColor(messageData.systemMessageVO.escrow.status, messageData.systemMessageVO.escrow.direction, messageData));
+				}
+				else if (messageData.systemMessageVO.escrow.status == EscrowStatus.offer_cancelled)
+				{
+					iconTime.visible = false;
+					time.visible = false;
+					iconFail.visible = true;
+					UI.colorize(iconSuccess, getIconColor(messageData.systemMessageVO.escrow.status, messageData.systemMessageVO.escrow.direction, messageData));
+				}
 				else
 				{
 					time.visible = false;
 				}
+				
+				var IconClass:Class = getIconClass(messageData.systemMessageVO.escrow);
+				if (IconClass != null)
+				{
+					if (iconCoin == null || !(iconCoin is IconClass))
+					{
+						UI.destroy(iconCoin);
+						iconCoin = new IconClass() as Sprite;
+						UI.scaleToFit(iconCoin, iconSize, iconSize);
+						addChild(iconCoin);
+						iconCoin.x = leftSideSize + padding;
+					}
+					iconCoin.y = int(amount.y + amount.height * .5 - iconCoin.height * .5);
+					iconCoin.visible = true;
+					amount.x = leftSideSize + padding + iconSize + Config.FINGER_SIZE*.15;
+				}
+				else
+				{
+					amount.x = leftSideSize + padding;
+					if (iconCoin != null)
+					{
+						iconCoin.visible = false;
+					}
+				}
 			}
+		}
+		
+		private function getIconColor(status:EscrowStatus, direction:TradeDirection, messageData:ChatMessageVO):Number 
+		{
+			if (EscrowScreenNavigation.isExpired(messageData.systemMessageVO.escrow, messageData.created))
+			{
+				return Color.GREY_SUPER_LIGHT;
+			}
+			else
+			{
+				switch(status)
+				{
+					case EscrowStatus.offer_accepted:
+					{
+						if (direction == TradeDirection.buy)
+						{
+							return Color.GREEN;
+						}
+						else if (direction == TradeDirection.sell)
+						{
+							return Color.RED;
+						}
+						break;
+					}
+					case EscrowStatus.offer_rejected:
+					{
+						return Color.GREY_SUPER_LIGHT;
+						break;
+					}
+					case EscrowStatus.offer_cancelled:
+					{
+						return Color.GREY_SUPER_LIGHT;
+						break;
+					}
+				}
+			}
+			
+			return Color.GREY_SUPER_LIGHT;
 		}
 		
 		private function gettimeDifference(seconds:Number):String 
@@ -447,25 +555,51 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 		
 		private function getSideColor(status:EscrowStatus, direction:TradeDirection, messageData:ChatMessageVO):Number 
 		{
-			switch(status)
+			if (EscrowScreenNavigation.isExpired(messageData.systemMessageVO.escrow, messageData.created))
 			{
-				case EscrowStatus.offer_created:
+				return Color.GREY;
+			}
+			else
+			{
+				switch(status)
 				{
-					if (EscrowScreenNavigation.isExpired(messageData.systemMessageVO.escrow, messageData.created))
+					case EscrowStatus.offer_created:
+					{
+						if (direction == TradeDirection.buy)
+						{
+							return Color.GREEN;
+						}
+						else if (direction == TradeDirection.sell)
+						{
+							return Color.RED;
+						}
+						break;
+					}
+					case EscrowStatus.offer_accepted:
+					{
+						if (direction == TradeDirection.buy)
+						{
+							return Color.GREEN_10;
+						}
+						else if (direction == TradeDirection.sell)
+						{
+							return Color.RED_10;
+						}
+						break;
+					}
+					case EscrowStatus.offer_rejected:
 					{
 						return Color.GREY;
+						break;
 					}
-					else if (direction == TradeDirection.buy)
+					case EscrowStatus.offer_cancelled:
 					{
-						return Color.GREEN;
+						return Color.GREY;
+						break;
 					}
-					else if (direction == TradeDirection.sell)
-					{
-						return Color.RED;
-					}
-					break;
 				}
 			}
+			
 			return Color.RED;
 		}
 		

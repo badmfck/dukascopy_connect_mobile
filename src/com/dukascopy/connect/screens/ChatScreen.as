@@ -2236,7 +2236,7 @@ package com.dukascopy.connect.screens {
 					downloadFile(cmsgVO.systemMessageVO);
 				} else if (cmsgVO.systemMessageVO != null && cmsgVO.systemMessageVO.type == ChatSystemMsgVO.TYPE_ESCROW_OFFER) {
 					
-					EscrowScreenNavigation.showScreen(cmsgVO.systemMessageVO.escrow, cmsgVO, UsersManager.getInterlocutor(ChatManager.getCurrentChat()).userVO);
+					EscrowScreenNavigation.showScreen(cmsgVO.systemMessageVO.escrow, cmsgVO, UsersManager.getInterlocutor(ChatManager.getCurrentChat()).userVO, ChatManager.getCurrentChat());
 				}
 				else if (cmsgVO.systemMessageVO != null && cmsgVO.systemMessageVO.fileType == ChatSystemMsgVO.FILETYPE_PUZZLE_CRYPTED && cmsgVO.systemMessageVO.puzzleVO != null) {
 					var url:String = cmsgVO.imageURLWithKey;

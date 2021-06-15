@@ -246,12 +246,12 @@ import flash.utils.getTimer;
 				}
 			}
 
-			if(!Config.PLATFORM_APPLE && !Config.PLATFORM_ANDROID ){
+			/*if(!Config.PLATFORM_APPLE && !Config.PLATFORM_ANDROID ){
 				if (!Config.isTest())
 				{
 					currentHost="ws://ws.site.dukascopy.com:8080";
 				}
-			}
+			}*/
 
 
 			GD.S_DEBUG_WS.invoke("G: get websocket, url: "+currentHost);
