@@ -152,7 +152,6 @@ package com.dukascopy.connect.screens.dialogs.bottom
 						{
 							data.callback(selectedItem, selectedNum);
 						}
-						data.callback(selectedItem, selectedNum);
 					}
 					else if((data.callback as Function).length == 3)
 					{

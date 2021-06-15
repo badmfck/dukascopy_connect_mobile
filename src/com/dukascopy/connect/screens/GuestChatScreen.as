@@ -1854,14 +1854,14 @@ package com.dukascopy.connect.screens {
 			repositionImageUploaders();
 		}
 		
-		private function addStartSystemMessage():void 
+		private function addStartSystemMessage():Boolean
 		{
 			if (list.data && list.data.length > 0 && needEnterName == false)
-				return;
+				return false;
 			
 			if (systemMessageShown)
 			{
-				return;
+				return true;
 			}
 			systemMessageShown = true;
 			var userVO:UserVO = new UserVO();
@@ -1883,6 +1883,7 @@ package com.dukascopy.connect.screens {
 				list.scrollBottom();
 				clearUnreaded();
 			}
+			return true;
 		}
 		
 		private function onFileUploadedStatus(status:String, imgUploader:FileUploader, data:Object = null):void {
@@ -2003,7 +2004,10 @@ package com.dukascopy.connect.screens {
 			}
 			updateSounds();
 			
-			addStartSystemMessage();
+			if (addStartSystemMessage() == false)
+			{
+				systemMessageShown = false;
+			}
 		}
 		
 		private function hideHistoryLoader():void 
@@ -2266,7 +2270,12 @@ package com.dukascopy.connect.screens {
 			}
 			introMessageSent = true;
 			
-			trace("!!!!!!!!!!!!!!!!!!!!----------");
+			var phone:String = "";
+			if (data != null && data.phone != null)
+			{
+				phone = data.phone;
+				phone = phone.replace("p", "+");
+			}
 			
 			Store.save(Store.GUEST_NAME, user);
 			Store.save(Store.GUEST_MAIL, mail);
@@ -2276,6 +2285,7 @@ package com.dukascopy.connect.screens {
 			message.additionalData = new Object();
 			message.additionalData.name = user;
 			message.additionalData.mail = mail;
+			message.additionalData.phone = phone;
 			message.additionalData.uid = Auth.uid;
 			message.type = "credentials";
 			message.method = "credentials";
