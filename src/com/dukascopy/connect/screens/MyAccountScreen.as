@@ -1166,9 +1166,9 @@ package com.dukascopy.connect.screens {
 			if (BankManager.getHistoryAccount() != null && 
 				BankManager.getHistoryAccount() != "" && 
 				BankManager.getHistoryAccount() != "all") {
+					topBar.showAnimationOverButton("refreshBtn", false);
 					BankManager.getPaymentHistory(1, 50, "all");
 					redrawTopBar();
-					topBar.showAnimationOverButton("refreshBtn", false);
 					_waiting = true;
 					return;
 			}

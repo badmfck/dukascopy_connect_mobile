@@ -923,6 +923,10 @@ package com.dukascopy.connect.sys.bankManager {
 						data.param.INSTRUMENT != null &&
 						data.param.INSTRUMENT != "")
 							giftData.currency = data.param.INSTRUMENT;
+					else if ("selection" in data == true &&
+						data.selection != null &&
+						data.selection != "")
+							giftData.currency = data.selection;
 					giftData.callback = onInvestmentSellCallback;
 					ServiceScreenManager.showScreen(
 						ServiceScreenManager.TYPE_DIALOG,
@@ -2827,8 +2831,12 @@ package com.dukascopy.connect.sys.bankManager {
 				isInvestmentHistory = false;
 				if (historyAccount != "all") {
 					var account:Object = getAccountByNumberAll(historyAccount);
-					if (account != null)
-						historyAccCurrency = account.CURRENCY;
+					if (account != null) {
+						if ("CURRENCY" in account == true)
+							historyAccCurrency = account.CURRENCY;
+						else if ("COIN" in account == true)
+							historyAccCurrency = account.COIN;
+					}
 				}
 				var notNull:Boolean = false;
 				if (history != null &&
