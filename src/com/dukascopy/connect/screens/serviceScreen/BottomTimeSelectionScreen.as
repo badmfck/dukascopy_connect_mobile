@@ -70,7 +70,13 @@ package com.dukascopy.connect.screens.serviceScreen {
 			createFromButton();
 			createToButton();
 			setTo((new Date()).getTime());
-			setFrom((new Date()).getTime() - 1000*60*60*24*30);
+			var startDate:Date = new Date();
+			startDate.setHours(0);
+			startDate.setMinutes(0);
+			startDate.setSeconds(0);
+			startDate.setMilliseconds(0);
+			startDate.setMonth(startDate.getMonth() - 1);
+			setFrom(startDate.getTime());
 			var position:int = Config.FINGER_SIZE * .4;
 			if (title.height > 0) {
 				title.y = position;
@@ -375,9 +381,6 @@ package com.dukascopy.connect.screens.serviceScreen {
 		{
 			if (screenData != null && screenData.callback != null)
 			{
-				var time:Object = new Object();
-				time.dateFrom = new Date(currentFromTime);
-				time.dateTo = new Date(currentToTime);
 				if (screenData.callback.length == 3)
 				{
 					screenData.callback(0, screenData.data, null);
