@@ -314,6 +314,7 @@ package com.dukascopy.connect.screens.serviceScreen {
 				
 				time.dateFrom = currentDate;
 				time.dateTo = new Date(currentToTime);
+				(time.dateTo as Date).setSeconds((time.dateTo as Date).getSeconds() - 1);
 				if (screenData.callback.length == 3)
 				{
 					screenData.callback(1, screenData.data, time);
