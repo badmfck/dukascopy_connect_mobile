@@ -2351,11 +2351,11 @@ package com.dukascopy.langs {
 		static public var below:String = "Below";
 		static public var above:String = "Above";
 		static public var to_pay_for_crypto:String = "To pay for crypto";
-		static public var refundable_fee:String = "Refundable fee (%@)";
+		static public var refundable_fee:String = "Refundable fee (%@)%";
 		static public var amount_to_be_debited:String = "Amount to be debited";
 		
 		static public var to_get_for_crypto:String = "To get for crypto";
-		static public var commission_crypto:String = "Сommission (%@)";
+		static public var commission_crypto:String = "Сommission (%@)%";
 		static public var amount_to_be_credited:String = "Amount to be credited";
 		static public var current_price_of_instrument:String = "Current price of 1 %@";
 		static public var send_offer:String = "SEND OFFER";

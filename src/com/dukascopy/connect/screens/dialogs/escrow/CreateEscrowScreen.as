@@ -123,7 +123,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			if (selectedDirection == TradeDirection.buy)
 			{
 				balanceTexts.push(Lang.to_pay_for_crypto);
-				balanceTexts.push(Lang.refundable_fee.replace("%@", (EscrowSettings.refundableFee*100) + "%"));
+				balanceTexts.push(Lang.refundable_fee.replace("%@", (EscrowSettings.refundableFee*100)));
 				balanceTexts.push(Lang.amount_to_be_debited);
 				
 				colors.push(Style.color(Style.COLOR_SUBTITLE));
@@ -133,7 +133,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			else
 			{
 				balanceTexts.push(Lang.to_get_for_crypto);
-				balanceTexts.push(Lang.commission_crypto.replace("%@", (EscrowSettings.commission*100) + "%"));
+				balanceTexts.push(Lang.commission_crypto.replace("%@", (EscrowSettings.commission*100)));
 				balanceTexts.push(Lang.amount_to_be_credited);
 				
 				colors.push(Style.color(Style.COLOR_SUBTITLE));

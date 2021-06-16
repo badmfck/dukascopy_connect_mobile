@@ -50,19 +50,19 @@ package com.dukascopy.connect.data.escrow
 				
 				
 				
-				escrow.transactionId = "xf345dfg545hfgh65nmqgh390gghj90w2j45bv";
+				/*escrow.transactionId = "xf345dfg545hfgh65nmqgh390gghj90w2j45bv";
 				escrow.status = EscrowStatus.deal_created;
 				screenData.callback = onSendTransactionCommand;
 				ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, ReceiveCryptoScreen, screenData);
-				return;
+				return;*/
 				
 				
 				
-				/*escrow.cryptoWallet = "xf345dfg545hfgh65nmqgh390gghj90w2j45bv";
+				escrow.cryptoWallet = "xf345dfg545hfgh65nmqgh390gghj90w2j45bv";
 				escrow.status = EscrowStatus.deal_created;
 				screenData.callback = onSendTransactionCommand;
 				ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, SendCryptoScreen, screenData);
-				return;*/
+				return;
 				
 				
 				
@@ -299,6 +299,7 @@ package com.dukascopy.connect.data.escrow
 		
 		static public function isExpired(escrow:EscrowMessageData, created:Number):Boolean 
 		{
+			//!TODO:;
 			if (escrow.status == EscrowStatus.offer_created)
 			{
 				return (((new Date()).time / 1000 - created) / 60) > EscrowSettings.offerMaxTime;
