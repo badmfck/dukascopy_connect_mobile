@@ -306,6 +306,12 @@ package com.dukascopy.connect.screens.serviceScreen {
 			if (screenData != null && screenData.callback != null)
 			{
 				var time:Object = new Object();
+				
+				currentFromTime.setHours(0);
+				currentFromTime.setMinutes(0);
+				currentFromTime.setSeconds(0);
+				currentFromTime.setMilliseconds(0);
+				
 				time.dateFrom = new Date(currentFromTime);
 				time.dateTo = new Date(currentToTime);
 				if (screenData.callback.length == 3)
