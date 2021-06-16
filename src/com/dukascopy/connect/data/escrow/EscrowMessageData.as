@@ -17,6 +17,7 @@ package com.dukascopy.connect.data.escrow
 		public var instrument:String;
 		public var cryptoWallet:String;
 		public var transactionId:String;
+		public var userUID:String;
 		
 		public function EscrowMessageData(data:Object = null) 
 		{
@@ -52,6 +53,10 @@ package com.dukascopy.connect.data.escrow
 			{
 				status = EscrowStatus.getStatus(data.status);
 			}
+			if ("userUID" in data)
+			{
+				userUID = data.userUID;
+			}
 		}
 		
 		public function toJsonString():String 
@@ -60,6 +65,7 @@ package com.dukascopy.connect.data.escrow
 			result.price = price;
 			result.amount = amount;
 			result.type = type;
+			result.userUID = userUID;
 			if (direction != null)
 			{
 				result.direction = direction.type;

@@ -172,6 +172,7 @@ package com.dukascopy.connect.data.screenAction.customActions {
 			messageData.currency = dealData.currency;
 			messageData.instrument = dealData.instrument;
 			messageData.direction = dealData.direction;
+			messageData.userUID = Auth.uid;
 			messageData.status = EscrowStatus.offer_created; 
 			
 			var text:String = messageData.toJsonString();

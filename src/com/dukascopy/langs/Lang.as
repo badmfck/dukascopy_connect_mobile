@@ -2416,6 +2416,12 @@ package com.dukascopy.langs {
 		static public var seller_sent_crypto:String = "The Seller has sent the crypto to your blockchain wallet.";
 		static public var check_transaction:String = "Check the transaction and confirm reception";
 		static public var i_have_received_ctypto:String = "I HAVE RECEIVED THE CRYPTO";
+		static public var sending_crypto_not_executed:String = "Sending of the crypto is not executed.";
+		static public var you_failed_confirm_transfer:String = "You failed to confirm the transfer and to provide the transaction ID during %@1 minutes. This will incur a penalty charge of %@2% from the amount of the failed transaction.";
+		static public var seller_failed_confirm_transfer:String = "The Seller failed to confirm the sending of crypto and providing the transaction ID. The fiat funds reserved for this transaction have been unblocked";
+		static public var escrow_penalty:String = "Penalty (%@1%)";
+		static public var waiting_for_crypto:String = "Waiting for the crypto to be sent by the Seller";
+		static public var waiting_for_crypto_description:String = "The Seller now has %@ minutes to send you the crypto and provide the transaction ID. You will receive a notification once this is done.";
 		
 		static public function updateKeys(keys:Object):void {
 			for (var n:String in keys) {

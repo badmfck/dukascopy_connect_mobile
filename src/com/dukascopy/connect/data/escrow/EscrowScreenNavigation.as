@@ -9,7 +9,9 @@ package com.dukascopy.connect.data.escrow
 	import com.dukascopy.connect.screens.dialogs.escrow.EscrowOfferScreen;
 	import com.dukascopy.connect.screens.dialogs.escrow.ReceiveCryptoScreen;
 	import com.dukascopy.connect.screens.dialogs.escrow.RegisterBlockchainScreen;
+	import com.dukascopy.connect.screens.dialogs.escrow.SendCryptoExpiredScreen;
 	import com.dukascopy.connect.screens.dialogs.escrow.SendCryptoScreen;
+	import com.dukascopy.connect.screens.dialogs.escrow.WaitCryptoScreen;
 	import com.dukascopy.connect.screens.dialogs.x.base.float.FloatAlert;
 	import com.dukascopy.connect.sys.applicationError.ApplicationErrors;
 	import com.dukascopy.connect.sys.auth.Auth;
@@ -47,8 +49,11 @@ package com.dukascopy.connect.data.escrow
 				screenData.chat = chatVO;
 				screenData.message = message;
 				
+				/*ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, WaitCryptoScreen, screenData);
+				return;*/
 				
-				
+				/*ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, SendCryptoExpiredScreen, screenData);
+				return;*/
 				
 				/*escrow.transactionId = "xf345dfg545hfgh65nmqgh390gghj90w2j45bv";
 				escrow.status = EscrowStatus.deal_created;
@@ -56,23 +61,14 @@ package com.dukascopy.connect.data.escrow
 				ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, ReceiveCryptoScreen, screenData);
 				return;*/
 				
-				
-				
-				escrow.cryptoWallet = "xf345dfg545hfgh65nmqgh390gghj90w2j45bv";
+				/*escrow.cryptoWallet = "xf345dfg545hfgh65nmqgh390gghj90w2j45bv";
 				escrow.status = EscrowStatus.deal_created;
 				screenData.callback = onSendTransactionCommand;
 				ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, SendCryptoScreen, screenData);
-				return;
-				
-				
-				
+				return;*/
 				
 				/*showFinishScreen(escrow);
 				return;*/
-				
-				
-				
-				
 				
 				
 				if (userVO != null)
@@ -86,21 +82,24 @@ package com.dukascopy.connect.data.escrow
 				
 				if (escrow.status == EscrowStatus.offer_created)
 				{
-					if (message.userUID == Auth.uid)
+					if (!isExpired(escrow, message.created))
 					{
-						screenData.callback = onSelfOfferCommand;
-						ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, EscrowOfferScreen, screenData);
-					}
-					else
-					{
-						lastRequestData = new Request();
-						lastRequestData.escrow = escrow;
-						lastRequestData.message = message;
-						lastRequestData.userVO = userVO;
-						lastRequestData.chatVO = chatVO;
-						GD.S_START_LOAD.invoke();
-						GD.S_ESCROW_INSTRUMENTS.add(showAcceptScreen);
-						GD.S_ESCROW_INSTRUMENTS_REQUEST.invoke();
+						if (message.userUID == Auth.uid)
+						{
+							screenData.callback = onSelfOfferCommand;
+							ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, EscrowOfferScreen, screenData);
+						}
+						else
+						{
+							lastRequestData = new Request();
+							lastRequestData.escrow = escrow;
+							lastRequestData.message = message;
+							lastRequestData.userVO = userVO;
+							lastRequestData.chatVO = chatVO;
+							GD.S_START_LOAD.invoke();
+							GD.S_ESCROW_INSTRUMENTS.add(showAcceptScreen);
+							GD.S_ESCROW_INSTRUMENTS_REQUEST.invoke();
+						}
 					}
 				}
 				else if (escrow.status == EscrowStatus.offer_cancelled)
@@ -229,6 +228,7 @@ package com.dukascopy.connect.data.escrow
 					messageData.currency = escrow.currency;
 					messageData.instrument = escrow.instrument;
 					messageData.direction = escrow.direction;
+					messageData.userUID = escrow.userUID;
 					messageData.status = EscrowStatus.offer_accepted; 
 					
 					text = messageData.toJsonString();
@@ -252,6 +252,7 @@ package com.dukascopy.connect.data.escrow
 					messageData.currency = escrow.currency;
 					messageData.instrument = escrow.instrument;
 					messageData.direction = escrow.direction;
+					messageData.userUID = escrow.userUID;
 					messageData.status = EscrowStatus.offer_rejected; 
 					
 					text = messageData.toJsonString();
@@ -283,6 +284,7 @@ package com.dukascopy.connect.data.escrow
 					messageData.currency = escrow.currency;
 					messageData.instrument = escrow.instrument;
 					messageData.direction = escrow.direction;
+					messageData.userUID = escrow.userUID;
 					messageData.status = EscrowStatus.offer_cancelled; 
 					
 					var text:String = messageData.toJsonString();

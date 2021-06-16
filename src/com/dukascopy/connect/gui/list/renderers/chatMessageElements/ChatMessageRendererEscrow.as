@@ -321,49 +321,49 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 			}
 			else
 			{
-				
+				switch (status)
+				{
+					case EscrowStatus.offer_created:
+					{
+						if (direction == TradeDirection.buy)
+						{
+							result = Lang.escrow_buy_offer;
+						}
+						else if(direction == TradeDirection.sell)
+						{
+							result = Lang.escrow_sell_offer;
+						}
+						
+						break;
+					}
+					case EscrowStatus.offer_accepted:
+					{
+						if (direction == TradeDirection.buy)
+						{
+							result = Lang.offer_accepted_by_seller;
+						}
+						else if(direction == TradeDirection.sell)
+						{
+							result = Lang.offer_accepted_by_buyer;
+						}
+						
+						break;
+					}
+					case EscrowStatus.offer_rejected:
+					{
+						result = Lang.offer_was_rejected;
+						
+						break;
+					}
+					case EscrowStatus.offer_cancelled:
+					{
+						result = Lang.offer_was_cancelled;
+						
+						break;
+					}
+				}
 			}
-			switch (status)
-			{
-				case EscrowStatus.offer_created:
-				{
-					if (direction == TradeDirection.buy)
-					{
-						result = Lang.escrow_buy_offer;
-					}
-					else if(direction == TradeDirection.sell)
-					{
-						result = Lang.escrow_sell_offer;
-					}
-					
-					break;
-				}
-				case EscrowStatus.offer_accepted:
-				{
-					if (direction == TradeDirection.buy)
-					{
-						result = Lang.offer_accepted_by_seller;
-					}
-					else if(direction == TradeDirection.sell)
-					{
-						result = Lang.offer_accepted_by_buyer;
-					}
-					
-					break;
-				}
-				case EscrowStatus.offer_rejected:
-				{
-					result = Lang.offer_was_rejected;
-					
-					break;
-				}
-				case EscrowStatus.offer_cancelled:
-				{
-					result = Lang.offer_was_cancelled;
-					
-					break;
-				}
-			}
+			
 			return result;
 		}
 		
