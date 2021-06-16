@@ -311,10 +311,17 @@ package com.dukascopy.connect.screens.serviceScreen {
 				currentDate.setMinutes(0);
 				currentDate.setSeconds(0);
 				currentDate.setMilliseconds(0);
-				
 				time.dateFrom = currentDate;
-				time.dateTo = new Date(currentToTime);
-				(time.dateTo as Date).setSeconds((time.dateTo as Date).getSeconds() - 1);
+				
+				var timeTo:Date = new Date(currentToTime);
+				if (timeTo.getHours() == 0 && timeTo.getMinutes() == 0 && timeTo.getSeconds() == 0)
+				{
+					timeTo.setSeconds(timeTo.getSeconds() - 1);
+					timeTo.setDate(timeTo.getDate() + 1);
+				}
+				
+				time.dateTo = timeTo;
+				
 				if (screenData.callback.length == 3)
 				{
 					screenData.callback(1, screenData.data, time);
