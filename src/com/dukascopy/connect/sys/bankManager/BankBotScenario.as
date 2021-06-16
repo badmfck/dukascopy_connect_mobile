@@ -2995,6 +2995,12 @@ package com.dukascopy.connect.sys.bankManager {
 						action:"nav:investmentConfirm",
 						value:"@@2"
 					}, {
+						text:"lang.menuInvestmentSellPartially",
+						action:"nav:investmentSellConfirm",
+						type:"paymentsInvestmentsSell",
+						textForUser1:"lang.itemInvestmentSell1",
+						selection:"@@2"
+					}, {
 						text:"lang.menuInvestmentSellAll",
 						action:"nav:investmentSellAllConfirm",
 						type:"paymentsInvestmentsSellAll",

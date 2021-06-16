@@ -15,6 +15,8 @@ package com.dukascopy.connect {
 	
 	public class GD {
 		
+		static public const S_TIMEZONE_REQUEST:Signal = new Signal("S_TIMEZONE_REQUEST");
+		
 		static public const S_CONFIG_UPDATED:Signal = new Signal("GD.S_CONFIG_UPDATED");
 		
         static public const S_PAYPASS_BACK_CLICK:Signal=new Signal();

@@ -173,6 +173,15 @@ package com.dukascopy.connect {
 			NativeApplication.nativeApplication.addEventListener(Event.DEACTIVATE, onDeativate);
 			NativeApplication.nativeApplication.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
 			NativeApplication.nativeApplication.addEventListener(Event.EXITING, onAppExit);
+			
+			GD.S_TIMEZONE_REQUEST.add(onTimezoneRequested);
+		}
+		
+		private function onTimezoneRequested(callback:Function):void {
+			if (Config.PLATFORM_ANDROID == true)
+				callback(androidExtension.getTimezoneId());
+			else
+				callback("Europe/Riga");
 		}
 		
 		private function initComponents():void {

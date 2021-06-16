@@ -1407,30 +1407,40 @@ package com.dukascopy.connect.sys.bankManager {
 				return;
 			if (value == null)
 				return;
-			/*if (data != null)
-				data["tapped"] = true;
-			S_ADDITIONAL_DATA_ENTERED.invoke();*/
 			var temp:int;
-			var from:String = value.dateFrom.getFullYear();
-			temp = value.dateFrom.getMonth() + 1;
-			from += "-";
-			from += (temp < 10) ? "0" + temp : temp;
-			temp = value.dateFrom.getDate();
-			from += "-";
-			from += (temp < 10) ? "0" + temp : temp;
-			var to:String = value.dateTo.getFullYear();
-			temp = value.dateTo.getMonth() + 1;
-			to += "-";
-			to += (temp < 10) ? "0" + temp : temp;
-			temp = value.dateTo.getDate();
-			to += "-";
-			to += (temp < 10) ? "0" + temp : temp;
-			sendMessage("val:" +
-				from + "|!|" +
-				to + "|!|" +
-				data.value, true
-			);
-			sendMessage(data.action, true);
+            var from:String = value.dateFrom.getFullYear();
+            temp = value.dateFrom.getMonth() + 1;
+            from += "-";
+            from += (temp < 10) ? "0" + temp : temp;
+            temp = value.dateFrom.getDate();
+            from += "-";
+            from += (temp < 10) ? "0" + temp : temp;
+            var to:String = value.dateTo.getFullYear();
+            temp = value.dateTo.getMonth() + 1;
+            to += "-";
+            to += (temp < 10) ? "0" + temp : temp;
+            temp = value.dateTo.getDate();
+            to += "-";
+            to += (temp < 10) ? "0" + temp : temp;
+            sendMessage("val:" +
+                from + "|!|" +
+                to + "|!|" +
+                data.value, true
+            );
+            sendMessage(data.action, true);
+			return;
+			var from:String = Number(value.dateFrom.getTime() * .001).toFixed(0);
+			var to:String = Number(value.dateTo.getTime() * .001).toFixed(0);
+			
+			GD.S_TIMEZONE_REQUEST.invoke(function(val:String):void {
+				sendMessage("val:" +
+					from + "|!|" +
+					to + "|!|" +
+					data.value + "|!|" + 
+					val, true
+				);
+				sendMessage(data.action, true);
+			} );
 		}
 		
 		static private function openLink(data:Object):void {
@@ -3585,7 +3595,7 @@ package com.dukascopy.connect.sys.bankManager {
 				return null;
 			var res:Object = {
 				CURRENCY: savingsAccounts[0].CONSOLIDATE_CURRENCY,
-				IBAN: Lang.textTotalCash,
+				IBAN: Lang.textTotalCash.toUpperCase(),
 				type: "total",
 				opened: false,
 				moreFnc: getTotalSavingsAll
