@@ -2401,6 +2401,21 @@ package com.dukascopy.langs {
 		static public var offer_accepted_by_buyer:String = "Offer is accepted by the Buyer";
 		static public var offer_was_cancelled:String = "Offer was cancelled";
 		static public var offer_was_rejected:String = "Offer was rejected";
+		static public var you_accepted_sell_offer:String = "You accepted the SELL offer";
+		static public var send_crypto:String = "You now have %@1 minutes to send %@2 to the blockchain wallet of the buyer:";
+		static public var type_transaction_id:String = "Right after sending the funds type the resulting transaction ID below:";
+		static public var i_have_sent_ctypto:String = "I HAVE SENT THE CRYPTO";
+		static public var buyers_wallet:String = "Buyer's wallet";
+		static public var transaction_id:String = "Transaction ID";
+		static public var operation_completed:String = "The operation has been successfully completed.";
+		static public var escrow_deal_completed_sell:String = "The fiat funds have been credited to your account, the %@% commission has been charged.";
+		static public var escrow_deal_completed_buy:String = "The refundable fee has been returned to your account.<br/>The fiat funds have been sent to the crypto Seller.";
+		static public var here_transaction_id:String = "Here is the transaction ID:";
+		static public var investigation_fee_description:String = "Please note that the refundable fee (%@%) will become non-refundable if you neither confirm the receipt of crypto nor request an investigation during 24 hours";
+		static public var crypro_sent_by_seller:String = "Crypto sent by Seller";
+		static public var seller_sent_crypto:String = "The Seller has sent the crypto to your blockchain wallet.";
+		static public var check_transaction:String = "Check the transaction and confirm reception";
+		static public var i_have_received_ctypto:String = "I HAVE RECEIVED THE CRYPTO";
 		
 		static public function updateKeys(keys:Object):void {
 			for (var n:String in keys) {

@@ -15,6 +15,8 @@ package com.dukascopy.connect.data.escrow
 		public var status:EscrowStatus;
 		public var currency:String;
 		public var instrument:String;
+		public var cryptoWallet:String;
+		public var transactionId:String;
 		
 		public function EscrowMessageData(data:Object = null) 
 		{

@@ -1,6 +1,7 @@
 package com.dukascopy.connect.data 
 {
 	import assets.StarIcon3;
+	import com.dukascopy.connect.sys.style.Style;
 	/**
 	 * ...
 	 * @author Sergey Dobarin
@@ -12,6 +13,7 @@ package com.dukascopy.connect.data
 		public var text:String;
 		public var button:String;
 		public var callback:Function;
+		public var iconColor:Number = Style.color(Style.COLOR_TEXT);
 		
 		public function AlertScreenData() 
 		{

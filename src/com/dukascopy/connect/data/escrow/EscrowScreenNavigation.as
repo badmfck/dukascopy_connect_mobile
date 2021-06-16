@@ -1,15 +1,21 @@
 package com.dukascopy.connect.data.escrow 
 {
+	import assets.EscrowSuccess;
 	import com.dukascopy.connect.Config;
 	import com.dukascopy.connect.GD;
+	import com.dukascopy.connect.data.AlertScreenData;
 	import com.dukascopy.connect.managers.escrow.vo.EscrowInstrument;
 	import com.dukascopy.connect.screens.dialogs.escrow.AcceptOfferScreen;
 	import com.dukascopy.connect.screens.dialogs.escrow.EscrowOfferScreen;
+	import com.dukascopy.connect.screens.dialogs.escrow.ReceiveCryptoScreen;
 	import com.dukascopy.connect.screens.dialogs.escrow.RegisterBlockchainScreen;
+	import com.dukascopy.connect.screens.dialogs.escrow.SendCryptoScreen;
+	import com.dukascopy.connect.screens.dialogs.x.base.float.FloatAlert;
 	import com.dukascopy.connect.sys.applicationError.ApplicationErrors;
 	import com.dukascopy.connect.sys.auth.Auth;
 	import com.dukascopy.connect.sys.chatManager.ChatManager;
 	import com.dukascopy.connect.sys.serviceScreenManager.ServiceScreenManager;
+	import com.dukascopy.connect.sys.style.presets.Color;
 	import com.dukascopy.connect.sys.ws.WSClient;
 	import com.dukascopy.connect.vo.ChatMessageVO;
 	import com.dukascopy.connect.vo.ChatSystemMsgVO;
@@ -40,6 +46,34 @@ package com.dukascopy.connect.data.escrow
 				screenData.created = message.created;
 				screenData.chat = chatVO;
 				screenData.message = message;
+				
+				
+				
+				
+				escrow.transactionId = "xf345dfg545hfgh65nmqgh390gghj90w2j45bv";
+				escrow.status = EscrowStatus.deal_created;
+				screenData.callback = onSendTransactionCommand;
+				ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, ReceiveCryptoScreen, screenData);
+				return;
+				
+				
+				
+				/*escrow.cryptoWallet = "xf345dfg545hfgh65nmqgh390gghj90w2j45bv";
+				escrow.status = EscrowStatus.deal_created;
+				screenData.callback = onSendTransactionCommand;
+				ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, SendCryptoScreen, screenData);
+				return;*/
+				
+				
+				
+				
+				/*showFinishScreen(escrow);
+				return;*/
+				
+				
+				
+				
+				
 				
 				if (userVO != null)
 				{
@@ -86,6 +120,30 @@ package com.dukascopy.connect.data.escrow
 			{
 				ApplicationErrors.add();
 			}
+		}
+		
+		static private function showFinishScreen(escrow:EscrowMessageData):void 
+		{
+			var screenData:AlertScreenData = new AlertScreenData();
+			screenData.icon = EscrowSuccess;
+			screenData.iconColor = Color.GREEN;
+		//	screenData.callback = finishOffer;
+			
+			var description:String;
+			if (escrow.direction == TradeDirection.buy)
+			{
+				description = Lang.escrow_deal_completed_sell;
+				description = description.replace("%@", (EscrowSettings.commission * 100));
+			}
+			else
+			{
+				description = Lang.escrow_deal_completed_buy;
+			}
+			screenData.text = description;
+			screenData.title = Lang.operation_completed;
+			screenData.button = Lang.textOk.toUpperCase();
+			
+			ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, FloatAlert, screenData);
 		}
 		
 		private static function showAcceptScreen(instruments:Vector.<EscrowInstrument>):void 
@@ -148,6 +206,11 @@ package com.dukascopy.connect.data.escrow
 			{
 				ApplicationErrors.add();
 			}
+		}
+		
+		static private function onSendTransactionCommand(escrow:EscrowMessageData, message:ChatMessageVO, chatVO:ChatVO, command:OfferCommand = null):void 
+		{
+			
 		}
 		
 		static private function onOfferCommand(escrow:EscrowMessageData, message:ChatMessageVO, chatVO:ChatVO, command:OfferCommand = null):void 

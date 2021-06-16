@@ -11,11 +11,14 @@ package com.dukascopy.connect.data.escrow
 		private static const OFFER_CANCELLED:String = "offer_cancelled";
 		private static const OFFER_REJECTED:String = "offer_rejected";
 		private static const OFFER_ACCEPTED:String = "offer_accepted";
+		private static const DEAL_CREATED:String = "deal_created";
 		
 		static public var offer_created:EscrowStatus = new EscrowStatus(EscrowStatus.OFFER_CREATED);
 		static public var offer_cancelled:EscrowStatus = new EscrowStatus(EscrowStatus.OFFER_CANCELLED);
 		static public var offer_rejected:EscrowStatus = new EscrowStatus(EscrowStatus.OFFER_REJECTED);
 		static public var offer_accepted:EscrowStatus = new EscrowStatus(EscrowStatus.OFFER_ACCEPTED);
+		
+		static public var deal_created:EscrowStatus = new EscrowStatus(EscrowStatus.DEAL_CREATED);
 		
 		public function get value():String 
 		{

@@ -88,9 +88,9 @@ package com.dukascopy.connect.screens.dialogs.x.base.float {
 				var icon:Sprite = new screenData.icon();
 				if (icon != null)
 				{
-					var iconSize:int = Config.FINGER_SIZE * 1.2;
+					var iconSize:int = Config.FINGER_SIZE * 1;
 					UI.scaleToFit(icon, iconSize, iconSize);
-					UI.colorize(icon, Style.color(Style.COLOR_TEXT));
+					UI.colorize(icon, screenData.iconColor);
 					illustration.bitmapData = UI.getSnapshot(icon);
 					icon = null;
 				}
@@ -108,9 +108,9 @@ package com.dukascopy.connect.screens.dialogs.x.base.float {
 			}
 			if (screenData != null && screenData.title != null)
 			{
-				title.bitmapData = TextUtils.createTextFieldData(screenData.title, getWidth() - contentPadding * 2, 10, true,
+				title.bitmapData = TextUtils.createTextFieldData(screenData.title, getWidth() - contentPadding * 4, 10, true,
 																	TextFormatAlign.LEFT, TextFieldAutoSize.LEFT, 
-																	FontSize.TITLE_2, true, Style.color(Style.COLOR_TEXT),
+																	FontSize.TITLE_3, true, Style.color(Style.COLOR_TEXT),
 																	Style.color(Style.COLOR_BACKGROUND), false);
 			}
 		}
@@ -121,15 +121,15 @@ package com.dukascopy.connect.screens.dialogs.x.base.float {
 			
 			illustration.x = int(getWidth() * .5 - illustration.width * .5);
 			illustration.y = position;
-			position += illustration.height + contentPaddingV * 1.5;
+			position += illustration.height + contentPaddingV * 2.5;
 			
-			title.x = int(_width * .5 - title.width * .5);
+			title.x = int(getWidth() * .5 - title.width * .5);
 			title.y = position;
-			position += title.height + contentPaddingV * 1.5;
+			position += title.height + contentPaddingV * 2.5;
 			
 			description.x = contentPadding;
 			description.y = position;
-			position += description.height + contentPaddingV * 1.5;
+			position += description.height + contentPaddingV * 2.5;
 			
 			nextButton.x = contentPadding;
 			nextButton.y = position;

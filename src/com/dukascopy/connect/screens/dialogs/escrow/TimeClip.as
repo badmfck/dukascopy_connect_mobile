@@ -61,13 +61,17 @@ package com.dukascopy.connect.screens.dialogs.escrow
 		
 		public function draw(itemWidth:Number, time:int):void
 		{
-			timeLeft = time;
-			this.itemWidth = itemWidth;
-			clearTimer();
-			timer = new Timer(1000, time);
-			timer.addEventListener(TimerEvent.TIMER, onTick);
-			timer.addEventListener(TimerEvent.TIMER_COMPLETE, onTimerComplete);
-			timer.start();
+			if (time > 0)
+			{
+				timeLeft = time;
+				this.itemWidth = itemWidth;
+				clearTimer();
+				timer = new Timer(1000, time);
+				timer.addEventListener(TimerEvent.TIMER, onTick);
+				timer.addEventListener(TimerEvent.TIMER_COMPLETE, onTimerComplete);
+				timer.start();
+			}
+			
 			drawCurrent();
 		}
 		
