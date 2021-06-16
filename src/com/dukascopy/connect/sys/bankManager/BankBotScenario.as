@@ -2940,7 +2940,7 @@ package com.dukascopy.connect.sys.bankManager {
 					}, {
 						text:"lang.menuInvestmentSellPartially",
 						action:"nav:investmentSellConfirm",
-						type:"paymentsInvestmentsSell",
+						type:"paymentsInvestmentsSellPart",
 						textForUser1:"lang.itemInvestmentSell1",
 						selection:"@@2"
 					}, {
@@ -2997,7 +2997,7 @@ package com.dukascopy.connect.sys.bankManager {
 					}, {
 						text:"lang.menuInvestmentSellPartially",
 						action:"nav:investmentSellConfirm",
-						type:"paymentsInvestmentsSell",
+						type:"paymentsInvestmentsSellPart",
 						textForUser1:"lang.itemInvestmentSell1",
 						selection:"@@2"
 					}, {

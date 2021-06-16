@@ -912,7 +912,7 @@ package com.dukascopy.connect.sys.bankManager {
 					else
 						screenData.type = TradingOrder.SELL;
 					ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_DIALOG, TradeNotesPopup, { callback:sendNotesRequest, data:screenData } );
-				} else if (data.type == "paymentsInvestmentsSell") {
+				} else if (data.type == "paymentsInvestmentsSell" ||data.type == "paymentsInvestmentsSellPart") {
 					giftData = new GiftData();
 					giftData.additionalData = data;
 					if (_initData != null && "transaction" in _initData == true && _initData.transaction != null)
@@ -2384,6 +2384,12 @@ package com.dukascopy.connect.sys.bankManager {
 										}
 										if ("type" in lastBankMessageVO.menu[i] &&
 											lastBankMessageVO.menu[i].type == "paymentsInvestmentsSellAll" &&
+											Number(getInvestmentByAccount(lastBankMessageVO.item.selection).BALANCE) == 0) {
+												lastBankMessageVO.menu[i].disabled = true;
+										}
+										
+										if ("type" in lastBankMessageVO.menu[i] &&
+											lastBankMessageVO.menu[i].type == "paymentsInvestmentsSellPart" &&
 											Number(getInvestmentByAccount(lastBankMessageVO.item.selection).BALANCE) == 0) {
 												lastBankMessageVO.menu[i].disabled = true;
 										}
