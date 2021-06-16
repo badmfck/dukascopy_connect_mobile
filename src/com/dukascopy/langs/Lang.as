@@ -2331,6 +2331,9 @@ package com.dukascopy.langs {
 		static public var roadmap_wireDeposit:String = "Wire transfer";
 		static public var wireTransfer:String = "Wire transfer";
 		
+		static public var increaseLimitRequestFalse:String = "You may file a request for limits increase only twice per day";
+		static public var updateInfoRequestFalse:String = "You may file a request for personal information update only twice per day";
+		
 		static public function updateKeys(keys:Object):void {
 			for (var n:String in keys) {
 				if (n.indexOf("REFERAL_") == 0) {

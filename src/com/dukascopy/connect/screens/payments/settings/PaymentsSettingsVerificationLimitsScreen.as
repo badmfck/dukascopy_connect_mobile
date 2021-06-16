@@ -5,6 +5,7 @@ package com.dukascopy.connect.screens.payments.settings {
 	import com.dukascopy.connect.data.TextFieldSettings;
 	import com.dukascopy.connect.gui.menuVideo.BitmapButton;
 	import com.dukascopy.connect.screens.layout.ScrollScreen;
+	import com.dukascopy.connect.sys.dialogManager.DialogManager;
 	import com.dukascopy.connect.sys.imageManager.ImageBitmapData;
 	import com.dukascopy.connect.sys.payments.PayManager;
 	import com.dukascopy.connect.sys.payments.PaymentsManager;
@@ -67,6 +68,10 @@ package com.dukascopy.connect.screens.payments.settings {
 		}
 		
 		private function onIncreaseButtonClick():void {
+			if (PayManager.accountInfo.limitsIncreaseRequest == false) {
+				DialogManager.alert(Lang.information, Lang.increaseLimitRequestFalse);
+				return;
+			}
 			MobileGui.changeMainScreen(
 				PaymentsSettingsIncreaseLimitsScreen,
 				{
@@ -118,7 +123,7 @@ package com.dukascopy.connect.screens.payments.settings {
 			}
 			if (PayManager.accountInfo.limitsIncreaseRequest == true) {
 				if (btnIncrease != null) {
-					btnIncrease.activate();
+					//btnIncrease.activate();
 					btnIncrease.alpha = 1;
 				}
 			}
@@ -138,12 +143,16 @@ package com.dukascopy.connect.screens.payments.settings {
 			super.activateScreen();
 			if (_isDisposed == true)
 				return;
+			if (btnIncrease != null)
+				btnIncrease.activate();
 		}
 		
 		override public function deactivateScreen():void {
 			super.deactivateScreen();
 			if (_isDisposed == true)
 				return;
+			if (btnIncrease != null)
+				btnIncrease.deactivate();
 		}
 		
 		override public function dispose():void {

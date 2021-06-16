@@ -605,11 +605,9 @@ package com.dukascopy.connect.screens.payments.settings {
 				cancelButton.setBitmapData(buttonBitmap, true);
 				
 				if (isActivated) {
-					if (filled == true && PayManager.accountInfo.updatePersonalInfo == true) {
-						if (saveButton != null) {
-							saveButton.activate();
-							saveButton.alpha = 1;
-						}
+					if (filled == true) {
+						saveButton.activate();
+						saveButton.alpha = 1;
 					}
 					cancelButton.activate();
 				}
@@ -625,6 +623,10 @@ package com.dukascopy.connect.screens.payments.settings {
 		}
 		
 		private function onSaveClick():void {
+			if (PayManager.accountInfo.updatePersonalInfo == false) {
+				DialogManager.alert(Lang.information, Lang.updateInfoRequestFalse);
+				return;
+			}
 			if (isDataValid() && locked == false) {
 				saveChanges();
 			}
@@ -793,7 +795,7 @@ package com.dukascopy.connect.screens.payments.settings {
 			}
 			if (PayManager.accountInfo.updatePersonalInfo == true) {
 				if (_isActivated == true && saveButton != null) {
-					saveButton.activate();
+					//saveButton.activate();
 					saveButton.alpha = 1;
 				}
 			}
