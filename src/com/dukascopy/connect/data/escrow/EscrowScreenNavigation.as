@@ -7,6 +7,7 @@ package com.dukascopy.connect.data.escrow
 	import com.dukascopy.connect.managers.escrow.vo.EscrowInstrument;
 	import com.dukascopy.connect.screens.dialogs.escrow.AcceptOfferScreen;
 	import com.dukascopy.connect.screens.dialogs.escrow.EscrowOfferScreen;
+	import com.dukascopy.connect.screens.dialogs.escrow.EscrowReportScreen;
 	import com.dukascopy.connect.screens.dialogs.escrow.ReceiveCryptoScreen;
 	import com.dukascopy.connect.screens.dialogs.escrow.RegisterBlockchainScreen;
 	import com.dukascopy.connect.screens.dialogs.escrow.SendCryptoExpiredScreen;
@@ -48,6 +49,10 @@ package com.dukascopy.connect.data.escrow
 				screenData.created = message.created;
 				screenData.chat = chatVO;
 				screenData.message = message;
+				screenData.callback = requestInvestigation;
+				screenData.title = Lang.indicate_issue_type;
+				ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, EscrowReportScreen, screenData);
+				return;
 				
 				/*ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, WaitCryptoScreen, screenData);
 				return;*/
@@ -119,6 +124,15 @@ package com.dukascopy.connect.data.escrow
 			{
 				ApplicationErrors.add();
 			}
+		}
+		
+		static private function requestInvestigation(escrow:EscrowMessageData, code:int):void 
+		{
+			var screenData:AlertScreenData = new AlertScreenData();
+			screenData.text = Lang.escrow_report_sent;
+			screenData.button = Lang.textOk.toUpperCase();
+			
+			ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, FloatAlert, screenData);
 		}
 		
 		static private function showFinishScreen(escrow:EscrowMessageData):void 

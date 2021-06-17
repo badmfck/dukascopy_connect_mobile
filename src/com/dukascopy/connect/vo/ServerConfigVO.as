@@ -364,5 +364,21 @@ package com.dukascopy.connect.vo {
 				return _raw.APPLICATIONS;
 			return localData;
 		}
+		
+		public function get escrowReportType():String {
+			
+			var localData:String = '[{"label":"escrow_report_1", "code":"1"},'+
+									'{"label":"escrow_report_2", "code":"2"},' +
+									'{"label":"escrow_report_3", "code":"3"},' +
+									'{"label":"escrow_report_4", "code":"4"},' +
+									'{"label":"escrow_report_5", "code":"5"},' +
+									'{"label":"escrow_report_6", "code":"6"}' +
+									']';
+			if (_raw == null)
+				return localData;
+			if ("APPLICATIONS" in _raw == true)
+				return _raw.ESCROW_REPORT_TYPE;
+			return localData;
+		}
 	}
 }

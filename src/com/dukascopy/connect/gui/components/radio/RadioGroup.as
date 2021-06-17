@@ -11,24 +11,26 @@ package com.dukascopy.connect.gui.components.radio
 	 */
 	public class RadioGroup extends Sprite
 	{
-		private var items:Vector.<RadioItem>;
+		private var items:Vector.<IRadioItem>;
 		private var onSelect:Function;
+		public var gap:int;
 		
 		public function RadioGroup(onSelect:Function) 
 		{
+			gap = Config.FINGER_SIZE * .13;
 			this.onSelect = onSelect;
 		}
 		
-		public function draw(selectors:Vector.<SelectorItemData>, itemWidth:int):void 
+		public function draw(selectors:Vector.<SelectorItemData>, itemWidth:int, Renderer:Class):void 
 		{
-			items = new Vector.<RadioItem>();
-			var item:RadioItem;
+			items = new Vector.<IRadioItem>();
+			var item:IRadioItem;
 			for (var i:int = 0; i < selectors.length; i++) 
 			{
-				item = new RadioItem(onItemSelected);
+				item = new Renderer(onItemSelected);
 				item.draw(selectors[i], itemWidth);
 				items.push(item);
-				addChild(item);
+				addChild(item as Sprite);
 			}
 			updatePositions();
 		}
@@ -47,7 +49,7 @@ package com.dukascopy.connect.gui.components.radio
 			}
 		}
 		
-		private function updateSelection(value:com.dukascopy.connect.data.SelectorItemData):void 
+		private function updateSelection(value:SelectorItemData):void 
 		{
 			if (items != null)
 			{
@@ -75,7 +77,7 @@ package com.dukascopy.connect.gui.components.radio
 			for (var i:int = 0; i < items.length; i++) 
 			{
 				items[i].y = position;
-				position += items[i].height + Config.FINGER_SIZE * .13;
+				position += items[i].height + gap;
 			}
 		}
 		

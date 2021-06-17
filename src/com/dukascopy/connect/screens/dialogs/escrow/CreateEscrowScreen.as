@@ -13,6 +13,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 	import com.dukascopy.connect.gui.button.DDFieldButton;
 	import com.dukascopy.connect.gui.components.message.ToastMessage;
 	import com.dukascopy.connect.gui.components.radio.RadioGroup;
+	import com.dukascopy.connect.gui.components.radio.RadioItem;
 	import com.dukascopy.connect.gui.input.Input;
 	import com.dukascopy.connect.gui.lightbox.UI;
 	import com.dukascopy.connect.gui.list.renderers.ListCryptoWallet;
@@ -1183,7 +1184,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			radioSelection = new Vector.<SelectorItemData>();
 			radioSelection.push(new SelectorItemData(Lang.deviation_from_market, showDeviationControl));
 			radioSelection.push(new SelectorItemData(Lang.fixed_price, showFixedPriceControl));
-			radio.draw(radioSelection, _width);
+			radio.draw(radioSelection, _width - contentPadding * 2, RadioItem);
 			radio.select(radioSelection[0]);
 			
 			if (selectorAccont != null)

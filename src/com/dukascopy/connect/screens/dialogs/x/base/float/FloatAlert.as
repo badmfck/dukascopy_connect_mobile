@@ -119,13 +119,23 @@ package com.dukascopy.connect.screens.dialogs.x.base.float {
 		{
 			var position:int = 0;
 			
-			illustration.x = int(getWidth() * .5 - illustration.width * .5);
-			illustration.y = position;
-			position += illustration.height + contentPaddingV * 2.5;
+			if (screenData.icon != null)
+			{
+				illustration.x = int(getWidth() * .5 - illustration.width * .5);
+				illustration.y = position;
+				position += illustration.height + contentPaddingV * 2.5;
+			}
+			if (screenData.title != null)
+			{
+				title.x = int(getWidth() * .5 - title.width * .5);
+				title.y = position;
+				position += title.height + contentPaddingV * 2.5;
+			}
 			
-			title.x = int(getWidth() * .5 - title.width * .5);
-			title.y = position;
-			position += title.height + contentPaddingV * 2.5;
+			if (position == 0)
+			{
+				position += contentPaddingV;
+			}
 			
 			description.x = contentPadding;
 			description.y = position;

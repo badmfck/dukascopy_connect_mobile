@@ -2423,6 +2423,18 @@ package com.dukascopy.langs {
 		static public var waiting_for_crypto:String = "Waiting for the crypto to be sent by the Seller";
 		static public var waiting_for_crypto_description:String = "The Seller now has %@ minutes to send you the crypto and provide the transaction ID. You will receive a notification once this is done.";
 		
+		static public var escrow_report_1:String = "The reported transaction ID does not exist";
+		static public var escrow_report_2:String = "The destination address of the transaction is wrong";
+		static public var escrow_report_3:String = "The currency of the transaction is wrong";
+		static public var escrow_report_4:String = "The amount of the transaction is wrong";
+		static public var escrow_report_5:String = "The transaction is correct, but is taking too long to be accepted by the blockchain and the Buyer anticipates that he/she will not be able to confirm crypto acceptance within the 24 hours limit, as required by the rules";
+		static public var escrow_report_6:String = "Other";
+		static public var please_select_reason:String = "todo";
+		static public var indicate_issue_type:String = "Indicate issue type";
+		static public var escrow_report:String = "REPORT";
+		static public var escrow_report_sent:String = "The transaction has been suspended and forwarded to manual investigation by Dukascopy Support. Dukascopy Bank will contact you if any explanation is required.";
+		static public var investigation_alert:String = "Please note that Dukascopy Bank may charge USD 50 of investigation fee if the report proves to be fake.";
+		
 		static public function updateKeys(keys:Object):void {
 			for (var n:String in keys) {
 				if (n.indexOf("REFERAL_") == 0) {

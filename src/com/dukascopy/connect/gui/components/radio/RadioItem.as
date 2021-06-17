@@ -19,7 +19,7 @@ package com.dukascopy.connect.gui.components.radio
 	 * ...
 	 * @author Sergey Dobarin
 	 */
-	public class RadioItem extends Sprite
+	public class RadioItem extends Sprite implements IRadioItem
 	{
 		private var baseState:Bitmap;
 		private var selectedState:Bitmap;
