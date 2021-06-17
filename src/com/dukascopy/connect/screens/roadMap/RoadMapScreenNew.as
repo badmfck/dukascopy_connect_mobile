@@ -11,13 +11,11 @@ package com.dukascopy.connect.screens.roadMap {
 	import com.dukascopy.connect.gui.components.message.ToastMessage;
 	import com.dukascopy.connect.gui.lightbox.UI;
 	import com.dukascopy.connect.gui.menuVideo.BitmapButton;
-	import com.dukascopy.connect.gui.payments.AccountRoadMap;
 	import com.dukascopy.connect.gui.scrollPanel.ScrollPanel;
 	import com.dukascopy.connect.gui.tabs.FilterTabs;
 	import com.dukascopy.connect.gui.topBar.TopBarScreen;
 	import com.dukascopy.connect.screens.RootScreen;
 	import com.dukascopy.connect.screens.base.BaseScreen;
-	import com.dukascopy.connect.screens.payments.card.TypeCurrency;
 	import com.dukascopy.connect.screens.roadMap.actions.InitialDepositAction;
 	import com.dukascopy.connect.screens.roadMap.actions.ScanDocumentAction;
 	import com.dukascopy.connect.screens.roadMap.actions.SelectCardAction;
@@ -25,14 +23,8 @@ package com.dukascopy.connect.screens.roadMap {
 	import com.dukascopy.connect.screens.roadMap.actions.StartRTOAction;
 	import com.dukascopy.connect.screens.roadMap.actions.StartVideoidentificationAction;
 	import com.dukascopy.connect.sys.auth.Auth;
-	import com.dukascopy.connect.sys.echo.echo;
 	import com.dukascopy.connect.sys.errors.ErrorLocalizer;
 	import com.dukascopy.connect.sys.imageManager.ImageBitmapData;
-	import com.dukascopy.connect.sys.mrz.MrzBridge;
-	import com.dukascopy.connect.sys.mrz.MrzData;
-	import com.dukascopy.connect.sys.mrz.MrzError;
-	import com.dukascopy.connect.sys.mrz.MrzResult;
-	import com.dukascopy.connect.sys.nativeExtensionController.NativeExtensionController;
 	import com.dukascopy.connect.sys.php.PHP;
 	import com.dukascopy.connect.sys.php.PHPRespond;
 	import com.dukascopy.connect.sys.pointerManager.PointerManager;
@@ -52,11 +44,9 @@ package com.dukascopy.connect.screens.roadMap {
 	import flash.display.BitmapData;
 	import flash.display.Sprite;
 	import flash.events.Event;
-	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	import flash.text.TextFieldAutoSize;
 	import flash.text.TextFormatAlign;
-	import white.ChatIcon;
 	
 	/**
 	 * @author Sergey Dobarin
