@@ -211,7 +211,20 @@ package com.dukascopy.connect.gui.list.renderers {
 				var baseSize:Number = FontSize.TITLE_2;
 				var captionSize:Number = FontSize.SUBHEAD;
 				var color:String = "#" + Style.color(Style.COLOR_TEXT).toString(16);
-				result = "<font color='" + color + "' size='" + baseSize + "'>" + balance.substring(0, balance.indexOf(".")) + "</font>" + "<font color='" + color + "' size='" + captionSize + "'>" + balance.substr(balance.indexOf(".")) + "</font>";
+				
+				if (!isNaN(parseFloat(balance)))
+				{
+					balance = parseFloat(balance).toString()
+				}
+				
+				if (balance.indexOf(".") != -1)
+				{
+					result = "<font color='" + color + "' size='" + baseSize + "'>" + balance.substring(0, balance.indexOf(".")) + "</font>" + "<font color='" + color + "' size='" + captionSize + "'>" + balance.substr(balance.indexOf(".")) + "</font>";
+				}
+				else
+				{
+					result = "<font color='" + color + "' size='" + baseSize + "'>" + balance + "</font>";
+				}
 			}
 			
 			return result;

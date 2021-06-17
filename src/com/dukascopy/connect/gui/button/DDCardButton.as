@@ -148,6 +148,10 @@ package com.dukascopy.connect.gui.button {
 					if (Number(data.available) == 0)
 					{
 						balance = "0";
+						if ("currency" in data == false)
+						{
+							balance = "";
+						}
 					}
 					var dotIndex:int = balance.indexOf(".");
 					var balanceLeft:String = "";

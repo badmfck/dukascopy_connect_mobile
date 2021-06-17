@@ -856,6 +856,11 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 						break;
 					}
 				}
+				if (defaultAccount == null && wallets.length > 0)
+				{
+					defaultAccount = wallets[0];
+				}
+				
 				if (defaultAccount != null)
 				{
 					onWalletSelect(defaultAccount, updateCards, selectCard);

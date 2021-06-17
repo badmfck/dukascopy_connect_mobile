@@ -105,10 +105,10 @@ package com.dukascopy.connect.gui.list.renderers {
 			{
 				var balance:String = data.available;
 				balanceNum = Number(balance);
-				if (balance == "0")
+				/*if (balance == "0")
 				{
 					balance = "0.0";
-				}
+				}*/
 				
 				var baseSize:Number = FontSize.TITLE_2;
 				var captionSize:Number = FontSize.SUBHEAD;
