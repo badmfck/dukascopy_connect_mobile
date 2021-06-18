@@ -854,17 +854,14 @@ package com.dukascopy.connect.sys.payments {
 		static public function cardStatement(cardNumber:String, from:String, to:String, timezone:String = null):void {
 			if (cardNumber == "")
 				return;
-			
 			var request:Object = new Object();
 			request.from = from;
 			request.to = to;
 			request.load = "summary";
 			request.asfile = "pdf";
-			if (timezone != null)
-			{
+			if (timezone != null) {
 				request.timezone = timezone;
 			}
-			
 			call("account/cards/" + cardNumber, null, request, URLRequestMethod.GET, null, true);
 		}
 		
@@ -875,18 +872,15 @@ package com.dukascopy.connect.sys.payments {
 		static public function walletStatement(accountNumber:String, from:String, to:String, timezone:String = null):void {
 			if (accountNumber == "")
 				return;
-			
 			var request:Object = new Object();
 			request.date_from = from;
 			request.date_to = to;
 			request.asfile = "pdf";
 			request.extended = true;
 			request.account = accountNumber;
-			if (timezone != null)
-			{
+			if (timezone != null) {
 				request.timezone = timezone;
 			}
-			
 			call("account/statement", null, { date_from:from, date_to:to, asfile:"pdf", extended:true, account:accountNumber, timezone:timezone }, URLRequestMethod.GET, null, true);
 		}
 		
