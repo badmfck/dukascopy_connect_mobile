@@ -988,9 +988,78 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 				selectorCreditAccont.activate();
 				selectorDebitAccont.activate();
 				
-				selectorCreditCurrency.activate();
-				selectorDebitCurrency.activate();
+				if (canActivateDebitCurrency())
+				{
+					selectorDebitCurrency.activate();
+				}
+				else
+				{
+					selectorDebitCurrency.setTextAlpha(0.5);
+					selectorDebitCurrency.hidArrow();
+				}
+				if (canActivateCreditCurrency())
+				{
+					selectorCreditCurrency.activate();
+				}
+				else
+				{
+					selectorCreditCurrency.setTextAlpha(0.5);
+					selectorCreditCurrency.hidArrow();
+				}
 			}
+		}
+		
+		private function canActivateDebitCurrency():Boolean 
+		{
+			var currencies:Array = new Array();
+			
+			var wallets:Array = getDebitAccounts();
+			var l:int = wallets.length;
+			var walletItem:Object;
+			var exist:Object = new Object();
+			for (var i:int = 0; i < l; i++)
+			{
+				walletItem = wallets[i];
+				currencies.push(walletItem.CURRENCY)
+				if (exist[walletItem.CURRENCY] != null)
+				{
+					return false;
+				}
+				exist[walletItem.CURRENCY] = walletItem.CURRENCY;
+			}
+			return true;
+		}
+		
+		private function canActivateCreditCurrency():Boolean 
+		{
+			var currencies:Array;
+
+			var existingCurrencies:Array = getCurrencies();
+			if (existingCurrencies != null && existingCurrencies.length > 0)
+			{
+				currencies = existingCurrencies;
+			}
+			else
+			{
+				currencies = new Array();
+				
+				var exist:Object = new Object();
+				
+				var wallets:Array = getCreditAccounts();
+				var l:int = wallets.length;
+				var walletItem:Object;
+				for (var i:int = 0; i < l; i++)
+				{
+					walletItem = wallets[i];
+					currencies.push(walletItem.CURRENCY);
+					if (exist[walletItem.CURRENCY] != null)
+					{
+						return false;
+					}
+					exist[walletItem.CURRENCY] = walletItem.CURRENCY;
+				}
+			}
+			return true;
 		}
 		
 		private function startLoadRate():void 
