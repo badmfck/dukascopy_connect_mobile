@@ -189,6 +189,8 @@ package com.dukascopy.connect.gui.list.renderers {
 			drawType(li.data);
 			drawStatus(li.data);
 			
+			label.y = int(itemHeight * .5 - label.height - Config.FINGER_SIZE * .00);
+			
 			status.x = int(label.x + label.textWidth + 4 + Config.MARGIN);
 			status.y = int(label.y + label.height * .5 - status.height * .5);
 			

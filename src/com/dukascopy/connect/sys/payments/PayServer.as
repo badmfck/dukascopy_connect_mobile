@@ -851,19 +851,42 @@ package com.dukascopy.connect.sys.payments {
 		 * This method returns list of transactions (statement) of particular prepaid card. See description:
 		 * https://intranet.dukascopy.dom/wiki/pages/viewpage.action?pageId=73236528
 		 */
-		static public function cardStatement(cardNumber:String, from:String, to:String, timezone:String):void {
+		static public function cardStatement(cardNumber:String, from:String, to:String, timezone:String = null):void {
 			if (cardNumber == "")
 				return;
-			call("account/cards/" + cardNumber, null, { from:from, to:to, load:"summary", asfile:"pdf", timezone:timezone }, URLRequestMethod.GET, null, true);
+			
+			var request:Object = new Object();
+			request.from = from;
+			request.to = to;
+			request.load = "summary";
+			request.asfile = "pdf";
+			if (timezone != null)
+			{
+				request.timezone = timezone;
+			}
+			
+			call("account/cards/" + cardNumber, null, request, URLRequestMethod.GET, null, true);
 		}
 		
 		/**
 		 * This method returns list of transactions (statement) of particular prepaid card. See description:
 		 * https://intranet.dukascopy.dom/wiki/pages/viewpage.action?pageId=70681606
 		 */
-		static public function walletStatement(accountNumber:String, from:String, to:String, timezone:String):void {
+		static public function walletStatement(accountNumber:String, from:String, to:String, timezone:String = null):void {
 			if (accountNumber == "")
 				return;
+			
+			var request:Object = new Object();
+			request.date_from = from;
+			request.date_to = to;
+			request.asfile = "pdf";
+			request.extended = true;
+			request.account = accountNumber;
+			if (timezone != null)
+			{
+				request.timezone = timezone;
+			}
+			
 			call("account/statement", null, { date_from:from, date_to:to, asfile:"pdf", extended:true, account:accountNumber, timezone:timezone }, URLRequestMethod.GET, null, true);
 		}
 		
