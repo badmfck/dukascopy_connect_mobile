@@ -229,17 +229,24 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 			else
 			{
 				currencies = new Array();
-
+				
+				var exist:Object = new Object();
+				
 				var wallets:Array = getCreditAccounts();
 				var l:int = wallets.length;
 				var walletItem:Object;
 				for (var i:int = 0; i < l; i++)
 				{
 					walletItem = wallets[i];
-					currencies.push(walletItem.CURRENCY)
+					currencies.push(walletItem.CURRENCY);
+					if (exist[walletItem.CURRENCY] != null)
+					{
+						return;
+					}
+					exist[walletItem.CURRENCY] = walletItem.CURRENCY;
 				}
 			}
-
+			
 			DialogManager.showDialog(
 					ListSelectionPopup,
 					{
@@ -322,10 +329,16 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 			var wallets:Array = getDebitAccounts();
 			var l:int = wallets.length;
 			var walletItem:Object;
+			var exist:Object = new Object();
 			for (var i:int = 0; i < l; i++)
 			{
 				walletItem = wallets[i];
 				currencies.push(walletItem.CURRENCY)
+				if (exist[walletItem.CURRENCY] != null)
+				{
+					return;
+				}
+				exist[walletItem.CURRENCY] = walletItem.CURRENCY;
 			}
 			
 			DialogManager.showDialog(

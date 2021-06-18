@@ -20,6 +20,7 @@ package com.dukascopy.connect.gui.button
 	import flash.geom.ColorTransform;
 	import flash.text.TextField;
 	import flash.text.TextFieldAutoSize;
+	import flash.text.TextFormat;
 	import flash.text.TextFormatAlign;
 	
 	/**
@@ -35,6 +36,7 @@ package com.dukascopy.connect.gui.button
 		private var box:Sprite;
 		private var tf:TextField;
 		private var tfRight:TextField;
+		private var walletName:TextField;
 		
 		static private var arrowHeight:int;
 		static private var arrowCathetus:int;
@@ -54,6 +56,8 @@ package com.dukascopy.connect.gui.button
 		private var description:Bitmap;
 		private var isInvestment:Boolean;
 		private var underlineColor:Number;
+		private var textFormatLabel:TextFormat;
+		private var textFormatPlaceholder:TextFormat;
 		
 		public function DDAccountButton(callBack:Function, data:Object = null/*, defaultLabel:String = ""*/, showArrow:Boolean = true, ammountColor:Number=-1, underlineColor:Number = NaN)
 		{
@@ -77,17 +81,47 @@ package com.dukascopy.connect.gui.button
 			tapCallback = callBack;
 			
 			box = new Sprite();
-			tf = UIFactory.createTextField();
-			tf.textColor = Style.color(Style.COLOR_SUBTITLE);
-			//tf.border = true;
+			
+			textFormatLabel = new TextFormat();
+			textFormatLabel.size = FontSize.CAPTION_1;
+			textFormatLabel.color = Style.color(Style.COLOR_SUBTITLE);
+			textFormatLabel.font = Config.defaultFontName;
+			
+			textFormatPlaceholder = new TextFormat();
+			textFormatPlaceholder.size = FontSize.BODY;
+			textFormatPlaceholder.color = Style.color(Style.COLOR_TEXT);
+			textFormatPlaceholder.font = Config.defaultFontName;
+			
+			tf = new TextField();
+			tf.defaultTextFormat = textFormatLabel;
+			tf.multiline = false;
+			tf.wordWrap = false;
+			tf.text = '|`qI';
+			tf.height = tf.textHeight + 4;
+			tf.text = "";
 			
 			tfRight = UIFactory.createTextField();
 			tfRight.autoSize = TextFieldAutoSize.RIGHT;
 			tfRight.defaultTextFormat.align = TextFormatAlign.RIGHT;
 			
+			var textFormat:TextFormat = new TextFormat();
+			textFormat.size = FontSize.SUBHEAD;
+			textFormat.color = Style.color(Style.COLOR_TEXT);
+			textFormat.font = Config.defaultFontName;
+			
+			walletName = new TextField();
+			walletName.defaultTextFormat = textFormat;
+			walletName.textColor = Style.color(Style.COLOR_TEXT);
+			walletName.multiline = false;
+			walletName.wordWrap = false;
+			walletName.text = '|`qI';
+			walletName.height = walletName.textHeight + 4;
+			walletName.text = "";
+			
 			//tfRight.border = true;
 			box.addChild(tf);
 			box.addChild(tfRight);
+			box.addChild(walletName);
 			
 			icon = new Bitmap();
 			box.addChild(icon);
@@ -176,7 +210,6 @@ package com.dukascopy.connect.gui.button
 			
 			if (data == null)
 			{
-				tf.textColor = Style.color(Style.COLOR_TEXT);
 				tfRight.text = "";
 				// render default label
 				tf.text = defaultLabel;
@@ -190,11 +223,16 @@ package com.dukascopy.connect.gui.button
 					icon.bitmapData.dispose();
 					icon.bitmapData = null;
 				}
+				
+				tf.setTextFormat(textFormatPlaceholder);
+				tf.width = tf.textWidth + 4;
+				tf.height = tf.textHeight + 4;
+				
 				generatedBitmap.drawWithQuality(box, null, null, null, null, true, StageQuality.BEST);
 			}
 			else if (data is String)
 			{
-				tf.textColor = Style.color(Style.COLOR_TEXT);
+				
 				tfRight.text = "";
 				// render single text line 	
 				tf.text = data as String;
@@ -204,6 +242,10 @@ package com.dukascopy.connect.gui.button
 				description.visible = false;
 				description.x = int(w - description.width);
 				description.y = int(tf.y + tf.height + Config.FINGER_SIZE * .3);
+				
+				tf.setTextFormat(textFormatPlaceholder);
+				tf.width = tf.textWidth + 4;
+				tf.height = tf.textHeight + 4;
 				
 				generatedBitmap.drawWithQuality(box, null, null, null, null, true, StageQuality.BEST);
 			}
@@ -296,7 +338,7 @@ package com.dukascopy.connect.gui.button
 				//var formatedAccountNumber:String = (this.w < 380)?accountNumber.substr(0, 4) + "…" + accountNumber.substr(8):accountNumber.substr(0, 4) + " " + accountNumber.substr(4, 4) + " " + accountNumber.substr(8);
 				
 				var formatedAccountNumber:String;
-				if (accountNumber != null && accountNumber.length > 3)
+				/*if (accountNumber != null && accountNumber.length > 3)
 				{
 					if (accountNumber.length == 12)
 					{
@@ -309,13 +351,15 @@ package com.dukascopy.connect.gui.button
 				}
 				else{
 					formatedAccountNumber = accountNumber;
-				}
+				}*/
+				formatedAccountNumber = accountNumber;
 				
-				if (data.IBAN != null){
-					accountNumber  = data.IBAN;
-					formatedAccountNumber = accountNumber.substr(0, 4) +"…"+ accountNumber.substr(accountNumber.length-4,4);
+				if (data.IBAN != null && !("TYPE" in data && data.TYPE != null && Lang.otherAccTypes[data.TYPE] != null)){
+					accountNumber = data.IBAN;
+				//	formatedAccountNumber = accountNumber.substr(0, 4) +"…"+ accountNumber.substr(accountNumber.length-4,4);
+					formatedAccountNumber = accountNumber;
 				}else{
-					if (accountNumber != null && accountNumber.length > 3)
+					/*if (accountNumber != null && accountNumber.length > 3)
 					{
 						if (accountNumber.length == 12)
 						{
@@ -325,7 +369,7 @@ package com.dukascopy.connect.gui.button
 						{
 							formatedAccountNumber = "… " + accountNumber.substr(accountNumber.length - 4);
 						}
-					}
+					}*/
 				}
 				
 				tf.text = formatedAccountNumber;
@@ -373,12 +417,19 @@ package com.dukascopy.connect.gui.button
 						icon.bitmapData = null;
 					}
 					icon.bitmapData = UI.renderAsset(iconAsset, ICON_SIZE, ICON_SIZE, false, "DDAccountButton.icon");
-					tf.x = ICON_SIZE + Config.DOUBLE_MARGIN;
-					tf.width = tfRight.x - ICON_SIZE-Config.DOUBLE_MARGIN;
+					tf.x = int(ICON_SIZE + Config.FINGER_SIZE * .15);
+					tf.width = tfRight.x - ICON_SIZE - Config.FINGER_SIZE * .15;
 				}
 				else{
-					tf.x = ICON_SIZE + Config.DOUBLE_MARGIN;
+					tf.x = int(ICON_SIZE + Config.FINGER_SIZE * .15);
 				}
+				
+				tf.setTextFormat(textFormatLabel);
+				tf.width = tf.textWidth + 4;
+				tf.height = tf.textHeight + 4;
+				tf.y = (h - tf.height) * .5;
+				
+				resize(tf, tfRight.x - Config.FINGER_SIZE * .15);
 				
 				icon.x = 0;
 				icon.y = h * .5 - ICON_SIZE * .5;
@@ -387,12 +438,37 @@ package com.dukascopy.connect.gui.button
 				description.x = int(w - description.width);
 				description.y = int(tf.y + tf.height + Config.FINGER_SIZE * .3);
 				
+				if ("TYPE" in data && data.TYPE != null && Lang.otherAccTypes[data.TYPE] != null)
+				{
+					walletName.text = Lang.otherAccTypes[data.TYPE];
+					walletName.y = Math.round(h * .5 - walletName.height - Config.FINGER_SIZE * .01);
+					tf.y = Math.round(h * .5 + Config.FINGER_SIZE * .01);
+					walletName.x = tf.x;
+				}
+				else
+				{
+					walletName.text = "";
+				}
 				generatedBitmap.drawWithQuality(box, null, null, null, null, true, StageQuality.BEST);
 			}
 			
 			//generatedBitmap.drawWithQuality(box, null, null, null, null, true, StageQuality.BEST);
 			
 			setBitmapData(generatedBitmap);
+		}
+		
+		private function resize(tf:TextField, position:Number):void 
+		{
+			if (tf.text != null && tf.text.length > 5)
+			{
+				if (tf.x + tf.width > position)
+				{
+					tf.text = tf.text.substr(0, tf.text.length - 3) + "..";
+					tf.width = tf.textWidth + 4;
+					
+					resize(tf, position);
+				}
+			}
 		}
 		
 		private function getUnderlineColor():uint
@@ -413,8 +489,10 @@ package com.dukascopy.connect.gui.button
 			
 			UI.safeRemoveChild(tf);
 			UI.safeRemoveChild(tfRight);
+			UI.safeRemoveChild(walletName);
 			tf = null;
 			tfRight = null;
+			walletName = null;
 			if (box != null)
 			{
 				box.graphics.clear();

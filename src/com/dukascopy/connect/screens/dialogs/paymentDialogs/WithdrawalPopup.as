@@ -206,10 +206,12 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 					}
 				}*/
 				
+				var currencies:Array = getCurrencies();
+				
 				DialogManager.showDialog(
 					ListSelectionPopup,
 					{
-						items:getCurrencies(),
+						items:currencies,
 						title:Lang.selectCurrency,
 						renderer:ListPayCurrency,
 						callback:callBackSelectCurrency
