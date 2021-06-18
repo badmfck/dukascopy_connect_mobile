@@ -972,6 +972,9 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 				{
 					debitCurrrency = selectedAccount.CURRENCY;
 				}
+				var card:Object = selectorCard.getValue();
+				if (card != null)
+					swift = card.number;
 				PayManager.callGetWithdrawalCommission(amount, currency, withdrawalType, swift, _lastComissionCallID, debitCurrrency);
 			}
 		}
