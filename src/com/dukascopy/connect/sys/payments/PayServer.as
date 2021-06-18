@@ -602,15 +602,21 @@ package com.dukascopy.connect.sys.payments {
 		 */
 		static public function call_getMoneyWithdrawalCommission(_callback:Function, _amount:Number, _currency:String, _type:String, _swift:String, _callID:String = "", debitCurrrency:String = null):void {
 			var requestObject:Object;
-			if (_type == "WIRE")
+			var method:String = "money/withdrawal/commission";
+			
+			if (_type == "WIRE") {
 				requestObject = { amount:_amount, currency:_currency, type:_type, swift:_swift };
-			else
+			} else if (_type == "CARD") {
+				method = "money/withdrawal/commission/linked-card";
+				requestObject = { amount:_amount, currency:_currency, card:_swift };
+			} else {
 				requestObject = { amount:_amount, currency:_currency, type:_type };
-			if (debitCurrrency != null)
-			{
+			}
+			
+			if (debitCurrrency != null) {
 				requestObject.debit_currency = debitCurrrency;
 			}
-			var php:PayLoader = call("money/withdrawal/commission", _callback, requestObject , URLRequestMethod.GET);
+			var php:PayLoader = call(method, _callback, requestObject , URLRequestMethod.GET);
 			if (php.savedRequestData != null)
 				php.savedRequestData.callID = _callID;
 		}
@@ -845,20 +851,20 @@ package com.dukascopy.connect.sys.payments {
 		 * This method returns list of transactions (statement) of particular prepaid card. See description:
 		 * https://intranet.dukascopy.dom/wiki/pages/viewpage.action?pageId=73236528
 		 */
-		static public function cardStatement(cardNumber:String, from:String, to:String):void {
+		static public function cardStatement(cardNumber:String, from:String, to:String, timezone:String):void {
 			if (cardNumber == "")
 				return;
-			call("account/cards/" + cardNumber, null, { from:from, to:to, load:"summary", asfile:"pdf" }, URLRequestMethod.GET, null, true);
+			call("account/cards/" + cardNumber, null, { from:from, to:to, load:"summary", asfile:"pdf", timezone:timezone }, URLRequestMethod.GET, null, true);
 		}
 		
 		/**
 		 * This method returns list of transactions (statement) of particular prepaid card. See description:
 		 * https://intranet.dukascopy.dom/wiki/pages/viewpage.action?pageId=70681606
 		 */
-		static public function walletStatement(accountNumber:String, from:String, to:String):void {
+		static public function walletStatement(accountNumber:String, from:String, to:String, timezone:String):void {
 			if (accountNumber == "")
 				return;
-			call("account/statement", null, { date_from:from, date_to:to, asfile:"pdf", extended:true, account:accountNumber }, URLRequestMethod.GET, null, true);
+			call("account/statement", null, { date_from:from, date_to:to, asfile:"pdf", extended:true, account:accountNumber, timezone:timezone }, URLRequestMethod.GET, null, true);
 		}
 		
 		/**

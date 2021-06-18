@@ -1,6 +1,7 @@
 package com.dukascopy.connect.sys.payments {
 
 	import com.dukascopy.connect.data.screenAction.customActions.DownloadFileAction;
+	import com.dukascopy.connect.gui.lightbox.UI;
 	import com.dukascopy.connect.sys.auth.Auth;
 	import com.dukascopy.connect.sys.connectionManager.NetworkManager;
 	import com.dukascopy.connect.sys.echo.echo;
@@ -81,6 +82,7 @@ package com.dukascopy.connect.sys.payments {
 				urlLoader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, onSecurityError);
 				urlLoader.addEventListener(HTTPStatusEvent.HTTP_STATUS, onHTTPStatus);
 				urlLoader.addEventListener(HTTPStatusEvent.HTTP_RESPONSE_STATUS, onHTTPStatus);
+				echo("PayLoader (" + id + ")", "load", "\n	url: " + urlRequest.url + "\n	method: " + method + "\n	data:\n" + UI.tracedObj(urlRequest.data));
 				urlLoader.load(urlRequest);
 			} else
 				callback(respond.setData(true, Lang.noInternetConnection, null, -2));
