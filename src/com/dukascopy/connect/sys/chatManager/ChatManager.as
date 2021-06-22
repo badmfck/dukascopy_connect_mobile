@@ -2,8 +2,8 @@ package com.dukascopy.connect.sys.chatManager {
 
 	import com.adobe.crypto.MD5;
 	import com.dukascopy.connect.Config;
-import com.dukascopy.connect.GD;
-import com.dukascopy.connect.MobileGui;
+	import com.dukascopy.connect.GD;
+	import com.dukascopy.connect.MobileGui;
 	import com.dukascopy.connect.data.ChatSettingsModel;
 	import com.dukascopy.connect.data.LocalSoundFileData;
 	import com.dukascopy.connect.data.MediaFileData;

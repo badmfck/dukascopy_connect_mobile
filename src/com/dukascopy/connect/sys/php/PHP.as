@@ -140,8 +140,8 @@ package com.dukascopy.connect.sys.php {
 		 * @param	userUIDS
 		 * @param	createChatOnly
 		 */
-		static public function call_stsGet(callBack:Function, promoCode:String, notaryFlow:Boolean,coolPhone:Boolean,birthDate:String,documentID:String,documentType:String,expired:String):void {
-			call('sts.get', callBack,{params:{promocode:promoCode,expired:expired,documentID:documentID,documentType:documentType,birthDate:birthDate,coolphone:(coolPhone)?1:0,notaryflow:(notaryFlow)?1:0,version:Config.VERSION,platform:Config.PLATFORM}});
+		static public function call_stsGet(callBack:Function, promoCode:String, notaryFlow:Boolean,coolPhone:Boolean,birthDate:String,documentID:String,documentType:String,expired:String,nationality:String):void {
+			call('sts.get', callBack,{params:{nationality:nationality,promocode:promoCode,expired:expired,documentID:documentID,documentType:documentType,birthDate:birthDate,coolphone:(coolPhone)?1:0,notaryflow:(notaryFlow)?1:0,version:Config.VERSION,platform:Config.PLATFORM}});
 		}
 		
 		static public function chat_start(callBack:Function, userUIDS:Array, createChatOnly:Boolean = false, caller:String = ""):void {

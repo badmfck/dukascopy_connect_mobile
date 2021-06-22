@@ -328,11 +328,22 @@ package com.forms{
             }
             
             component.parent=this;
-
-           // attachControllerUpward(component);
+            if(component.id!=null)
+                attachControllerUpward(component);
 
             if(doRebuild)
                 rebuild();
+        }
+
+        private function attachControllerUpward(component:FormComponent):void{
+            if(this.controller && component.id!=null){
+                try{
+                   this.controller[id]=this;
+                }catch(e:Error){
+                    trace("Can't attach element to controller: "+id);
+                    
+                }
+            }
         }
 
         private function rebuild():void{
@@ -481,22 +492,22 @@ package com.forms{
 
             // setup wrap content for display size
             if(percentagesChidldren.length==0){
-            if(bounds['display_'+style.layout.oppositeSide]<0){
-                if(style.layout.toString()==FormLayout.VERTICAL)
-                    maxSize+=style.padding.left+style.padding.right;
-                else
-                    maxSize+=style.padding.top+style.padding.bottom;
+                if(bounds['display_'+style.layout.oppositeSide]<0){
+                    if(style.layout.toString()==FormLayout.VERTICAL)
+                        maxSize+=style.padding.left+style.padding.right;
+                    else
+                        maxSize+=style.padding.top+style.padding.bottom;
 
-                bounds['display_'+style.layout.oppositeSide]=maxSize;
-                bounds[style.layout.oppositeSide]=maxSize;
-            }else{
-                bounds[style.layout.oppositeSide]=bounds['display_'+style.layout.oppositeSide];
-            }
-            if(bounds['display_'+style.layout.side]<0){
-               
-                bounds['display_'+style.layout.side]=bounds[style.layout.side];
+                    bounds['display_'+style.layout.oppositeSide]=maxSize;
+                    bounds[style.layout.oppositeSide]=maxSize;
+                }else{
+                    bounds[style.layout.oppositeSide]=bounds['display_'+style.layout.oppositeSide];
+                }
+                if(bounds['display_'+style.layout.side]<0){
                 
-            }
+                    bounds['display_'+style.layout.side]=bounds[style.layout.side];
+                    
+                }
             }
             
             // move bounds to display size, if display size > 0

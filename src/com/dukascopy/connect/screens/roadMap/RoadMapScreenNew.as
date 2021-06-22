@@ -85,6 +85,7 @@ package com.dukascopy.connect.screens.roadMap {
 		public static const REGISTRATION_TYPE_DEPOSIT:String = "deposit";
 		public static const REGISTRATION_TYPE_DEPOSIT_CARD:String = "deposit_card";
 		public static const REGISTRATION_TYPE_SOLVENCY_CHECK:String = "zbx_check";
+		public static const REGISTRATION_TYPE_MRZ:String = "mrz";
 		
 		static public const TAB_ACCOUNT_MCA:String = "tabAccountMca";
 		static public const TAB_ACCOUNT_TRADE_CH:String = "tabAccountTradeCh";
@@ -264,7 +265,10 @@ package com.dukascopy.connect.screens.roadMap {
 			TweenMax.killDelayedCallsTo(openInternetBank);
 			if (Auth.bank_phase == null)
 				return;
-			
+
+			if(Auth.bank_phase == BankPhaze.DOCUMENT_SCAN)
+				registrationType=REGISTRATION_TYPE_MRZ;
+
 			var items:Vector.<RoadmapStepData> = new Vector.<RoadmapStepData>();
 			
 			var item_registration_form   :RoadmapStepData = new RoadmapStepData(RoadmapStepData.STEP_REGISTRATION_FORM,   Lang.roadmap_fillRegistrationForm);
@@ -273,6 +277,9 @@ package com.dukascopy.connect.screens.roadMap {
 			var item_select_card         :RoadmapStepData = new RoadmapStepData(RoadmapStepData.STEP_SELECT_CARD,         Lang.roadmap_selectCard);
 			var item_videoidentification :RoadmapStepData = new RoadmapStepData(RoadmapStepData.STEP_VIDEOIDENTIFICATION, Lang.roadmap_identityVerification);
 			var item_approve_account     :RoadmapStepData = new RoadmapStepData(RoadmapStepData.STEP_APPROVE_ACCOUNT,     Lang.roadmap_approveAccount);
+
+			// ONLY FOR MRZ SCAN (AS DUMMY)
+			var item_continue_registration:RoadmapStepData = new RoadmapStepData(RoadmapStepData.STEP_APPROVE_ACCOUNT,     Lang.continueRegistration);
 			
 			var item_solvency_check      :RoadmapStepData = new RoadmapStepData(RoadmapStepData.STEP_SOLVENCY_CHECK,      Lang.roadmap_solvencyCheck);
 			
@@ -422,7 +429,9 @@ package com.dukascopy.connect.screens.roadMap {
 			
 			if (selectedFilter == TAB_ACCOUNT_MCA)
 			{
-				items.push(item_registration_form);
+				
+				if(registrationType!=REGISTRATION_TYPE_MRZ)
+					items.push(item_registration_form);
 				
 				if (registrationType == REGISTRATION_TYPE_SOLVENCY_CHECK)
 				{
@@ -447,12 +456,12 @@ package com.dukascopy.connect.screens.roadMap {
 						(item_solvency_check.action as SolvencyCheckAction).allowZBX = false;
 					}
 					
-					if (Auth.bank_phase == BankPhaze.DOCUMENT_SCAN)
+					/*if (Auth.bank_phase == BankPhaze.DOCUMENT_SCAN)
 					{
-						items.push(item_document_scan);
+						//items.push(item_document_scan);
 						item_document_scan.action.getSuccessSignal().add(onDocumentScanSuccess);
 						item_document_scan.action.getFailSignal().add(onDocumentScanFail);
-					}
+					}*/
 					
 					if (registrationType == REGISTRATION_TYPE_DEPOSIT || registrationType == REGISTRATION_TYPE_DEPOSIT_CARD)
 					{
@@ -466,13 +475,25 @@ package com.dukascopy.connect.screens.roadMap {
 					{
 						items.push(item_initial_Deposit);
 					}
+
+					if(registrationType==REGISTRATION_TYPE_MRZ){
+						items.push(item_document_scan);
+						items.push(item_continue_registration);
+						item_document_scan.action.getSuccessSignal().add(onDocumentScanSuccess);
+						item_document_scan.action.getFailSignal().add(onDocumentScanFail);
+					}
 				}
 				
-				items.push(item_videoidentification);
-				items.push(item_approve_account);
+				// ONLY IF MRZ SCAN NOT NEEDED
+				if(registrationType!=REGISTRATION_TYPE_MRZ){
+					items.push(item_videoidentification);
+					item_continue_registration.status=RoadmapStepData.STATE_INACTIVE;
+					items.push(item_approve_account);
+				}
 			}
 			else
 			{
+				// NOT MCA
 				item_registration_form.status   = RoadmapStepData.STATE_DONE;
 				item_videoidentification.status = RoadmapStepData.STATE_ACTIVE;
 				item_approve_account.status     = RoadmapStepData.STATE_INACTIVE;

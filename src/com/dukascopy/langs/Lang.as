@@ -2333,6 +2333,7 @@ package com.dukascopy.langs {
 		
 		static public var increaseLimitRequestFalse:String = "You may file a request for limits increase only twice per day";
 		static public var updateInfoRequestFalse:String = "You may file a request for personal information update only twice per day";
+		static public var continueRegistration:String = "Continue registration";
 		
 		static public function updateKeys(keys:Object):void {
 			for (var n:String in keys) {

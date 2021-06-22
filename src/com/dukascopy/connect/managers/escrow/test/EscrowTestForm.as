@@ -15,6 +15,7 @@ package com.dukascopy.connect.managers.escrow.test{
         
         private var form:Form;
         
+        public var buyerKey:Sprite=null;
 
 
         public function EscrowTestForm(){
@@ -42,7 +43,7 @@ package com.dukascopy.connect.managers.escrow.test{
         }
 
         private function formReady():void{
-
+            
         } 
 
         public function destroy():void{

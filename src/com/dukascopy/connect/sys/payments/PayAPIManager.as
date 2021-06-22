@@ -521,7 +521,8 @@ package com.dukascopy.connect.sys.payments {
 				birthDate,
 				mrzData.docNumber,
 				mrzData.docType,
-				mrzData.dateExpired
+				mrzData.dateExpired,
+				mrzData.nationality
 
 			);
 			Auth.rtoStarted();

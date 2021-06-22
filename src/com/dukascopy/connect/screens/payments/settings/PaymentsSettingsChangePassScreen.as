@@ -159,7 +159,6 @@ package com.dukascopy.connect.screens.payments.settings {
 		}
 
 		private function onBTNChangePassword():void {
-			//TODO:func
 			if(paramCurr.length >= 6){
 				PayManager.callChangePassword(paramCurr, paramNP);
 				deactivateScreen();
@@ -322,11 +321,11 @@ package com.dukascopy.connect.screens.payments.settings {
 
 		}
 
-		private function createIconByMCandName(mc:Sprite, nameIcon:String, isBlock = false, color:uint = 0xFFFFFF):BitmapData {
+		private function createIconByMCandName(mc:Sprite, nameIcon:String, isBlock:Boolean = false, color:uint = 0xFFFFFF):BitmapData {
 			var topBarBtnSize:Number = Config.FINGER_SIZE * .4;
 			if (isBlock) {
 				var myColorTransform:ColorTransform = new ColorTransform();
-				myColorTransform.color = color /**/;
+				myColorTransform.color = color;
 				mc.transform.colorTransform = myColorTransform;
 			}
 			return UI.renderAsset(mc, topBarBtnSize, topBarBtnSize, true, nameIcon);
