@@ -479,6 +479,7 @@ package com.dukascopy.connect.screens.roadMap {
 					if(registrationType==REGISTRATION_TYPE_MRZ){
 						items.push(item_document_scan);
 						items.push(item_continue_registration);
+						item_continue_registration.status=RoadmapStepData.STATE_INACTIVE;
 						item_document_scan.action.getSuccessSignal().add(onDocumentScanSuccess);
 						item_document_scan.action.getFailSignal().add(onDocumentScanFail);
 					}
@@ -487,7 +488,6 @@ package com.dukascopy.connect.screens.roadMap {
 				// ONLY IF MRZ SCAN NOT NEEDED
 				if(registrationType!=REGISTRATION_TYPE_MRZ){
 					items.push(item_videoidentification);
-					item_continue_registration.status=RoadmapStepData.STATE_INACTIVE;
 					items.push(item_approve_account);
 				}
 			}

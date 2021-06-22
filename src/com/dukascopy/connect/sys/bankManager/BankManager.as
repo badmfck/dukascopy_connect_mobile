@@ -1429,7 +1429,8 @@ package com.dukascopy.connect.sys.bankManager {
             );
             sendMessage(data.action, true);
 			return;
-			var from:String = Number(value.dateFrom.getTime() * .001).toFixed(0);
+			
+			/*var from:String = Number(value.dateFrom.getTime() * .001).toFixed(0);
 			var to:String = Number(value.dateTo.getTime() * .001).toFixed(0);
 			
 			GD.S_TIMEZONE_REQUEST.invoke(function(val:String):void {
@@ -1440,7 +1441,7 @@ package com.dukascopy.connect.sys.bankManager {
 					val, true
 				);
 				sendMessage(data.action, true);
-			} );
+			} );*/
 		}
 		
 		static private function openLink(data:Object):void {
