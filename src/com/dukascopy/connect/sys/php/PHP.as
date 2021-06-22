@@ -484,7 +484,7 @@ package com.dukascopy.connect.sys.php {
 		}
 		
 		static public function profile_getFXGallery(fxID:int, callBack:Function):void {
-			call("profile.getFXGallery", callBack, {fxid: fxID}, null, false, null, false);
+			call("profile.getFXGallery", callBack, {fxid: fxID}, null, false, null);
 		}
 		
 		static public function saveProfile(avatarId:String, firstName:String, lastName:String, callBack:Function, dataType:String):void {

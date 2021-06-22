@@ -280,8 +280,16 @@ package com.dukascopy.connect.gui.list.renderers.trade {
 				date.visible = false;
 			}
 			
-			if (data.fillOrKill)
+			if (data.fillOrKill || data.publicOrder == false)
 			{
+				if (data.fillOrKill)
+				{
+					comment.text = Lang.fillOrKill.toUpperCase();
+				}
+				else if (data.publicOrder == false)
+				{
+					comment.text = Lang.privateOrder.toUpperCase();
+				}
 				comment.width = originalWidth - padding;
 				comment.height = comment.textHeight + 4;
 				comment.visible = true;
