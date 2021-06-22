@@ -471,33 +471,6 @@ package com.dukascopy.connect.sys.bankManager {
 					sendBlock(tmp[1], vals[0], vals[1]);
 					return;
 				}
-				if (tmp[1] == "investmentOperationsAdd") {
-					if (tmp.length == 3)
-						vals = tmp[2].split("|!|");
-					else
-						return;
-					firstData = tmp[2];
-					sendBlock(tmp[1], vals[0], vals[1]);
-					return;
-				}
-				if (tmp[1] == "investmentOperationsAdd") {
-					if (tmp.length == 3)
-						vals = tmp[2].split("|!|");
-					else
-						return;
-					firstData = tmp[2];
-					sendBlock(tmp[1], vals[0], vals[1]);
-					return;
-				}
-				if (tmp[1] == "investmentOperationsAdd") {
-					if (tmp.length == 3)
-						vals = tmp[2].split("|!|");
-					else
-						return;
-					firstData = tmp[2];
-					sendBlock(tmp[1], vals[0], vals[1]);
-					return;
-				}
 				if (tmp[1] == "investmentsList" || tmp[1] == "investmentsListAll" || tmp[1] == "investmentsListSell") {
 					if (investmentsData == null) {
 						lastWaitingInvestmentsAction = tempAction;
@@ -1029,6 +1002,10 @@ package com.dukascopy.connect.sys.bankManager {
 				if (temp.length != 3)
 					return;
 				PaymentsManagerNew.callCardStatement(temp[2], temp[0], temp[1]);
+				/*temp = msg.substr(command.length + 1).split("|!|");
+				if (temp.length != 4)
+					return;
+				PaymentsManagerNew.callCardStatement(temp[2], temp[0], temp[1], temp[3]);*/
 			}
 			if (command == "changeMainCurrency") {
 				if (checkForPaymentsRequestExist(msg) == true)
@@ -1041,6 +1018,10 @@ package com.dukascopy.connect.sys.bankManager {
 				if (temp.length != 3)
 					return;
 				PaymentsManagerNew.callWalletStatement(temp[2], temp[0], temp[1]);
+				/*temp = msg.substr(command.length + 1).split("|!|");
+				if (temp.length != 4)
+					return;
+				PaymentsManagerNew.callWalletStatement(temp[2], temp[0], temp[1], temp[3]);*/
 			}
 			if (command == "possibleRewardDeposites") {
 				if (checkForPaymentsRequestExist(msg) == true)
@@ -1895,6 +1876,7 @@ package com.dukascopy.connect.sys.bankManager {
 			if (preCheckForErrors(respondData, "investmentCurrency", null, "paymentsErrorDataNull") == true)
 				return;
 			accountInfo.settings = respondData;
+			sendBlock("clearWallets");
 			sendBlock("investMoney");
 		}
 		
