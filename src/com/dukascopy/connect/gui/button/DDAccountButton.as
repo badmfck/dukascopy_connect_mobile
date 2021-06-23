@@ -444,6 +444,8 @@ package com.dukascopy.connect.gui.button
 					walletName.y = Math.round(h * .5 - walletName.height - Config.FINGER_SIZE * .01);
 					tf.y = Math.round(h * .5 + Config.FINGER_SIZE * .01);
 					walletName.x = tf.x;
+					
+					walletName.width = tfRight.x - Config.FINGER_SIZE * .15 - walletName.x;
 				}
 				else
 				{
