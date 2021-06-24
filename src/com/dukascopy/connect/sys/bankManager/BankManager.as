@@ -779,7 +779,7 @@ package com.dukascopy.connect.sys.bankManager {
 							title = Lang.TEXT_WITHDRAWAL;
 							giftData.currencyAvaliable = false;
 							giftData.fromAccounts = PayManager.accountInfo.accounts;
-							giftData.toAccounts = otherAccounts;
+							giftData.toAccounts = removeCryptoAccounts(otherAccounts);
 							giftData.transferType = OperationType.SAVING_MONEY_TRANSFER;
 						} else if (data.value == "SMCA") {
 							giftData.fromAccounts = savingsAccounts;
@@ -788,7 +788,7 @@ package com.dukascopy.connect.sys.bankManager {
 						} else if (data.value == "TMCA") {
 							textFrom = Lang.fromTradingAccount;
 							giftData.currencyAvaliable = false;
-							giftData.fromAccounts = otherAccounts;
+							giftData.fromAccounts = removeCryptoAccounts(otherAccounts);
 							giftData.toAccounts = PayManager.accountInfo.accounts;
 							giftData.transferType = OperationType.MCA_MONEY_TRANSFER;
 						}
@@ -1307,6 +1307,47 @@ package com.dukascopy.connect.sys.bankManager {
 				invokeAnswerSignal(baVO);
 			}
 			sendMessage(msg);
+		}
+		
+		static private function removeCryptoAccounts(accounts:Array):Array 
+		{
+			var result:Array = new Array();
+			if (accounts != null)
+			{
+				for (var i:int = 0; i < accounts.length; i++) 
+				{
+					if (!isCryptoFoundAccount(accounts[i]))
+					{
+						result.push(accounts[i]);
+					}
+				}
+			}
+			return result;
+		}
+		
+		static private function isCryptoFoundAccount(account:Object):Boolean 
+		{
+			var result:Boolean = false;
+			if (account != null)
+			{
+				if ("IS_BITCOIN_FUNDING" in account && account.IS_BITCOIN_FUNDING == "1")
+				{
+					return true;
+				}
+				if ("IS_DUKASCOINS_FUNDING" in account && account.IS_DUKASCOINS_FUNDING == "1")
+				{
+					return true;
+				}
+				if ("IS_ETHEREUM_FUNDING" in account && account.IS_ETHEREUM_FUNDING == "1")
+				{
+					return true;
+				}
+				if ("IS_TETHER_FUNDING" in account && account.IS_TETHER_FUNDING == "1")
+				{
+					return true;
+				}
+			}
+			return result;
 		}
 		
 		static private function onSaveTemplate(val:int, transactionData:Object):void {
