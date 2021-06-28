@@ -3595,10 +3595,10 @@ package com.dukascopy.connect.sys.bankManager {
 			total ||= {
 				"type": "total",
 				"IBAN": Lang.textTotalCash.toUpperCase(),
-				"opened": lastOpened,
-				"CURRENCY": accountInfo.consolidateCurrency
+				"opened": lastOpened
 			};
 			total["BALANCE"] = 0;
+			total["CURRENCY"] = accountInfo.consolidateCurrency
 			var balance:Number;
 			var index:int;
 			for (var n:String in data) {
