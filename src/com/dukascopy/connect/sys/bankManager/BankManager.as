@@ -1470,7 +1470,7 @@ package com.dukascopy.connect.sys.bankManager {
             );
             sendMessage(data.action, true);
 			return;
-			
+
 			/*var from:String = Number(value.dateFrom.getTime() * .001).toFixed(0);
 			var to:String = Number(value.dateTo.getTime() * .001).toFixed(0);
 			
