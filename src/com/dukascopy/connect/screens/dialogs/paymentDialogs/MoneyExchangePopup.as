@@ -919,7 +919,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 		{
 			if (data != null && "giftData" in data && data.giftData != null && "fromAccounts" in data.giftData && data.giftData.fromAccounts != null && data.giftData.fromAccounts is Array)
 			{
-				return data.giftData.fromAccounts as Array;
+				return PaymentsManagerNew.filterEmptyWallets(data.giftData.fromAccounts as Array);
 			}
 			else
 			{

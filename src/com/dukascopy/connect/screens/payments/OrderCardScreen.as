@@ -22,6 +22,7 @@ package com.dukascopy.connect.screens.payments {
 	import com.dukascopy.connect.sys.imageManager.ImageBitmapData;
 	import com.dukascopy.connect.sys.payments.PayManager;
 	import com.dukascopy.connect.sys.payments.PaymentsManager;
+	import com.dukascopy.connect.sys.paymentsManagerNew.PaymentsManagerNew;
 	import com.dukascopy.connect.sys.style.FontSize;
 	import com.dukascopy.connect.sys.style.Style;
 	import com.dukascopy.connect.sys.style.presets.Color;
@@ -543,10 +544,13 @@ package com.dukascopy.connect.screens.payments {
 				PaymentsManager.updateAccount();
 				return;
 			}
+			
+			var wallets:Array = PaymentsManagerNew.filterEmptyWallets(PayManager.accountInfo.accounts);
+			
 			DialogManager.showDialog(
 				ListSelectionPopup,
 				{
-					items:PayManager.accountInfo.accounts,
+					items:wallets,
 					title:Lang.TEXT_SELECT_ACCOUNT,
 					renderer:ListPayWalletItem,
 					callback:callBackOnSelectAccount

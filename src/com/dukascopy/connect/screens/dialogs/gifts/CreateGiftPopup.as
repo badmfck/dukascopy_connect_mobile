@@ -43,6 +43,7 @@ package com.dukascopy.connect.screens.dialogs.gifts
 	import com.dukascopy.connect.sys.payments.PayManager;
 	import com.dukascopy.connect.sys.payments.PayRespond;
 	import com.dukascopy.connect.sys.payments.advancedPayments.vo.PayTaskVO;
+	import com.dukascopy.connect.sys.paymentsManagerNew.PaymentsManagerNew;
 	import com.dukascopy.connect.sys.pointerManager.PointerManager;
 	import com.dukascopy.connect.sys.serviceScreenManager.ServiceScreenManager;
 	import com.dukascopy.connect.sys.softKeyboard.SoftKeyboard;
@@ -297,7 +298,7 @@ package com.dukascopy.connect.screens.dialogs.gifts
 			var acc:Array;
 			if (PayManager.accountInfo.accounts != null)
 			{
-				acc = PayManager.accountInfo.accounts.concat();
+				acc = PaymentsManagerNew.filterEmptyWallets(PayManager.accountInfo.accounts);
 			}
 			if (giftData == null || 
 				(

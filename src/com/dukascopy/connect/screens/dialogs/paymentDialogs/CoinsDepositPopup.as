@@ -18,6 +18,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs {
 	import com.dukascopy.connect.screens.base.BaseScreen;
 	import com.dukascopy.connect.screens.dialogs.ScreenPayDialog;
 	import com.dukascopy.connect.screens.dialogs.ScreenWebviewDialogBase;
+	import com.dukascopy.connect.screens.dialogs.bottom.ListSelectionPopup;
 	import com.dukascopy.connect.screens.payments.card.TypeCurrency;
 	import com.dukascopy.connect.screens.serviceScreen.Overlay;
 	import com.dukascopy.connect.sys.bankManager.BankManager;
@@ -25,6 +26,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs {
 	import com.dukascopy.connect.sys.imageManager.ImageBitmapData;
 	import com.dukascopy.connect.sys.payments.InvoiceManager;
 	import com.dukascopy.connect.sys.payments.PayManager;
+	import com.dukascopy.connect.sys.paymentsManagerNew.PaymentsManagerNew;
 	import com.dukascopy.connect.sys.serviceScreenManager.ServiceScreenManager;
 	import com.dukascopy.connect.sys.softKeyboard.SoftKeyboard;
 	import com.dukascopy.connect.sys.style.FontSize;
@@ -444,7 +446,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs {
 		{
 			if (giftData != null)
 			{
-				return giftData.cards;
+				return PaymentsManagerNew.filterEmptyWallets(giftData.cards);
 			}
 			return null;
 		}
@@ -485,7 +487,17 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs {
 			var wallets:Array = getFiatAccounts();
 			if (wallets != null && wallets.length > 0)
 			{
-				DialogManager.showDialog(ScreenPayDialog, {callback: onWalletFiatSelect, data: wallets, itemClass: ListPayWalletItem/*ListPayAccount*/, label: Lang.TEXT_SELECT_ACCOUNT});
+				DialogManager.showDialog(
+					ListSelectionPopup,
+					{
+						items:wallets,
+						title:Lang.TEXT_SELECT_ACCOUNT,
+						renderer:ListPayWalletItem,
+						callback:onWalletFiatSelect
+					}, ServiceScreenManager.TYPE_SCREEN
+				);
+				
+			//	DialogManager.showDialog(ScreenPayDialog, {callback: onWalletFiatSelect, data: wallets, itemClass: ListPayWalletItem/*ListPayAccount*/, label: Lang.TEXT_SELECT_ACCOUNT});
 			}
 		}
 		

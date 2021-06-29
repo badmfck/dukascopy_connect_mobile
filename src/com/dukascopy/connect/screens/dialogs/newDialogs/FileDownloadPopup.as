@@ -191,13 +191,13 @@ package com.dukascopy.connect.screens.dialogs.newDialogs {
 			
 			if (urlRequest != null && urlRequest.data != null)
 			{
-				if ("from" in urlRequest.data && "to" in urlRequest.data && "duid" in urlRequest.data)
+				if ("date_from" in urlRequest.data && "date_to" in urlRequest.data && "duid" in urlRequest.data)
 				{
-					filename = "report_" + urlRequest.data.duid + "_" + urlRequest.data.from + "_" + urlRequest.data.to;
-					if ("asfile" in urlRequest.data)
-					{
-						filename += "." + urlRequest.data.asfile;
-					}
+					filename = "report_" + urlRequest.data.date_from + "_" + urlRequest.data.date_to;
+				}
+				if ("asfile" in urlRequest.data)
+				{
+					filename += "." + urlRequest.data.asfile;
 				}
 			}
 			
@@ -216,7 +216,7 @@ package com.dukascopy.connect.screens.dialogs.newDialogs {
 			}
 			else
 			{
-				var fs2:FileStream = new FileStream();
+				var fs2:FileStream = new FileStream(); 
 				fs2.open(fl, "write");
 				fs2.writeBytes(loaderData.data);
 				fs2.close();
@@ -233,7 +233,15 @@ package com.dukascopy.connect.screens.dialogs.newDialogs {
 			}
 			else if (Config.PLATFORM_WINDOWS == true)
 			{
-				fl.openWithDefaultApplication();
+				try
+				{
+					fl.openWithDefaultApplication();
+				}
+				catch (e:Error)
+				{
+					ToastMessage.display(e.message);
+				}
+				
 			//	var path:String = "file:///" + fl.url;
 			//	navigateToURL(new URLRequest(path));
 			}

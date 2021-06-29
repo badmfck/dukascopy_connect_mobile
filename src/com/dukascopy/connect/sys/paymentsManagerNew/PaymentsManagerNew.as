@@ -1748,5 +1748,23 @@ package com.dukascopy.connect.sys.paymentsManagerNew {
 			hashCallbacks = null;
 			delete callbacksTrCode[respond.savedRequestData.callID];
 		}
+		
+		static public function filterEmptyWallets(accounts:Array):Array 
+		{
+			var result:Array = new Array();
+			
+			if (accounts != null)
+			{
+				for (var i:int = 0; i < accounts.length; i++) 
+				{
+					if ("BALANCE" in accounts[i] && accounts[i].BALANCE > 0)
+					{
+						result.push(accounts[i]);
+					}
+				}
+			}
+			
+			return result;
+		}
 	}
 }
