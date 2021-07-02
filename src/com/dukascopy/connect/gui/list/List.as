@@ -644,71 +644,62 @@ package com.dukascopy.connect.gui.list {
 		 * @return
 		 */
 		public function appendItem(
-									itemData:Object, itemRendererClass:Class = null, 
-									fieldLinkNames:Array = null, appendToDataCollection:Boolean = false, 
-									animate:Boolean = false, position:int = -1, animationDelay:Number = 0, refreshStartPosition:Boolean = false):void
-		{
-			if (currentRenderer == null && itemRendererClass == null)
-				return;
-			if (appendToDataCollection)
-				if (data && "length" in data)
-				{
-					if (position != -1 && data.length > position)
-					{
-						data.insertAt(position, itemData);
-					}
-					else{
-						data.push(itemData);
-					}
-				}
-			this.itemRendererClass = itemRendererClass;
-			
-			var rend:IListRenderer;
-			if (currentRenderer != null && currentRenderer is itemRendererClass)
-				rend = currentRenderer;
-			if (otherRenderers != null) {
-				var orL:int = otherRenderers.length;
-				for (var i:int = 0; i < orL; i++) {
-					if (otherRenderers[i] is itemRendererClass) {
-						rend = otherRenderers[i];
-						break;
+			itemData:Object,
+			itemRendererClass:Class = null, 
+			fieldLinkNames:Array = null,
+			appendToDataCollection:Boolean = false, 
+			animate:Boolean = false,
+			position:int = -1,
+			animationDelay:Number = 0,
+			refreshStartPosition:Boolean = false):void {
+				if (currentRenderer == null && itemRendererClass == null)
+					return;
+				if (appendToDataCollection) {
+					if (data && "length" in data) {
+						if (position != -1 && data.length > position) {
+							data.insertAt(position, itemData);
+						} else {
+							data.push(itemData);
+						}
 					}
 				}
-			}
-			if (rend == null) {
-				rend = new itemRendererClass();
-				otherRenderers ||= [];
-				otherRenderers.push(rend);
-			}
-			
-			if (stock == null)
-				stock = [];
-			if (_innerHeight == 0)
-				_innerHeight = vspace;
-			
-			/*if (refreshStartPosition == true && stock != null && stock.length > 0 && stock[0] != null)
-			{
-				stock[0].changeY(0);
-			}*/
-			var positionY:int;
-			if (stock == null || position == -1 || position > stock.length - 1)
-			{
-				positionY = _innerHeight;
-			}
-			else
-			{
-				positionY = stock[position].y;
-			}
-			
-			var li:ListItem = addElementToStock(fieldLinkNames, positionY, rend, itemData, position);
-			if (animate == true)
-				li.animate(animationDelay);
-			
-			_innerHeight += li.height;
-			if (inMovementPhase == false)
-				onMoved(true, false, false, animate, position);
-			setBoundsBoxes();
-			setScrollBarSize();
+				this.itemRendererClass = itemRendererClass;
+				var rend:IListRenderer;
+				if (currentRenderer != null && currentRenderer is itemRendererClass)
+					rend = currentRenderer;
+				if (otherRenderers != null) {
+					var orL:int = otherRenderers.length;
+					for (var i:int = 0; i < orL; i++) {
+						if (otherRenderers[i] is itemRendererClass) {
+							rend = otherRenderers[i];
+							break;
+						}
+					}
+				}
+				if (rend == null) {
+					rend = new itemRendererClass();
+					otherRenderers ||= [];
+					otherRenderers.push(rend);
+				}
+				if (stock == null)
+					stock = [];
+				if (_innerHeight == 0)
+					_innerHeight = vspace;
+				var positionY:int;
+				if (stock == null || position == -1 || position > stock.length - 1) {
+					positionY = _innerHeight;
+				} else {
+					positionY = stock[position].y;
+				}
+				var li:ListItem = addElementToStock(fieldLinkNames, positionY, rend, itemData, position);
+				if (animate == true)
+					li.animate(animationDelay);
+				
+				_innerHeight += li.height;
+				if (inMovementPhase == false)
+					onMoved(true, false, false, animate, position);
+				setBoundsBoxes();
+				setScrollBarSize();
 		}
 		
 		protected function addElementToStock(fieldLinkNames:Array, y:int, rend:IListRenderer, data:Object, position:int = -1):ListItem {

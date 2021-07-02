@@ -68,8 +68,8 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements {
 		
 		public function getHeight(li:ListItem, width:int):int {
 			if (li.data.opened == false)
-				return cardSections[0].getHeight()/* + Config.DOUBLE_MARGIN*/ + tfUserHeight + Config.DOUBLE_MARGIN;
-			return (cardSections[0].getHeight()/* + Config.MARGIN*/) * li.data.cards.length/* + Config.MARGIN*/ + tfUserHeight + Config.DOUBLE_MARGIN;
+				return cardSections[0].getHeight() + tfUserHeight + Config.DOUBLE_MARGIN;
+			return (cardSections[0].getHeight()) * li.data.cards.length + tfUserHeight + Config.DOUBLE_MARGIN;
 		}
 		
 		public function getView(li:ListItem, h:int, width:int, highlight:Boolean = false):IBitmapDrawable {

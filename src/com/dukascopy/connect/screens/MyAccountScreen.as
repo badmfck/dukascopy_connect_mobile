@@ -591,8 +591,25 @@ package com.dukascopy.connect.screens {
 					list.updateItemByIndex(cardsItemIndex, list.getStock()[cardsItemIndex].data.opened);
 				} else {
 					var toBottom:Boolean = checkScrollToBottom();
-					list.appendItem( { opened:false, cards:data }, ListBankAccountCards);
+					list.appendItem( { opened:false, cards:data, first:true }, ListBankAccountCards, null, false, false, walletItemIndex);
 					cardsItemIndex = list.getStock().length - 1;
+					if (walletItemIndex != -1) {
+						cardsItemIndex = walletItemIndex;
+						walletItemIndex += 1;
+						if (totalItemIndex != -1)
+							totalItemIndex += 1;
+						if (totalSavingsItemIndex != -1)
+							totalSavingsItemIndex += 1;
+						if (investmentsItemIndex != -1)
+							investmentsItemIndex += 1;
+						if (cryptoItemIndex != -1)
+							cryptoItemIndex += 1;
+						if (otherItemIndex != -1)
+							otherItemIndex += 1;
+						if (savingsItemIndex != -1)
+							savingsItemIndex += 1;
+					}
+					list.refresh(true);
 					if (toBottom == true)
 						list.scrollBottom(true);
 				}
@@ -615,10 +632,12 @@ package com.dukascopy.connect.screens {
 			if (accCorrect.length != 0) {
 				if (walletItemIndex != -1) {
 					list.getStock()[walletItemIndex].data.accounts = accCorrect;
-					list.updateItemByIndex(walletItemIndex, list.getStock()[walletItemIndex].data.opened);
+					var recalcHeight:Boolean = list.getStock()[walletItemIndex].data.first != (cardsItemIndex == -1) || list.getStock()[walletItemIndex].data.opened;
+					list.getStock()[walletItemIndex].data.first = cardsItemIndex == -1;
+					list.updateItemByIndex(walletItemIndex, recalcHeight);
 				} else {
 					var toBottom:Boolean = checkScrollToBottom();
-					list.appendItem( { opened:false, accounts:accCorrect }, ListBankAccountWallets);
+					list.appendItem( { opened:false, accounts:accCorrect, first:cardsItemIndex == -1 }, ListBankAccountWallets);
 					walletItemIndex = list.getStock().length - 1;
 					if (toBottom == true)
 						list.scrollBottom(true);
@@ -645,7 +664,7 @@ package com.dukascopy.connect.screens {
 					list.updateItemByIndex(investmentsItemIndex, list.getStock()[investmentsItemIndex].data.opened);
 				} else {
 					var toBottom:Boolean = checkScrollToBottom();
-					list.appendItem( { opened:false, accounts:accCorrect }, ListBankAccountInvestments);
+					list.appendItem( { opened:false, accounts:accCorrect }, ListBankAccountInvestments, null, false, false, walletItemIndex + 1);
 					investmentsItemIndex = list.getStock().length - 1;
 					if (toBottom == true)
 						list.scrollBottom(true);

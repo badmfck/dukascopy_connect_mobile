@@ -1470,10 +1470,8 @@ package com.dukascopy.connect.sys.bankManager {
             );
             sendMessage(data.action, true);
 			return;
-
 			/*var from:String = Number(value.dateFrom.getTime() * .001).toFixed(0);
 			var to:String = Number(value.dateTo.getTime() * .001).toFixed(0);
-			
 			GD.S_TIMEZONE_REQUEST.invoke(function(val:String):void {
 				sendMessage("val:" +
 					from + "|!|" +
@@ -3736,7 +3734,6 @@ package com.dukascopy.connect.sys.bankManager {
 				}
 			);
 			
-			
 			/*ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, 
 											ShareLinkPopup, 
 												{url:"http://google.com", 
@@ -3747,17 +3744,16 @@ package com.dukascopy.connect.sys.bankManager {
 		}
 		
 		static private function onHomeLoaded(homeJSON:String, fromELS:Boolean = false):void {
-			if (fromELS == false) {
-				GD.S_BANK_CACHE_ACCOUNT_INFO_SAVE.invoke(homeJSON);
-				trace();
-			} else if (homeJSON == null) {
-				return;
-			}
 			var data:Object = null;
 			try {
 				data = JSON.parse(homeJSON);
 			} catch (e:Error) {
 				S_ALL_DATA.invoke(true, fromELS);
+				return;
+			}
+			if (fromELS == false && data.fullRequest == true) {
+				GD.S_BANK_CACHE_ACCOUNT_INFO_SAVE.invoke(homeJSON);
+			} else if (homeJSON == null) {
 				return;
 			}
 			processAccount(data);

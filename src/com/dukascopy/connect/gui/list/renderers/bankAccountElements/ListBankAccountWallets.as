@@ -66,10 +66,8 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements {
 		
 		public function getHeight(li:ListItem, width:int):int {
 			var additionalHeight:int;
-			if (li.num == 0 ||
-				li.list.getElementByNumID(li.num - 1).renderer is ListBankAccount == true ||
-				li.list.getElementByNumID(li.num - 1).renderer is ListBankEmpty == true)
-					additionalHeight = tfUserHeight + Config.DOUBLE_MARGIN;
+			if (li.data.first == true)
+				additionalHeight = tfUserHeight + Config.DOUBLE_MARGIN;
 			if (li.data.opened == false)
 				return walletSections[0].getHeight() + additionalHeight;
 			return (walletSections[0].getHeight()) * li.data.accounts.length + additionalHeight;
@@ -81,12 +79,10 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements {
 			hitZones.length = 0;
 			
 			var additionalHeight:int;
-			if (li.num == 0 ||
-				li.list.getElementByNumID(li.num - 1).renderer is ListBankAccount == true ||
-				li.list.getElementByNumID(li.num - 1).renderer is ListBankEmpty == true) {
-					if (userTF.parent == null)
-						addChild(userTF);
-					additionalHeight = tfUserHeight + Config.DOUBLE_MARGIN;
+			if (li.data.first == true) {
+				if (userTF.parent == null)
+					addChild(userTF);
+				additionalHeight = tfUserHeight + Config.DOUBLE_MARGIN;
 			} else {
 				if (userTF.parent != null)
 					removeChild(userTF);
@@ -164,7 +160,7 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements {
 				width,
 				h,
 				li.data.opened,
-				(li.num == 0 || li.list.getElementByNumID(li.num - 1).renderer is ListBankAccount == true || li.list.getElementByNumID(li.num - 1).renderer is ListBankEmpty == true),
+				li.data.first,
 				additionalHeight
 			);
 			

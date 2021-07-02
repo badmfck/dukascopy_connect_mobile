@@ -140,7 +140,7 @@ package com.dukascopy.connect.sys.payments {
 			};
 			if (withCards == true)
 				data.with_cards = true;
-			call("account/home", _callback, data, URLRequestMethod.GET);
+			var pl:PayLoader = call("account/home", _callback, data, URLRequestMethod.GET);
 		}
 		
 		/**
