@@ -629,6 +629,8 @@ package com.dukascopy.connect.screens {
 					continue;
 				accCorrect.push(data[i]);
 			}
+			if (accCorrect.length == 0 && l > 0)
+				accCorrect = data;
 			if (accCorrect.length != 0) {
 				if (walletItemIndex != -1) {
 					list.getStock()[walletItemIndex].data.accounts = accCorrect;
@@ -658,6 +660,8 @@ package com.dukascopy.connect.screens {
 					continue;
 				accCorrect.push(data[i]);
 			}
+			if (accCorrect.length == 0 && l > 0)
+				accCorrect = data;
 			if (accCorrect.length != 0) {
 				if (investmentsItemIndex != -1) {
 					list.getStock()[investmentsItemIndex].data.accounts = accCorrect;
@@ -722,6 +726,8 @@ package com.dukascopy.connect.screens {
 					continue;
 				accCorrect.push(data[i]);
 			}
+			if (accCorrect.length == 0 && l > 0)
+				accCorrect = data;
 			var toBottom:Boolean;
 			if (accCorrect != null && accCorrect.length != 0) {
 				if (savingsItemIndex != -1) {
