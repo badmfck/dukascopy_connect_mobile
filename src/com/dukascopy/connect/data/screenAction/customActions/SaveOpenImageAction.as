@@ -64,11 +64,17 @@ package com.dukascopy.connect.data.screenAction.customActions
 						break;
 				}
 			}
-				
-			ToastMessage.display(Lang.textSaving);
-			var bmd:BitmapData = bitmapSource.getBitmapData();
-			FilesSaveUtility.signalOnImageSaved.add(onSaveSuccess);
-			FilesSaveUtility.saveFileToForGallery(bmd, url);
+			if (bitmapSource != null)
+			{
+				ToastMessage.display(Lang.textSaving);
+				var bmd:BitmapData = bitmapSource.getBitmapData();
+				FilesSaveUtility.signalOnImageSaved.add(onSaveSuccess);
+				FilesSaveUtility.saveFileToForGallery(bmd, url);
+			}
+			else
+			{
+				trace("123");
+			}
 		}
 		
 		private function onSaveSuccess():void {

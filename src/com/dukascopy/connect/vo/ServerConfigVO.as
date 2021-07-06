@@ -4,6 +4,7 @@ package com.dukascopy.connect.vo {
 	import com.dukascopy.connect.data.BarabanSettings;
 	import com.dukascopy.connect.sys.auth.Auth;
 	import com.dukascopy.connect.sys.echo.echo;
+	import com.dukascopy.langs.Lang;
 	
 	/**
 	 * ...
@@ -357,7 +358,47 @@ package com.dukascopy.connect.vo {
 		
 		public function get applications():String {
 			
-			var localData:String = '[{"name":"Launch JForex App", "type":"app", "idIOS":"com.dukascopy.iplatform://", "idAndroid":"com.dukascopy.platform", "linkIOS":"https://apps.apple.com/us/app/jforex/id364049165", "linkAndroid":"https://play.google.com/store/apps/details?id=com.dukascopy.platform&hl=uk&gl=US"}, {"name":"Launch JForex Web", "type":"web", "link":"https://live-login.dukascopy.com/web-platform/"}, {"name":"Launch MT4 App", "type":"app", "linkIOS":"https://apps.apple.com/us/app/metatrader-4/id496212596", "idIOS":"net.metaquotes.MetaTrader4Terminal://", "idAndroid":"net.metaquotes.metatrader4", "linkAndroid":"https://play.google.com/store/apps/details?id=net.metaquotes.metatrader4&hl=en&referrer=ref_id%3d1011367727760268752%26hl%3den"}, {"name":"Launch Binary Trader App", "type":"web", "link":"https://login.dukascopy.com/binary/mobile/"}, {"name":"Current account", "type":"web", "link":"https://ebank.dukascopy.com"}]';
+			var apps:Array = new Array();
+			
+			var jf:Object = new Object();
+			jf.name = Lang.launchJForex;
+			jf.type = "app";
+			jf.idIOS = "com.dukascopy.iplatform://";
+			jf.idAndroid = "com.dukascopy.platform";
+			jf.linkIOS = "https://apps.apple.com/us/app/jforex/id364049165"
+			jf.linkAndroid = "https://play.google.com/store/apps/details?id=com.dukascopy.platform&hl=uk&gl=US";
+			apps.push(jf);
+			
+			var jfw:Object = new Object();
+			jfw.name = Lang.launchJForexWeb;
+			jfw.type = "web";
+			jfw.link = "https://live-login.dukascopy.com/web-platform/";
+			jfw.linkIOS = "https://apps.apple.com/us/app/jforex/id364049165"
+			jfw.linkAndroid = "https://play.google.com/store/apps/details?id=com.dukascopy.platform&hl=uk&gl=US";
+			apps.push(jfw);
+			
+			var mt4:Object = new Object();
+			mt4.name = Lang.launchMT4;
+			mt4.type = "app";
+			mt4.idIOS = "net.metaquotes.MetaTrader4Terminal://";
+			mt4.idAndroid = "net.metaquotes.metatrader4";
+			mt4.linkIOS = "https://apps.apple.com/us/app/metatrader-4/id496212596"
+			mt4.linkAndroid = "https://play.google.com/store/apps/details?id=net.metaquotes.metatrader4&hl=en&referrer=ref_id%3d1011367727760268752%26hl%3den";
+			apps.push(mt4);
+			
+			var bt:Object = new Object();
+			bt.name = Lang.launchBinaryTrader;
+			bt.type = "web";
+			bt.link = "https://login.dukascopy.com/binary/mobile/";
+			apps.push(bt);
+			
+			var acc:Object = new Object();
+			acc.name = Lang.launchCurrentAccount;
+			acc.type = "web";
+			acc.link = "https://ebank.dukascopy.com";
+			apps.push(acc);
+			
+			var localData:String = JSON.stringify(apps);
 			if (_raw == null)
 				return localData;
 			if ("APPLICATIONS" in _raw == true)

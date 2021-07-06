@@ -1145,7 +1145,7 @@ package com.dukascopy.connect.gui.lightbox {
 									listenScreenRotation:Boolean = false,
 									contentProvider:IContentProvider = null):void {
 			echo("Lightbox", "show", "START");
-			
+			mainTitle = title;
 			if (!exists(url) && currentContentProvider != null)
 				return; // no such url 
 			listenForScreenRotation = listenScreenRotation;
@@ -1191,8 +1191,7 @@ package com.dukascopy.connect.gui.lightbox {
 			currentIndex = destIndex;
 			zoomPanCont.distanceOpacity  = 1;
 			
-			if (title)
-				header.setData(title, getCurrentImageActions());
+			updateHeader();
 			
 			if (contentProvider != null)
 			{
@@ -1202,6 +1201,16 @@ package com.dukascopy.connect.gui.lightbox {
 				
 			NativeExtensionController.S_ORIENTATION_CHANGE.add(setOrientation);
 			echo("Lightbox", "show", "END");
+		}
+		
+		static private function updateHeader():void 
+		{
+			var titleText:String = " ";
+			if (mainTitle != null)
+			{
+				titleText = mainTitle;
+			}
+			header.setData(titleText, getCurrentImageActions());
 		}
 		
 		static private function startListenConnectionChanged():void 
@@ -1417,6 +1426,7 @@ package com.dukascopy.connect.gui.lightbox {
 					loadMainImage();
 				}
 			}
+			updateHeader();
 			echo("Lightbox", "onCurrentIndexChange", "END");
 		}
 		
@@ -1643,6 +1653,7 @@ package com.dukascopy.connect.gui.lightbox {
 		private static var isDefaultButtonsEnabled:Boolean = true;
 		static private var prewButtonAllowed:Boolean;
 		static private var prewCallPanding:Boolean;
+		static private var mainTitle:String;
 
 		private static function showDefaultButtons():void
 		{

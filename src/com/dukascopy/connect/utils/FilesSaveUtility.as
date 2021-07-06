@@ -6,6 +6,7 @@ package com.dukascopy.connect.utils {
 	import com.dukascopy.connect.MobileGui;
 	import com.dukascopy.connect.gui.components.message.ToastMessage;
 	import com.dukascopy.connect.sys.dialogManager.DialogManager;
+	import com.dukascopy.connect.sys.echo.echo;
 	import com.dukascopy.connect.sys.nativeExtensionController.NativeExtensionController;
 	import com.dukascopy.langs.Lang;
 	import com.telefision.sys.signals.Signal;
@@ -71,7 +72,7 @@ package com.dukascopy.connect.utils {
 		}
 		
 		public static function saveFileToForGallery(image:BitmapData, fileUrl:String, hashName:Boolean = true):void {
-			if (createDukascopyDirectoryIfNotExist() == false) {
+			if (createDukascopyDirectoryIfNotExist() == false || image == null) {
 				return;
 			}
 			var fileName:String = getMD5ByUrl(fileUrl) + ".png";
@@ -116,6 +117,7 @@ package com.dukascopy.connect.utils {
 		}
 		
 		public static function openGalleryIfFileExists(fileUrl:String):void {
+			echo("!!!", "OPREN GALLERY");
 			var url:String;
 			if (getIsFileExists(fileUrl)) {
 				if (Config.PLATFORM_ANDROID) {
