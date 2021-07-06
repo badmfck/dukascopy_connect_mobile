@@ -2334,6 +2334,7 @@ package com.dukascopy.langs {
 		static public var increaseLimitRequestFalse:String = "You may file a request for limits increase only twice per day";
 		static public var updateInfoRequestFalse:String = "You may file a request for personal information update only twice per day";
 		static public var continueRegistration:String = "Continue registration";
+		static public var moneyTransferTimeoutError:String = "The server was not able to respond during 30 seconds. Please go back to My account and check the actual status of the operation.";
 		
 		static public function updateKeys(keys:Object):void {
 			for (var n:String in keys) {

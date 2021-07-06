@@ -2554,7 +2554,12 @@ package com.dukascopy.connect.sys.bankManager {
 			var startObjectIndex:int = val.indexOf(":", 15);
 			var command:String = val.substring(15, startObjectIndex);
 			if (command == "error") {
-				DialogManager.alert(Lang.information, "Payments Error: " + val.substr(6));
+				var message:String = "";
+				if (val != null && val.length > startObjectIndex)
+				{
+					message = val.substr(startObjectIndex + 1)
+				}
+				DialogManager.alert(Lang.information, "Payments Error: " + message);
 				S_ERROR.invoke();
 				return true;
 			}

@@ -627,6 +627,8 @@ package com.dukascopy.connect.sys.payments {
 		 */
 		static public function call_putMoneyTransfer(_callback:Function, _fromAccount:String, _toAccount:String, _amount:Number, _currency:String, _callID:String = ""):void {
 			var php:PayLoader = call("money/transfer", _callback, { from:_fromAccount, to:_toAccount, amount:_amount, currency:_currency }, URLRequestMethod.PUT);
+			php.timeoutErrorText = Lang.moneyTransferTimeoutError;
+			php.timeoutErrorCode = PayLoader.ERROR_SERVER_NOT_RESPOND;
 			if (php.savedRequestData != null)
 				php.savedRequestData.callID = _callID;
 		}

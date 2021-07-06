@@ -2519,7 +2519,25 @@ package com.dukascopy.connect.sys.bankManager {
 			}
 			if ("errorType" in respondData) {
 				if (respondData.code == -2) {
-					S_ANSWER.invoke("requestRespond:error:" + respondData);
+					
+					var errorText:String;
+					if (respondData is String)
+					{
+						errorText = respondData as String;
+					}
+					else if (respondData is Object)
+					{
+						if ("msg" in respondData && respondData.msg != null)
+						{
+							errorText = respondData.msg;
+						}
+						else
+						{
+							errorText = respondData as String;
+						}
+					}
+					
+					S_ANSWER.invoke("requestRespond:error:" + errorText);
 					return 2;
 				}
 				if (respondData.errorType == "type") {
