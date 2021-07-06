@@ -5,8 +5,10 @@ package com.dukascopy.connect.sys.payments {
 	import com.dukascopy.connect.sys.auth.Auth;
 	import com.dukascopy.connect.sys.connectionManager.NetworkManager;
 	import com.dukascopy.connect.sys.echo.echo;
+	import com.dukascopy.connect.sys.php.PHP;
 	import com.dukascopy.connect.vo.chat.FileMessageVO;
 	import com.dukascopy.langs.Lang;
+	import com.dukascopy.langs.LangManager;
 	import com.hurlant.crypto.hash.HMAC;
 	import com.hurlant.crypto.hash.SHA256;
 	import com.hurlant.util.Base64;
