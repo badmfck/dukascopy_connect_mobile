@@ -107,6 +107,11 @@ package com.dukascopy.connect.screens.dialogs.bottom
 			selectedNum = n;
 			if (list.data != null)
 			{
+				if ("disabled" in list.data[selectedNum] && list.data[selectedNum].disabled == true)
+				{
+					return;
+				}
+				
 				for (var i:int = 0; i < list.data.length; i++) 
 				{
 					if ("selected" in list.data[i])
