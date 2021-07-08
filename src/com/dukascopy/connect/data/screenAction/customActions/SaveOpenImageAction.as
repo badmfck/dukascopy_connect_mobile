@@ -72,10 +72,6 @@ package com.dukascopy.connect.data.screenAction.customActions
 				FilesSaveUtility.signalOnImageSaved.add(onSaveSuccess);
 				FilesSaveUtility.saveFileToForGallery(bmd, url, true, false);
 			}
-			else
-			{
-				trace("123");
-			}
 		}
 		
 		private function onSaveSuccess():void {
