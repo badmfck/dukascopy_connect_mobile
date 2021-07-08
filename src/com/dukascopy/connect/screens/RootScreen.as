@@ -470,7 +470,7 @@ package com.dukascopy.connect.screens {
 			if (_isDisposed)
 				return;
 			
-			if (data != null)
+			if (data != null && "additionalData" in data)
 			{
 				data.additionalData = null;
 			}
@@ -548,7 +548,7 @@ package com.dukascopy.connect.screens {
 					data.additionalData = null;
 				}
 				
-				if (data != null)
+				if (data != null && "additionalData" in data)
 				{
 					data.additionalData = null;
 				}
@@ -612,7 +612,7 @@ package com.dukascopy.connect.screens {
 					(innerScreenManager.currentScreen as InnerContactScreen).setAddditionalData(null);
 				}
 			}
-			if (data != null)
+			if (data != null && "additionalData" in data)
 			{
 				data.additionalData = null;
 			}

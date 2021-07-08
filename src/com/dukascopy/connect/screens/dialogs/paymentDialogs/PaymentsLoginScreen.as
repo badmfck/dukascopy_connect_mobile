@@ -21,6 +21,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs {
 	import com.dukascopy.connect.gui.scrollPanel.ScrollPanel;
 	import com.dukascopy.connect.screens.base.BaseScreen;
 	import com.dukascopy.connect.screens.serviceScreen.FingerprintScreen;
+	import com.dukascopy.connect.sys.applicationError.ApplicationErrors;
 	import com.dukascopy.connect.sys.dialogManager.DialogManager;
 	import com.dukascopy.connect.sys.imageManager.ImageBitmapData;
 	import com.dukascopy.connect.sys.nativeExtensionController.NativeExtensionController;
@@ -813,7 +814,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs {
 		private function onFingerprintClosed():void 
 		{
 			activateScreen();
-			if (fingerprint != null)
+			if (fingerprint != null && container != null && container.contains(fingerprint.view))
 			{
 				container.removeChild(fingerprint.view);
 				fingerprint.dispose();
@@ -1178,6 +1179,11 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs {
 		}
 		
 		override public function activateScreen():void {
+			if (isDisposed)
+			{
+				ApplicationErrors.add();
+				return;
+			}
 			super.activateScreen();
 			
 			if (firstTime) {
@@ -1189,24 +1195,31 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs {
 				
 				return;
 			}
-			input.addEventListener(FocusEvent.FOCUS_IN, onTextFocusIn);
-			input.addEventListener(FocusEvent.FOCUS_OUT, onTextFocusOut);
-			input.addEventListener(SoftKeyboardEvent.SOFT_KEYBOARD_ACTIVATE, onSKActivate);
-			input.addEventListener(SoftKeyboardEvent.SOFT_KEYBOARD_ACTIVATING, onSKActivating);
-			input.addEventListener(SoftKeyboardEvent.SOFT_KEYBOARD_DEACTIVATE, onSKDeactivating);
-			
-			if (state == STATE_PASSWORD) {
-				//!TODO:;
-				okButton.activate();
-				backButton.activate();
-				restoreButton.activate();
-				if (fingerprintButton != null)
-				{
-					fingerprintButton.activate();
+			if (input != null)
+			{
+				input.addEventListener(FocusEvent.FOCUS_IN, onTextFocusIn);
+				input.addEventListener(FocusEvent.FOCUS_OUT, onTextFocusOut);
+				input.addEventListener(SoftKeyboardEvent.SOFT_KEYBOARD_ACTIVATE, onSKActivate);
+				input.addEventListener(SoftKeyboardEvent.SOFT_KEYBOARD_ACTIVATING, onSKActivating);
+				input.addEventListener(SoftKeyboardEvent.SOFT_KEYBOARD_DEACTIVATE, onSKDeactivating);
+				
+				if (state == STATE_PASSWORD) {
+					//!TODO:;
+					okButton.activate();
+					backButton.activate();
+					restoreButton.activate();
+					if (fingerprintButton != null)
+					{
+						fingerprintButton.activate();
+					}
 				}
+				
+				input.visible = true;
 			}
-			
-			input.visible = true;
+			else
+			{
+				ApplicationErrors.add("no input");
+			}
 			
 		//	onButtonOkClick();
 		}
@@ -1346,30 +1359,39 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs {
 		}
 		
 		override public function deactivateScreen():void {
-			super.deactivateScreen();
-		//	input.deactivate();
-		//	input.S_FOCUS_IN.remove(onTextFocusIn);
-		//	input.S_FOCUS_OUT.remove(onTextFocusOut);
-			
-			input.removeEventListener(FocusEvent.FOCUS_IN, onTextFocusIn);
-			input.removeEventListener(FocusEvent.FOCUS_OUT, onTextFocusOut);
-			input.removeEventListener(SoftKeyboardEvent.SOFT_KEYBOARD_ACTIVATE, onSKActivate);
-			input.removeEventListener(SoftKeyboardEvent.SOFT_KEYBOARD_ACTIVATING, onSKActivating);
-			input.removeEventListener(SoftKeyboardEvent.SOFT_KEYBOARD_DEACTIVATE, onSKDeactivating);
-			
-			if (state == STATE_PASSWORD) {
-				//!TODO:;
-				okButton.deactivate();
-				backButton.deactivate();
-				restoreButton.deactivate();
-			//	showPassButton.deactivate();
-				if (fingerprintButton != null)
-				{
-					fingerprintButton.deactivate();
-				}
+			if (isDisposed)
+			{
+				ApplicationErrors.add();
+				return;
 			}
+			super.deactivateScreen();
 			
-			input.visible = false;
+			if (input != null)
+			{
+				input.removeEventListener(FocusEvent.FOCUS_IN, onTextFocusIn);
+				input.removeEventListener(FocusEvent.FOCUS_OUT, onTextFocusOut);
+				input.removeEventListener(SoftKeyboardEvent.SOFT_KEYBOARD_ACTIVATE, onSKActivate);
+				input.removeEventListener(SoftKeyboardEvent.SOFT_KEYBOARD_ACTIVATING, onSKActivating);
+				input.removeEventListener(SoftKeyboardEvent.SOFT_KEYBOARD_DEACTIVATE, onSKDeactivating);
+				
+				if (state == STATE_PASSWORD) {
+					//!TODO:;
+					okButton.deactivate();
+					backButton.deactivate();
+					restoreButton.deactivate();
+				//	showPassButton.deactivate();
+					if (fingerprintButton != null)
+					{
+						fingerprintButton.deactivate();
+					}
+				}
+				
+				input.visible = false;
+			}
+			else
+			{
+				ApplicationErrors.add("no input");
+			}
 		}
 		
 		override protected function drawView():void {
@@ -1623,7 +1645,11 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs {
 			fingerprintButton = null;
 			if (fingerprint != null)
 			{
-				view.removeChild(fingerprint.view);
+				if (container != null && container.contains(fingerprint.view))
+				{
+					container.removeChild(fingerprint.view);
+				}
+				
 				fingerprint.dispose();
 				fingerprint = null;
 			}

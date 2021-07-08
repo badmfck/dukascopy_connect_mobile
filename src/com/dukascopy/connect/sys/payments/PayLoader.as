@@ -1,6 +1,7 @@
 package com.dukascopy.connect.sys.payments {
 
 	import com.dukascopy.connect.data.screenAction.customActions.DownloadFileAction;
+	import com.dukascopy.connect.gui.lightbox.UI;
 	import com.dukascopy.connect.sys.auth.Auth;
 	import com.dukascopy.connect.sys.connectionManager.NetworkManager;
 	import com.dukascopy.connect.sys.echo.echo;
@@ -30,7 +31,13 @@ package com.dukascopy.connect.sys.payments {
 	
 	public class PayLoader {
 		
+		static public const ERROR_SERVER_NOT_RESPOND:int = -10;
+		static public const ERROR_SERVER_TIMEOUT:int = -2;
+		
+		public var timeoutErrorCode:int;
+		
 		static private var counter:int = 0;
+		public var timeoutErrorText:String;
 		
 		private var urlRequest:URLRequest;
 		private var urlLoader:URLStream;
@@ -75,12 +82,14 @@ package com.dukascopy.connect.sys.payments {
 			_savedRequestData.method = method;
 			_savedRequestData.callBack = callBack;
 			respond.setSavedRequestData(_savedRequestData);
+			
 			if (NetworkManager.isConnected) {
 				urlLoader.addEventListener(Event.COMPLETE, onComplete);
 				urlLoader.addEventListener(IOErrorEvent.IO_ERROR, onIOError);
 				urlLoader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, onSecurityError);
 				urlLoader.addEventListener(HTTPStatusEvent.HTTP_STATUS, onHTTPStatus);
 				urlLoader.addEventListener(HTTPStatusEvent.HTTP_RESPONSE_STATUS, onHTTPStatus);
+				echo("PayLoader (" + id + ")", "load", "\n	url: " + urlRequest.url + "\n	method: " + method + "\n	data:\n" + UI.tracedObj(urlRequest.data));
 				urlLoader.load(urlRequest);
 			} else
 				callback(respond.setData(true, Lang.noInternetConnection, null, -2));
@@ -191,7 +200,7 @@ package com.dukascopy.connect.sys.payments {
 		
 		private function onHTTPStatus(e:HTTPStatusEvent):void {
 			if (e.status == 0)
-				finish("err");
+				finish("err", true);
 		}
 		
 		private function onComplete(e:Event):void {
@@ -206,9 +215,25 @@ package com.dukascopy.connect.sys.payments {
 			finish('sec');
 		}
 		
-		private function finish(error:String = null):void {
+		private function finish(error:String = null, isTimeoutError:Boolean = false):void {
+			var errorCode:int;
 			if (error != null) {
-				callback(respond.setData(true, Lang.TEXT_SERVER_CANNT_RESPOND, null, -2));
+				var erorText:String;
+				if (isTimeoutError && timeoutErrorText != null)
+				{
+					erorText = timeoutErrorText;
+				}
+				else
+				{
+					erorText = Lang.TEXT_SERVER_CANNT_RESPOND;
+				}
+				errorCode = ERROR_SERVER_TIMEOUT;
+				if (isTimeoutError && timeoutErrorCode != 0)
+				{
+					errorCode = timeoutErrorCode;
+				}
+				
+				callback(respond.setData(true, erorText, null, errorCode));
 				return;
 			}
 			var data:Object = null;
@@ -226,7 +251,7 @@ package com.dukascopy.connect.sys.payments {
 				return;
 			}
 			if ("error" in data  && data.error != null) {
-				var errorCode:int = data.code != null ? data.code : -1;
+				errorCode = data.code != null ? data.code : -1;
 				callback(respond.setData(true, data.error, data, errorCode));
 				if (errorCode == 1040) {
 					/*if (Config.isTest() == true)

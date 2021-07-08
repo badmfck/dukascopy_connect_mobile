@@ -103,6 +103,11 @@ package com.dukascopy.connect.screens.dialogs {
 		
 		private function onNextClick():void 
 		{
+			if (inputAmount.value == 0)
+			{
+				inputAmount.invalid();
+				return;
+			}
 			if (iCurrency.value == Lang.currency)
 			{
 				if (PayManager.systemOptions == null)
@@ -213,6 +218,7 @@ package com.dukascopy.connect.screens.dialogs {
 		
 		private function onAmountChange():void 
 		{
+			inputAmount.valid();
 			checkDataValid();
 		}
 		

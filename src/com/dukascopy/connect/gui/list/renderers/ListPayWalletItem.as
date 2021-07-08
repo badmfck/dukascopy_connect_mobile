@@ -26,9 +26,10 @@ package com.dukascopy.connect.gui.list.renderers {
 	public class ListPayWalletItem extends BaseRenderer implements IListRenderer{
 		
 		protected var label:TextField;
+		protected var walletName:TextField;
 		private var amount:TextField;
 		private var currency:TextField;
-		protected var padding:int = Config.FINGER_SIZE * .3;
+		protected var padding:int = Config.FINGER_SIZE * .2;
 		protected var itemHeight:int = Config.FINGER_SIZE;
 		protected var ICON_SIZE:int = Config.FINGER_SIZE * .5;
 		protected var format:TextFormat=new TextFormat(Config.defaultFontName, FontSize.BODY, Style.color(Style.COLOR_TEXT));
@@ -38,7 +39,7 @@ package com.dukascopy.connect.gui.list.renderers {
 			
 			icon = new Bitmap();
 			
-			format.size = FontSize.SUBHEAD;
+			format.size = FontSize.CAPTION_1;
 			label = new TextField();
 			label.autoSize = TextFieldAutoSize.LEFT;
 			label.defaultTextFormat = format;
@@ -48,6 +49,17 @@ package com.dukascopy.connect.gui.list.renderers {
 			label.x = ICON_SIZE + padding * 2;
 			label.textColor = Style.color(Style.COLOR_SUBTITLE);
 			label.y = Math.round((itemHeight - label.textHeight) * .5);
+			
+			format.size = FontSize.SUBHEAD;
+			walletName = new TextField();
+			walletName.autoSize = TextFieldAutoSize.LEFT;
+			walletName.defaultTextFormat = format;
+			walletName.text = "Pp";
+			walletName.multiline = false;
+			walletName.wordWrap = false;
+			walletName.x = ICON_SIZE + padding * 2;
+			walletName.textColor = Style.color(Style.COLOR_TEXT);
+			walletName.y = Math.round((itemHeight - walletName.textHeight) * .5);
 			
 			format.size = FontSize.TITLE_2;
 			format.bold = false;
@@ -75,6 +87,7 @@ package com.dukascopy.connect.gui.list.renderers {
 			addChild(label);
 			addChild(amount);
 			addChild(currency);
+			addChild(walletName);
 		}
 		
 		/* INTERFACE com.dukascopy.connect.gui.list.renderers.IListRenderer */
@@ -89,10 +102,40 @@ package com.dukascopy.connect.gui.list.renderers {
 			drawIcon(li.data);
 			drawAmount(li.data);
 			drawAccount(li.data);
+			drawName(li.data);
 			
 			position(w);
 			
+			if (data != null && "disabled" in data && data.disabled == true)
+			{
+				alpha = 0.4;
+			}
+			else
+			{
+				alpha = 1;
+			}
+			
 			return this;
+		}
+		
+		private function drawName(data:Object):void 
+		{
+			var text:String = getAccountName(data);
+			if (text != null) {
+				walletName.text = text;
+			} else {
+				walletName.text = "";
+			}
+		}
+		
+		protected function getAccountName(data:Object):String 
+		{
+			var result:String;
+			if ("TYPE" in data && data.TYPE != null && Lang.otherAccTypes[data.TYPE] != null)
+			{
+				result = Lang.otherAccTypes[data.TYPE];
+			}
+			return result;
 		}
 		
 		private function position(w:int):void 
@@ -106,6 +149,16 @@ package com.dukascopy.connect.gui.list.renderers {
 				label.visible = false;			
 			}else {
 				label.visible = true;
+			}
+			
+			if (walletName.text == "")
+			{
+				label.y = Math.round((itemHeight - label.textHeight) * .5);
+			}
+			else
+			{
+				walletName.y = Math.round(itemHeight * .5 - walletName.height - Config.FINGER_SIZE * .02);
+				label.y = Math.round(itemHeight * .5 + Config.FINGER_SIZE * .02);
 			}
 		}
 		
@@ -122,7 +175,7 @@ package com.dukascopy.connect.gui.list.renderers {
 			var result:String;
 			var accountNumber:String = data.ACCOUNT_NUMBER;
 			var accountDescrition:String = data.DESCRIPTION;
-			if (data.IBAN != null) {
+			if (data.IBAN != null && getAccountName(data) == null) {
 				if ("IBAN" in data)
 				{
 					accountNumber  = data.IBAN;
@@ -135,9 +188,12 @@ package com.dukascopy.connect.gui.list.renderers {
 				{
 					accountNumber = "**** **** ****";
 				}
-				result = accountNumber.substr(0, 4) + "...." + accountNumber.substr(accountNumber.length - 4, 4);
+			//	result = accountNumber.substr(0, 4) + "...." + accountNumber.substr(accountNumber.length - 4, 4);
+				result = accountNumber;
 			} else {
-				if (accountNumber != null && accountNumber.length > 3) {
+				result = accountNumber;
+				
+				/*if (accountNumber != null && accountNumber.length > 3) {
 					result = "**** " + accountNumber.substr(8);
 				} else {
 					if (accountNumber != null)
@@ -148,8 +204,15 @@ package com.dukascopy.connect.gui.list.renderers {
 					{
 						result = "";
 					}
-				}
+				}*/
 			}
+			/*if (getAccountName(data) != null)
+			{
+				if (result != null && result.length > 3)
+				{
+					result = result.substr(0, result.length - 3);
+				}
+			}*/
 			return result;
 		}
 		
@@ -211,7 +274,20 @@ package com.dukascopy.connect.gui.list.renderers {
 				var baseSize:Number = FontSize.TITLE_2;
 				var captionSize:Number = FontSize.SUBHEAD;
 				var color:String = "#" + Style.color(Style.COLOR_TEXT).toString(16);
-				result = "<font color='" + color + "' size='" + baseSize + "'>" + balance.substring(0, balance.indexOf(".")) + "</font>" + "<font color='" + color + "' size='" + captionSize + "'>" + balance.substr(balance.indexOf(".")) + "</font>";
+				
+				if (!isNaN(parseFloat(balance)))
+				{
+					balance = parseFloat(balance).toString()
+				}
+				
+				if (balance.indexOf(".") != -1)
+				{
+					result = "<font color='" + color + "' size='" + baseSize + "'>" + balance.substring(0, balance.indexOf(".")) + "</font>" + "<font color='" + color + "' size='" + captionSize + "'>" + balance.substr(balance.indexOf(".")) + "</font>";
+				}
+				else
+				{
+					result = "<font color='" + color + "' size='" + baseSize + "'>" + balance + "</font>";
+				}
 			}
 			
 			return result;
@@ -268,7 +344,10 @@ package com.dukascopy.connect.gui.list.renderers {
 			if (currency != null)
 				currency.text = "";
 			currency = null;
-			format = null
+			if (walletName != null)
+				walletName.text = "";
+			walletName = null;
+			format = null;
 		}
 		
 		/* INTERFACE com.dukascopy.connect.gui.list.renderers.IListRenderer */

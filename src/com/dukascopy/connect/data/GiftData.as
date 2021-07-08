@@ -22,6 +22,7 @@ package com.dukascopy.connect.data
 		public var currency:String;
 		public var chatUID:String;
 		public var commentAvaliable:Boolean = true;
+		public var currencyAvaliable:Boolean = true;
 		public var callback:Function;
 		public var accountNumber:String;
 		public var accountNumberIBAN:String;

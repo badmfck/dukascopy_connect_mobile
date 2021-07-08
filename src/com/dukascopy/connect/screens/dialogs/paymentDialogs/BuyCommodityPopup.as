@@ -348,6 +348,10 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 		
 		private function nextClick():void {
 			SoftKeyboard.closeKeyboard();
+			if (Number(iAmountCurrency.value) == 0)
+			{
+				return;
+			}
 			if (iAmount != null)
 			{
 				iAmount.forceFocusOut();
@@ -459,7 +463,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 			iAmount.view.x = Config.DIALOG_MARGIN;
 			
 			iAmount.value = "1";
-			iAmountCurrency.value = "100";
+			iAmountCurrency.value = "0";
 			
 			selectorCommodity.x = iAmount.view.x + itemWidth + Config.MARGIN;
 			selectorCommodity.setSize(itemWidth, Config.FINGER_SIZE * .8);
@@ -587,6 +591,10 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 		
 		private function onDataReady():void 
 		{
+			if (isDisposed)
+			{
+				return;
+			}
 			PayManager.S_INVESTMENTS_RATE_RESPOND.add(onRateRespond);
 			targetInvestment = false;
 			var currency:String = PayManager.accountInfo.investmentReferenceCurrency
@@ -596,6 +604,16 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 			}
 			
 			selectAccount(currency);
+			
+			if (selectedAccount != null)
+			{
+				var targetAmount:Number = 100;
+				if (selectedAccount.BALANCE < targetAmount)
+				{
+					targetAmount = selectedAccount.BALANCE;
+				}
+				iAmountCurrency.value = targetAmount.toString();
+			}
 			
 			if (currency)
 			{
@@ -1074,6 +1092,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 			}
 			else {
 				if (acceptButton != null) {
+					acceptButton.alpha = 0.5;
 				//	acceptButton.deactivate();
 				}
 			}

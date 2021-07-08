@@ -28,6 +28,7 @@ package com.dukascopy.connect.sys.nativeExtensionController {
 	import com.dukascopy.connect.sys.style.Style;
 	import com.dukascopy.connect.sys.touchID.TouchIDManager;
 	import com.dukascopy.connect.sys.ws.WS;
+	import com.dukascopy.connect.type.ChatRoomType;
 	import com.dukascopy.connect.utils.FilesSaveUtility;
 	import com.dukascopy.connect.vo.ChatMessageVO;
 	import com.dukascopy.connect.vo.ChatVO;
@@ -1197,10 +1198,10 @@ package com.dukascopy.connect.sys.nativeExtensionController {
 			}
 		}
 		
-		static public function saveFileToDownloadFolder(url:String):String {
+		static public function saveFileToDownloadFolder(url:String, openFile:Boolean = true):String {
 			if (Config.PLATFORM_ANDROID == true) {
 				MobileGui.preventScreenRemove = true;
-				return MobileGui.androidExtension.moveToDownloadFolder(url);
+				return MobileGui.androidExtension.moveToDownloadFolder(url, openFile);
 			}
 			return null;
 		}
@@ -1248,17 +1249,30 @@ package com.dukascopy.connect.sys.nativeExtensionController {
 				}
 				else
 				{
+					var userName:String = "";
 					if ("user_name" in messageData)
 					{
 						if ("anonymous" in messageData && messageData.anonymous == true)
 						{
-							messageObject.messageFrom = Lang.textIncognito;
+							userName = Lang.textIncognito;
 						}
 						else
 						{
-							messageObject.messageFrom = messageData.user_name;
+							userName = messageData.user_name;
 						}
 					}
+					
+					if (chatModel && chatModel.type == ChatRoomType.COMPANY) {
+						if (chatModel.title != null)
+						{
+							userName = chatModel.title;
+						}
+						else
+						{
+							userName = Lang.textSupport;
+						}
+					}
+					messageObject.messageFrom = userName;
 					
 					if ("user_avatar" in messageData)
 					{
@@ -1405,6 +1419,33 @@ package com.dukascopy.connect.sys.nativeExtensionController {
 			if (MobileGui.androidExtension != null)
 			{
 				MobileGui.androidExtension.detectLink(message, messageId);
+			}
+		}
+		
+		static public function getTimezoneId():String 
+		{
+			var result:String;
+			if (Config.PLATFORM_ANDROID && MobileGui.androidExtension != null)
+			{
+				result = MobileGui.androidExtension.getTimezoneId();
+			}
+			return result;
+		}
+		
+		static public function existInDownloadFolder(fileName:String):Boolean 
+		{
+			if (Config.PLATFORM_ANDROID && MobileGui.androidExtension != null)
+			{
+				return MobileGui.androidExtension.existInDownloadFolder(fileName);
+			}
+			return false;
+		}
+		
+		static public function openFileInDownloads(fileName:String):void 
+		{
+			if (Config.PLATFORM_ANDROID && MobileGui.androidExtension != null)
+			{
+				return MobileGui.androidExtension.openFileInDownloads(fileName);
 			}
 		}
 		

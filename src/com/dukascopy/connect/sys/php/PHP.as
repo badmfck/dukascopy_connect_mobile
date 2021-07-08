@@ -140,8 +140,8 @@ package com.dukascopy.connect.sys.php {
 		 * @param	userUIDS
 		 * @param	createChatOnly
 		 */
-		static public function call_stsGet(callBack:Function, promoCode:String, notaryFlow:Boolean,coolPhone:Boolean,birthDate:String,documentID:String,documentType:String,expired:String):void {
-			call('sts.get', callBack,{params:{promocode:promoCode,expired:expired,documentID:documentID,documentType:documentType,birthDate:birthDate,coolphone:(coolPhone)?1:0,notaryflow:(notaryFlow)?1:0,version:Config.VERSION,platform:Config.PLATFORM}});
+		static public function call_stsGet(callBack:Function, promoCode:String, notaryFlow:Boolean,coolPhone:Boolean,birthDate:String,documentID:String,documentType:String,expired:String,nationality:String):void {
+			call('sts.get', callBack,{params:{nationality:nationality,promocode:promoCode,expired:expired,documentID:documentID,documentType:documentType,birthDate:birthDate,coolphone:(coolPhone)?1:0,notaryflow:(notaryFlow)?1:0,version:Config.VERSION,platform:Config.PLATFORM}});
 		}
 		
 		static public function chat_start(callBack:Function, userUIDS:Array, createChatOnly:Boolean = false, caller:String = ""):void {
@@ -484,7 +484,7 @@ package com.dukascopy.connect.sys.php {
 		}
 		
 		static public function profile_getFXGallery(fxID:int, callBack:Function):void {
-			call("profile.getFXGallery", callBack, {fxid: fxID}, null, false, null, false);
+			call("profile.getFXGallery", callBack, {fxid: fxID}, null, false, null);
 		}
 		
 		static public function saveProfile(avatarId:String, firstName:String, lastName:String, callBack:Function, dataType:String):void {

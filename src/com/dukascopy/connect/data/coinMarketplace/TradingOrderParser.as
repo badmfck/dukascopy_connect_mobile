@@ -36,7 +36,7 @@ package com.dukascopy.connect.data.coinMarketplace
 				result.id = raw.id;
 				result.fillOrKill = raw.fill_or_kill;
 				result.max_trade = raw.max_trade;
-				result.min_trade = raw.min_trade;
+			//	result.min_trade = raw.min_trade;
 				result.own = raw.own;
 				result.price = parseFloat(raw.price);
 				result.priceString = raw.price;

@@ -62,6 +62,7 @@ package com.dukascopy.connect.screens.payments.settings {
 		private var mailPattern:RegExp = /([a-z0-9._-]+)@([a-z0-9.-]+)\.([a-z]{2,4})/g;
 		private var locked:Boolean;
 		private var lastSelectedCountry:Array;
+		private var filled:Boolean;
 		
 		public function PaymentsSettingsPersonalDetailsScreen() {
 			super();
@@ -80,13 +81,13 @@ package com.dukascopy.connect.screens.payments.settings {
 			
 			countrySelector.setSize(_width - padding * 2, Config.FINGER_SIZE * .7);
 			
-			if (PayManager.accountInfo == null) {
+			//if (PayManager.accountInfo == null) {
 				drawControls();
 				showPreloader();
 				PayManager.callGetAccountInfo(fillData);
-			} else {
-				fillData();
-			}
+			//} else {
+			//	fillData();
+			//}
 		}
 		
 		private function drawControls():void 
@@ -287,9 +288,9 @@ package com.dukascopy.connect.screens.payments.settings {
 				if (cancelButton != null) {
 					cancelButton.activate();
 				}
-				if (saveButton != null) {
+				/*if (saveButton != null) {
 					saveButton.activate();
-				}
+				}*/
 			}
 		}
 		
@@ -308,11 +309,11 @@ package com.dukascopy.connect.screens.payments.settings {
 			countrySelector.deactivate();
 			
 			if (cancelButton != null) {
-				cancelButton.activate();
+				cancelButton.deactivate();
 			}
-			if (saveButton != null) {
+			/*if (saveButton != null) {
 				saveButton.activate();
-			}
+			}*/
 		}
 		
 		override public function onBack(e:Event = null):void
@@ -584,6 +585,7 @@ package com.dukascopy.connect.screens.payments.settings {
 				saveButton.setDownScale(1);
 				saveButton.setOverlay(HitZoneType.BUTTON);
 				saveButton.tapCallback = onSaveClick;
+				saveButton.alpha = .7;
 				addObject(saveButton);
 				
 				cancelButton = new BitmapButton();
@@ -602,9 +604,11 @@ package com.dukascopy.connect.screens.payments.settings {
 				buttonBitmap = TextUtils.createbutton(textSettings, Style.color(Style.COLOR_BACKGROUND), 1, -1, Style.color(Style.COLOR_LINE_SSL), ((_width - padding * 3) * .5), -1, Style.size(Style.SIZE_BUTTON_CORNER));
 				cancelButton.setBitmapData(buttonBitmap, true);
 				
-				if (isActivated)
-				{
-					saveButton.activate();
+				if (isActivated) {
+					if (filled == true) {
+						saveButton.activate();
+						saveButton.alpha = 1;
+					}
 					cancelButton.activate();
 				}
 				drawView();
@@ -619,6 +623,10 @@ package com.dukascopy.connect.screens.payments.settings {
 		}
 		
 		private function onSaveClick():void {
+			if (PayManager.accountInfo.updatePersonalInfo == false) {
+				DialogManager.alert(Lang.information, Lang.updateInfoRequestFalse);
+				return;
+			}
 			if (isDataValid() && locked == false) {
 				saveChanges();
 			}
@@ -785,6 +793,13 @@ package com.dukascopy.connect.screens.payments.settings {
 				onBack();
 				return;
 			}
+			if (PayManager.accountInfo.updatePersonalInfo == true) {
+				if (_isActivated == true && saveButton != null) {
+					//saveButton.activate();
+					saveButton.alpha = 1;
+				}
+			}
+			filled = true;
 			drawControls();
 			drawView();
 		}
@@ -798,8 +813,7 @@ package com.dukascopy.connect.screens.payments.settings {
 			super.drawView();
 			
 			var selectedInput:InputField = getSelectedControl();
-			if (selectedInput != null && !isVisible(selectedInput))
-			{
+			if (selectedInput != null && !isVisible(selectedInput)) {
 				scrollToPosition(selectedInput.y - Config.MARGIN * 2);
 			}
 		}

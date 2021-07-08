@@ -62,7 +62,7 @@ package com.dukascopy.connect.sys.payments
 				order.currency = (currentProposal[i] as TradingOrder).currency;
 				order.fillOrKill = (currentProposal[i] as TradingOrder).fillOrKill;
 				order.max_trade = (currentProposal[i] as TradingOrder).max_trade;
-				order.min_trade = (currentProposal[i] as TradingOrder).min_trade;
+			//	order.min_trade = (currentProposal[i] as TradingOrder).min_trade;
 				order.own = (currentProposal[i] as TradingOrder).own;
 				order.price = (currentProposal[i] as TradingOrder).price;
 				

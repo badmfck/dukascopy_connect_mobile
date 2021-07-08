@@ -2180,6 +2180,7 @@ package com.dukascopy.langs {
 		static public var fromMultiAccount:String = "From Multi-currency account";
 		static public var toSavingAccount:String = "To Saving account";
 		static public var toTradingAccount:String = "To Trading account";
+		static public var fromTradingAccount:String = "From Trading account";
 		static public var fromSavingAccount:String = "From Saving account";
 		static public var toMultiAccount:String = "To Multi-currency account";
 		static public var savings:String = "Savings";
@@ -2330,6 +2331,7 @@ package com.dukascopy.langs {
 		static public var roadmap_wireDeposit:String = "Wire transfer";
 		static public var makeOffer:String = "Make offer";
 		static public var escrow:String = "Escrow";
+		static public var wireTransfer:String = "Wire transfer";
 		
 		static public var wantSellCrypto:String = "I WANT TO SELL CRYPTO";
 		static public var wantBuyCrypto:String = "I WANT TO BUY CRYPTO";
@@ -2434,6 +2436,16 @@ package com.dukascopy.langs {
 		static public var escrow_report:String = "REPORT";
 		static public var escrow_report_sent:String = "The transaction has been suspended and forwarded to manual investigation by Dukascopy Support. Dukascopy Bank will contact you if any explanation is required.";
 		static public var investigation_alert:String = "Please note that Dukascopy Bank may charge USD 50 of investigation fee if the report proves to be fake.";
+		
+		static public var increaseLimitRequestFalse:String = "You may file a request for limits increase only twice per day";
+		static public var updateInfoRequestFalse:String = "You may file a request for personal information update only twice per day";
+		static public var continueRegistration:String = "Continue registration";
+		static public var moneyTransferTimeoutError:String = "The server was not able to respond during 30 seconds. Please go back to My account and check the actual status of the operation.";
+		static public var launchJForex:String = "Launch JForex App";
+		static public var launchJForexWeb:String = "Launch JForex Web";
+		static public var launchMT4:String = "Launch MT4 App";
+		static public var launchBinaryTrader:String = "Launch Binary Trader App";
+		static public var launchCurrentAccount:String = "Current account";
 		
 		static public function updateKeys(keys:Object):void {
 			for (var n:String in keys) {

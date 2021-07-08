@@ -1,6 +1,7 @@
 package com.dukascopy.connect.sys.configManager {
 	
 	import com.dukascopy.connect.Config;
+	import com.dukascopy.connect.GD;
 	import com.dukascopy.connect.data.BarabanSettings;
 	import com.dukascopy.connect.sys.auth.Auth;
 	import com.dukascopy.connect.sys.bankManager.BankBotController;
@@ -43,6 +44,12 @@ package com.dukascopy.connect.sys.configManager {
 			getConfig();
 			
 			WS.S_CONNECTED.add(getConfig);
+			
+			GD.S_BANK_CACHE_CONFIG_REQUEST.add(onBankCacheRequested, "ConfigManager");
+		}
+		
+		static private function onBankCacheRequested(callback:Function):void {
+			callback(_rawConfig.bankCacheMinute);
 		}
 		
 		static private function getConfig():void {
@@ -180,6 +187,8 @@ package com.dukascopy.connect.sys.configManager {
 			
 			if ("open_link_in_browser_mark" in loadedConfigData == true && loadedConfigData.open_link_in_browser_mark != "")
 				NativeExtensionController.open_link_in_browser_mark = loadedConfigData.open_link_in_browser_mark;
+			
+			GD.S_CONFIG_UPDATED.invoke();
 		}
 		
 		static private function updateBankManagerControllerConfig(loadedConfigData:Object):void 

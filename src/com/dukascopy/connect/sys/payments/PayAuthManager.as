@@ -2,6 +2,7 @@ package com.dukascopy.connect.sys.payments {
 	
 	import com.dukascopy.connect.MobileGui;
 	import com.dukascopy.connect.sys.dialogManager.DialogManager;
+	import com.dukascopy.connect.sys.echo.echo;
 	import com.dukascopy.langs.Lang;
 	import com.greensock.TweenMax;
 	import com.telefision.sys.signals.Signal;
@@ -73,6 +74,7 @@ package com.dukascopy.connect.sys.payments {
 		
 		private static function onPasswordAuthorizeSucess():void {
 			isLockedByPass = false;
+			echo("money.PayAuthManager", "onPasswordAuthorizeSucess");
 			S_ON_AUTH_SUCCESS.invoke();
 		}
 		

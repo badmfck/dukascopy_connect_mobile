@@ -1,0 +1,18 @@
+package {
+	
+	import flash.display.Sprite;
+	import gibberishAES.AESCrypter;
+	
+	public class Decript extends Sprite {
+		
+		private var key:String = "WIW1DXWFWoWYWmWPPWmWYWoWFWXD1WIW";
+		private var data:String = "U2FsdGVkX18b3/cH4r34818D6n%2005TrIYVm9RNW9TlSVelBtW2xJs%206u%20y%20QwdrpQuxV7weG%20onJjo9XblQJL%20/8dvttYFsqgpbnYmHllVCeSZp6qd11wfu2oKJLWMlV/zeRx4LochsFyBMwvDN2GT4EnoUQAIKuYqWyDOG5jTtk3huRG7GaQi3r%203DLLTlOM97abkztGVRV0H1xJpMzFiA0w8Z4z9lyGW40rgfadEitnM/vWv5PhTY4z9C6esqS0T8kVYrp4qXDWstnQbe4KI81A/7oOxoqD1ZRSLipyojrxZ226jQ3PShUBsdyls2IVKK/BhVTePLDO8bduSM%20uH1cMuHvCXDUv6JV%20rAQ/OawaD7ka0/L1JirZ2xF%20nYkr4poMhU9kxCMSShtsFx5OW78ricg4nOsza00lCTHgM2F4Es6UqGb6TP41osO2ENO9Bx9XRFoTW6qb6hGfMStRQp9LhZ41i9i1f6KNJwEhaApuU9AGf9tdz4%200bqGhU4%204UFHWUKqJecPFNaeERnJko3B2a34PaX7%20/eKF55JFX1pyLsP3DOtKns8fu5jPGrVfc7y82LHolFvW09PS7q8aR30xNQg%20Ry4t/e9TZsebiGUoOPua0o5sfqG2nxJd1iOBkwhofrPYwdl%206n3fcoTstynD1PGOIb%20xJWPSdsmzMol9eWMK37YhBpBDevt7VY2o7N/AG8LP5K8jgpK1hlzS2WYhDK51RcmOL87UaBffCnhazyb8bfEvynE2jyOvYPPOtRKFQFeOfz9SRbNm9PWWCVNieGT5bXTRAJxkasDiPlcNB9bhuizNNoXA2kTydb1pOWVoFrL3wrqIpG0vn2qL4XoNjnF5v5R2FoUH9utgw8IsmEyChDc9pHj5GhJI0ekYgZLV%20eaL6sshHdfB41UQ1kRZFmLoYtl0bebkJgWYOyKmrUUh26500JdA5weQ5uhJnHVGV9SYDkWQF/BtJ9KJ81gJKTTOjk0LnzmewXpHGG5qgYKclIoXIyy1BsRv2TrwS764ldURKFnsAwZ72yElacoeENHe3wJz8QDclKcwsfZAziVpQE4AJLsD1iAuooREX7b/5jlK4MZ8sl%20hsrZCiKOyEfK4B2rCeN99w99lg4979Tog9eVLMsQsRb2vuGirr8gV6PrzbSQLc38lke10QX%20BIF/JUuzTvzS0lMX3sk=";
+		
+		public function Decript() {
+			data = data.replace(/\%20/g, "+");
+			var value:String = AESCrypter.dec(data, key);
+			var test:Object = JSON.parse(value);
+			trace();
+		}
+	}
+}

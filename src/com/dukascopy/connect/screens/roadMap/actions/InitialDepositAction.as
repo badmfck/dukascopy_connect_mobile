@@ -145,13 +145,22 @@ package com.dukascopy.connect.screens.roadMap.actions
 		
 		private function showWebView(url:String):void {
 			PHP.call_statVI("fastTrackRequest", "underage");
+			var title:String;
+			if (Auth.bank_phase == BankPhaze.WIRE_DEPOSIT)
+			{
+				title = Lang.wireTransfer;
+			}
+			else
+			{
+				title = Lang.sendByCart;
+			}
 			DialogManager.showDialog(
 				ScreenWebviewDialogBase, 
 				{
 					preventCloseOnBgTap: true, 
 					url:url, 
 					callback: onWebViewCallback, 
-					label: Lang.sendByCart
+					label: title
 				}
 			);
 		}

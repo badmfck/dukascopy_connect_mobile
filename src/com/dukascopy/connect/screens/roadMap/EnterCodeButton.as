@@ -44,7 +44,7 @@ package com.dukascopy.connect.screens.roadMap
 		
 		public function animate():void
 		{
-			if (shown)
+			if (shown || animation != null)
 			{
 				return;
 			}

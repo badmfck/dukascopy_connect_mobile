@@ -363,7 +363,7 @@ package com.dukascopy.connect.screens {
 					list.updateItemByIndex(n, false);
 			}
 			if (lhz == HitZoneType.WALLET_SELECT) {
-				bmVO.item.param = bmVO.additionalData[lastHitzoneObject.param];
+				bmVO.item.param = BankManager.getAccountByNumberAll(lastHitzoneObject.param);
 				BankManager.preSendMessage(bmVO.item);
 			}
 			if (lhz == HitZoneType.WALLET) {

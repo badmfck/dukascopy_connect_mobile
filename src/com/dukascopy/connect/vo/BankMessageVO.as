@@ -28,16 +28,7 @@ package com.dukascopy.connect.vo {
 		public function BankMessageVO(val:String) {
 			var data:Object = null;
 			try {
-				if (data != null && data is String && (data as String).indexOf("{") != -1)
-				{
-					
-				}
-				else
-				{
-					data = JSON.parse(val);
-				}
-				
-				
+				data = JSON.parse(val);
 			} catch (e:Error) {
 				_text = val;
 				return;
@@ -47,16 +38,11 @@ package com.dukascopy.connect.vo {
 		}
 		
 		private function setData(obj:Object):void {
-			
-			// НЕ НАДО СОЗДАВАТЬ BANK MESSAGE VO если OBJ == NULL !!
-			
-			if(obj==null)
+			if (obj == null)
 				return;
-			
-			if("menuLayout" in obj && obj["menuLayout"]!=null && obj["menuLayout"] is String){
+			if ("menuLayout" in obj && obj["menuLayout"] != null && obj["menuLayout"] is String) {
 				_menuLayout = obj["menuLayout"];
 			}
-			
 			if ("isMain" in obj == true)
 				_isMain = obj.isMain;
 			if ("saveItem" in obj == true)
@@ -85,7 +71,7 @@ package com.dukascopy.connect.vo {
 					_item = obj.item;
 					if (_text == null || _text == "")
 						_text = _item.text;
-				}
+			}
 			if ("isItem" in obj &&
 				obj.isItem == true)
 					_isItem = obj.isItem;

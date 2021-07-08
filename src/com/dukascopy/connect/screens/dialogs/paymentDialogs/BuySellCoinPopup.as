@@ -203,7 +203,14 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 					inputCoins.invalid();
 					invalid = true;
 				}
-				else if (isNaN(inputCoins.value) || (orders != null && orders.length > 0 && orders[0] != null && !isNaN(orders[0].min_trade) && inputCoins.value < orders[0].min_trade))
+				else if (
+					isNaN(inputCoins.value) || 
+					(
+						orders != null && 
+						orders.length > 0 && 
+						orders[0] != null && 
+						(orders[0] as TradingOrder).fillOrKill && 
+						inputCoins.value < (orders[0] as TradingOrder).quantity))
 				{
 					inputCoins.invalid();
 					invalid = true;
@@ -241,7 +248,13 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 					invalid = true;
 				}
 				
-				if (isNaN(inputCoins.value) || (orders != null && orders.length > 0 && orders[0] != null && !isNaN(orders[0].min_trade) && inputCoins.value < orders[0].min_trade))
+				if (isNaN(inputCoins.value) || 
+					(
+						orders != null && 
+						orders.length > 0 && 
+						orders[0] != null && 
+						(orders[0] as TradingOrder).fillOrKill && 
+						inputCoins.value < (orders[0] as TradingOrder).quantity))
 				{
 					invalid = true;
 				}
@@ -1166,7 +1179,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 		//	startPriceValue = NaN;
 		//	startQuantityValue = NaN;
 			
-			if (orders.length == 1 && (orders[0] as TradingOrder).min_trade == (orders[0] as TradingOrder).quantity)
+			if (orders.length == 1 && (orders[0] as TradingOrder).fillOrKill)
 			{
 				startQuantityValue = (orders[0] as TradingOrder).quantity;
 				if (isActivated)
@@ -1351,7 +1364,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 		
 		private function isEditable():Boolean 
 		{
-			if (orders.length == 1 && (orders[0] as TradingOrder).min_trade == (orders[0] as TradingOrder).quantity)
+			if (orders.length == 1 && (orders[0] as TradingOrder).fillOrKill)
 			{
 				return false;
 			}

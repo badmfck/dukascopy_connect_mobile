@@ -12,15 +12,7 @@ import flash.system.Capabilities;
 import flash.events.UncaughtErrorEvent;
 import com.greensock.TweenMax;
 import com.dukascopy.connect.managers.escrow.EscrowDealManager;
-import com.dukascopy.connect.GD;
-import com.dukascopy.connect.managers.escrow.EscrowDealCreateRequest;
-import com.dukascopy.connect.managers.escrow.EscrowDealSide;
-import com.forms.FormComponent;
 import com.dukascopy.connect.managers.webview.WebViewManager;
-import com.forms.Form;
-import flash.filesystem.File;
-import flash.events.KeyboardEvent;
-import flash.ui.Keyboard;
 import com.dukascopy.connect.managers.escrow.test.EscrowTest;
 import com.dukascopy.connect.managers.escrow.test.EscrowTestForm;
 

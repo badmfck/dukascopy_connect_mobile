@@ -28,6 +28,7 @@ package com.dukascopy.connect {
 	import com.dukascopy.connect.sys.GlobalDate;
 	import com.dukascopy.connect.sys.applicationShop.Shop;
 	import com.dukascopy.connect.sys.auth.Auth;
+	import com.dukascopy.connect.sys.bankManager.BankCacheManager;
 	import com.dukascopy.connect.sys.bankManager.BankManager;
 	import com.dukascopy.connect.sys.calendar.Calendar;
 	import com.dukascopy.connect.sys.callManager.CallManager;
@@ -173,6 +174,15 @@ package com.dukascopy.connect {
 			NativeApplication.nativeApplication.addEventListener(Event.DEACTIVATE, onDeativate);
 			NativeApplication.nativeApplication.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
 			NativeApplication.nativeApplication.addEventListener(Event.EXITING, onAppExit);
+			
+			GD.S_TIMEZONE_REQUEST.add(onTimezoneRequested);
+		}
+		
+		private function onTimezoneRequested(callback:Function):void {
+			if (Config.PLATFORM_ANDROID == true)
+				callback(androidExtension.getTimezoneId());
+			else
+				callback("Europe/Riga");
 		}
 		
 		private function initComponents():void {
@@ -215,6 +225,7 @@ package com.dukascopy.connect {
 			SoftKeyboard.startDetectHeight();
 			
 			new EscrowDealManager();
+			BankCacheManager.init();
 
 			/*if(Config.PLATFORM_WINDOWS)
 				stage.addChild(new MemoryMonitor());*/

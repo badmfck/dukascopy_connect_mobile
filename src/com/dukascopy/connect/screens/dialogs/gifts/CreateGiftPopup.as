@@ -35,6 +35,7 @@ package com.dukascopy.connect.screens.dialogs.gifts
 	import com.dukascopy.connect.sys.Gifts;
 	import com.dukascopy.connect.sys.auth.Auth;
 	import com.dukascopy.connect.sys.dialogManager.DialogManager;
+	import com.dukascopy.connect.sys.echo.echo;
 	import com.dukascopy.connect.sys.imageManager.ImageBitmapData;
 	import com.dukascopy.connect.sys.imageManager.ImageManager;
 	import com.dukascopy.connect.sys.payments.InvoiceManager;
@@ -42,6 +43,7 @@ package com.dukascopy.connect.screens.dialogs.gifts
 	import com.dukascopy.connect.sys.payments.PayManager;
 	import com.dukascopy.connect.sys.payments.PayRespond;
 	import com.dukascopy.connect.sys.payments.advancedPayments.vo.PayTaskVO;
+	import com.dukascopy.connect.sys.paymentsManagerNew.PaymentsManagerNew;
 	import com.dukascopy.connect.sys.pointerManager.PointerManager;
 	import com.dukascopy.connect.sys.serviceScreenManager.ServiceScreenManager;
 	import com.dukascopy.connect.sys.softKeyboard.SoftKeyboard;
@@ -296,7 +298,7 @@ package com.dukascopy.connect.screens.dialogs.gifts
 			var acc:Array;
 			if (PayManager.accountInfo.accounts != null)
 			{
-				acc = PayManager.accountInfo.accounts.concat();
+				acc = PaymentsManagerNew.filterEmptyWallets(PayManager.accountInfo.accounts);
 			}
 			if (giftData == null || 
 				(
@@ -838,10 +840,12 @@ package com.dukascopy.connect.screens.dialogs.gifts
 		}
 		
 		public function onTransferRespond(respond:PayRespond):void {
+			echo("money", "onTransferRespond", respond.error + " " + respond.errorMsg);
 			if (isDisposed)
 				return;
 			if (respond.error == true) {
-				if (respond.hasAuthorizationError == false) {
+				echo("money", "onTransferRespond", "hasAuthorizationError = " + respond.hasAuthorizationError);
+				if (respond.hasAuthorizationError == false && respond.errorCode != 3408 && respond.errorCode != 3409) {
 					inPaymentProcess = false;
 					activateScreen();
 					hidePreloader();
@@ -1053,6 +1057,7 @@ package com.dukascopy.connect.screens.dialogs.gifts
 		
 		private function onGiftSent(task:PayTaskVO):void
 		{
+			echo("money", "onGiftSent", task == currentPayTask);
 			inPaymentProcess = false;
 			
 			if (isDisposed)

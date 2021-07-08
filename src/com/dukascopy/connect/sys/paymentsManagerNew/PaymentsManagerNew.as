@@ -876,7 +876,7 @@ package com.dukascopy.connect.sys.paymentsManagerNew {
 				}
 				var dta:Object = { coin:coin, currency:currency, side:side, price:price, quantity:quantity, activate:true };
 				if (fullOrder == true)
-					dta.min_trade = quantity;
+					dta.fill_or_kill = true;
 				if (for_account != "")
 					dta.for_account = for_account;
 				if (good_till != 0)
@@ -1501,6 +1501,8 @@ package com.dukascopy.connect.sys.paymentsManagerNew {
 			if (callbacksHome == null)
 				return;
 			var res:Object = checkForError(respond);
+			if (respond.savedRequestData.data.with_cards == true)
+				res.fullRequest = true;
 			while (callbacksHome.length != 0)
 				callbacksHome.shift()(res);
 			callbacksHome = null;
@@ -1723,12 +1725,12 @@ package com.dukascopy.connect.sys.paymentsManagerNew {
 			return hash;
 		}
 		
-		static public function callCardStatement(cardNumber:String, from:String, to:String):void {
-			PayServer.cardStatement(cardNumber, from, to);
+		static public function callCardStatement(cardNumber:String, from:String, to:String, timezone:String = null):void {
+			PayServer.cardStatement(cardNumber, from, to, timezone);
 		}
 		
-		static public function callWalletStatement(accountNumber:String, from:String, to:String):void {
-			PayServer.walletStatement(accountNumber, from, to);
+		static public function callWalletStatement(accountNumber:String, from:String, to:String, timezone:String = null):void {
+			PayServer.walletStatement(accountNumber, from, to, timezone);
 		}
 		
 		static private function onTransactionCode(respond:PayRespond):void {
@@ -1747,6 +1749,24 @@ package com.dukascopy.connect.sys.paymentsManagerNew {
 				hashCallbacks.shift()(res, respond.savedRequestData.callID);
 			hashCallbacks = null;
 			delete callbacksTrCode[respond.savedRequestData.callID];
+		}
+		
+		static public function filterEmptyWallets(accounts:Array):Array 
+		{
+			var result:Array = new Array();
+			
+			if (accounts != null)
+			{
+				for (var i:int = 0; i < accounts.length; i++) 
+				{
+					if ("BALANCE" in accounts[i] && accounts[i].BALANCE > 0)
+					{
+						result.push(accounts[i]);
+					}
+				}
+			}
+			
+			return result;
 		}
 	}
 }

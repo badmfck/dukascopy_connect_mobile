@@ -344,6 +344,21 @@ package com.dukascopy.connect.gui.button {
 			return tf.y + box.y + 1;
 		}
 		
+		public function setTextAlpha(value:Number):void 
+		{
+			if (tf != null)
+			{
+				tf.alpha = value;
+			}
+			setSize(w, h);
+		}
+		
+		public function hidArrow():void 
+		{
+			arrowShow = false;
+			setSize(w, h);
+		}
+		
 		public function get value():String {
 			return _value;
 		}

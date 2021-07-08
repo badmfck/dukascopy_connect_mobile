@@ -234,7 +234,11 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 			}
 			
 			cardsPreloader.start();
-			PayManager.callGetDepositCommission(Number(iAmountCurrency.value), selectorCurrency.value, "MCARD", _lastCommissionCallID);
+			var card:Object = selectorCard.getValue();
+			var type:String = "MCARD";
+			if (card.programme == "linked")
+				type = "CC";
+			PayManager.callGetDepositCommission(Number(iAmountCurrency.value), selectorCurrency.value, type, _lastCommissionCallID, cardId);
 		}
 		
 		private function getAmount():Number 

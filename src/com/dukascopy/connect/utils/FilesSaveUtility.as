@@ -6,6 +6,7 @@ package com.dukascopy.connect.utils {
 	import com.dukascopy.connect.MobileGui;
 	import com.dukascopy.connect.gui.components.message.ToastMessage;
 	import com.dukascopy.connect.sys.dialogManager.DialogManager;
+	import com.dukascopy.connect.sys.echo.echo;
 	import com.dukascopy.connect.sys.nativeExtensionController.NativeExtensionController;
 	import com.dukascopy.langs.Lang;
 	import com.telefision.sys.signals.Signal;
@@ -39,6 +40,7 @@ package com.dukascopy.connect.utils {
 		
 		static private var currentBytearray:ByteArray;
 		static private var currentFileUrl:String;
+		static private var needOpenFile:Boolean;
 		
 		public static function init(dce:DukascopyExtension):void {
 			if (_dukascopyExtension != null) {
@@ -58,7 +60,7 @@ package com.dukascopy.connect.utils {
 					fs.open(fl,"write");
 					fs.writeBytes(currentBytearray);
 					fs.close();
-					var path:String = NativeExtensionController.saveFileToDownloadFolder(fl.nativePath);
+					var path:String = NativeExtensionController.saveFileToDownloadFolder(fl.nativePath, needOpenFile);
 					if (path != null) {
 						path += currentFileUrl;
 					}
@@ -70,8 +72,8 @@ package com.dukascopy.connect.utils {
 			}
 		}
 		
-		public static function saveFileToForGallery(image:BitmapData, fileUrl:String, hashName:Boolean = true):void {
-			if (createDukascopyDirectoryIfNotExist() == false) {
+		public static function saveFileToForGallery(image:BitmapData, fileUrl:String, hashName:Boolean = true, openFile:Boolean = true):void {
+			if (createDukascopyDirectoryIfNotExist() == false || image == null) {
 				return;
 			}
 			var fileName:String = getMD5ByUrl(fileUrl) + ".png";
@@ -79,6 +81,7 @@ package com.dukascopy.connect.utils {
 			{
 				fileName = fileUrl;
 			}
+			needOpenFile = openFile;
 			var byteArray:ByteArray = image.encode(image.rect, new PNGEncoderOptions(true));
 			if (Config.PLATFORM_ANDROID) {
 				currentFileUrl = fileName;
@@ -116,15 +119,19 @@ package com.dukascopy.connect.utils {
 		}
 		
 		public static function openGalleryIfFileExists(fileUrl:String):void {
+			echo("!!!", "OPREN GALLERY");
 			var url:String;
 			if (getIsFileExists(fileUrl)) {
 				if (Config.PLATFORM_ANDROID) {
-					url = ("intent:#Intent;" +
+					
+					NativeExtensionController.openFileInDownloads(getMD5ByUrl(fileUrl) + ".png")
+					
+					/*url = ("intent:#Intent;" +
 						   "action=android.intent.action.ACTION_VIEW;" +
 						   "type=image/*;" +
 						   "end"
 					);
-					navigateToURL(new URLRequest(url));
+					navigateToURL(new URLRequest(url));*/
 				}
 				if (Config.PLATFORM_APPLE) {
 					if (_dukascopyExtension != null) {
@@ -140,8 +147,19 @@ package com.dukascopy.connect.utils {
 			if (Config.PLATFORM_ANDROID) {
 				var fl:File = new File(getGalleryFolder() + "/" + fileName);
 				if (fl.exists) {
+					echo("FILE! exist", fl.nativePath, fl.url);
 					res = true;
 				}
+				else
+				{
+					echo("FILE!", fileName, NativeExtensionController.existInDownloadFolder(fileName));
+					
+					if (NativeExtensionController.existInDownloadFolder(fileName))
+					{
+						res = true;
+					}
+				}
+				
 			}
 			if (Config.PLATFORM_APPLE) {
 				if (isPossibleToSaveImage) {

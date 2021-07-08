@@ -229,17 +229,24 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 			else
 			{
 				currencies = new Array();
-
+				
+				var exist:Object = new Object();
+				
 				var wallets:Array = getCreditAccounts();
 				var l:int = wallets.length;
 				var walletItem:Object;
 				for (var i:int = 0; i < l; i++)
 				{
 					walletItem = wallets[i];
-					currencies.push(walletItem.CURRENCY)
+					currencies.push(walletItem.CURRENCY);
+					if (exist[walletItem.CURRENCY] != null)
+					{
+						return;
+					}
+					exist[walletItem.CURRENCY] = walletItem.CURRENCY;
 				}
 			}
-
+			
 			DialogManager.showDialog(
 					ListSelectionPopup,
 					{
@@ -322,10 +329,16 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 			var wallets:Array = getDebitAccounts();
 			var l:int = wallets.length;
 			var walletItem:Object;
+			var exist:Object = new Object();
 			for (var i:int = 0; i < l; i++)
 			{
 				walletItem = wallets[i];
 				currencies.push(walletItem.CURRENCY)
+				if (exist[walletItem.CURRENCY] != null)
+				{
+					return;
+				}
+				exist[walletItem.CURRENCY] = walletItem.CURRENCY;
 			}
 			
 			DialogManager.showDialog(
@@ -893,7 +906,20 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 		{
 			if (data != null && "giftData" in data && data.giftData != null && "toAccounts" in data.giftData && data.giftData.toAccounts != null && data.giftData.toAccounts is Array)
 			{
-				return data.giftData.toAccounts as Array;
+				var accounts:Array = new Array();
+				var sorted:Array = data.giftData.toAccounts as Array;
+				var account:Object;
+				for (var i:int = 0; i < sorted.length; i++) 
+				{
+					account = copyAccount(sorted[i]);
+					if (selectedDebitAccount != null && selectedDebitAccount.ACCOUNT_NUMBER == account.ACCOUNT_NUMBER)
+					{
+						account.disabled = true;
+					}
+					accounts.push(account);
+				}
+				
+				return accounts;
 			}
 			else
 			{
@@ -906,13 +932,35 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 		{
 			if (data != null && "giftData" in data && data.giftData != null && "fromAccounts" in data.giftData && data.giftData.fromAccounts != null && data.giftData.fromAccounts is Array)
 			{
-				return data.giftData.fromAccounts as Array;
+				var accounts:Array = new Array();
+				var sorted:Array = PaymentsManagerNew.filterEmptyWallets(data.giftData.fromAccounts as Array);
+				var account:Object;
+				for (var i:int = 0; i < sorted.length; i++) 
+				{
+					account = copyAccount(sorted[i]);
+					if (selectedCreditAccount != null && selectedCreditAccount.ACCOUNT_NUMBER == account.ACCOUNT_NUMBER)
+					{
+						account.disabled = true;
+					}
+					accounts.push(account);
+				}
+				return accounts;
 			}
 			else
 			{
 				ApplicationErrors.add();
 				return new Array();
 			}
+		}
+		
+		private function copyAccount(account:Object) :Object
+		{
+			var result:Object = new Object();
+			for (var key:String in account) 
+			{
+				result[key] = account[key];
+			}
+			return result;
 		}
 
 		private function selectDebitAccountByNumber(accountNumber:String):void
@@ -975,9 +1023,78 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 				selectorCreditAccont.activate();
 				selectorDebitAccont.activate();
 				
-				selectorCreditCurrency.activate();
-				selectorDebitCurrency.activate();
+				if (canActivateDebitCurrency())
+				{
+					selectorDebitCurrency.activate();
+				}
+				else
+				{
+					selectorDebitCurrency.setTextAlpha(0.5);
+					selectorDebitCurrency.hidArrow();
+				}
+				if (canActivateCreditCurrency())
+				{
+					selectorCreditCurrency.activate();
+				}
+				else
+				{
+					selectorCreditCurrency.setTextAlpha(0.5);
+					selectorCreditCurrency.hidArrow();
+				}
 			}
+		}
+		
+		private function canActivateDebitCurrency():Boolean 
+		{
+			var currencies:Array = new Array();
+			
+			var wallets:Array = getDebitAccounts();
+			var l:int = wallets.length;
+			var walletItem:Object;
+			var exist:Object = new Object();
+			for (var i:int = 0; i < l; i++)
+			{
+				walletItem = wallets[i];
+				currencies.push(walletItem.CURRENCY)
+				if (exist[walletItem.CURRENCY] != null)
+				{
+					return false;
+				}
+				exist[walletItem.CURRENCY] = walletItem.CURRENCY;
+			}
+			return true;
+		}
+		
+		private function canActivateCreditCurrency():Boolean 
+		{
+			var currencies:Array;
+
+			var existingCurrencies:Array = getCurrencies();
+			if (existingCurrencies != null && existingCurrencies.length > 0)
+			{
+				currencies = existingCurrencies;
+			}
+			else
+			{
+				currencies = new Array();
+				
+				var exist:Object = new Object();
+				
+				var wallets:Array = getCreditAccounts();
+				var l:int = wallets.length;
+				var walletItem:Object;
+				for (var i:int = 0; i < l; i++)
+				{
+					walletItem = wallets[i];
+					currencies.push(walletItem.CURRENCY);
+					if (exist[walletItem.CURRENCY] != null)
+					{
+						return false;
+					}
+					exist[walletItem.CURRENCY] = walletItem.CURRENCY;
+				}
+			}
+			return true;
 		}
 		
 		private function startLoadRate():void 

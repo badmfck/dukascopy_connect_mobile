@@ -146,7 +146,7 @@ package com.dukascopy.connect.sys.payments {
 				PayManager.S_CANCEL_AUTH.add(onAuthBack);
 			}
 			
-			PayAuthManager.S_ON_AUTH_SUCCESS.add(onAuthPassSuccess);
+		//	PayAuthManager.S_ON_AUTH_SUCCESS.add(onAuthPassSuccess);
 			PayAuthManager.S_ON_PASS_CHANGE_SUCCESS.add(onAuthPassChangeSuccess);
 			PayAuthManager.S_ON_DISMISS_PASS.add(onPassDismiss);
 			
@@ -171,7 +171,7 @@ package com.dukascopy.connect.sys.payments {
 			
 			if (! PayAuthManager.hasDependencies()){ 
 				PayAuthManager.S_ON_BACK.remove(onAuthBack);
-				PayAuthManager.S_ON_AUTH_SUCCESS.remove(onAuthPassSuccess);
+			//	PayAuthManager.S_ON_AUTH_SUCCESS.remove(onAuthPassSuccess);
 				PayAuthManager.S_ON_PASS_CHANGE_SUCCESS.remove(onAuthPassChangeSuccess);
 				PayAuthManager.S_ON_DISMISS_PASS.remove(onPassDismiss);
 			}
@@ -321,7 +321,7 @@ package com.dukascopy.connect.sys.payments {
 		// Pass Auth Sucess 
 		static private function onAuthPassSuccess():void {
 			_isAuthorized = true;
-			echo("IncoiceManager", "onAuthPassSuccess");
+			echo("mpney.IncoiceManager", "onAuthPassSuccess !!!");
 			
 			// if is pendng transaction > sendInvoice
 			if (failedInvoiceData != null && failedInvoiceData.data != null) {
@@ -541,25 +541,26 @@ package com.dukascopy.connect.sys.payments {
 			if (respond.savedRequestData.callID == _lastTransactionCallID){
 				isMakingTransaction = false;
 			}
-			
+			echo("money", "onSelfTransferRespond", "1");
 			S_TRANSFER_RESPOND.invoke(respond);
-			if (!respond.error){					
+			if (!respond.error){
+				echo("money", "onSelfTransferRespond", "2");
 				markAsAcepted( respond.savedRequestData.callID);				
 				failedInvoiceData = null;
 			}else{			
-				
+				echo("money", "onSelfTransferRespond", "3");
 				if (respond.hasAuthorizationError){					
 					failedInvoiceData = respond.savedRequestData;
 					PayManager.validateAuthorization(respond);
 					PayManager.clearSavedData()
 				}else if (respond.errorCode == 3408){//3408	PWP operation amount limit reached	see PWP mode
-					trace("HANLE PWP ERROR 3408");
+					echo("onSelfTransferRespond", "HANLE PWP ERROR 3408");
 					failedInvoiceData = respond.savedRequestData;
 					PayManager.needAuthorizationInvoke();
 					PayManager.clearSavedData()
 				}else if (respond.errorCode == 3409){//3409	PWP daily limit reached
 					failedInvoiceData = respond.savedRequestData;
-					trace("HANLE PWP ERROR 3409");
+					echo("onSelfTransferRespond", "HANLE PWP ERROR 3409");
 					PayManager.needAuthorizationInvoke();
 					PayManager.clearSavedData()
 				} 
@@ -593,7 +594,7 @@ package com.dukascopy.connect.sys.payments {
 		 * @param	respond
 		 */
 		public static function onMerchTransferRespond(respond:PayRespond):void {
-			trace("Respond Invoice Merch call id = " + respond.savedRequestData.callID );			
+			echo("onMerchTransferRespond", "Respond Invoice Merch call id = " + respond.savedRequestData.callID );			
 			if (respond.savedRequestData.callID == _lastTransactionCallID){
 				isMakingTransaction = false;
 			}
@@ -610,7 +611,7 @@ package com.dukascopy.connect.sys.payments {
 					PayManager.validateAuthorization(respond);					
 					PayManager.clearSavedData()
 				}else if (respond.errorCode == 3408){//3408	PWP operation amount limit reached	see PWP mode
-					trace("HANLE PWP ERROR 3408");
+					echo("onMerchTransferRespond", "HANLE PWP ERROR 3408");
 					failedInvoiceData = respond.savedRequestData;
 					
 					PayManager.needAuthorizationInvoke();
@@ -618,7 +619,7 @@ package com.dukascopy.connect.sys.payments {
 				}else if (respond.errorCode == 3409){//3409	PWP daily limit reached
 					failedInvoiceData = respond.savedRequestData;
 					
-					trace("HANLE PWP ERROR 3409");
+					echo("onMerchTransferRespond", "HANLE PWP ERROR 3409");
 					PayManager.needAuthorizationInvoke();
 					PayManager.clearSavedData()
 				} 
@@ -655,14 +656,14 @@ package com.dukascopy.connect.sys.payments {
 		 * @param	respond
 		 */
 		public static function onInvoiceTransferRespond(respond:PayRespond):void {
-			trace("Respond Invoice call id = " + respond.savedRequestData.callID );			
+			echo("onInvoiceTransferRespond", "Respond Invoice call id = " + respond.savedRequestData.callID );			
 			if (respond.savedRequestData.callID == _lastTransactionCallID){
 				isMakingTransaction = false;
 			}
 			
 			S_TRANSFER_RESPOND.invoke(respond);	
 			if (!respond.error){					
-				markAsAcepted( respond.savedRequestData.callID);				
+				markAsAcepted( respond.savedRequestData.callID);			
 				failedInvoiceData = null;
 			}else{			
 				 
@@ -674,19 +675,36 @@ package com.dukascopy.connect.sys.payments {
 					{
 						if ("to" in respond.savedRequestData.data && respond.savedRequestData.data.to != null)
 						{
+							echo("onInvoiceTransferRespond", "try clear");
 							CheckDuplicateTransfer.clear(respond.savedRequestData.data.to);
 						}
 					}
 				}else if (respond.errorCode == 3408){//3408	PWP operation amount limit reached	see PWP mode
-					trace("HANLE PWP ERROR 3408");
+					echo("onInvoiceTransferRespond", "HANLE PWP ERROR 3408");
 					failedInvoiceData = respond.savedRequestData;
 					PayManager.needAuthorizationInvoke();
 					PayManager.clearSavedData();// for not to call again from PyaManager but call here
+					if (respond.savedRequestData != null && "data" in respond.savedRequestData && respond.savedRequestData.data != null)
+					{
+						if ("to" in respond.savedRequestData.data && respond.savedRequestData.data.to != null)
+						{
+							echo("onInvoiceTransferRespond", "try clear");
+							CheckDuplicateTransfer.clear(respond.savedRequestData.data.to);
+						}
+					}
 				}else if (respond.errorCode == 3409){//3409	PWP daily limit reached
 					failedInvoiceData = respond.savedRequestData;
-					trace("HANLE PWP ERROR 3409");
+					echo("onInvoiceTransferRespond", "HANLE PWP ERROR 3409");
 					PayManager.needAuthorizationInvoke();
 					PayManager.clearSavedData();// for not to call again from PyaManager but call here
+					if (respond.savedRequestData != null && "data" in respond.savedRequestData && respond.savedRequestData.data != null)
+					{
+						if ("to" in respond.savedRequestData.data && respond.savedRequestData.data.to != null)
+						{
+							echo("onInvoiceTransferRespond", "try clear");
+							CheckDuplicateTransfer.clear(respond.savedRequestData.data.to);
+						}
+					}
 				} 
 				else if (respond.hasTrialVersionError) {//is trial reached
 				
@@ -729,8 +747,9 @@ package com.dukascopy.connect.sys.payments {
 			
 			// Pay Task COMPLETED 
 			var completedTask:PayTaskVO =  inTransactionTasks[callID];
+			echo("money", "markAsAcepted", completedTask);
 			if (completedTask != null){	
-				trace(" Payment Task Is completed:" +callID +" >"+ completedTask.amount + completedTask.currency );
+				echo("markAsAcepted", "Payment Task Is completed:" +callID +" >"+ completedTask.amount + completedTask.currency );
 				
 				
 				// This is how to handle on complete 	
@@ -769,16 +788,16 @@ package com.dukascopy.connect.sys.payments {
 					ChatManager.updateInvoce(Config.BOUNDS + JSON.stringify(msgVO.systemMessageVO.invoiceVO.getData()), msgVO.id);
 					
 				} else {
-					trace("Cannot mark Invoice as complete because messageVO is null or messageVO.invoiceData is null");
+					echo("markAsAcepted", "Cannot mark Invoice as complete because messageVO is null or messageVO.invoiceData is null");
 				}
-				
+				echo("money", "S_PAY_TASK_COMPLETED", completedTask);
 				S_PAY_TASK_COMPLETED.invoke(completedTask);
 				if (completedTask.updateAccount == true)
 				{
 					PayManager.callGetAccountInfo();
 				}
 			}else{
-				trace("Cannot mark InvoiceData as complete because inTransactionTasks[callID] is null");
+				echo("markAsAcepted", "Cannot mark InvoiceData as complete because inTransactionTasks[callID] is null");
 			}
 			
 			// TODO maybe keep completed PayTaskVO's in stock ?
@@ -786,7 +805,7 @@ package com.dukascopy.connect.sys.payments {
 		}
 		
 		public static function onIsPaidResponse(phpRespond:PHPRespond):void {
-			echo("InvoiceManager", "onIsPaidResponse");
+			echo("onIsPaidResponse", "onIsPaidResponse");
 		}
 		
 		//===========================================================================================================

@@ -107,6 +107,11 @@ package com.dukascopy.connect.screens.dialogs.x.base.bottom
 			selectedNum = n;
 			if (list.data != null)
 			{
+				if ("disabled" in list.data[selectedNum] && list.data[selectedNum].disabled == true)
+				{
+					return;
+				}
+				
 				for (var i:int = 0; i < list.data.length; i++) 
 				{
 					if ("selected" in list.data[i])
@@ -152,12 +157,12 @@ package com.dukascopy.connect.screens.dialogs.x.base.bottom
 						{
 							data.callback(selectedItem, selectedNum);
 						}
-						data.callback(selectedItem, selectedNum);
 					}
 					else if((data.callback as Function).length == 3)
 					{
 						data.callback(selectedItem);
 					}
+					selectedItem = null;
 				}
 				selectedItem = null;
 			}

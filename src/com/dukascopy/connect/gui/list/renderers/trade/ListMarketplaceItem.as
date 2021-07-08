@@ -512,7 +512,7 @@ package com.dukascopy.connect.gui.list.renderers.trade {
 					var l:int = orderData.suboffers.length;
 					for (var i:int = 0; i < l; i++) 
 					{
-						if (orderData.suboffers[i].min_trade != orderData.suboffers[i].quantity)
+						if (!(orderData.suboffers[i] as TradingOrder).fillOrKill)
 						{
 							fullFillOrKill = false;
 							break;

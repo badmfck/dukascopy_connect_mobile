@@ -40,6 +40,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 	import com.dukascopy.connect.sys.payments.PayManager;
 	import com.dukascopy.connect.sys.payments.PayRespond;
 	import com.dukascopy.connect.sys.payments.PaymentsManager;
+	import com.dukascopy.connect.sys.paymentsManagerNew.PaymentsManagerNew;
 	import com.dukascopy.connect.sys.pointerManager.PointerManager;
 	import com.dukascopy.connect.sys.serviceScreenManager.ServiceScreenManager;
 	import com.dukascopy.connect.sys.softKeyboard.SoftKeyboard;
@@ -415,10 +416,13 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 		
 		private function showWalletsDialog():void
 		{
+			var accounts:Array = PaymentsManagerNew.filterEmptyWallets(PayManager.accountInfo.accounts);
+			accounts = accounts.concat(PayManager.getCoins());
+			
 			DialogManager.showDialog(
 				ListSelectionPopup,
 				{
-					items:PayManager.accountInfo.accounts.concat(PayManager.getCoins()),
+					items:accounts,
 					title:Lang.TEXT_SELECT_ACCOUNT,
 					renderer:ListPayWalletItem,
 					callback:onWalletSelect

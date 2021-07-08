@@ -23,12 +23,12 @@ package com.dukascopy.connect.data.coinMarketplace
 		public var own:Boolean;
 		public var price:Number;
 		public var priceString:String;
-		public var publicOrder:Boolean;
+		public var publicOrder:Boolean = true;
 		public var side:String;
 		public var trades_count:Number;
 		public var uid:String;
 		public var updated:Number;
-		public var min_trade:Number;
+	//	public var min_trade:Number;
 		public var max_trade:Number;
 		public var quantity:Number;
 		public var quantityString:String;

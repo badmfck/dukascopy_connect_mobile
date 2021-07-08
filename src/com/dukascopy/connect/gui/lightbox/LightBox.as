@@ -431,7 +431,11 @@ package com.dukascopy.connect.gui.lightbox {
 		}
 		
 		private static function removeView():void {
-			echo("Lightbox", "removeView", "");	
+			echo("Lightbox", "removeView", "");
+			
+			echo("FILE!", "onSaveSuccess.remove");
+			FilesSaveUtility.signalOnImageSaved.remove(onSaveSuccess);
+			
 			if (viewHolder != null && viewHolder.parent != null) {
 				viewHolder.parent.removeChild(viewHolder);
 			}
@@ -1145,7 +1149,7 @@ package com.dukascopy.connect.gui.lightbox {
 									listenScreenRotation:Boolean = false,
 									contentProvider:IContentProvider = null):void {
 			echo("Lightbox", "show", "START");
-			
+			mainTitle = title;
 			if (!exists(url) && currentContentProvider != null)
 				return; // no such url 
 			listenForScreenRotation = listenScreenRotation;
@@ -1191,8 +1195,7 @@ package com.dukascopy.connect.gui.lightbox {
 			currentIndex = destIndex;
 			zoomPanCont.distanceOpacity  = 1;
 			
-			if (title)
-				header.setData(title, getCurrentImageActions());
+			updateHeader();
 			
 			if (contentProvider != null)
 			{
@@ -1202,6 +1205,29 @@ package com.dukascopy.connect.gui.lightbox {
 				
 			NativeExtensionController.S_ORIENTATION_CHANGE.add(setOrientation);
 			echo("Lightbox", "show", "END");
+			
+			echo("FILE!", "onSaveSuccess.add");
+			FilesSaveUtility.signalOnImageSaved.add(onSaveSuccess);
+		}
+		
+		static private function onSaveSuccess():void 
+		{
+			echo("FILE!", "onSaveSuccess");
+			TweenMax.delayedCall(1, updateHeader);
+		}
+		
+		static private function updateHeader():void 
+		{
+			echo("FILE!", "updateHeader");
+			var titleText:String = " ";
+			if (mainTitle != null)
+			{
+				titleText = mainTitle;
+			}
+			if (header != null)
+			{
+				header.setData(titleText, getCurrentImageActions());
+			}
 		}
 		
 		static private function startListenConnectionChanged():void 
@@ -1417,6 +1443,7 @@ package com.dukascopy.connect.gui.lightbox {
 					loadMainImage();
 				}
 			}
+			updateHeader();
 			echo("Lightbox", "onCurrentIndexChange", "END");
 		}
 		
@@ -1643,6 +1670,7 @@ package com.dukascopy.connect.gui.lightbox {
 		private static var isDefaultButtonsEnabled:Boolean = true;
 		static private var prewButtonAllowed:Boolean;
 		static private var prewCallPanding:Boolean;
+		static private var mainTitle:String;
 
 		private static function showDefaultButtons():void
 		{

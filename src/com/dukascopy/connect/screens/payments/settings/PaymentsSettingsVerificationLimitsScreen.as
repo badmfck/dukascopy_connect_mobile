@@ -5,6 +5,7 @@ package com.dukascopy.connect.screens.payments.settings {
 	import com.dukascopy.connect.data.TextFieldSettings;
 	import com.dukascopy.connect.gui.menuVideo.BitmapButton;
 	import com.dukascopy.connect.screens.layout.ScrollScreen;
+	import com.dukascopy.connect.sys.dialogManager.DialogManager;
 	import com.dukascopy.connect.sys.imageManager.ImageBitmapData;
 	import com.dukascopy.connect.sys.payments.PayManager;
 	import com.dukascopy.connect.sys.payments.PaymentsManager;
@@ -41,6 +42,7 @@ package com.dukascopy.connect.screens.payments.settings {
 			btnIncrease.setOverlay(HitZoneType.BUTTON);
 			btnIncrease.tapCallback = onIncreaseButtonClick;
 			btnIncrease.disposeBitmapOnDestroy = true;
+			btnIncrease.alpha = .7;
 			view.addChild(btnIncrease);
 		}
 		
@@ -66,6 +68,10 @@ package com.dukascopy.connect.screens.payments.settings {
 		}
 		
 		private function onIncreaseButtonClick():void {
+			if (PayManager.accountInfo.limitsIncreaseRequest == false) {
+				DialogManager.alert(Lang.information, Lang.increaseLimitRequestFalse);
+				return;
+			}
 			MobileGui.changeMainScreen(
 				PaymentsSettingsIncreaseLimitsScreen,
 				{
@@ -98,12 +104,12 @@ package com.dukascopy.connect.screens.payments.settings {
 			drawButton();
 			
 			PaymentsManager.activate();
-			if (PayManager.accountInfo == null) {
+			//if (PayManager.accountInfo == null) {
 				showPreloader();
 				PayManager.callGetAccountInfo(fillData);
-			} else {
+			/*} else {
 				fillData();
-			}
+			}*/
 			drawView();
 		}
 		
@@ -114,6 +120,12 @@ package com.dukascopy.connect.screens.payments.settings {
 			if (PayManager.accountInfo == null) {
 				onBack();
 				return;
+			}
+			if (PayManager.accountInfo.limitsIncreaseRequest == true) {
+				if (btnIncrease != null) {
+					//btnIncrease.activate();
+					btnIncrease.alpha = 1;
+				}
 			}
 			_vectItems = new <ItemVerificationLimit>[];
 			var itemVL:ItemVerificationLimit;

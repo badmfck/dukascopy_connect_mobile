@@ -5,7 +5,6 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 	import com.dukascopy.connect.data.GiftData;
 	import com.dukascopy.connect.data.TextFieldSettings;
 	import com.dukascopy.connect.gui.button.DDAccountButton;
-	import com.dukascopy.connect.gui.button.DDCardButton;
 	import com.dukascopy.connect.gui.button.DDCardButtonExtended;
 	import com.dukascopy.connect.gui.button.DDFieldButton;
 	import com.dukascopy.connect.gui.components.message.ToastMessage;
@@ -18,9 +17,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 	import com.dukascopy.connect.gui.preloader.Preloader;
 	import com.dukascopy.connect.gui.tools.HorizontalPreloader;
 	import com.dukascopy.connect.screens.base.BaseScreen;
-	import com.dukascopy.connect.screens.dialogs.ScreenPayDialog;
 	import com.dukascopy.connect.screens.dialogs.x.base.bottom.ListSelectionPopup;
-	import com.dukascopy.connect.screens.payments.PayCardsManager;
 	import com.dukascopy.connect.screens.payments.card.CardStatic;
 	import com.dukascopy.connect.screens.payments.card.TypeCurrency;
 	import com.dukascopy.connect.sys.applicationShop.commodity.Commodity;
@@ -33,7 +30,6 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 	import com.dukascopy.connect.sys.softKeyboard.SoftKeyboard;
 	import com.dukascopy.connect.sys.style.FontSize;
 	import com.dukascopy.connect.sys.style.Style;
-	import com.dukascopy.connect.sys.theme.AppTheme;
 	import com.dukascopy.connect.utils.TextUtils;
 	import com.dukascopy.langs.Lang;
 	import com.dukascopy.langs.LangManager;
@@ -210,10 +206,12 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 					}
 				}*/
 				
+				var currencies:Array = getCurrencies();
+				
 				DialogManager.showDialog(
 					ListSelectionPopup,
 					{
-						items:getCurrencies(),
+						items:currencies,
 						title:Lang.selectCurrency,
 						renderer:ListPayCurrency,
 						callback:callBackSelectCurrency
@@ -247,7 +245,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 		
 		private function checkDataValid():void
 		{
-			if (isActivated && selectorCard.getValue() != null && selectedAccount != null && iAmountCurrency.value != null && iAmountCurrency.value != "" && !isNaN(Number(iAmountCurrency.value)))
+			if (isActivated && selectorCard.getValue() != null && selectedAccount != null && iAmountCurrency.value != null && iAmountCurrency.value != "" && !isNaN(Number(iAmountCurrency.value)) && Number(iAmountCurrency.value) != 0)
 			{
 				acceptButton.activate();
 				acceptButton.alpha = 1;
@@ -527,10 +525,24 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 		
 		private function showWalletsDialog():void
 		{
+			var accounts:Array = PayManager.accountInfo.accounts;
+			var nonZeroAccounts:Array = new Array();
+			
+			if (accounts != null)
+			{
+				for (var i:int = 0; i < accounts.length; i++) 
+				{
+					if ("BALANCE" in accounts[i] && Number(accounts[i].BALANCE) > 0)
+					{
+						nonZeroAccounts.push(accounts[i]);
+					}
+				}
+			}
+			
 			DialogManager.showDialog(
 				ListSelectionPopup,
 				{
-					items:PayManager.accountInfo.accounts,
+					items:nonZeroAccounts,
 					title:Lang.TEXT_SELECT_ACCOUNT,
 					renderer:ListPayWalletItem,
 					callback:onWalletSelect
@@ -620,9 +632,15 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 				{
 					for (var j:int = 0; j < avaliable.length; j++) 
 					{
-						if (avaliable[j] == TypeCurrency.USD) 
+						var prefCurrency:String = TypeCurrency.USD;
+						if (selectorCard.getValue() != null && selectorCard.getValue().currency != null)
 						{
-							return TypeCurrency.USD;
+							prefCurrency = selectorCard.getValue().currency;
+						}
+						
+						if (avaliable[j] == prefCurrency) 
+						{
+							return prefCurrency;
 						}
 					}
 					return avaliable[0];
@@ -840,6 +858,11 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 						break;
 					}
 				}
+				if (defaultAccount == null && wallets.length > 0)
+				{
+					defaultAccount = wallets[0];
+				}
+				
 				if (defaultAccount != null)
 				{
 					onWalletSelect(defaultAccount, updateCards, selectCard);
@@ -949,6 +972,9 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 				{
 					debitCurrrency = selectedAccount.CURRENCY;
 				}
+				var card:Object = selectorCard.getValue();
+				if (card != null)
+					swift = card.number;
 				PayManager.callGetWithdrawalCommission(amount, currency, withdrawalType, swift, _lastComissionCallID, debitCurrrency);
 			}
 		}

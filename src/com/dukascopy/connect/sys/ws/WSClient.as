@@ -619,7 +619,7 @@ import com.dukascopy.connect.MobileGui;
 			}
 			if (pack.method == 'init') {
 				try{
-					var dbg:String=Print_r.show(pack,true);
+					var dbg:String = ""; // Print_r.show(pack, true);
 					echo("WSClient","handlePacket","\nAuthorized on socket: \n"+dbg+"\n");9
 				}catch(e:Error){}
 

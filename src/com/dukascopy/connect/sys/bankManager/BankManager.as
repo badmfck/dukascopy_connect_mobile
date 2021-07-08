@@ -2,6 +2,7 @@ package com.dukascopy.connect.sys.bankManager {
 	
 	import assets.ExchangeIcon;
 	import com.dukascopy.connect.Config;
+	import com.dukascopy.connect.GD;
 	import com.dukascopy.connect.MobileGui;
 	import com.dukascopy.connect.data.CoinTradeOrder;
 	import com.dukascopy.connect.data.GiftData;
@@ -774,16 +775,19 @@ package com.dukascopy.connect.sys.bankManager {
 						} else if (data.value == "TRADING") {
 							textFrom = Lang.fromMultiAccount;
 							textTo = Lang.toTradingAccount;
-							title = Lang.TEXT_WITHDRAWAL
+							title = Lang.TEXT_WITHDRAWAL;
+							giftData.currencyAvaliable = false;
 							giftData.fromAccounts = PayManager.accountInfo.accounts;
-							giftData.toAccounts = otherAccounts;
+							giftData.toAccounts = removeCryptoAccounts(otherAccounts);
 							giftData.transferType = OperationType.SAVING_MONEY_TRANSFER;
 						} else if (data.value == "SMCA") {
 							giftData.fromAccounts = savingsAccounts;
 							giftData.toAccounts = PayManager.accountInfo.accounts;
 							giftData.transferType = OperationType.MCA_MONEY_TRANSFER;
 						} else if (data.value == "TMCA") {
-							giftData.fromAccounts = otherAccounts;
+							textFrom = Lang.fromTradingAccount;
+							giftData.currencyAvaliable = false;
+							giftData.fromAccounts = removeCryptoAccounts(otherAccounts);
 							giftData.toAccounts = PayManager.accountInfo.accounts;
 							giftData.transferType = OperationType.MCA_MONEY_TRANSFER;
 						}
@@ -907,7 +911,7 @@ package com.dukascopy.connect.sys.bankManager {
 					else
 						screenData.type = TradingOrder.SELL;
 					ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_DIALOG, TradeNotesPopup, { callback:sendNotesRequest, data:screenData } );
-				} else if (data.type == "paymentsInvestmentsSell") {
+				} else if (data.type == "paymentsInvestmentsSell" ||data.type == "paymentsInvestmentsSellPart") {
 					giftData = new GiftData();
 					giftData.additionalData = data;
 					if (_initData != null && "transaction" in _initData == true && _initData.transaction != null)
@@ -918,6 +922,10 @@ package com.dukascopy.connect.sys.bankManager {
 						data.param.INSTRUMENT != null &&
 						data.param.INSTRUMENT != "")
 							giftData.currency = data.param.INSTRUMENT;
+					else if ("selection" in data == true &&
+						data.selection != null &&
+						data.selection != "")
+							giftData.currency = data.selection;
 					giftData.callback = onInvestmentSellCallback;
 					ServiceScreenManager.showScreen(
 						ServiceScreenManager.TYPE_DIALOG,
@@ -995,6 +1003,8 @@ package com.dukascopy.connect.sys.bankManager {
 					);
 				} else if (data.type == "selectedAccCurrency") {
 					var acc:Object = getAccountByNumber(data.val);
+					if (acc == null)
+						acc = getSavingAccountByNumber(data.val);
 					if (acc == null)
 						return;
 					sendMessage("val:" + data.value + "|!|" + acc.CURRENCY);
@@ -1298,6 +1308,47 @@ package com.dukascopy.connect.sys.bankManager {
 			sendMessage(msg);
 		}
 		
+		static private function removeCryptoAccounts(accounts:Array):Array 
+		{
+			var result:Array = new Array();
+			if (accounts != null)
+			{
+				for (var i:int = 0; i < accounts.length; i++) 
+				{
+					if (!isCryptoFoundAccount(accounts[i]))
+					{
+						result.push(accounts[i]);
+					}
+				}
+			}
+			return result;
+		}
+		
+		static private function isCryptoFoundAccount(account:Object):Boolean 
+		{
+			var result:Boolean = false;
+			if (account != null)
+			{
+				if ("IS_BITCOIN_FUNDING" in account && account.IS_BITCOIN_FUNDING == "1")
+				{
+					return true;
+				}
+				if ("IS_DUKASCOINS_FUNDING" in account && account.IS_DUKASCOINS_FUNDING == "1")
+				{
+					return true;
+				}
+				if ("IS_ETHEREUM_FUNDING" in account && account.IS_ETHEREUM_FUNDING == "1")
+				{
+					return true;
+				}
+				if ("IS_TETHER_FUNDING" in account && account.IS_TETHER_FUNDING == "1")
+				{
+					return true;
+				}
+			}
+			return result;
+		}
+		
 		static private function onSaveTemplate(val:int, transactionData:Object):void {
 			if (val != 1)
 				return;
@@ -1396,30 +1447,39 @@ package com.dukascopy.connect.sys.bankManager {
 				return;
 			if (value == null)
 				return;
-			/*if (data != null)
-				data["tapped"] = true;
-			S_ADDITIONAL_DATA_ENTERED.invoke();*/
 			var temp:int;
-			var from:String = value.dateFrom.getFullYear();
-			temp = value.dateFrom.getMonth() + 1;
-			from += "-";
-			from += (temp < 10) ? "0" + temp : temp;
-			temp = value.dateFrom.getDate();
-			from += "-";
-			from += (temp < 10) ? "0" + temp : temp;
-			var to:String = value.dateTo.getFullYear();
-			temp = value.dateTo.getMonth() + 1;
-			to += "-";
-			to += (temp < 10) ? "0" + temp : temp;
-			temp = value.dateTo.getDate();
-			to += "-";
-			to += (temp < 10) ? "0" + temp : temp;
-			sendMessage("val:" +
-				from + "|!|" +
-				to + "|!|" +
-				data.value, true
-			);
-			sendMessage(data.action, true);
+            var from:String = value.dateFrom.getFullYear();
+            temp = value.dateFrom.getMonth() + 1;
+            from += "-";
+            from += (temp < 10) ? "0" + temp : temp;
+            temp = value.dateFrom.getDate();
+            from += "-";
+            from += (temp < 10) ? "0" + temp : temp;
+            var to:String = value.dateTo.getFullYear();
+            temp = value.dateTo.getMonth() + 1;
+            to += "-";
+            to += (temp < 10) ? "0" + temp : temp;
+            temp = value.dateTo.getDate();
+            to += "-";
+            to += (temp < 10) ? "0" + temp : temp;
+            sendMessage("val:" +
+                from + "|!|" +
+                to + "|!|" +
+                data.value, true
+            );
+            sendMessage(data.action, true);
+			return;
+			/*var from:String = Number(value.dateFrom.getTime() * .001).toFixed(0);
+			var to:String = Number(value.dateTo.getTime() * .001).toFixed(0);
+			GD.S_TIMEZONE_REQUEST.invoke(function(val:String):void {
+				sendMessage("val:" +
+					from + "|!|" +
+					to + "|!|" +
+					data.value + "|!|" + 
+					val, true
+				);
+				sendMessage(data.action, true);
+			} );*/
 		}
 		
 		static private function openLink(data:Object):void {
@@ -2366,6 +2426,12 @@ package com.dukascopy.connect.sys.bankManager {
 											Number(getInvestmentByAccount(lastBankMessageVO.item.selection).BALANCE) == 0) {
 												lastBankMessageVO.menu[i].disabled = true;
 										}
+										
+										if ("type" in lastBankMessageVO.menu[i] &&
+											lastBankMessageVO.menu[i].type == "paymentsInvestmentsSellPart" &&
+											Number(getInvestmentByAccount(lastBankMessageVO.item.selection).BALANCE) == 0) {
+												lastBankMessageVO.menu[i].disabled = true;
+										}
 									}
 								}
 						}
@@ -2447,7 +2513,7 @@ package com.dukascopy.connect.sys.bankManager {
 			if (tor == null || tor.orders == null || tor.orders.length == 0)
 				return false;
 			var order:TradingOrder = tor.orders[0];
-			if (tor.quantity < order.min_trade)
+			if (order.fillOrKill && tor.quantity < order.quantity)
 				return false;
 			BankBotController.getAnswer(
 				"bot:bankbot payments:tradeCoins:" + 
@@ -2487,7 +2553,12 @@ package com.dukascopy.connect.sys.bankManager {
 			var startObjectIndex:int = val.indexOf(":", 15);
 			var command:String = val.substring(15, startObjectIndex);
 			if (command == "error") {
-				DialogManager.alert(Lang.information, "Payments Error: " + val.substr(6));
+				var message:String = "";
+				if (val != null && val.length > startObjectIndex)
+				{
+					message = val.substr(startObjectIndex + 1)
+				}
+				DialogManager.alert(Lang.information, "Payments Error: " + message);
 				S_ERROR.invoke();
 				return true;
 			}
@@ -2820,8 +2891,12 @@ package com.dukascopy.connect.sys.bankManager {
 				isInvestmentHistory = false;
 				if (historyAccount != "all") {
 					var account:Object = getAccountByNumberAll(historyAccount);
-					if (account != null)
-						historyAccCurrency = account.CURRENCY;
+					if (account != null) {
+						if ("CURRENCY" in account == true)
+							historyAccCurrency = account.CURRENCY;
+						else if ("COIN" in account == true)
+							historyAccCurrency = account.COIN;
+					}
 				}
 				var notNull:Boolean = false;
 				if (history != null &&
@@ -2970,8 +3045,10 @@ package com.dukascopy.connect.sys.bankManager {
 					S_ALL_DATA.invoke(false, true);
 				if (needToLoad == true)
 					BankBotController.getAnswer("bot:bankbot payments:home");
-			} else
+			} else {
+				GD.S_BANK_CACHE_ACCOUNT_INFO_REQUEST.invoke(onHomeLoaded);
 				BankBotController.getAnswer("bot:bankbot payments:home");
+			}
 		}
 		
 		static public function getCards(local:Boolean = true, needToLoad:Boolean = false):void {
@@ -3520,10 +3597,10 @@ package com.dukascopy.connect.sys.bankManager {
 			total ||= {
 				"type": "total",
 				"IBAN": Lang.textTotalCash.toUpperCase(),
-				"opened": lastOpened,
-				"CURRENCY": accountInfo.consolidateCurrency
+				"opened": lastOpened
 			};
 			total["BALANCE"] = 0;
+			total["CURRENCY"] = accountInfo.consolidateCurrency
 			var balance:Number;
 			var index:int;
 			for (var n:String in data) {
@@ -3568,7 +3645,7 @@ package com.dukascopy.connect.sys.bankManager {
 				return null;
 			var res:Object = {
 				CURRENCY: savingsAccounts[0].CONSOLIDATE_CURRENCY,
-				IBAN: "TOTAL ACCOUNTS",
+				IBAN: Lang.textTotalCash.toUpperCase(),
 				type: "total",
 				opened: false,
 				moreFnc: getTotalSavingsAll
@@ -3661,7 +3738,6 @@ package com.dukascopy.connect.sys.bankManager {
 				}
 			);
 			
-			
 			/*ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, 
 											ShareLinkPopup, 
 												{url:"http://google.com", 
@@ -3671,12 +3747,17 @@ package com.dukascopy.connect.sys.bankManager {
 												callback:function(result:String):void{}})*/
 		}
 		
-		static private function onHomeLoaded(homeJSON:String):void {
+		static private function onHomeLoaded(homeJSON:String, fromELS:Boolean = false):void {
 			var data:Object = null;
 			try {
 				data = JSON.parse(homeJSON);
 			} catch (e:Error) {
-				S_ALL_DATA.invoke(true, false);
+				S_ALL_DATA.invoke(true, fromELS);
+				return;
+			}
+			if (fromELS == false && data.fullRequest == true) {
+				GD.S_BANK_CACHE_ACCOUNT_INFO_SAVE.invoke(homeJSON);
+			} else if (homeJSON == null) {
 				return;
 			}
 			processAccount(data);
@@ -3710,7 +3791,7 @@ package com.dukascopy.connect.sys.bankManager {
 					savingsAccountLoaded = true;
 					processSavingsAccounts(data["savings"]);
 			}
-			S_ALL_DATA.invoke(false, false);
+			S_ALL_DATA.invoke(false, fromELS);
 		}
 		
 		static private function processOtherAccounts(data:Array):void {

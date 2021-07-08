@@ -100,22 +100,30 @@ package com.dukascopy.connect.gui.list.renderers {
 		override protected function getAmountText(data:Object):String 
 		{
 			var result:String;
-			
+			var balanceNum:Number = NaN;
 			if ("available" in data && data.available != null)
 			{
 				var balance:String = data.available;
-				if (balance == "0")
+				balanceNum = Number(balance);
+				/*if (balance == "0")
 				{
 					balance = "0.0";
-				}
+				}*/
 				
 				var baseSize:Number = FontSize.TITLE_2;
 				var captionSize:Number = FontSize.SUBHEAD;
 				var color:String = "#" + Style.color(Style.COLOR_TEXT).toString(16);
-				result = "<font color='" + color + "' size='" + baseSize + "'>" + balance.substring(0, balance.indexOf(".")) + "</font>" + "<font color='" + color + "' size='" + captionSize + "'>" + balance.substr(balance.indexOf(".")) + "</font>";
+				if (balanceNum == Math.round(balanceNum))
+				{
+					result = "<font color='" + color + "' size='" + baseSize + "'>" + balance + "</font>";
+				}
+				else
+				{
+					result = "<font color='" + color + "' size='" + baseSize + "'>" + balance.substring(0, balance.indexOf(".")) + "</font>" + "<font color='" + color + "' size='" + captionSize + "'>" + balance.substr(balance.indexOf(".")) + "</font>";
+				}
 			}
 			
-			if ("programme" in data && data.programme == "linked")
+			if ("programme" in data && data.programme == "linked" && (isNaN(balanceNum) || balanceNum == 0))
 			{
 				result = null;
 			}
@@ -181,6 +189,8 @@ package com.dukascopy.connect.gui.list.renderers {
 			drawType(li.data);
 			drawStatus(li.data);
 			
+			label.y = int(itemHeight * .5 - label.height - Config.FINGER_SIZE * .00);
+			
 			status.x = int(label.x + label.textWidth + 4 + Config.MARGIN);
 			status.y = int(label.y + label.height * .5 - status.height * .5);
 			
@@ -195,7 +205,16 @@ package com.dukascopy.connect.gui.list.renderers {
 				if (data.programme == "virtual")
 					text = Lang.TEXT_VIRTUAL.toUpperCase();
 				else if (data.programme == "linked")
-					text = Lang.TEXT_LINKED.toUpperCase();
+				{
+					if ("bankName" in data && data.bankName != null && data.bankName != "")
+					{
+						text = data.bankName;
+					}
+					else
+					{
+						text = Lang.TEXT_LINKED.toUpperCase();
+					}
+				}
 				else
 					text = Lang.TEXT_PLASTIC.toUpperCase();
 			}

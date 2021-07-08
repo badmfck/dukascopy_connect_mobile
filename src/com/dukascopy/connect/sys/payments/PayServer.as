@@ -2,6 +2,7 @@ package com.dukascopy.connect.sys.payments {
 	
 	import com.dukascopy.connect.data.CardDeliveryAddress;
 	import com.dukascopy.connect.data.CheckDuplicateTransfer;
+	import com.dukascopy.connect.sys.echo.echo;
 	import com.dukascopy.langs.Lang;
 	import com.dukascopy.langs.LangManager;
 	import flash.net.URLRequestMethod;
@@ -139,7 +140,7 @@ package com.dukascopy.connect.sys.payments {
 			};
 			if (withCards == true)
 				data.with_cards = true;
-			call("account/home", _callback, data, URLRequestMethod.GET);
+			var pl:PayLoader = call("account/home", _callback, data, URLRequestMethod.GET);
 		}
 		
 		/**
@@ -482,7 +483,7 @@ package com.dukascopy.connect.sys.payments {
 				data.cvv = cvv;
 				data.closable = 0;
 			}
-			var php:PayLoader = call("money/deposit" + ((cvv != null) ? "/mcard" : ""), _callback, data, URLRequestMethod.PUT);
+			var php:PayLoader = call("money/deposit" + ((cvv != null) ? "/linked-card" : ""), _callback, data, URLRequestMethod.PUT);
 			if (php.savedRequestData != null)
 				php.savedRequestData.callID = _callID;
 		}
@@ -523,6 +524,9 @@ package com.dukascopy.connect.sys.payments {
 		 * 
 		 * This method generates link to PGateway Bank withdrawal form. See description:
 		 * https://intranet.dukascopy.dom/wiki/pages/viewpage.action?pageId=132317192
+		 * 
+		 * This method initiates withdrawal process to linked card. See description:
+		 * https://intranet.dukascopy.dom/wiki/pages/viewpage.action?pageId=135430220
 		 */
 		static public function call_putMoneyWithdrawal(_callback:Function, _from:Number, _type:String, _amount:Number, _currency:String, _card:String, _swift:String, _callID:String= ""):void {
 			var requestObject:Object ;
@@ -534,6 +538,8 @@ package com.dukascopy.connect.sys.payments {
 			if (_type == "WIRE") {
 				action = "money/withdrawal/bank-transfer";
 				requestObject.swift = _swift;
+			} else if (_type == "CARD") {
+					action = "money/withdrawal/linked-card";
 			} else {
 				requestObject.type = _type;
 				if (_type == "PPCARD") {
@@ -581,20 +587,36 @@ package com.dukascopy.connect.sys.payments {
 		}
 		
 		/**
+		 * Will be returned commission value which will be applied to deposit transaction. See description:
+		 * https://intranet.dukascopy.dom/wiki/pages/viewpage.action?pageId=84050017
+		 */
+		static public function call_getMoneyDepositCommissionLinked(_callback:Function, _amount:Number, _currency:String, _card:String, _callID:String = ""):void {
+			var php:PayLoader = call("money/deposit/commission/linked-card", _callback, { amount:_amount, currency:_currency, card:_card }, URLRequestMethod.GET);
+			if (php.savedRequestData != null)
+				php.savedRequestData.callID = _callID;
+		}
+		
+		/**
 		 * This method returns commission calculated for money withdrawals. It is similar to GET money∕send∕commission. See description:
 		 * https://intranet.dukascopy.dom/wiki/pages/viewpage.action?pageId=70682132
 		 */
 		static public function call_getMoneyWithdrawalCommission(_callback:Function, _amount:Number, _currency:String, _type:String, _swift:String, _callID:String = "", debitCurrrency:String = null):void {
 			var requestObject:Object;
-			if (_type == "WIRE")
+			var method:String = "money/withdrawal/commission";
+			
+			if (_type == "WIRE") {
 				requestObject = { amount:_amount, currency:_currency, type:_type, swift:_swift };
-			else
+			} else if (_type == "CARD") {
+				method = "money/withdrawal/commission/linked-card";
+				requestObject = { amount:_amount, currency:_currency, card:_swift };
+			} else {
 				requestObject = { amount:_amount, currency:_currency, type:_type };
-			if (debitCurrrency != null)
-			{
+			}
+			
+			if (debitCurrrency != null) {
 				requestObject.debit_currency = debitCurrrency;
 			}
-			var php:PayLoader = call("money/withdrawal/commission", _callback, requestObject , URLRequestMethod.GET);
+			var php:PayLoader = call(method, _callback, requestObject , URLRequestMethod.GET);
 			if (php.savedRequestData != null)
 				php.savedRequestData.callID = _callID;
 		}
@@ -605,6 +627,8 @@ package com.dukascopy.connect.sys.payments {
 		 */
 		static public function call_putMoneyTransfer(_callback:Function, _fromAccount:String, _toAccount:String, _amount:Number, _currency:String, _callID:String = ""):void {
 			var php:PayLoader = call("money/transfer", _callback, { from:_fromAccount, to:_toAccount, amount:_amount, currency:_currency }, URLRequestMethod.PUT);
+			php.timeoutErrorText = Lang.moneyTransferTimeoutError;
+			php.timeoutErrorCode = PayLoader.ERROR_SERVER_NOT_RESPOND;
 			if (php.savedRequestData != null)
 				php.savedRequestData.callID = _callID;
 		}
@@ -627,6 +651,7 @@ package com.dukascopy.connect.sys.payments {
 			
 			if (CheckDuplicateTransfer.addTransfer(data) == false)
 			{
+				echo("money.call_putMoneySendAdvanced", "CheckDuplicateTransfer");
 				if (_callback != null)
 				{
 					var respond:PayRespond = new PayRespond(null);
@@ -828,20 +853,37 @@ package com.dukascopy.connect.sys.payments {
 		 * This method returns list of transactions (statement) of particular prepaid card. See description:
 		 * https://intranet.dukascopy.dom/wiki/pages/viewpage.action?pageId=73236528
 		 */
-		static public function cardStatement(cardNumber:String, from:String, to:String):void {
+		static public function cardStatement(cardNumber:String, from:String, to:String, timezone:String = null):void {
 			if (cardNumber == "")
 				return;
-			call("account/cards/" + cardNumber, null, { from:from, to:to, load:"summary", asfile:"pdf" }, URLRequestMethod.GET, null, true);
+			var request:Object = new Object();
+			request.from = from;
+			request.to = to;
+			request.load = "summary";
+			request.asfile = "pdf";
+			if (timezone != null) {
+				request.timezone = timezone;
+			}
+			call("account/cards/" + cardNumber, null, request, URLRequestMethod.GET, null, true);
 		}
 		
 		/**
 		 * This method returns list of transactions (statement) of particular prepaid card. See description:
 		 * https://intranet.dukascopy.dom/wiki/pages/viewpage.action?pageId=70681606
 		 */
-		static public function walletStatement(accountNumber:String, from:String, to:String):void {
+		static public function walletStatement(accountNumber:String, from:String, to:String, timezone:String = null):void {
 			if (accountNumber == "")
 				return;
-			call("account/statement", null, { date_from:from, date_to:to, asfile:"pdf", extended:true, account:accountNumber }, URLRequestMethod.GET, null, true);
+			var request:Object = new Object();
+			request.date_from = from;
+			request.date_to = to;
+			request.asfile = "pdf";
+			request.extended = true;
+			request.account = accountNumber;
+			if (timezone != null) {
+				request.timezone = timezone;
+			}
+			call("account/statement", null, { date_from:from, date_to:to, asfile:"pdf", extended:true, account:accountNumber, timezone:timezone }, URLRequestMethod.GET, null, true);
 		}
 		
 		/**
