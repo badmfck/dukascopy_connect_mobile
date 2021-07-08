@@ -431,7 +431,11 @@ package com.dukascopy.connect.gui.lightbox {
 		}
 		
 		private static function removeView():void {
-			echo("Lightbox", "removeView", "");	
+			echo("Lightbox", "removeView", "");
+			
+			echo("FILE!", "onSaveSuccess.remove");
+			FilesSaveUtility.signalOnImageSaved.remove(onSaveSuccess);
+			
 			if (viewHolder != null && viewHolder.parent != null) {
 				viewHolder.parent.removeChild(viewHolder);
 			}
@@ -1201,16 +1205,29 @@ package com.dukascopy.connect.gui.lightbox {
 				
 			NativeExtensionController.S_ORIENTATION_CHANGE.add(setOrientation);
 			echo("Lightbox", "show", "END");
+			
+			echo("FILE!", "onSaveSuccess.add");
+			FilesSaveUtility.signalOnImageSaved.add(onSaveSuccess);
+		}
+		
+		static private function onSaveSuccess():void 
+		{
+			echo("FILE!", "onSaveSuccess");
+			TweenMax.delayedCall(1, updateHeader);
 		}
 		
 		static private function updateHeader():void 
 		{
+			echo("FILE!", "updateHeader");
 			var titleText:String = " ";
 			if (mainTitle != null)
 			{
 				titleText = mainTitle;
 			}
-			header.setData(titleText, getCurrentImageActions());
+			if (header != null)
+			{
+				header.setData(titleText, getCurrentImageActions());
+			}
 		}
 		
 		static private function startListenConnectionChanged():void 

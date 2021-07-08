@@ -1198,10 +1198,10 @@ package com.dukascopy.connect.sys.nativeExtensionController {
 			}
 		}
 		
-		static public function saveFileToDownloadFolder(url:String):String {
+		static public function saveFileToDownloadFolder(url:String, openFile:Boolean = true):String {
 			if (Config.PLATFORM_ANDROID == true) {
 				MobileGui.preventScreenRemove = true;
-				return MobileGui.androidExtension.moveToDownloadFolder(url);
+				return MobileGui.androidExtension.moveToDownloadFolder(url, openFile);
 			}
 			return null;
 		}
@@ -1430,6 +1430,23 @@ package com.dukascopy.connect.sys.nativeExtensionController {
 				result = MobileGui.androidExtension.getTimezoneId();
 			}
 			return result;
+		}
+		
+		static public function existInDownloadFolder(fileName:String):Boolean 
+		{
+			if (Config.PLATFORM_ANDROID && MobileGui.androidExtension != null)
+			{
+				return MobileGui.androidExtension.existInDownloadFolder(fileName);
+			}
+			return false;
+		}
+		
+		static public function openFileInDownloads(fileName:String):void 
+		{
+			if (Config.PLATFORM_ANDROID && MobileGui.androidExtension != null)
+			{
+				return MobileGui.androidExtension.openFileInDownloads(fileName);
+			}
 		}
 		
 		static private function onFileSelect(e:Event):void 

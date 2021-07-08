@@ -155,6 +155,21 @@ package com.dukascopy.connect.gui.lightbox
 		}
 		
 		// EVENT HANDLERS =============================================================
+		
+		private function onMove(e:MouseEvent):void 
+		{
+			
+		}
+		
+		private function onUp(e:MouseEvent):void 
+		{
+			
+		}
+		
+		private function onDown(e:MouseEvent):void 
+		{
+			
+		}
 		//=============================================================================
 		
 		private function onKeyUp(e:KeyboardEvent):void
@@ -166,7 +181,7 @@ package com.dukascopy.connect.gui.lightbox
 		}
 		
 		/*** 1 ON TOUCH START **/
-		private function onTouchBegin(e:TouchEvent):void
+		private function onTouchBegin(e :TouchEvent):void
 		{
 			if ((e.target is Box) == false)
 			{
@@ -751,6 +766,10 @@ package com.dukascopy.connect.gui.lightbox
 			stageRef.addEventListener(TouchEvent.TOUCH_MOVE, onTouchMove);
 			stageRef.addEventListener(KeyboardEvent.KEY_UP, onKeyUp);
 			stageRef.addEventListener(MouseEvent.MOUSE_WHEEL, onWheel);
+			
+			/*stageRef.addEventListener(MouseEvent.MOUSE_DOWN, onDown);
+			stageRef.addEventListener(MouseEvent.MOUSE_UP, onUp);
+			stageRef.addEventListener(MouseEvent.MOUSE_MOVE, onMove);*/
 		}
 		
 		/** ACTIVATE */
