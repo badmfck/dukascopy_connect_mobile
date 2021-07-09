@@ -18,6 +18,7 @@ package com.dukascopy.connect.screens.payments {
 	import com.dukascopy.connect.gui.topBar.TopBarScreen;
 	import com.dukascopy.connect.screens.base.BaseScreen;
 	import com.dukascopy.connect.screens.dialogs.bottom.ListSelectionPopup;
+	import com.dukascopy.connect.screens.dialogs.bottom.implementation.BottomAlertPopup;
 	import com.dukascopy.connect.sys.dialogManager.DialogManager;
 	import com.dukascopy.connect.sys.imageManager.ImageBitmapData;
 	import com.dukascopy.connect.sys.payments.PayManager;
@@ -556,15 +557,28 @@ package com.dukascopy.connect.screens.payments {
 			
 			var wallets:Array = PaymentsManagerNew.filterEmptyWallets(PayManager.accountInfo.accounts);
 			
-			DialogManager.showDialog(
-				ListSelectionPopup,
-				{
-					items:wallets,
-					title:Lang.TEXT_SELECT_ACCOUNT,
-					renderer:ListPayWalletItem,
-					callback:callBackOnSelectAccount
-				}, DialogManager.TYPE_SCREEN
-			);
+			if (wallets != null && wallets.length > 0)
+			{
+				DialogManager.showDialog(
+					ListSelectionPopup,
+					{
+						items:wallets,
+						title:Lang.TEXT_SELECT_ACCOUNT,
+						renderer:ListPayWalletItem,
+						callback:callBackOnSelectAccount
+					}, DialogManager.TYPE_SCREEN
+				);
+			}
+			else
+			{
+				DialogManager.showDialog(
+					BottomAlertPopup,
+					{
+						title:Lang.TEXT_SELECT_ACCOUNT,
+						message:Lang.noFundedAccounts
+					}, DialogManager.TYPE_SCREEN
+				);
+			}
 		}
 		
 		private function callBackOnSelectAccount(account:Object):void {
