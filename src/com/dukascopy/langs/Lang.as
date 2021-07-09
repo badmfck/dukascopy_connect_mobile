@@ -2340,6 +2340,7 @@ package com.dukascopy.langs {
 		static public var launchMT4:String = "Launch MT4 App";
 		static public var launchBinaryTrader:String = "Launch Binary Trader App";
 		static public var launchCurrentAccount:String = "Current account";
+		static public var cardOrderDelivery:String = "Card order and delivery";
 		
 		static public function updateKeys(keys:Object):void {
 			for (var n:String in keys) {
