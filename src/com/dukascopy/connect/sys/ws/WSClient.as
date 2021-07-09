@@ -957,6 +957,17 @@ import com.dukascopy.connect.MobileGui;
 				S_IDENTIFICATION_QUEUE.invoke(pack.total);
 				return;
 			}
+			
+			if (pack.method == WSMethodType.ESCROW_OFFER_ACCEPT)
+			{
+				trace("123");
+				return;
+			}
+			if (pack.method == WSMethodType.ESCROW_OFFER_CANCEL)
+			{
+				trace("123");
+				return;
+			}
 		}
 		
 		static public function sendLocationUpdate(uid:String, location:Location):void 
@@ -969,6 +980,16 @@ import com.dukascopy.connect.MobileGui;
 				lat:location.latitude,
 				lon:location.longitude
 			} );
+		}
+		
+		static public function call_accept_offer(id:Number):void 
+		{
+			send(WSMethodType.ESCROW_OFFER_ACCEPT, id);
+		}
+		
+		static public function call_cancel_offer(id:Number):void 
+		{
+			send(WSMethodType.ESCROW_OFFER_CANCEL, id);
 		}
 		
 		static private function checkBlackHoleMethod(pack:Object):void {

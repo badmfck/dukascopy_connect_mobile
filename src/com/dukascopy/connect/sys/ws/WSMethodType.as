@@ -52,6 +52,8 @@ package com.dukascopy.connect.sys.ws
 		static public const MODERATOR_PAID_BAN_BANNED:String = "unban911";
 		static public const MAIN_BAN:String = "ban";
 		static public const GET_IDENTIFICATION_QUEUE_LENGTH:String = "getQueueTotal";
+		static public const ESCROW_OFFER_ACCEPT:String = "offerAccept";
+		static public const ESCROW_OFFER_CANCEL:String = "offerCancel";
 		
 		public function WSMethodType() 
 		{

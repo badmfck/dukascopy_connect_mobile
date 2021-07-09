@@ -470,7 +470,7 @@ package com.dukascopy.connect.utils {
             return  (bytes / Math.pow(1024, Math.floor(exp))).toFixed(2) + " " + s[exp];
 		}
 
-		static public function parseChatInvoiceText(txt:String):String {
+		/*static public function parseChatInvoiceText(txt:String):String {
 			var arr:Array;
 			if (txt.indexOf(Config.BOUNDS_INVOICE) == 0) {
 				arr = txt.split(Config.BOUNDS_INVOICE);
@@ -482,7 +482,7 @@ package com.dukascopy.connect.utils {
 				}
 			}
 			return txt;
-		}
+		}*/
 		
 		static public function generateRandomString(strlen:Number):String
 		{

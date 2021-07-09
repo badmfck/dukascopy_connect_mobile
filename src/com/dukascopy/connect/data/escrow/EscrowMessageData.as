@@ -37,13 +37,13 @@ package com.dukascopy.connect.data.escrow
 			{
 				amount = parseFloat(data.amount);
 			}
-			if ("direction" in data)
+			if ("side" in data)
 			{
-				direction = TradeDirection.getDirection(data.direction);
+				direction = TradeDirection.getDirection(data.side);
 			}
-			if ("currency" in data)
+			if ("mca_ccy" in data)
 			{
-				currency = data.currency;
+				currency = data.mca_ccy;
 			}
 			if ("instrument" in data)
 			{
@@ -68,7 +68,7 @@ package com.dukascopy.connect.data.escrow
 			result.userUID = userUID;
 			if (direction != null)
 			{
-				result.direction = direction.type;
+				result.side = direction.type;
 			}
 			else
 			{
@@ -83,7 +83,7 @@ package com.dukascopy.connect.data.escrow
 			{
 				ApplicationErrors.add("status");
 			}
-			result.currency = currency;
+			result.mca_ccy = currency;
 			result.instrument = instrument;
 			
 			return Config.BOUNDS + JSON.stringify(result);

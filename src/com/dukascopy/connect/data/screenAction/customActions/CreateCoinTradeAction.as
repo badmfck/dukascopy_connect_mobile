@@ -176,7 +176,7 @@ package com.dukascopy.connect.data.screenAction.customActions {
 			messageData.status = EscrowStatus.offer_created; 
 			
 			var text:String = messageData.toJsonString();
-			WSClient.call_sendTextMessage(chat.uid, Config.BOUNDS_INVOICE + ChatManager.cryptTXT(text));
+			WSClient.call_sendTextMessage(chat.uid, Config.BOUNDS_ESCROW + ChatManager.cryptTXT(text));
 			
 			if (S_ACTION_SUCCESS != null)
 			{

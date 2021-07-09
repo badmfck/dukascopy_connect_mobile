@@ -50,9 +50,11 @@ package com.dukascopy.connect.data.escrow
 				screenData.chat = chatVO;
 				screenData.message = message;
 				screenData.callback = requestInvestigation;
-				screenData.title = Lang.indicate_issue_type;
+				
+				
+				/*screenData.title = Lang.indicate_issue_type;
 				ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, EscrowReportScreen, screenData);
-				return;
+				return;*/
 				
 				/*ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, WaitCryptoScreen, screenData);
 				return;*/
@@ -235,7 +237,9 @@ package com.dukascopy.connect.data.escrow
 			{
 				if (escrow != null)
 				{
-					messageData = new EscrowMessageData();
+					WSClient.call_accept_offer(message.id);
+					
+					/*messageData = new EscrowMessageData();
 					messageData.type = ChatSystemMsgVO.TYPE_ESCROW_OFFER;
 					messageData.price = escrow.price;
 					messageData.amount = escrow.amount;
@@ -246,7 +250,7 @@ package com.dukascopy.connect.data.escrow
 					messageData.status = EscrowStatus.offer_accepted; 
 					
 					text = messageData.toJsonString();
-					WSClient.call_updateTextMessage(chatVO.uid, Config.BOUNDS_INVOICE + ChatManager.cryptTXT(text, chatVO.chatSecurityKey), message.id);
+					WSClient.call_updateTextMessage(chatVO.uid, Config.BOUNDS_ESCROW + ChatManager.cryptTXT(text, chatVO.chatSecurityKey), message.id);*/
 				}
 				else
 				{
@@ -259,7 +263,9 @@ package com.dukascopy.connect.data.escrow
 			{
 				if (escrow != null)
 				{
-					messageData = new EscrowMessageData();
+					WSClient.call_cancel_offer(message.id);
+					
+					/*messageData = new EscrowMessageData();
 					messageData.type = ChatSystemMsgVO.TYPE_ESCROW_OFFER;
 					messageData.price = escrow.price;
 					messageData.amount = escrow.amount;
@@ -270,7 +276,7 @@ package com.dukascopy.connect.data.escrow
 					messageData.status = EscrowStatus.offer_rejected; 
 					
 					text = messageData.toJsonString();
-					WSClient.call_updateTextMessage(chatVO.uid, Config.BOUNDS_INVOICE + ChatManager.cryptTXT(text, chatVO.chatSecurityKey), message.id);
+					WSClient.call_updateTextMessage(chatVO.uid, Config.BOUNDS_ESCROW + ChatManager.cryptTXT(text, chatVO.chatSecurityKey), message.id);*/
 				}
 				else
 				{
@@ -291,7 +297,9 @@ package com.dukascopy.connect.data.escrow
 			{
 				if (escrow != null)
 				{
-					var messageData:EscrowMessageData = new EscrowMessageData();
+					WSClient.call_cancel_offer(message.id);
+					
+					/*var messageData:EscrowMessageData = new EscrowMessageData();
 					messageData.type = ChatSystemMsgVO.TYPE_ESCROW_OFFER;
 					messageData.price = escrow.price;
 					messageData.amount = escrow.amount;
@@ -302,7 +310,7 @@ package com.dukascopy.connect.data.escrow
 					messageData.status = EscrowStatus.offer_cancelled; 
 					
 					var text:String = messageData.toJsonString();
-					WSClient.call_updateTextMessage(chatVO.uid, Config.BOUNDS_INVOICE + ChatManager.cryptTXT(text, chatVO.chatSecurityKey), message.id);
+					WSClient.call_updateTextMessage(chatVO.uid, Config.BOUNDS_ESCROW + ChatManager.cryptTXT(text, chatVO.chatSecurityKey), message.id);*/
 				}
 				else
 				{
