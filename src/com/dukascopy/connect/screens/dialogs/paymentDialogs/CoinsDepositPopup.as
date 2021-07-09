@@ -775,7 +775,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs {
 				drawWalletAddress();
 				moreInfo.visible = true;
 				moreInfo.htmlText = Lang.investmentDeliveryLink;
-				moreInfo.width = _width;
+				moreInfo.width = componentsWidth;
 				moreInfo.height = moreInfo.textHeight + 4;
 				moreInfo.x = Config.DIALOG_MARGIN;
 			}
