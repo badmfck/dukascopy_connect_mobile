@@ -8,7 +8,7 @@ package com.dukascopy.connect.data.escrow
 	{
 		private var _value:String;
 		private static const OFFER_CREATED:String = "offer_created";
-		private static const OFFER_CANCELLED:String = "offer_cancelled";
+		private static const OFFER_CANCELLED:String = "canceled";
 		private static const OFFER_REJECTED:String = "offer_rejected";
 		private static const OFFER_ACCEPTED:String = "offer_accepted";
 		private static const DEAL_CREATED:String = "deal_created";

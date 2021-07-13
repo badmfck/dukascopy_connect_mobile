@@ -179,7 +179,7 @@ package com.dukascopy.connect.data.escrow
 						}
 					}
 				}
-				instrumentExist = false;
+				
 				var screenData:Object = new Object();
 				if (instrumentExist)
 				{
