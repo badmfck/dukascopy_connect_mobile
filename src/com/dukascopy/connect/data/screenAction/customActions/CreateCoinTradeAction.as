@@ -98,6 +98,11 @@ package com.dukascopy.connect.data.screenAction.customActions {
 				onFail();
 			}
 			
+			showCreateSuccessPopup(offer);
+		}
+		
+		private function showCreateSuccessPopup(offer:EscrowDealData):void 
+		{
 			var chatUser:ChatUserVO = UsersManager.getInterlocutor(chat);
 			var userName:String = Lang.user;
 			if (chatUser != null)
