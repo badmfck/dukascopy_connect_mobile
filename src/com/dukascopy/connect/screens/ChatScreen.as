@@ -1673,6 +1673,11 @@ package com.dukascopy.connect.screens {
 			var editable:Boolean = (msgVO.created * 1000 > new Date().getTime() - 1800000);
 			var menuItems:Array = new Array();
 			
+			if (messageType == ChatSystemMsgVO.TYPE_ESCROW_OFFER)
+			{
+				return;
+			}
+			
 			//pending massages
 			if (msgVO.id < 0) {
 				if (messageType == ChatMessageType.TEXT && isMine) {

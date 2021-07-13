@@ -966,6 +966,13 @@ import com.dukascopy.connect.MobileGui;
 			if (pack.method == WSMethodType.ESCROW_OFFER_CANCEL)
 			{
 				trace("123");
+				/*data : Object {
+					error : Object {
+						code : "ESCROW16" 
+						msg : "Escrow deal offer error: Cannot decode message" 
+					}
+				}*/
+				
 				return;
 			}
 		}
@@ -984,12 +991,12 @@ import com.dukascopy.connect.MobileGui;
 		
 		static public function call_accept_offer(id:Number):void 
 		{
-			send(WSMethodType.ESCROW_OFFER_ACCEPT, id);
+			send(WSMethodType.ESCROW_OFFER_ACCEPT, {msg_id:id});
 		}
 		
 		static public function call_cancel_offer(id:Number):void 
 		{
-			send(WSMethodType.ESCROW_OFFER_CANCEL, id);
+			send(WSMethodType.ESCROW_OFFER_CANCEL, {msg_id:id});
 		}
 		
 		static private function checkBlackHoleMethod(pack:Object):void {
