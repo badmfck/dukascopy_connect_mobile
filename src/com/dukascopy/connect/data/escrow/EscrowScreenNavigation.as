@@ -111,7 +111,7 @@ package com.dukascopy.connect.data.escrow
 				}
 				else if (escrow.status == EscrowStatus.offer_cancelled)
 				{
-					ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, EscrowOfferScreen, screenData);
+					
 				}
 				else if (escrow.status == EscrowStatus.offer_rejected)
 				{

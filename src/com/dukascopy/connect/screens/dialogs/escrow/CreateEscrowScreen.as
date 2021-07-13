@@ -982,6 +982,14 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 				selectedDirection = data.selectedDirection as TradeDirection;
 			}
 			
+			if (data != null)
+			{
+				if ("price" in data && "amount" in data)
+				{
+					lockInputs();
+				}
+			}
+			
 			if (selectedDirection == TradeDirection.buy)
 			{
 				createAccountSelector();
@@ -1001,6 +1009,11 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			updateScroll();
 			
 			loadInstruments();
+		}
+		
+		private function lockInputs():void 
+		{
+			
 		}
 		
 		private function loadInstruments():void 

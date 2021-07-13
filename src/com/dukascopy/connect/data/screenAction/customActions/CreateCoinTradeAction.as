@@ -14,6 +14,7 @@ package com.dukascopy.connect.data.screenAction.customActions {
 	import com.dukascopy.connect.screens.dialogs.x.base.float.FloatAlert;
 	import com.dukascopy.connect.screens.dialogs.escrow.RegisterEscrowScreen;
 	import com.dukascopy.connect.screens.dialogs.escrow.StartEscrowScreen;
+	import com.dukascopy.connect.screens.payments.card.TypeCurrency;
 	import com.dukascopy.connect.sys.applicationError.ApplicationErrors;
 	import com.dukascopy.connect.sys.auth.Auth;
 	import com.dukascopy.connect.sys.chatManager.ChatManager;
@@ -68,6 +69,11 @@ package com.dukascopy.connect.data.screenAction.customActions {
 			}
 			screenData.selectedDirection = selectedDirection;
 			screenData.callback = createEscrowOffer;
+			
+			/*screenData.price = "5";
+			screenData.amount = "15";
+			screenData.instrument = TypeCurrency.BTC;
+			screenData.currency = TypeCurrency.USD;*/
 			
 			ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, CreateEscrowScreen, screenData);
 		}
