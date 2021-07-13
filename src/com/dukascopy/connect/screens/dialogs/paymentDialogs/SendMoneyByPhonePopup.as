@@ -29,6 +29,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 	import com.dukascopy.connect.screens.dialogs.ScreenPayDialog;
 	import com.dukascopy.connect.screens.dialogs.x.base.bottom.ListSelectionPopup;
 	import com.dukascopy.connect.screens.dialogs.x.base.bottom.SearchListSelectionPopup;
+	import com.dukascopy.connect.screens.dialogs.bottom.implementation.BottomAlertPopup;
 	import com.dukascopy.connect.screens.payments.card.TypeCurrency;
 	import com.dukascopy.connect.screens.payments.managers.SendMoneySecureCodeItem;
 	import com.dukascopy.connect.screens.serviceScreen.Overlay;
@@ -419,17 +420,28 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 			var accounts:Array = PaymentsManagerNew.filterEmptyWallets(PayManager.accountInfo.accounts);
 			accounts = accounts.concat(PayManager.getCoins());
 			
-			DialogManager.showDialog(
-				ListSelectionPopup,
-				{
-					items:accounts,
-					title:Lang.TEXT_SELECT_ACCOUNT,
-					renderer:ListPayWalletItem,
-					callback:onWalletSelect
-				}, ServiceScreenManager.TYPE_SCREEN
-			);
-			
-		//	DialogManager.showDialog(ScreenPayDialog, {callback: onWalletSelect, data: PayManager.accountInfo.accounts.concat(PayManager.getCoins()), itemClass: ListPayWalletItem/*ListPayAccount*/, label: Lang.TEXT_SELECT_ACCOUNT});
+			if (accounts.length > 0)
+			{
+				DialogManager.showDialog(
+					ListSelectionPopup,
+					{
+						items:accounts,
+						title:Lang.TEXT_SELECT_ACCOUNT,
+						renderer:ListPayWalletItem,
+						callback:onWalletSelect
+					}, DialogManager.TYPE_SCREEN
+				);
+			}
+			else
+			{
+				DialogManager.showDialog(
+					BottomAlertPopup,
+					{
+						title:Lang.TEXT_SELECT_ACCOUNT,
+						message:Lang.noFundedAccounts
+					}, DialogManager.TYPE_SCREEN
+				);
+			}
 		}
 		
 		private function onWalletSelect(account:Object, cleanCurrent:Boolean = false):void

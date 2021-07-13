@@ -30,6 +30,7 @@ package com.dukascopy.connect.screens.dialogs.gifts
 	import com.dukascopy.connect.screens.base.BaseScreen;
 	import com.dukascopy.connect.screens.dialogs.ScreenPayDialog;
 	import com.dukascopy.connect.screens.dialogs.x.base.bottom.ListSelectionPopup;
+	import com.dukascopy.connect.screens.dialogs.bottom.implementation.BottomAlertPopup;
 	import com.dukascopy.connect.screens.payments.card.TypeCurrency;
 	import com.dukascopy.connect.screens.payments.managers.SendMoneySecureCodeItem;
 	import com.dukascopy.connect.sys.Gifts;
@@ -324,15 +325,29 @@ package com.dukascopy.connect.screens.dialogs.gifts
 				}
 			}
 			
-			DialogManager.showDialog(
-				ListSelectionPopup,
-				{
-					items:acc,
-					title:Lang.TEXT_SELECT_ACCOUNT,
-					renderer:ListPayWalletItem,
-					callback:onWalletSelect
-				}, ServiceScreenManager.TYPE_SCREEN
-			);
+			if (acc != null && acc.length > 0)
+			{
+				DialogManager.showDialog(
+					ListSelectionPopup,
+					{
+						items:acc,
+						title:Lang.TEXT_SELECT_ACCOUNT,
+						renderer:ListPayWalletItem,
+						callback:onWalletSelect
+					}, DialogManager.TYPE_SCREEN
+				);
+			}
+			else
+			{
+				DialogManager.showDialog(
+					BottomAlertPopup,
+					{
+						title:Lang.TEXT_SELECT_ACCOUNT,
+						message:Lang.noFundedAccounts
+					}, DialogManager.TYPE_SCREEN
+				);
+			}
+			
 			
 		//	DialogManager.showDialog(ScreenPayDialog, {callback: onWalletSelect, data: acc, itemClass: ListPayWalletItem/*ListPayAccount*/, label: Lang.TEXT_SELECT_ACCOUNT});
 		}

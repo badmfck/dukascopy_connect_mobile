@@ -18,6 +18,7 @@ package com.dukascopy.connect.screens.payments {
 	import com.dukascopy.connect.gui.topBar.TopBarScreen;
 	import com.dukascopy.connect.screens.base.BaseScreen;
 	import com.dukascopy.connect.screens.dialogs.x.base.bottom.ListSelectionPopup;
+	import com.dukascopy.connect.screens.dialogs.bottom.implementation.BottomAlertPopup;
 	import com.dukascopy.connect.sys.dialogManager.DialogManager;
 	import com.dukascopy.connect.sys.imageManager.ImageBitmapData;
 	import com.dukascopy.connect.sys.payments.PayManager;
@@ -206,7 +207,7 @@ package com.dukascopy.connect.screens.payments {
 			tfAccountsTitle.bitmapData = createLabelBMD(Lang.TEXT_PAY_WITH, FontSize.CAPTION_1);
 			iAccounts.setSize(_width - Config.DIALOG_MARGIN * 2, Config.FINGER_SIZE_DOT_75);
 			if (feeWaiting == true)
-				tfCommissionAmount.bitmapData = createLabelBMD(Lang.textCommission + ": " + Lang.loading + "…", FontSize.BODY);
+				tfCommissionAmount.bitmapData = createLabelBMD(getCommissionText() + ": " + Lang.loading + "…", FontSize.BODY);
 			if (tfDelivery != null)
 				tfDelivery.bitmapData = createLabelBMD(Lang.textCardDelivery, FontSize.CAPTION_1);
 			if (iDelivery != null)
@@ -264,7 +265,7 @@ package com.dukascopy.connect.screens.payments {
 			iAccounts.y = tfAccountsTitle.y + tfAccountsTitle.height;
 			if (paramsObj.type == CARD_TYPE_VIRTUAL) {
 				tfCommissionAmount.y = iAccounts.y + iAccounts.height + Config.MARGIN;
-				drawDescription("");
+				drawDescription(null);
 			} else {
 				if (tfDelivery != null && tfDelivery.parent != null) {
 					tfDelivery.y = iAccounts.y + iAccounts.height + Config.DOUBLE_MARGIN;
@@ -274,9 +275,14 @@ package com.dukascopy.connect.screens.payments {
 					tfCommissionAmount.y = iAccounts.y + iAccounts.height + Config.MARGIN;
 				}
 				
-				description.y = tfCommissionAmount.y + tfCommissionAmount.height + Config.DIALOG_MARGIN + Config.MARGIN;
+				var position:int = tfCommissionAmount.y + tfCommissionAmount.height + Config.DIALOG_MARGIN + Config.MARGIN;
+				description.y = position;
 				description.x = Config.DIALOG_MARGIN;
-				addressBox.y = description.y + description.height + Config.DIALOG_MARGIN + Config.MARGIN;
+				if (description.height > 0)
+				{
+					position += description.height + Config.DIALOG_MARGIN + Config.MARGIN;
+				}
+				addressBox.y = position;
 			}
 			
 			btnContinue.y = _height - Config.FINGER_SIZE;
@@ -361,9 +367,12 @@ package com.dukascopy.connect.screens.payments {
 				description.bitmapData.dispose();
 				description.bitmapData = null;
 			}
-			description.bitmapData = TextUtils.createTextFieldData(text, _width - Config.DIALOG_MARGIN*2, 10, true, 
+			if (text != null)
+			{
+				description.bitmapData = TextUtils.createTextFieldData(text, _width - Config.DIALOG_MARGIN*2, 10, true, 
 							TextFormatAlign.LEFT, TextFieldAutoSize.LEFT, FontSize.BODY, 
 							true, Style.color(Style.COLOR_TEXT), Style.color(Style.COLOR_BACKGROUND));
+			}
 		}
 		
 		private function checkForActivateContinueButton():void {
@@ -438,7 +447,8 @@ package com.dukascopy.connect.screens.payments {
 			
 			if (paramsObj != null && "delivery" in paramsObj && paramsObj.delivery == "EXPEDITED")
 			{
-				drawDescription(Lang.cardDeliveryDescriptionExpress);
+			//	drawDescription(Lang.cardDeliveryDescriptionExpress);
+				drawDescription(null);
 			}
 			else
 			{
@@ -547,15 +557,28 @@ package com.dukascopy.connect.screens.payments {
 			
 			var wallets:Array = PaymentsManagerNew.filterEmptyWallets(PayManager.accountInfo.accounts);
 			
-			DialogManager.showDialog(
-				ListSelectionPopup,
-				{
-					items:wallets,
-					title:Lang.TEXT_SELECT_ACCOUNT,
-					renderer:ListPayWalletItem,
-					callback:callBackOnSelectAccount
-				}, DialogManager.TYPE_SCREEN
-			);
+			if (wallets != null && wallets.length > 0)
+			{
+				DialogManager.showDialog(
+					ListSelectionPopup,
+					{
+						items:wallets,
+						title:Lang.TEXT_SELECT_ACCOUNT,
+						renderer:ListPayWalletItem,
+						callback:callBackOnSelectAccount
+					}, DialogManager.TYPE_SCREEN
+				);
+			}
+			else
+			{
+				DialogManager.showDialog(
+					BottomAlertPopup,
+					{
+						title:Lang.TEXT_SELECT_ACCOUNT,
+						message:Lang.noFundedAccounts
+					}, DialogManager.TYPE_SCREEN
+				);
+			}
 		}
 		
 		private function callBackOnSelectAccount(account:Object):void {
@@ -594,7 +617,8 @@ package com.dukascopy.connect.screens.payments {
 			if (delivery.type == "STANDARD") {
 				drawDescription(Lang.cardDeliveryDescriptionStandard);
 			} else {
-				drawDescription(Lang.cardDeliveryDescriptionExpress);
+			//	drawDescription(Lang.cardDeliveryDescriptionExpress);
+				drawDescription(null);
 			}
 			drawView();
 			
@@ -607,7 +631,7 @@ package com.dukascopy.connect.screens.payments {
 			feeWaiting = true;
 			feeReceived = false;
 			lastCallIDFee = new Date().getTime().toString();
-			tfCommissionAmount.bitmapData = createLabelBMD(Lang.textCommission + ": " + Lang.loading + "…", FontSize.BODY);
+			tfCommissionAmount.bitmapData = createLabelBMD(getCommissionText() + ": " + Lang.loading + "…", FontSize.BODY);
 			PayManager.S_PPCARD_COMMISSION_RECEIVE.add(onCommissionReceived);
 			PayManager.callGetCardCommission(paramsObj.type, paramsObj.currency, paramsObj.debitCurrency, paramsObj.cardType, paramsObj.delivery, lastCallIDFee);
 		}
@@ -618,7 +642,7 @@ package com.dukascopy.connect.screens.payments {
 			feeWaiting = false;
 			feeReceived = true;
 			if (data == null) {
-				tfCommissionAmount.bitmapData = createLabelBMD(Lang.textCommission + ": " + "-", FontSize.BODY);
+				tfCommissionAmount.bitmapData = createLabelBMD(getCommissionText() + ": " + "-", FontSize.BODY);
 				return;
 			}
 			var commissionText:String = "";
@@ -634,10 +658,24 @@ package com.dukascopy.connect.screens.payments {
 				commissionText += "\n" + Lang.monthlyFee + ": " + data[2][0] + " " + data[2][1];
 			}
 
-			tfCommissionAmount.bitmapData = createLabelBMD(Lang.textCommission + ": " + commissionText, FontSize.BODY);
+			tfCommissionAmount.bitmapData = createLabelBMD(getCommissionText() + ": " + commissionText, FontSize.BODY);
 			PayManager.S_PPCARD_COMMISSION_RECEIVE.remove(onCommissionReceived);
 			checkForActivateContinueButton();
 			drawView();
+		}
+		
+		private function getCommissionText():String 
+		{
+			if (paramsObj != null && paramsObj.type == CARD_TYPE_VIRTUAL) {
+				return Lang.textCommission;
+			}
+			
+			if (paramsObj != null && "delivery" in paramsObj && paramsObj.delivery == "EXPEDITED")
+			{
+				return Lang.cardOrderDelivery;
+			} else {
+				return Lang.textCommission;
+			}
 		}
 		
 		private function onContinueClick(...rest):void {

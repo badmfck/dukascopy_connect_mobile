@@ -36,6 +36,12 @@ package com.dukascopy.connect.data.screenAction.customActions.chatMessageAction 
 			{
 				message = msgVO.systemMessageVO.forwardVO.text;
 			}
+			
+			if (msgVO.systemMessageVO != null && msgVO.systemMessageVO.newsVO != null)
+			{
+				message = msgVO.systemMessageVO.newsVO.link;
+			}
+			
 			if (message != null)
 			{
 				if (ChatManager.getCurrentChat() != null && msgVO.linksArray != null && msgVO.linksArray.length > 0)

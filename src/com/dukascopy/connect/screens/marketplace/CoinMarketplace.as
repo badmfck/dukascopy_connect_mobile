@@ -127,6 +127,13 @@ package com.dukascopy.connect.screens.marketplace {
 					return -1;
 				else if (first.price < second.price)
 					return 1;
+				else
+				{
+					if (first.quantity > second.quantity)
+						return -1;
+					else if (first.quantity < second.quantity)
+						return 1;
+				}
 				return -1;
 			}
 			
@@ -135,6 +142,13 @@ package com.dukascopy.connect.screens.marketplace {
 					return 1;
 				else if (first.price < second.price)
 					return -1;
+				else
+				{
+					if (first.quantity > second.quantity)
+						return -1;
+					else if (first.quantity < second.quantity)
+						return 1;
+				}
 				return -1;
 			}
 		}

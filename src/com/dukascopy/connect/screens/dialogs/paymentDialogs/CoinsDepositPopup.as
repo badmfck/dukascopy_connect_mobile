@@ -18,6 +18,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs {
 	import com.dukascopy.connect.screens.dialogs.ScreenPayDialog;
 	import com.dukascopy.connect.screens.dialogs.ScreenWebviewDialogBase;
 	import com.dukascopy.connect.screens.dialogs.x.base.bottom.ListSelectionPopup;
+	import com.dukascopy.connect.screens.dialogs.bottom.implementation.BottomAlertPopup;
 	import com.dukascopy.connect.screens.payments.card.TypeCurrency;
 	import com.dukascopy.connect.screens.serviceScreen.Overlay;
 	import com.dukascopy.connect.sys.bankManager.BankManager;
@@ -492,10 +493,18 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs {
 						title:Lang.TEXT_SELECT_ACCOUNT,
 						renderer:ListPayWalletItem,
 						callback:onWalletFiatSelect
-					}, ServiceScreenManager.TYPE_SCREEN
+					}, DialogManager.TYPE_SCREEN
 				);
-				
-			//	DialogManager.showDialog(ScreenPayDialog, {callback: onWalletFiatSelect, data: wallets, itemClass: ListPayWalletItem/*ListPayAccount*/, label: Lang.TEXT_SELECT_ACCOUNT});
+			}
+			else
+			{
+				DialogManager.showDialog(
+					BottomAlertPopup,
+					{
+						title:Lang.TEXT_SELECT_ACCOUNT,
+						message:Lang.noFundedAccounts
+					}, DialogManager.TYPE_SCREEN
+				);
 			}
 		}
 		
@@ -773,7 +782,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs {
 				drawWalletAddress();
 				moreInfo.visible = true;
 				moreInfo.htmlText = Lang.investmentDeliveryLink;
-				moreInfo.width = _width;
+				moreInfo.width = componentsWidth;
 				moreInfo.height = moreInfo.textHeight + 4;
 				moreInfo.x = Config.DIALOG_MARGIN;
 			}

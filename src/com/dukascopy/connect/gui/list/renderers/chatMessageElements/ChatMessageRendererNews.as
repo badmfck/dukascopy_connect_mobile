@@ -268,13 +268,18 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements
 				}
 				
 				position = title.y + title.height + verticalPadding;
+				if (title.htmlText == "")
+				{
+					position = verticalPadding;
+				}
+				
 				if (data.newsVO.image != null)
 				{
 					position += verticalPadding;
 				}
 			}
 			
-			if (text != null) {
+			if (text != null && text != "") {
 				message.visible = true;
 				message.width = maxWidth - horizontalPadding * 2;
 				message.htmlText = text;
@@ -307,7 +312,15 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements
 			}
 			
 			if (data.newsVO.link != null){
-				position += Config.FINGER_SIZE * .1;
+				if (position != verticalPadding)
+				{
+					position += Config.FINGER_SIZE * .1;
+				}
+				else
+				{
+					position = verticalPadding * 1.8;
+				}
+				
 				linkClip.visible = true;
 				linkText.text = TextUtils.getServerName(data.newsVO.link);
 				linkText.width = Math.min(linkText.textWidth + 4, maxWidth - linkPadding * 3 + linkIcon.width - horizontalPadding * 2);

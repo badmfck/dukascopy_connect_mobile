@@ -22,6 +22,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 	import com.dukascopy.connect.screens.base.BaseScreen;
 	import com.dukascopy.connect.screens.dialogs.ScreenPayDialog;
 	import com.dukascopy.connect.screens.dialogs.x.base.bottom.ListSelectionPopup;
+	import com.dukascopy.connect.screens.dialogs.bottom.implementation.BottomAlertPopup;
 	import com.dukascopy.connect.sys.applicationError.ApplicationErrors;
 	import com.dukascopy.connect.sys.dialogManager.DialogManager;
 	import com.dukascopy.connect.sys.imageManager.ImageBitmapData;
@@ -340,8 +341,9 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 				}
 				exist[walletItem.CURRENCY] = walletItem.CURRENCY;
 			}
-			
-			DialogManager.showDialog(
+			if (currencies.length > 0)
+			{
+				DialogManager.showDialog(
 					ListSelectionPopup,
 					{
 						items:currencies,
@@ -350,7 +352,8 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 						callback:callBackSelectDebitCurrency
 					}, ServiceScreenManager.TYPE_SCREEN
 				);
-
+			}
+			
 		//	DialogManager.showDialog(ScreenPayDialog, {callback: callBackSelectDebitCurrency, data: currencies, itemClass: ListPayCurrency, label: Lang.selectCurrency});
 		}
 		
@@ -534,26 +537,31 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 				debitAmount.forceFocusOut();
 			if (creditAmount != null)
 				creditAmount.forceFocusOut();
-
-			DialogManager.showDialog(
+			
+			var accounts:Array = getDebitAccounts()
+			
+			if (accounts.length > 0)
+			{
+				DialogManager.showDialog(
 					ListSelectionPopup,
 					{
-						items:getDebitAccounts(),
+						items:accounts,
 						title:Lang.TEXT_SELECT_ACCOUNT,
 						renderer:ListPayWalletItem,
 						callback:onDebitWalletSelect
-					}, ServiceScreenManager.TYPE_SCREEN
+					}, DialogManager.TYPE_SCREEN
 				);
-
-			/*DialogManager.showDialog(
-				ScreenPayDialog,
-				{
-					callback: onDebitWalletSelect,
-					data: getDebitAccounts(),
-					itemClass: ListPayWalletItem,
-					label: Lang.TEXT_SELECT_ACCOUNT
-				}
-			);*/
+			}
+			else
+			{
+				DialogManager.showDialog(
+					BottomAlertPopup,
+					{
+						title:Lang.TEXT_SELECT_ACCOUNT,
+						message:Lang.noFundedAccounts
+					}, DialogManager.TYPE_SCREEN
+				);
+			}
 		}
 		
 		static private function createPaymentsAccount(val:int):void {
