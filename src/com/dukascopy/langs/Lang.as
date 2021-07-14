@@ -2451,6 +2451,9 @@ package com.dukascopy.langs {
 		static public var escrow_to_sell:String = "To SELL";
 		static public var escrow_to_buy:String = "To BUY";
 		static public var please_select_debit_account:String = "Please select account to be debited";
+		static public var escrow_deal_message:String = "Escrow deal";
+		static public var deal_expired:String = "Deal expired";
+		static public var escrow_enter_transaction_id:String = "Please enter transaction id";
 		
 		static public function updateKeys(keys:Object):void {
 			for (var n:String in keys) {

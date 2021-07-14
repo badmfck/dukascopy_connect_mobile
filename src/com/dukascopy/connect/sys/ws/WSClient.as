@@ -989,13 +989,17 @@ import com.dukascopy.connect.MobileGui;
 			} );
 		}
 		
-		static public function call_accept_offer(id:Number, debitAccount:String):void 
+		static public function call_accept_offer(id:Number, debitAccount:String, cryptoWallet:String):void 
 		{
 			var request:Object = new Object();
 			request.msg_id = id;
 			if (debitAccount != null)
 			{
 				request.debit_account = debitAccount;
+			}
+			if (cryptoWallet != null)
+			{
+				request.crypto_wallet = cryptoWallet;
 			}
 			send(WSMethodType.ESCROW_OFFER_ACCEPT, request);
 		}

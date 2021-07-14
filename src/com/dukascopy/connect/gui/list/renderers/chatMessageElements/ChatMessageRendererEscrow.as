@@ -318,7 +318,14 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 			var result:String = "";
 			if (EscrowScreenNavigation.isExpired(messageData.systemMessageVO.escrow, messageData.created))
 			{
-				result = Lang.offer_expired;
+				if (messageData.systemMessageVO.escrow.status == EscrowStatus.deal_created)
+				{
+					result = Lang.deal_expired;
+				}
+				else
+				{
+					result = Lang.offer_expired;
+				}
 			}
 			else
 			{
@@ -374,6 +381,13 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 					case EscrowStatus.offer_cancelled:
 					{
 						result = Lang.offer_was_cancelled;
+						
+						break;
+					}
+					
+					case EscrowStatus.deal_created:
+					{
+						result = Lang.waiting_for_crypto;
 						
 						break;
 					}
@@ -439,6 +453,31 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 					
 					time.x = int(leftSideSize * .5 - time.width * .5);
 					time.y = int(resultHeight * .5 + Config.FINGER_SIZE * .05);
+				}
+				else if (messageData.systemMessageVO.escrow.status == EscrowStatus.deal_created)
+				{
+					iconTime.visible = false;
+					time.visible = false;
+					if (EscrowScreenNavigation.isExpired(messageData.systemMessageVO.escrow, messageData.created))
+					{
+						iconFail.visible = true;
+						UI.colorize(iconSuccess, getIconColor(messageData.systemMessageVO.escrow.status, messageData.systemMessageVO.escrow.direction, messageData));
+					}
+					else
+					{
+						iconTime.visible = true;
+						time.visible = true;
+						
+						time.width = leftSideSize - Config.FINGER_SIZE * .1 * 2;
+						
+						time.text = gettimeDifference(EscrowSettings.dealMaxTime * 60 - ((new Date()).time / 1000 - messageData.created));
+						
+						time.width = time.textWidth + 5;
+						time.height = time.textHeight + 5;
+						
+						time.x = int(leftSideSize * .5 - time.width * .5);
+						time.y = int(resultHeight * .5 + Config.FINGER_SIZE * .05);
+					}
 				}
 				else if (messageData.systemMessageVO.escrow.status == EscrowStatus.offer_accepted)
 				{
@@ -546,6 +585,11 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 						return Color.GREY_SUPER_LIGHT;
 						break;
 					}
+					case EscrowStatus.deal_created:
+					{
+						return Color.WHITE;
+						break;
+					}
 				}
 			}
 			
@@ -651,6 +695,11 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 					case EscrowStatus.offer_cancelled:
 					{
 						return Color.GREY;
+						break;
+					}
+					case EscrowStatus.deal_created:
+					{
+						return Color.GREY_DARK;
 						break;
 					}
 				}

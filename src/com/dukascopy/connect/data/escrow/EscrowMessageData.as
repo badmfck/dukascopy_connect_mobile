@@ -20,6 +20,11 @@ package com.dukascopy.connect.data.escrow
 		public var userUID:String;
 		public var debitAccount:String;
 		
+		public var chatUID:String;
+		public var deal_uid:String;
+		public var debit_account:String;
+		public var msg_id:String;
+		
 		public function EscrowMessageData(data:Object = null) 
 		{
 			if (data != null)
@@ -30,6 +35,22 @@ package com.dukascopy.connect.data.escrow
 		
 		private function parse(data:Object):void 
 		{
+			if ("chatUID" in data)
+			{
+				chatUID = data.chatUID;
+			}
+			if ("deal_uid" in data)
+			{
+				deal_uid = data.deal_uid;
+			}
+			if ("debit_account" in data)
+			{
+				debit_account = data.debit_account;
+			}
+			if ("msg_id" in data)
+			{
+				msg_id = data.msg_id;
+			}
 			if ("price" in data)
 			{
 				price = parseFloat(data.price);
@@ -57,6 +78,10 @@ package com.dukascopy.connect.data.escrow
 			if ("userUID" in data)
 			{
 				userUID = data.userUID;
+			}
+			if ("crypto_wallet" in data)
+			{
+				cryptoWallet = data.crypto_wallet;
 			}
 		}
 		

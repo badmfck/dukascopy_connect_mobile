@@ -7,6 +7,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 	import com.dukascopy.connect.data.escrow.EscrowSettings;
 	import com.dukascopy.connect.data.escrow.EscrowStatus;
 	import com.dukascopy.connect.data.escrow.OfferCommand;
+	import com.dukascopy.connect.gui.components.message.ToastMessage;
 	import com.dukascopy.connect.gui.input.Input;
 	import com.dukascopy.connect.gui.lightbox.UI;
 	import com.dukascopy.connect.gui.menuVideo.BitmapButton;
@@ -54,6 +55,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		private var chat:ChatVO;
 		private var transaction:InputField;
 		private var transactionClip:TransactionClip;
+		private var transactionId:String;
 		
 		public function SendCryptoScreen() { }
 		
@@ -111,7 +113,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		
 		private function onInputSelected():void 
 		{
-			
+			transaction.valid();
 		}
 		
 		private function onInputChange(e:Event = null):void
@@ -142,7 +144,18 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		
 		private function onAcceptClick():void 
 		{
-			//!TODO:;
+			if (transaction.valueString == null || transaction.valueString == "")
+			{
+				transaction.invalid();
+				ToastMessage.display(Lang.escrow_enter_transaction_id);
+			}
+			else
+			{
+				transactionId = transaction.valueString;
+				command = OfferCommand.send_transaction_id;
+				close();
+			}
+			
 		}
 		
 		override public function onBack(e:Event = null):void {
@@ -502,6 +515,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		{
 			if (command != null && "callback" in data && data.callback != null && data.callback is Function && (data.callback as Function).length == 4)
 			{
+				escrowOffer.transactionId = transactionId;
 				(data.callback as Function)(escrowOffer, message, chat, command);
 				command = null;
 				chat = null;

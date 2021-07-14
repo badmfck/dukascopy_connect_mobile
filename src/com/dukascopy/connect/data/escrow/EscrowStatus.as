@@ -11,7 +11,7 @@ package com.dukascopy.connect.data.escrow
 		private static const OFFER_CANCELLED:String = "canceled";
 		private static const OFFER_REJECTED:String = "rejected";
 		private static const OFFER_ACCEPTED:String = "accepted";
-		private static const DEAL_CREATED:String = "deal_created";
+		private static const DEAL_CREATED:String = "created";
 		
 		static public var offer_created:EscrowStatus = new EscrowStatus(EscrowStatus.OFFER_CREATED);
 		static public var offer_cancelled:EscrowStatus = new EscrowStatus(EscrowStatus.OFFER_CANCELLED);
@@ -52,6 +52,11 @@ package com.dukascopy.connect.data.escrow
 				case OFFER_ACCEPTED:
 				{
 					return offer_accepted;
+					break;
+				}
+				case DEAL_CREATED:
+				{
+					return deal_created;
 					break;
 				}
 			}

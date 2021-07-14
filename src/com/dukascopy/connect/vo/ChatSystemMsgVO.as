@@ -112,6 +112,7 @@ package com.dukascopy.connect.vo {
 		static public const TYPE_REPLY:String = "typeReply";
 		static public const TYPE_LINK_PREVIEW:String = "typeLinkPreview";
 		static public const TYPE_ESCROW_OFFER:String = "typeEscrowOffer";
+		static public const TYPE_ESCROW_DEAL:String = "typeEscrowDeal";
 		
 		private var _type:String;
 		private var _method:String;
@@ -413,7 +414,12 @@ package com.dukascopy.connect.vo {
 				} else if (_type == TYPE_ESCROW_OFFER) {
 					_additionalData = new EscrowMessageData(data);
 					_title = Lang.escrow_offer_message;
+				} else if (_type == TYPE_ESCROW_DEAL) {
+					_type = TYPE_ESCROW_OFFER;
+					_additionalData = new EscrowMessageData(data);
+					_title = Lang.escrow_deal_message;
 				}
+				
 				
 				if (_method != null && _method == METHOD_CONTACT) {
 					//!TODO: replace title from locale
