@@ -237,7 +237,7 @@ package com.dukascopy.connect.data.escrow
 			{
 				if (escrow != null)
 				{
-					WSClient.call_accept_offer(message.id);
+					WSClient.call_accept_offer(message.id, escrow.debitAccount);
 					
 					/*messageData = new EscrowMessageData();
 					messageData.type = ChatSystemMsgVO.TYPE_ESCROW_OFFER;

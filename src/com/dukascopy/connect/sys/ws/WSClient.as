@@ -989,9 +989,15 @@ import com.dukascopy.connect.MobileGui;
 			} );
 		}
 		
-		static public function call_accept_offer(id:Number):void 
+		static public function call_accept_offer(id:Number, debitAccount:String):void 
 		{
-			send(WSMethodType.ESCROW_OFFER_ACCEPT, {msg_id:id});
+			var request:Object = new Object();
+			request.msg_id = id;
+			if (debitAccount != null)
+			{
+				request.debit_account = debitAccount;
+			}
+			send(WSMethodType.ESCROW_OFFER_ACCEPT, request);
 		}
 		
 		static public function call_cancel_offer(id:Number):void 

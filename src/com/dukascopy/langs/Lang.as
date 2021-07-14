@@ -2448,6 +2448,9 @@ package com.dukascopy.langs {
 		static public var launchCurrentAccount:String = "Current account";
 		static public var cardOrderDelivery:String = "Card order and delivery";
 		static public var noFundedAccounts:String = "You have no funded accounts";
+		static public var escrow_to_sell:String = "To SELL";
+		static public var escrow_to_buy:String = "To BUY";
+		static public var please_select_debit_account:String = "Please select account to be debited";
 		
 		static public function updateKeys(keys:Object):void {
 			for (var n:String in keys) {

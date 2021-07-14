@@ -266,7 +266,7 @@ package com.dukascopy.connect.gui.button
 				tf.width = tf.textWidth + 4;
 				tf.height = tf.textHeight + 4;
 				
-				generatedBitmap.drawWithQuality(box, null, null, null, null, true, StageQuality.BEST);
+				generatedBitmap.drawWithQuality(container, null, null, null, null, true, StageQuality.BEST);
 			}
 			else if (data is String)
 			{
@@ -285,7 +285,7 @@ package com.dukascopy.connect.gui.button
 				tf.width = tf.textWidth + 4;
 				tf.height = tf.textHeight + 4;
 				
-				generatedBitmap.drawWithQuality(box, null, null, null, null, true, StageQuality.BEST);
+				generatedBitmap.drawWithQuality(container, null, null, null, null, true, StageQuality.BEST);
 			}
 			else if (data is Object)
 			{
@@ -489,7 +489,7 @@ package com.dukascopy.connect.gui.button
 				{
 					walletName.text = "";
 				}
-				generatedBitmap.drawWithQuality(box, null, null, null, null, true, StageQuality.BEST);
+				generatedBitmap.drawWithQuality(container, null, null, null, null, true, StageQuality.BEST);
 			}
 			
 			//generatedBitmap.drawWithQuality(box, null, null, null, null, true, StageQuality.BEST);

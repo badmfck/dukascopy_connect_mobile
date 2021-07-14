@@ -17,6 +17,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 	import com.dukascopy.connect.screens.dialogs.x.base.bottom.ListSelectionPopup;
 	import com.dukascopy.connect.screens.payments.card.TypeCurrency;
 	import com.dukascopy.connect.sys.applicationError.ApplicationErrors;
+	import com.dukascopy.connect.sys.auth.Auth;
 	import com.dukascopy.connect.sys.dialogManager.DialogManager;
 	import com.dukascopy.connect.sys.imageManager.ImageBitmapData;
 	import com.dukascopy.connect.sys.serviceScreenManager.ServiceScreenManager;
@@ -214,9 +215,9 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			{
 				if (terms.isSelected())
 				{
-					if (escrowOffer != null && escrowOffer.direction == TradeDirection.buy && selectedFiatAccount == null)
+					if (escrowOffer != null && escrowOffer.direction == TradeDirection.sell && selectedFiatAccount == null)
 					{
-						ToastMessage.display(Lang.please_select_credit_account);
+						ToastMessage.display(Lang.please_select_debit_account);
 					}
 					else
 					{
@@ -297,11 +298,11 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 				var title:String;
 				if (escrowOffer.direction == TradeDirection.buy)
 				{
-					title = Lang.pay_from_account;
+					title = Lang.credit_to;
 				}
 				else if (escrowOffer.direction == TradeDirection.sell)
 				{
-					title = Lang.credit_to;
+					title = Lang.pay_from_account;
 				}
 				selectorAccont = new DDAccountButton(openWalletSelector, Lang.TEXT_SELECT_ACCOUNT, true, -1, NaN, title);
 				addItem(selectorAccont);
@@ -311,13 +312,13 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			
 			if (escrowOffer != null && escrowOffer.direction == TradeDirection.sell)
 			{
-				removeItem(selectorAccont);
-				onDataReady();
-				recreateLayout();
+				loadAccounts();
 			}
 			else
 			{
-				loadAccounts();
+				removeItem(selectorAccont);
+				onDataReady();
+				recreateLayout();
 			}
 		}
 		
@@ -368,7 +369,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			
 			if (escrowOffer != null && !EscrowScreenNavigation.isExpired(escrowOffer, offerCreatedTime))
 			{
-				if (escrowOffer.direction == TradeDirection.buy)
+				if (escrowOffer.direction == TradeDirection.sell)
 				{
 					selectDefaultAccount();
 				}
@@ -404,7 +405,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		{
 			if (isAvaliable(escrowOffer))
 			{
-				if (escrowOffer.direction == TradeDirection.sell)
+				if (escrowOffer.direction == TradeDirection.buy)
 				{
 					alertText.draw(getWidth() - contentPadding * 2, Lang.escrow_send_obligation_penalty, Lang.escrow_send_obligation_penalty_url);
 				}
@@ -457,20 +458,6 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 					}
 					else if (escrowOffer.direction == TradeDirection.buy)
 					{
-						texts.push(Lang.to_pay_for_crypto);
-						texts.push(Lang.refundable_fee.replace("%@", (EscrowSettings.refundableFee*100)));
-						texts.push(Lang.amount_to_be_debited);
-						
-						colors.push(Style.color(Style.COLOR_SUBTITLE));
-						colors.push(Style.color(Style.COLOR_SUBTITLE));
-						colors.push(Color.WHITE);
-						
-						values.push(NumberFormat.formatAmount(escrowOffer.amount * escrowOffer.price, escrowOffer.currency));
-						values.push(NumberFormat.formatAmount(escrowOffer.amount * escrowOffer.price * EscrowSettings.refundableFee, escrowOffer.currency));
-						values.push(NumberFormat.formatAmount(escrowOffer.amount * escrowOffer.price * EscrowSettings.refundableFee + escrowOffer.amount * escrowOffer.price, escrowOffer.currency));
-					}
-					else if (escrowOffer.direction == TradeDirection.sell)
-					{
 						texts.push(Lang.amount_of_transaction);
 						texts.push(Lang.commission_crypto.replace("%@", (EscrowSettings.commission*100)));
 						texts.push(Lang.amount_to_be_credited);
@@ -482,7 +469,20 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 						values.push(NumberFormat.formatAmount(escrowOffer.amount * escrowOffer.price, escrowOffer.currency));
 						values.push(NumberFormat.formatAmount(escrowOffer.amount * escrowOffer.price * EscrowSettings.commission, escrowOffer.currency));
 						values.push(NumberFormat.formatAmount(escrowOffer.amount * escrowOffer.price * EscrowSettings.refundableFee + escrowOffer.amount * escrowOffer.price, escrowOffer.currency));
-					
+					}
+					else if (escrowOffer.direction == TradeDirection.sell)
+					{
+						texts.push(Lang.to_pay_for_crypto);
+						texts.push(Lang.refundable_fee.replace("%@", (EscrowSettings.refundableFee*100)));
+						texts.push(Lang.amount_to_be_debited);
+						
+						colors.push(Style.color(Style.COLOR_SUBTITLE));
+						colors.push(Style.color(Style.COLOR_SUBTITLE));
+						colors.push(Color.WHITE);
+						
+						values.push(NumberFormat.formatAmount(escrowOffer.amount * escrowOffer.price, escrowOffer.currency));
+						values.push(NumberFormat.formatAmount(escrowOffer.amount * escrowOffer.price * EscrowSettings.refundableFee, escrowOffer.currency));
+						values.push(NumberFormat.formatAmount(escrowOffer.amount * escrowOffer.price * EscrowSettings.refundableFee + escrowOffer.amount * escrowOffer.price, escrowOffer.currency));
 					}
 				}
 				else if (escrowOffer.status == EscrowStatus.offer_cancelled)
@@ -541,13 +541,13 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 					}
 					else if (escrowOffer.direction == TradeDirection.buy)
 					{
-						text = Lang.buy_offer_awaiting_acceptance;
-						color = Color.GREEN;
+						text = Lang.escrow_sell_offer;
+						color = Color.RED;
 					}
 					else if (escrowOffer.direction == TradeDirection.sell)
 					{
-						text = Lang.sell_offer_awaiting_acceptance;
-						color = Color.RED;
+						text = Lang.escrow_buy_offer;
+						color = Color.GREEN;
 					}
 				}
 				
@@ -635,13 +635,13 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 					}
 					else if (escrowOffer.direction == TradeDirection.buy)
 					{
-						text = Lang.buy_offer_accept_description;
-						text = text.replace("%@", EscrowSettings.offerMaxTime);
+						text = Lang.sell_offer_accept_description;
+						text = text.replace("%@", EscrowSettings.dealMaxTime);
 					}
 					else if (escrowOffer.direction == TradeDirection.sell)
 					{
-						text = Lang.sell_offer_accept_description;
-						text = text.replace("%@", EscrowSettings.dealMaxTime);
+						text = Lang.buy_offer_accept_description;
+						text = text.replace("%@", EscrowSettings.offerMaxTime);	
 					}
 				}
 			}
@@ -687,7 +687,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			
 			if (escrowOffer != null)
 			{
-				if (escrowOffer.direction == TradeDirection.buy)
+				if (escrowOffer.direction == TradeDirection.sell)
 				{
 					description.x = contentPadding;
 					description.y = position;
@@ -697,7 +697,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 					{
 						selectorAccont.x = contentPadding;
 						selectorAccont.y = position;
-						position += selectorAccont.height + contentPaddingV * 1.5;
+						position += selectorAccont.height + contentPaddingV * 1;
 					}
 					
 					if (terms != null && terms.parent != null)
@@ -707,7 +707,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 						position += terms.height + contentPaddingV * 1.5;
 					}
 				}
-				else if (escrowOffer.direction == TradeDirection.sell)
+				else if (escrowOffer.direction == TradeDirection.buy)
 				{
 					/*selectorAccont.x = contentPadding;
 					selectorAccont.y = position;
@@ -833,6 +833,11 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		{
 			if (command != null && "callback" in data && data.callback != null && data.callback is Function && (data.callback as Function).length == 4)
 			{
+				if (escrowOffer.direction == TradeDirection.sell)
+				{
+					escrowOffer.debitAccount = selectedFiatAccount.ACCOUNT_NUMBER;
+				}
+				
 				(data.callback as Function)(escrowOffer, message, chat, command);
 				command = null;
 				chat = null;

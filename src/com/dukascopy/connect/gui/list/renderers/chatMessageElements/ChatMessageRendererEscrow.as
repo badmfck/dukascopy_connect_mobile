@@ -13,6 +13,7 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 	import com.dukascopy.connect.data.escrow.TradeDirection;
 	import com.dukascopy.connect.gui.lightbox.UI;
 	import com.dukascopy.connect.gui.list.ListItem;
+	import com.dukascopy.connect.sys.auth.Auth;
 	import com.dukascopy.connect.sys.style.FontSize;
 	import com.dukascopy.connect.sys.style.Style;
 	import com.dukascopy.connect.sys.style.presets.Color;
@@ -327,11 +328,26 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 					{
 						if (direction == TradeDirection.buy)
 						{
-							result = Lang.escrow_buy_offer;
+							if (messageData.userUID == Auth.uid)
+							{
+								result = Lang.escrow_to_buy;
+							}
+							else
+							{
+								result = Lang.escrow_to_sell;
+							}
+							
 						}
 						else if(direction == TradeDirection.sell)
 						{
-							result = Lang.escrow_sell_offer;
+							if (messageData.userUID == Auth.uid)
+							{
+								result = Lang.escrow_to_sell;
+							}
+							else
+							{
+								result = Lang.escrow_to_buy;
+							}
 						}
 						
 						break;
@@ -389,8 +405,6 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 				back.graphics.beginFill(Style.color(Style.COLOR_BACKGROUND));
 				back.graphics.drawRoundRectComplex(leftSideSize, 0, mainWidth - leftSideSize, resultHeight, 0, radiusBack, 0, radiusBack);
 				back.graphics.endFill();
-				
-				
 				
 				iconTime.visible = false;
 				iconAlert.visible = false;
@@ -500,11 +514,25 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 					{
 						if (direction == TradeDirection.buy)
 						{
-							return Color.GREEN;
+							if (messageData.userUID == Auth.uid)
+							{
+								return Color.GREEN;
+							}
+							else
+							{
+								return Color.RED;
+							}
 						}
 						else if (direction == TradeDirection.sell)
 						{
-							return Color.RED;
+							if (messageData.userUID == Auth.uid)
+							{
+								return Color.RED;
+							}
+							else
+							{
+								return Color.GREEN;
+							}
 						}
 						break;
 					}
@@ -567,11 +595,25 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 					{
 						if (direction == TradeDirection.buy)
 						{
-							return Color.GREEN;
+							if (messageData.userUID == Auth.uid)
+							{
+								return Color.GREEN;
+							}
+							else
+							{
+								return Color.RED;
+							}
 						}
 						else if (direction == TradeDirection.sell)
 						{
-							return Color.RED;
+							if (messageData.userUID == Auth.uid)
+							{
+								return Color.RED;
+							}
+							else
+							{
+								return Color.GREEN;
+							}
 						}
 						break;
 					}
@@ -579,11 +621,25 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 					{
 						if (direction == TradeDirection.buy)
 						{
-							return Color.GREEN_10;
+							if (messageData.userUID == Auth.uid)
+							{
+								return Color.GREEN_10;
+							}
+							else
+							{
+								return Color.RED_10;
+							}
 						}
 						else if (direction == TradeDirection.sell)
 						{
-							return Color.RED_10;
+							if (messageData.userUID == Auth.uid)
+							{
+								return Color.RED_10;
+							}
+							else
+							{
+								return Color.GREEN_10;
+							}
 						}
 						break;
 					}
