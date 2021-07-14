@@ -17,6 +17,8 @@ package com.dukascopy.connect.data.escrow
 	import com.dukascopy.connect.sys.applicationError.ApplicationErrors;
 	import com.dukascopy.connect.sys.auth.Auth;
 	import com.dukascopy.connect.sys.chatManager.ChatManager;
+	import com.dukascopy.connect.sys.php.PHP;
+	import com.dukascopy.connect.sys.php.PHPRespond;
 	import com.dukascopy.connect.sys.serviceScreenManager.ServiceScreenManager;
 	import com.dukascopy.connect.sys.style.presets.Color;
 	import com.dukascopy.connect.sys.ws.WSClient;
@@ -280,7 +282,8 @@ package com.dukascopy.connect.data.escrow
 				{
 					for (var i:int = 0; i < instruments.length; i++) 
 					{
-						if (instruments[i].code == lastRequestData.escrow.instrument)
+						//!TODO:?
+						if (instruments[i].code == lastRequestData.escrow.instrument && instruments[i].isLinked)
 						{
 							selectedInstrument = instruments[i];
 							break;
@@ -338,13 +341,18 @@ package com.dukascopy.connect.data.escrow
 			{
 				if (escrow != null)
 				{
-					
+					PHP.escrow_addEvent(onEvent, {event_type:"paid_crypto", data:escrow.transactionId, deal_uid:escrow.deal_uid});
 				}
 				else
 				{
 					ApplicationErrors.add();
 				}
 			}
+		}
+		
+		static private function onEvent(respond:PHPRespond):void 
+		{
+			trace("123");
 		}
 		
 		static private function onOfferCommand(escrow:EscrowMessageData, message:ChatMessageVO, chatVO:ChatVO, command:OfferCommand = null):void 
