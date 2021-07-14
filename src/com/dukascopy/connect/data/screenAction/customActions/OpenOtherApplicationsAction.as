@@ -6,7 +6,7 @@ package com.dukascopy.connect.data.screenAction.customActions
 	import com.dukascopy.connect.data.screenAction.ScreenAction;
 	import com.dukascopy.connect.gui.components.message.ToastMessage;
 	import com.dukascopy.connect.gui.list.renderers.ListSimpleText;
-	import com.dukascopy.connect.screens.dialogs.bottom.ListSelectionPopup;
+	import com.dukascopy.connect.screens.dialogs.x.base.bottom.ListSelectionPopup;
 	import com.dukascopy.connect.sys.applicationError.ApplicationErrors;
 	import com.dukascopy.connect.sys.configManager.ConfigManager;
 	import com.dukascopy.connect.sys.dialogManager.DialogManager;

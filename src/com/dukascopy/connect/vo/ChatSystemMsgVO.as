@@ -4,6 +4,7 @@ package com.dukascopy.connect.vo {
 	import com.dukascopy.connect.Config;
 	import com.dukascopy.connect.data.GiftData;
 	import com.dukascopy.connect.data.RateBotData;
+	import com.dukascopy.connect.data.escrow.EscrowMessageData;
 	import com.dukascopy.connect.data.location.Location;
 	import com.dukascopy.connect.gui.puzzle.Puzzle;
 	import com.dukascopy.connect.sys.auth.Auth;
@@ -110,6 +111,8 @@ package com.dukascopy.connect.vo {
 		static public const REPLAY_START_BOUND_FIXED:String = "<quote ";
 		static public const TYPE_REPLY:String = "typeReply";
 		static public const TYPE_LINK_PREVIEW:String = "typeLinkPreview";
+		static public const TYPE_ESCROW_OFFER:String = "typeEscrowOffer";
+		static public const TYPE_ESCROW_DEAL:String = "typeEscrowDeal";
 		
 		private var _type:String;
 		private var _method:String;
@@ -408,7 +411,15 @@ package com.dukascopy.connect.vo {
 							_geolocation = new Location(tmp[0], tmp[1]);
 						}
 					}
+				} else if (_type == TYPE_ESCROW_OFFER) {
+					_additionalData = new EscrowMessageData(data);
+					_title = Lang.escrow_offer_message;
+				} else if (_type == TYPE_ESCROW_DEAL) {
+					_type = TYPE_ESCROW_OFFER;
+					_additionalData = new EscrowMessageData(data);
+					_title = Lang.escrow_deal_message;
 				}
+				
 				
 				if (_method != null && _method == METHOD_CONTACT) {
 					//!TODO: replace title from locale
@@ -485,6 +496,7 @@ package com.dukascopy.connect.vo {
 		public function get newsVO():NewsMessageVO { return _additionalData as NewsMessageVO; }
 		public function get fileVO():FileMessageVO { return _additionalData as FileMessageVO; }
 		public function get callVO():CallMessageVO { return _additionalData as CallMessageVO; }
+		public function get escrow():EscrowMessageData { return _additionalData as EscrowMessageData; }
 		
 		public function set originalImageHeight(value:int):void{
 			_originalImageHeight = value;

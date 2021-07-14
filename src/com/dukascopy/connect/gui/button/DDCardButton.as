@@ -108,7 +108,7 @@ package com.dukascopy.connect.gui.button {
 			var xOffset:int = w;
 			arrowHeight = h * 0.15;
 			arrowCathetus = h * 0.12;
-			box.graphics.beginFill(Style.color(Style.COLOR_TEXT));
+			box.graphics.beginFill(Style.color(Style.COLOR_SUBTITLE));
 			box.graphics.moveTo(xOffset,int((h - arrowHeight) * .5));
 			box.graphics.lineTo(xOffset - arrowCathetus, int((h + arrowHeight) * .5));
 			box.graphics.lineTo(xOffset - arrowCathetus * 2, int((h - arrowHeight) * .5));

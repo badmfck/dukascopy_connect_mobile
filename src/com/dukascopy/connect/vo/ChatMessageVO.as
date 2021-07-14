@@ -174,6 +174,8 @@ package com.dukascopy.connect.vo {
 		private function removeCustomMessageBound(message:String):String {
 			if (message.indexOf(Config.BOUNDS_INVOICE) != -1)
 				return message.substr(Config.BOUNDS_INVOICE.length);
+			if (message.indexOf(Config.BOUNDS_ESCROW) != -1)
+				return message.substr(Config.BOUNDS_ESCROW.length);
 			return message;
 		}
 		

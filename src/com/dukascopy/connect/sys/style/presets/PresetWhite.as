@@ -6,6 +6,7 @@ package com.dukascopy.connect.sys.style.presets
 	import assets.AttachImageIcon;
 	import assets.AttachInvoiceIcon;
 	import assets.AttachPayIcon;
+	import assets.CreateDealIcon;
 	import assets.FilterSmallIcon;
 	import assets.FingerprintInfo;
 	import assets.JailIcon;
@@ -286,7 +287,7 @@ package com.dukascopy.connect.sys.style.presets
 			this[Style.ICON_FACE_ID] = FaceIdIcon;
 			this[Style.CONTROL_TEXT_SIZE] = Config.FINGER_SIZE * .3;
 			this[Style.CONTROL_TEXT_SMALL_SIZE] = Config.FINGER_SIZE * .25;
-			this[Style.SIZE_BUTTON_CORNER] = Config.FINGER_SIZE * .22;
+			this[Style.SIZE_BUTTON_CORNER] = Config.FINGER_SIZE * .3;
 			this[Style.SIZE_BUTTON_HEIGHT] = Config.FINGER_SIZE * .8;
 			this[Style.COLOR_TEXT_DISABLE] = Color.GREY_LIGHT;
 			this[Style.CONTROL_INACTIVE] = Color.GREY_LIGHT;
@@ -309,6 +310,14 @@ package com.dukascopy.connect.sys.style.presets
 			this[Style.ROADMAP_ILLUSTRATION] = RoadmapImage;
 			this[Style.PAYMENT_VISA] = VisaClip;
 			this[Style.TRANSFER_ILLUSTRATION] = TransferIllustration;
+			this[Style.ICON_ATTACH_DEAL] = CreateDealIcon;
+			this[Style.COLOR_BUTTON_OUTLINE] = Color.GREY_LIGHT;
+			this[Style.FLOAT_POOPUP_RADIUS] = int(Config.FINGER_SIZE * .6);
+			this[Style.BUTTON_PADDING] = int(Config.FINGER_SIZE * .23);
+			this[Style.COLOR_BUTTON_ACCENT] = Color.GREY_DARK;
+			this[Style.COLOR_SEEK_BACK] = Color.GREY_SSL;
+			this[Style.COLOR_TEXT_RED_DARK] = Color.RED_DARK;
+			this[Style.COLOR_RED_LIGHT] = Color.RED_LIGHT;
 		}
 	}
 }

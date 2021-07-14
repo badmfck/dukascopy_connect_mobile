@@ -514,6 +514,10 @@ package com.dukascopy.connect.screens {
 			if (LightBox.isShowing || ImagePreviewCrop.isShowing) {
 				return;
 			}
+			if (MobileGui.serviceScreen.isActive || MobileGui.dialogScreen.isActive)
+			{
+				return;
+			}
 			var tapIndex:int = currentTabIndex;
 			if (direction == Swiper.DIRECTION_RIGHT) {
 				if (tapIndex == 0)

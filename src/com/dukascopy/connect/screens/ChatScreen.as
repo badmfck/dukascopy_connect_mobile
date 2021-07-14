@@ -19,6 +19,7 @@ package com.dukascopy.connect.screens {
 	import com.dukascopy.connect.data.ScanPassportResult;
 	import com.dukascopy.connect.data.SoundStatusData;
 	import com.dukascopy.connect.data.UserBanData;
+	import com.dukascopy.connect.data.escrow.EscrowScreenNavigation;
 	import com.dukascopy.connect.data.location.Location;
 	import com.dukascopy.connect.data.screenAction.IScreenAction;
 	import com.dukascopy.connect.data.screenAction.customActions.AddInvoiceAction;
@@ -1672,6 +1673,11 @@ package com.dukascopy.connect.screens {
 			var editable:Boolean = (msgVO.created * 1000 > new Date().getTime() - 1800000);
 			var menuItems:Array = new Array();
 			
+			if (messageType == ChatSystemMsgVO.TYPE_ESCROW_OFFER)
+			{
+				return;
+			}
+			
 			//pending massages
 			if (msgVO.id < 0) {
 				if (messageType == ChatMessageType.TEXT && isMine) {
@@ -2233,6 +2239,9 @@ package com.dukascopy.connect.screens {
 					NativeExtensionController.showVideo(cmsgVO.systemMessageVO.videoVO, getTitleValue());
 				} else if (cmsgVO.systemMessageVO != null && cmsgVO.systemMessageVO.fileType == ChatSystemMsgVO.FILETYPE_GENERAL) {
 					downloadFile(cmsgVO.systemMessageVO);
+				} else if (cmsgVO.systemMessageVO != null && cmsgVO.systemMessageVO.type == ChatSystemMsgVO.TYPE_ESCROW_OFFER) {
+					
+					EscrowScreenNavigation.showScreen(cmsgVO.systemMessageVO.escrow, cmsgVO, UsersManager.getInterlocutor(ChatManager.getCurrentChat()).userVO, ChatManager.getCurrentChat());
 				}
 				else if (cmsgVO.systemMessageVO != null && cmsgVO.systemMessageVO.fileType == ChatSystemMsgVO.FILETYPE_PUZZLE_CRYPTED && cmsgVO.systemMessageVO.puzzleVO != null) {
 					var url:String = cmsgVO.imageURLWithKey;

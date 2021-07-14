@@ -1219,6 +1219,11 @@ package com.dukascopy.connect.sys.php {
 
 			call('files.addImage', callBack, data, Config.URL_PHP_CORE_SERVER_FILE);
 		}
+		
+		static public function escrow_addEvent(callBack:Function = null, data:Object = null):void 
+		{
+			call('escrow.addEvent', callBack, data);
+		}
 
 		static private function call(method:String, callBack:Function = null, data:Object = null,  url:String = null, rawRespond:Boolean = false, requestMethod:String = 'POST', crypt:Boolean = true, noAuthKey:Boolean = false, additionalData:Object = null):void {
 			if (Auth.key == "web" && methodsWithoutKey.indexOf(method) == -1 && rawRespond == false) {

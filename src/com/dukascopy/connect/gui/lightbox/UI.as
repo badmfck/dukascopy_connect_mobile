@@ -2148,6 +2148,7 @@ package com.dukascopy.connect.gui.lightbox {
 		static private var invCAR:Sprite;
 		static private var invADS:Sprite;
 		static private var invBPG:SWFInvestmentBPG;
+		static private var invUSDT:Sprite;
 		
 		public static function getInvestIconByInstrument(type:String):Sprite {
 			var icon:Sprite;
@@ -2237,6 +2238,7 @@ package com.dukascopy.connect.gui.lightbox {
 					icon = invJPN;
 					break;
 				case "DCO":
+				case "DUK+":
 					invDCO ||= new SWFInvestmentDCO();
 					icon = invDCO;
 					break;
@@ -2315,6 +2317,10 @@ package com.dukascopy.connect.gui.lightbox {
 				case TypeCurrency.BLOCKCHAIN:
 					invBLOCKCHAIN ||= new Filter_affiliate(); // CHANGE TO BLOCKCHAIN ICON
 					icon = invBLOCKCHAIN;
+					break;
+				case TypeCurrency.USDT:
+					invUSDT ||= new SWFInvestmentUSDT();
+					icon = invUSDT;
 					break;
 				default:
 					invNONE ||= new SWFFlagNONE();
@@ -2776,6 +2782,40 @@ package com.dukascopy.connect.gui.lightbox {
 		static public function getLineThickness():int 
 		{
 			return Math.max(1, int(Config.FINGER_SIZE * .036));
+		}
+		
+		static public function getCryptoIconClass(instrument:String):Class 
+		{
+			switch (instrument) {
+				case "LTC":
+				{
+					return SWFInvestmentLTC;
+					break;
+				}
+					
+				case "BTC":
+				{
+					return SWFInvestmentBTC;
+					break;
+				}
+				case "ETH":
+				{
+					return SWFInvestmentETH;
+					break;	
+				}
+				case "DCO":
+				case "DUK+":
+				{
+					return SWFInvestmentDCO;
+					break;
+				}
+				case "USDT":
+				{
+					return SWFInvestmentUSDT;
+					break;
+				}
+			}
+			return null;
 		}
 	}
 }

@@ -28,6 +28,10 @@ package com.dukascopy.connect.screens.payments.card {
 		public static const HUF:String = "HUF";
 		static public const DCO:String = "DCO";
 		static public const BLOCKCHAIN:String = "BLOCKCHAIN";
+		
+		static public const ETH:String = "ETH";
+		static public const BTC:String = "BTC";
+		static public const USDT:String = "USDT";
 
 		public function TypeCurrency() { }
 	}

@@ -37,6 +37,9 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs.elements
 		private var selected:Boolean;
 		private var _align:String;
 		private var defaultValue:Number;
+		private var titleValue:String;
+		private var typeValue:String;
+		private var underlineString:String;
 
 		public function get align():String
 		{
@@ -240,6 +243,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs.elements
 		
 		public function drawUnderlineValue(value:String):void 
 		{
+			underlineString = value;
 			if (underlineValue.bitmapData)
 			{
 				underlineValue.bitmapData.dispose();
@@ -278,6 +282,10 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs.elements
 		
 		public function drawString(itemWidth:int, titleValue:String, defaultValue:String, underlineString:String = null, typeValue:String = null):void 
 		{
+			this.titleValue = titleValue;
+			this.typeValue = typeValue;
+			this.underlineString = underlineString;
+			
 			this.itemWidth = itemWidth;
 			
 			drawTitle(titleValue);
@@ -290,36 +298,12 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs.elements
 			updatePositions();
 		}
 		
-		public function updatePositions():void 
-		{
-			var tf:TextField = input.getTextField();
-			var line:TextLineMetrics = tf.getLineMetrics(0);
-			
-			var titleHeight:int = FontSize.SUBHEAD;
-			
-			input.view.y = int(title.y + titleHeight - Config.FINGER_SIZE * .1);
-			input.width = itemWidth - valueField.width;
-			
-			valueContainer.x = int(input.view.x + itemWidth - valueField.width);
-			valueContainer.y = int(input.view.y + tf.y + line.ascent - valueField.height + 2);
-			underline.width = itemWidth;
-			underline.y = int(input.view.y + input.height - Config.FINGER_SIZE * .1) - underline.height;
-			
-			if (align == ALIGN_LEFT)
-			{
-				underlineValue.x = 0;
-			}
-			else
-			{
-				underlineValue.x = int(itemWidth - underlineValue.width);
-			}
-			underlineValue.y = int(underline.y + Config.FINGER_SIZE * .16);
-
-			trace("FIELD", int(input.view.y + input.height - Config.FINGER_SIZE * .1));
-		}
-		
 		public function draw(itemWidth:int, titleValue:String, defaultValue:Number = NaN, underlineString:String = null, typeValue:String = null, backColor:Number = NaN):void 
 		{
+			this.titleValue = titleValue;
+			this.typeValue = typeValue;
+			this.underlineString = underlineString;
+			
 			this.defaultValue = defaultValue;
 			if (isNaN(backColor))
 			{
@@ -348,6 +332,32 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs.elements
 			}
 			
 			updatePositions();
+		}
+		
+		public function updatePositions():void 
+		{
+			var tf:TextField = input.getTextField();
+			var line:TextLineMetrics = tf.getLineMetrics(0);
+			
+			var titleHeight:int = FontSize.SUBHEAD;
+			
+			input.view.y = int(title.y + titleHeight - Config.FINGER_SIZE * .1);
+			input.width = itemWidth - valueField.width;
+			
+			valueContainer.x = int(input.view.x + itemWidth - valueField.width);
+			valueContainer.y = int(input.view.y + tf.y + line.ascent - valueField.height + 2);
+			underline.width = itemWidth;
+			underline.y = int(input.view.y + input.height - Config.FINGER_SIZE * .1) - underline.height;
+			
+			if (align == ALIGN_LEFT)
+			{
+				underlineValue.x = 0;
+			}
+			else
+			{
+				underlineValue.x = int(itemWidth - underlineValue.width);
+			}
+			underlineValue.y = int(underline.y + Config.FINGER_SIZE * .16);
 		}
 		
 		public function activate():void
@@ -544,12 +554,22 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs.elements
 			return underline.y + Config.FINGER_SIZE * .3;
 		}
 		
+		public function linePosition():int 
+		{
+			return underline.y;
+		}
+		
+		public function getUnderlineValue():String 
+		{
+			return underlineString;
+		}
+		
 		private function onSelected():void 
 		{
 			selected = true;
 			if (input != null)
 			{
-				if (!isNaN(defaultValue) && !isNaN(Number(input.value)) && Number(input.value) == defaultValue)
+				if (!isNaN(defaultValue) && !isNaN(Number(input.value)) && Number(input.value) == defaultValue && defaultValue == 0)
 				{
 					input.value = "";
 				}

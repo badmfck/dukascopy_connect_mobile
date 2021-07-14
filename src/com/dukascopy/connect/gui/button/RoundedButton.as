@@ -25,9 +25,6 @@ package com.dukascopy.connect.gui.button {
 		private var box:Sprite;
 		private var tf:TextField;
 		
-		static private var arrowHeight:int;
-		static private var arrowCathetus:int;
-		
 		private var w:int = 0;
 		private var h:int = 0;
 		private var icon:Sprite;

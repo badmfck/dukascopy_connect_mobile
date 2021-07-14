@@ -17,8 +17,8 @@ package com.dukascopy.connect.screens.payments {
 	import com.dukascopy.connect.gui.tabs.FilterTabs;
 	import com.dukascopy.connect.gui.topBar.TopBarScreen;
 	import com.dukascopy.connect.screens.base.BaseScreen;
-	import com.dukascopy.connect.screens.dialogs.bottom.ListSelectionPopup;
-	import com.dukascopy.connect.screens.dialogs.bottom.implementation.BottomAlertPopup;
+	import com.dukascopy.connect.screens.dialogs.x.base.bottom.BottomAlertPopup;
+	import com.dukascopy.connect.screens.dialogs.x.base.bottom.ListSelectionPopup;
 	import com.dukascopy.connect.sys.dialogManager.DialogManager;
 	import com.dukascopy.connect.sys.imageManager.ImageBitmapData;
 	import com.dukascopy.connect.sys.payments.PayManager;

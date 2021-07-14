@@ -3,6 +3,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs.elements
 	import com.dukascopy.connect.Config;
 	import com.dukascopy.connect.gui.lightbox.UI;
 	import com.dukascopy.connect.sys.pointerManager.PointerManager;
+	import com.dukascopy.connect.sys.style.Style;
 	import com.dukascopy.connect.sys.theme.AppTheme;
 	import flash.display.Sprite;
 	import flash.events.Event;
@@ -83,7 +84,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs.elements
 			valueContainer.addChild(arrow);
 			var arrowHeight:Number = Config.FINGER_SIZE*.85 * 0.15;
 				var arrowCathetus:Number = Config.FINGER_SIZE*.85 * 0.12;
-				arrow.graphics.beginFill(AppTheme.GREY_MEDIUM);
+				arrow.graphics.beginFill(Style.color(Style.COLOR_SUBTITLE));
 				arrow.graphics.moveTo(0, 0);
 				arrow.graphics.lineTo(0 + arrowCathetus, arrowHeight);
 				arrow.graphics.lineTo(0 + arrowCathetus * 2, 0);

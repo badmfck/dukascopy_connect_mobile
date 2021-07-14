@@ -1,22 +1,35 @@
 package com.dukascopy.connect.data.screenAction.customActions {
 	
+	import assets.StarIcon3;
+	import com.dukascopy.connect.Config;
+	import com.dukascopy.connect.data.AlertScreenData;
+	import com.dukascopy.connect.data.escrow.EscrowDealData;
+	import com.dukascopy.connect.data.escrow.EscrowMessageData;
+	import com.dukascopy.connect.data.escrow.EscrowSettings;
+	import com.dukascopy.connect.data.escrow.EscrowStatus;
+	import com.dukascopy.connect.data.escrow.TradeDirection;
 	import com.dukascopy.connect.data.screenAction.IScreenAction;
 	import com.dukascopy.connect.data.screenAction.ScreenAction;
-	import com.dukascopy.connect.screens.dialogs.ScreenAddInvoiceDialog;
+	import com.dukascopy.connect.screens.dialogs.escrow.CreateEscrowScreen;
+	import com.dukascopy.connect.screens.dialogs.x.base.float.FloatAlert;
+	import com.dukascopy.connect.screens.dialogs.escrow.RegisterEscrowScreen;
+	import com.dukascopy.connect.screens.dialogs.escrow.StartEscrowScreen;
+	import com.dukascopy.connect.screens.payments.card.TypeCurrency;
+	import com.dukascopy.connect.sys.applicationError.ApplicationErrors;
 	import com.dukascopy.connect.sys.auth.Auth;
 	import com.dukascopy.connect.sys.chatManager.ChatManager;
 	import com.dukascopy.connect.sys.dialogManager.DialogManager;
+	import com.dukascopy.connect.sys.payments.PayManager;
 	import com.dukascopy.connect.sys.serviceScreenManager.ServiceScreenManager;
 	import com.dukascopy.connect.sys.style.Style;
 	import com.dukascopy.connect.sys.usersManager.UsersManager;
-	import com.dukascopy.connect.type.InvoiceStatus;
-	import com.dukascopy.connect.utils.TextUtils;
+	import com.dukascopy.connect.sys.ws.WSClient;
+	import com.dukascopy.connect.type.BankPhaze;
+	import com.dukascopy.connect.vo.ChatMessageVO;
+	import com.dukascopy.connect.vo.ChatSystemMsgVO;
 	import com.dukascopy.connect.vo.ChatVO;
-	import com.dukascopy.connect.vo.QuestionVO;
-	import com.dukascopy.connect.vo.chat.ChatMessageInvoiceData;
 	import com.dukascopy.connect.vo.users.adds.ChatUserVO;
 	import com.dukascopy.langs.Lang;
-	import com.greensock.TweenMax;
 
 	/**
 	 * ...
@@ -25,159 +38,160 @@ package com.dukascopy.connect.data.screenAction.customActions {
 	
 	public class CreateCoinTradeAction extends ScreenAction implements IScreenAction {
 		
-		private var currentData:Object;
-		
-		public var amount:Number;
-		public var currency:String;
-		public var comment:String;
-		public var confirm:String;
-		public var disposeAction:Boolean = true;
-		public var blockInputs:Boolean = false;
+		public var chat:ChatVO;
 		
 		public function CreateCoinTradeAction() {
-			setIconClass(Style.icon(Style.ICON_ATTACH_INVOICE));
+			setIconClass(Style.icon(Style.ICON_ATTACH_DEAL));
 		}
 		
 		public function execute():void {
 			
-			var invoiceData:Object = new Object();
-			invoiceData.amount = amount;
-			invoiceData.currency = currency;
-			invoiceData.message = comment;
-			invoiceData.confirm = confirm;
-			invoiceData.block = blockInputs;
-			invoiceData.callback = callBackAddInvoice;
-
-			var currentChat:ChatVO = ChatManager.getCurrentChat();
-			if (currentChat != null)
+			if (Auth.bank_phase == BankPhaze.ACC_APPROVED)
 			{
-				var chatUser:ChatUserVO = UsersManager.getInterlocutor(currentChat);
-				invoiceData.user = chatUser.userVO;
-			}
-
-			ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, ScreenAddInvoiceDialog, invoiceData, 0.5, 0.5, 3);
-
-			if (disposeAction)
-			{
-				dispose();
-			}
-		}
-		
-		private function callBackAddInvoice(i:int, paramsObj:Object):void {
-			if (i != 1)
-			{
-				if (S_ACTION_FAIL != null)
-				{
-					S_ACTION_FAIL.invoke();
-				}
-				return;
-			}
-			var currentChat:ChatVO = ChatManager.getCurrentChat();
-			if (currentChat == null)
-			{
-				if (S_ACTION_FAIL != null)
-				{
-					S_ACTION_FAIL.invoke();
-				}
-				return;
-			}
-			var chatUser:ChatUserVO = UsersManager.getInterlocutor(currentChat);
-			if (chatUser == null)
-			{
-				if (S_ACTION_FAIL != null)
-				{
-					S_ACTION_FAIL.invoke();
-				}
-				return;
-			}
-			
-			if (confirm != null)
-			{
-				currentData = paramsObj;
-				
-				TweenMax.delayedCall(1, showConfirm, null, true);
+				ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, StartEscrowScreen, {callback:createOffer});
 			}
 			else
 			{
-				send(paramsObj);
+				ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, RegisterEscrowScreen);
 			}
 		}
 		
-		private function showConfirm():void 
+		private function createOffer(selectedDirection:TradeDirection):void 
 		{
-			DialogManager.alert(Lang.pleaseConfirm, confirm, onConfirmCallback, Lang.textOk, Lang.textBack);
-		}
-		
-		private function onConfirmCallback(i:int):void 
-		{
-			if (i != 1)
+			var screenData:Object = new Object();
+			if (selectedDirection == TradeDirection.buy)
 			{
-				if (S_ACTION_FAIL != null)
-				{
-					S_ACTION_FAIL.invoke();
-				}
-				return;
+				screenData.title = Lang.create_buy_offer;
 			}
-			send(currentData);
-		}
-		
-		private function send(paramsObj:Object):void 
-		{
-			var currentChat:ChatVO = ChatManager.getCurrentChat();
-			if (currentChat == null)
+			else if (selectedDirection == TradeDirection.sell)
 			{
-				if (S_ACTION_FAIL != null)
-				{
-					S_ACTION_FAIL.invoke();
-				}
-				return;
+				screenData.title = Lang.create_sell_offer;
 			}
-			var chatUser:ChatUserVO = UsersManager.getInterlocutor(currentChat);
-			if (chatUser == null)
-			{
-				if (S_ACTION_FAIL != null)
-				{
-					S_ACTION_FAIL.invoke();
-				}
-				return;
-			}
+			screenData.selectedDirection = selectedDirection;
+			screenData.callback = createEscrowOffer;
 			
-			var qVO:QuestionVO = currentChat.getQuestion();
-			var fromIncognitoQuestion:Boolean = (qVO != null && qVO.incognito == true && qVO.userUID == Auth.uid);
-			var myPhone:String = "+" + Auth.countryCode + Auth.getMyPhone();
-			var myUserName:String = "";
-			if (fromIncognitoQuestion){
-				myUserName = "Secret";
-			}else{
-				myUserName  = TextUtils.checkForNumber(Auth.username);				
-			}
+			/*screenData.price = "5";
+			screenData.amount = "15";
+			screenData.instrument = TypeCurrency.BTC;
+			screenData.currency = TypeCurrency.USD;*/
 			
-			if (paramsObj != null &&
-				"amount" in paramsObj == true &&
-				"currency" in paramsObj == true) {
-					var data:ChatMessageInvoiceData = ChatMessageInvoiceData.create(Number(paramsObj.amount),
-						paramsObj.currency,
-						paramsObj.message,
-						myUserName,
-						Auth.uid,
-						(chatUser.secretMode == true) ? "Secret" : chatUser.name,
-						chatUser.uid,
-						myPhone,
-						InvoiceStatus.NEW
-					);
-					ChatManager.sendInvoiceByData(data);
-				if (S_ACTION_SUCCESS != null)
+			ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, CreateEscrowScreen, screenData);
+		}
+		
+		private function createEscrowOffer(offer:EscrowDealData):void 
+		{
+			if (chat != null && ChatManager.getCurrentChat() && chat.uid == ChatManager.getCurrentChat().uid)
+			{
+				if (offer != null)
 				{
-					S_ACTION_SUCCESS.invoke();
+					sendDeal(offer);
 				}
-				
+				else
+				{
+					ApplicationErrors.add();
+					onFail();
+				}
 			}
 			else
 			{
-				if (S_ACTION_FAIL != null)
-				{
-					S_ACTION_FAIL.invoke();
-				}
+				ApplicationErrors.add();
+				onFail();
+			}
+			
+			showCreateSuccessPopup(offer);
+		}
+		
+		private function showCreateSuccessPopup(offer:EscrowDealData):void 
+		{
+			var chatUser:ChatUserVO = UsersManager.getInterlocutor(chat);
+			var userName:String = Lang.user;
+			if (chatUser != null)
+			{
+				userName = chatUser.userVO.getDisplayName();
+			}
+			
+			var screenData:AlertScreenData = new AlertScreenData();
+			screenData.icon = StarIcon3;
+			screenData.callback = finishOffer;
+			
+			var decimals:int = 2;
+			if (PayManager.systemOptions != null && PayManager.systemOptions.currencyDecimalRules != null && !isNaN(PayManager.systemOptions.currencyDecimalRules[offer.currency]))
+			{
+				decimals = PayManager.systemOptions.currencyDecimalRules[offer.currency];
+			}
+			
+			var sum:String;
+			var description:String;
+			if (offer.direction == TradeDirection.buy)
+			{
+				sum = (offer.amount * offer.price * EscrowSettings.refundableFee + offer.amount * offer.price).toFixed(decimals) + " " + offer.currency;
+				description = Lang.sent_buy_offer_description;
+				description = description.replace("%@1", sum);
+				description = description.replace("%@2", userName);
+				description = description.replace("%@3", EscrowSettings.offerMaxTime);
+				description = description.replace("%@4", EscrowSettings.offerMaxTime);
+				description = description.replace("%@5", userName);
+				screenData.text = description;
+			}
+			else
+			{
+				sum = (offer.amount * offer.price -offer.amount * offer.price * EscrowSettings.commission).toFixed(decimals) + " " + offer.currency;
+				description = Lang.sent_sell_offer_description;
+				description = description.replace("%@1", userName);
+				description = description.replace("%@2", EscrowSettings.offerMaxTime);
+				description = description.replace("%@3", EscrowSettings.dealMaxTime);
+				description = description.replace("%@4", EscrowSettings.offerMaxTime);
+				description = description.replace("%@5", userName);
+				screenData.text = description;
+			}
+			
+			if (offer.direction == TradeDirection.buy)
+				screenData.title = Lang.you_sent_buy_offer;
+			else
+				screenData.title = Lang.you_sent_sell_offer;
+			
+			screenData.button = Lang.ok_understood;
+			
+			ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, FloatAlert, screenData);
+		}
+		
+		private function finishOffer():void 
+		{
+			trace("123");
+		}
+		
+		private function onFail():void 
+		{
+			if (S_ACTION_FAIL != null)
+			{
+				S_ACTION_FAIL.invoke();
+			}
+		}
+		
+		private function sendDeal(dealData:EscrowDealData):void 
+		{
+			var chatUser:ChatUserVO = UsersManager.getInterlocutor(chat);
+			if (chatUser == null)
+			{
+				onFail();
+				return;
+			}
+			var messageData:EscrowMessageData = new EscrowMessageData();
+			messageData.type = ChatSystemMsgVO.TYPE_ESCROW_OFFER;
+			messageData.price = dealData.price;
+			messageData.amount = dealData.amount;
+			messageData.currency = dealData.currency;
+			messageData.instrument = dealData.instrument;
+			messageData.direction = dealData.direction;
+			messageData.userUID = Auth.uid;
+			messageData.status = EscrowStatus.offer_created; 
+			
+			var text:String = messageData.toJsonString();
+			WSClient.call_sendTextMessage(chat.uid, Config.BOUNDS_ESCROW + ChatManager.cryptTXT(text));
+			
+			if (S_ACTION_SUCCESS != null)
+			{
+				S_ACTION_SUCCESS.invoke();
 			}
 		}
 	}

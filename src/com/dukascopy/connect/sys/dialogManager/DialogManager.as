@@ -22,8 +22,8 @@ package com.dukascopy.connect.sys.dialogManager {
 	import com.dukascopy.connect.screens.dialogs.ScreenVerifyDialog;
 	import com.dukascopy.connect.screens.dialogs.ScreenVideoSettingsDialog;
 	import com.dukascopy.connect.screens.dialogs.SpamChannelsInfoDialog;
-	import com.dukascopy.connect.screens.dialogs.bottom.ActionSheetIOSPopup;
-	import com.dukascopy.connect.screens.dialogs.bottom.ListSelectionPopup;
+	import com.dukascopy.connect.screens.dialogs.x.base.content.ActionSheetIOSPopup;
+	import com.dukascopy.connect.screens.dialogs.x.base.bottom.ListSelectionPopup;
 	import com.dukascopy.connect.screens.dialogs.geolocation.CityGeoposition;
 	import com.dukascopy.connect.screens.dialogs.geolocation.SelectLocationPopup;
 	import com.dukascopy.connect.screens.dialogs.newDialogs.ScreenLanguagesPopup;
