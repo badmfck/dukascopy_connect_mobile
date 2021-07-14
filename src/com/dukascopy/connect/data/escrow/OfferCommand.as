@@ -1,0 +1,33 @@
+package com.dukascopy.connect.data.escrow 
+{
+	/**
+	 * ...
+	 * @author Sergey Dobarin
+	 */
+	public class OfferCommand
+	{
+		private var _type:String;
+		
+		private static const CANCEL:String = "cancel";
+		private static const ACCEPT:String = "accept";
+		private static const REJECT:String = "reject";
+		private static const REGISTER:String = "register";
+		private static const SEND_TRANSACTION_ID:String = "sendTransactionId";
+		
+		public static const cancel:OfferCommand = new OfferCommand(OfferCommand.CANCEL);
+		public static const accept:OfferCommand = new OfferCommand(OfferCommand.ACCEPT);
+		public static const reject:OfferCommand = new OfferCommand(OfferCommand.REJECT);
+		public static const register_blockchain:OfferCommand = new OfferCommand(OfferCommand.REGISTER);
+		public static const send_transaction_id:OfferCommand = new OfferCommand(OfferCommand.SEND_TRANSACTION_ID);
+		
+		public function get type():String 
+		{
+			return _type;
+		}
+		
+		public function OfferCommand(type:String) 
+		{
+			this._type = type;
+		}
+	}
+}
