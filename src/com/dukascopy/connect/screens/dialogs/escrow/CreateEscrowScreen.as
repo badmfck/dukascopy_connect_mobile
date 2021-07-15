@@ -103,7 +103,6 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		override protected function createView():void {
 			super.createView();
 			
-			createNextButton();
 			createInputAmount();
 			createInputPrice();
 			createInstrumentSelector();
@@ -394,10 +393,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 				}
 				else if (state == STATE_START)
 				{
-					if (selectorCurrency != null)
-					{
-						addItem(selectorCurrency);
-					}
+					
 					addItem(selectorInstrument);
 					addItem(selectorAccont);
 					addItem(radio);
@@ -409,10 +405,21 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 					}
 					else
 					{
+						if (selectorCurrency != null)
+						{
+							addItem(selectorCurrency);
+						}
 						addItem(inputPrice);
 					}
+					if (nextButton != null)
+					{
+						container.addChild(nextButton);
+					}
+					else if (sendButton != null)
+					{
+						container.addChild(sendButton);
+					}
 					
-					container.addChild(nextButton);
 					activateStartState();
 				}
 				else if (state == STATE_FINISH)
@@ -435,37 +442,8 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		
 		private function createFinishState():void 
 		{
-			var textSettings:TextFieldSettings;
-			var buttonBitmap:ImageBitmapData;
-			if (sendButton == null)
-			{
-				sendButton = new BitmapButton();
-				sendButton.setStandartButtonParams();
-				sendButton.tapCallback = onSendClick;
-				sendButton.disposeBitmapOnDestroy = true;
-				sendButton.setDownScale(1);
-				sendButton.setOverlay(HitZoneType.BUTTON);
-				
-				textSettings = new TextFieldSettings(Lang.send_offer, Style.color(Style.COLOR_BACKGROUND), FontSize.BODY, TextFormatAlign.CENTER);
-				buttonBitmap = TextUtils.createbutton(textSettings, Color.GREEN, 1, -1, NaN, getButtonWidth(), Style.size(Style.BUTTON_PADDING), Style.size(Style.SIZE_BUTTON_CORNER));
-				sendButton.setBitmapData(buttonBitmap, true);
-			}
-			container.addChild(sendButton);
-			
-			if (backButton == null)
-			{
-				backButton = new BitmapButton();
-				backButton.setStandartButtonParams();
-				backButton.tapCallback = onBackClick;
-				backButton.disposeBitmapOnDestroy = true;
-				backButton.setDownScale(1);
-				backButton.setOverlay(HitZoneType.BUTTON);
-				
-				textSettings = new TextFieldSettings(Lang.textBack.toUpperCase(), Style.color(Style.COLOR_TEXT), FontSize.BODY, TextFormatAlign.CENTER);
-				buttonBitmap = TextUtils.createbutton(textSettings, Style.color(Style.COLOR_BACKGROUND), 1, -1, Style.color(Style.COLOR_BUTTON_OUTLINE), getButtonWidth(), Style.size(Style.BUTTON_PADDING), Style.size(Style.SIZE_BUTTON_CORNER));
-				backButton.setBitmapData(buttonBitmap, true);
-			}
-			container.addChild(backButton);
+			createSendButton();
+			createBackButton();
 			
 			if (blockchainTitle == null)
 			{
@@ -508,12 +486,49 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			blockchainBack.graphics.drawRect(0, 0, _width - contentPadding * 2, blockchainAddress.height + contentPadding * 2);
 			blockchainBack.graphics.endFill();
 			
-			if (terms == null)
+			creeateTerms();
+		}
+		
+		private function createBackButton():void 
+		{
+			var textSettings:TextFieldSettings;
+			var buttonBitmap:ImageBitmapData;
+			
+			if (backButton == null)
 			{
-				terms = new TermsChecker(onTermsChecker);
-				terms.draw(_width, Lang.escrow_terms_accept, Lang.escrow_terms_link);
+				backButton = new BitmapButton();
+				backButton.setStandartButtonParams();
+				backButton.tapCallback = onBackClick;
+				backButton.disposeBitmapOnDestroy = true;
+				backButton.setDownScale(1);
+				backButton.setOverlay(HitZoneType.BUTTON);
+				
+				textSettings = new TextFieldSettings(Lang.textBack.toUpperCase(), Style.color(Style.COLOR_TEXT), FontSize.BODY, TextFormatAlign.CENTER);
+				buttonBitmap = TextUtils.createbutton(textSettings, Style.color(Style.COLOR_BACKGROUND), 1, -1, Style.color(Style.COLOR_BUTTON_OUTLINE), getButtonWidth(), Style.size(Style.BUTTON_PADDING), Style.size(Style.SIZE_BUTTON_CORNER));
+				backButton.setBitmapData(buttonBitmap, true);
 			}
-			addItem(terms);
+			container.addChild(backButton);
+		}
+		
+		private function createSendButton():void 
+		{
+			var textSettings:TextFieldSettings;
+			var buttonBitmap:ImageBitmapData;
+			
+			if (sendButton == null)
+			{
+				sendButton = new BitmapButton();
+				sendButton.setStandartButtonParams();
+				sendButton.tapCallback = onSendClick;
+				sendButton.disposeBitmapOnDestroy = true;
+				sendButton.setDownScale(1);
+				sendButton.setOverlay(HitZoneType.BUTTON);
+				
+				textSettings = new TextFieldSettings(Lang.send_offer, Style.color(Style.COLOR_BACKGROUND), FontSize.BODY, TextFormatAlign.CENTER);
+				buttonBitmap = TextUtils.createbutton(textSettings, Color.GREEN, 1, -1, NaN, getButtonWidth(), Style.size(Style.BUTTON_PADDING), Style.size(Style.SIZE_BUTTON_CORNER));
+				sendButton.setBitmapData(buttonBitmap, true);
+			}
+			container.addChild(sendButton);
 		}
 		
 		private function onTermsChecker():void 
@@ -617,6 +632,30 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		
 		private function onSendClick():void 
 		{
+			if (state == STATE_START)
+			{
+				var dataValid:Boolean = true;
+				
+				if (isNaN(selectedPrice) || selectedPrice == 0)
+				{
+					if (controlPriceSelected == inputPrice)
+					{
+						inputPrice.invalid();
+					}
+					dataValid = false;
+				}
+				if (isNaN(inputAmount.value) || inputAmount.value == 0)
+				{
+					inputAmount.invalid();
+					dataValid = false;
+				}
+				
+				if (!dataValid)
+				{
+					return;
+				}
+			}
+			
 			if (terms != null)
 			{
 				if (terms.isSelected())
@@ -704,9 +743,20 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			{
 				selectorCurrency.activate();
 			}
+			if (terms != null)
+			{
+				terms.activate();
+			}
+			if (nextButton != null)
+			{
+				nextButton.activate();
+			}
+			if (sendButton != null)
+			{
+				sendButton.activate();
+			}
 			
 			radio.activate();
-			nextButton.activate();
 			inputAmount.activate();
 			inputPrice.activate();
 			priceSelector.activate();
@@ -784,13 +834,13 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		{
 			if (state == STATE_START)
 			{
-				if (container.contains(nextButton))
+				if (nextButton != null && container.contains(nextButton))
 				{
 					container.removeChild(nextButton);
 				}
-				else
+				if (sendButton != null && container.contains(sendButton))
 				{
-					ApplicationErrors.add();
+					container.removeChild(sendButton);
 				}
 				
 				removeItem(radio);
@@ -853,9 +903,20 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			{
 				selectorCurrency.deactivate();
 			}
+			if (terms != null)
+			{
+				terms.deactivate();
+			}
+			if (nextButton != null)
+			{
+				nextButton.deactivate();
+			}
+			if (sendButton != null)
+			{
+				sendButton.deactivate();
+			}
 			
 			radio.deactivate();
-			nextButton.deactivate();
 			inputAmount.deactivate();
 			inputPrice.deactivate();
 			priceSelector.deactivate();
@@ -992,11 +1053,14 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			
 			if (selectedDirection == TradeDirection.buy)
 			{
+				createNextButton();
 				createAccountSelector();
 			}
 			else if (selectedDirection == TradeDirection.sell)
 			{
+				createSendButton();
 				createCurrencySelector();
+				creeateTerms();
 			}
 			
 			priceSelector.direction = selectedDirection;
@@ -1009,6 +1073,16 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			updateScroll();
 			
 			loadInstruments();
+		}
+		
+		private function creeateTerms():void 
+		{
+			if (terms == null)
+			{
+				terms = new TermsChecker(onTermsChecker);
+				terms.draw(_width, Lang.escrow_terms_accept, Lang.escrow_terms_link);
+			}
+			addItem(terms);
 		}
 		
 		private function lockInputs():void 
@@ -1072,7 +1146,14 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			var result:int = 0;
 			if (state == STATE_START)
 			{
-				result = nextButton.height + contentPadding * 2;
+				if (nextButton != null)
+				{
+					result = nextButton.height + contentPadding * 2;
+				}
+				else if (sendButton != null)
+				{
+					result = sendButton.height + contentPadding * 2;
+				}
 			}
 			else if (state == STATE_REGISTER)
 			{
@@ -1139,16 +1220,33 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 					position += priceSelector.height + contentPaddingV * 1.5;
 				}
 				
+				if (terms != null)
+				{
+					terms.x = contentPadding;
+					terms.y = position;
+					position += terms.height + contentPaddingV * 1.5;
+				}
+				
 				balance.x = int(_width * .5 - balance.width * .5);
 				balance.y = position;
 				
-				if (getHeight() - nextButton.height - contentPadding - balance.height - scrollPanel.view.y - contentPaddingV > position)
+				var bottomButton:BitmapButton;
+				if (nextButton != null)
 				{
-					balance.y = getHeight() - nextButton.height - contentPadding - balance.height - scrollPanel.view.y - contentPaddingV;
+					bottomButton = nextButton;
+				}
+				else if (sendButton != null)
+				{
+					bottomButton = sendButton;
 				}
 				
-				nextButton.x = contentPadding;
-				nextButton.y = int(getHeight() - nextButton.height - contentPadding);
+				if (getHeight() - bottomButton.height - contentPadding - balance.height - scrollPanel.view.y - contentPaddingV > position)
+				{
+					balance.y = getHeight() - bottomButton.height - contentPadding - balance.height - scrollPanel.view.y - contentPaddingV;
+				}
+				
+				bottomButton.x = contentPadding;
+				bottomButton.y = int(getHeight() - bottomButton.height - contentPadding);
 			}
 			else if (state == STATE_REGISTER)
 			{
@@ -1207,9 +1305,15 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			
 			selectorInstrument.setSize(_width - contentPadding * 2, Config.FINGER_SIZE * 1.0);
 			
-			var textSettings:TextFieldSettings = new TextFieldSettings(Lang.textNext.toUpperCase(), Style.color(Style.COLOR_TEXT), FontSize.BODY, TextFormatAlign.CENTER);
-			var buttonBitmap:ImageBitmapData = TextUtils.createbutton(textSettings, Style.color(Style.COLOR_BACKGROUND), 1, -1, Style.color(Style.COLOR_BUTTON_OUTLINE), getButtonWidth(), Style.size(Style.BUTTON_PADDING), Style.size(Style.SIZE_BUTTON_CORNER));
-			nextButton.setBitmapData(buttonBitmap, true);
+			var textSettings:TextFieldSettings;
+			var buttonBitmap:ImageBitmapData;
+			if (nextButton != null)
+			{
+				textSettings = new TextFieldSettings(Lang.textNext.toUpperCase(), Style.color(Style.COLOR_TEXT), FontSize.BODY, TextFormatAlign.CENTER);
+				buttonBitmap = TextUtils.createbutton(textSettings, Style.color(Style.COLOR_BACKGROUND), 1, -1, Style.color(Style.COLOR_BUTTON_OUTLINE), getButtonWidth(), Style.size(Style.BUTTON_PADDING), Style.size(Style.SIZE_BUTTON_CORNER));
+				nextButton.setBitmapData(buttonBitmap, true);
+			}
+			
 			
 			inputAmount.draw(_width - contentPadding * 2, Lang.textAmount, 0);
 			
