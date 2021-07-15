@@ -207,8 +207,22 @@ package com.dukascopy.connect.sys.nativeExtensionController {
 												}
 										}});
 									}
+									else
+									{
+										if (Config.PLATFORM_ANDROID && MobileGui.androidExtension.fingerprint_pinExist() == false && MobileGui.androidExtension.fingerprint_avaliable() == true)
+										{
+											savePin(loginData.data.password);
+										}
+									}
 								}
 							);
+						}
+						else
+						{
+							if (Config.PLATFORM_ANDROID && MobileGui.androidExtension.fingerprint_pinExist() == false && MobileGui.androidExtension.fingerprint_avaliable() == true)
+							{
+								savePin(loginData.data.password);
+							}
 						}
 					}
 				);
