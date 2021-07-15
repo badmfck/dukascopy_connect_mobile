@@ -2960,10 +2960,17 @@ package com.dukascopy.connect.sys.bankManager {
 		
 		static public function getInvestments(local:Boolean = true):void {
 			init();
+
 			if (local == true) {
+
 				if (investments != null) {
+
 					investments.sort(sortInvestments);
+
 					S_INVESTMENTS.invoke(investments, true);
+
+				} else {
+					S_INVESTMENTS.invoke(null, true);
 				}
 			} else
 				BankBotController.getAnswer("bot:bankbot payments:investments");
