@@ -10,6 +10,7 @@ package com.dukascopy.connect.data.screenAction.customActions {
 	import com.dukascopy.connect.data.escrow.TradeDirection;
 	import com.dukascopy.connect.data.screenAction.IScreenAction;
 	import com.dukascopy.connect.data.screenAction.ScreenAction;
+	import com.dukascopy.connect.gui.chatInput.ChatInputAndroid;
 	import com.dukascopy.connect.screens.dialogs.escrow.CreateEscrowScreen;
 	import com.dukascopy.connect.screens.dialogs.x.base.float.FloatAlert;
 	import com.dukascopy.connect.screens.dialogs.escrow.RegisterEscrowScreen;
@@ -46,6 +47,10 @@ package com.dukascopy.connect.data.screenAction.customActions {
 		
 		public function execute():void {
 			
+			if (Config.PLATFORM_ANDROID == true)
+			{
+				ChatInputAndroid.S_CLOSE_MEDIA_KEYBOARD.invoke();
+			}
 			if (Auth.bank_phase == BankPhaze.ACC_APPROVED)
 			{
 				ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, StartEscrowScreen, {callback:createOffer});

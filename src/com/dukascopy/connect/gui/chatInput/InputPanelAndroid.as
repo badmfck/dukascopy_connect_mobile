@@ -3,6 +3,7 @@ package com.dukascopy.connect.gui.chatInput
 	import com.dukascopy.connect.Config;
 	import com.dukascopy.connect.MobileGui;
 	import com.dukascopy.connect.gui.lightbox.UI;
+	import com.dukascopy.connect.sys.echo.echo;
 	import com.greensock.TweenMax;
 	import flash.desktop.NativeApplication;
 	import flash.display.Bitmap;
@@ -427,11 +428,13 @@ package com.dukascopy.connect.gui.chatInput
 		
 		public function setY(value:int):void
 		{
+			echo("imput! setY y=", value.toString());
 			TweenMax.killDelayedCallsTo(setY);
 			if (value > 0)
 			{
 				if (Config.PLATFORM_ANDROID)
 				{
+					echo("imput! setY2 y=", value.toString());
 					MobileGui.androidExtension.callChatInput(SET_POSITION, {position: value});
 				}
 			}

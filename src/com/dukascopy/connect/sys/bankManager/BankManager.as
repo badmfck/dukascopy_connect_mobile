@@ -2962,13 +2962,9 @@ package com.dukascopy.connect.sys.bankManager {
 			init();
 
 			if (local == true) {
-
 				if (investments != null) {
-
 					investments.sort(sortInvestments);
-
 					S_INVESTMENTS.invoke(investments, true);
-
 				} else {
 					S_INVESTMENTS.invoke(null, true);
 				}

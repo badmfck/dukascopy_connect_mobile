@@ -16,6 +16,7 @@ package com.dukascopy.connect.screens.keyboardScreens.attachScreen {
 	import com.dukascopy.connect.sys.auth.Auth;
 	import com.dukascopy.connect.sys.chatManager.ChatManager;
 	import com.dukascopy.connect.sys.connectionManager.NetworkManager;
+	import com.dukascopy.connect.sys.echo.echo;
 	import com.dukascopy.connect.sys.payments.PayConfig;
 	import com.dukascopy.connect.sys.payments.PayManager;
 	import com.dukascopy.connect.sys.style.Style;
@@ -219,6 +220,9 @@ package com.dukascopy.connect.screens.keyboardScreens.attachScreen {
 		}
 		
 		private function drawButtons():void {
+			
+			echo("imput! drawButtons", "");
+			
 			var horizontalButtonsNum:int = 3;
 			var gridSize:int = (_width - Config.DOUBLE_MARGIN) / horizontalButtonsNum;
 			var btnSize:int = Math.min(gridSize * .7, Config.FINGER_SIZE * 1.4);

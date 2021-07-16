@@ -15,6 +15,7 @@ package com.dukascopy.connect.gui.chatInput {
 	import com.dukascopy.connect.screens.keyboardScreens.attachScreen.AttachVoiceScreen;
 	import com.dukascopy.connect.sys.auth.Auth;
 	import com.dukascopy.connect.sys.chatManager.ChatManager;
+	import com.dukascopy.connect.sys.echo.echo;
 	import com.dukascopy.connect.sys.nativeExtensionController.NativeExtensionController;
 	import com.dukascopy.connect.sys.pointerManager.PointerManager;
 	import com.dukascopy.connect.sys.richTextField.RichTextSmilesCodes;
@@ -121,7 +122,7 @@ package com.dukascopy.connect.gui.chatInput {
 		
 		private function onActivate(e:Event):void 
 		{
-			
+			echo("imput! onActivate !", "");
 			if (mediaScreenActivated == false)
 			{
 				inputPanel.movoToBottom();
@@ -129,6 +130,7 @@ package com.dukascopy.connect.gui.chatInput {
 			
 			if (mediaScreenActivated)
 			{
+				echo("imput! onActivate y=", y.toString());
 				TweenMax.killTweensOf(setY);
 				TweenMax.delayedCall(0.2, setY, [y]);
 			}
@@ -570,6 +572,7 @@ package com.dukascopy.connect.gui.chatInput {
 		}
 		
 		public function setY(openChatY:int):void {
+			echo("imput! setY y=", openChatY.toString());
 			TweenMax.killTweensOf(setY);
 			y = openChatY;
 			inputPanel.setY(openChatY);
@@ -615,7 +618,10 @@ package com.dukascopy.connect.gui.chatInput {
 		public function initButtons(showPayButtons:Boolean = false):void {
 			payButtonActive = showPayButtons;
 			if (mediaScreenManager && (mediaScreenManager.currentScreen != null) && (mediaScreenManager.currentScreen is AttachScreen))
+			{
 				(mediaScreenManager.currentScreen as AttachScreen).initButtons(payButtonActive);
+				onActivate(null);
+			}
 			if (Config.PLATFORM_WINDOWS == true && ChatManager.getCurrentChat() != null && ChatManager.getCurrentChat().pid == Config.EP_VI_DEF)
 			{
 				inputPanel.showAccountButton();
