@@ -92,6 +92,7 @@ package com.dukascopy.connect.screens {
 	import com.dukascopy.connect.sys.auth.Auth;
 	import com.dukascopy.connect.sys.calendar.Calendar;
 	import com.dukascopy.connect.sys.callManager.CallManager;
+	import com.dukascopy.connect.sys.chat.DraftMessage;
 	import com.dukascopy.connect.sys.chatManager.ChatManager;
 	import com.dukascopy.connect.sys.chatManager.ForwardingManager;
 	import com.dukascopy.connect.sys.chatManager.typesManagers.AnswersManager;
@@ -3207,7 +3208,7 @@ package com.dukascopy.connect.screens {
 					invA.execute();
 				}
 		
-			
+			checkDraftMessage();
 				
 			//------visual iploaders
 			
@@ -3246,6 +3247,18 @@ package com.dukascopy.connect.screens {
 				imagesUploaders[imagesUploaders.length - 1].x = Config.MARGIN;
 			}
 			repositionImageUploaders();
+		}
+		
+		private function checkDraftMessage():void 
+		{
+			if (chatInput != null)
+			{
+				var draft:String = DraftMessage.getValue(ChatManager.getCurrentChat().uid, ChatManager.getCurrentChat().chatSecurityKey);
+				if (draft != null && draft != "")
+				{
+					chatInput.setValue(draft);
+				}
+			}
 		}
 		
 		private function updateReportButton():void 

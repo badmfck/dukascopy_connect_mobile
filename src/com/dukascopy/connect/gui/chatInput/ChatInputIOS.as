@@ -13,6 +13,7 @@ package com.dukascopy.connect.gui.chatInput {
 	import com.dukascopy.connect.sys.Gifts;
 	import com.dukascopy.connect.sys.applicationError.ApplicationErrors;
 	import com.dukascopy.connect.sys.auth.Auth;
+	import com.dukascopy.connect.sys.chat.DraftMessage;
 	import com.dukascopy.connect.sys.chatManager.ChatManager;
 	import com.dukascopy.connect.sys.echo.echo;
 	import com.dukascopy.connect.sys.imageManager.ImageBitmapData;
@@ -302,6 +303,9 @@ package com.dukascopy.connect.gui.chatInput {
 		}
 		
 		protected function onTextChanged():void {
+			
+			DraftMessage.setValue(ChatManager.getCurrentChat().uid, ChatManager.getCurrentChat().chatSecurityKey, MobileGui.dce.inputViewText());
+			
 			if (getTimer() - lastBlackHoleTime < 5000)
 				return;
 			onUserWritingTimer();
@@ -399,6 +403,7 @@ package com.dukascopy.connect.gui.chatInput {
 				case "inputViewSend": {
 					data = JSON.parse(e.level);
 					if (data && ("message" in data)) {
+						DraftMessage.clearValue(ChatManager.getCurrentChat().uid);
 						if (onChatSend) {
 							var value:String = StringUtil.trim(data.message);
 							if (value.length > 0)

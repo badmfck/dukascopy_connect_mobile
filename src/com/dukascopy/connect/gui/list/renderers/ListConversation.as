@@ -16,6 +16,7 @@ package com.dukascopy.connect.gui.list.renderers {
 	import com.dukascopy.connect.gui.megaText.MegaText;
 	import com.dukascopy.connect.sys.assets.Assets;
 	import com.dukascopy.connect.sys.auth.Auth;
+	import com.dukascopy.connect.sys.chat.DraftMessage;
 	import com.dukascopy.connect.sys.chatManager.ChatManager;
 	import com.dukascopy.connect.sys.echo.echo;
 	import com.dukascopy.connect.sys.imageManager.ImageBitmapData;
@@ -550,6 +551,14 @@ package com.dukascopy.connect.gui.list.renderers {
 			// TF LAST MESSAGE ///////////////////////////////////////////////////////////////////////
 			tfLastMessage.visible = false;
 			
+			var draft:String = DraftMessage.getValue(cVO.uid, cVO.chatSecurityKey);
+			var isHTML:Boolean = false;
+			if (draft != null && draft != "")
+			{
+				isHTML = true;
+				message = "<FONT COLOR=\"#" + Color.RED.toString(16) + "\">" + Lang.draft + "</FONT>" + draft;
+			}
+			
 			if (message != null && message != "") {
 				
 				/*if (Config.isAdmin() && msgVO != null)
@@ -568,7 +577,7 @@ package com.dukascopy.connect.gui.list.renderers {
 					int(format2.size),
 					"#FFFFFF",
 					1.5,
-					cVO.wasSmile
+					cVO.wasSmile, isHTML
 				);
 				cVO.wasSmile = tfLastMessage.getWasSmile() ? 2 : 1;
 				
@@ -597,7 +606,7 @@ package com.dukascopy.connect.gui.list.renderers {
 						int(format2.size),
 						"#FFFFFF",
 						1.5,
-						cVO.wasSmile
+						cVO.wasSmile, isHTML
 						);
 					}
 					else
@@ -610,7 +619,7 @@ package com.dukascopy.connect.gui.list.renderers {
 						int(format2.size),
 						"#FFFFFF",
 						1.5,
-						cVO.wasSmile
+						cVO.wasSmile, isHTML
 						);
 					}
 				}

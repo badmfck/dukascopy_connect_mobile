@@ -33,6 +33,7 @@ package com.dukascopy.connect {
 	import com.dukascopy.connect.sys.calendar.Calendar;
 	import com.dukascopy.connect.sys.callManager.CallManager;
 	import com.dukascopy.connect.sys.callManager.CallsHistoryManager;
+	import com.dukascopy.connect.sys.chat.DraftMessage;
 	import com.dukascopy.connect.sys.chatManager.ChatManager;
 	import com.dukascopy.connect.sys.chatManager.ChatUsersManager;
 	import com.dukascopy.connect.sys.chatManager.typesManagers.ChannelsManager;
@@ -223,6 +224,7 @@ package com.dukascopy.connect {
 			UserExtensionsManager.init();
 			Calendar.init();
 			SoftKeyboard.startDetectHeight();
+			DraftMessage.init();
 			
 			new EscrowDealManager();
 			BankCacheManager.init();
