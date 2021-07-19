@@ -1,6 +1,8 @@
 package com.dukascopy.connect.sys.contextActions {
 	
 	import assets.BlockUserIcon;
+	import assets.ContectDeleteIcon;
+	import assets.ContextCallIcon;
 	import assets.DeleteIcon;
 	import assets.KickIcon;
 	import assets.ModeratorIcon;
@@ -18,6 +20,7 @@ package com.dukascopy.connect.sys.contextActions {
 	import com.dukascopy.connect.sys.chatManager.ChatManager;
 	import com.dukascopy.connect.sys.connectionManager.NetworkManager;
 	import com.dukascopy.connect.sys.questionsManager.QuestionsManager;
+	import com.dukascopy.connect.sys.style.Style;
 	import com.dukascopy.connect.sys.usersManager.UsersManager;
 	import com.dukascopy.connect.type.ChatRoomType;
 	import com.dukascopy.connect.type.HitZoneType;
@@ -46,15 +49,14 @@ package com.dukascopy.connect.sys.contextActions {
 						break;
 					if (itemData is ChatVO) {
 						if ((itemData as ChatVO).type == ChatRoomType.PRIVATE) {
-							if (NetworkManager.isConnected == true)
-							{
-								actions.push(new ContextAction(HitZoneType.DELETE, Lang.textDelete.toUpperCase(), 0x93A2AE, DeleteIcon ));
-							}
-							
 							var user:ChatUserVO = UsersManager.getInterlocutor(itemData as ChatVO);
 							if (user && user.uid != Config.NOTEBOOK_USER_UID && NetworkManager.isConnected)
 							{
-								actions.push(new ContextAction(HitZoneType.CALL, Lang.textCall, 0x93A2AE, IconCallsS ));
+								actions.push(new ContextAction(HitZoneType.CALL, Lang.textCall, Style.color(Style.COLOR_SEPARATOR), ContextCallIcon ));
+							}
+							if (NetworkManager.isConnected == true)
+							{
+								actions.push(new ContextAction(HitZoneType.DELETE, Lang.textDelete.toUpperCase(), Style.color(Style.COLOR_SEPARATOR), ContectDeleteIcon ));
 							}
 						} else if ((itemData as ChatVO).type == ChatRoomType.GROUP && NetworkManager.isConnected == true) {
 							actions.push(new ContextAction(HitZoneType.DELETE, Lang.textDelete.toUpperCase(), 0x93A2AE, DeleteIcon ));

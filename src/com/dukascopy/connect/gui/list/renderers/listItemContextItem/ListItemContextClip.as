@@ -145,23 +145,24 @@ package com.dukascopy.connect.gui.list.renderers.listItemContextItem
 				if (data[i].icon)
 				{
 					icon = new data[i].icon();
-					UI.scaleToFit(icon, int(currentItemHeight / 2.5), int(currentItemHeight / 2.5));
+					var iconSize:int = Math.min(Config.FINGER_SIZE * .5, int(currentItemHeight / 2));
+					UI.scaleToFit(icon, iconSize, iconSize);
 					matrix = new Matrix();
 					var ct:ColorTransform = new ColorTransform();
-					ct.color = 0xFFFFFF;
+					ct.color = Style.color(Style.COLOR_ICON_SETTINGS);
 					matrix.scale(icon.scaleX, icon.scaleY);
-					matrix.translate(i*currentItemHeight + currentItemHeight*.5 - icon.width*.5, currentItemHeight*.5 - icon.height*.5);
+					matrix.translate(i * currentItemHeight + currentItemHeight * .5 - icon.width * .5, currentItemHeight * .5 - icon.height * .5);
 					bd.drawWithQuality(icon, matrix, ct, null, null, false, StageQuality.HIGH);
 					
 					if (i != 0)
 					{
-						bd.fillRect(new Rectangle(i*currentItemHeight, 0, 2, currentItemHeight), data[i].backColor - 0x111111);
+						bd.fillRect(new Rectangle(i * currentItemHeight, 0, int(Math.max(2, Config.FINGER_SIZE*.05)), currentItemHeight), Style.color(Style.COLOR_BACKGROUND));
 					}
 					else
 					{
-						bd.fillRect(new Rectangle(i*currentItemHeight, 0, 4, currentItemHeight), data[i].backColor - 0x111111);
+					//	bd.fillRect(new Rectangle(i * currentItemHeight, 0, 4, currentItemHeight), Style.color(Style.COLOR_BACKGROUND));
 					}
-					bd.fillRect(new Rectangle(i*currentItemHeight, 0, currentItemHeight, 4), data[i].backColor - 0x111111);
+				//	bd.fillRect(new Rectangle(i * currentItemHeight, 0, currentItemHeight, 4), data[i].backColor - 0x111111);
 				}
 				
 				hitzone = new HitZoneData();
