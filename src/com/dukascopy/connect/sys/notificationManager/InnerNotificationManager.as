@@ -328,9 +328,9 @@ package com.dukascopy.connect.sys.notificationManager {
 			var notificationMessage:String = "";
 			
 			if (chatModel && chatModel.type == ChatRoomType.GROUP) {
-				notificationMessage = userName + Lang.sentGroupMessage;
+				notificationMessage = userName + " " + Lang.sentGroupMessage;
 			} else {
-				notificationMessage = userName + Lang.sentYouMessage;
+				notificationMessage = userName + " " + Lang.sentYouMessage;
 			}
 			
 			if (ChatManager.getCurrentChat() == null || ChatManager.getCurrentChat().uid != data["chatUID"] ) {
