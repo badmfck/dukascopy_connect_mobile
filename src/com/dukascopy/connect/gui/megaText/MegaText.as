@@ -62,7 +62,7 @@ package com.dukascopy.connect.gui.megaText {
 								size:int = 12, 
 								smileColor:String = "#FFFFFF", 
 								smileSize:Number = 1.5,
-								wasSmile:int = 0):int {
+								wasSmile:int = 0, html:Boolean = false):int {
 			if (disposed == true) {
 				return 0;
 			}
@@ -81,13 +81,23 @@ package com.dukascopy.connect.gui.megaText {
 				if (UnicodeStatic.isArabic(txt))
 				{
 					UnicodeStatic.fastUnicodeOnLines(textField, txt);
+					textField.setTextFormat(defaultFormat);
 				}
 				else
 				{
-					textField.text = txt;
+					if (html)
+					{
+						textField.defaultTextFormat = defaultFormat;
+						textField.htmlText = txt;
+					}
+					else
+					{
+						textField.text = txt;
+						textField.setTextFormat(defaultFormat);
+					}
 				}
 				
-				textField.setTextFormat(defaultFormat);
+			//	textField.setTextFormat(defaultFormat);
 				return textField.height;
 			}
 			smileSize = Math.round(size * smileSize);
@@ -128,15 +138,25 @@ package com.dukascopy.connect.gui.megaText {
 				if (UnicodeStatic.isArabic(res))
 				{
 					UnicodeStatic.fastUnicodeOnLines(textField, res);
+					textField.setTextFormat(defaultFormat);
 				}
 				else
 				{
-					textField.text = res;
+					if (html)
+					{
+						textField.defaultTextFormat = defaultFormat;
+						textField.htmlText = res;
+					}
+					else
+					{
+						textField.text = res;
+						textField.setTextFormat(defaultFormat);
+					}
 				}
 				
 			//	textField.text = res;
 			//	textField.text = UnicodeStatic.convert(res);
-				textField.setTextFormat(defaultFormat);
+			//	textField.setTextFormat(defaultFormat);
 			}
 			return textField.height;
 		}

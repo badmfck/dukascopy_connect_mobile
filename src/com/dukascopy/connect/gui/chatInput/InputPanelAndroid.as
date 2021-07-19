@@ -30,6 +30,7 @@ package com.dukascopy.connect.gui.chatInput
 		private var onSoftKeyboardActivateFunction:Function;
 		private var onSoftKeyboardDeactivateFunction:Function;
 		private static var inputDefaultBitmap:BitmapData;
+		private var onChangedFunction:Function;
 		
 		static public const SHOW_INPUT:String = "showInput";
 		static public const ATTACH_INPUT:String = "attachInput";
@@ -204,8 +205,21 @@ package com.dukascopy.connect.gui.chatInput
 						redrawScreenshot(true);
 						break;
 					}
+					case "valueChanged": 
+					{
+						onValueChanged();
+						break;
+					}
 					}
 				}
+			}
+		}
+		
+		private function onValueChanged():void 
+		{
+			if (onChangedFunction != null)
+			{
+				onChangedFunction();
 			}
 		}
 		
@@ -319,6 +333,7 @@ package com.dukascopy.connect.gui.chatInput
 			onPositionChangedFunction = null;
 			onSoftKeyboardActivateFunction = null;
 			onSoftKeyboardDeactivateFunction = null;
+			onChangedFunction = null;
 			
 			MobileGui.androidExtension.callChatInput(REMOVE_INPUT);
 			MobileGui.androidExtension.removeEventListener(StatusEvent.STATUS, extensionAndroidStatusHandler);
@@ -410,7 +425,7 @@ package com.dukascopy.connect.gui.chatInput
 		
 		public function onInputChangedCallback(callback:Function):void
 		{
-		
+			onChangedFunction = callback;
 		}
 		
 		public function show(defaultText:String):void

@@ -14,6 +14,7 @@ package com.dukascopy.connect.gui.chatInput {
 	import com.dukascopy.connect.screens.keyboardScreens.attachScreen.AttachScreen;
 	import com.dukascopy.connect.screens.keyboardScreens.attachScreen.AttachVoiceScreen;
 	import com.dukascopy.connect.sys.auth.Auth;
+	import com.dukascopy.connect.sys.chat.DraftMessage;
 	import com.dukascopy.connect.sys.chatManager.ChatManager;
 	import com.dukascopy.connect.sys.echo.echo;
 	import com.dukascopy.connect.sys.nativeExtensionController.NativeExtensionController;
@@ -168,10 +169,13 @@ package com.dukascopy.connect.gui.chatInput {
 				onUserWritingTimer();
 			updateView(true, "onInputChanged");
 			inputPanel.updateView(stickerMenu);
+			echo("input!", "onInputChanged");
+			DraftMessage.setValue(ChatManager.getCurrentChat().uid, ChatManager.getCurrentChat().chatSecurityKey, inputPanel.getText());
 		}
 		
 		private function onSentPressed(value:String):void 
 		{
+			DraftMessage.clearValue(ChatManager.getCurrentChat().uid);
 			if (chatSendCallBack != null){
 				var sent:Boolean = chatSendCallBack(value);
 				if (sent == true) {
