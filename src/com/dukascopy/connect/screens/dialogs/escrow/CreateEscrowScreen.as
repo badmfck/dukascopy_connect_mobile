@@ -97,6 +97,8 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		private var terms:TermsChecker;
 		private var offerData:EscrowDealData;
 		private var selectorCurrency:DDFieldButton;
+		private var priceSummary:PriceClip;
+		private var alert:AlertTextArea;
 		
 		public function CreateEscrowScreen() { }
 		
@@ -178,17 +180,22 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			}
 			
 			var amount:Number = getAmount();
+			var targetPrice:Number = 0;
+			if (!isNaN(selectedPrice))
+			{
+				targetPrice = selectedPrice;
+			}
 			if (selectedDirection == TradeDirection.buy)
 			{
-				values.push((amount * selectedPrice).toFixed(decimals) + " " + currency);
-				values.push((amount * selectedPrice * EscrowSettings.refundableFee).toFixed(decimals) + " " + currency);
-				values.push((amount * selectedPrice * EscrowSettings.refundableFee + amount * selectedPrice).toFixed(decimals) + " " + currency);
+				values.push((amount * targetPrice).toFixed(decimals) + " " + currency);
+				values.push((amount * targetPrice * EscrowSettings.refundableFee).toFixed(decimals) + " " + currency);
+				values.push((amount * targetPrice * EscrowSettings.refundableFee + amount * targetPrice).toFixed(decimals) + " " + currency);
 			}
 			else
 			{
-				values.push((amount * selectedPrice).toFixed(decimals) + " " + currency);
-				values.push((amount * selectedPrice * EscrowSettings.commission).toFixed(decimals) + " " + currency);
-				values.push((amount * selectedPrice - amount * selectedPrice * EscrowSettings.commission).toFixed(decimals) + " " + currency);
+				values.push((amount * targetPrice).toFixed(decimals) + " " + currency);
+				values.push((amount * targetPrice * EscrowSettings.commission).toFixed(decimals) + " " + currency);
+				values.push((amount * targetPrice - amount * targetPrice * EscrowSettings.commission).toFixed(decimals) + " " + currency);
 			}
 			
 			balance.draw(_width, values);
@@ -352,6 +359,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			{
 				toState(STATE_START);
 			}
+			updatePrice();
 			updateBalance();
 		}
 		
@@ -444,6 +452,20 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		{
 			createSendButton();
 			createBackButton();
+			
+			if (priceSummary == null)
+			{
+				priceSummary = new PriceClip();
+			}
+			addItem(priceSummary);
+			priceSummary.draw(Lang.escrow_you_buy, getAmount() + " " + selectedCrypto.name, Lang.escrow_price, getPrice() + " " + getCurrency(), _width, contentPadding);
+			
+			if (alert == null)
+			{
+				alert = new AlertTextArea();
+			}
+			alert.draw(_width - contentPadding * 2, Lang.escrow_autocancel_description, null);
+			addItem(alert);
 			
 			if (blockchainTitle == null)
 			{
@@ -890,6 +912,8 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 				removeItem(blockchainBack);
 				removeItem(blockchainTitle);
 				removeItem(terms);
+				removeItem(priceSummary);
+				removeItem(alert);
 			}
 		}
 		
@@ -1258,7 +1282,16 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			}
 			else if (state == STATE_FINISH)
 			{
-				position = Config.FINGER_SIZE * .3;
+				if (priceSummary != null)
+				{
+					position = 1;
+					priceSummary.y = position;
+					position += priceSummary.height + contentPaddingV * 2;
+				}
+				else
+				{
+					position = Config.FINGER_SIZE * .3;
+				}
 				
 				blockchainTitle.x = contentPadding;
 				blockchainTitle.y = position;
@@ -1269,6 +1302,13 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 				blockchainAddress.x = contentPadding * 2;
 				blockchainAddress.y = position + contentPadding;
 				position += blockchainBack.height + contentPaddingV * 2;
+				
+				if (alert != null)
+				{
+					alert.x = contentPadding;
+					alert.y = position;
+					position += alert.height + contentPaddingV * 2;
+				}
 				
 				terms.x = contentPadding;
 				terms.y = position;
@@ -1632,7 +1672,10 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		{
 			sendButton.deactivate();
 			backButton.deactivate();
-			terms.deactivate();
+			if (terms != null)
+			{
+				terms.deactivate();
+			}
 		}
 		
 		override protected function onRemove():void 
@@ -1762,6 +1805,16 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			{
 				terms.dispose();
 				terms = null;
+			}
+			if (priceSummary != null)
+			{
+				priceSummary.dispose();
+				priceSummary = null;
+			}
+			if (alert != null)
+			{
+				alert.dispose();
+				alert = null;
 			}
 			
 			selectedFiatAccount = null;

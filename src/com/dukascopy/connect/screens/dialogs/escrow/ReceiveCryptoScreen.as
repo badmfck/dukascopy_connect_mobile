@@ -40,6 +40,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 	public class ReceiveCryptoScreen extends EscrowDealScreen {
 		
 		private var acceptButton:BitmapButton;
+		private var investigationButton:BitmapButton;
 		private var amount:Bitmap;
 		private var price:Bitmap;
 		private var balance:BalanceCalculation;
@@ -68,6 +69,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			bottomColor = Style.color(Style.COLOR_BACKGROUND);
 			
 			createAcceptButton();
+			createInvestigationButton();
 			
 			illustration = new Bitmap();
 			container.addChild(illustration);
@@ -114,7 +116,18 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		
 		private function onAcceptClick():void 
 		{
-			//!TODO:;
+			if (escrowOffer != null && !EscrowScreenNavigation.isExpired(escrowOffer, offerCreatedTime))
+			{
+				command = OfferCommand.confirm_crypto_recieve;
+			}
+			
+			close();
+		}
+		
+		private function onInvestigationClick():void 
+		{
+			command = OfferCommand.request_imvestigation;
+			close();
 		}
 		
 		override public function onBack(e:Event = null):void {
@@ -130,6 +143,17 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			acceptButton.setDownScale(1);
 			acceptButton.setOverlay(HitZoneType.BUTTON);
 			addItem(acceptButton);
+		}
+		
+		private function createInvestigationButton():void 
+		{
+			investigationButton = new BitmapButton();
+			investigationButton.setStandartButtonParams();
+			investigationButton.tapCallback = onInvestigationClick;
+			investigationButton.disposeBitmapOnDestroy = true;
+			investigationButton.setDownScale(1);
+			investigationButton.setOverlay(HitZoneType.BUTTON);
+			addItem(investigationButton);
 		}
 		
 		override public function initScreen(data:Object = null):void {
@@ -176,17 +200,9 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		
 		private function drawAlert():void 
 		{
-			if (escrowOffer != null && !EscrowScreenNavigation.isExpired(escrowOffer, offerCreatedTime))
-			{
-				var text:String = Lang.investigation_fee_description;
-				text = text.replace("%@", (EscrowSettings.refundableFee * 100));
-				alertText.draw(getWidth() - contentPadding * 2, text, null);
-			}
-			else
-			{
-				//!TODO:;
-				removeItem(alertText);
-			}
+			var text:String = Lang.investigation_fee_description;
+			text = text.replace("%@", (EscrowSettings.refundableFee * 100));
+			alertText.draw(getWidth() - contentPadding * 2, text, null);
 		}
 		
 		private function createBalance():void 
@@ -249,8 +265,18 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		{
 			if (escrowOffer != null)
 			{
-				var text:String = Lang.crypro_sent_by_seller;
-				var color:Number = Color.GREEN;
+				var text:String;
+				var color:Number;
+				if (!EscrowScreenNavigation.isExpired(escrowOffer, offerCreatedTime))
+				{
+					text = Lang.crypro_sent_by_seller;
+					color = Color.GREEN;
+				}
+				else
+				{
+					text = Lang.offer_expired;
+					color = Color.GREY;
+				}
 				
 				status.draw(getWidth() - contentPadding * 2, text, color);
 			}
@@ -336,6 +362,11 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		{
 			var text:String = Lang.check_transaction;
 			
+			if (escrowOffer != null && EscrowScreenNavigation.isExpired(escrowOffer, offerCreatedTime))
+			{
+				text = Lang.offer_expired;
+			}
+			
 			if (descriptionTransaction.bitmapData != null)
 			{
 				descriptionTransaction.bitmapData.dispose();
@@ -391,13 +422,20 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			descriptionTransaction.y = position;
 			position += descriptionTransaction.height + contentPaddingV * 1.5;
 			
-			time.x = int(getWidth() * .5 - time.width * .5);
-			time.y = position;
-			position += time.height + contentPaddingV;
+			if (escrowOffer != null && !EscrowScreenNavigation.isExpired(escrowOffer, offerCreatedTime))
+			{
+				time.x = int(getWidth() * .5 - time.width * .5);
+				time.y = position;
+				position += time.height + contentPaddingV;
+			}
 			
 			acceptButton.x = contentPadding;
 			acceptButton.y = position;
-			position += acceptButton.height + contentPaddingV;
+			position += acceptButton.height + contentPaddingV * 0;
+			
+			investigationButton.x = contentPadding;
+			investigationButton.y = position;
+			position += investigationButton.height + contentPaddingV;
 		}
 		
 		private function drawControls():void
@@ -417,6 +455,10 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 				buttonBitmap = TextUtils.createbutton(textSettings, Style.color(Style.COLOR_BACKGROUND), 1, -1, Style.color(Style.COLOR_BUTTON_OUTLINE), getButtonWidth(), Style.size(Style.BUTTON_PADDING), Style.size(Style.SIZE_BUTTON_CORNER));
 				acceptButton.setBitmapData(buttonBitmap, true);
 			}
+			
+			textSettings = new TextFieldSettings(Lang.escrow_request_investigation, Color.RED, FontSize.SUBHEAD, TextFormatAlign.CENTER);
+			buttonBitmap = TextUtils.createbutton(textSettings, Style.color(Style.COLOR_BACKGROUND), 1, -1, NaN, getButtonWidth(), Style.size(Style.BUTTON_PADDING), Style.size(Style.SIZE_BUTTON_CORNER));
+			investigationButton.setBitmapData(buttonBitmap, true);
 		}
 		
 		private function getButtonWidth():int 
@@ -438,6 +480,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			}
 			
 			acceptButton.activate();
+			investigationButton.activate();
 			alertText.activate();
 			transactionClip.activate();
 		}
@@ -450,6 +493,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			
 			acceptButton.deactivate();
 			alertText.deactivate();
+			investigationButton.deactivate();
 			transactionClip.deactivate();
 		}
 		
@@ -472,6 +516,11 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			{
 				acceptButton.dispose();
 				acceptButton = null;
+			}
+			if (investigationButton != null)
+			{
+				investigationButton.dispose();
+				investigationButton = null;
 			}
 			if (balance != null)
 			{

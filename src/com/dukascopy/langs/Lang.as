@@ -2454,6 +2454,10 @@ package com.dukascopy.langs {
 		static public var escrow_deal_message:String = "Escrow deal";
 		static public var deal_expired:String = "Deal expired";
 		static public var escrow_enter_transaction_id:String = "Please enter transaction id";
+		static public var escrow_request_investigation:String = "Request investigation";
+		static public var escrow_you_buy:String = "You Buy";
+		static public var escrow_price:String = "Price";
+		static public var escrow_autocancel_description:String = "Note that the offer may be automatically cancelled if there is not enough funds on your account to pay for the crypto purchase.";
 		
 		static public function updateKeys(keys:Object):void {
 			for (var n:String in keys) {

@@ -40,6 +40,25 @@ package com.dukascopy.connect.data.escrow
 			
 		}
 		
+		static private function confirmCryptoReceiveCommand(escrow:EscrowMessageData, message:ChatMessageVO, chatVO:ChatVO, command:OfferCommand = null):void 
+		{
+			if (command == OfferCommand.request_imvestigation)
+			{
+				var screenData:Object = new Object();
+				screenData.escrowOffer = escrow;
+				screenData.created = message.created;
+				screenData.chat = chatVO;
+				screenData.message = message;
+				
+				screenData.title = Lang.indicate_issue_type;
+				ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, EscrowReportScreen, screenData);
+			}
+			else if(command == OfferCommand.confirm_crypto_recieve)
+			{
+				trace("123");
+			}
+		}
+		
 		static public function showScreen(escrow:EscrowMessageData, message:ChatMessageVO, userVO:UserVO, chatVO:ChatVO):void 
 		{
 			GD.S_STOP_LOAD.invoke();
@@ -65,7 +84,7 @@ package com.dukascopy.connect.data.escrow
 				
 				/*escrow.transactionId = "xf345dfg545hfgh65nmqgh390gghj90w2j45bv";
 				escrow.status = EscrowStatus.deal_created;
-				screenData.callback = onSendTransactionCommand;
+				screenData.callback = confirmCryptoReceiveCommand;
 				ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, ReceiveCryptoScreen, screenData);
 				return;*/
 				

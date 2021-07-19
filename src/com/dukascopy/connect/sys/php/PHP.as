@@ -1216,7 +1216,7 @@ package com.dukascopy.connect.sys.php {
 			data.b64 = true;
 			data.method = "files.addImage";
 			data.crypted = false;
-
+			
 			call('files.addImage', callBack, data, Config.URL_PHP_CORE_SERVER_FILE);
 		}
 		
@@ -1224,7 +1224,7 @@ package com.dukascopy.connect.sys.php {
 		{
 			call('escrow.addEvent', callBack, data);
 		}
-
+		
 		static private function call(method:String, callBack:Function = null, data:Object = null,  url:String = null, rawRespond:Boolean = false, requestMethod:String = 'POST', crypt:Boolean = true, noAuthKey:Boolean = false, additionalData:Object = null):void {
 			if (Auth.key == "web" && methodsWithoutKey.indexOf(method) == -1 && rawRespond == false) {
 				

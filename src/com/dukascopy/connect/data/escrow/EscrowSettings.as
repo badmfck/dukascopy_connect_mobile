@@ -8,8 +8,8 @@ package com.dukascopy.connect.data.escrow
 	{
 		static private var _refundableFee:Number = 0.03;
 		static private var _commission:Number = 0.03;
-		static public var offerMaxTime:Number = 500;
-		static public var dealMaxTime:Number = 300;
+		static public var offerMaxTime:Number = 50000;
+		static public var dealMaxTime:Number = 30000;
 		static public var confirmTransactionTime:Number = 1440;
 		static public var penalty:Number = 0.01;
 		

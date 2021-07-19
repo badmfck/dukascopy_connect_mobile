@@ -65,7 +65,7 @@ package com.dukascopy.connect.gui.components.seekbar
 			button.graphics.beginFill(Style.color(Style.COLOR_BACKGROUND));
 			button.graphics.drawCircle(0, 0, buttonRadius);
 			button.graphics.endFill();
-			button.filters = [new DropShadowFilter(int(Config.FINGER_SIZE * .025), 90, 0, 0.35, int(Config.FINGER_SIZE * .07), int(Config.FINGER_SIZE * .07))];
+			button.filters = [new DropShadowFilter(int(Config.FINGER_SIZE * .035), 90, 0, 0.35, int(Config.FINGER_SIZE * .12), int(Config.FINGER_SIZE * .12))];
 			addChild(button);
 		}
 		
