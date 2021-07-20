@@ -18,5 +18,10 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		{
 			return _height - Config.FINGER_SIZE * .5 - illustrationSize * .5;
 		}
+		
+		override protected function createView():void {
+			super.createView();
+			scrollPanel.hideScrollBar(true);
+		}
 	}
 }

@@ -2201,6 +2201,7 @@ package com.dukascopy.connect.screens {
 				if (list != null)
 				{
 					list.scrollToItem("num", cmsgVO.systemMessageVO.replayMessage.target, Config.FINGER_SIZE, true);
+					list.blinkItem("num", cmsgVO.systemMessageVO.replayMessage.target);
 				}
 			}
 			if (lhz == HitZoneType.BOT_MENU_ACTION) {
@@ -3263,7 +3264,12 @@ package com.dukascopy.connect.screens {
 		
 		private function updateReportButton():void 
 		{
-			trace("updateReportButton", ChatManager.getCurrentChat().uid);
+			if (ChatManager.getCurrentChat() != null && UsersManager.getInterlocutor(ChatManager.getCurrentChat()) != null && UsersManager.getInterlocutor(ChatManager.getCurrentChat()).uid == Config.NOTEBOOK_USER_UID)
+			{
+				return;
+			}
+			
+			
 			if (reportButton == null &&
 				ChatManager.getCurrentChat() != null && 
 				ChatManager.getCurrentChat().isLocalIncomeChat() == false && 

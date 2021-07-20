@@ -37,6 +37,7 @@ package com.dukascopy.connect.screens.dialogs.gifts
 	import com.dukascopy.connect.sys.auth.Auth;
 	import com.dukascopy.connect.sys.dialogManager.DialogManager;
 	import com.dukascopy.connect.sys.echo.echo;
+	import com.dukascopy.connect.sys.errors.ErrorLocalizer;
 	import com.dukascopy.connect.sys.imageManager.ImageBitmapData;
 	import com.dukascopy.connect.sys.imageManager.ImageManager;
 	import com.dukascopy.connect.sys.payments.InvoiceManager;
@@ -864,6 +865,8 @@ package com.dukascopy.connect.screens.dialogs.gifts
 					inPaymentProcess = false;
 					activateScreen();
 					hidePreloader();
+					
+					ToastMessage.display(ErrorLocalizer.getPaymentsError(respond.errorCode.toString(), respond.errorMsg));
 				}
 				return;
 			}
@@ -2367,17 +2370,31 @@ package com.dukascopy.connect.screens.dialogs.gifts
 				
 				var currencyNeeded:String = currency;
 				var wallets:Array = PayManager.accountInfo.accounts;
+				
 				var l:int = wallets.length;
 				var walletItem:Object;
 				for (var i:int = 0; i < l; i++)
 				{
 					walletItem = wallets[i];
-					if (currencyNeeded == walletItem.CURRENCY)
+					if (currencyNeeded == walletItem.CURRENCY && Number(walletItem.BALANCE) > 0)
 					{
 						defaultAccount = walletItem;
 						break;
 					}
 				}
+				if (defaultAccount == null)
+				{
+					for (var i2:int = 0; i2 < l; i2++)
+					{
+						walletItem = wallets[i2];
+						if (Number(walletItem.BALANCE) > 0)
+						{
+							defaultAccount = walletItem;
+							break;
+						}
+					}
+				}
+				
 				if (defaultAccount != null)
 				{
 					onWalletSelect(defaultAccount);
@@ -2582,12 +2599,30 @@ package com.dukascopy.connect.screens.dialogs.gifts
 			for (var i:int = 0; i < l; i++)
 			{
 				walletItem = wallets[i];
-				if (currencyNeeded == walletItem.CURRENCY)
+				if (currencyNeeded == walletItem.CURRENCY && Number(walletItem.BALANCE) > 0)
 				{
 					defaultAccount = walletItem;
 					break;
 				}
 			}
+			
+			if (defaultAccount == null)
+			{
+				for (var i2:int = 0; i2 < l; i2++)
+				{
+					walletItem = wallets[i2];
+					if (Number(walletItem.BALANCE) > 0)
+					{
+						defaultAccount = walletItem;
+						break;
+					}
+				}
+			}
+			if (defaultAccount != null && "CURRENCY" in defaultAccount)
+			{
+				selectorCurrency.setValue(defaultAccount.CURRENCY);
+			}
+			
 			if (defaultAccount != null && !selfTransfer)
 			{
 				if (giftData != null && giftData.currency == "DCO" && ("COIN" in defaultAccount) == false)

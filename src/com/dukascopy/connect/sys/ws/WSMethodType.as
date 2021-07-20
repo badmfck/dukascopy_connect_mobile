@@ -54,6 +54,7 @@ package com.dukascopy.connect.sys.ws
 		static public const GET_IDENTIFICATION_QUEUE_LENGTH:String = "getQueueTotal";
 		static public const ESCROW_OFFER_ACCEPT:String = "escrowOfferAccept";
 		static public const ESCROW_OFFER_CANCEL:String = "escrowOfferCancel";
+		static public const ESCROW_EVENT:String = "evEscrow";
 		
 		public function WSMethodType() 
 		{

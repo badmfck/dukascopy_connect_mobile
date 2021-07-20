@@ -457,9 +457,13 @@ package com.dukascopy.connect.gui.scrollPanel {
 			return true;
 		}
 		
-		public function hideScrollBar():void 
+		public function hideScrollBar(permanent:Boolean = false):void 
 		{
 			scrollBar.alpha = 0;
+			if(permanent && scrollBar.parent != null)
+			{
+				scrollBar.parent.removeChild(scrollBar);
+			}
 		}
 		
 		public function getScrollBarWidth():int {

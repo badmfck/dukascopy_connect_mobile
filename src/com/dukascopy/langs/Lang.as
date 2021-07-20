@@ -2459,6 +2459,7 @@ package com.dukascopy.langs {
 		static public var escrow_price:String = "Price";
 		static public var escrow_autocancel_description:String = "Note that the offer may be automatically cancelled if there is not enough funds on your account to pay for the crypto purchase.";
 		static public var draft:String = "Draft: ";
+		static public var payments_error_amount_too_small:String = "Amount is too small 1";
 		
 		static public function updateKeys(keys:Object):void {
 			for (var n:String in keys) {

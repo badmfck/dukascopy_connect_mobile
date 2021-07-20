@@ -401,7 +401,10 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 				}
 				else if (state == STATE_START)
 				{
-					
+					if (terms != null)
+					{
+						addItem(terms);
+					}
 					addItem(selectorInstrument);
 					addItem(selectorAccont);
 					addItem(radio);
@@ -873,6 +876,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 				removeItem(selectorInstrument);
 				removeItem(selectorAccont);
 				removeItem(selectorCurrency);
+				removeItem(terms);
 				deactivateStartState();
 			}
 			else if (state == STATE_REGISTER)
