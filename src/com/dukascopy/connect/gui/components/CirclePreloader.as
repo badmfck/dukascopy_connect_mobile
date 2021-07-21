@@ -27,6 +27,7 @@ package com.dukascopy.connect.gui.components
 		
 		public function CirclePreloader(radius:Number = NaN, thickness:Number = NaN, color:Number = NaN) 
 		{
+			cacheAsBitmap = true;
 			this.radius = radius;
 			this.thickness = thickness;
 			this.color = color;
