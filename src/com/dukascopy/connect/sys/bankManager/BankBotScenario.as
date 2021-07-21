@@ -890,7 +890,6 @@ package com.dukascopy.connect.sys.bankManager {
 					}, {
 						text:"lang.menuOpenAccount",
 						keywords:"accounts,new,open",
-						textForUser:"lang.itemOpenAccount",
 						action:"nav:selectNewWalletCurrency"
 					}, {
 						text:"lang.menuLoadMoney",
@@ -953,12 +952,14 @@ package com.dukascopy.connect.sys.bankManager {
 						text:"lang.menuNewAccMCA",
 						value:"MCA",
 						type:"walletSelectCurrency",
+						textForUser:"lang.itemOpenAccount",
 						action:"nav:walletConfirm"
 					}, {
 						disabled: true,
 						text:"lang.menuNewAccSaving",
 						value:"SAVINGS",
 						type:"walletSelectCurrency",
+						textForUser:"lang.itemOpenAccount",
 						action:"nav:walletSavingsConfirm"
 					}
 				],
@@ -980,12 +981,14 @@ package com.dukascopy.connect.sys.bankManager {
 						text:"lang.menuMCA",
 						value:"MCA",
 						type:"paymentsSendMy",
+						textForUser:"lang.itemExchange",
 						action:"nav:transferConfirm"
 					}, {
 						disabled: true,
 						text:"lang.menuSavings",
 						value:"SAVINGS",
 						type:"paymentsSendMy",
+						textForUser:"lang.itemExchange",
 						action:"nav:transferConfirm"
 					}
 				],
@@ -1317,12 +1320,14 @@ package com.dukascopy.connect.sys.bankManager {
 					}, {
 						disabled: true,
 						text:"lang.menuToSavingAcc",
+						textForUser:"lang.itemSendToSaving",
 						type:"sendMoneyOtherAcc",
 						value:"SAVINGS",
 						action:"nav:transferInternalConfirm"
 					}, {
 						disabled: true,
 						text:"lang.menuToTradingAcc",
+						textForUser:"lang.itemSendToTrading",
 						type:"sendMoneyOtherAcc",
 						value:"TRADING",
 						action:"nav:transferInternalConfirm"
@@ -1375,6 +1380,7 @@ package com.dukascopy.connect.sys.bankManager {
 					}, {
 						disabled: true,
 						text:"lang.menuToSavingAcc",
+						textForUser:"lang.itemSendToSaving",
 						type:"sendMoneyOtherAcc",
 						value:"SAVINGS",
 						action:"nav:transferInternalConfirm"

@@ -998,14 +998,14 @@ package com.dukascopy.connect.sys.bankManager {
 				PaymentsManagerNew.fatCatz(onFatCatz);
 			}
 			if (command == "cardStatementAsFile") {
-				temp = msg.substr(command.length + 1).split("|!|");
+				/*temp = msg.substr(command.length + 1).split("|!|");
 				if (temp.length != 3)
 					return;
-				PaymentsManagerNew.callCardStatement(temp[2], temp[0], temp[1]);
-				/*temp = msg.substr(command.length + 1).split("|!|");
+				PaymentsManagerNew.callCardStatement(temp[2], temp[0], temp[1]);*/
+				temp = msg.substr(command.length + 1).split("|!|");
 				if (temp.length != 4)
 					return;
-				PaymentsManagerNew.callCardStatement(temp[2], temp[0], temp[1], temp[3]);*/
+				PaymentsManagerNew.callCardStatement(temp[2], temp[0], temp[1], temp[3]);
 			}
 			if (command == "changeMainCurrency") {
 				if (checkForPaymentsRequestExist(msg) == true)
@@ -1014,14 +1014,14 @@ package com.dukascopy.connect.sys.bankManager {
 				PaymentsManagerNew.changeMainCurrency(onMainCurrencyChanged, msg.substr(command.length + 1));
 			}
 			if (command == "walletStatementAsFile") {
-				temp = msg.substr(command.length + 1).split("|!|");
+				/*temp = msg.substr(command.length + 1).split("|!|");
 				if (temp.length != 3)
 					return;
-				PaymentsManagerNew.callWalletStatement(temp[2], temp[0], temp[1]);
-				/*temp = msg.substr(command.length + 1).split("|!|");
+				PaymentsManagerNew.callWalletStatement(temp[2], temp[0], temp[1]);*/
+				temp = msg.substr(command.length + 1).split("|!|");
 				if (temp.length != 4)
 					return;
-				PaymentsManagerNew.callWalletStatement(temp[2], temp[0], temp[1], temp[3]);*/
+				PaymentsManagerNew.callWalletStatement(temp[2], temp[0], temp[1], temp[3]);
 			}
 			if (command == "possibleRewardDeposites") {
 				if (checkForPaymentsRequestExist(msg) == true)

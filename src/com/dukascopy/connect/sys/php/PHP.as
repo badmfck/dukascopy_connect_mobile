@@ -590,7 +590,7 @@ package com.dukascopy.connect.sys.php {
 				data.ver = 4;
 				if (isNaN(tipsAmount) == false) {
 					data.tipsAmount = tipsAmount;
-					data.tipsCurrency = tipsCurrency;
+					data.tipsCurrency = (tipsCurrency == "DUK+") ? "DCO" : tipsCurrency;
 				}
 				data.type = type;
 				if (categories != null)
@@ -613,7 +613,7 @@ package com.dukascopy.connect.sys.php {
 				data.text = text;
 			if (isNaN(tipsAmount) == false) {
 				data.tipsAmount = tipsAmount;
-				data.tipsCurrency = tipsCurrency;
+				data.tipsCurrency = (tipsCurrency == "DUK+") ? "DCO" : tipsCurrency;
 			}
 			if (categories != null)
 				data.categories = categories;

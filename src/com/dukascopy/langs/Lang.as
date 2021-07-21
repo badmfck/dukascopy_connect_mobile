@@ -56,6 +56,7 @@ package com.dukascopy.langs {
 		static public var areYouSureQuitApplication:String = "Are you sure  you want to quit application?";
 		static public var areYouSureRemovePin:String = "Are You sure want to remove PIN from this chat?";
 		static public var askAnyQuestions:String = "Ask any question, we will find people to answer you.\n\nPlease tap on 'Thank you I`m satisfied' ' button to those who will satisfy you with answer!";
+		static public var createOfferStartMessage:String = "Bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla";
 		static public var askNewQuestion:String = "Ask new question";
 		static public var askQuestions:String = "Ask your question";
 		static public var backgroundImage:String = "Background image";
@@ -728,6 +729,10 @@ package com.dukascopy.langs {
 		static public var extraTipsBody:String = "press to promise extra tips...";
 		static public var categoriesTitle:String = "Categories";
 		static public var questionType:String = "Question type";
+		static public var questionSide:String = "Offer side";
+		static public var questionPrice:String = "Price";
+		static public var questionCurrency:String = "Currency";
+		static public var questionCryptoAmount:String = "Crypto amount";
 		static public var languageTitle:String = "Language";
 		static public var secretTitle:String = "Secret mode";
 		
@@ -752,6 +757,9 @@ package com.dukascopy.langs {
 		static public var textAdditionalCategoiesInfo:String = "To facilitate other people to find your question and answer it propertly, you can choose a category or few of them.";
 		static public var textAdditionalLanguagesInfo:String = "To facilitate other people to find your question and answer it propertly, you can choose a language or few of them.";
 		static public var textAdditionalTipsInfo:String = "To encourage people to answer, you may promise extra tips. The amount you have promised will be shown next to your question. You should pay extra tips and it is your exclusive responsibility. If you do not pay for the promised extra tips, this service will be automatically void for you in the future until you complete the promised extra tips payment.";
+		static public var textAdditionalSideInfo:String = "To encourage people to answer, you may promise extra tips. The amount you have promised will be shown next to your question. You should pay extra tips and it is your exclusive responsibility. If you do not pay for the promised extra tips, this service will be automatically void for you in the future until you complete the promised extra tips payment.";
+		static public var textAdditionalCryptoAmountInfo:String = "To encourage people to answer, you may promise extra tips. The amount you have promised will be shown next to your question. You should pay extra tips and it is your exclusive responsibility. If you do not pay for the promised extra tips, this service will be automatically void for you in the future until you complete the promised extra tips payment.";
+		static public var textAdditionalCurrencyInfo:String = "To encourage people to answer, you may promise extra tips. The amount you have promised will be shown next to your question. You should pay extra tips and it is your exclusive responsibility. If you do not pay for the promised extra tips, this service will be automatically void for you in the future until you complete the promised extra tips payment.";
 		/*UserQuestionsStatScreen*/
 		static public var rewardRightAnswer:String = "Reward per right answer";
 		static public var inPendingStatus:String = "In pending status";
@@ -1105,9 +1113,13 @@ package com.dukascopy.langs {
 		static public var textAdditionalTypeInfo:String = "In Private questions you will have conversation privately. In public question multiple people will answer simultaneously.";
 		static public var textAdditionalGeoInfo:String = "When user will answer your question user will be asked to share location with you.";
 		static public var textSelectType:String = "Select type";
+		static public var textSelectSide:String = "Select side";
 		static public var textQuestionTypePublic:String = "Public";
 		static public var textQuestionTypePrivate:String = "Private";
+		static public var textQuestionSideBuy:String = "Buy";
+		static public var textQuestionSideSell:String = "Sell";
 		static public var textAdditionalTypeInfoDesc:String = "Press to select <B>private</B> or <B>public</B>";
+		static public var textAdditionalSideInfoDesc:String = "Press to select <B>BUY</B> or <B>SELL</B>";
 		static public var theMoneyWasSent:String = "Money was transfered";
 		static public var failedToLoadCommission:String ="Some error occurred while loading commission";
 		static public var clickToPlay:String="CLICK TO PLAY GAME";

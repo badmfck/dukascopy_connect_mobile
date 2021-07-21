@@ -1,16 +1,20 @@
 package com.dukascopy.connect.screens.dialogs.newDialogs {
 	
 	import com.dukascopy.connect.Config;
+	import com.dukascopy.connect.GD;
 	import com.dukascopy.connect.data.TextFieldSettings;
 	import com.dukascopy.connect.gui.button.DDAccountButton;
 	import com.dukascopy.connect.gui.button.DDFieldButton;
 	import com.dukascopy.connect.gui.input.Input;
 	import com.dukascopy.connect.gui.lightbox.UI;
+	import com.dukascopy.connect.gui.list.renderers.ListCryptoWallet;
 	import com.dukascopy.connect.gui.list.renderers.ListPayCurrency;
 	import com.dukascopy.connect.gui.list.renderers.ListPayWalletItem;
 	import com.dukascopy.connect.gui.menuVideo.BitmapButton;
 	import com.dukascopy.connect.gui.tools.HorizontalPreloader;
+	import com.dukascopy.connect.managers.escrow.vo.EscrowInstrument;
 	import com.dukascopy.connect.screens.dialogs.ScreenPayDialog;
+	import com.dukascopy.connect.screens.dialogs.x.base.bottom.ListSelectionPopup;
 	import com.dukascopy.connect.screens.serviceScreen.Overlay;
 	import com.dukascopy.connect.sys.dialogManager.DialogManager;
 	import com.dukascopy.connect.sys.imageManager.ImageBitmapData;
@@ -44,15 +48,8 @@ package com.dukascopy.connect.screens.dialogs.newDialogs {
 		
 		private var btnOk:BitmapButton;
 		
-		private var selectorDebitAccont:DDAccountButton;
-		private var accountsPreloader:HorizontalPreloader;
-		
 		private var inputWidth:int;
-		private var type:String = QuestionsManager.QUESTION_TYPE_PRIVATE;
-		
-		private var walletSelected:Boolean;
-		private var selectedAccount:Object;
-		private var dataReady:Boolean;
+		private var selectedInstrument:EscrowInstrument;
 		
 		public function ScreenExtraTipsPopup() {
 			super();
@@ -91,56 +88,11 @@ package com.dukascopy.connect.screens.dialogs.newDialogs {
 			btnOk.tapCallback = onOK;
 			btnOk.disposeBitmapOnDestroy = true;
 			container.addChild(btnOk);
-			
-			selectorDebitAccont = new DDAccountButton(openWalletSelector);
-			scrollPanel.addObject(selectorDebitAccont);
-			
-			accountsPreloader = new HorizontalPreloader();
-			scrollPanel.addObject(accountsPreloader);
-		}
-		
-		private function checkData():void {
-			PaymentsManager.S_ACCOUNT.add(onDataReady);
-			if (PaymentsManager.activate() == false && PayManager.accountInfo != null)
-				onDataReady();
-		}
-		
-		private function onDataReady():void {
-			if (_isDisposed)
-				return;
-			PaymentsManager.S_ACCOUNT.remove(onDataReady);
-			dataReady = true;
-			accountsPreloader.stop();
-			if (isActivated == true)
-				selectorDebitAccont.activate();
-			selectBigAccount();
-		}
-		
-		private function drawAccountSelector():void {
-			selectorDebitAccont.setSize(componentsWidth, Config.FINGER_SIZE * .8);
-			selectorDebitAccont.setValue(Lang.TEXT_SELECT_ACCOUNT);
-			selectorDebitAccont.x = hPadding;
-		}
-		
-		private function selectBigAccount():void {
-			if (PayManager.accountInfo == null)
-				return;
-			var wallets:Array = PayManager.accountInfo.accounts;
-			var l:int = wallets.length;
-			var bigAccount:Object;
-			if (wallets != null && wallets.length > 0)
-				bigAccount = wallets[0];
-			for (var i:int = 0; i < l; i++) {
-				if (Number(bigAccount.BALANCE) < Number(wallets[i].BALANCE))
-					bigAccount = wallets[i];
-			}
-			if (bigAccount != null)
-				onWalletSelect(bigAccount);
 		}
 		
 		private function checkDataValid():void {
-			var tipsLimitMax:int = PayLimits.getTipsLimitMaxForCurrency(inputCurrency.value, type);
-			var tipsLimitMin:Number = PayLimits.getTipsLimitMinForCurrency(inputCurrency.value, type);
+			var tipsLimitMax:int = int.MAX_VALUE;
+			var tipsLimitMin:Number = 0
 			var tipsAmount:Number = Number(inputAmount.value);
 			if (isNaN(tipsAmount) == true)
 				inputAmount.setIncorrect(true);
@@ -151,8 +103,8 @@ package com.dukascopy.connect.screens.dialogs.newDialogs {
 			else
 				inputAmount.setIncorrect(false);
 			if (_isActivated == true && 
-				selectedAccount != null &&
-				inputAmount.getIncorrect() == false) {
+				inputAmount.getIncorrect() == false &&
+				selectedInstrument != null) {
 					btnOk.activate();
 					btnOk.alpha = 1;
 			} else {
@@ -161,70 +113,8 @@ package com.dukascopy.connect.screens.dialogs.newDialogs {
 			}
 		}
 		
-		private function openWalletSelector(e:Event = null):void {
-			
-			if (PayManager.accountInfo == null)
-			{
-				//trace("NO ACCOUNT!");
-				return;
-			}
-			var accounts:Array = new Array();
-			if (PayManager.accountInfo.coins != null)
-			{
-				accounts = accounts.concat(PayManager.accountInfo.coins)
-			}
-			if (PayManager.accountInfo.accounts != null)
-			{
-				accounts = accounts.concat(PayManager.accountInfo.accounts);
-			}
-			
-			SoftKeyboard.closeKeyboard();
-			if (inputAmount != null)
-				inputAmount.forceFocusOut();
-			if (dataReady == true) {
-				DialogManager.showDialog(
-					ScreenPayDialog, 
-					{
-						callback: onWalletSelect, 
-						data: accounts, 
-						itemClass: ListPayWalletItem, 
-						label: Lang.TEXT_SELECT_ACCOUNT
-					}
-				);
-			} else {
-				checkData();
-				accountsPreloader.start();
-			}
-		}
-		
-		private function onWalletSelect(account:Object, cleanCurrent:Boolean = false):void {
-			if (account == null) {
-				if (cleanCurrent == true) {
-					selectedAccount = account;
-					walletSelected = false;
-				}	
-			} else {
-				selectedAccount = account;
-				if ("CURRENCY" in account)
-				{
-					inputCurrency.setValue(account.CURRENCY);
-				}
-				else
-				{
-					inputCurrency.setValue(account.COIN);
-				}
-			}
-			if (account != null || cleanCurrent == true) {
-				selectorDebitAccont.setValue(account);
-				checkDataValid();
-			}
-		}
-		
 		override public function initScreen(data:Object = null):void {
 			super.initScreen(data);
-			
-			if ("type" in data == true && data.type != null)
-				type = data.type;
 			
 			inputWidth = (componentsWidth - Config.MARGIN) * .5;
 			
@@ -232,7 +122,6 @@ package com.dukascopy.connect.screens.dialogs.newDialogs {
 				labelAmount.bitmapData = createLabel(Lang.textAmount);
 			if (labelCurrency.bitmapData == null)
 				labelCurrency.bitmapData = createLabel(Lang.textCurrency);
-			
 			if (isNaN(QuestionsManager.getTipsAmount()) == false && QuestionsManager.getTipsAmount() != 0) {
 				inputAmount.value = QuestionsManager.getTipsAmount().toString();
 				inputAmount.setIncorrect(false);
@@ -246,41 +135,18 @@ package com.dukascopy.connect.screens.dialogs.newDialogs {
 			inputCurrency.setSize(inputWidth, inputAmount.height);
 			inputCurrency.x = labelCurrency.x;
 			inputCurrency.y = inputAmount.view.y;
-			if (data.currency != null)
-				localSelectCurrency(data.currency);
-			else if (QuestionsManager.getTipsCurrency())
-				localSelectCurrency(QuestionsManager.getTipsCurrency());
-			else
-				localSelectCurrency("EUR");
+			if (QuestionsManager.getTipsCurrency())
+				callBackSelectCurrency(QuestionsManager.getTipsCurrency());
 			
-			var tipsLimitMax:int = PayLimits.getTipsLimitMaxForCurrency(inputCurrency.value, type);
-			var tipsLimitMin:Number = PayLimits.getTipsLimitMinForCurrency(inputCurrency.value, type);
+			var tipsLimitMax:int = int.MAX_VALUE;
+			var tipsLimitMin:Number = 0;
 			inputAmount.setMaxValue(tipsLimitMax);
 			inputAmount.setMinValue(tipsLimitMin);
-			if (QuestionsManager.getTipsAmount() > tipsLimitMax) {
-				QuestionsManager.saveTipsForCurrentQuestion(tipsLimitMax, inputCurrency.value);
-				inputAmount.value = QuestionsManager.getTipsAmount().toString();
-				inputAmount.setIncorrect(false);
-			} else if (QuestionsManager.getTipsAmount() < tipsLimitMin) {
-				QuestionsManager.saveTipsForCurrentQuestion(tipsLimitMin, inputCurrency.value);
-				inputAmount.value = QuestionsManager.getTipsAmount().toString();
-				inputAmount.setIncorrect(false);
-			}
-			
-			drawAccountSelector();
-			accountsPreloader.setSize(componentsWidth, int(Config.FINGER_SIZE * .05));
-			
-			selectorDebitAccont.y = int(inputCurrency.y + inputCurrency.height + Config.FINGER_SIZE * .3);
-			selectorDebitAccont.x = inputAmount.view.x;
-			accountsPreloader.y = selectorDebitAccont.y + selectorDebitAccont.height;
-			accountsPreloader.x = selectorDebitAccont.x;
 			
 			var textSettings_ok:TextFieldSettings = new TextFieldSettings(Lang.textOk.toUpperCase(), 0xFFFFFF, Config.FINGER_SIZE * .3, TextFormatAlign.CENTER);
 			var buttonBitmap_ok:ImageBitmapData = TextUtils.createbutton(textSettings_ok, Color.GREEN, 1);
 			btnOk.setBitmapData(buttonBitmap_ok, true);
 			btnOk.x = int(_width * .5 - btnOk.width * .5);
-			
-			checkData();
 		}
 		
 		override protected function drawView():void {
@@ -326,9 +192,8 @@ package com.dukascopy.connect.screens.dialogs.newDialogs {
 				if (inputAmount.S_CHANGED != null)
 					inputAmount.S_CHANGED.add(onChangeInputValue);
 			}
-			selectorDebitAccont.activate();
 			if (inputCurrency != null)
-					inputCurrency.activate();
+				inputCurrency.activate();
 			if (btnOk.getIsShown() == false)
 				btnOk.show(.3, .15, true, 0.9, 0);
 			SoftKeyboard.S_KEY.add(changeBtnOKState);
@@ -357,69 +222,44 @@ package com.dukascopy.connect.screens.dialogs.newDialogs {
 			checkDataValid();
 		}
 		
-		private function localSelectCurrency(currency:String):void {
-			if (inputCurrency != null)
-				inputCurrency.setValue(currency);
-		}
-		
 		private function onChangeInputValue():void {
 			checkDataValid();
 		}
 		
 		private function selectCurrency():void {
-			if (PayManager.systemOptions == null)
-			{
-				return;
-			}
-			
-			var currencies:Array = new Array();
-			currencies.push("DCO");
-			if (PayManager.systemOptions.currencyList != null)
-			{
-				currencies = currencies.concat(PayManager.systemOptions.currencyList);
-			}
-			
-			QuestionsManager.saveTipsForCurrentQuestion(Number(inputAmount.value), inputCurrency.value);
-			DialogManager.showDialog(ScreenPayDialog, { callback:callBackSelectCurrency, data:currencies, itemClass:ListPayCurrency, label:Lang.selectCurrency } );
+			GD.S_ESCROW_INSTRUMENTS.add(onResult);
+			GD.S_ESCROW_INSTRUMENTS_REQUEST.invoke();
 		}
 		
-		private function callBackSelectCurrency(currency:String):void {
-			if (!isDisposed)
-				inputCurrency.setValue(currency);
-			if (currency == "DCO")
-			{
-				if (PayManager.accountInfo != null && PayManager.accountInfo.coins != null && PayManager.accountInfo.coins.length > 0)
+		private function onResult(instruments:Vector.<EscrowInstrument>):void {
+			GD.S_ESCROW_INSTRUMENTS.remove(onResult);
+			
+			DialogManager.showDialog(
+				ListSelectionPopup,
 				{
-					for (var i:int = 0; i < PayManager.accountInfo.coins.length; i++) 
-					{
-						if (PayManager.accountInfo.coins[i].COIN == "DCO")
-						{
-							onWalletSelect(PayManager.accountInfo.coins[i], true);
-							break;
-						}
-					}
-				}
+					items:instruments,
+					title:Lang.selectCurrency,
+					renderer:ListCryptoWallet,
+					callback:callBackSelectCurrency
+				},
+				DialogManager.TYPE_SCREEN
+			);
+		}
+		
+		private function callBackSelectCurrency(ei:EscrowInstrument):void {
+			selectedInstrument = ei;
+			if (!isDisposed) {
+				inputCurrency.setValueExtend(ei.name, selectCurrency, UI.getInvestIconByInstrument(ei.code));
+				checkDataValid();
 			}
 		}
 		
 		private function onOK():void {
-			if (selectedAccount == null)
-				return;
-			var queT:Number = Number(inputAmount.value);
-			var accB:Number = Number(selectedAccount.BALANCE);
-			if (isNaN(queT) == true || isNaN(accB) == true)
-				return;
-			if (accB - queT < 0)
-				return;
-			QuestionsManager.setWalletForCurrentQuestion(selectedAccount.ACCOUNT_NUMBER);
-			
-			var currency:String = inputCurrency.value;
-			if (currency == "DUK+")
-			{
+			var currency:String = selectedInstrument.code;
+			if (currency == "DUK+") {
 				currency = "DCO";
 			}
-			
-			QuestionsManager.saveTipsForCurrentQuestion(Number(inputAmount.value), currency, true);
+			QuestionsManager.saveTipsForCurrentQuestion(Number(inputAmount.value), selectedInstrument, true);
 			if (QuestionsManager.getCurrentQuestion() != null)
 				QuestionsManager.editQuestion(QuestionsManager.getCurrentQuestion().uid, null);
 			onCloseTap();
@@ -437,8 +277,6 @@ package com.dukascopy.connect.screens.dialogs.newDialogs {
 		
 		override public function dispose():void {
 			super.dispose();
-			PaymentsManager.S_ACCOUNT.remove(onDataReady);
-			PaymentsManager.deactivate();
 			UI.destroy(labelAmount);
 			labelAmount = null;
 			if (inputAmount != null)
@@ -451,8 +289,8 @@ package com.dukascopy.connect.screens.dialogs.newDialogs {
 			if (btnOk != null)
 				btnOk.dispose();
 			btnOk = null;
-			
 			Overlay.removeCurrent();
+			selectedInstrument = null;
 		}
 	}
 }

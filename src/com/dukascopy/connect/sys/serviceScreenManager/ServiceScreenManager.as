@@ -42,8 +42,8 @@ package com.dukascopy.connect.sys.serviceScreenManager {
 			S_SHOW.invoke(CreateGiftPopup, { user:userModel, giftType:giftType, giftData:predefinedGiftData, receiverSecret:receiverSecret } );
 		}
 		
-		public static function showExtraTipsPopup(currency:String = null, type:String = null):void {
-			var data:Object = { buttonSecond:Lang.textCancel, title:Lang.addExtraTips, currency:currency, type:type };
+		public static function showExtraTipsPopup(currency:String = null):void {
+			var data:Object = { buttonSecond:Lang.textCancel, title:Lang.addExtraTips, currency:currency };
 			showScreen(TYPE_DIALOG, ScreenExtraTipsPopup, data, 0.5);
 		}
 		

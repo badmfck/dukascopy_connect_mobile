@@ -130,25 +130,20 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 		private function getBodyText(itemData:ChatMessageVO):String {
 			var res:String = "";
 			switch(itemData.systemMessageVO.method) {
-				case ChatSystemMsgVO.METHOD_LOCAL_EXTRA_TIPS:
-					var currency:String = QuestionsManager.getTipsCurrency();
-					if (Lang[currency] != null)
-					{
-						currency = Lang[currency];
-					}
+				case ChatSystemMsgVO.METHOD_LOCAL_CRYPTO_AMOUNT:
+					if (QuestionsManager.getTipsCurrency() == null)
+						break;
+					var currency:String = QuestionsManager.getTipsCurrency().name;
 					res = (isNaN(QuestionsManager.getTipsAmount()) == true) ? Lang.extraTipsBody : QuestionsManager.getTipsAmount() + " " + currency + " ";
 					break;
 				case ChatSystemMsgVO.METHOD_LOCAL_SECRET:
 					res = (QuestionsManager.getQuestionSecretMode() == true) ? Lang.textOn : Lang.textOff;
 					break;
-				case ChatSystemMsgVO.METHOD_LOCAL_LANGUAGES:
-					res = QuestionsManager.getQuestionLanguagesString();
+				case ChatSystemMsgVO.METHOD_LOCAL_CURRENCY:
+					res = QuestionsManager.getQuestionCurrency();
 					break;
-				case ChatSystemMsgVO.METHOD_LOCAL_TYPE:
-					res = QuestionsManager.getQuestionTypeLabel();
-					break;
-				case ChatSystemMsgVO.METHOD_LOCAL_GEO:
-					res = (QuestionsManager.getQuestionGeoMode() != null) ? QuestionsManager.getQuestionGeoMode().cityName : Lang.textOff;
+				case ChatSystemMsgVO.METHOD_LOCAL_SIDE:
+					res = QuestionsManager.getQuestionSideLabel();
 					break;
 				default:
 					break;
@@ -161,20 +156,14 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 		private function getMessageText(itemData:ChatMessageVO):String {
 			var res:String = "";
 			switch(itemData.systemMessageVO.method) {
-				case ChatSystemMsgVO.METHOD_LOCAL_EXTRA_TIPS:
-					res = Lang.extraTipsTitle;
+				case ChatSystemMsgVO.METHOD_LOCAL_SIDE:
+					res = Lang.questionSide;
 					break;
-				case ChatSystemMsgVO.METHOD_LOCAL_GEO:
-					res = Lang.geoTitle;
+				case ChatSystemMsgVO.METHOD_LOCAL_CRYPTO_AMOUNT:
+					res = Lang.questionCryptoAmount;
 					break;
-				case ChatSystemMsgVO.METHOD_LOCAL_SECRET:
-					res = Lang.secretTitle;
-					break;
-				case ChatSystemMsgVO.METHOD_LOCAL_LANGUAGES:
-					res = QuestionsManager.getQuestionLanguagesString();
-					break;
-				case ChatSystemMsgVO.METHOD_LOCAL_TYPE:
-					res = Lang.questionType;
+				case ChatSystemMsgVO.METHOD_LOCAL_CURRENCY:
+					res = Lang.questionCurrency;
 					break;
 				default:
 					break;
@@ -225,12 +214,12 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 			
 			questionBitmap.x = buttonBitmap.x + buttonBitmap.width - questionBitmap.width;
 			
-			if (messageData.systemMessageVO.method == ChatSystemMsgVO.METHOD_LOCAL_TYPE) {
+			if (messageData.systemMessageVO.method == ChatSystemMsgVO.METHOD_LOCAL_SIDE) {
 				tipsText.visible = true;
 				tipsText.x = tf.x;
 				tipsText.y = tf.y + tf.height;
 				tipsText.width = questionBitmap.x - tipsText.x - Config.MARGIN;
-				tipsText.htmlText = Lang.textAdditionalTypeInfoDesc;
+				tipsText.htmlText = Lang.textAdditionalSideInfoDesc;
 				tipsText.height = tipsText.textHeight + 5;
 			}
 			
@@ -277,20 +266,14 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 			itemHitzones.push( { type:HitZoneType.BALLOON, x:x , y:y, width: boxBg.width, height: boxBg.height } );
 			var hitZoneType:String;
 			switch (currentMessage.systemMessageVO.method) {
-				case ChatSystemMsgVO.METHOD_LOCAL_EXTRA_TIPS:
-					hitZoneType = HitZoneType.TIPS_INFO;
+				case ChatSystemMsgVO.METHOD_LOCAL_SIDE:
+					hitZoneType = HitZoneType.SIDE_INFO;
 					break;
-				case ChatSystemMsgVO.METHOD_LOCAL_GEO:
-					hitZoneType = HitZoneType.GEO_INFO;
+				case ChatSystemMsgVO.METHOD_LOCAL_CRYPTO_AMOUNT:
+					hitZoneType = HitZoneType.CRYPTO_AMOUNT_INFO;
 					break;
-				case ChatSystemMsgVO.METHOD_LOCAL_SECRET:
-					hitZoneType = HitZoneType.SECRET_INFO;
-					break;
-				case ChatSystemMsgVO.METHOD_LOCAL_LANGUAGES:
-					hitZoneType = HitZoneType.LANGS_INFO;
-					break;
-				case ChatSystemMsgVO.METHOD_LOCAL_TYPE:
-					hitZoneType = HitZoneType.TYPE_INFO;
+				case ChatSystemMsgVO.METHOD_LOCAL_CURRENCY:
+					hitZoneType = HitZoneType.CURRENCY_INFO;
 					break;
 			}
 			if (hitZoneType != null)

@@ -86,6 +86,10 @@ package com.dukascopy.connect.vo {
 		static public const METHOD_LOCAL_TYPE:String = "type";
 		static public const METHOD_LOCAL_GEO:String = "Geolocation";
 		static public const METHOD_LOCAL_LANGUAGES:String = "languages";
+		static public const METHOD_LOCAL_SIDE:String = "side";
+		static public const METHOD_LOCAL_CRYPTO_AMOUNT:String = "cryptoAmount";
+		static public const METHOD_LOCAL_PRICE:String = "price";
+		static public const METHOD_LOCAL_CURRENCY:String = "currency";
 		
 		static public const METHOD_USER_ADD:String = "userAdd";
 		static public const METHOD_USER_REMOVE:String = "userRemove";

@@ -2,14 +2,12 @@ package com.dukascopy.connect.screens {
 	
 	import assets.JailedIllustrationClip;
 	import com.dukascopy.connect.Config;
+	import com.dukascopy.connect.MobileGui;
 	import com.dukascopy.connect.data.LocalAvatars;
 	import com.dukascopy.connect.data.PopupData;
 	import com.dukascopy.connect.data.screenAction.customActions.OpenBankAccountAction;
 	import com.dukascopy.connect.gui.chat.BubbleButton;
 	import com.dukascopy.connect.gui.chat.ConnectionIndicator;
-	import com.dukascopy.connect.gui.chatInput.ChatInputAndroid;
-	import com.dukascopy.connect.gui.chatInput.ChatInputIOS;
-	import com.dukascopy.connect.gui.chatInput.IChatInput;
 	import com.dukascopy.connect.gui.components.message.ToastMessage;
 	import com.dukascopy.connect.gui.lightbox.UI;
 	import com.dukascopy.connect.gui.list.List;
@@ -17,25 +15,20 @@ package com.dukascopy.connect.screens {
 	import com.dukascopy.connect.gui.list.renderers.ListLink;
 	import com.dukascopy.connect.gui.list.renderers.ListPayCurrency;
 	import com.dukascopy.connect.gui.list.renderers.ListQuestionType;
+	import com.dukascopy.connect.gui.menuVideo.HidableButton;
 	import com.dukascopy.connect.gui.preloader.Preloader;
-	import com.dukascopy.connect.gui.tools.HorizontalPreloader;
 	import com.dukascopy.connect.gui.topBar.TopBarScreen;
-	import com.dukascopy.connect.MobileGui;
 	import com.dukascopy.connect.screens.base.BaseScreen;
 	import com.dukascopy.connect.screens.dialogs.ScreenLinksDialog;
 	import com.dukascopy.connect.screens.dialogs.geolocation.CityGeoposition;
+	import com.dukascopy.connect.screens.dialogs.x.base.bottom.ListSelectionPopup;
 	import com.dukascopy.connect.screens.serviceScreen.BottomPopupScreen;
 	import com.dukascopy.connect.sys.auth.Auth;
-	import com.dukascopy.connect.sys.chatManager.ChatManager;
 	import com.dukascopy.connect.sys.chatManager.typesManagers.AnswersManager;
 	import com.dukascopy.connect.sys.connectionManager.NetworkManager;
 	import com.dukascopy.connect.sys.dialogManager.DialogManager;
 	import com.dukascopy.connect.sys.echo.echo;
 	import com.dukascopy.connect.sys.geolocation.GeolocationManager;
-	import com.dukascopy.connect.sys.payments.PayAPIManager;
-	import com.dukascopy.connect.sys.payments.PayAPIManager;
-	import com.dukascopy.connect.sys.payments.PayConfig;
-	import com.dukascopy.connect.sys.payments.PayManager;
 	import com.dukascopy.connect.sys.questionsManager.QuestionsManager;
 	import com.dukascopy.connect.sys.serviceScreenManager.ServiceScreenManager;
 	import com.dukascopy.connect.sys.theme.AppTheme;
@@ -45,13 +38,12 @@ package com.dukascopy.connect.screens {
 	import com.dukascopy.connect.vo.ChatSystemMsgVO;
 	import com.dukascopy.connect.vo.QuestionVO;
 	import com.dukascopy.langs.Lang;
-	import com.greensock.TweenMax;
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
 	import flash.display.Sprite;
 	import flash.events.Event;
-	import flash.net.navigateToURL;
 	import flash.net.URLRequest;
+	import flash.net.navigateToURL;
 	
 	/**
 	 * ...
@@ -64,7 +56,6 @@ package com.dukascopy.connect.screens {
 		
 		private var topBar:TopBarScreen;
 		private var list:List;
-		private var chatInput:IChatInput;
 		private var preloader:Preloader;
 		private var backClip:Sprite;
 		private var answersCountButton:BubbleButton;
@@ -78,10 +69,10 @@ package com.dukascopy.connect.screens {
 		
 		private var trashAdded:Boolean = false;
 		
-		private var inputText:String;
 		private var noConnectionIndicator:ConnectionIndicator;
 		
-		private var horizontalLoader:HorizontalPreloader;
+		private var createChatButton:HidableButton;
+		private var addQuestionIcon:SWFAddQuestionButton;
 		
 		public function QuestionCreateUpdateScreen() { }
 		
@@ -96,15 +87,6 @@ package com.dukascopy.connect.screens {
 			list.background = true;
 			_view.addChild(list.view);
 			
-			if (Config.PLATFORM_APPLE)
-				chatInput = new ChatInputIOS(Lang.enterQuestion, ChatInputIOS.SNAPSHOT_TYPE_911);
-			else
-				chatInput = new ChatInputAndroid();
-			chatInput.blockExtraFunctions();
-			
-			if (chatInput && chatInput.getView())
-				_view.addChild(chatInput.getView());
-			
 			topBar = new TopBarScreen();
 			_view.addChild(topBar);
 			
@@ -113,13 +95,16 @@ package com.dukascopy.connect.screens {
 			preloader.hide();
 			view.addChild(preloader);
 			
-			horizontalLoader = new HorizontalPreloader(0xF6951D);
-			view.addChild(horizontalLoader);
+			createChatButton = new HidableButton();
+			createChatButton.unhide();
+			createChatButton.tapCallback = onChatSend;
+			addQuestionIcon ||= new SWFAddQuestionButton();
+			createChatButton.setDesign(addQuestionIcon);
+			_view.addChild(createChatButton);
 		}
 		
 		private function showPreloader():void {
 			preloader.show();
-		//	horizontalLoader.start();
 		}
 		
 		/**
@@ -131,22 +116,11 @@ package com.dukascopy.connect.screens {
 			super.initScreen(data);
 			if (data != null)
 				topBar.setData(data.title, true, null);
-			if(Config.PLATFORM_APPLE)
-				ChatInputIOS.S_INPUT_POSITION.add(updateListWithKeyboard);
-			else
-				ChatInputAndroid.S_INPUT_HEIGHT_CHANGED.add(setChatListSize);
-			
 			backClip.graphics.clear();
 			backClip.graphics.beginFill(DEFAULT_BACKGROUND_COLOR);
 			backClip.graphics.drawRect(0, 0, _width, _height - topBar.trueHeight);
 			backClip.graphics.endFill();
 			backClip.y = topBar.trueHeight;
-			
-			if (Config.PLATFORM_APPLE) {
-				if (chatInput)
-					chatInput.setMaxTopY(Config.FINGER_SIZE * 3 + Config.MARGIN);
-			} else
-				chatInput.setWidth(_width);
 			
 			var qVO:QuestionVO;
 			if (data != null)
@@ -157,8 +131,6 @@ package com.dukascopy.connect.screens {
 				trashAdded = true;
 				QuestionsManager.setInOut(true);
 			}
-			onCloseChatKeyboard();
-			
 			fillList();
 			// Add signal update question
 			QuestionsManager.S_CURRENT_QUESTION_UPDATED.add(activate);
@@ -174,11 +146,15 @@ package com.dukascopy.connect.screens {
 			
 			onNetworkChanged();
 			
-			horizontalLoader.setSize(_width, int(Config.FINGER_SIZE * .07));
+			if (qVO == null) {
+				createChatButton.setPosition(_width - Config.FINGER_SIZE - Config.MARGIN * 2,  _height - Config.FINGER_SIZE - Config.MARGIN * 2);
+				createChatButton.setOffset(Config.TOP_BAR_HEIGHT * 2 + Config.APPLE_TOP_OFFSET);
+			} else {
+				createChatButton.visible = false;
+			}
 		}
 		
 		private function hidePreloader():void {
-		//	horizontalLoader.stop();
 			if (preloader != null)
 				preloader.hide();
 		}
@@ -213,11 +189,7 @@ package com.dukascopy.connect.screens {
 				return;
 			if (list == null)
 				return;
-			if (Config.PUBLIC_QUESTIONS_ALLOWED == true) {
-				list.updateItemByIndex(2);
-				return;
-			}
-			list.updateItemByIndex(1);
+			list.updateItemByIndex(2);
 		}
 		
 		private function updateCategoriesChatItem():void {
@@ -263,44 +235,9 @@ package com.dukascopy.connect.screens {
 			messageData.id = 0;
 			messageData.user_avatar = LocalAvatars.QUESTIONS;
 			messageData.user_name = "911";
-			messageData.text = Lang.askAnyQuestions;
+			messageData.text = Lang.createOfferStartMessage;
 			messageData.usePlainText = true;
 			messageData.created = (new Date()).getTime() / 1000;
-			messageData.isEntryMessage = true;
-			message = new ChatMessageVO(messageData);
-			_messages.push(message);
-			
-			if (Config.PUBLIC_QUESTIONS_ALLOWED == true) {
-				messageData = {};
-				messageData.id = 0;
-				messageData.user_avatar = LocalAvatars.QUESTIONS;
-				messageData.user_name = "911";
-				messageData.text = Config.BOUNDS + JSON.stringify( { type:ChatSystemMsgVO.TYPE_LOCAL_QUESTION, method: ChatSystemMsgVO.METHOD_LOCAL_TYPE, title:Lang.questionType } );
-				messageData.usePlainText = true;
-				messageData.created = (new Date()).getTime() / 1000;
-				messageData.isEntryMessage = true;
-				message = new ChatMessageVO(messageData);
-				_messages.push(message);
-			}
-			
-			/*messageData = {};
-			messageData.id = 0;
-			messageData.user_avatar = LocalAvatars.QUESTIONS;
-			messageData.user_name = "911";
-			messageData.text = Config.BOUNDS + JSON.stringify( { type:ChatSystemMsgVO.TYPE_LOCAL_QUESTION, method: ChatSystemMsgVO.METHOD_LOCAL_GEO, title:Lang.extraTipsTitle } );
-			messageData.usePlainText = true;
-			messageData.created = 0;
-			messageData.isEntryMessage = true;
-			message = new ChatMessageVO(messageData);
-			_messages.push(message);*/
-			
-			messageData = {};
-			messageData.id = 0;
-			messageData.user_avatar = LocalAvatars.QUESTIONS;
-			messageData.user_name = "911";
-			messageData.text = Config.BOUNDS + JSON.stringify( { type:ChatSystemMsgVO.TYPE_LOCAL_QUESTION, method: ChatSystemMsgVO.METHOD_LOCAL_EXTRA_TIPS, title:Lang.extraTipsTitle } );
-			messageData.usePlainText = true;
-			messageData.created = 0;
 			messageData.isEntryMessage = true;
 			message = new ChatMessageVO(messageData);
 			_messages.push(message);
@@ -309,48 +246,40 @@ package com.dukascopy.connect.screens {
 			messageData.id = 0;
 			messageData.user_avatar = LocalAvatars.QUESTIONS;
 			messageData.user_name = "911";
-			messageData.text = Config.BOUNDS + JSON.stringify( { type:ChatSystemMsgVO.TYPE_LOCAL_QUESTION, method: ChatSystemMsgVO.METHOD_LOCAL_SECRET, title:Lang.categoriesTitle } );
+			messageData.text = Config.BOUNDS + JSON.stringify( { type:ChatSystemMsgVO.TYPE_LOCAL_QUESTION, method: ChatSystemMsgVO.METHOD_LOCAL_SIDE, title:Lang.questionSide } );
 			messageData.usePlainText = true;
 			messageData.created = (new Date()).getTime() / 1000;
 			messageData.isEntryMessage = true;
 			message = new ChatMessageVO(messageData);
 			_messages.push(message);
 			
-			/*messageData = {};
+			messageData = {};
 			messageData.id = 0;
 			messageData.user_avatar = LocalAvatars.QUESTIONS;
 			messageData.user_name = "911";
-			messageData.text = ChatMessageVO.TYPE_LANGS;
+			messageData.text = Config.BOUNDS + JSON.stringify( { type:ChatSystemMsgVO.TYPE_LOCAL_QUESTION, method: ChatSystemMsgVO.METHOD_LOCAL_CRYPTO_AMOUNT, title:Lang.questionCryptoAmount } );
 			messageData.usePlainText = true;
 			messageData.created = (new Date()).getTime() / 1000;
 			messageData.isEntryMessage = true;
 			message = new ChatMessageVO(messageData);
-			_messages.push(message);*/
+			_messages.push(message);
 			
-			if (QuestionsManager.getCurrentQuestion() != null) {
-				for (var i:int = 0; i < QuestionsManager.getCurrentQuestion().messages.length; i++) {
-					message = new ChatMessageVO(createQuestionMessage(QuestionsManager.getCurrentQuestion().messages[i].text, QuestionsManager.getCurrentQuestion().messages[i].createdTime));
-					_messages.push(message);
-				}
-			}
+			messageData = {};
+			messageData.id = 0;
+			messageData.user_avatar = LocalAvatars.QUESTIONS;
+			messageData.user_name = "911";
+			messageData.text = Config.BOUNDS + JSON.stringify( { type:ChatSystemMsgVO.TYPE_LOCAL_QUESTION, method: ChatSystemMsgVO.METHOD_LOCAL_CURRENCY, title:Lang.questionCurrency } );
+			messageData.usePlainText = true;
+			messageData.created = 0;
+			messageData.isEntryMessage = true;
+			message = new ChatMessageVO(messageData);
+			_messages.push(message);
+			
 			list.setData(_messages, ListChatItem, ['avatarForChat', 'imageThumbURLWithKey']);
 			list.scrollBottom();
 		}
 		
-		override public function startRenderingBitmap():void {
-			chatInput.showBG();
-		}
-		
 		override public function onBack(e:Event = null):void {
-			if (chatInput != null)
-			{
-				if (Config.PLATFORM_APPLE) {
-					(chatInput as ChatInputIOS).redrawScreenshot();
-					(chatInput as ChatInputIOS).y = (MobileGui.stage.stageHeight - (chatInput as ChatInputIOS).height);
-				} else if (Config.PLATFORM_ANDROID)
-					(chatInput as ChatInputAndroid).setY(MobileGui.stage.stageHeight - (chatInput as ChatInputAndroid).height);
-			}
-			
 			QuestionsManager.resetCurrentProperties();
 			
 			super.onBack(e);
@@ -378,13 +307,9 @@ package com.dukascopy.connect.screens {
 			}
 			list.view.y = Config.FINGER_SIZE * .85 + Config.APPLE_TOP_OFFSET;
 			
-			if (Config.PLATFORM_ANDROID)
-				chatInput.setY(MobileGui.stage.stageHeight - (chatInput as ChatInputAndroid).height);
 			setChatListSize();
 			backClip.width = _width;
 			backClip.height = _height;
-			
-			horizontalLoader.y = topBar.y + topBar.height;
 		}
 		
 		override public function activateScreen():void {
@@ -402,20 +327,12 @@ package com.dukascopy.connect.screens {
 			list.activate();
 			list.S_ITEM_TAP.add(onItemTap);
 			
-			if (chatInput) {
-				chatInput.activate();
-				chatInput.setCallBack(onChatSend);
-			}
 			if (answersCountButton) 
 				answersCountButton.activate();
+			if (createChatButton != null)
+				createChatButton.activate();
 			
 			setChatListSize();
-			
-			if (chatInput != null) {
-				chatInput.show(Lang.enterQuestion);
-				if (Config.PLATFORM_APPLE && chatInput)
-					chatInput.blockExtraFunctions();
-			}
 		}
 		
 		private function onItemTap(data:Object, n:int):void {
@@ -428,48 +345,46 @@ package com.dukascopy.connect.screens {
 			}
 			var cmsgVO:ChatMessageVO = data as ChatMessageVO;
 			var lhz:String = list.getItemByNum(n).getLastHitZone();
-			if (lhz == HitZoneType.TIPS_INFO) {
-				DialogManager.alert(Lang.information, Lang.textAdditionalTipsInfo);
+			if (lhz == HitZoneType.SIDE_INFO) {
+				DialogManager.alert(Lang.information, Lang.textAdditionalSideInfo);
 				return;
 			}
-			if (lhz == HitZoneType.LANGS_INFO) {
-				DialogManager.alert(Lang.information, Lang.textAdditionalLanguagesInfo);
+			if (lhz == HitZoneType.CRYPTO_AMOUNT_INFO) {
+				DialogManager.alert(Lang.information, Lang.textAdditionalCryptoAmountInfo);
 				return;
 			}
-			if (lhz == HitZoneType.SECRET_INFO) {
-				DialogManager.alert(Lang.information, Lang.textAdditionalCategoiesInfo);
-				return;
-			}
-			if (lhz == HitZoneType.TYPE_INFO) {
-				DialogManager.alert(Lang.information, Lang.textAdditionalTypeInfo);
-				return;
-			}
-			if (lhz == HitZoneType.GEO_INFO) {
-				DialogManager.alert(Lang.information, Lang.textAdditionalGeoInfo);
-				GeolocationManager.getLocation();
+			if (lhz == HitZoneType.CURRENCY_INFO) {
+				DialogManager.alert(Lang.information, Lang.textAdditionalCurrencyInfo);
 				return;
 			}
 			if (lhz == HitZoneType.BALLOON) {
 				if (cmsgVO.isEntryMessage == true) {
 					if (cmsgVO.typeEnum == ChatSystemMsgVO.TYPE_LOCAL_QUESTION && QuestionsManager.getCurrentQuestion() == null) {
-						if (cmsgVO.systemMessageVO.method == ChatSystemMsgVO.METHOD_LOCAL_EXTRA_TIPS) {
+						if (cmsgVO.systemMessageVO.method == ChatSystemMsgVO.METHOD_LOCAL_CRYPTO_AMOUNT) {
 							checkForAddingTips();
 							return;
 						}
-						if (cmsgVO.systemMessageVO.method == ChatSystemMsgVO.METHOD_LOCAL_SECRET) {
-							DialogManager.showSecretPopup(onSecretSelected);
+						if (cmsgVO.systemMessageVO.method == ChatSystemMsgVO.METHOD_LOCAL_CURRENCY) {
+							if (QuestionsManager.getTipsCurrency() == null) {
+								DialogManager.alert(Lang.information, Lang.textAdditionalCurrencyInfo);
+								return;
+							}
+							var currencies:Array = new Array();
+							for (var i:int = 0; i < QuestionsManager.getTipsCurrency().price.length; i++)
+								currencies.push(QuestionsManager.getTipsCurrency().price[i].name);
+							DialogManager.showDialog(
+								ListSelectionPopup, 
+								{
+									items:currencies,
+									title:Lang.selectCurrency,
+									renderer:ListPayCurrency,
+									callback:callBackSelectCurrency
+								}, ServiceScreenManager.TYPE_SCREEN
+							);
 							return;
 						}
-						if (cmsgVO.systemMessageVO.method == ChatSystemMsgVO.METHOD_LOCAL_GEO) {
-							DialogManager.showGeoPopup(onGeoSelected, QuestionsManager.getQuestionGeoMode());
-							return;
-						}
-						if (cmsgVO.systemMessageVO.method == ChatSystemMsgVO.METHOD_LOCAL_LANGUAGES) {
-							DialogManager.showLangPopup();
-							return;
-						}
-						if (cmsgVO.systemMessageVO.method == ChatSystemMsgVO.METHOD_LOCAL_TYPE) {
-							DialogManager.showSelectItemDialog( { callBack:onTypeChanged, itemClass:ListQuestionType, listData:QuestionsManager.questionsTypes, title:Lang.textSelectType } );
+						if (cmsgVO.systemMessageVO.method == ChatSystemMsgVO.METHOD_LOCAL_SIDE) {
+							DialogManager.showSelectItemDialog( { callBack:onSideChanged, itemClass:ListQuestionType, listData:QuestionsManager.questionsSides, title:Lang.textSelectSide } );
 							return;
 						}
 					}
@@ -488,14 +403,11 @@ package com.dukascopy.connect.screens {
 			}
 		}
 		
-		private function onTypeChanged(val:int):void {
+		private function onSideChanged(val:int):void {
 			if (val == -1)
 				return;
-			QuestionsManager.setQuestionType(val);
+			QuestionsManager.setQuestionSide(val);
 			list.updateItemByIndex(1);
-			QuestionsManager.resetTips();
-			updateTipsChatItem();
-			chatInput.blockStickers(val == 1);
 		}
 		
 		private function onSecretSelected(incognito:Boolean = false):void {
@@ -503,9 +415,9 @@ package com.dukascopy.connect.screens {
 			updateCategoriesChatItem();
 		}
 		
-		private function onGeoSelected(geo:CityGeoposition = null):void {
-			QuestionsManager.saveGeoMode(geo);
-			updateGeoChatItem();
+		private function callBackSelectCurrency(currency:String):void {
+			QuestionsManager.saveCurrency(currency);
+			list.updateItemByIndex(3);
 		}
 		
 		private function checkForAddingTips():void {
@@ -522,64 +434,18 @@ package com.dukascopy.connect.screens {
 				checkForPaymentsAccount();
 		}
 		
-		/*private function checkForPaymentsAccount():void {
-			chatInput.deactivate();
-			if (Auth.bank_phase != "ACC_APPROVED") {
-				var popupData:PopupData = new PopupData();
-				var action:OpenBankAccountAction = new OpenBankAccountAction();
-				action.setData(Lang.openBankAccount);
-				popupData.action = action;
-				popupData.illustration = JailedIllustrationClip;
-				popupData.title = Lang.noBankAccount;
-				popupData.text = Lang.featureNoPaments;
-				ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, BottomPopupScreen, popupData);
-				//DialogManager.alert(Lang.information, Lang.featureNoPaments, createPaymentsAccount, Lang.registrate, Lang.textCancel);
-			} else
-				ServiceScreenManager.showExtraTipsPopup(null, QuestionsManager.getQuestionType());
-		}*/
-		
 		private function checkForPaymentsAccount():void {
-
-
-			chatInput.deactivate();
-
-
 			if (Auth.bank_phase != "ACC_APPROVED") {
-
-
 				var popupData:PopupData = new PopupData();
-
-
 				var action:OpenBankAccountAction = new OpenBankAccountAction();
-
-
 				action.setData(Lang.openBankAccount);
-
-
 				popupData.action = action;
-
-
 				popupData.illustration = JailedIllustrationClip;
-
-
 				popupData.title = Lang.noBankAccount;
-
-
 				popupData.text = Lang.featureNoPaments;
-
-
 				ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, BottomPopupScreen, popupData);
-
-
-				//DialogManager.alert(Lang.information, Lang.featureNoPaments, createPaymentsAccount, Lang.registrate, Lang.textCancel);
-
-
 			} else
-
-
-				ServiceScreenManager.showExtraTipsPopup(null, QuestionsManager.getQuestionType());
-
-
+				ServiceScreenManager.showExtraTipsPopup(null);
 		}
 		
 		private function createPaymentsAccount(val:int):void {
@@ -598,21 +464,8 @@ package com.dukascopy.connect.screens {
 			list.deactivate();
 			if (answersCountButton)
 				answersCountButton.deactivate();
-			if (Config.PLATFORM_APPLE) {
-				chatInput.hide();
-			} else {
-				chatInput.hide();
-				chatInput.setCallBack(null);
-				chatInput.deactivate();
-			}
-		}
-		
-		private function onCloseChatKeyboard():void {
-			echo("QuestionCreateUpdateScreen", "onCloseChatKeyboard", "");
-			if(!Config.PLATFORM_APPLE) {
-				var openChatY:int = _height - (chatInput as ChatInputAndroid).height;
-				chatInput.setY(openChatY);
-			}
+			if (createChatButton != null)
+				createChatButton.deactivate();
 		}
 		
 		private function checkScrollToBottom():Boolean {
@@ -634,7 +487,7 @@ package com.dukascopy.connect.screens {
 			if (list.innerHeight + list.getBoxY() > list.height)
 				inBotomPosition = false;
 			var lastY:Number = 0;
-			var bottomY:int = chatInput.getView().y;
+			var bottomY:int = _height;
 			if (answersCountButton) {
 				answersCountButton.y = bottomY - answersCountButton.height - Config.MARGIN;
 				answersCountButton.x = _width * .6 ;
@@ -655,18 +508,14 @@ package com.dukascopy.connect.screens {
 				list.scrollBottom();
 		}
 		
-		private function onChatSend(txt:String):Boolean {
+		private function onChatSend():Boolean {
 			if (busy == true)
 				return false;
 			busy = true;
-			inputText = txt;
-			
-			if (QuestionsManager.getCurrentQuestion() == null)
-			{
+			if (QuestionsManager.getCurrentQuestion() == null) {
 				showPreloader();
 			}
-			
-			QuestionsManager.createUpdateQuestion(txt);
+			QuestionsManager.createUpdateQuestion("Escrow");
 			return true;
 		}
 		
@@ -779,15 +628,6 @@ package com.dukascopy.connect.screens {
 			if (preloader != null)
 				preloader.dispose();
 			preloader = null;
-			if (chatInput != null) {
-				if (Config.PLATFORM_APPLE)
-					ChatInputIOS.S_INPUT_POSITION.remove(updateListWithKeyboard);
-				else
-					ChatInputAndroid.S_INPUT_HEIGHT_CHANGED.remove(setChatListSize);
-				chatInput.dispose();
-			}
-			chatInput = null;
-			
 			if (preloader != null)
 				preloader.dispose();
 			preloader = null;
@@ -800,16 +640,13 @@ package com.dukascopy.connect.screens {
 				UI.destroy(backClip);
 			backClip = null;
 			
+			if (createChatButton)
+				createChatButton.dispose();
+			createChatButton = null;
+			
 			if (topBar != null)
 				topBar.dispose();
 			topBar = null;
-			
-			if (horizontalLoader != null)
-			{
-				horizontalLoader.dispose();
-				horizontalLoader = null;
-			}
-			
 			super.clearView();
 		}
 		
@@ -830,16 +667,6 @@ package com.dukascopy.connect.screens {
 			hidePreloader();
 			busy = false;
 			ToastMessage.display(Lang.sendMessageFail);
-			TweenMax.delayedCall(1, setLastText, null, true);
-		}
-		
-		private function setLastText():void {
-			if (chatInput != null)
-				chatInput.setValue(inputText);
-		}
-		
-		private function updateListWithKeyboard():void {
-			setChatListSize(false);
 		}
 		
 		private function onTrashTap():void {

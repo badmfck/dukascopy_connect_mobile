@@ -274,7 +274,7 @@ package com.dukascopy.connect.screens.innerScreens {
 			}
 			if (id == TAB_911) {
 				addQuestionIcon ||= new SWFAddQuestionButton();
-				createChatButton.setDesign(addQuestionIcon);	
+				createChatButton.setDesign(addQuestionIcon);
 				createChatButton.visible = true;
 				return;
 			}

@@ -81,13 +81,10 @@ package com.dukascopy.connect.gui.chatInput {
 				bg.bitmapData = UI.getColorTexture(Style.color(Style.COLOR_BACKGROUND));
 			addChild(bg);
 			y = MobileGui.stage.stageHeight - getStartHeight();
-			
-			// IOS X
 			y -= Config.APPLE_BOTTOM_OFFSET;
 			graphics.beginFill(Style.color(Style.COLOR_INPUT_BACKGROUND));
 			graphics.drawRect(0, 0, MobileGui.stage.width, Config.FINGER_SIZE * 6);
 			graphics.endFill();
-			
 		}
 		
 		public static function init():void {
@@ -97,22 +94,15 @@ package com.dukascopy.connect.gui.chatInput {
 			}
 		}
 		
-		public function hideStickersAndAttachButton():void
-		{
-			/*if (MobileGui.dce != null) {
-				MobileGui.dce.inputViewHideAttachAndStickersButton();
-			}*/
+		public function hideStickersAndAttachButton():void {
+			
 		}
 		
-		public function setLeftMargin(value:int):void
-		{
-			/*if (MobileGui.dce != null) {
-				MobileGui.dce.inputViewSetLeftMargin(value);
-			}*/
+		public function setLeftMargin(value:int):void {
+			
 		}
 		
-		override public function get height():Number
-		{
+		override public function get height():Number {
 			return inputViewHeight;
 		}
 		
@@ -144,37 +134,28 @@ package com.dukascopy.connect.gui.chatInput {
 				shown = true;
 				
 				MobileGui.dce.inputViewShow(getChatUser(), defaultText);
-				if (lastPayButtonsStatus == false)
-				{
+				if (lastPayButtonsStatus == false) {
 					initButtons(lastPayButtonsStatus);
 					lastPayButtonsStatus = true;
 				}
-				if (currentInputText != null)
-				{
+				if (currentInputText != null) {
 					MobileGui.dce.inputViewSetText(currentInputText);
 					currentInputText = null;
 				}
-				if (extraFunctionsAvaliable == false)
-				{
+				if (extraFunctionsAvaliable == false) {
 					MobileGui.dce.inputViewDisableAttachButton();
 				}
-				
-				if (pendingEdit != null)
-				{
+				if (pendingEdit != null) {
 					callNativeEdit(pendingEdit);
 					pendingEdit = null;
 				}
 			}
 		}
 		
-		private function getChatUser():IosChatUser 
-		{
+		private function getChatUser():IosChatUser {
 			var user:IosChatUser = new IosChatUser();
-				
-			if (ChatManager.getCurrentChat() != null)
-			{
-				if (ChatManager.getCurrentChat().type == ChatRoomType.GROUP || ChatRoomType.CHANNEL)
-				{
+			if (ChatManager.getCurrentChat() != null) {
+				if (ChatManager.getCurrentChat().type == ChatRoomType.GROUP || ChatRoomType.CHANNEL) {
 					user.avatar = ChatManager.getCurrentChat().avatar;
 					user.name = ChatManager.getCurrentChat().title;
 				}
@@ -187,18 +168,6 @@ package com.dukascopy.connect.gui.chatInput {
 					}
 				}
 			}
-			/*else
-			{
-				var userModel:ChatUserVO = UsersManager.getInterlocutor(ChatManager.getCurrentChat());
-				
-				if (userModel != null)
-				{
-					user.avatar = userModel.avatarURL;
-					user.id = userModel.uid;
-					user.name = userModel.name;
-				}
-			}*/
-			
 			return user;
 		}
 		
@@ -226,8 +195,7 @@ package com.dukascopy.connect.gui.chatInput {
 		public function hideBackground():void {
 			if (bg)
 				bg.visible = false;
-			
-			if (shown == false){
+			if (shown == false) {
 				graphics.clear();
 			}
 		}

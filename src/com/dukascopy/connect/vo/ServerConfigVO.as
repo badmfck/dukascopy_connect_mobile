@@ -429,5 +429,13 @@ package com.dukascopy.connect.vo {
 				return _raw.BANK_CACHE_MINUTE;
 			return -1;
 		}
+		
+		public function get supportBotUID():String {
+			if (_raw == null)
+				return "WgDNWdIEW4I6IsWg";
+			if ("SUPPORT_BOT_UID" in _raw == true)
+				return _raw.SUPPORT_BOT_UID;
+			return "WgDNWdIEW4I6IsWg";
+		}
 	}
 }

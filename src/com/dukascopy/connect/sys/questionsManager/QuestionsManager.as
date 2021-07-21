@@ -6,6 +6,7 @@ package com.dukascopy.connect.sys.questionsManager {
 	import com.dukascopy.connect.data.MediaFileData;
 	import com.dukascopy.connect.data.SelectorItemData;
 	import com.dukascopy.connect.gui.components.message.ToastMessage;
+	import com.dukascopy.connect.managers.escrow.vo.EscrowInstrument;
 	import com.dukascopy.connect.screens.QuestionCreateUpdateScreen;
 	import com.dukascopy.connect.screens.dialogs.geolocation.CityGeoposition;
 	import com.dukascopy.connect.screens.dialogs.newDialogs.ExpiredQuestionPopup;
@@ -89,6 +90,9 @@ package com.dukascopy.connect.sys.questionsManager {
 		static public const QUESTION_TYPE_PRIVATE:String = "private";
 		static public const QUESTION_TYPE_PUBLIC:String = "public";
 		
+		static public const QUESTION_SIDE_BUY:String = "buy";
+		static public const QUESTION_SIDE_SELL:String = "sell";
+		
 		static public const COMPLAIN_SPAM:String = "Spam";
 		static public const COMPLAIN_ABUSE:String = "Abuse";
 		static public const COMPLAIN_BLOCK:String = "Block";
@@ -109,12 +113,18 @@ package com.dukascopy.connect.sys.questionsManager {
 		static public const S_CATEGORIES:Signal = new Signal("QuestionsManager.S_CATEGORIES");
 		static public const S_FILTER_CLEARED:Signal = new Signal("QuestionsManager.S_FILTER_CLEARED");
 		static public const S_LANGUAGES:Signal = new Signal("QuestionsManager.S_LANGUAGES");
+		static public const S_CURRENCY:Signal = new Signal("QuestionsManager.S_CURRENCY");
 		
 		static public const S_QUESTION_PROLONG:Signal = new Signal("QuestionsManager.S_QUESTION_PROLONG");
 		
 		static public const questionsTypes:Array = [
 			{ label:Lang.textQuestionTypePrivate, type:QUESTION_TYPE_PRIVATE },
 			{ label:Lang.textQuestionTypePublic, type:QUESTION_TYPE_PUBLIC }
+		];
+		
+		static public const questionsSides:Array = [
+			{ label:Lang.textQuestionSideBuy, type:QUESTION_SIDE_BUY },
+			{ label:Lang.textQuestionSideSell, type:QUESTION_SIDE_SELL }
 		];
 		
 		
@@ -138,14 +148,16 @@ package com.dukascopy.connect.sys.questionsManager {
 		static private var _isInitedPayingUsers:Boolean = false;
 		
 		static private var tipsAmount:Number;
-		static private var tipsCurrency:String;
+		static private var tipsCurrency:EscrowInstrument;
 		static private var tipsSetted:Boolean = false;
+		static private var currency:String;
 		
 		static private var categories:Vector.<SelectorItemData>;
 		static private var languages:Vector.<SelectorItemData>;
 		static private var incognito:Boolean = false;
 		static private var geo:CityGeoposition;
 		static private var type:int;
+		static private var side:int;
 		static private var newFilteredQuestions:Boolean;
 		static private var categoriesFilter:Array;
 		static private var categoriesFilterNames:String = "";
@@ -707,19 +719,14 @@ package com.dukascopy.connect.sys.questionsManager {
 		}
 		
 		static private function askForProlong(prolong:Array):void {
-			
-			if (prolong == null)
-			{
+			if (prolong == null) {
 				return;
 			}
-			if (prolong.length == 1)
-			{
-				if (prolong[0] == null || (prolong[0] is QuestionVO) == false || (prolong[0] as QuestionVO).isDisposed)
-				{
+			if (prolong.length == 1) {
+				if (prolong[0] == null || (prolong[0] is QuestionVO) == false || (prolong[0] as QuestionVO).isDisposed) {
 					return;
 				}
 			}
-			
 			ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, ExpiredQuestionPopup, { questions : prolong } );
 		}
 		
@@ -981,13 +988,13 @@ package com.dukascopy.connect.sys.questionsManager {
 				DialogManager.alert(Lang.information, Lang.textTypePublicTips);
 				return;
 			}
-			if (!isNaN(tipsAmount)) {
+			/*if (!isNaN(tipsAmount)) {
 				var task:AskPrivateQuestionWithTipsServerTask = new AskPrivateQuestionWithTipsServerTask(tipsAmount, tipsCurrency, text, wallet, incognito, questionsTypes[type].type, (geo != null) ? geo.location : null);
 				task.S_ACTION_FAIL.add(onCreateQuestionFail);
 				task.S_ACTION_SUCCESS.add(onCreateQuestionSuccess);
 				task.execute();
-			} else
-				PHP.question_create(onQuestionCreated, Crypter.crypt(text, MESSAGE_KEY), tipsAmount, tipsCurrency, createCategoriesString(), incognito, questionsTypes[type].type);
+			} else*/
+				PHP.question_create(onQuestionCreated, Crypter.crypt(text, MESSAGE_KEY), tipsAmount, tipsCurrency.code, currency, incognito, questionsSides[side].type);
 		}
 		
 		static private function onCreateQuestionSuccess(data:Object):void {
@@ -995,7 +1002,6 @@ package com.dukascopy.connect.sys.questionsManager {
 				questions = [];
 			if (questionsMine == null)
 				questionsMine = [];
-			
 			if (questionsMine.length > 0 && (questionsMine[0].uid == null || questionsMine[0].uid == ""))
 				questionsMine.splice(0, 1);
 			currentQuestion = new QuestionVO(data);
@@ -1006,11 +1012,9 @@ package com.dukascopy.connect.sys.questionsManager {
 			WSClient.call_blackHoleToGroup("que", "send", "mobile", WSMethodType.QUESTION_CREATED, { quid:questionsMine[0].uid, senderUID:senderUID, categories:createCategoriesString(), data:JSON.stringify(data) } );
 		}
 		
-		static private function onCreateQuestionFail(error:String = null):void 
-		{
+		static private function onCreateQuestionFail(error:String = null):void {
 			var errorMsg:String = error;
-			if (errorMsg != null)
-			{
+			if (errorMsg != null) {
 				if (errorMsg.substr(0, 7) == "que..08")
 					DialogManager.alert(Lang.textAlert, error.substr(8));
 				if (errorMsg.substr(0, 7) == "que..17")
@@ -1027,18 +1031,15 @@ package com.dukascopy.connect.sys.questionsManager {
 						errorText = errorText.replace("3", errorMsg.split(",")[1]);
 					}
 					DialogManager.alert(Lang.textAttention, errorText);
-				}
-				else
-				{
+				} else {
 					DialogManager.alert(Lang.textAttention, errorMsg);
 				}
 			}
-			
 			S_QUESTION_CREATE_FAIL.invoke();
 		}
 		
 		static public function editQuestion(quid:String, text:String):void {
-			PHP.question_edit(onQuestionEdited, quid, (text == null) ? null : Crypter.crypt(text, MESSAGE_KEY), tipsAmount, tipsCurrency, createCategoriesString(), incognito);
+			PHP.question_edit(onQuestionEdited, quid, (text == null) ? null : Crypter.crypt(text, MESSAGE_KEY), tipsAmount, tipsCurrency.code, createCategoriesString(), incognito);
 		}
 		
 		static public function createCategoriesString(workWithParam:Boolean = false, cats:Vector.<SelectorItemData> = null):String {
@@ -1069,13 +1070,11 @@ package com.dukascopy.connect.sys.questionsManager {
 				phpRespond.dispose();
 				return;
 			}
-			
 			if (questions == null || questionsMine == null) {
 				S_CURRENT_QUESTION_UPDATED.invoke();
 				phpRespond.dispose();
 				return;
 			}
-			
 			var qVO:QuestionVO;
 			var ql:int = questions.length;
 			for (var i:int = 0; i < ql; i++) {
@@ -1604,7 +1603,7 @@ package com.dukascopy.connect.sys.questionsManager {
 				return;
 			}
 			tipsAmount = currentQuestion.tipsAmount;
-			tipsCurrency = currentQuestion.tipsCurrency;
+			//tipsCurrency = currentQuestion.tipsCurrency;
 			var _categories:Vector.<SelectorItemData> = CategoryManager.getCategoriesByID(currentQuestion.categories);
 			if (_categories != null)
 				saveCategories(_categories, currentQuestion.incognito);
@@ -1614,7 +1613,7 @@ package com.dukascopy.connect.sys.questionsManager {
 			DialogManager.show911Rules( { title:Lang.textRules } );
 		}
 		
-		static public function saveTipsForCurrentQuestion(tipsAmount:Number, tipsCurrency:String, needSignal:Boolean = false):void {
+		static public function saveTipsForCurrentQuestion(tipsAmount:Number, tipsCurrency:EscrowInstrument, needSignal:Boolean = false):void {
 			if (tipsAmount == 0) {
 				resetTips();
 			} else {
@@ -1634,7 +1633,7 @@ package com.dukascopy.connect.sys.questionsManager {
 		}
 		
 		static public function getTipsAmount():Number { return tipsAmount; }
-		static public function getTipsCurrency():String { return tipsCurrency; }
+		static public function getTipsCurrency():EscrowInstrument { return tipsCurrency; }
 		static public function getTipsSetted():Boolean { return tipsSetted; }
 		
 		static public function checkForUnsatisfiedQuestionWithTipsExists():int {
@@ -1715,6 +1714,17 @@ package com.dukascopy.connect.sys.questionsManager {
 		static public function saveLanguages(selectedItems:Vector.<SelectorItemData>):void {
 			languages = selectedItems;
 			S_LANGUAGES.invoke();
+		}
+		
+		static public function saveCurrency(selectedCurrency:String):void {
+			currency = selectedCurrency;
+			S_CURRENCY.invoke();
+		}
+		
+		static public function getQuestionCurrency():String {
+			if (currency == null)
+				return "";
+			return currency;
 		}
 		
 		static public function getQuestionLanguages():Vector.<SelectorItemData> {
@@ -1904,8 +1914,15 @@ package com.dukascopy.connect.sys.questionsManager {
 			return questionsTypes[type].label;
 		}
 		
+		static public function getQuestionSideLabel():String {
+			return questionsSides[side].label;
+		}
+		
 		static public function setQuestionType(val:int):void {
 			type = val;
+		}
+		static public function setQuestionSide(val:int):void {
+			side = val;
 		}
 		
 		static public function setShowTipsOnlyPublic(val:Boolean):void {
@@ -1919,6 +1936,9 @@ package com.dukascopy.connect.sys.questionsManager {
 		static public function refreshLangConsts():void {
 			questionsTypes[0].label = Lang.textQuestionTypePrivate;
 			questionsTypes[1].label = Lang.textQuestionTypePublic;
+			
+			questionsSides[0].label = Lang.textQuestionSideBuy;
+			questionsSides[1].label = Lang.textQuestionSideSell;
 		}
 		
 		static public function setFirstQuestionTimeOut(val:Number):void {

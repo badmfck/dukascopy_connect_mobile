@@ -39,6 +39,7 @@ package com.dukascopy.connect.vo {
 		private var _userVO:UserVO;
 		private var _newbie:Boolean;
 		private var _type:String;
+		private var _subtype:String;
 		private var _freshTime:Number = 0;
 		
 		private var _unread:Array;
@@ -100,6 +101,7 @@ package com.dukascopy.connect.vo {
 				_isPaid = true;
 			_status = data.status;
 			_type = data.type;
+			_subtype = data.subtype;
 			_unread = data.unread;
 			
 			if (data.categories != null)
@@ -117,9 +119,7 @@ package com.dukascopy.connect.vo {
 			}
 			
 			if ("paidBySuspend" in data && data.paidBySuspend == false)
-			{
 				needPayBeforeClose = true;
-			}
 			
 			busy = false;
 		}
@@ -172,6 +172,7 @@ package com.dukascopy.connect.vo {
 		public function get isPaid():Boolean { return _isPaid; }
 		public function get anonymData():Object { return _anonymData; }
 		public function get type():String { return _type; }
+		public function get subtype():String { return _subtype; }
 		public function get freshTime():Number { return _freshTime; }
 		public function get geo():Boolean { return _geo; }
 		public function get geolocation():Location { return _geolocation; }

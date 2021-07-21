@@ -730,6 +730,8 @@ package com.dukascopy.connect.gui.list.renderers {
 						else
 							str = Lang.noAswersYet;
 					}
+					if (str == null)
+						str = "";
 					tfAnswersNum.text = str;
 				}
 				tfAnswersNum.width = newWidth;
