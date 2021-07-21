@@ -167,7 +167,8 @@ package com.dukascopy.connect.vo {
 						_title = obj.title;
 					wasGroupTitle = true;
 				} else {
-					if (_users != null && _users.length > 0) {
+					_title = Lang.groupChat;
+					/*if (_users != null && _users.length > 0) {
 						_title = '';
 						for (var m:int = 0; m < _users.length; m++) {
 							if (_users[m].secretMode == true)
@@ -178,7 +179,7 @@ package com.dukascopy.connect.vo {
 						}
 						if (_title == "")
 							_title = "Secret chat";
-					}
+					}*/
 				}
 			}
 			if (_title == null)
