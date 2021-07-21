@@ -1760,13 +1760,16 @@ package com.dukascopy.connect.screens {
 					menuItems.push({fullLink:Lang.forwardMessage, id:ChatItemContextMenuItemType.FORWARD});
 				}
 			}
-			if (msgVO.renderInfo == null || msgVO.renderInfo.renderInforenderBigFont == false)
+			if (messageType != ChatSystemMsgVO.TYPE_FILE)
 			{
-				menuItems.push({fullLink:Lang.enlargeText, id:ChatItemContextMenuItemType.ENLARGE});
-			}
-			else
-			{
-				menuItems.push({fullLink:Lang.reduceText, id:ChatItemContextMenuItemType.MINIMIZE});
+				if (msgVO.renderInfo == null || msgVO.renderInfo.renderInforenderBigFont == false)
+				{
+					menuItems.push({fullLink:Lang.enlargeText, id:ChatItemContextMenuItemType.ENLARGE});
+				}
+				else
+				{
+					menuItems.push({fullLink:Lang.reduceText, id:ChatItemContextMenuItemType.MINIMIZE});
+				}
 			}
 			
 			if (menuItems.length == 0)

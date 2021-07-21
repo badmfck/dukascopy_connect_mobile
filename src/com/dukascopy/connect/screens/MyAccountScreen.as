@@ -188,12 +188,15 @@ package com.dukascopy.connect.screens {
 		}
 		
 		private function onInputSend():void {
-			var chatScreenData:ChatScreenData = new ChatScreenData();
-			chatScreenData.pid = Config.EP_VI_DEF;
-			chatScreenData.type = ChatInitType.SUPPORT;
-			chatScreenData.backScreen = MobileGui.centerScreen.currentScreenClass;
-			chatScreenData.backScreenData = MobileGui.centerScreen.currentScreen.data;
-			MobileGui.showChatScreen(chatScreenData);
+			if (isActivated)
+			{
+				var chatScreenData:ChatScreenData = new ChatScreenData();
+				chatScreenData.pid = Config.EP_VI_DEF;
+				chatScreenData.type = ChatInitType.SUPPORT;
+				chatScreenData.backScreen = MobileGui.centerScreen.currentScreenClass;
+				chatScreenData.backScreenData = MobileGui.centerScreen.currentScreen.data;
+				MobileGui.showChatScreen(chatScreenData);
+			}
 		}
 		
 		private function loadTutorialStatus():void {
