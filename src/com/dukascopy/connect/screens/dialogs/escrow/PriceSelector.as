@@ -112,7 +112,7 @@ package com.dukascopy.connect.screens.dialogs.escrow
 		
 		private function onValueChange(value:Number):void 
 		{
-			selectedValue = Number(value.toFixed(2));
+			selectedValue = Number(value.toFixed(1));
 			drawPrice(value);
 			drawPercent(value);
 			
