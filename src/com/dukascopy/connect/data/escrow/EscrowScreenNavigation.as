@@ -1,12 +1,15 @@
-package com.dukascopy.connect.data.escrow 
+package com.dukascopy.connect.data.escrow
 {
 	import assets.EscrowSuccess;
 	import com.dukascopy.connect.Config;
 	import com.dukascopy.connect.GD;
 	import com.dukascopy.connect.data.AlertScreenData;
+	import com.dukascopy.connect.data.SelectorItemData;
+	import com.dukascopy.connect.gui.components.message.ToastMessage;
 	import com.dukascopy.connect.managers.escrow.vo.EscrowInstrument;
 	import com.dukascopy.connect.screens.dialogs.escrow.AcceptOfferScreen;
 	import com.dukascopy.connect.screens.dialogs.escrow.EscrowOfferScreen;
+	import com.dukascopy.connect.screens.dialogs.escrow.EscrowPriceScreen;
 	import com.dukascopy.connect.screens.dialogs.escrow.EscrowReportScreen;
 	import com.dukascopy.connect.screens.dialogs.escrow.ReceiveCryptoScreen;
 	import com.dukascopy.connect.screens.dialogs.escrow.RegisterBlockchainScreen;
@@ -14,6 +17,7 @@ package com.dukascopy.connect.data.escrow
 	import com.dukascopy.connect.screens.dialogs.escrow.SendCryptoScreen;
 	import com.dukascopy.connect.screens.dialogs.escrow.WaitCryptoScreen;
 	import com.dukascopy.connect.screens.dialogs.x.base.float.FloatAlert;
+	import com.dukascopy.connect.screens.payments.card.TypeCurrency;
 	import com.dukascopy.connect.sys.applicationError.ApplicationErrors;
 	import com.dukascopy.connect.sys.auth.Auth;
 	import com.dukascopy.connect.sys.chatManager.ChatManager;
@@ -27,20 +31,21 @@ package com.dukascopy.connect.data.escrow
 	import com.dukascopy.connect.vo.ChatVO;
 	import com.dukascopy.connect.vo.users.UserVO;
 	import com.dukascopy.langs.Lang;
+	
 	/**
 	 * ...
 	 * @author Sergey Dobarin
 	 */
-	public class EscrowScreenNavigation 
+	public class EscrowScreenNavigation
 	{
 		static private var lastRequestData:Request;
 		
-		public function EscrowScreenNavigation() 
+		public function EscrowScreenNavigation()
 		{
-			
+		
 		}
 		
-		static private function confirmCryptoReceiveCommand(escrow:EscrowMessageData, message:ChatMessageVO, chatVO:ChatVO, command:OfferCommand = null):void 
+		static private function confirmCryptoReceiveCommand(escrow:EscrowMessageData, message:ChatMessageVO, chatVO:ChatVO, command:OfferCommand = null):void
 		{
 			if (command == OfferCommand.request_imvestigation)
 			{
@@ -49,22 +54,23 @@ package com.dukascopy.connect.data.escrow
 				screenData.created = message.created;
 				screenData.chat = chatVO;
 				screenData.message = message;
-				
+				screenData.callback = requestInvestigation;
 				screenData.title = Lang.indicate_issue_type;
 				ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, EscrowReportScreen, screenData);
 			}
-			else if(command == OfferCommand.confirm_crypto_recieve)
+			else if (command == OfferCommand.confirm_crypto_recieve)
 			{
 				trace("123");
 			}
 		}
 		
-		static public function showScreen(escrow:EscrowMessageData, message:ChatMessageVO, userVO:UserVO, chatVO:ChatVO):void 
+		static public function showScreen(escrow:EscrowMessageData, message:ChatMessageVO, userVO:UserVO, chatVO:ChatVO):void
 		{
 			GD.S_STOP_LOAD.invoke();
 			lastRequestData = null;
 			if (escrow != null)
 			{
+				
 				var screenData:Object = new Object();
 				screenData.escrowOffer = escrow;
 				screenData.created = message.created;
@@ -72,27 +78,25 @@ package com.dukascopy.connect.data.escrow
 				screenData.message = message;
 				
 				
+				
 				/*screenData.title = Lang.indicate_issue_type;
-				ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, EscrowReportScreen, screenData);
-				return;*/
+				   ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, EscrowReportScreen, screenData);
+				   return;*/
 				
 				/*ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, WaitCryptoScreen, screenData);
-				return;*/
+				   return;*/
 				
 				/*ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, SendCryptoExpiredScreen, screenData);
-				return;*/
+				   return;*/
 				
 				/*escrow.transactionId = "xf345dfg545hfgh65nmqgh390gghj90w2j45bv";
-				escrow.status = EscrowStatus.deal_created;
-				screenData.callback = confirmCryptoReceiveCommand;
-				ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, ReceiveCryptoScreen, screenData);
-				return;*/
-				
-				
+				   escrow.status = EscrowStatus.deal_created;
+				   screenData.callback = confirmCryptoReceiveCommand;
+				   ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, ReceiveCryptoScreen, screenData);
+				   return;*/
 				
 				/*showFinishScreen(escrow);
-				return;*/
-				
+				   return;*/
 				
 				if (userVO != null)
 				{
@@ -126,7 +130,7 @@ package com.dukascopy.connect.data.escrow
 							lastRequestData.chatVO = chatVO;
 							GD.S_START_LOAD.invoke();
 							GD.S_ESCROW_INSTRUMENTS.remove(showAcceptScreen);
-						//	GD.S_ESCROW_INSTRUMENTS.remove(showCryptoScreen);
+							//	GD.S_ESCROW_INSTRUMENTS.remove(showCryptoScreen);
 							GD.S_ESCROW_INSTRUMENTS.add(showAcceptScreen);
 							GD.S_ESCROW_INSTRUMENTS_REQUEST.invoke();
 						}
@@ -157,27 +161,25 @@ package com.dukascopy.connect.data.escrow
 							if (escrow.userUID == Auth.uid)
 							{
 								
-								
-								
 								//!TODO: check exist escrow.cryptoWallet;
 								screenData.callback = onSendTransactionCommand;
 								ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, SendCryptoScreen, screenData);
 								
 								/*if (lastRequestData != null)
-								{
-									ApplicationErrors.add("crit lastRequestData != null");
-								}
+								   {
+								   ApplicationErrors.add("crit lastRequestData != null");
+								   }
 								
-								lastRequestData = new Request();
-								lastRequestData.escrow = escrow;
-								lastRequestData.message = message;
-								lastRequestData.userVO = userVO;
-								lastRequestData.chatVO = chatVO;
-								GD.S_START_LOAD.invoke();
-								GD.S_ESCROW_INSTRUMENTS.remove(showAcceptScreen);
-								GD.S_ESCROW_INSTRUMENTS.remove(showCryptoScreen);
-								GD.S_ESCROW_INSTRUMENTS.add(showCryptoScreen);
-								GD.S_ESCROW_INSTRUMENTS_REQUEST.invoke();*/
+								   lastRequestData = new Request();
+								   lastRequestData.escrow = escrow;
+								   lastRequestData.message = message;
+								   lastRequestData.userVO = userVO;
+								   lastRequestData.chatVO = chatVO;
+								   GD.S_START_LOAD.invoke();
+								   GD.S_ESCROW_INSTRUMENTS.remove(showAcceptScreen);
+								   GD.S_ESCROW_INSTRUMENTS.remove(showCryptoScreen);
+								   GD.S_ESCROW_INSTRUMENTS.add(showCryptoScreen);
+								   GD.S_ESCROW_INSTRUMENTS_REQUEST.invoke();*/
 							}
 							else
 							{
@@ -193,84 +195,107 @@ package com.dukascopy.connect.data.escrow
 			}
 		}
 		
-		/*private static function showCryptoScreen(instruments:Vector.<EscrowInstrument>):void 
+		/*private static function showCryptoScreen(instruments:Vector.<EscrowInstrument>):void
+		   {
+		   GD.S_STOP_LOAD.invoke();
+		   GD.S_ESCROW_INSTRUMENTS.remove(showCryptoScreen);
+		
+		   if (lastRequestData != null && lastRequestData.escrow != null && lastRequestData.escrow.status == EscrowStatus.deal_created)
+		   {
+		   var instrumentExist:Boolean = false;
+		   var selectedInstrument:EscrowInstrument;
+		   if (lastRequestData.escrow.instrument != null && instruments != null)
+		   {
+		   for (var i:int = 0; i < instruments.length; i++)
+		   {
+		   if (instruments[i].code == lastRequestData.escrow.instrument)
+		   {
+		   selectedInstrument = instruments[i];
+		   break;
+		   }
+		   }
+		   }
+		
+		   var screenData:Object = new Object();
+		   if (selectedInstrument != null)
+		   {
+		   screenData.escrowOffer = lastRequestData.escrow;
+		   if (lastRequestData.message != null)
+		   {
+		   screenData.created = lastRequestData.message.created;
+		   }
+		   else
+		   {
+		   ApplicationErrors.add();
+		   }
+		
+		   screenData.chat = lastRequestData.chatVO;
+		   screenData.message = lastRequestData.message;
+		
+		   if (lastRequestData.userVO != null)
+		   {
+		   screenData.userName = lastRequestData.userVO.getDisplayName();
+		   }
+		   else
+		   {
+		   screenData.userName = Lang.chatmate;
+		   }
+		
+		   screenData.escrowOffer.cryptoWallet = selectedInstrument.wallet;
+		   screenData.callback = onSendTransactionCommand;
+		   ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, SendCryptoScreen, screenData);
+		   }
+		   else
+		   {
+		   //!TODO: not possible;
+		   }
+		
+		   lastRequestData = null;
+		   }
+		   else
+		   {
+		   ApplicationErrors.add();
+		   }
+		   }*/
+		
+		static private function requestInvestigation(escrow:EscrowMessageData, reason:SelectorItemData):void
+		{
+			if (escrow != null && reason != null)
+			{
+				GD.S_START_LOAD.invoke();
+				sendInvestigationRequest(reason.label, escrow.deal_uid);
+			}
+		}
+		
+		static private function sendInvestigationRequest(label:String, dealId:String):void
+		{
+			PHP.escrow_requestInvestigation(onRequestInvestigation, {reason: label, supporterChatUID: Config.EP_911, deal_uid: dealId});
+		}
+		
+		static private function onRequestInvestigation(respond:PHPRespond):void
 		{
 			GD.S_STOP_LOAD.invoke();
-			GD.S_ESCROW_INSTRUMENTS.remove(showCryptoScreen);
-			
-			if (lastRequestData != null && lastRequestData.escrow != null && lastRequestData.escrow.status == EscrowStatus.deal_created)
+			if (respond.error)
 			{
-				var instrumentExist:Boolean = false;
-				var selectedInstrument:EscrowInstrument;
-				if (lastRequestData.escrow.instrument != null && instruments != null)
-				{
-					for (var i:int = 0; i < instruments.length; i++) 
-					{
-						if (instruments[i].code == lastRequestData.escrow.instrument)
-						{
-							selectedInstrument = instruments[i];
-							break;
-						}
-					}
-				}
-				
-				var screenData:Object = new Object();
-				if (selectedInstrument != null)
-				{
-					screenData.escrowOffer = lastRequestData.escrow;
-					if (lastRequestData.message != null)
-					{
-						screenData.created = lastRequestData.message.created;
-					}
-					else
-					{
-						ApplicationErrors.add();
-					}
-					
-					screenData.chat = lastRequestData.chatVO;
-					screenData.message = lastRequestData.message;
-					
-					if (lastRequestData.userVO != null)
-					{
-						screenData.userName = lastRequestData.userVO.getDisplayName();
-					}
-					else
-					{
-						screenData.userName = Lang.chatmate;
-					}
-					
-					screenData.escrowOffer.cryptoWallet = selectedInstrument.wallet;
-					screenData.callback = onSendTransactionCommand;
-					ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, SendCryptoScreen, screenData);
-				}
-				else
-				{
-					//!TODO: not possible;
-				}
-				
-				lastRequestData = null;
+				//!TODO:;
+				ToastMessage.display(respond.errorMsg);
 			}
 			else
 			{
-				ApplicationErrors.add();
+				var screenData:AlertScreenData = new AlertScreenData();
+				screenData.text = Lang.escrow_report_sent;
+				screenData.button = Lang.textOk.toUpperCase();
+				
+				ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, FloatAlert, screenData);
 			}
-		}*/
-		
-		static private function requestInvestigation(escrow:EscrowMessageData, code:int):void 
-		{
-			var screenData:AlertScreenData = new AlertScreenData();
-			screenData.text = Lang.escrow_report_sent;
-			screenData.button = Lang.textOk.toUpperCase();
-			
-			ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, FloatAlert, screenData);
 		}
 		
-		static private function showFinishScreen(escrow:EscrowMessageData):void 
+		static private function showFinishScreen(escrow:EscrowMessageData):void
 		{
 			var screenData:AlertScreenData = new AlertScreenData();
 			screenData.icon = EscrowSuccess;
 			screenData.iconColor = Color.GREEN;
-		//	screenData.callback = finishOffer;
+			//	screenData.callback = finishOffer;
 			
 			var description:String;
 			if (escrow.direction == TradeDirection.buy)
@@ -289,7 +314,7 @@ package com.dukascopy.connect.data.escrow
 			ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, FloatAlert, screenData);
 		}
 		
-		private static function showAcceptScreen(instruments:Vector.<EscrowInstrument>):void 
+		private static function showAcceptScreen(instruments:Vector.<EscrowInstrument>):void
 		{
 			GD.S_ESCROW_INSTRUMENTS.remove(showAcceptScreen);
 			GD.S_STOP_LOAD.invoke();
@@ -299,7 +324,7 @@ package com.dukascopy.connect.data.escrow
 			{
 				if (lastRequestData.escrow.instrument != null && instruments != null)
 				{
-					for (var i:int = 0; i < instruments.length; i++) 
+					for (var i:int = 0; i < instruments.length; i++)
 					{
 						//!TODO:?
 						if (instruments[i].code == lastRequestData.escrow.instrument && instruments[i].isLinked)
@@ -354,13 +379,13 @@ package com.dukascopy.connect.data.escrow
 			}
 		}
 		
-		static private function onSendTransactionCommand(escrow:EscrowMessageData, message:ChatMessageVO, chatVO:ChatVO, command:OfferCommand = null):void 
+		static private function onSendTransactionCommand(escrow:EscrowMessageData, message:ChatMessageVO, chatVO:ChatVO, command:OfferCommand = null):void
 		{
 			if (command == OfferCommand.send_transaction_id)
 			{
 				if (escrow != null)
 				{
-					PHP.escrow_addEvent(onEvent, {event_type:"paid_crypto", data:escrow.transactionId, deal_uid:escrow.deal_uid});
+					PHP.escrow_addEvent(onEvent, {event_type: "paid_crypto", data: escrow.transactionId, deal_uid: escrow.deal_uid, notifyWS: true});
 				}
 				else
 				{
@@ -369,12 +394,12 @@ package com.dukascopy.connect.data.escrow
 			}
 		}
 		
-		static private function onEvent(respond:PHPRespond):void 
+		static private function onEvent(respond:PHPRespond):void
 		{
 			trace("123");
 		}
 		
-		static private function onOfferCommand(escrow:EscrowMessageData, message:ChatMessageVO, chatVO:ChatVO, command:OfferCommand = null):void 
+		static private function onOfferCommand(escrow:EscrowMessageData, message:ChatMessageVO, chatVO:ChatVO, command:OfferCommand = null):void
 		{
 			var messageData:EscrowMessageData;
 			var text:String;
@@ -407,7 +432,7 @@ package com.dukascopy.connect.data.escrow
 			}
 		}
 		
-		static private function onSelfOfferCommand(escrow:EscrowMessageData, message:ChatMessageVO, chatVO:ChatVO, command:OfferCommand = null):void 
+		static private function onSelfOfferCommand(escrow:EscrowMessageData, message:ChatMessageVO, chatVO:ChatVO, command:OfferCommand = null):void
 		{
 			if (command == OfferCommand.cancel)
 			{
@@ -422,7 +447,7 @@ package com.dukascopy.connect.data.escrow
 			}
 		}
 		
-		static public function isExpired(escrow:EscrowMessageData, created:Number):Boolean 
+		static public function isExpired(escrow:EscrowMessageData, created:Number):Boolean
 		{
 			//!TODO:;
 			if (escrow.status == EscrowStatus.offer_created)
@@ -436,21 +461,22 @@ package com.dukascopy.connect.data.escrow
 			}
 			return false;
 		}
-		
-		/*static public function getLeftTime(escrow:EscrowMessageData, created:Number):Number 
-		{
-			if (escrow.status == EscrowStatus.offer_created)
-			{
-				return EscrowSettings.offerMaxTime * 60 - ((new Date()).time / 1000 - escrowOffer.created);
-			}
-			return 0;
-		}*/
+	
+	/*static public function getLeftTime(escrow:EscrowMessageData, created:Number):Number
+	   {
+	   if (escrow.status == EscrowStatus.offer_created)
+	   {
+	   return EscrowSettings.offerMaxTime * 60 - ((new Date()).time / 1000 - escrowOffer.created);
+	   }
+	   return 0;
+	   }*/
 	}
 }
 import com.dukascopy.connect.vo.ChatMessageVO;
 import com.dukascopy.connect.vo.ChatVO;
 import com.dukascopy.connect.vo.users.UserVO;
 import com.dukascopy.connect.data.escrow.EscrowMessageData;
+
 class Request
 {
 	public var escrow:EscrowMessageData;

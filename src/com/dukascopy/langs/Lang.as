@@ -2471,6 +2471,7 @@ package com.dukascopy.langs {
 		static public var draft:String = "Draft: ";
 		static public var payments_error_amount_too_small:String = "Amount is too small 1";
 		static public var groupChat:String = "Group chat";
+		static public var escrow_target_price_per_coin:String = "Target price per Coin";
 		
 		static public var addTender:String = "Add your tender";
 		static public var tenderStartText:String = "Compose your tender, indicating the details of the offer you intend to publish.\nOnce someonce reacts to your tender, switch to the one-to-one chat with the counterparty, agree on the ultimate conditions of deal and initiate a binding offer through a dedicated form right from the chat.";

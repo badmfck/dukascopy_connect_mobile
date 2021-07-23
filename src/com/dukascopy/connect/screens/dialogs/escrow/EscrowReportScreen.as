@@ -4,6 +4,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 	import com.dukascopy.connect.data.SelectorItemData;
 	import com.dukascopy.connect.data.TextFieldSettings;
 	import com.dukascopy.connect.data.escrow.EscrowDealData;
+	import com.dukascopy.connect.data.escrow.EscrowMessageData;
 	import com.dukascopy.connect.gui.components.message.ToastMessage;
 	import com.dukascopy.connect.gui.components.radio.RadioGroup;
 	import com.dukascopy.connect.gui.components.radio.RadioItemBack;
@@ -33,7 +34,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		private var radio:RadioGroup;
 		private var radioSelection:Vector.<SelectorItemData>;
 		
-		private var offerData:EscrowDealData;
+		private var escrowOffer:EscrowMessageData;
 		private var selectedReason:SelectorItemData;
 		private var alertText:AlertTextArea;
 		
@@ -102,6 +103,11 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			drawControls();
 			updatePositions();
 			updateScroll();
+			
+			if (data != null && "escrowOffer" in data && data.escrowOffer != null && data.escrowOffer is EscrowMessageData)
+			{
+				escrowOffer = data.escrowOffer as EscrowMessageData;
+			}
 		}
 		
 		override protected function getBottomPadding():int 
@@ -227,9 +233,10 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 				needCallback = false;
 				if (data != null && "callback" in data && data.callback != null && data.callback is Function && (data.callback as Function).length == 2 && selectedReason != null)
 				{
-					(data.callback as Function)(offerData, selectedReason.data);
+					(data.callback as Function)(escrowOffer, selectedReason);
 				}
 				selectedReason = null;
+				escrowOffer = null;
 			}
 		}
 		

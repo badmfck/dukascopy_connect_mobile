@@ -112,7 +112,7 @@ package com.dukascopy.connect.screens.dialogs.escrow
 		
 		private function onValueChange(value:Number):void 
 		{
-			selectedValue = value;
+			selectedValue = Number(value.toFixed(2));
 			drawPrice(value);
 			drawPercent(value);
 			
@@ -478,6 +478,11 @@ package com.dukascopy.connect.screens.dialogs.escrow
 			createCurrencySelector();
 			this.onPriceChanged = onPriceChanged;
 			selectorCurrency.setValue(currencySign);
+		}
+		
+		public function getValue():Number 
+		{
+			return selectedValue;
 		}
 		
 		private function createCurrencySelector():void 

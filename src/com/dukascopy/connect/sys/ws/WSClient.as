@@ -1005,6 +1005,56 @@ import com.dukascopy.connect.MobileGui;
 					created_by: 'pFcvIFn'
 				  }
 				}*/
+				
+				
+				
+				
+				/*pack : Object {
+					action : "escrow_paid_crypto" 
+					data : Object {
+						deal : Object {
+							amount : "2.0000000000" 
+							chat_uid : "WLDaDZWdWvW9IiWO" 
+							created_at : "2021-07-20 08:44:15" 
+							created_at_inv : "1529000145" 
+							crypto_claim_id : null 
+							crypto_trn_id : null 
+							crypto_user_uid : "I6D5WsWZDLWj" 
+							deal_uid : "6267706555212832076" 
+							instrument : "DUK%20" 
+							mca_ccy : "USD" 
+							mca_claim_id : null 
+							mca_trn_id : null 
+							mca_user_uid : "WgDIDQWGW4IEWAW9" 
+							msg_id : 35648957 [0x21ff5bd] 
+							price : "2.9100000000" 
+							side : "SELL" 
+							status : "paid_crypto" 
+							updated_at : "2021-07-21 10:03:19" 
+							updated_at_inv : 1528909001 [0x5b214cc9] 
+						}
+						event : Object {
+							created_at : "2021-07-21 10:03:19" 
+							created_at_inv : 1528909001 [0x5b214cc9] 
+							created_by : "WgDIDQWGW4IEWAW9" 
+							deal_uid : "6267706555212832076" 
+							info : null 
+							type : "paid_crypto" 
+							type_id : "1" 
+							uid : "6268617996498961125" 
+						}
+					}
+					method : "evEscrow" 
+				}*/
+				
+				
+				
+				
+				
+				
+				
+				
+				
 				return;
 			}
 		}

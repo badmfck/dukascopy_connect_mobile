@@ -36,7 +36,7 @@ package com.dukascopy.connect.screens.dialogs.x.base.float
 		private var backAnimation:Object;
 		private var showTime:Number = 0.25;
 		
-		private var closeButton:BitmapButton;
+		protected var closeButton:BitmapButton;
 		protected var contentPadding:int;
 		protected var contentPaddingV:int;
 		

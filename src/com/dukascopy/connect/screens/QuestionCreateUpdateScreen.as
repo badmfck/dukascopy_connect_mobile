@@ -4,6 +4,9 @@ package com.dukascopy.connect.screens {
 	import com.dukascopy.connect.GD;
 	import com.dukascopy.connect.MobileGui;
 	import com.dukascopy.connect.data.LocalAvatars;
+	import com.dukascopy.connect.data.escrow.TradeDirection;
+	import com.dukascopy.connect.data.screenAction.IScreenAction;
+	import com.dukascopy.connect.data.screenAction.customActions.GetNumericKeyboardAction;
 	import com.dukascopy.connect.gui.chat.BubbleButton;
 	import com.dukascopy.connect.gui.chat.ConnectionIndicator;
 	import com.dukascopy.connect.gui.components.message.ToastMessage;
@@ -18,7 +21,10 @@ package com.dukascopy.connect.screens {
 	import com.dukascopy.connect.gui.topBar.TopBarScreen;
 	import com.dukascopy.connect.managers.escrow.vo.EscrowInstrument;
 	import com.dukascopy.connect.screens.base.BaseScreen;
+	import com.dukascopy.connect.screens.dialogs.escrow.EscrowPriceScreen;
 	import com.dukascopy.connect.screens.dialogs.x.base.bottom.ListSelectionPopup;
+	import com.dukascopy.connect.screens.payments.card.TypeCurrency;
+	import com.dukascopy.connect.sys.applicationError.ApplicationErrors;
 	import com.dukascopy.connect.sys.auth.Auth;
 	import com.dukascopy.connect.sys.chatManager.typesManagers.AnswersManager;
 	import com.dukascopy.connect.sys.dialogManager.DialogManager;
@@ -60,6 +66,7 @@ package com.dukascopy.connect.screens {
 		
 		private var createChatButton:HidableButton;
 		private var addQuestionIcon:SWFAddQuestionButton;
+		private var getKeyboardAction:GetNumericKeyboardAction;
 		
 		public function QuestionCreateUpdateScreen() { }
 		
@@ -349,16 +356,105 @@ package com.dukascopy.connect.screens {
                             );
 							return;
 						}
+						if (cmsgVO.systemMessageVO.method == ChatSystemMsgVO.METHOD_LOCAL_PRICE) {
+							if (QuestionsManager.getCurrentQuestion() != QuestionsManager.fakeTender)
+								return;
+							if (QuestionsManager.getCurrentQuestion().instrument == null)
+								return;
+							if (QuestionsManager.getCurrentQuestion().subtype == null)
+								return;
+							
+							
+							var direction:TradeDirection;
+							if (QuestionsManager.getCurrentQuestion().subtype == "buy")
+							{
+								direction = TradeDirection.buy;
+							}
+							else if (QuestionsManager.getCurrentQuestion().subtype == "sell")
+							{
+								direction = TradeDirection.sell;
+							}
+							else
+							{
+								ApplicationErrors.add();
+							}
+							
+							var screenData:Object = new Object();
+							
+							screenData.callback = onPriceChange;
+							screenData.instrument = QuestionsManager.getCurrentQuestion().instrument;
+							screenData.currency = TypeCurrency.EUR;
+							screenData.direction = direction;
+							screenData.title = Lang.escrow_target_price_per_coin;
+							
+							ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, EscrowPriceScreen, screenData);
+							return;
+						}
 					}
 				}
 			}
 		}
 		
+		private function onPriceChange(price:Number, isPercent:Boolean):void 
+		{
+			if (isDisposed)
+			{
+				return;
+			}
+			trace(price, isPercent);
+		}
+		
 		private var testCounter:int;
+		
 		private function callKeyboard():void {
 			testCounter = 0;
+			
+		//	key : 1002 [0x3ea] 
+
+			getKeyboardAction = new GetNumericKeyboardAction();
+			getKeyboardAction.S_ACTION_SUCCESS.add(onAmountChange);
+			getKeyboardAction.S_ACTION_FAIL.add(onKeyboardClose);
+			getKeyboardAction.execute();
+			return;
+			
 			QuestionsManager.getCurrentQuestion().cryptoAmount = "";
 			TweenMax.delayedCall(.5, onValueChanged);
+		}
+		
+		private function onKeyboardClose():void 
+		{
+			if (isDisposed)
+			{
+				return;
+			}
+			removeKeyboardAction();
+		}
+		
+		private function removeKeyboardAction():void 
+		{
+			if (getKeyboardAction != null)
+			{
+				getKeyboardAction.S_ACTION_SUCCESS.remove(onAmountChange);
+				getKeyboardAction.S_ACTION_FAIL.remove(onKeyboardClose);
+				getKeyboardAction.dispose();
+				getKeyboardAction = null;
+			}
+		}
+		
+		private function onAmountChange(key:Object):void 
+		{
+			if (isDisposed)
+			{
+				return;
+			}
+			if (key == 1002)
+			{
+				//remove last char
+			}
+			else
+			{
+				// new "num" or "."
+			}
 		}
 		
 		private function onValueChanged():void {
@@ -601,6 +697,9 @@ package com.dukascopy.connect.screens {
 		
 		override public function dispose():void {
 			echo("QuestionCreateUpdateScreen", "dispose", "");
+			
+			removeKeyboardAction();
+			
 			QuestionsManager.S_CURRENT_QUESTION_UPDATED.remove(activate);
 			QuestionsManager.S_QUESTION.remove(onQuestionAnswers);
 			QuestionsManager.S_QUESTION_CREATE_FAIL.remove(onQuestionCreateError);
