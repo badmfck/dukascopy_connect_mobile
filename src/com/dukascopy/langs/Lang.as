@@ -2487,6 +2487,7 @@ package com.dukascopy.langs {
 		static public var tenderInputPrice:String = "Input price";
 		static public var tenderSideBuy:String = "Buy";
 		static public var tenderSideSell:String = "Sell";
+		static public var tenderPricePercent:String = "from market price";
 		
 		static public function updateKeys(keys:Object):void {
 			for (var n:String in keys) {

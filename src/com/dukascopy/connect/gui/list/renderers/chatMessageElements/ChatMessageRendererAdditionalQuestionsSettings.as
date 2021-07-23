@@ -70,8 +70,11 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 			var res:String = itemData.systemMessageVO.text;
 			switch(itemData.systemMessageVO.method) {
 				case ChatSystemMsgVO.METHOD_LOCAL_SIDE:
-					if (QuestionsManager.getCurrentQuestion() != null && QuestionsManager.getCurrentQuestion().subtype != null)
-						res = QuestionsManager.getSide(QuestionsManager.getCurrentQuestion().subtype).label;
+					if (QuestionsManager.getCurrentQuestion() != null && QuestionsManager.getCurrentQuestion().subtype != null) {
+						var side:Object = QuestionsManager.getSide(QuestionsManager.getCurrentQuestion().subtype);
+						if (side != null)
+							res = side.label;
+					}
 					break;
 				case ChatSystemMsgVO.METHOD_LOCAL_CRYPTO:
 					if (QuestionsManager.getCurrentQuestion() != null && QuestionsManager.getCurrentQuestion().instrument != null)
@@ -84,6 +87,17 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 				case ChatSystemMsgVO.METHOD_LOCAL_CURRENCY:
 					if (QuestionsManager.getCurrentQuestion() != null && QuestionsManager.getCurrentQuestion().priceCurrency != null)
 						res = QuestionsManager.getCurrentQuestion().priceCurrency;
+					break;
+				case ChatSystemMsgVO.METHOD_LOCAL_PRICE:
+					if (QuestionsManager.getCurrentQuestion() != null && QuestionsManager.getCurrentQuestion().price != null)
+						res = QuestionsManager.getCurrentQuestion().price;
+						if (res.charAt(res.length -1) == "%") {
+							res += " " + Lang.tenderPricePercent;
+							if (res.charAt(0) != "-")
+								res = "+" + res;
+						} else {
+							res += " " + QuestionsManager.getCurrentQuestion().priceCurrency;
+						}
 					break;
 				default:
 					break;
@@ -101,7 +115,7 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 			
 			tf.width = maxWidth - vTextMargin * 2;
 			tf.text = messageData.systemMessageVO.title;
-			tf.width = tf.textWidth + 5;
+			tf.width = Math.min(tf.width, tf.textWidth + 5);
 			tf.height = tf.textHeight + 4;
 			
 			var roundedTop:Boolean = true;
@@ -129,7 +143,7 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 			
 			tipsText.width = maxWidth - vTextMargin * 2;
 			tipsText.text = getBodyText(messageData);
-			tipsText.width = tipsText.textWidth + 5;
+			tipsText.width = Math.min(tipsText.width, tipsText.textWidth + 5);
 			tipsText.height = tipsText.textHeight + 4;
 			if (icon == null) {
 				tipsText.y = tf.y + tf.height;
@@ -206,6 +220,11 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 				}
 			} else if (messageData.systemMessageVO.method == ChatSystemMsgVO.METHOD_LOCAL_CURRENCY) {
 				if (QuestionsManager.getCurrentQuestion().priceCurrency != null) {
+					textFormat.color = COLOR_TEXT_SELECTOR_TITLE_SELECTED;
+					textFormat1.color = COLOR_TEXT_SELECTOR_VALUE_SELECTED;
+				}
+			} else if (messageData.systemMessageVO.method == ChatSystemMsgVO.METHOD_LOCAL_PRICE) {
+				if (QuestionsManager.getCurrentQuestion().price != null) {
 					textFormat.color = COLOR_TEXT_SELECTOR_TITLE_SELECTED;
 					textFormat1.color = COLOR_TEXT_SELECTOR_VALUE_SELECTED;
 				}

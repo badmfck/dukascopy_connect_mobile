@@ -945,7 +945,7 @@ package com.dukascopy.connect.sys.questionsManager {
 			var txt:String = text.replace(/\s/, "");
 			if (txt.length == 0)
 				return;
-			if (currentQuestion == null) {
+			if (currentQuestion == fakeTender) {
 				createQuestion(text);
 				return;
 			} else if (currentQuestion.answersCount > 0) {
@@ -957,24 +957,31 @@ package com.dukascopy.connect.sys.questionsManager {
 		
 		static private function createQuestion(text:String):void {
 			firstQuestionCreated = true;
-			if (isNaN(tipsAmount) == true) {
-				if (incognito == true) {
-					S_QUESTION_CREATE_FAIL.invoke();
-					DialogManager.alert(Lang.information, Lang.textIncognitoTips);
-					return;
-				}
-				if (geo != null) {
-					S_QUESTION_CREATE_FAIL.invoke();
-					DialogManager.alert(Lang.information, Lang.textGeoTips);
-					return;
-				}
-			}
-			if (questionsTypes[type].type == QUESTION_TYPE_PUBLIC && isNaN(tipsAmount) == true) {
-				S_QUESTION_CREATE_FAIL.invoke();
-				DialogManager.alert(Lang.information, Lang.textTypePublicTips);
+			if (text == null)
 				return;
-			}
-			PHP.question_create(onQuestionCreated, Crypter.crypt(text, MESSAGE_KEY), tipsAmount, tipsCurrency.code, currency, incognito, questionsSides[side].type);
+			if (currentQuestion.subtype == null)
+				return;
+			if (currentQuestion.instrument == null)
+				return;
+			if (currentQuestion.cryptoAmount == null)
+				return;
+			if (currentQuestion.priceCurrency == null)
+				return;
+			if (currentQuestion.price == null)
+				return;
+			PHP.question_create(
+				onQuestionCreated,
+				Crypter.crypt(text, MESSAGE_KEY),
+				Number(currentQuestion.cryptoAmount),
+				currentQuestion.instrument.code,
+				currentQuestion.priceCurrency,
+				incognito,
+				currentQuestion.subtype,
+				NaN,
+				NaN,
+				null,
+				currentQuestion.price
+			);
 		}
 		
 		static private function onCreateQuestionSuccess(data:Object):void {

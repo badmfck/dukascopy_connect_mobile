@@ -584,7 +584,8 @@ package com.dukascopy.connect.sys.php {
 			type:String = QuestionsManager.QUESTION_TYPE_PRIVATE,
 			lat:Number = NaN,
 			lon:Number = NaN,
-			reservedQuestionId:String = null):void {
+			reservedQuestionId:String = null,
+			price:String = ""):void {
 				var data:Object = { };
 				data.text = text;
 				data.ver = 4;
@@ -593,6 +594,7 @@ package com.dukascopy.connect.sys.php {
 					data.tipsCurrency = (tipsCurrency == "DUK+") ? "DCO" : tipsCurrency;
 				}
 				data.type = type;
+				data.price = price;
 				if (categories != null)
 					data.categories = categories;
 				if (incognito == true)

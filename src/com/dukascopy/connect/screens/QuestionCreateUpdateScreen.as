@@ -363,30 +363,19 @@ package com.dukascopy.connect.screens {
 								return;
 							if (QuestionsManager.getCurrentQuestion().subtype == null)
 								return;
-							
-							
 							var direction:TradeDirection;
 							if (QuestionsManager.getCurrentQuestion().subtype == "buy")
-							{
 								direction = TradeDirection.buy;
-							}
 							else if (QuestionsManager.getCurrentQuestion().subtype == "sell")
-							{
 								direction = TradeDirection.sell;
-							}
 							else
-							{
 								ApplicationErrors.add();
-							}
-							
 							var screenData:Object = new Object();
-							
 							screenData.callback = onPriceChange;
 							screenData.instrument = QuestionsManager.getCurrentQuestion().instrument;
 							screenData.currency = TypeCurrency.EUR;
 							screenData.direction = direction;
 							screenData.title = Lang.escrow_target_price_per_coin;
-							
 							ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, EscrowPriceScreen, screenData);
 							return;
 						}
@@ -395,45 +384,45 @@ package com.dukascopy.connect.screens {
 			}
 		}
 		
-		private function onPriceChange(price:Number, isPercent:Boolean):void 
-		{
+		private function onPriceChange(price:Number, isPercent:Boolean, currency:String):void {
 			if (isDisposed)
-			{
 				return;
+			var val:String = price.toString();
+			if (isPercent == true) {
+				QuestionsManager.getCurrentQuestion().priceCurrency = currency;
+				list.updateItemByIndex(4);
+			} else {
+				val += "%";
 			}
-			trace(price, isPercent);
+			QuestionsManager.getCurrentQuestion().price = val;
+			list.updateItemByIndex(5);
 		}
 		
 		private var testCounter:int;
 		
 		private function callKeyboard():void {
-			testCounter = 0;
-			
-		//	key : 1002 [0x3ea] 
-
 			getKeyboardAction = new GetNumericKeyboardAction();
 			getKeyboardAction.S_ACTION_SUCCESS.add(onAmountChange);
 			getKeyboardAction.S_ACTION_FAIL.add(onKeyboardClose);
 			getKeyboardAction.execute();
-			return;
-			
-			QuestionsManager.getCurrentQuestion().cryptoAmount = "";
-			TweenMax.delayedCall(.5, onValueChanged);
 		}
 		
-		private function onKeyboardClose():void 
-		{
+		private function onKeyboardClose():void {
 			if (isDisposed)
-			{
 				return;
+			var val:String = QuestionsManager.getCurrentQuestion().cryptoAmount;
+			if (val != null && val.length > 0) {
+				if (val.charAt(val.length - 1) == ".") {
+					val = val.substr(0, val.length -1);
+					QuestionsManager.getCurrentQuestion().cryptoAmount = val;
+					list.updateItemByIndex(3);
+				}
 			}
 			removeKeyboardAction();
 		}
 		
-		private function removeKeyboardAction():void 
-		{
-			if (getKeyboardAction != null)
-			{
+		private function removeKeyboardAction():void {
+			if (getKeyboardAction != null) {
 				getKeyboardAction.S_ACTION_SUCCESS.remove(onAmountChange);
 				getKeyboardAction.S_ACTION_FAIL.remove(onKeyboardClose);
 				getKeyboardAction.dispose();
@@ -441,33 +430,25 @@ package com.dukascopy.connect.screens {
 			}
 		}
 		
-		private function onAmountChange(key:Object):void 
-		{
+		private function onAmountChange(key:Object):void {
 			if (isDisposed)
-			{
 				return;
+			var val:String = QuestionsManager.getCurrentQuestion().cryptoAmount;
+			if (val == null)
+				val = "";
+			if (key == 1002) {
+				if (val.length == 0)
+					return;
+				val = val.substr(0, val.length - 1);
+			} else {
+				val += key as String;
 			}
-			if (key == 1002)
-			{
-				//remove last char
-			}
-			else
-			{
-				// new "num" or "."
-			}
-		}
-		
-		private function onValueChanged():void {
-			testCounter++;
-			if (QuestionsManager.getCurrentQuestion() != QuestionsManager.fakeTender)
+			if (isNaN(Number(val)))
 				return;
-			if (testCounter == 3)
-				QuestionsManager.getCurrentQuestion().cryptoAmount = QuestionsManager.getCurrentQuestion().cryptoAmount + ".";
-			else
-				QuestionsManager.getCurrentQuestion().cryptoAmount = QuestionsManager.getCurrentQuestion().cryptoAmount + "1";
+			if (val == "")
+				val = null;
+			QuestionsManager.getCurrentQuestion().cryptoAmount = val;
 			list.updateItemByIndex(3);
-			if (testCounter < 6)
-				TweenMax.delayedCall(.5, onValueChanged);
 		}
 		
 		private function onSideChanged(val:int):void {
@@ -577,7 +558,9 @@ package com.dukascopy.connect.screens {
 			if (preloader != null)
 				preloader.hide();
 			hidePreloader();
-			fillList();
+			
+			if (list != null)
+				list.refresh();
 			
 			if (trashAdded == false) {
 				trashAdded = true;
