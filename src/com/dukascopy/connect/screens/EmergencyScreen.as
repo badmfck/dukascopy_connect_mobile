@@ -190,7 +190,7 @@ package com.dukascopy.connect.screens {
 			}
 			MobileGui.changeMainScreen(QuestionCreateUpdateScreen, {
 					backScreen:MobileGui.centerScreen.currentScreenClass,
-					title:Lang.askQuestions, 
+					title:Lang.addTender, 
 					backScreenData:this.data,
 					data:null
 				}, ScreenManager.DIRECTION_RIGHT_LEFT
@@ -1041,7 +1041,7 @@ package com.dukascopy.connect.screens {
 				}
 				MobileGui.changeMainScreen(QuestionCreateUpdateScreen, {
 					backScreen:MobileGui.centerScreen.currentScreenClass,
-					title:Lang.askQuestions, 
+					title:Lang.addTender, 
 					data:null
 				}, ScreenManager.DIRECTION_RIGHT_LEFT);
 				echo("EmergencyScreen", "onItemTap", "START QUESTION");
@@ -1065,9 +1065,9 @@ package com.dukascopy.connect.screens {
 					return;
 				}
 				if (itemHitZone == HitZoneType.QUESTION_INFO) {
-					if (QuestionsManager.getCategoriesFilterNames() == "")
+					/*if (QuestionsManager.getCategoriesFilterNames() == "")
 						QuestionsManager.showRules();
-					else
+					else*/
 						onBottomButtonTap();
 					echo("EmergencyScreen", "onItemTap", "DATA IS QUESTIONVO AND HITZONE IS QUESTION_INFO");
 					return;

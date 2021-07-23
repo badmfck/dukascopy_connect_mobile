@@ -762,7 +762,7 @@ package com.dukascopy.connect.screens.innerScreens {
 					}
 					MobileGui.changeMainScreen(QuestionCreateUpdateScreen, {
 						backScreen:MobileGui.centerScreen.currentScreenClass,
-						title:Lang.askQuestions, 
+						title:Lang.addTender, 
 						data:null
 					}, ScreenManager.DIRECTION_RIGHT_LEFT);
 					return;
@@ -789,7 +789,7 @@ package com.dukascopy.connect.screens.innerScreens {
 						return;
 					}
 					if (itemHitZone == HitZoneType.QUESTION_INFO) {
-						if (QuestionsManager.getCategoriesFilterNames() == "")
+						//if (QuestionsManager.getCategoriesFilterNames() == "")
 							QuestionsManager.showRules();
 						return;
 					}

@@ -12,6 +12,8 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 	import com.dukascopy.connect.vo.ChatSystemMsgVO;
 	import com.dukascopy.langs.Lang;
 	import flash.display.Bitmap;
+	import flash.display.Shape;
+	import flash.display.Sprite;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	import flash.text.TextFieldAutoSize;
@@ -20,14 +22,13 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 	
 	/**
 	 * ...
-	 * @author David Gnatkivskij. Telefision TEAM Kiev.
+	 * @author Ilya Shcherbakov. Telefision TEAM Kiev.
 	 */
 	
 	public class ChatMessageRendererAdditionalQuestionsSettings extends ChatMessageRendererAction implements IMessageRenderer {
 		
-		private var buttonBitmap:Bitmap;
-		private var questionBitmap:Bitmap;
-		private var bodyText:String;
+		private var line:Shape;
+		private var bird:Shape;
 		
 		private var currentMessage:ChatMessageVO;
 		
@@ -38,153 +39,69 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 		override protected function createTextFormat():void {
 			super.createTextFormat();
 			textFormat.underline = false;
+			
+			textFormat1.size = fontSize * 1.33;
+			textFormat1.bold = false;
 		}
 		
 		override protected function create():void {
 			super.create();
-			
 			tf.x = vTextMargin;
-			tf.text = "|";
+			tipsText.x = vTextMargin;
 			
-			buttonBitmap = new Bitmap();
-			buttonBitmap.x = vTextMargin;
-			addChild(buttonBitmap);
+			line = new Shape()
+			line.graphics.beginFill(0xDDE8F2);
+			line.graphics.drawRect(0, 0, 1, 1);
+			line.graphics.endFill();
+			line.x = vTextMargin;
+			line.height = Math.ceil(Config.FINGER_SIZE * .02);
+			addChild(line);
 			
-			tf.text = "";
-			
-			tipsText.multiline = true;
-			tipsText.wordWrap = true;
-			tipsText.defaultTextFormat = new TextFormat(Config.defaultFontName, Config.FINGER_SIZE * .2, textColor, false);
-			
-			var questionIconSize:int = Config.FINGER_SIZE * .35;
-			questionBitmap = new Bitmap();
-			questionBitmap.bitmapData = UI.renderAsset(new SWFQuestionIconBlue(), questionIconSize, questionIconSize);
-			addChild(questionBitmap);
-		}
-		
-		override public function getSelectedHitzone(itemTouchPoint:Point, listItem:ListItem):HitZoneData
-		{
-			var zone:Rectangle = questionBitmap.getBounds(this);
-			
-			var result:HitZoneData = new HitZoneData();
-			
-			if (zone.contains(itemTouchPoint.x - x, itemTouchPoint.y - y))
-			{
-				result.type = HitZoneType.MENU_SIMPLE_ELEMENT;
-				result.x = x + questionBitmap.x - Config.MARGIN * 2;
-				result.y = y + questionBitmap.y - Config.MARGIN * 2;
-				result.width = questionBitmap.width + Config.MARGIN * 4;
-				result.height = result.width;
-				result.radius = result.width;
-				return result;
-			}
-			else
-			{
-				
-				var roundedTop:Boolean = true;
-				var roundedBottom:Boolean = true;
-				var cmVO:ChatMessageVO;
-				if (listItem != null) {
-					if (listItem.num != 0) {
-						cmVO = listItem.list.data[listItem.num - 1];
-						tf.y = vTextMargin;
-						if (cmVO.typeEnum == ChatSystemMsgVO.TYPE_LOCAL_QUESTION) {
-							tf.y = 0;
-							roundedTop = false;
-						}
-					}
-					if (listItem.list.data.length > listItem.num + 1) {
-						cmVO = listItem.list.data[listItem.num + 1];
-						if (cmVO != null && cmVO.crypted == true)
-							cmVO.decrypt(null);
-						if (cmVO.typeEnum == ChatSystemMsgVO.TYPE_LOCAL_QUESTION)
-							roundedBottom = false;
-					}
-				}
-				
-				if (roundedTop && roundedBottom)
-				{
-					result.type = HitZoneType.MENU_SIMPLE_ELEMENT;
-				}
-				else if (roundedTop)
-				{
-					result.type = HitZoneType.MENU_FIRST_ELEMENT;
-				}
-				else if (roundedBottom)
-				{
-					result.type = HitZoneType.MENU_LAST_ELEMENT;
-				}
-				else{
-					result.type = HitZoneType.MENU_MIDDLE_ELEMENT;
-				}
-				
-				result.x = x;
-				result.y = y;
-				result.width = getWidth();
-				result.height = getContentHeight();
-				result.radius = textBoxRadius;
-				return result;
-			}
+			bird = new Shape()
+			bird.graphics.beginFill(0x7E95A8);
+			bird.graphics.lineTo(Config.FINGER_SIZE * .12, 0);
+			bird.graphics.lineTo(Config.FINGER_SIZE * .06, Config.FINGER_SIZE * .08);
+			bird.graphics.lineTo(0, 0);
+			bird.graphics.endFill();
+			addChild(bird);
 		}
 		
 		private function getBodyText(itemData:ChatMessageVO):String {
-			var res:String = "";
+			var res:String = itemData.systemMessageVO.text;
 			switch(itemData.systemMessageVO.method) {
-				case ChatSystemMsgVO.METHOD_LOCAL_CRYPTO_AMOUNT:
-					if (QuestionsManager.getTipsCurrency() == null)
-						break;
-					var currency:String = QuestionsManager.getTipsCurrency().name;
-					res = (isNaN(QuestionsManager.getTipsAmount()) == true) ? Lang.extraTipsBody : QuestionsManager.getTipsAmount() + " " + currency + " ";
+				case ChatSystemMsgVO.METHOD_LOCAL_SIDE:
+					if (QuestionsManager.getCurrentQuestion() != null && QuestionsManager.getCurrentQuestion().subtype != null)
+						res = QuestionsManager.getSide(QuestionsManager.getCurrentQuestion().subtype).label;
 					break;
-				case ChatSystemMsgVO.METHOD_LOCAL_SECRET:
-					res = (QuestionsManager.getQuestionSecretMode() == true) ? Lang.textOn : Lang.textOff;
+				case ChatSystemMsgVO.METHOD_LOCAL_CRYPTO:
+					if (QuestionsManager.getCurrentQuestion() != null && QuestionsManager.getCurrentQuestion().instrument != null)
+						res = QuestionsManager.getCurrentQuestion().instrument.name + " (" + QuestionsManager.getCurrentQuestion().instrument.code + ")";
+					break;
+				case ChatSystemMsgVO.METHOD_LOCAL_CRYPTO_AMOUNT:
+					if (QuestionsManager.getCurrentQuestion() != null && QuestionsManager.getCurrentQuestion().cryptoAmount != null)
+						res = QuestionsManager.getCurrentQuestion().cryptoAmount;
 					break;
 				case ChatSystemMsgVO.METHOD_LOCAL_CURRENCY:
-					res = QuestionsManager.getQuestionCurrency();
-					break;
-				case ChatSystemMsgVO.METHOD_LOCAL_SIDE:
-					res = QuestionsManager.getQuestionSideLabel();
+					if (QuestionsManager.getCurrentQuestion() != null && QuestionsManager.getCurrentQuestion().priceCurrency != null)
+						res = QuestionsManager.getCurrentQuestion().priceCurrency;
 					break;
 				default:
 					break;
 			}
-			if (res == "")
-				res = "<i>" + Lang.pressToChange + "</i> ";
 			return res;
-		}
-		
-		private function getMessageText(itemData:ChatMessageVO):String {
-			var res:String = "";
-			switch(itemData.systemMessageVO.method) {
-				case ChatSystemMsgVO.METHOD_LOCAL_SIDE:
-					res = Lang.questionSide;
-					break;
-				case ChatSystemMsgVO.METHOD_LOCAL_CRYPTO_AMOUNT:
-					res = Lang.questionCryptoAmount;
-					break;
-				case ChatSystemMsgVO.METHOD_LOCAL_CURRENCY:
-					res = Lang.questionCurrency;
-					break;
-				default:
-					break;
-			}
-			return res + ":";
 		}
 		
 		override public function getHeight(itemData:ChatMessageVO, maxWidth:int, listItem:ListItem):uint {
 			draw(itemData, maxWidth, listItem);
 			return boxBg.y + boxBg.height;
-			//return height;
 		}
 		
 		override public function draw(messageData:ChatMessageVO, maxWidth:int, listItem:ListItem = null, securityKey:Array = null, minWidth:int = -1):void {
 			currentMessage = messageData;
 			
-			tipsText.visible = false;
-			
 			tf.width = maxWidth - vTextMargin * 2;
-			tf.text = getMessageText(messageData);
-			tf.width = tf.textWidth + 5;//TODO magic numbers
+			tf.text = messageData.systemMessageVO.title;
+			tf.width = tf.textWidth + 5;
 			tf.height = tf.textHeight + 4;
 			
 			var roundedTop:Boolean = true;
@@ -208,84 +125,143 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 				}
 			}
 			
-			questionBitmap.y = tf.y;
+			getIcon(messageData);
 			
-			prepareButtonBitmapAndReturnHeight(maxWidth, getBodyText(messageData));
-			
-			questionBitmap.x = buttonBitmap.x + buttonBitmap.width - questionBitmap.width;
-			
-			if (messageData.systemMessageVO.method == ChatSystemMsgVO.METHOD_LOCAL_SIDE) {
-				tipsText.visible = true;
-				tipsText.x = tf.x;
+			tipsText.width = maxWidth - vTextMargin * 2;
+			tipsText.text = getBodyText(messageData);
+			tipsText.width = tipsText.textWidth + 5;
+			tipsText.height = tipsText.textHeight + 4;
+			if (icon == null) {
 				tipsText.y = tf.y + tf.height;
-				tipsText.width = questionBitmap.x - tipsText.x - Config.MARGIN;
-				tipsText.htmlText = Lang.textAdditionalSideInfoDesc;
-				tipsText.height = tipsText.textHeight + 5;
+				tipsText.x = hTextMargin;
+				line.y = tipsText.y + tipsText.height;
+			} else {
+				tipsText.y = icon.y + int((icon.height - tipsText.height) * .5) + 2;
+				tipsText.x = icon.x + icon.width + hTextMargin;
+				line.y = icon.y + icon.height + hTextMargin;
 			}
 			
-			if (tipsText.visible == true)
-				buttonBitmap.y = tipsText.y + tipsText.height + Config.MARGIN;
-			else
-				buttonBitmap.y = tf.y + tf.height + Config.MARGIN;
+			line.width = maxWidth - vTextMargin * 2;
 			
-			initBg(bgColor, roundedTop, roundedBottom);
+			if (messageData.systemMessageVO.method == ChatSystemMsgVO.METHOD_LOCAL_SIDE ||
+				messageData.systemMessageVO.method == ChatSystemMsgVO.METHOD_LOCAL_CRYPTO ||
+				messageData.systemMessageVO.method == ChatSystemMsgVO.METHOD_LOCAL_CURRENCY) {
+					bird.visible = true;
+					bird.x = line.x + line.width - bird.width;
+					bird.y = tipsText.y + int((tipsText.height - bird.height) * .5);
+			} else {
+				bird.visible = false;
+			}
+			
+			setTextColors(messageData);
+			
+			initBg(0xFFFFFF, roundedTop, roundedBottom);
 			boxBg.width = maxWidth;
-			boxBg.height = buttonBitmap.y + buttonBitmap.height + vTextMargin;
+			boxBg.height = line.y + line.height + vTextMargin;
 		}
 		
-		private function prepareButtonBitmapAndReturnHeight(maxWidth:int, text:String):int {
-			if (buttonBitmap != null) {
-				if (buttonBitmap.width == int(maxWidth - hTextMargin * 2) && bodyText == text)
-					return buttonBitmap.height;
+		private function getIcon(messageData:ChatMessageVO):void {
+			if (icon != null && icon.parent != null)
+				icon.parent.removeChild(icon);
+			icon = null;
+			if (messageData.systemMessageVO == null)
+				return;
+			if (messageData.systemMessageVO.method != ChatSystemMsgVO.METHOD_LOCAL_CRYPTO)
+				return;
+			if (QuestionsManager.getCurrentQuestion().instrument == null)
+				return;
+			icon = UI.getInvestIconByInstrument(QuestionsManager.getCurrentQuestion().instrument.code);
+			if (icon != null) {
+				UI.scaleToFit(icon, iconSize * 1.5, iconSize * 1.5);
+				icon.y = int(tf.y + tf.height + hTextMargin * .5 - 2);
+				icon.x = hTextMargin + 2;
+				addChild(icon);
 			}
-			bodyText = text;
-			UI.disposeBMD(buttonBitmap.bitmapData);
-			buttonBitmap.bitmapData = UI.renderTextPlane("<i>" + bodyText + "</i> " ,
-				int(maxWidth - hTextMargin * 2),
-				Config.FINGER_SIZE,
-				true, 
-				TextFormatAlign.LEFT, 
-				TextFieldAutoSize.LEFT, 
-				fontSize, 
-				true, 
-				COLOR_TEXT_INFO,
-				0xFFFFFF,				
-				0xf2e407,
-				textBoxRadius,
-				1,
-				Config.FINGER_SIZE*.1,
-				10,
-				null,
-				false,
-				true
-			);
-			return buttonBitmap.height;
+		}
+		
+		private function setTextColors(messageData:ChatMessageVO):void {
+			textFormat.color = COLOR_TEXT_SELECTOR_TITLE;
+			textFormat1.color = COLOR_TEXT_SELECTOR_VALUE;
+			textFormat1.size = fontSize * 1.33;
+			if (QuestionsManager.getCurrentQuestion() == null) {
+				tf.setTextFormat(textFormat);
+				tipsText.setTextFormat(textFormat1);
+				return;
+			}
+			if (messageData.systemMessageVO.method == ChatSystemMsgVO.METHOD_LOCAL_SIDE) {
+				if (QuestionsManager.getCurrentQuestion().subtype != null) {
+					textFormat.color = COLOR_TEXT_SELECTOR_TITLE_SELECTED;
+					textFormat1.color = COLOR_TEXT_SELECTOR_VALUE_SELECTED;
+				}
+			} else if (messageData.systemMessageVO.method == ChatSystemMsgVO.METHOD_LOCAL_CRYPTO) {
+				if (QuestionsManager.getCurrentQuestion().instrument != null) {
+					textFormat.color = COLOR_TEXT_SELECTOR_TITLE_SELECTED;
+					textFormat1.color = COLOR_TEXT_SELECTOR_VALUE_SELECTED;
+					textFormat1.size = fontSize * 1.10;
+				}
+			} else if (messageData.systemMessageVO.method == ChatSystemMsgVO.METHOD_LOCAL_CRYPTO_AMOUNT) {
+				if (QuestionsManager.getCurrentQuestion().cryptoAmount != null) {
+					textFormat.color = COLOR_TEXT_SELECTOR_TITLE_SELECTED;
+					textFormat1.color = COLOR_TEXT_SELECTOR_VALUE_SELECTED;
+				}
+			} else if (messageData.systemMessageVO.method == ChatSystemMsgVO.METHOD_LOCAL_CURRENCY) {
+				if (QuestionsManager.getCurrentQuestion().priceCurrency != null) {
+					textFormat.color = COLOR_TEXT_SELECTOR_TITLE_SELECTED;
+					textFormat1.color = COLOR_TEXT_SELECTOR_VALUE_SELECTED;
+				}
+			}
+			tf.setTextFormat(textFormat);
+			tipsText.setTextFormat(textFormat1);
 		}
 		
 		override public function updateHitzones(itemHitzones:Array):void {
 			itemHitzones.push( { type:HitZoneType.BALLOON, x:x , y:y, width: boxBg.width, height: boxBg.height } );
-			var hitZoneType:String;
-			switch (currentMessage.systemMessageVO.method) {
-				case ChatSystemMsgVO.METHOD_LOCAL_SIDE:
-					hitZoneType = HitZoneType.SIDE_INFO;
-					break;
-				case ChatSystemMsgVO.METHOD_LOCAL_CRYPTO_AMOUNT:
-					hitZoneType = HitZoneType.CRYPTO_AMOUNT_INFO;
-					break;
-				case ChatSystemMsgVO.METHOD_LOCAL_CURRENCY:
-					hitZoneType = HitZoneType.CURRENCY_INFO;
-					break;
+		}
+		
+		override public function getSelectedHitzone(itemTouchPoint:Point, listItem:ListItem):HitZoneData {
+			var result:HitZoneData = new HitZoneData();
+			var roundedTop:Boolean = true;
+			var roundedBottom:Boolean = true;
+			var cmVO:ChatMessageVO;
+			if (listItem != null) {
+				if (listItem.num != 0) {
+					cmVO = listItem.list.data[listItem.num - 1];
+					if (cmVO.typeEnum == ChatSystemMsgVO.TYPE_LOCAL_QUESTION)
+						roundedTop = false;
+				}
+				if (listItem.list.data.length > listItem.num + 1) {
+					cmVO = listItem.list.data[listItem.num + 1];
+					if (cmVO != null && cmVO.crypted == true)
+						cmVO.decrypt(null);
+					if (cmVO.typeEnum == ChatSystemMsgVO.TYPE_LOCAL_QUESTION)
+						roundedBottom = false;
+				}
 			}
-			if (hitZoneType != null)
-				itemHitzones.unshift( { type:hitZoneType, x:(x + questionBitmap.x), y:(y + questionBitmap.y), width:questionBitmap.width, height:questionBitmap.height } );
+			if (roundedTop && roundedBottom)
+				result.type = HitZoneType.MENU_SIMPLE_ELEMENT;
+			else if (roundedTop)
+				result.type = HitZoneType.MENU_FIRST_ELEMENT;
+			else if (roundedBottom)
+				result.type = HitZoneType.MENU_LAST_ELEMENT;
+			else
+				result.type = HitZoneType.MENU_MIDDLE_ELEMENT;
+			result.x = x;
+			result.y = y;
+			result.width = getWidth();
+			result.height = getContentHeight();
+			result.radius = textBoxRadius;
+			return result;
 		}
 		
 		override public function dispose():void {
 			super.dispose();
-			UI.destroy(buttonBitmap);
-			buttonBitmap = null;
-			UI.destroy(questionBitmap);
-			questionBitmap = null;
+			currentMessage = null;
+			if (line != null) {
+				if (line.parent != null)
+					line.parent.removeChild(line);
+				line.graphics.clear();
+			}
+			line = null;
 		}
 		
 		override public function getSmallGap(listItem:ListItem):int {

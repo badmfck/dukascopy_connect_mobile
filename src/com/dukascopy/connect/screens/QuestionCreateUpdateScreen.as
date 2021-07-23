@@ -1,49 +1,40 @@
 package com.dukascopy.connect.screens {
 	
-	import assets.JailedIllustrationClip;
 	import com.dukascopy.connect.Config;
+	import com.dukascopy.connect.GD;
 	import com.dukascopy.connect.MobileGui;
 	import com.dukascopy.connect.data.LocalAvatars;
-	import com.dukascopy.connect.data.PopupData;
-	import com.dukascopy.connect.data.screenAction.customActions.OpenBankAccountAction;
 	import com.dukascopy.connect.gui.chat.BubbleButton;
 	import com.dukascopy.connect.gui.chat.ConnectionIndicator;
 	import com.dukascopy.connect.gui.components.message.ToastMessage;
 	import com.dukascopy.connect.gui.lightbox.UI;
 	import com.dukascopy.connect.gui.list.List;
 	import com.dukascopy.connect.gui.list.renderers.ListChatItem;
-	import com.dukascopy.connect.gui.list.renderers.ListLink;
+	import com.dukascopy.connect.gui.list.renderers.ListCryptoWallet;
 	import com.dukascopy.connect.gui.list.renderers.ListPayCurrency;
 	import com.dukascopy.connect.gui.list.renderers.ListQuestionType;
 	import com.dukascopy.connect.gui.menuVideo.HidableButton;
 	import com.dukascopy.connect.gui.preloader.Preloader;
 	import com.dukascopy.connect.gui.topBar.TopBarScreen;
+	import com.dukascopy.connect.managers.escrow.vo.EscrowInstrument;
 	import com.dukascopy.connect.screens.base.BaseScreen;
-	import com.dukascopy.connect.screens.dialogs.ScreenLinksDialog;
-	import com.dukascopy.connect.screens.dialogs.geolocation.CityGeoposition;
 	import com.dukascopy.connect.screens.dialogs.x.base.bottom.ListSelectionPopup;
-	import com.dukascopy.connect.screens.serviceScreen.BottomPopupScreen;
 	import com.dukascopy.connect.sys.auth.Auth;
 	import com.dukascopy.connect.sys.chatManager.typesManagers.AnswersManager;
-	import com.dukascopy.connect.sys.connectionManager.NetworkManager;
 	import com.dukascopy.connect.sys.dialogManager.DialogManager;
 	import com.dukascopy.connect.sys.echo.echo;
-	import com.dukascopy.connect.sys.geolocation.GeolocationManager;
 	import com.dukascopy.connect.sys.questionsManager.QuestionsManager;
 	import com.dukascopy.connect.sys.serviceScreenManager.ServiceScreenManager;
 	import com.dukascopy.connect.sys.theme.AppTheme;
 	import com.dukascopy.connect.type.HitZoneType;
-	import com.dukascopy.connect.type.MainColors;
 	import com.dukascopy.connect.vo.ChatMessageVO;
 	import com.dukascopy.connect.vo.ChatSystemMsgVO;
 	import com.dukascopy.connect.vo.QuestionVO;
 	import com.dukascopy.langs.Lang;
+	import com.greensock.TweenMax;
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
-	import flash.display.Sprite;
 	import flash.events.Event;
-	import flash.net.URLRequest;
-	import flash.net.navigateToURL;
 	
 	/**
 	 * ...
@@ -52,24 +43,20 @@ package com.dukascopy.connect.screens {
 	
 	public class QuestionCreateUpdateScreen extends BaseScreen {
 		
-		private const DEFAULT_BACKGROUND_COLOR:uint = 0xc4def1;
+		private const DEFAULT_BACKGROUND_COLOR:uint = 0xE9F3FB;
 		
 		private var topBar:TopBarScreen;
 		private var list:List;
 		private var preloader:Preloader;
-		private var backClip:Sprite;
 		private var answersCountButton:BubbleButton;
 		private var questionButtonBG:Bitmap;
 		
 		private var currentQuestion:QuestionVO;
 		private var busy:Boolean = false;
-		private var waitingForPaymentsRespond:Boolean = false;
 		
 		private var actionTrash:Object = { id:"refreshBtn", img:SWFTrashIconBold, imgColor:0xFFFFFF, callback:onTrashTap }
 		
 		private var trashAdded:Boolean = false;
-		
-		private var noConnectionIndicator:ConnectionIndicator;
 		
 		private var createChatButton:HidableButton;
 		private var addQuestionIcon:SWFAddQuestionButton;
@@ -78,13 +65,9 @@ package com.dukascopy.connect.screens {
 		
 		override protected function createView():void {
 			super.createView();
-			backClip = new Sprite();
-			_view.addChild(backClip);
 			
 			list = new List("Chat");
 			list.setAdditionalBottomHeight(Config.FINGER_SIZE * .5);
-			list.backgroundColor = MainColors.CHAT_COLOR_1;
-			list.background = true;
 			_view.addChild(list.view);
 			
 			topBar = new TopBarScreen();
@@ -116,12 +99,6 @@ package com.dukascopy.connect.screens {
 			super.initScreen(data);
 			if (data != null)
 				topBar.setData(data.title, true, null);
-			backClip.graphics.clear();
-			backClip.graphics.beginFill(DEFAULT_BACKGROUND_COLOR);
-			backClip.graphics.drawRect(0, 0, _width, _height - topBar.trueHeight);
-			backClip.graphics.endFill();
-			backClip.y = topBar.trueHeight;
-			
 			var qVO:QuestionVO;
 			if (data != null)
 				qVO = data.data;
@@ -136,15 +113,6 @@ package com.dukascopy.connect.screens {
 			QuestionsManager.S_CURRENT_QUESTION_UPDATED.add(activate);
 			QuestionsManager.S_QUESTION.add(onQuestionAnswers);
 			QuestionsManager.S_QUESTION_CREATE_FAIL.add(onQuestionCreateError);
-			QuestionsManager.S_TIPS.add(updateTipsChatItem);
-			QuestionsManager.S_CATEGORIES.add(updateCategoriesChatItem);
-			QuestionsManager.S_LANGUAGES.add(updateLanguagesChatItem);
-			
-			NetworkManager.S_CONNECTION_CHANGED.add(onNetworkChanged);
-			
-			waitingForPaymentsRespond = false;
-			
-			onNetworkChanged();
 			
 			if (qVO == null) {
 				createChatButton.setPosition(_width - Config.FINGER_SIZE - Config.MARGIN * 2,  _height - Config.FINGER_SIZE - Config.MARGIN * 2);
@@ -159,83 +127,15 @@ package com.dukascopy.connect.screens {
 				preloader.hide();
 		}
 		
-		// NO CONNECTION INDICATOR -> //
-		private function onNetworkChanged():void {
-			if (NetworkManager.isConnected)
-			{
-				hideNoConnectionIndicator();
-			}
-			else
-				showNoConnectionIndicator();
-		}
-		
-		private function hideNoConnectionIndicator():void {
-			if (noConnectionIndicator == null || noConnectionIndicator.parent == null)
-				return;
-			noConnectionIndicator.parent.removeChild(noConnectionIndicator);
-		}
-		
-		private function showNoConnectionIndicator():void {
-			if (noConnectionIndicator == null) {
-				noConnectionIndicator = new ConnectionIndicator();
-				noConnectionIndicator.draw(_width, Config.FINGER_SIZE * .5);
-			}
-			noConnectionIndicator.y = topBar.height;
-			_view.addChild(noConnectionIndicator);
-		}
-		
-		private function updateTipsChatItem():void {
-			if (_isDisposed == true)
-				return;
-			if (list == null)
-				return;
-			list.updateItemByIndex(2);
-		}
-		
-		private function updateCategoriesChatItem():void {
-			if (_isDisposed == true)
-				return;
-			if (list == null)
-				return;
-			if (Config.PUBLIC_QUESTIONS_ALLOWED == true) {
-				list.updateItemByIndex(3);
-				return;
-			}
-			list.updateItemByIndex(2);
-		}
-		
-		private function updateGeoChatItem():void {
-			if (_isDisposed == true)
-				return;
-			if (list == null)
-				return;
-			if (Config.PUBLIC_QUESTIONS_ALLOWED == true) {
-				list.updateItemByIndex(4);
-				return;
-			}
-			list.updateItemByIndex(3);
-		}
-		
-		private function updateLanguagesChatItem():void {
-			if (_isDisposed == true)
-				return;
-			if (list == null)
-				return;
-			if (Config.PUBLIC_QUESTIONS_ALLOWED == true) {
-				list.updateItemByIndex(4);
-				return;
-			}
-			list.updateItemByIndex(3);
-		}
-		
 		private function fillList():void {
 			var _messages:Array = new Array();
 			var message:ChatMessageVO;
+			
 			var messageData:Object = new Object();
 			messageData.id = 0;
 			messageData.user_avatar = LocalAvatars.QUESTIONS;
 			messageData.user_name = "911";
-			messageData.text = Lang.createOfferStartMessage;
+			messageData.text = Lang.tenderStartText;
 			messageData.usePlainText = true;
 			messageData.created = (new Date()).getTime() / 1000;
 			messageData.isEntryMessage = true;
@@ -246,7 +146,14 @@ package com.dukascopy.connect.screens {
 			messageData.id = 0;
 			messageData.user_avatar = LocalAvatars.QUESTIONS;
 			messageData.user_name = "911";
-			messageData.text = Config.BOUNDS + JSON.stringify( { type:ChatSystemMsgVO.TYPE_LOCAL_QUESTION, method: ChatSystemMsgVO.METHOD_LOCAL_SIDE, title:Lang.questionSide } );
+			messageData.text = Config.BOUNDS + JSON.stringify(
+				{
+					type: ChatSystemMsgVO.TYPE_LOCAL_QUESTION,
+					method: ChatSystemMsgVO.METHOD_LOCAL_SIDE,
+					title: Lang.tenderSide,
+					defaultText: Lang.tenderTypeOperation
+				}
+			);
 			messageData.usePlainText = true;
 			messageData.created = (new Date()).getTime() / 1000;
 			messageData.isEntryMessage = true;
@@ -257,7 +164,14 @@ package com.dukascopy.connect.screens {
 			messageData.id = 0;
 			messageData.user_avatar = LocalAvatars.QUESTIONS;
 			messageData.user_name = "911";
-			messageData.text = Config.BOUNDS + JSON.stringify( { type:ChatSystemMsgVO.TYPE_LOCAL_QUESTION, method: ChatSystemMsgVO.METHOD_LOCAL_CRYPTO_AMOUNT, title:Lang.questionCryptoAmount } );
+			messageData.text = Config.BOUNDS + JSON.stringify(
+				{
+					type: ChatSystemMsgVO.TYPE_LOCAL_QUESTION,
+					method: ChatSystemMsgVO.METHOD_LOCAL_CRYPTO,
+					title: Lang.tenderCrypto,
+					defaultText: Lang.tenderSelectCrypto
+				}
+			);
 			messageData.usePlainText = true;
 			messageData.created = (new Date()).getTime() / 1000;
 			messageData.isEntryMessage = true;
@@ -268,7 +182,50 @@ package com.dukascopy.connect.screens {
 			messageData.id = 0;
 			messageData.user_avatar = LocalAvatars.QUESTIONS;
 			messageData.user_name = "911";
-			messageData.text = Config.BOUNDS + JSON.stringify( { type:ChatSystemMsgVO.TYPE_LOCAL_QUESTION, method: ChatSystemMsgVO.METHOD_LOCAL_CURRENCY, title:Lang.questionCurrency } );
+			messageData.text = Config.BOUNDS + JSON.stringify(
+				{
+					type: ChatSystemMsgVO.TYPE_LOCAL_QUESTION,
+					method: ChatSystemMsgVO.METHOD_LOCAL_CRYPTO_AMOUNT,
+					title: Lang.tenderCryptoAmount,
+					defaultText: Lang.tenderAmount
+				}
+			);
+			messageData.usePlainText = true;
+			messageData.created = (new Date()).getTime() / 1000;
+			messageData.isEntryMessage = true;
+			message = new ChatMessageVO(messageData);
+			_messages.push(message);
+			
+			messageData = {};
+			messageData.id = 0;
+			messageData.user_avatar = LocalAvatars.QUESTIONS;
+			messageData.user_name = "911";
+			messageData.text = Config.BOUNDS + JSON.stringify(
+				{
+					type: ChatSystemMsgVO.TYPE_LOCAL_QUESTION,
+					method: ChatSystemMsgVO.METHOD_LOCAL_CURRENCY,
+					title: Lang.tenderCurrency,
+					defaultText: Lang.tenderChooseCurrency
+				}
+			);
+			messageData.usePlainText = true;
+			messageData.created = 0;
+			messageData.isEntryMessage = true;
+			message = new ChatMessageVO(messageData);
+			_messages.push(message);
+			
+			messageData = {};
+			messageData.id = 0;
+			messageData.user_avatar = LocalAvatars.QUESTIONS;
+			messageData.user_name = "911";
+			messageData.text = Config.BOUNDS + JSON.stringify(
+				{
+					type: ChatSystemMsgVO.TYPE_LOCAL_QUESTION,
+					method: ChatSystemMsgVO.METHOD_LOCAL_PRICE,
+					title: Lang.tenderTargetPrice,
+					defaultText: Lang.tenderInputPrice
+				}
+			);
 			messageData.usePlainText = true;
 			messageData.created = 0;
 			messageData.isEntryMessage = true;
@@ -297,19 +254,18 @@ package com.dukascopy.connect.screens {
 				return;
 			if (!list)
 				return;
+			view.graphics.clear();
+			view.graphics.beginFill(0xE9F3FB);
+			view.graphics.drawRect(0, 0, _width, _height);
+			view.graphics.endFill();
 			if (preloader != null) {
 				preloader.x = _width * .5;
 				preloader.y = _height * .5;
 			}
 			topBar.drawView(_width);
-			if (noConnectionIndicator != null) {
-				noConnectionIndicator.y = topBar.height;
-			}
 			list.view.y = Config.FINGER_SIZE * .85 + Config.APPLE_TOP_OFFSET;
 			
 			setChatListSize();
-			backClip.width = _width;
-			backClip.height = _height;
 		}
 		
 		override public function activateScreen():void {
@@ -345,113 +301,114 @@ package com.dukascopy.connect.screens {
 			}
 			var cmsgVO:ChatMessageVO = data as ChatMessageVO;
 			var lhz:String = list.getItemByNum(n).getLastHitZone();
-			if (lhz == HitZoneType.SIDE_INFO) {
-				DialogManager.alert(Lang.information, Lang.textAdditionalSideInfo);
-				return;
-			}
-			if (lhz == HitZoneType.CRYPTO_AMOUNT_INFO) {
-				DialogManager.alert(Lang.information, Lang.textAdditionalCryptoAmountInfo);
-				return;
-			}
-			if (lhz == HitZoneType.CURRENCY_INFO) {
-				DialogManager.alert(Lang.information, Lang.textAdditionalCurrencyInfo);
-				return;
-			}
 			if (lhz == HitZoneType.BALLOON) {
 				if (cmsgVO.isEntryMessage == true) {
-					if (cmsgVO.typeEnum == ChatSystemMsgVO.TYPE_LOCAL_QUESTION && QuestionsManager.getCurrentQuestion() == null) {
-						if (cmsgVO.systemMessageVO.method == ChatSystemMsgVO.METHOD_LOCAL_CRYPTO_AMOUNT) {
-							checkForAddingTips();
-							return;
-						}
-						if (cmsgVO.systemMessageVO.method == ChatSystemMsgVO.METHOD_LOCAL_CURRENCY) {
-							if (QuestionsManager.getTipsCurrency() == null) {
-								DialogManager.alert(Lang.information, Lang.textAdditionalCurrencyInfo);
+					if (cmsgVO.systemMessageVO != null) {
+						if (cmsgVO.systemMessageVO.method == ChatSystemMsgVO.METHOD_LOCAL_SIDE) {
+							if (QuestionsManager.getCurrentQuestion() != QuestionsManager.fakeTender)
 								return;
-							}
-							var currencies:Array = new Array();
-							for (var i:int = 0; i < QuestionsManager.getTipsCurrency().price.length; i++)
-								currencies.push(QuestionsManager.getTipsCurrency().price[i].name);
-							DialogManager.showDialog(
-								ListSelectionPopup, 
+							DialogManager.showSelectItemDialog(
 								{
-									items:currencies,
-									title:Lang.selectCurrency,
-									renderer:ListPayCurrency,
-									callback:callBackSelectCurrency
-								}, ServiceScreenManager.TYPE_SCREEN
+									callBack:onSideChanged,
+									itemClass:ListQuestionType,
+									listData:QuestionsManager.questionsSides,
+									title:Lang.textSelectSide
+								}
 							);
 							return;
 						}
-						if (cmsgVO.systemMessageVO.method == ChatSystemMsgVO.METHOD_LOCAL_SIDE) {
-							DialogManager.showSelectItemDialog( { callBack:onSideChanged, itemClass:ListQuestionType, listData:QuestionsManager.questionsSides, title:Lang.textSelectSide } );
+						if (cmsgVO.systemMessageVO.method == ChatSystemMsgVO.METHOD_LOCAL_CRYPTO) {
+							if (QuestionsManager.getCurrentQuestion() != QuestionsManager.fakeTender)
+								return;
+							GD.S_ESCROW_INSTRUMENTS.add(onResult);
+							GD.S_ESCROW_INSTRUMENTS_REQUEST.invoke();
+							return;
+						}
+						if (cmsgVO.systemMessageVO.method == ChatSystemMsgVO.METHOD_LOCAL_CRYPTO_AMOUNT) {
+							if (QuestionsManager.getCurrentQuestion() != QuestionsManager.fakeTender)
+								return;
+							callKeyboard();
+							return;
+						}
+						if (cmsgVO.systemMessageVO.method == ChatSystemMsgVO.METHOD_LOCAL_CURRENCY) {
+							if (QuestionsManager.getCurrentQuestion() != QuestionsManager.fakeTender)
+								return;
+							if (QuestionsManager.getCurrentQuestion().instrument == null || QuestionsManager.getCurrentQuestion().instrument.price.length < 2)
+								return;
+                            var currencies:Array = new Array();
+                            for (var i:int = 0; i < QuestionsManager.getCurrentQuestion().instrument.price.length; i++)
+                                currencies.push(QuestionsManager.getCurrentQuestion().instrument.price[i].name);
+                            DialogManager.showDialog(
+                                ListSelectionPopup, 
+                                {
+                                    items:currencies,
+                                    title:Lang.selectCurrency,
+                                    renderer:ListPayCurrency,
+                                    callback:callBackSelectCurrency
+                                }, ServiceScreenManager.TYPE_SCREEN
+                            );
 							return;
 						}
 					}
 				}
-				if (cmsgVO.linksArray != null && cmsgVO.linksArray.length > 0) {
-					if (cmsgVO.linksArray.length > 1) {
-						DialogManager.showDialog(ScreenLinksDialog, { callback:function(data:Object):void {
-							navigateToURL(new URLRequest(data.shortLink));
-							}, data:cmsgVO.linksArray, itemClass:ListLink, title:Lang.chooseLinkToOpen } );
-					} else {
-						var linkObj:Object = cmsgVO.linksArray[0];
-						if (linkObj != null)
-							navigateToURL(new URLRequest(linkObj.shortLink));
-					}
-				}
 			}
+		}
+		
+		private var testCounter:int;
+		private function callKeyboard():void {
+			testCounter = 0;
+			QuestionsManager.getCurrentQuestion().cryptoAmount = "";
+			TweenMax.delayedCall(.5, onValueChanged);
+		}
+		
+		private function onValueChanged():void {
+			testCounter++;
+			if (QuestionsManager.getCurrentQuestion() != QuestionsManager.fakeTender)
+				return;
+			if (testCounter == 3)
+				QuestionsManager.getCurrentQuestion().cryptoAmount = QuestionsManager.getCurrentQuestion().cryptoAmount + ".";
+			else
+				QuestionsManager.getCurrentQuestion().cryptoAmount = QuestionsManager.getCurrentQuestion().cryptoAmount + "1";
+			list.updateItemByIndex(3);
+			if (testCounter < 6)
+				TweenMax.delayedCall(.5, onValueChanged);
 		}
 		
 		private function onSideChanged(val:int):void {
 			if (val == -1)
 				return;
-			QuestionsManager.setQuestionSide(val);
+			if (QuestionsManager.getCurrentQuestion() != QuestionsManager.fakeTender)
+				return;
+			QuestionsManager.getCurrentQuestion().subtype = QuestionsManager.questionsSides[val].type;
 			list.updateItemByIndex(1);
 		}
 		
-		private function onSecretSelected(incognito:Boolean = false):void {
-			QuestionsManager.saveSecretMode(incognito);
-			updateCategoriesChatItem();
+		private function onResult(instruments:Vector.<EscrowInstrument>):void {
+			GD.S_ESCROW_INSTRUMENTS.remove(onResult);
+			DialogManager.showDialog(
+				ListSelectionPopup,
+				{
+					items:instruments,
+					title:Lang.selectCurrency,
+					renderer:ListCryptoWallet,
+					callback:callBackSelectInstrument
+				},
+				DialogManager.TYPE_SCREEN
+			);
+		}
+		
+		private function callBackSelectInstrument(ei:EscrowInstrument):void {
+			QuestionsManager.getCurrentQuestion().instrument = ei;
+			if (ei.price.length == 1)
+				QuestionsManager.getCurrentQuestion().priceCurrency = ei.price[0].name;
+			else
+				QuestionsManager.getCurrentQuestion().priceCurrency = null;
+			list.updateItemByIndex(2, true, true);
 		}
 		
 		private function callBackSelectCurrency(currency:String):void {
-			QuestionsManager.saveCurrency(currency);
-			list.updateItemByIndex(3);
-		}
-		
-		private function checkForAddingTips():void {
-			var checkResult:int = QuestionsManager.checkForUnsatisfiedQuestionWithTipsExists();
-			if (checkResult == -1) {
-				ToastMessage.display(Lang.pleaseTryLater);
-				return;
-			}
-			if (checkResult == 1) {
-				DialogManager.alert(Lang.information, Lang.alreadyHaveUnpaid);
-				return;
-			}
-			if (checkResult == 0)
-				checkForPaymentsAccount();
-		}
-		
-		private function checkForPaymentsAccount():void {
-			if (Auth.bank_phase != "ACC_APPROVED") {
-				var popupData:PopupData = new PopupData();
-				var action:OpenBankAccountAction = new OpenBankAccountAction();
-				action.setData(Lang.openBankAccount);
-				popupData.action = action;
-				popupData.illustration = JailedIllustrationClip;
-				popupData.title = Lang.noBankAccount;
-				popupData.text = Lang.featureNoPaments;
-				ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, BottomPopupScreen, popupData);
-			} else
-				ServiceScreenManager.showExtraTipsPopup(null);
-		}
-		
-		private function createPaymentsAccount(val:int):void {
-			if (val != 1)
-				return;
-				MobileGui.showRoadMap();
+			QuestionsManager.getCurrentQuestion().priceCurrency = currency;
+			list.updateItemByIndex(4);
 		}
 		
 		override public function deactivateScreen():void {
@@ -632,14 +589,6 @@ package com.dukascopy.connect.screens {
 				preloader.dispose();
 			preloader = null;
 			
-			if (noConnectionIndicator)
-				noConnectionIndicator.dispose();
-			noConnectionIndicator = null;
-			
-			if (backClip != null)
-				UI.destroy(backClip);
-			backClip = null;
-			
 			if (createChatButton)
 				createChatButton.dispose();
 			createChatButton = null;
@@ -655,10 +604,6 @@ package com.dukascopy.connect.screens {
 			QuestionsManager.S_CURRENT_QUESTION_UPDATED.remove(activate);
 			QuestionsManager.S_QUESTION.remove(onQuestionAnswers);
 			QuestionsManager.S_QUESTION_CREATE_FAIL.remove(onQuestionCreateError);
-			QuestionsManager.S_TIPS.remove(updateTipsChatItem);
-			QuestionsManager.S_CATEGORIES.remove(updateCategoriesChatItem);
-			QuestionsManager.S_LANGUAGES.remove(updateLanguagesChatItem);
-			NetworkManager.S_CONNECTION_CHANGED.remove(onNetworkChanged);
 			_data = null;
 			super.dispose();
 		}

@@ -1447,7 +1447,7 @@ package com.dukascopy.connect.sys.bankManager {
 				return;
 			if (value == null)
 				return;
-			var temp:int;
+			/*var temp:int;
             var from:String = value.dateFrom.getFullYear();
             temp = value.dateFrom.getMonth() + 1;
             from += "-";
@@ -1468,8 +1468,8 @@ package com.dukascopy.connect.sys.bankManager {
                 data.value, true
             );
             sendMessage(data.action, true);
-			return;
-			/*var from:String = Number(value.dateFrom.getTime() * .001).toFixed(0);
+			return;*/
+			var from:String = Number(value.dateFrom.getTime() * .001).toFixed(0);
 			var to:String = Number(value.dateTo.getTime() * .001).toFixed(0);
 			GD.S_TIMEZONE_REQUEST.invoke(function(val:String):void {
 				sendMessage("val:" +
@@ -1479,7 +1479,7 @@ package com.dukascopy.connect.sys.bankManager {
 					val, true
 				);
 				sendMessage(data.action, true);
-			} );*/
+			} );
 		}
 		
 		static private function openLink(data:Object):void {

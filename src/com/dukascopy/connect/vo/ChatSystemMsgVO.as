@@ -87,6 +87,7 @@ package com.dukascopy.connect.vo {
 		static public const METHOD_LOCAL_GEO:String = "Geolocation";
 		static public const METHOD_LOCAL_LANGUAGES:String = "languages";
 		static public const METHOD_LOCAL_SIDE:String = "side";
+		static public const METHOD_LOCAL_CRYPTO:String = "crypto";
 		static public const METHOD_LOCAL_CRYPTO_AMOUNT:String = "cryptoAmount";
 		static public const METHOD_LOCAL_PRICE:String = "price";
 		static public const METHOD_LOCAL_CURRENCY:String = "currency";
@@ -123,6 +124,7 @@ package com.dukascopy.connect.vo {
 		private var _title:String;
 		private var _text:String;
 		private var _textSmall:String;
+		private var _defaultText:String;
 		
 		private var _fileType:String;
 		private var _imageURL:String;
@@ -174,6 +176,8 @@ package com.dukascopy.connect.vo {
 				_title = data.title;
 			if ("fileType" in data && data.fileType != null)
 				_fileType = data.fileType;
+			if ("defaultText" in data && data.defaultText != null)
+				_defaultText = data.defaultText;
 			var tmp:Array;
 			if (_type != null) {
 				if (_type == TYPE_VI) {
@@ -600,8 +604,11 @@ package com.dukascopy.connect.vo {
 						_text = _title;
 				} else
 					_text = _title;
-			} else
+			} else if (_defaultText != null) {
+				_text = _defaultText;
+			} else {
 				_text = _title;
+			}
 			return _text;
 		}
 		

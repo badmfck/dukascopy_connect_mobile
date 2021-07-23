@@ -248,7 +248,7 @@ package com.dukascopy.connect.screens.innerScreens {
 					return;
 				}
 				MobileGui.changeMainScreen(QuestionCreateUpdateScreen, { backScreen:MobileGui.centerScreen.currentScreenClass,
-														   title:Lang.askQuestions, 
+														   title:Lang.addTender, 
 														   backScreenData:this.data,
 														   data:null}, 
 														   ScreenManager.DIRECTION_RIGHT_LEFT);

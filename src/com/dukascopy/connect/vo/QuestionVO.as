@@ -1,6 +1,8 @@
 package com.dukascopy.connect.vo {
 	
 	import com.dukascopy.connect.data.location.Location;
+	import com.dukascopy.connect.managers.escrow.vo.EscrowInstrument;
+	import com.dukascopy.connect.managers.escrow.vo.EscrowPrice;
 	import com.dukascopy.connect.sys.auth.Auth;
 	import com.dukascopy.connect.sys.crypter.Crypter;
 	import com.dukascopy.connect.sys.questionsManager.QuestionsManager;
@@ -49,6 +51,9 @@ package com.dukascopy.connect.vo {
 		
 		private var _geo:Boolean = false;
 		private var _geolocation:Location;
+		private var _instrument:EscrowInstrument;
+		private var _cryptoAmount:String;
+		private var _priceCurrency:String;
 		
 		public var needPayBeforeClose:Boolean;
 		
@@ -177,9 +182,28 @@ package com.dukascopy.connect.vo {
 		public function get geo():Boolean { return _geo; }
 		public function get geolocation():Location { return _geolocation; }
 		public function get isHeader():Boolean { return _isHeader; }
+		public function get instrument():EscrowInstrument { return _instrument; }
+		public function get cryptoAmount():String { return _cryptoAmount; }
+		public function get priceCurrency():String { return _priceCurrency; }
 		
 		public function set type(value:String):void {
 			_type = value;
+		}
+		
+		public function set subtype(value:String):void {
+			_subtype = value;
+		}
+		
+		public function set instrument(value:EscrowInstrument):void {
+			_instrument = value;
+		}
+		
+		public function set priceCurrency(value:String):void {
+			_priceCurrency = value;
+		}
+		
+		public function set cryptoAmount(val:String):void {
+			_cryptoAmount = val;
 		}
 		
 		public function dispose():void {

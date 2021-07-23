@@ -56,7 +56,6 @@ package com.dukascopy.langs {
 		static public var areYouSureQuitApplication:String = "Are you sure  you want to quit application?";
 		static public var areYouSureRemovePin:String = "Are You sure want to remove PIN from this chat?";
 		static public var askAnyQuestions:String = "Ask any question, we will find people to answer you.\n\nPlease tap on 'Thank you I`m satisfied' ' button to those who will satisfy you with answer!";
-		static public var createOfferStartMessage:String = "Bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla";
 		static public var askNewQuestion:String = "Ask new question";
 		static public var askQuestions:String = "Ask your question";
 		static public var backgroundImage:String = "Background image";
@@ -1119,7 +1118,6 @@ package com.dukascopy.langs {
 		static public var textQuestionSideBuy:String = "Buy";
 		static public var textQuestionSideSell:String = "Sell";
 		static public var textAdditionalTypeInfoDesc:String = "Press to select <B>private</B> or <B>public</B>";
-		static public var textAdditionalSideInfoDesc:String = "Press to select <B>BUY</B> or <B>SELL</B>";
 		static public var theMoneyWasSent:String = "Money was transfered";
 		static public var failedToLoadCommission:String ="Some error occurred while loading commission";
 		static public var clickToPlay:String="CLICK TO PLAY GAME";
@@ -2473,6 +2471,21 @@ package com.dukascopy.langs {
 		static public var draft:String = "Draft: ";
 		static public var payments_error_amount_too_small:String = "Amount is too small 1";
 		static public var groupChat:String = "Group chat";
+		
+		static public var addTender:String = "Add your tender";
+		static public var tenderStartText:String = "Compose your tender, indicating the details of the offer you intend to publish.\nOnce someonce reacts to your tender, switch to the one-to-one chat with the counterparty, agree on the ultimate conditions of deal and initiate a binding offer through a dedicated form right from the chat.";
+		static public var tenderSide:String = "I would like to";
+		static public var tenderTypeOperation:String = "Choose operation type";
+		static public var tenderCrypto:String = "Crypto";
+		static public var tenderSelectCrypto:String = "Select crypto";
+		static public var tenderCryptoAmount:String = "Crypto amount";
+		static public var tenderAmount:String = "Amount";
+		static public var tenderCurrency:String = "Currency";
+		static public var tenderChooseCurrency:String = "Choose currency";
+		static public var tenderTargetPrice:String = "Target price per Coin";
+		static public var tenderInputPrice:String = "Input price";
+		static public var tenderSideBuy:String = "Buy";
+		static public var tenderSideSell:String = "Sell";
 		
 		static public function updateKeys(keys:Object):void {
 			for (var n:String in keys) {

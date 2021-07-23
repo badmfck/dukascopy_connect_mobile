@@ -528,11 +528,11 @@ package com.dukascopy.connect.gui.list.renderers {
 				
 				tfAnswersNum.defaultTextFormat = format3;
 				
-				if (QuestionsManager.getCategoriesFilterNames() == "") {
+				//if (QuestionsManager.getCategoriesFilterNames() == "") {
 					tfAnswersNum.text = Lang.answerGetRewards;
-				} else {
+				/*} else {
 					tfAnswersNum.text = QuestionsManager.getCategoriesFilterNames();
-				}
+				}*/
 				
 				tfAnswersNum.width = tfAnswersNum.textWidth + 4;
 				tfAnswersNum.x = int((width - tfAnswersNum.width) * .5);

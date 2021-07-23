@@ -90,7 +90,7 @@ package com.dukascopy.connect.screens.dialogs.newDialogs {
 			if (btnAnonim == null) {
 				btnAnonim = new OptionSwitcher();
 				btnAnonim.x = hPadding;
-				btnAnonim.create(componentsWidth, OPTION_LINE_HEIGHT, null, Lang.textIncognito, QuestionsManager.getQuestionSecretMode(), true, -1, NaN, 0);
+				btnAnonim.create(componentsWidth, OPTION_LINE_HEIGHT, null, Lang.textIncognito, false/*QuestionsManager.getQuestionSecretMode()*/, true, -1, NaN, 0);
 				btnAnonim.onSwitchCallback = onAnonimTap;
 			}
 			scrollPanel.addObject(btnAnonim);

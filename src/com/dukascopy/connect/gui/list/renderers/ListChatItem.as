@@ -450,9 +450,6 @@ package com.dukascopy.connect.gui.list.renderers {
 			{
 				h += replyRenderer.getHeight(messageData, maxItemWidth, listItem);
 			}
-			
-			/*if (listItem.list.data!=null && listItem.num == listItem.list.data.length - 1)
-				h += smallGap * 5;*/
 			return Math.min(8000, h);
 		}
 		
@@ -475,25 +472,17 @@ package com.dukascopy.connect.gui.list.renderers {
 		}
 		
 		private function needShowUsername(messageData:ChatMessageVO, listItem:ListItem):Boolean{
-			
 			var result:Boolean = false;
-			
-			//для системных сообщений в 911 нужно отображать имя 911, нужно переделать на явный признак а не идентифицировать только первое;
 			if (messageData.name == "911" && messageData.isEntryMessage && listItem.num == 0)
-				result = true;
-			
+				result = false;
 			if (ChatManager.getCurrentChat() != null && 
 				(ChatManager.getCurrentChat().type == ChatRoomType.GROUP || 
 				ChatManager.getCurrentChat().type == ChatRoomType.CHANNEL) && 
-				messageData.userUID != Auth.uid)
-			{
-				result = true;
-				if (listItem.num > 0 && listItem.list.getStock()[listItem.num - 1].data is ChatMessageVO && listItem.list.getStock()[listItem.num - 1].data.userUID == listItem.data.userUID)
-				{
-					result = false;
-				}
+				messageData.userUID != Auth.uid) {
+					result = true;
+					if (listItem.num > 0 && listItem.list.getStock()[listItem.num - 1].data is ChatMessageVO && listItem.list.getStock()[listItem.num - 1].data.userUID == listItem.data.userUID)
+						result = false;
 			}
-			
 			return result;
 		}
 		

@@ -122,7 +122,7 @@ package com.dukascopy.connect.sys.questionsManager {
 			{ label:Lang.textQuestionTypePublic, type:QUESTION_TYPE_PUBLIC }
 		];
 		
-		static public const questionsSides:Array = [
+		static public const questionsSides:Array =  [
 			{ label:Lang.textQuestionSideBuy, type:QUESTION_SIDE_BUY },
 			{ label:Lang.textQuestionSideSell, type:QUESTION_SIDE_SELL }
 		];
@@ -157,7 +157,7 @@ package com.dukascopy.connect.sys.questionsManager {
 		static private var incognito:Boolean = false;
 		static private var geo:CityGeoposition;
 		static private var type:int;
-		static private var side:int;
+		static private var side:int = -1;
 		static private var newFilteredQuestions:Boolean;
 		static private var categoriesFilter:Array;
 		static private var categoriesFilterNames:String = "";
@@ -177,6 +177,8 @@ package com.dukascopy.connect.sys.questionsManager {
 		static private var getQuestionsTS:Number;
 		static private var wallet:String;
 		
+		static public var fakeTender:QuestionVO;
+		
 		public function QuestionsManager() { }
 		
 		public static function init():void {
@@ -195,23 +197,7 @@ package com.dukascopy.connect.sys.questionsManager {
 			VideoUploader.S_FILE_UPLOADED_FINISH.add(sendVideoMessageFinish);
 			VideoUploader.S_FILE_UPLOADED_PROGRESS.add(sendVideoMessageProgress);
 			
-			CategoryManager.S_CATEGORIES_LOADED.add(onCategoriesLoaded);
-			
-			MobileGui.centerScreen.S_START_SHOW.add(resetTips);
-			
 			initPayingUIDS();
-		}
-		
-		static private function onCategoriesLoaded():void {
-			if (currentQuestion == null)
-				return;
-			if (currentQuestion.categories == null || currentQuestion.categories.length == 0)
-				return;
-			if (categories != null && categories.length != 0)
-				return;
-			var _categories:Vector.<SelectorItemData> = CategoryManager.getCategoriesByID(currentQuestion.categories);
-			if (_categories != null)
-				saveCategories(_categories, currentQuestion.incognito);
 		}
 		
 		static private function onImageUploadReady(success:Boolean, ibd:ImageBitmapData, title:String):void {
@@ -988,13 +974,7 @@ package com.dukascopy.connect.sys.questionsManager {
 				DialogManager.alert(Lang.information, Lang.textTypePublicTips);
 				return;
 			}
-			/*if (!isNaN(tipsAmount)) {
-				var task:AskPrivateQuestionWithTipsServerTask = new AskPrivateQuestionWithTipsServerTask(tipsAmount, tipsCurrency, text, wallet, incognito, questionsTypes[type].type, (geo != null) ? geo.location : null);
-				task.S_ACTION_FAIL.add(onCreateQuestionFail);
-				task.S_ACTION_SUCCESS.add(onCreateQuestionSuccess);
-				task.execute();
-			} else*/
-				PHP.question_create(onQuestionCreated, Crypter.crypt(text, MESSAGE_KEY), tipsAmount, tipsCurrency.code, currency, incognito, questionsSides[side].type);
+			PHP.question_create(onQuestionCreated, Crypter.crypt(text, MESSAGE_KEY), tipsAmount, tipsCurrency.code, currency, incognito, questionsSides[side].type);
 		}
 		
 		static private function onCreateQuestionSuccess(data:Object):void {
@@ -1600,41 +1580,15 @@ package com.dukascopy.connect.sys.questionsManager {
 		static public function setCurrentQuestion(qVO:QuestionVO):void {
 			currentQuestion = qVO;
 			if (qVO == null) {
+				fakeTender = new QuestionVO(null);
+				currentQuestion = fakeTender;
 				return;
 			}
-			tipsAmount = currentQuestion.tipsAmount;
-			//tipsCurrency = currentQuestion.tipsCurrency;
-			var _categories:Vector.<SelectorItemData> = CategoryManager.getCategoriesByID(currentQuestion.categories);
-			if (_categories != null)
-				saveCategories(_categories, currentQuestion.incognito);
 		}
 		
 		static public function showRules():void {
 			DialogManager.show911Rules( { title:Lang.textRules } );
 		}
-		
-		static public function saveTipsForCurrentQuestion(tipsAmount:Number, tipsCurrency:EscrowInstrument, needSignal:Boolean = false):void {
-			if (tipsAmount == 0) {
-				resetTips();
-			} else {
-				QuestionsManager.tipsAmount = tipsAmount;
-				QuestionsManager.tipsCurrency = tipsCurrency;
-			}
-			if (needSignal) {
-				tipsSetted = true;
-				S_TIPS.invoke();
-			}
-		}
-		
-		static public function resetTips():void {
-			tipsAmount = NaN;
-			tipsCurrency = null;
-			tipsSetted = false;
-		}
-		
-		static public function getTipsAmount():Number { return tipsAmount; }
-		static public function getTipsCurrency():EscrowInstrument { return tipsCurrency; }
-		static public function getTipsSetted():Boolean { return tipsSetted; }
 		
 		static public function checkForUnsatisfiedQuestionWithTipsExists():int {
 			if (currentQuestion != null && currentQuestion.isPaid == false) {
@@ -1683,76 +1637,6 @@ package com.dukascopy.connect.sys.questionsManager {
 			}
 		}
 		
-		static public function saveCategories(selectedItems:Vector.<SelectorItemData>, incognito:Boolean = false):void {
-			categories = selectedItems;
-			QuestionsManager.incognito = incognito;
-			S_CATEGORIES.invoke();
-			if (currentQuestion != null)
-				editQuestion(currentQuestion.uid, null);
-		}
-		
-		static public function getQuestionCategories():Vector.<SelectorItemData> {
-			return categories;
-		}
-		
-		static public function getQuestionCategoriesString():String {
-			if (categories == null || categories.length == 0) {
-				return "";
-			}
-			var res:String = "";
-			var l:int = categories.length;
-			for (var i:int = 0; i < l; i++) {
-				if (categories[i].data.id == Config.CAT_DATING && incognito == true)
-					res += categories[i].data.name + " incognito, ";
-				else
-					res += categories[i].data.name + ", ";
-			}
-			res = res.substr(0, res.length - 2);
-			return res;
-		}
-		
-		static public function saveLanguages(selectedItems:Vector.<SelectorItemData>):void {
-			languages = selectedItems;
-			S_LANGUAGES.invoke();
-		}
-		
-		static public function saveCurrency(selectedCurrency:String):void {
-			currency = selectedCurrency;
-			S_CURRENCY.invoke();
-		}
-		
-		static public function getQuestionCurrency():String {
-			if (currency == null)
-				return "";
-			return currency;
-		}
-		
-		static public function getQuestionLanguages():Vector.<SelectorItemData> {
-			return languages;
-		}
-		
-		static public function getQuestionLanguagesString():String {
-			if (languages == null || languages.length == 0) {
-				return "";
-			}
-			var res:String = "";
-			var l:int = languages.length;
-			for (var i:int = 0; i < l; i++) {
-				res += languages[i].data.name + ", ";
-			}
-			res = res.substr(0, res.length - 2);
-			return res;
-		}
-		
-		static public function resetCurrentProperties():void {
-			resetTips();
-			languages = null;
-			categories = null;
-			incognito = false;
-			geo = null;
-			type = 0;
-		}
-		
 		static public function getFilteredQuestionsFromServer(selectedCategories:Vector.<SelectorItemData>):void {
 			categoriesFilter ||= [];
 			categoriesFilter.length = 0;
@@ -1772,7 +1656,6 @@ package com.dukascopy.connect.sys.questionsManager {
 				fs += selectedCategories[i].data.id;
 				categoriesFilterNames += selectedCategories[i].data.name;
 			}
-			//trace("getFilteredQuestionsFromServer -> CATEGORIES IS fs");
 			PHP.question_get(onFilteredQuestionsLoaded, null, null, fs);
 		}
 		
@@ -1796,10 +1679,6 @@ package com.dukascopy.connect.sys.questionsManager {
 			newFilteredQuestions = true;
 			S_QUESTIONS_FILTERED.invoke();
 			phpRespond.dispose();
-		}
-		
-		static public function getCategoriesFilterNames():String {
-			return categoriesFilterNames;
 		}
 		
 		static public function checkForUnsatisfiedQuestions():Boolean {
@@ -1862,10 +1741,6 @@ package com.dukascopy.connect.sys.questionsManager {
 				WS.S_CONNECTED.add(resendInOut);
 		}
 		
-		static public function isAnon(chatUID:String):Boolean {
-			return false;
-		}
-		
 		static private function resendInOut():void {
 			WS.S_CONNECTED.remove(resendInOut);
 			if (flagInOut == true)
@@ -1876,22 +1751,6 @@ package com.dukascopy.connect.sys.questionsManager {
 		
 		static public function getLastTipsQUID():String {
 			return lastTipsQUID;
-		}
-		
-		static public function getQuestionSecretMode():Boolean {
-			return incognito;
-		}
-		
-		static public function saveSecretMode(val:Boolean):void {
-			incognito = val;
-		}
-		
-		static public function getQuestionGeoMode():CityGeoposition {
-			return geo;
-		}
-		
-		static public function saveGeoMode(val:CityGeoposition):void {
-			geo = val;
 		}
 		
 		static public function getLastTipsQUIDs():String {
@@ -1906,25 +1765,6 @@ package com.dukascopy.connect.sys.questionsManager {
 			return showTipsOnly;
 		}
 		
-		static public function getQuestionType():String {
-			return questionsTypes[type].type;
-		}
-		
-		static public function getQuestionTypeLabel():String {
-			return questionsTypes[type].label;
-		}
-		
-		static public function getQuestionSideLabel():String {
-			return questionsSides[side].label;
-		}
-		
-		static public function setQuestionType(val:int):void {
-			type = val;
-		}
-		static public function setQuestionSide(val:int):void {
-			side = val;
-		}
-		
 		static public function setShowTipsOnlyPublic(val:Boolean):void {
 			showTipsOnlyPublic = val;
 		}
@@ -1937,8 +1777,8 @@ package com.dukascopy.connect.sys.questionsManager {
 			questionsTypes[0].label = Lang.textQuestionTypePrivate;
 			questionsTypes[1].label = Lang.textQuestionTypePublic;
 			
-			questionsSides[0].label = Lang.textQuestionSideBuy;
-			questionsSides[1].label = Lang.textQuestionSideSell;
+			questionsSides[0].label = Lang.tenderSideBuy;
+			questionsSides[1].label = Lang.tenderSideSell;
 		}
 		
 		static public function setFirstQuestionTimeOut(val:Number):void {
@@ -1949,9 +1789,19 @@ package com.dukascopy.connect.sys.questionsManager {
 			return firstQuestionTimeOut;
 		}
 		
-		static public function setWalletForCurrentQuestion(wallet:String):void 
-		{
-			QuestionsManager.wallet = wallet;
+		static public function getSide(side:String):Object {
+			for (var i:int = 0; i < questionsSides.length; i++) {
+				if (questionsSides[i].type == side)
+					return questionsSides[i];
+			}
+			return null;
+		}
+		
+		static public function resetCurrentProperties():void {
+			currentQuestion = null;
+			if (fakeTender != null)
+				fakeTender.dispose();
+			fakeTender = null;
 		}
 	}
 }

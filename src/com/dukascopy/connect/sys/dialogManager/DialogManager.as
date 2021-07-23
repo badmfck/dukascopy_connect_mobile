@@ -311,11 +311,6 @@ package com.dukascopy.connect.sys.dialogManager {
 			S_SHOW.invoke(ScreenAddPuzzleDialog, obj, .7);
 		}
 		
-		/*public static function showExtraTipsPopup(currency:String = null, type:String = null):void {
-			hasOpenedDialog = true;
-			S_SHOW.invoke(ScreenExtraTipsPopup, { buttonSecond:Lang.textCancel, title:Lang.addExtraTips, currency:currency, type:type }, .7);
-		}*/
-		
 		static public function showInvitedNotification(data:Object):void {
 			hasOpenedDialog = true;
 			currentScreenType = TYPE_DIALOG;
