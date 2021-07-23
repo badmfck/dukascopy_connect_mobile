@@ -304,7 +304,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		override public function initScreen(data:Object = null):void {
 			
 			
-			var titleWidth:int = (getWidth() - contentPadding * 3 - closeButton.width);
+			var titleWidth:int = (_width - contentPadding * 3 - mainPadding * 2 - closeButton.width);
 			if (data != null && "title" in data && data.title != null)
 			{
 				titleText.bitmapData = TextUtils.createTextFieldData(data.title, titleWidth, 10, true, 
@@ -592,6 +592,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			
 			removeItem(priceSelector);
 			addItem(inputPrice);
+			makePositions();
 		}
 		
 		private function showDeviationControl():void 
@@ -609,6 +610,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			
 			removeItem(inputPrice);
 			addItem(priceSelector);
+			makePositions();
 		}
 		
 		private function getButtonWidth():int 
@@ -652,9 +654,9 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			if (needCallback == true)
 			{
 				needCallback = false;
-				if (data != null && "callback" in data && data.callback != null && data.callback is Function && (data.callback as Function).length == 2)
+				if (data != null && "callback" in data && data.callback != null && data.callback is Function && (data.callback as Function).length == 3)
 				{
-					(data.callback as Function)(selectedPriceValue, isPercent);
+					(data.callback as Function)(selectedPriceValue, isPercent, currencySign);
 				}
 			}
 		}

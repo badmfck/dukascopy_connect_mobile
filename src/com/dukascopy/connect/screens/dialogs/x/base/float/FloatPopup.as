@@ -43,7 +43,7 @@ package com.dukascopy.connect.screens.dialogs.x.base.float
 		protected var scrollPanel:ScrollPanel;
 		protected var scrollBottom:Sprite;
 		private var scrollUp:Sprite;
-		private var mainPadding:Number;
+		protected var mainPadding:Number;
 		private var topColorClip:Sprite;
 		private var preloader:CirclePreloader;
 		protected var colorDelimiterPosition:int = -1;
@@ -60,8 +60,6 @@ package com.dukascopy.connect.screens.dialogs.x.base.float
 			
 			contentPadding = Config.FINGER_SIZE * .3;
 			contentPaddingV = Config.FINGER_SIZE * .26;
-			
-			mainPadding = Config.FINGER_SIZE * .17;
 			
 			background.graphics.beginFill(0x000000, 0.45);
 			background.graphics.drawRect(0, 0, _width, _height);
@@ -81,6 +79,12 @@ package com.dukascopy.connect.screens.dialogs.x.base.float
 		protected function recreateLayout():void 
 		{
 			drawContent();
+			
+			makePositions();
+		}
+		
+		protected function makePositions():void 
+		{
 			updateContentPositions();
 			updateScroll();
 			
@@ -101,6 +105,8 @@ package com.dukascopy.connect.screens.dialogs.x.base.float
 		
 		override protected function createView():void {
 			super.createView();
+			
+			mainPadding = Config.FINGER_SIZE * .17;
 			
 			background = new Sprite();
 			view.addChild(background);
@@ -152,6 +158,8 @@ package com.dukascopy.connect.screens.dialogs.x.base.float
 			scrollBottom.y = 0;
 			updateContentPositions();
 			updateBottomScrollClip();
+			
+			makePositions();
 		}
 		
 		private function updateBottomScrollClip():void 
