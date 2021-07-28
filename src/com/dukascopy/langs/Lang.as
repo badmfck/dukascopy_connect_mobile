@@ -2487,7 +2487,19 @@ package com.dukascopy.langs {
 		static public var tenderInputPrice:String = "Input price";
 		static public var tenderSideBuy:String = "Buy";
 		static public var tenderSideSell:String = "Sell";
+		static public var escrow_hold:String = "ESCROW";
 		static public var tenderPricePercent:String = "from market price";
+		static public var history:String = "History";
+		static public var ads:String = "Ads";
+		static public var escrow_title:String = "911 Crypto P2P";
+		static public var escrow_rules:String = "Rules";
+		static public var escrow_already_participate:String = "Already participate";
+		static public var escrow_offer_closed:String = "Closed";
+		static public var escrow_your_ad_created:String = "Your AD created!";
+		static public var escrow_ad_intro_message:String = "I would like to %@1 %@2 at %@3 per coin.";
+		static public var escrow_buy:String = "Buy";
+		static public var escrow_sell:String = "Sell";
+		static public var make_offer:String = "MAKE OFFER";
 		
 		static public function updateKeys(keys:Object):void {
 			for (var n:String in keys) {

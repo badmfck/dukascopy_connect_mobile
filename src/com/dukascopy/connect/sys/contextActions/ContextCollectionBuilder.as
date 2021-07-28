@@ -13,6 +13,7 @@ package com.dukascopy.connect.sys.contextActions {
 	import com.dukascopy.connect.gui.list.renderers.ListChatItem;
 	import com.dukascopy.connect.gui.list.renderers.ListChatUsers;
 	import com.dukascopy.connect.gui.list.renderers.ListConversation;
+	import com.dukascopy.connect.gui.list.renderers.ListEscrowRenderer;
 	import com.dukascopy.connect.gui.list.renderers.ListQuestionRenderer;
 	import com.dukascopy.connect.gui.list.renderers.TransactionTemplateRenderer;
 	import com.dukascopy.connect.sys.auth.Auth;
@@ -76,6 +77,26 @@ package com.dukascopy.connect.sys.contextActions {
 					break;
 				}
 				case ListQuestionRenderer: {
+					if (itemData == null)
+						break;
+					if (itemData is QuestionVO) {
+						if ((itemData as QuestionVO).uid == null)
+							break;
+						if ((itemData as QuestionVO).isMine()) {
+							if (itemData.isRemoving == true)
+								break;
+							if (itemData.status == QuestionsManager.QUESTION_STATUS_CREATED || itemData.status == QuestionsManager.QUESTION_STATUS_EDITED)
+								actions.push(new ContextAction(HitZoneType.DELETE, Lang.textDelete.toUpperCase(), Style.color(Style.COLOR_SEPARATOR), ContectDeleteIcon));
+							else if (isNaN((itemData as QuestionVO).tipsAmount) == true && NetworkManager.isConnected == true)
+								actions.push(new ContextAction(HitZoneType.DELETE, Lang.textDelete.toUpperCase(), Style.color(Style.COLOR_SEPARATOR), ContectDeleteIcon));
+							else if (itemData.isPaid == true && NetworkManager.isConnected == true)
+								actions.push(new ContextAction(HitZoneType.DELETE, Lang.textDelete.toUpperCase(), Style.color(Style.COLOR_SEPARATOR), ContectDeleteIcon));
+						} else if (Config.isAdmin() == true && NetworkManager.isConnected == true)
+							actions.push(new ContextAction(HitZoneType.DELETE_ADMIN, Lang.textDelete.toUpperCase(), Style.color(Style.COLOR_SEPARATOR), ContectDeleteIcon));
+					}
+					break;
+				}
+				case ListEscrowRenderer: {
 					if (itemData == null)
 						break;
 					if (itemData is QuestionVO) {

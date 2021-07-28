@@ -343,7 +343,7 @@ package com.dukascopy.connect.sys.nativeExtensionController {
 			switch (e.code) {
 				
 				case "filePicker": {
-					trace("file:", "imagePicker");
+					echo("file:", "imagePicker");
 					var resultData:Object;
 					try
 					{
@@ -357,14 +357,14 @@ package com.dukascopy.connect.sys.nativeExtensionController {
 					{
 						if (resultData.signal == "didPick")
 						{
-							trace("file:", "didPick");
+							echo("file:", "didPick");
 							if (Config.PLATFORM_ANDROID && MobileGui.androidExtension != null)
 							{
 								var mediaFileData:MediaFileData = new MediaFileData();	
 								var file:File = new File(resultData.path);
 								if (file.exists)
 								{
-									trace("file:", "File: " + resultData.path);
+									echo("file:", "File: " + resultData.path);
 									mediaFileData.path = resultData.path;
 									mediaFileData.id = resultData.path;
 									

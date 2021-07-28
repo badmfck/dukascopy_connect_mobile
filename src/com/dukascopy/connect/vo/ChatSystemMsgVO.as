@@ -118,6 +118,7 @@ package com.dukascopy.connect.vo {
 		static public const TYPE_LINK_PREVIEW:String = "typeLinkPreview";
 		static public const TYPE_ESCROW_OFFER:String = "typeEscrowOffer";
 		static public const TYPE_ESCROW_DEAL:String = "typeEscrowDeal";
+		static public const METHOD_LOCAL_CREATE:String = "methodLocalCreate";
 		
 		private var _type:String;
 		private var _method:String;

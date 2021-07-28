@@ -5,6 +5,7 @@ package com.dukascopy.connect.sys
 	import com.dukascopy.connect.data.MediaFileData;
 	import com.dukascopy.connect.gui.components.message.ToastMessage;
 	import com.dukascopy.connect.sys.chatManager.ChatManager;
+	import com.dukascopy.connect.sys.echo.echo;
 	import com.dukascopy.connect.sys.imageManager.FileUploader;
 	import com.dukascopy.connect.sys.nativeExtensionController.NativeExtensionController;
 	import com.dukascopy.connect.sys.php.PHP;
@@ -165,6 +166,7 @@ package com.dukascopy.connect.sys
 		
 		private function onUploaded(respond:PHPRespond):void 
 		{
+			echo("file:", "onUploaded: ");
 			if (respond.error)
 			{
 				ToastMessage.display(respond.errorMsg);

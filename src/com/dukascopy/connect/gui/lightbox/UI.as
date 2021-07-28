@@ -599,8 +599,12 @@ package com.dukascopy.connect.gui.lightbox {
 			
 			textfield.y = __paddingV;// (height * .5 - textfield.height * .5);
 		
-			if (__textFieldAutoSize != TextFieldAutoSize.NONE) {
+			if (__textFieldAutoSize != TextFieldAutoSize.NONE && height == 8) {
 				height = textfield.height + __paddingV * 2;
+			}
+			else
+			{
+				textfield.y = int(height * .5 - textfield.height * .5);
 			}
 			if (_isIconCenter){
 				height = textfield.height;

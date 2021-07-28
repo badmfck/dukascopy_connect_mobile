@@ -326,7 +326,14 @@ package com.dukascopy.connect.utils {
 				else{
 					day = Lang.day;
 				}
-				return days.toString() + " " + day + " " + hours.toString() + " " + Lang.textHours;
+				if (hours > 0)
+				{
+					return days.toString() + " " + day + " " + hours.toString() + " " + Lang.textHours;
+				}
+				else
+				{
+					return days.toString() + " " + day;
+				}
 			}
 			else{
 				var result:String = seconds.toString();

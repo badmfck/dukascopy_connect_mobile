@@ -13,6 +13,8 @@ package com.dukascopy.connect.sys.style
 		static public const TITLE_1:int = Config.FINGER_SIZE * .5;
 		// 15 pt
 		static public const SUBHEAD:int = Config.FINGER_SIZE * .27;
+		// 14 pt
+		static public const SUBHEAD_14:int = Config.FINGER_SIZE * .252;
 		// 12 pt
 		static public const CAPTION_1:int = Config.FINGER_SIZE * .22;
 		// 20 pt

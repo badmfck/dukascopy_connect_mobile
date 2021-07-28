@@ -465,7 +465,7 @@ package com.dukascopy.connect.vo {
 				return;
 			lastMessagesHash = null;
 			var messageData:Object = { };
-			if (_qVO.userUID != Auth.uid) {
+			/*if (_qVO.userUID != Auth.uid) {
 				var createdTime:Number = (_qVO.messages != null && _qVO.messages.length > 0) ? _qVO.messages[0].createdTime : _qVO.createdTime;
 				messageData.created = createdTime;
 				
@@ -486,7 +486,7 @@ package com.dukascopy.connect.vo {
 				}
 				euroActionMessageVO = actionEuro;
 				_messages.unshift(actionEuro);
-			}
+			}*/
 			
 			var userAvatar:String;
 			
@@ -507,7 +507,27 @@ package com.dukascopy.connect.vo {
 					if (_qVO.user != null)
 						userName = _qVO.user.getDisplayName();
 					messageData.user_name = userName;
-					messageData.text = _qVO.messages[j].text;
+					
+					var text:String = Lang.escrow_ad_intro_message;
+					if (_qVO.subtype == "buy")
+					{
+						text = text.replace("%@1", Lang.escrow_buy);
+					}
+					else
+					{
+						text = text.replace("%@1", Lang.escrow_sell);
+					}
+					text = text.replace("%@2", _qVO.cryptoAmount + " " + _qVO.tipsCurrency);
+					
+					var price:String = _qVO.price;
+					if (_qVO.categories != null && _qVO.categories.length > 0)
+					{
+						price + " " + _qVO.categories[0];
+					}
+					
+					text = text.replace("%@3", price);
+					
+					messageData.text = text;
 					messageData.usePlainText = true;
 					messageData.created = _qVO.messages[j].createdTime;
 					messageData.user_uid = _qVO.userUID;

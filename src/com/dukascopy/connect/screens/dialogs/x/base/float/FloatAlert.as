@@ -30,7 +30,7 @@ package com.dukascopy.connect.screens.dialogs.x.base.float {
 		private var title:Bitmap;
 		private var description:Bitmap;
 		private var illustration:Bitmap;
-		private var screenData:AlertScreenData;
+		protected var screenData:AlertScreenData;
 		
 		public function FloatAlert() { }
 		
@@ -64,7 +64,7 @@ package com.dukascopy.connect.screens.dialogs.x.base.float {
 			addItem(nextButton);
 		}
 		
-		private function onNextClick():void 
+		protected function onNextClick():void 
 		{
 			close();
 		}
@@ -103,7 +103,7 @@ package com.dukascopy.connect.screens.dialogs.x.base.float {
 			{
 				description.bitmapData = TextUtils.createTextFieldData(screenData.text, getWidth() - contentPadding * 2, 10, true,
 																	TextFormatAlign.LEFT, TextFieldAutoSize.LEFT, 
-																	FontSize.BODY, true, Style.color(Style.COLOR_TEXT),
+																	FontSize.BODY, true, getTextColor(),
 																	Style.color(Style.COLOR_BACKGROUND), false, true);
 			}
 			if (screenData != null && screenData.title != null)
@@ -113,6 +113,15 @@ package com.dukascopy.connect.screens.dialogs.x.base.float {
 																	FontSize.TITLE_3, true, Style.color(Style.COLOR_TEXT),
 																	Style.color(Style.COLOR_BACKGROUND), false);
 			}
+		}
+		
+		private function getTextColor():uint 
+		{
+			if (!isNaN(screenData.textColor))
+			{
+				return screenData.textColor;
+			}
+			return Style.color(Style.COLOR_TEXT);
 		}
 		
 		override protected function updateContentPositions():void 

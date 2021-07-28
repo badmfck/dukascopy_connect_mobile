@@ -14,6 +14,8 @@ package com.dukascopy.connect.data
 		public var button:String;
 		public var callback:Function;
 		public var iconColor:Number = Style.color(Style.COLOR_TEXT);
+		public var mainTitle:String;
+		public var textColor:Number = NaN;
 		
 		public function AlertScreenData() 
 		{

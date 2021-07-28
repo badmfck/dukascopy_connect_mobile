@@ -21,6 +21,9 @@ package com.dukascopy.connect.data.escrow
 	import com.dukascopy.connect.sys.applicationError.ApplicationErrors;
 	import com.dukascopy.connect.sys.auth.Auth;
 	import com.dukascopy.connect.sys.chatManager.ChatManager;
+	import com.dukascopy.connect.sys.errors.ErrorLocalizer;
+	import com.dukascopy.connect.sys.payments.PaymentsManager;
+	import com.dukascopy.connect.sys.payments.advancedPayments.vo.PayTaskVO;
 	import com.dukascopy.connect.sys.php.PHP;
 	import com.dukascopy.connect.sys.php.PHPRespond;
 	import com.dukascopy.connect.sys.serviceScreenManager.ServiceScreenManager;
@@ -39,6 +42,10 @@ package com.dukascopy.connect.data.escrow
 	public class EscrowScreenNavigation
 	{
 		static private var lastRequestData:Request;
+		static private var currentPayTask:PayTaskVO;
+		private static var transactionId:String;
+		static private var payId:String;
+		static private var currenDealRawData:Object;
 		
 		public function EscrowScreenNavigation()
 		{
@@ -60,8 +67,13 @@ package com.dukascopy.connect.data.escrow
 			}
 			else if (command == OfferCommand.confirm_crypto_recieve)
 			{
-				trace("123");
+				PHP.escrow_addEvent(onConfirmCryptoEvent, {event_type: "crypto_accepted", deal_uid: escrow.deal_uid, notifyWS: true});
 			}
+		}
+		
+		static private function onConfirmCryptoEvent(respond:PHPRespond):void 
+		{
+			trace("123");
 		}
 		
 		static public function showScreen(escrow:EscrowMessageData, message:ChatMessageVO, userVO:UserVO, chatVO:ChatVO):void
@@ -77,7 +89,11 @@ package com.dukascopy.connect.data.escrow
 				screenData.chat = chatVO;
 				screenData.message = message;
 				
-				
+				escrow.transactionId = "xf345dfg545hfgh65nmqgh390gghj90w2j45bv";
+				escrow.status = EscrowStatus.deal_created;
+				screenData.callback = confirmCryptoReceiveCommand;
+				ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, ReceiveCryptoScreen, screenData);
+				return;
 				
 				/*screenData.title = Lang.indicate_issue_type;
 				   ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, EscrowReportScreen, screenData);
@@ -194,69 +210,6 @@ package com.dukascopy.connect.data.escrow
 				ApplicationErrors.add();
 			}
 		}
-		
-		/*private static function showCryptoScreen(instruments:Vector.<EscrowInstrument>):void
-		   {
-		   GD.S_STOP_LOAD.invoke();
-		   GD.S_ESCROW_INSTRUMENTS.remove(showCryptoScreen);
-		
-		   if (lastRequestData != null && lastRequestData.escrow != null && lastRequestData.escrow.status == EscrowStatus.deal_created)
-		   {
-		   var instrumentExist:Boolean = false;
-		   var selectedInstrument:EscrowInstrument;
-		   if (lastRequestData.escrow.instrument != null && instruments != null)
-		   {
-		   for (var i:int = 0; i < instruments.length; i++)
-		   {
-		   if (instruments[i].code == lastRequestData.escrow.instrument)
-		   {
-		   selectedInstrument = instruments[i];
-		   break;
-		   }
-		   }
-		   }
-		
-		   var screenData:Object = new Object();
-		   if (selectedInstrument != null)
-		   {
-		   screenData.escrowOffer = lastRequestData.escrow;
-		   if (lastRequestData.message != null)
-		   {
-		   screenData.created = lastRequestData.message.created;
-		   }
-		   else
-		   {
-		   ApplicationErrors.add();
-		   }
-		
-		   screenData.chat = lastRequestData.chatVO;
-		   screenData.message = lastRequestData.message;
-		
-		   if (lastRequestData.userVO != null)
-		   {
-		   screenData.userName = lastRequestData.userVO.getDisplayName();
-		   }
-		   else
-		   {
-		   screenData.userName = Lang.chatmate;
-		   }
-		
-		   screenData.escrowOffer.cryptoWallet = selectedInstrument.wallet;
-		   screenData.callback = onSendTransactionCommand;
-		   ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, SendCryptoScreen, screenData);
-		   }
-		   else
-		   {
-		   //!TODO: not possible;
-		   }
-		
-		   lastRequestData = null;
-		   }
-		   else
-		   {
-		   ApplicationErrors.add();
-		   }
-		   }*/
 		
 		static private function requestInvestigation(escrow:EscrowMessageData, reason:SelectorItemData):void
 		{
@@ -406,9 +359,37 @@ package com.dukascopy.connect.data.escrow
 			
 			if (command == OfferCommand.accept)
 			{
+				//!TODO: перенести;
+				WSClient.S_ESCROW_DEAL_CREATED.add(onDealCreated);
+				
 				if (escrow != null)
 				{
-					WSClient.call_accept_offer(message.id, escrow.debitAccount, escrow.cryptoWallet);
+					var debitAccount:String;
+					var cryptoWallet:String;
+					if (escrow.direction == TradeDirection.sell)
+					{
+						if (escrow.userUID == Auth.uid)
+						{
+							cryptoWallet = escrow.cryptoWallet;
+						}
+						else
+						{
+							debitAccount = escrow.debitAccount;
+						}
+					}
+					else if (escrow.direction == TradeDirection.buy)
+					{
+						if (escrow.userUID == Auth.uid)
+						{
+							debitAccount = escrow.debitAccount;
+						}
+						else
+						{
+							cryptoWallet = escrow.cryptoWallet;
+						}
+					}
+					
+					WSClient.call_accept_offer(message.id, debitAccount, cryptoWallet);
 				}
 				else
 				{
@@ -431,6 +412,136 @@ package com.dukascopy.connect.data.escrow
 				//!TODO:;
 			}
 		}
+		
+		static private function onDealCreated(dealRawData:Object):void 
+		{
+			if (dealRawData != null && dealRawData.status == EscrowStatus.deal_created.value)
+			{
+				if (dealRawData.side == "SELL")
+				{
+					if (dealRawData.mca_user_uid == Auth.uid)
+					{
+						makeHold(dealRawData);
+					}
+				}
+				else if (dealRawData.side == "BUY")
+				{
+					//!TODO:;
+				}
+				else
+				{
+					ApplicationErrors.add();
+				}
+			}
+			
+			/*amount : "2.0000000000" 
+			chat_uid : "WLDaDZWdWvW9IiWO" 
+			created_at : "2021-07-26 14:46:29" 
+			crypto_claim_id : null 
+			crypto_trn_id : null 
+			crypto_user_uid : "WgDIDQWGW4IEWAW9" 
+			crypto_wallet : null 
+			deal_uid : "6273107893191869083" 
+			debit_account : "314931366384" 
+			hash : "324f51d9011be2d1416b39f0cef75bd389c92150" 
+			instrument : "DUK+" 
+			mca_ccy : "EUR" 
+			mca_claim_id : null 
+			mca_trn_id : null 
+			mca_user_uid : "I6D5WsWZDLWj" 
+			msg_id : 35649197 [0x21ff6ad] 
+			price : "2.5100000000" 
+			side : "SELL" 
+			status : "created" 
+			updated_at : "2021-07-26 14:46:29"*/ 
+		}
+		
+		static private function makeHold(dealRawData:Object):void 
+		{
+			//!TODO: добавить комиссию; 
+			
+			currenDealRawData = dealRawData;
+			
+			currentPayTask = new PayTaskVO(PayTaskVO.TASK_TYPE_RESERVE_TIPS);
+			currentPayTask.handleInCustomScreenName = "CreateDeal";
+			currentPayTask.amount = Number(dealRawData.amount) * Number(dealRawData.price);
+			currentPayTask.currency = dealRawData.mca_ccy;
+			//TODO: hash; 
+			currentPayTask.to_uid = dealRawData.hash;
+			currentPayTask.from_wallet = dealRawData.debit_account;
+			
+			var requestPayData:Object = currentPayTask.generateRequestObject();
+			requestPayData.message = Lang.escrow_hold;
+			requestPayData.description = "escrow hold, e=" + dealRawData.deal_uid;
+			
+			PaymentsManager.S_ERROR.add(onError);
+			PaymentsManager.S_COMPLETE.add(onComplete);
+			PaymentsManager.S_BACK.add(onError);
+			payId = new Date().time + "_escrow";
+			PaymentsManager.startTask(currentPayTask, payId);
+		}
+		
+		private static function onError(errorCode:String = null, errorMessage:String = null):void {
+			trace("123");
+		//	S_ACTION_FAIL.invoke(ErrorLocalizer.getPaymentsError(errorCode, errorMessage));
+		//	dispose();
+		}
+		
+		private static function onComplete(data:Object, callID:String):void {
+			if (payId != callID)
+				return;
+			if (data != null &&
+				data is Array && 
+				data.length > 1 &&
+				data[1] != null &&
+				(data[1] == "COMPLETED" || data[1] == "PENDING"))
+					transactionId = (data as Array)[0];
+			
+			//!TODO:;
+			if (currenDealRawData != null)
+			{
+				PHP.escrow_addEvent(onEventHoldMca, {event_type: EscrowEventType.HOLD_MCA, data: transactionId, deal_uid: currenDealRawData.deal_uid, notifyWS: true});
+			}
+		}
+		
+		static private function onEventHoldMca(respond:PHPRespond):void 
+		{
+			trace("123");
+		}
+		
+		private function onRequestComplete():void {
+			if (transactionId != null) {
+			//	onPaidSuccess(transactionId);
+			}
+			else {
+			//	S_ACTION_FAIL.invoke(Lang.serverError);
+			//	dispose();
+			}
+		}
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		
 		static private function onSelfOfferCommand(escrow:EscrowMessageData, message:ChatMessageVO, chatVO:ChatVO, command:OfferCommand = null):void
 		{

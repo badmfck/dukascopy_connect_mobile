@@ -67,6 +67,7 @@ package com.dukascopy.connect.screens {
 		private var createChatButton:HidableButton;
 		private var addQuestionIcon:SWFAddQuestionButton;
 		private var getKeyboardAction:GetNumericKeyboardAction;
+		private var qVO:QuestionVO;
 		
 		public function QuestionCreateUpdateScreen() { }
 		
@@ -90,7 +91,7 @@ package com.dukascopy.connect.screens {
 			createChatButton.tapCallback = onChatSend;
 			addQuestionIcon ||= new SWFAddQuestionButton();
 			createChatButton.setDesign(addQuestionIcon);
-			_view.addChild(createChatButton);
+		//	_view.addChild(createChatButton);
 		}
 		
 		private function showPreloader():void {
@@ -106,7 +107,6 @@ package com.dukascopy.connect.screens {
 			super.initScreen(data);
 			if (data != null)
 				topBar.setData(data.title, true, null);
-			var qVO:QuestionVO;
 			if (data != null)
 				qVO = data.data;
 			QuestionsManager.setCurrentQuestion(data.data);
@@ -120,6 +120,7 @@ package com.dukascopy.connect.screens {
 			QuestionsManager.S_CURRENT_QUESTION_UPDATED.add(activate);
 			QuestionsManager.S_QUESTION.add(onQuestionAnswers);
 			QuestionsManager.S_QUESTION_CREATE_FAIL.add(onQuestionCreateError);
+			QuestionsManager.S_QUESTION_CREATE_SUCCESS.add(onSuccess);
 			
 			if (qVO == null) {
 				createChatButton.setPosition(_width - Config.FINGER_SIZE - Config.MARGIN * 2,  _height - Config.FINGER_SIZE - Config.MARGIN * 2);
@@ -127,6 +128,13 @@ package com.dukascopy.connect.screens {
 			} else {
 				createChatButton.visible = false;
 			}
+		}
+		
+		private function onSuccess():void 
+		{
+			busy = false;
+			onBack();
+			ToastMessage.display(Lang.escrow_your_ad_created);
 		}
 		
 		private function hidePreloader():void {
@@ -239,6 +247,26 @@ package com.dukascopy.connect.screens {
 			message = new ChatMessageVO(messageData);
 			_messages.push(message);
 			
+			if (qVO == null)
+			{
+				messageData = {};
+				messageData.id = 0;
+				messageData.user_avatar = LocalAvatars.QUESTIONS;
+				messageData.user_name = "911";
+				messageData.text = Config.BOUNDS + JSON.stringify(
+					{
+						type: ChatSystemMsgVO.TYPE_LOCAL_QUESTION,
+						method: ChatSystemMsgVO.METHOD_LOCAL_CREATE,
+						title: Lang.create.toUpperCase()
+					}
+				);
+				messageData.usePlainText = true;
+				messageData.created = 0;
+				messageData.isEntryMessage = true;
+				message = new ChatMessageVO(messageData);
+				_messages.push(message);
+			}
+			
 			list.setData(_messages, ListChatItem, ['avatarForChat', 'imageThumbURLWithKey']);
 			list.scrollBottom();
 		}
@@ -314,14 +342,23 @@ package com.dukascopy.connect.screens {
 						if (cmsgVO.systemMessageVO.method == ChatSystemMsgVO.METHOD_LOCAL_SIDE) {
 							if (QuestionsManager.getCurrentQuestion() != QuestionsManager.fakeTender)
 								return;
-							DialogManager.showSelectItemDialog(
+							/*DialogManager.showSelectItemDialog(
 								{
 									callBack:onSideChanged,
 									itemClass:ListQuestionType,
 									listData:QuestionsManager.questionsSides,
 									title:Lang.textSelectSide
 								}
-							);
+							);*/
+							DialogManager.showDialog(
+                                ListSelectionPopup, 
+                                {
+                                    items:QuestionsManager.questionsSides,
+                                    title:Lang.textSelectSide,
+                                    renderer:ListQuestionType,
+                                    callback:onSideChanged
+                                }, ServiceScreenManager.TYPE_SCREEN
+                            );
 							return;
 						}
 						if (cmsgVO.systemMessageVO.method == ChatSystemMsgVO.METHOD_LOCAL_CRYPTO) {
@@ -379,6 +416,10 @@ package com.dukascopy.connect.screens {
 							ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, EscrowPriceScreen, screenData);
 							return;
 						}
+						if (cmsgVO.systemMessageVO.method == ChatSystemMsgVO.METHOD_LOCAL_CREATE) {
+							onChatSend();
+							return;
+						}
 					}
 				}
 			}
@@ -388,7 +429,7 @@ package com.dukascopy.connect.screens {
 			if (isDisposed)
 				return;
 			var val:String = price.toString();
-			if (isPercent == true) {
+			if (isPercent == false) {
 				QuestionsManager.getCurrentQuestion().priceCurrency = currency;
 				list.updateItemByIndex(4);
 			} else {
@@ -451,16 +492,20 @@ package com.dukascopy.connect.screens {
 			list.updateItemByIndex(3);
 		}
 		
-		private function onSideChanged(val:int):void {
-			if (val == -1)
+		private function onSideChanged(selectedType:Object):void {
+			if (selectedType == null)
 				return;
 			if (QuestionsManager.getCurrentQuestion() != QuestionsManager.fakeTender)
 				return;
-			QuestionsManager.getCurrentQuestion().subtype = QuestionsManager.questionsSides[val].type;
+			QuestionsManager.getCurrentQuestion().subtype = selectedType.type;
 			list.updateItemByIndex(1);
 		}
 		
 		private function onResult(instruments:Vector.<EscrowInstrument>):void {
+			if (isDisposed)
+			{
+				return;
+			}
 			GD.S_ESCROW_INSTRUMENTS.remove(onResult);
 			DialogManager.showDialog(
 				ListSelectionPopup,
@@ -655,6 +700,7 @@ package com.dukascopy.connect.screens {
 				answersCountButton = null;
 			}
 			
+			qVO = null;
 			UI.destroy(questionButtonBG);
 			questionButtonBG = null;
 			
@@ -686,6 +732,7 @@ package com.dukascopy.connect.screens {
 			QuestionsManager.S_CURRENT_QUESTION_UPDATED.remove(activate);
 			QuestionsManager.S_QUESTION.remove(onQuestionAnswers);
 			QuestionsManager.S_QUESTION_CREATE_FAIL.remove(onQuestionCreateError);
+			QuestionsManager.S_QUESTION_CREATE_SUCCESS.remove(onSuccess);
 			_data = null;
 			super.dispose();
 		}

@@ -40,6 +40,7 @@ package com.dukascopy.connect.data.screenAction.customActions {
 	public class CreateCoinTradeAction extends ScreenAction implements IScreenAction {
 		
 		public var chat:ChatVO;
+		public var direction:TradeDirection;
 		
 		public function CreateCoinTradeAction() {
 			setIconClass(Style.icon(Style.ICON_ATTACH_DEAL));
@@ -53,7 +54,14 @@ package com.dukascopy.connect.data.screenAction.customActions {
 			}
 			if (Auth.bank_phase == BankPhaze.ACC_APPROVED)
 			{
-				ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, StartEscrowScreen, {callback:createOffer});
+				if (direction != null)
+				{
+					createOffer(direction);
+				}
+				else
+				{
+					ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, StartEscrowScreen, {callback:createOffer});
+				}
 			}
 			else
 			{

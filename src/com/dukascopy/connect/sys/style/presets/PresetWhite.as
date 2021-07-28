@@ -112,7 +112,7 @@ package com.dukascopy.connect.sys.style.presets
 			this[Style.TOP_BAR_TEXT_COLOR] = Color.BLACK_OLD;
 			this[Style.TOP_BAR_ICON_COLOR] = Color.GREY;
 			this[Style.TOP_BAR_TEXT_BOLD] = true;
-			this[Style.FILTER_TABS_COLOR_TAB_BG_SELECTED] = Color.GREY_SUPER_LIGHT;
+			this[Style.FILTER_TABS_COLOR_TAB_BG_SELECTED] = Color.GREY_SSL;
 			this[Style.FILTER_TABS_COLOR_TAB_TEXT_SELECTED] = Color.GREY;
 			this[Style.FILTER_TABS_COLOR_TAB_BG_BORDER_SELECTED] = Color.GREY_SUPER_LIGHT;
 			this[Style.FILTER_TABS_COLOR_TAB_TEXT] = Color.GREY;

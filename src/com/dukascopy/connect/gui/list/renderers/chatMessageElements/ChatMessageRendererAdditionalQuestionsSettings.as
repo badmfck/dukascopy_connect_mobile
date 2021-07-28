@@ -5,6 +5,7 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 	import com.dukascopy.connect.gui.lightbox.UI;
 	import com.dukascopy.connect.gui.list.ListItem;
 	import com.dukascopy.connect.sys.questionsManager.QuestionsManager;
+	import com.dukascopy.connect.sys.style.presets.Color;
 	import com.dukascopy.connect.type.ChatMessageType;
 	import com.dukascopy.connect.type.HitZoneType;
 	import com.dukascopy.connect.type.QuestionAdditionalMessagesType;
@@ -29,6 +30,7 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 		
 		private var line:Shape;
 		private var bird:Shape;
+		private var buttonBack:Sprite;
 		
 		private var currentMessage:ChatMessageVO;
 		
@@ -64,43 +66,75 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 			bird.graphics.lineTo(0, 0);
 			bird.graphics.endFill();
 			addChild(bird);
+			
+			buttonBack = new Sprite();
+			addChildAt(buttonBack, 1);
 		}
 		
 		private function getBodyText(itemData:ChatMessageVO):String {
 			var res:String = itemData.systemMessageVO.text;
-			switch(itemData.systemMessageVO.method) {
+			switch(itemData.systemMessageVO.method)
+			{
 				case ChatSystemMsgVO.METHOD_LOCAL_SIDE:
-					if (QuestionsManager.getCurrentQuestion() != null && QuestionsManager.getCurrentQuestion().subtype != null) {
+				{
+					if (QuestionsManager.getCurrentQuestion() != null && QuestionsManager.getCurrentQuestion().subtype != null)
+					{
 						var side:Object = QuestionsManager.getSide(QuestionsManager.getCurrentQuestion().subtype);
 						if (side != null)
+						{
 							res = side.label;
+						}
 					}
 					break;
+				}
+				
 				case ChatSystemMsgVO.METHOD_LOCAL_CRYPTO:
+				{
 					if (QuestionsManager.getCurrentQuestion() != null && QuestionsManager.getCurrentQuestion().instrument != null)
+					{
 						res = QuestionsManager.getCurrentQuestion().instrument.name + " (" + QuestionsManager.getCurrentQuestion().instrument.code + ")";
+					}
 					break;
+				}
+				
 				case ChatSystemMsgVO.METHOD_LOCAL_CRYPTO_AMOUNT:
+				{
 					if (QuestionsManager.getCurrentQuestion() != null && QuestionsManager.getCurrentQuestion().cryptoAmount != null)
+					{
 						res = QuestionsManager.getCurrentQuestion().cryptoAmount;
+					}
 					break;
+				}
+				
 				case ChatSystemMsgVO.METHOD_LOCAL_CURRENCY:
+				{
 					if (QuestionsManager.getCurrentQuestion() != null && QuestionsManager.getCurrentQuestion().priceCurrency != null)
+					{
 						res = QuestionsManager.getCurrentQuestion().priceCurrency;
+					}
 					break;
+				}
+				
 				case ChatSystemMsgVO.METHOD_LOCAL_PRICE:
+				{
 					if (QuestionsManager.getCurrentQuestion() != null && QuestionsManager.getCurrentQuestion().price != null)
+					{
 						res = QuestionsManager.getCurrentQuestion().price;
-						if (res.charAt(res.length -1) == "%") {
+						if (res.charAt(res.length -1) == "%")
+						{
 							res += " " + Lang.tenderPricePercent;
 							if (res.charAt(0) != "-")
+							{
 								res = "+" + res;
-						} else {
+							}
+						}
+						else if (QuestionsManager.getCurrentQuestion().priceCurrency != null)
+						{
 							res += " " + QuestionsManager.getCurrentQuestion().priceCurrency;
 						}
+					}
 					break;
-				default:
-					break;
+				}
 			}
 			return res;
 		}
@@ -141,37 +175,68 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 			
 			getIcon(messageData);
 			
-			tipsText.width = maxWidth - vTextMargin * 2;
-			tipsText.text = getBodyText(messageData);
-			tipsText.width = Math.min(tipsText.width, tipsText.textWidth + 5);
-			tipsText.height = tipsText.textHeight + 4;
-			if (icon == null) {
-				tipsText.y = tf.y + tf.height;
-				tipsText.x = hTextMargin;
-				line.y = tipsText.y + tipsText.height;
-			} else {
-				tipsText.y = icon.y + int((icon.height - tipsText.height) * .5) + 2;
-				tipsText.x = icon.x + icon.width + hTextMargin;
-				line.y = icon.y + icon.height + hTextMargin;
+			if (currentMessage.systemMessageVO.method == ChatSystemMsgVO.METHOD_LOCAL_CREATE)
+			{
+				buttonBack.visible = true;
+				tipsText.visible = false;
+				line.visible = false;
+				tf.textColor = Color.WHITE;
+				tf.width = int(Math.min(maxWidth - Config.FINGER_SIZE * .2 * 2 * 2, tf.textWidth + 4));
+				tf.x = maxWidth * .5 - tf.width * .5;
+				tf.y = Config.FINGER_SIZE*.4 - tf.height * .5;
+				buttonBack.graphics.clear();
+				buttonBack.graphics.beginFill(Color.GREEN);
+				buttonBack.graphics.drawRoundRect(0, 0, int(maxWidth - Config.FINGER_SIZE * .2 * 2), Config.FINGER_SIZE*.8, Config.FINGER_SIZE * .3, Config.FINGER_SIZE * .3);
+				buttonBack.graphics.endFill();
+				buttonBack.x = int(Config.FINGER_SIZE * .2);
+				
+				initBg(0xFFFFFF, roundedTop, roundedBottom);
+				boxBg.width = maxWidth;
+				boxBg.height = buttonBack.height + Config.FINGER_SIZE * .2;
+			}
+			else
+			{
+				tf.x = vTextMargin;
+				tipsText.visible = true;
+				line.visible = true;
+				buttonBack.visible = false;
+				
+				tipsText.width = maxWidth - vTextMargin * 2;
+				tipsText.text = getBodyText(messageData);
+				tipsText.width = Math.min(tipsText.width, tipsText.textWidth + 5);
+				tipsText.height = tipsText.textHeight + 4;
+				if (icon == null) {
+					tipsText.y = tf.y + tf.height;
+					tipsText.x = hTextMargin;
+					line.y = tipsText.y + tipsText.height;
+				} else {
+					tipsText.y = icon.y + int((icon.height - tipsText.height) * .5) + 2;
+					tipsText.x = icon.x + icon.width + hTextMargin;
+					line.y = icon.y + icon.height + hTextMargin;
+				}
+				
+				line.width = maxWidth - vTextMargin * 2;
+				
+				if (messageData.systemMessageVO.method == ChatSystemMsgVO.METHOD_LOCAL_SIDE ||
+					messageData.systemMessageVO.method == ChatSystemMsgVO.METHOD_LOCAL_CRYPTO ||
+					messageData.systemMessageVO.method == ChatSystemMsgVO.METHOD_LOCAL_CURRENCY) {
+						bird.visible = true;
+						bird.x = line.x + line.width - bird.width;
+						bird.y = tipsText.y + int((tipsText.height - bird.height) * .5);
+				} else {
+					bird.visible = false;
+				}
+				
+				setTextColors(messageData);
+				
+				initBg(0xFFFFFF, roundedTop, roundedBottom);
+				boxBg.width = maxWidth;
+				boxBg.height = line.y + line.height + vTextMargin;
 			}
 			
-			line.width = maxWidth - vTextMargin * 2;
 			
-			if (messageData.systemMessageVO.method == ChatSystemMsgVO.METHOD_LOCAL_SIDE ||
-				messageData.systemMessageVO.method == ChatSystemMsgVO.METHOD_LOCAL_CRYPTO ||
-				messageData.systemMessageVO.method == ChatSystemMsgVO.METHOD_LOCAL_CURRENCY) {
-					bird.visible = true;
-					bird.x = line.x + line.width - bird.width;
-					bird.y = tipsText.y + int((tipsText.height - bird.height) * .5);
-			} else {
-				bird.visible = false;
-			}
 			
-			setTextColors(messageData);
 			
-			initBg(0xFFFFFF, roundedTop, roundedBottom);
-			boxBg.width = maxWidth;
-			boxBg.height = line.y + line.height + vTextMargin;
 		}
 		
 		private function getIcon(messageData:ChatMessageVO):void {
@@ -279,6 +344,16 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 				if (line.parent != null)
 					line.parent.removeChild(line);
 				line.graphics.clear();
+			}
+			if (bird != null)
+			{
+				UI.destroy(bird);
+				bird = null;
+			}
+			if (buttonBack != null)
+			{
+				UI.destroy(buttonBack);
+				buttonBack = null;
 			}
 			line = null;
 		}
