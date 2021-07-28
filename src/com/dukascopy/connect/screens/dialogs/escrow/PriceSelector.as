@@ -485,6 +485,12 @@ package com.dukascopy.connect.screens.dialogs.escrow
 			return selectedValue;
 		}
 		
+		public function setValue(value:Number):void 
+		{
+			selectedValue = value;
+			seekBar.setValue(selectedValue);
+		}
+		
 		private function createCurrencySelector():void 
 		{
 			if (selectorCurrency == null)

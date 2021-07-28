@@ -281,7 +281,6 @@ package com.dukascopy.connect.gui.list.renderers {
 			format_status.color = Style.color(Style.COLOR_SUBTITLE);
 			format_status.size = FontSize.CAPTION_1;
 			format_status.align = TextFormatAlign.LEFT;
-			format_status.underline = false;
 			
 			format_username.font = Config.defaultFontName;
 			format_username.color = Style.color(Style.COLOR_SUBTITLE);
@@ -295,9 +294,8 @@ package com.dukascopy.connect.gui.list.renderers {
 			
 			format6.font = Config.defaultFontName;
 			format6.align = TextFormatAlign.LEFT;
-			format6.color = Style.color(Style.COLOR_911_BRED);
-			format6.size = Config.FINGER_SIZE * .23;
-			format6.underline = true;
+			format6.color = Color.GREEN;
+			format6.size = FontSize.CAPTION_1;
 			
 			format_price.font = Config.defaultFontName;
 			format_price.align = TextFormatAlign.LEFT;
@@ -628,9 +626,9 @@ package com.dukascopy.connect.gui.list.renderers {
 			{
 				result = "@" + itemData.price;
 			}
-			if (itemData.categories != null && itemData.categories.length > 0)
+			if (itemData.priceCurrency != null)
 			{
-				result += itemData.categories[0];
+				result += " " + itemData.priceCurrency;
 			}
 			return result;
 		}

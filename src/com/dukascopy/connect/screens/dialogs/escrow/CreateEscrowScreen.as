@@ -99,6 +99,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		private var selectorCurrency:DDFieldButton;
 		private var priceSummary:PriceClip;
 		private var alert:AlertTextArea;
+		private var lockInstrumentSelector:Boolean;
 		
 		public function CreateEscrowScreen() { }
 		
@@ -328,18 +329,21 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		
 		private function selectInstrumentTap():void 
 		{
-			if (instruments != null && instruments.length > 0)
+			if (!lockInstrumentSelector)
 			{
-				DialogManager.showDialog(
-					ListSelectionPopup,
-					{
-						items:instruments,
-						title:Lang.selectCurrency,
-						renderer:ListCryptoWallet,
-						callback:onCurrencySelected
-					},
-					DialogManager.TYPE_SCREEN
-				);
+				if (instruments != null && instruments.length > 0)
+				{
+					DialogManager.showDialog(
+						ListSelectionPopup,
+						{
+							items:instruments,
+							title:Lang.selectCurrency,
+							renderer:ListCryptoWallet,
+							callback:onCurrencySelected
+						},
+						DialogManager.TYPE_SCREEN
+					);
+				}
 			}
 		}
 		
@@ -1382,7 +1386,25 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			
 			if (instruments != null && instruments.length > 0)
 			{
-				selectInstrument(instruments[0]);
+				var targetInstrument:EscrowInstrument;
+				if (data != null && "instrument" in data && data.instrument != null)
+				{
+					var requestedInstrument:String = data.instrument;
+					for (var i:int = 0; i < instruments.length; i++) 
+					{
+						if (instruments[i].code == requestedInstrument)
+						{
+							lockInstrumentSelector = true;
+							targetInstrument = instruments[i];
+							break;
+						}
+					}
+				}
+				if (targetInstrument == null)
+				{
+					targetInstrument = instruments[0];
+				}
+				selectInstrument(targetInstrument);
 			}
 			else
 			{
@@ -1412,12 +1434,46 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 				}
 			}
 			
-			refreshPrice();
+			if (data != null && "amount" in data && !isNaN(data.amount))
+			{
+				inputAmount.value = data.amount
+			}
+			if (data != null && "currency" in data && data.currency != null)
+			{
+				currencySign = data.currency;
+			}
+			if (data != null && "price" in data && data.price != null)
+			{
+				var requestedPrice:String = data.price;
+				if (requestedPrice.indexOf("%") != -1)
+				{
+					requestedPrice = requestedPrice.replace("%", "");
+					if (!isNaN(Number(requestedPrice)))
+					{
+						radio.select(radioSelection[0]);
+						showDeviationControl();
+						priceSelector.setValue(Number(requestedPrice));
+					}
+				}
+				else if(!isNaN(Number(requestedPrice)))
+				{
+					radio.select(radioSelection[1]);
+					showFixedPriceControl();
+					selectedPrice = Number(requestedPrice);
+					inputPrice.value = selectedPrice;
+				}
+				
+				refreshPrice(selectedPrice);
+			}
+			else
+			{
+				refreshPrice();
+			}
 		}
 		
-		private function refreshPrice():void 
+		private function refreshPrice(overridePrice:Number = NaN):void 
 		{
-			updatePrice();
+			updatePrice(overridePrice);
 			if (state == STATE_START)
 			{
 				priceSelector.draw(_width - contentPadding * 2, -5, 5, 0, selectedPrice, getCurrency());
@@ -1496,9 +1552,13 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			updatePrice();
 		}
 		
-		private function updatePrice():void 
+		private function updatePrice(overridePrice:Number = NaN):void 
 		{
 			var price:Number = getPrice();
+			if (!isNaN(overridePrice))
+			{
+				price = overridePrice;
+			}
 			if (!isNaN(price))
 			{
 				setPrice(price);

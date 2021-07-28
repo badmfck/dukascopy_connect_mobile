@@ -606,7 +606,7 @@ package com.dukascopy.connect.screens {
 			var o1:int = Config.MARGIN * .5;
 			
 			answersCountButton ||= new BubbleButton();
-			answersCountButton.setParams(Style.color(Style.COLOR_TEXT), Color.GREEN);
+			answersCountButton.setParams(Style.color(Style.COLOR_TEXT), Style.color(Style.COLOR_SEPARATOR_TOP_BAR), 1, Style.color(Style.COLOR_LINE_LIGHT), 1, TextFormatAlign.CENTER);
 			answersCountButton.setStandartButtonParams();
 				
 			var buttonWidth:int;
@@ -623,7 +623,6 @@ package com.dukascopy.connect.screens {
 			answersCountButton.setDownScale(1);
 			answersCountButton.setDownAlpha(0);
 			answersCountButton.setOverflow(o0, o0, o0, o0);
-			answersCountButton.setParams(0xffffff, AppTheme.RED_MEDIUM, 1, AppTheme.RED_MEDIUM, 0,"center");
 			answersCountButton.tapCallback = openOtherAnswers;
 			answersCountButton.hide();
 			_view.addChild(answersCountButton);
@@ -676,23 +675,43 @@ package com.dukascopy.connect.screens {
 		
 		private function createOffer():void 
 		{
-			var tradeAction:IScreenAction = new CreateCoinTradeAction();
-			(tradeAction as CreateCoinTradeAction).chat = ChatManager.getCurrentChat();
+			var tradeAction:CreateCoinTradeAction = new CreateCoinTradeAction();
+			tradeAction.chat = ChatManager.getCurrentChat();
 			
 			var direction:TradeDirection;
-			if (ChatManager.getCurrentChat().getQuestion() != null)
+			var question:QuestionVO = ChatManager.getCurrentChat().getQuestion();
+			if (question != null)
 			{
-				if (ChatManager.getCurrentChat().getQuestion().subtype == "sell")
+				if (question.subtype == "sell")
 				{
-					direction = TradeDirection.buy;
+					if (question.userUID == Auth.uid)
+					{
+						direction = TradeDirection.sell;
+					}
+					else
+					{
+						direction = TradeDirection.buy;
+					}
 				}
 				else
 				{
-					direction = TradeDirection.sell;
+					if (question.userUID == Auth.uid)
+					{
+						direction = TradeDirection.buy;
+					}
+					else
+					{
+						direction = TradeDirection.sell;
+					}
 				}
 			}
 			
-			(tradeAction as CreateCoinTradeAction).direction = direction;
+			tradeAction.direction = direction;
+			tradeAction.currency = question.priceCurrency;
+			tradeAction.price = question.price;
+			tradeAction.instrument = question.tipsCurrency;
+			tradeAction.amount = question.tipsAmount;
+			
 			tradeAction.setData(Lang.escrow);
 			tradeAction.execute();
 		}
@@ -2313,10 +2332,10 @@ package com.dukascopy.connect.screens {
 				showInfo();
 				return;
 			}
-			if (cmsgVO.typeEnum == ChatSystemMsgVO.TYPE_COMPLAIN) {
+			/*if (cmsgVO.typeEnum == ChatSystemMsgVO.TYPE_COMPLAIN) {
 				showInfo();
 				return;
-			}
+			}*/
 			var selectedItem:ListItem = list.getItemByNum(n);
 			var lastHitzoneObject:Object =  selectedItem.getLastHitZoneObject();
 			var lhz:String = lastHitzoneObject!=null?lastHitzoneObject.type:null;// selectedItem.getLastHitZone();
@@ -3316,7 +3335,10 @@ package com.dukascopy.connect.screens {
 				chatInput.initButtons(showPayButtons);
 			if (ChatManager.getCurrentChat().type == ChatRoomType.QUESTION &&
 				ChatManager.getCurrentChat().getQuestion() != null)
-					createQuestionButtons();
+				{
+					checkQuestionButtons();
+					updateChatInput();
+				}
 			if (userWritings == null) {
 				if (Config.PLATFORM_APPLE) {
 					if (chatInput)
@@ -4036,28 +4058,27 @@ package com.dukascopy.connect.screens {
 		}*/
 		
 		private function getAnswersOffset(bottomY:int):int {
-			if (ChatManager.getCurrentChat() == null ||
-				ChatManager.getCurrentChat().type != ChatRoomType.QUESTION ||
-				ChatManager.getCurrentChat().ownerUID == Auth.uid)
+			var chat:ChatVO = ChatManager.getCurrentChat();
+			if (chat == null ||	chat.type != ChatRoomType.QUESTION)
 					return 0;
 			var lastY:Number = 0;
-			if (questionLinkButton) {
+			if (questionLinkButton != null) {
 				questionLinkButton.y = bottomY - questionLinkButton.height - Config.MARGIN;
 				questionLinkButton.x = Config.MARGIN;
 				if (questionLinkButton.getIsShown())
 					lastY = questionLinkButton.height + Config.MARGIN * 2;
 			}
-			if (basketButton) {
+			if (basketButton != null) {
 				basketButton.y = questionLinkButton.y;
 				basketButton.x = questionLinkButton.width + Config.MARGIN * 2;
 			}
-			if (answersCountButton) {
+			if (answersCountButton != null) {
 				answersCountButton.y = int(bottomY - answersCountButton.height - Config.MARGIN - (questionLinkButton.height - answersCountButton.height) * .5);
 				answersCountButton.x = _width * .6 ;
 				if (answersCountButton.getIsShown() && questionLinkButton != null &&  lastY<answersCountButton.height )
 					lastY = answersCountButton.height + Config.MARGIN * 2;
 			}
-			if (questionButtonBG) {
+			if (questionButtonBG != null) {
 				questionButtonBG.width = _width;
 				questionButtonBG.height = lastY;
 				questionButtonBG.y =  bottomY - questionButtonBG.height;
@@ -4595,10 +4616,6 @@ package com.dukascopy.connect.screens {
 				return false;
 			if (qVO == null)
 				action = false;
-			else if (qVO.userUID != Auth.uid)
-				action = false;
-			else if (ChatManager.getCurrentChat().hasQuestionAnswer == false)
-				action = false;
 			else if (qVO.status == "closed" || qVO.status == "resolved" || qVO.status == "archived")
 				action = false;
 			else if (ChatManager.getCurrentChat().queStatus == true)
@@ -4649,14 +4666,13 @@ package com.dukascopy.connect.screens {
 				}
 				else {
 					if (ChatManager.getCurrentChat().queStatus == true) {
-						textAnswer = (qVO.answersCount == 1) ? Lang.textAnswer.toLowerCase() : Lang.textAnswers.toLowerCase();
+						textAnswer = (qVO.answersCount == 1) ? Lang.escrow_chat : Lang.escrow_chats;
 						answersCountButton.setText("+" + (qVO.answersCount) + " " + textAnswer, _width * .4 - Config.MARGIN);
 					} else {
-						textAnswer = (qVO.answersCount == 2) ? Lang.textAnswer.toLowerCase() : Lang.textAnswers.toLowerCase();
+						textAnswer = (qVO.answersCount == 2) ? Lang.escrow_chat : Lang.escrow_chats;
 						answersCountButton.setText("+" + (qVO.answersCount - 1) + " " + textAnswer, _width * .4 - Config.MARGIN);
 					}
 				}
-				
 				
 				answersCountButton.show();
 				answersCountButton.activate();

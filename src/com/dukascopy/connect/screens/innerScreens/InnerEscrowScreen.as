@@ -500,7 +500,7 @@ package com.dukascopy.connect.screens.innerScreens {
 				MobileGui.changeMainScreen(
 					QuestionCreateUpdateScreen, {
 						backScreen:MobileGui.centerScreen.currentScreenClass,
-						title:Lang.editQuestions,
+						title:Lang.editEscrowAd,
 						data:qVO
 					},
 					ScreenManager.DIRECTION_RIGHT_LEFT

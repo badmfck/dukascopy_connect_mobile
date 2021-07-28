@@ -41,6 +41,10 @@ package com.dukascopy.connect.data.screenAction.customActions {
 		
 		public var chat:ChatVO;
 		public var direction:TradeDirection;
+		public var currency:String;
+		public var price:String;
+		public var instrument:String;
+		public var amount:Number;
 		
 		public function CreateCoinTradeAction() {
 			setIconClass(Style.icon(Style.ICON_ATTACH_DEAL));
@@ -82,6 +86,23 @@ package com.dukascopy.connect.data.screenAction.customActions {
 			}
 			screenData.selectedDirection = selectedDirection;
 			screenData.callback = createEscrowOffer;
+			
+			if (currency != null)
+			{
+				screenData.currency = currency;
+			}
+			if (price != null)
+			{
+				screenData.price = price;
+			}
+			if (instrument != null)
+			{
+				screenData.instrument = instrument;
+			}
+			if (!isNaN(amount))
+			{
+				screenData.amount = amount;
+			}
 			
 			/*screenData.price = "5";
 			screenData.amount = "15";

@@ -520,9 +520,9 @@ package com.dukascopy.connect.vo {
 					text = text.replace("%@2", _qVO.cryptoAmount + " " + _qVO.tipsCurrency);
 					
 					var price:String = _qVO.price;
-					if (_qVO.categories != null && _qVO.categories.length > 0)
+					if (_qVO.priceCurrency != null)
 					{
-						price + " " + _qVO.categories[0];
+						price += " " + _qVO.priceCurrency;
 					}
 					
 					text = text.replace("%@3", price);

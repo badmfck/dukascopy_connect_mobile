@@ -66,8 +66,6 @@ package com.dukascopy.connect.screens.dialogs.x.base.bottom
 			backgroundContent.graphics.beginFill(Style.color(Style.COLOR_BACKGROUND));
 			backgroundContent.graphics.drawRoundRectComplex(0, headerHeight, _width, getHeight() - headerHeight, 0, 0, 0, 0);
 			backgroundContent.graphics.endFill();
-			backgroundContent.y = _height;
-			background.alpha = 0;
 		}
 		
 		private function getHeaderColor():uint 

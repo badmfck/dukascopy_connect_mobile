@@ -89,11 +89,11 @@ package com.dukascopy.connect.data.escrow
 				screenData.chat = chatVO;
 				screenData.message = message;
 				
-				escrow.transactionId = "xf345dfg545hfgh65nmqgh390gghj90w2j45bv";
+				/*escrow.transactionId = "xf345dfg545hfgh65nmqgh390gghj90w2j45bv";
 				escrow.status = EscrowStatus.deal_created;
 				screenData.callback = confirmCryptoReceiveCommand;
 				ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, ReceiveCryptoScreen, screenData);
-				return;
+				return;*/
 				
 				/*screenData.title = Lang.indicate_issue_type;
 				   ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, EscrowReportScreen, screenData);

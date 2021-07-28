@@ -1,6 +1,7 @@
 package com.dukascopy.connect.gui.list.renderers {
 	
 	import assets.ButtonChatContent;
+	import assets.ContectDeleteIcon;
 	import assets.IconCard;
 	import assets.IconCardBG;
 	import assets.IconInvoice;
@@ -168,8 +169,9 @@ package com.dukascopy.connect.gui.list.renderers {
 					tfNewMessagesCnt.y = int((newMessages.height - tfNewMessagesCnt.height) * .5) - 1;
 				newMessages.addChild(tfNewMessagesCnt);
 			addChild(newMessages);
-			trashIcon = new SWFTrashIcon();
-			UI.scaleToFit(trashIcon, Config.FINGER_SIZE_DOT_5, Config.FINGER_SIZE_DOT_5);
+			trashIcon = new ContectDeleteIcon();
+			UI.colorize(trashIcon, Style.color(Style.ICON_SETTINGS));
+			UI.scaleToFit(trashIcon, int(Config.FINGER_SIZE * .4), int(Config.FINGER_SIZE * .4));
 			addChild(trashIcon);
 				avatar = new Shape();
 				avatar.x = int(Config.DOUBLE_MARGIN);

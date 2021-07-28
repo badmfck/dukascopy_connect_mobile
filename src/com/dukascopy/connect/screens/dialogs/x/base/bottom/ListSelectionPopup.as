@@ -45,6 +45,11 @@ package com.dukascopy.connect.screens.dialogs.x.base.bottom
 			
 			list.view.y = headerHeight;
 			
+			setInitialData();
+		}
+		
+		protected function setInitialData():void 
+		{
 			setListData();
 		}
 		
@@ -59,7 +64,7 @@ package com.dukascopy.connect.screens.dialogs.x.base.bottom
 			}
 		}
 		
-		private function drawList(renderer:Class, itemsData:Object):void 
+		protected function drawList(renderer:Class, itemsData:Object):void 
 		{
 			list.setWidthAndHeight(_width, getMaxContentHeight());
 			list.setData(itemsData, renderer);

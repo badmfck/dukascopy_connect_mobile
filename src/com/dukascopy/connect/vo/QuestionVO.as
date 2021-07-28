@@ -118,7 +118,14 @@ package com.dukascopy.connect.vo {
 			if ("price" in data == true)
 				_price = data.price;
 			if (data.categories != null) {
-				_categories = data.categories;
+				_categories = new Array();
+				for (var key:Object in data.categories) 
+				{
+					_categories.push(data.categories[key]);
+				}
+				
+				
+			//	_categories = data.categories;
 				if (_categories != null && _categories.length != 0)
 					_priceCurrency = _categories[0];
 			}

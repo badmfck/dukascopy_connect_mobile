@@ -8,6 +8,7 @@ package com.dukascopy.connect.screens.dialogs.x.base.bottom
 	import com.dukascopy.connect.sys.serviceScreenManager.ServiceScreenManager;
 	import com.dukascopy.connect.sys.style.Style;
 	import com.greensock.TweenMax;
+	import com.greensock.easing.Ease;
 	import com.greensock.easing.Power2;
 	import flash.display.Sprite;
 	import flash.events.Event;
@@ -84,17 +85,34 @@ package com.dukascopy.connect.screens.dialogs.x.base.bottom
 				return;
 			}
 			if (firstTime) {
-				drawBack();
-				
-				firstTime = false;
-				showTime = getHeight() * .5 / _height;
-				showTime = Math.max(showTime, 0.25);
-				showTime = Math.min(showTime, 0.7);
-				TweenMax.to(container, showTime, { y:getContentShowPosition(), ease:Power2.easeOut, onComplete:animationFinished} );
-				TweenMax.to(backgroundContent, showTime, { y:int(_height - getHeight()), ease:Power2.easeOut } );
-				TweenMax.to(background, showTime, { alpha:1 } );
+				background.alpha = 0;
+				backgroundContent.y = _height;
+				animateShow();
 			}
 			PointerManager.addTap(background, close);
+		}
+		
+		protected function animateShow(customTime:Number = NaN, customEase:Ease = null):void 
+		{
+			drawBack();
+			
+			firstTime = false;
+			showTime = getHeight() * .5 / _height;
+			showTime = Math.max(showTime, 0.25);
+			showTime = Math.min(showTime, 0.7);
+			
+			if (!isNaN(customTime))
+			{
+				showTime = customTime;
+			}
+			var easing:Ease = Power2.easeOut;
+			if (customEase != null)
+			{
+				easing = customEase;
+			}
+			TweenMax.to(container, showTime, { y:getContentShowPosition(), ease:easing, onComplete:animationFinished} );
+			TweenMax.to(backgroundContent, showTime, { y:int(_height - getHeight()), ease:easing } );
+			TweenMax.to(background, showTime, { alpha:1 } );
 		}
 		
 		protected function getContentShowPosition():int 
@@ -104,12 +122,12 @@ package com.dukascopy.connect.screens.dialogs.x.base.bottom
 		
 		protected function drawBack():void 
 		{
+			backgroundContent.graphics.clear();
 			backgroundContent.graphics.beginFill(Style.color(Style.COLOR_BACKGROUND));
 			var radius:int = Config.FINGER_SIZE * .22;
 			backgroundContent.graphics.drawRoundRectComplex(0, 0, _width, getHeight(), radius, radius, 0, 0);
 			backgroundContent.graphics.endFill();
-			backgroundContent.y = _height;
-			background.alpha = 0;
+			
 		}
 		
 		protected function animationFinished():void 

@@ -210,5 +210,10 @@ package com.dukascopy.connect.gui.components.seekbar
 		{
 			return button.x;
 		}
+		
+		public function setValue(value:Number):void 
+		{
+			updatePosition(value);
+		}
 	}
 }
