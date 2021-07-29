@@ -47,6 +47,7 @@ package com.dukascopy.connect.screens.dialogs.escrow
 		private var selectedValue:Number;
 		private var onPriceChanged:Function;
 		private var selectorCurrency:DDFieldButton;
+		private var zeroValue:Number;
 		
 		public function PriceSelector(onChange:Function) 
 		{
@@ -113,15 +114,15 @@ package com.dukascopy.connect.screens.dialogs.escrow
 		private function onValueChange(value:Number):void 
 		{
 			selectedValue = Number(value.toFixed(1));
-			drawPrice(value);
-			drawPercent(value);
+			drawPrice(selectedValue);
+			drawPercent(selectedValue);
 			
 			var color:Number;
-			if (value > currentValue)
+			if (selectedValue > currentValue)
 			{
 				color = (direction == TradeDirection.sell)?Color.GREEN:Color.RED;
 			}
-			else if (value < currentValue)
+			else if (selectedValue < currentValue)
 			{
 				color = (direction == TradeDirection.sell)?Color.RED:Color.GREEN;
 			}
@@ -140,7 +141,7 @@ package com.dukascopy.connect.screens.dialogs.escrow
 				priceBack.y = int(priceCurrent.y - Config.FINGER_SIZE * .08);
 			}
 			
-			dispatchValue(value);
+			dispatchValue(selectedValue);
 		}
 		
 		private function dispatchValue(value:Number):void 
@@ -192,6 +193,7 @@ package com.dukascopy.connect.screens.dialogs.escrow
 			this.currentValue = currentValue;
 			this.priceValue = priceValue;
 			this.currencySign = currencySign;
+			zeroValue = 0;
 			
 			selectedValue = currentValue;
 			
@@ -292,11 +294,11 @@ package com.dukascopy.connect.screens.dialogs.escrow
 																	Style.color(Style.COLOR_BACKGROUND));
 			percentBack.graphics.clear();
 			var color:Number;
-			if (value > currentValue)
+			if (value > zeroValue)
 			{
 				color = (direction == TradeDirection.sell)?Color.GREEN:Color.RED;
 			}
-			else if (value < currentValue)
+			else if (value < zeroValue)
 			{
 				color = (direction == TradeDirection.sell)?Color.RED:Color.GREEN;
 			}
@@ -334,11 +336,11 @@ package com.dukascopy.connect.screens.dialogs.escrow
 			if (!isNaN(value) && !isNaN(priceValue))
 			{
 				var color:Number;
-				if (value > currentValue)
+				if (value > zeroValue)
 				{
 					color = (direction == TradeDirection.sell)?Color.GREEN:Color.RED;
 				}
-				else if (value < currentValue)
+				else if (value < zeroValue)
 				{
 					color = (direction == TradeDirection.sell)?Color.RED:Color.GREEN;
 				}

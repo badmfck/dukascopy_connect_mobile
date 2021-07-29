@@ -465,7 +465,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 				priceSummary = new PriceClip();
 			}
 			addItem(priceSummary);
-			priceSummary.draw(Lang.escrow_you_buy, getAmount() + " " + selectedCrypto.name, Lang.escrow_price, getPrice() + " " + getCurrency(), _width, contentPadding);
+			priceSummary.draw(Lang.escrow_you_buy, getAmount() + " " + selectedCrypto.name, Lang.escrow_price, selectedPrice + " " + getCurrency(), _width, contentPadding);
 			
 			if (alert == null)
 			{
@@ -1445,14 +1445,17 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			if (data != null && "price" in data && data.price != null)
 			{
 				var requestedPrice:String = data.price;
+				var pricePercentStartValue:Number = 0;
 				if (requestedPrice.indexOf("%") != -1)
 				{
 					requestedPrice = requestedPrice.replace("%", "");
 					if (!isNaN(Number(requestedPrice)))
 					{
+						pricePercentStartValue = Number(requestedPrice);
 						radio.select(radioSelection[0]);
 						showDeviationControl();
 						priceSelector.setValue(Number(requestedPrice));
+					//	selectedPrice = priceSelector.getPrice();
 					}
 				}
 				else if(!isNaN(Number(requestedPrice)))
@@ -1463,7 +1466,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 					inputPrice.value = selectedPrice;
 				}
 				
-				refreshPrice(selectedPrice);
+				refreshPrice(selectedPrice, pricePercentStartValue);
 			}
 			else
 			{
@@ -1471,12 +1474,12 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			}
 		}
 		
-		private function refreshPrice(overridePrice:Number = NaN):void 
+		private function refreshPrice(overridePrice:Number = NaN, pricePercentStartValue:Number = 0):void 
 		{
-			updatePrice(overridePrice);
+			var originalPrice:Number = updatePrice(overridePrice, pricePercentStartValue);
 			if (state == STATE_START)
 			{
-				priceSelector.draw(_width - contentPadding * 2, -5, 5, 0, selectedPrice, getCurrency());
+				priceSelector.draw(_width - contentPadding * 2, -5, 5, pricePercentStartValue, originalPrice, getCurrency());
 			}
 			updateBalance();
 			updatePositions();
@@ -1552,12 +1555,19 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			updatePrice();
 		}
 		
-		private function updatePrice(overridePrice:Number = NaN):void 
+		private function updatePrice(overridePrice:Number = NaN, percentStartValue:Number = NaN):Number 
 		{
 			var price:Number = getPrice();
+			var originalPrice:Number = price;
+			if (!isNaN(percentStartValue) && !isNaN(price))
+			{
+				price = parseFloat((price + price * percentStartValue / 100).toFixed(2));
+			}
+			
 			if (!isNaN(overridePrice))
 			{
 				price = overridePrice;
+				originalPrice = price;
 			}
 			if (!isNaN(price))
 			{
@@ -1567,6 +1577,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 				var underlineText:String = Lang.current_price_of_instrument.replace(Lang.regExtValue, getInstrument()) + " = " + price + " " + getCurrency();
 				inputPrice.drawUnderlineValue(underlineText);
 			}
+			return originalPrice;
 		}
 		
 		private function getPrice():Number 

@@ -14,6 +14,8 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 	import com.dukascopy.connect.gui.lightbox.UI;
 	import com.dukascopy.connect.gui.list.ListItem;
 	import com.dukascopy.connect.sys.auth.Auth;
+	import com.dukascopy.connect.sys.payments.CurrencyHelpers;
+	import com.dukascopy.connect.sys.payments.PayManager;
 	import com.dukascopy.connect.sys.style.FontSize;
 	import com.dukascopy.connect.sys.style.Style;
 	import com.dukascopy.connect.sys.style.presets.Color;
@@ -288,8 +290,20 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 		
 		private function getAmountText(data:EscrowMessageData):String 
 		{
-			var currency:String = getInstrument(data);;
-			var result:String = data.amount.toFixed(2);
+			var currency:String = getInstrument(data);
+			
+			var decimals:int = 2;
+			if (PayManager.systemOptions != null && PayManager.systemOptions.currencyDecimalRules != null && !isNaN(PayManager.systemOptions.currencyDecimalRules[currency]))
+			{
+				decimals = PayManager.systemOptions.currencyDecimalRules[currency];
+			}
+			else
+			{
+				decimals = CurrencyHelpers.getMaxDecimalCount(currency)
+			}
+			
+			var result:String = Number(data.amount.toFixed(decimals)).toString();
+			
 			if (currency != null && currency != "")
 			{
 				result += " " + currency;

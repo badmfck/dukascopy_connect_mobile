@@ -35,6 +35,7 @@ package com.dukascopy.connect.gui.components.seekbar
 		private var startValue:Number;
 		private var startPosition:int;
 		private var onChange:Function;
+		private var zeroPosition:Number;
 		
 		public function Seekbar(onChange:Function)
 		{
@@ -103,6 +104,7 @@ package com.dukascopy.connect.gui.components.seekbar
 			{
 				positionValue = maxValue;
 			}
+			zeroPosition = buttonRadius + int( (0 - minValue) * (itemWidth - buttonRadius * 2) / (maxValue - minValue) );
 			startPosition = buttonRadius + int( (positionValue - minValue) * (itemWidth - buttonRadius * 2) / (maxValue - minValue) );
 			button.x = startPosition;
 		}
@@ -141,9 +143,8 @@ package com.dukascopy.connect.gui.components.seekbar
 		
 		private function calculatePosition():void 
 		{
-			
-			var distance:int = startPosition - button.x;
-			selectLine.x = startPosition;
+			var distance:int = zeroPosition - button.x;
+			selectLine.x = zeroPosition;
 			
 			var color:Number;
 			if (distance < 0)
@@ -167,7 +168,7 @@ package com.dukascopy.connect.gui.components.seekbar
 		{
 			if (onChange != null && onChange.length == 1)
 			{
-				var value:Number = (startPosition - button.x) * (maxValue - minValue) / (width - buttonRadius * 2);
+				var value:Number = (zeroPosition - button.x) * (maxValue - minValue) / (width - buttonRadius * 2);
 				onChange(-value);
 			}
 		}
