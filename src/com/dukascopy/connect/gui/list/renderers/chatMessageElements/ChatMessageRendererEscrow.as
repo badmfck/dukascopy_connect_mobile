@@ -410,6 +410,39 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 						
 						break;
 					}
+					case EscrowStatus.paid_crypto:
+					{
+						if (direction == TradeDirection.buy)
+						{
+							if (messageData.userUID != Auth.uid)
+							{
+								result = Lang.escrow_seller_sent_crypto_transaction;
+							}
+							else
+							{
+								result = Lang.escrow_waiting_receipt_confirm;
+							}
+						}
+						else if(direction == TradeDirection.sell)
+						{
+							if (messageData.userUID != Auth.uid)
+							{
+								result = Lang.escrow_waiting_receipt_confirm;
+							}
+							else
+							{
+								result = Lang.escrow_seller_sent_crypto_transaction;
+							}
+						}
+						
+						break;
+					}
+					case EscrowStatus.deal_completed:
+					{
+						result = Lang.escrow_deal_completed;
+						
+						break;
+					}
 				}
 			}
 			
@@ -487,7 +520,7 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 					time.y = int(resultHeight * .5 + Config.FINGER_SIZE * .05);
 				}
 				else if (messageData.systemMessageVO.escrow.inactive == false && 
-						 (messageData.systemMessageVO.escrow.status == EscrowStatus.deal_created || messageData.systemMessageVO.escrow.status == EscrowStatus.deal_mca_hold))
+						 (messageData.systemMessageVO.escrow.status == EscrowStatus.deal_created || messageData.systemMessageVO.escrow.status == EscrowStatus.deal_mca_hold || messageData.systemMessageVO.escrow.status == EscrowStatus.paid_crypto))
 				{
 					iconTime.visible = false;
 					time.visible = false;
@@ -514,6 +547,14 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 					}
 				}
 				else if (messageData.systemMessageVO.escrow.inactive == true)
+				{
+					iconTime.visible = false;
+					time.visible = false;
+					
+					iconSuccess.visible = true;
+					UI.colorize(iconSuccess, getIconColor(messageData.systemMessageVO.escrow.status, messageData.systemMessageVO.escrow.direction, messageData));
+				}
+				else if (messageData.systemMessageVO.escrow.status == EscrowStatus.deal_completed)
 				{
 					iconTime.visible = false;
 					time.visible = false;
@@ -645,6 +686,20 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 						return Color.WHITE;
 						break;
 					}
+					case EscrowStatus.paid_crypto:
+					{
+						if (messageData.systemMessageVO.escrow.inactive == true)
+						{
+							return Color.GREY_DARK;
+						}
+						return Color.WHITE;
+						break;
+					}
+					case EscrowStatus.deal_completed:
+					{
+						return Color.BLACK;
+						break;
+					}
 				}
 			}
 			
@@ -768,6 +823,20 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 							return Color.GREY_LIGHT;
 						}
 						return Color.GREY_DARK;
+						break;
+					}
+					case EscrowStatus.paid_crypto:
+					{
+						if (messageData.systemMessageVO.escrow.inactive == true)
+						{
+							return Color.GREY_LIGHT;
+						}
+						return Color.GREY_DARK;
+						break;
+					}
+					case EscrowStatus.deal_completed:
+					{
+						return Color.GREY_SUPER_LIGHT;
 						break;
 					}
 				}

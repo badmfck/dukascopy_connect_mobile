@@ -2507,6 +2507,9 @@ package com.dukascopy.langs {
 		static public var escrow_chats:String = "CHATS";
 		static public var waiting_for_money_hold:String = "Waiting for money hold by the Buyer";
 		static public var escrow_from_market_price:String = "from market price";
+		static public var escrow_seller_sent_crypto_transaction:String = "Seller sent crypto tranaction ID";
+		static public var escrow_waiting_receipt_confirm:String = "Waiting for receipt confirmation by the Buyer";
+		static public var escrow_deal_completed:String = "Deal successfully completed";
 		
 		static public function updateKeys(keys:Object):void {
 			for (var n:String in keys) {

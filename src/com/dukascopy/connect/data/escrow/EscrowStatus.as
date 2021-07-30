@@ -14,6 +14,7 @@ package com.dukascopy.connect.data.escrow
 		private static const DEAL_CREATED:String = "created";
 		private static const MCA_HOLD:String = "paid_mca";
 		private static const PAID_CRYPTO:String = "paid_crypto";
+		private static const DEAL_COMPLETED:String = "completed";
 		
 		static public var offer_created:EscrowStatus = new EscrowStatus(EscrowStatus.OFFER_CREATED);
 		static public var offer_cancelled:EscrowStatus = new EscrowStatus(EscrowStatus.OFFER_CANCELLED);
@@ -23,6 +24,7 @@ package com.dukascopy.connect.data.escrow
 		static public var deal_created:EscrowStatus = new EscrowStatus(EscrowStatus.DEAL_CREATED);
 		static public var deal_mca_hold:EscrowStatus = new EscrowStatus(EscrowStatus.MCA_HOLD);
 		static public var paid_crypto:EscrowStatus = new EscrowStatus(EscrowStatus.PAID_CRYPTO);
+		static public var deal_completed:EscrowStatus = new EscrowStatus(EscrowStatus.DEAL_COMPLETED);
 		
 		public function get value():String 
 		{
@@ -71,6 +73,11 @@ package com.dukascopy.connect.data.escrow
 				case PAID_CRYPTO:
 				{
 					return paid_crypto;
+					break;
+				}
+				case DEAL_COMPLETED:
+				{
+					return deal_completed;
 					break;
 				}
 			}
