@@ -522,7 +522,8 @@ package com.dukascopy.connect.sys.payments {
 				mrzData.docNumber,
 				mrzData.docType,
 				mrzData.dateExpired,
-				mrzData.nationality
+				mrzData.nationality,
+				mrzData.country
 
 			);
 			Auth.rtoStarted();

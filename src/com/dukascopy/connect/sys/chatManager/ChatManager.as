@@ -592,7 +592,7 @@ package com.dukascopy.connect.sys.chatManager {
 					}
 				}
 			}
-			echo("ChatManager", "getChatByUID", "ACHTUNG <--------> ACHTUNG");
+			echo("ChatManager", "getChatByUID", "chat uid: "+uid);
 			lastGettedChats ||= [];
 			var cvo:ChatVO;
 			if (latestChats != null) {

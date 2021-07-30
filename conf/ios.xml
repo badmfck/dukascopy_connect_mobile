@@ -41,7 +41,7 @@
         </array>
 
         <key>MinimumOSVersion</key>
-        <string>12.0</string>
+        <string>13.0</string>
 
         <key>CFBundleURLTypes</key>
         <array>
@@ -55,27 +55,12 @@
             </dict>
         </array>
 
+        
         <key>LSApplicationQueriesSchemes</key>
         <array>
             <string>com.dukascopy.community</string>
             <string>com.dukascopy.iplatform</string>
         </array>
-
-        <key>Fabric</key>
-        <dict>
-            <key>APIKey</key>
-            <string>6d81b5f368a32de5772b247444a55d90d568b566</string>
-            <key>Kits</key>
-            <array>
-            <dict>
-                <key>KitInfo</key>
-                <dict/>
-                <key>KitName</key>
-                <string>Crashlytics</string>
-            </dict>
-            </array>
-        </dict>
-
     ]]>
 </InfoAdditions>
 <Entitlements>

@@ -40,6 +40,12 @@ package com.dukascopy.connect.gui.chatInput {
 	import flash.events.StatusEvent;
 	import flash.utils.getTimer;
 	import mx.utils.StringUtil;
+	import com.dukascopy.dccext.DCCExtCommand;
+	import com.dukascopy.dccext.DCCExtData;
+	import flash.filesystem.File;
+	import com.dukascopy.dccext.DCCExtMethod;
+	import com.dukascopy.dccext.DCCExt;
+	import com.dukascopy.connect.gui.components.message.ToastMessage;
 	
 	/**
 	 * ...
@@ -307,6 +313,12 @@ package com.dukascopy.connect.gui.chatInput {
 			var data:Object;
 			switch (e.code) {
 				case "inputView": {
+
+					if(e.level=="galleryBtnPressed"){
+						getFiles();
+						return;
+					}
+
 					if (e.level == "didChangeText")
 						onTextChanged();
 					else if (e.level == "didShow" && wasShowCalled) {
@@ -549,6 +561,42 @@ package com.dukascopy.connect.gui.chatInput {
 				}
 			}
 		}
+
+
+		private function getFiles():void{
+            DCCExt.call(new DCCExtCommand(
+                DCCExtMethod.FILE_BROWSE,
+                {}
+            ),function(e:DCCExtData):void{
+                var filePath:String=e.data.file;
+                var file:File=new File(filePath); //File.applicationStorageDirectory+"tmp/com.swfx.connect/inbox/..etc"
+				if(!file.exists){
+					//TODO: show error message
+					echo("ChatInputIOS","getFiles","file not exists",true);
+					return;
+				}
+
+				var mediaFileData:MediaFileData = new MediaFileData();	
+				mediaFileData.setOriginalName(file.name);
+				var chat:ChatVO=ChatManager.getCurrentChat();
+				if(!chat){
+					//TODO: show error message
+					echo("ChatInputIOS","getFiles","No current chat!",true);
+					return;
+				}
+									
+				mediaFileData.key = chat.securityKey;
+				mediaFileData.chatUID=chat.uid;
+				mediaFileData.localResource = file.nativePath;
+				if (mediaFileData.localResource.indexOf("file://") != -1)
+					mediaFileData.localResource = mediaFileData.localResource.substr(7);
+				mediaFileData.path=mediaFileData.localResource;
+
+				mediaFileData.type = MediaFileData.MEDIA_TYPE_FILE;
+				PhotoGaleryManager.S_GALLERY_MEDIA_LOADED.invoke(mediaFileData);
+				echo("ChatInputIOS","getFiles","Try to upload!");
+            })
+        }
 		
 		private function callBackAddInvoice(i:int, paramsObj:Object):void {
 			if (MobileGui.dce != null)

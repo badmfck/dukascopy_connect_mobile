@@ -151,7 +151,7 @@ package com.dukascopy.connect {
 		
         static public const APPLE_LOG:Boolean=true;
         static public const ANDROID_LOG:Boolean=true;
-        static public const VERSION:String = "3.5.70o"+(Capabilities.isDebugger?" dbg":"");
+        static public const VERSION:String = "3.5.72o"+(Capabilities.isDebugger?" dbg":"");
         static public const VERSION_SQL:int = 1;
 		
         static public const MAX_UPLOAD_THUMB_SIZE:int = 230;
@@ -422,8 +422,22 @@ package com.dukascopy.connect {
             return _dobule_margin;
         }
 		
+
+        
         static private var _appleTopOffset:int = -1;
 		
+        static public function setupAppleTopOffset(offset:int):void{
+            _appleTopOffset=offset;
+        }
+		
+        static public function setupAppleBottomOffset(offset:int):void{
+            _appleBottomOffset=offset;
+        }
+        
+        static public function setupFingerSize(size:int):void{
+            _fingerSize=size;
+        }
+
         static public function get APPLE_TOP_OFFSET():int {
             if (_appleTopOffset == -1) {
                 if (PLATFORM_APPLE == false) {

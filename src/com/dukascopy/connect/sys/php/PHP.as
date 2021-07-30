@@ -140,8 +140,8 @@ package com.dukascopy.connect.sys.php {
 		 * @param	userUIDS
 		 * @param	createChatOnly
 		 */
-		static public function call_stsGet(callBack:Function, promoCode:String, notaryFlow:Boolean,coolPhone:Boolean,birthDate:String,documentID:String,documentType:String,expired:String,nationality:String):void {
-			call('sts.get', callBack,{params:{nationality:nationality,promocode:promoCode,expired:expired,documentID:documentID,documentType:documentType,birthDate:birthDate,coolphone:(coolPhone)?1:0,notaryflow:(notaryFlow)?1:0,version:Config.VERSION,platform:Config.PLATFORM}});
+		static public function call_stsGet(callBack:Function, promoCode:String, notaryFlow:Boolean,coolPhone:Boolean,birthDate:String,documentID:String,documentType:String,expired:String,nationality:String,country:String):void {
+			call('sts.get', callBack,{params:{nationality:nationality,promocode:promoCode,expired:expired,country:country,documentID:documentID,documentType:documentType,birthDate:birthDate,coolphone:(coolPhone)?1:0,notaryflow:(notaryFlow)?1:0,version:Config.VERSION,platform:Config.PLATFORM}});
 		}
 		
 		static public function chat_start(callBack:Function, userUIDS:Array, createChatOnly:Boolean = false, caller:String = ""):void {
@@ -706,12 +706,14 @@ package com.dukascopy.connect.sys.php {
 		}
 		
 		static public function addDocument(callBack:Function, chatUID:String, data:ByteArray, title:String):void {
+			echo("PHP","addDocument","creating PHPFormData");
 			var phpFormData:PHPFormData = new PHPFormData();
 			phpFormData.addParam("method", "files.addDoc");
 			phpFormData.addParam("key", Auth.key); 
 			phpFormData.addParam("title", title); 
 			phpFormData.addParam("chatUID", chatUID);
 			phpFormData.addFile("doc", 'doc', data, function():void {
+				echo("PHP","addDocument.addFile.callback","File added");
 				phpFormData.send(Config.URL_PHP_CORE_SERVER_FILE, callBack);
 			});
 		}

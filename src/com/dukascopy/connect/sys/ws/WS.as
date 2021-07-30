@@ -234,7 +234,6 @@ import flash.utils.getTimer;
 		
 		static private function getWebSocket():IWebSocket {
 
-
 			if(currentHost==null)
 				currentHost=Config.URL_WS_HOST_1;
 			else {
@@ -247,8 +246,7 @@ import flash.utils.getTimer;
 			}
 
 			if(!Config.PLATFORM_APPLE && !Config.PLATFORM_ANDROID ){
-				if (!Config.isTest())
-				{
+				if (!Config.isTest()){
 					currentHost="ws://ws.site.dukascopy.com:8080";
 				}
 			}

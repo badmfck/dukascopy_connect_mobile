@@ -42,6 +42,8 @@ package com.dukascopy.connect {
 		static public const S_ESCROW_INSTRUMENTS:S_EscrowInstruments=new S_EscrowInstruments();
 		static public const S_ESCROW_PRICE:S_EscrowPrice=new S_EscrowPrice();
 		static public const S_ESCROW_PRICES_REQUEST:S_EscrowPricesRequest = new S_EscrowPricesRequest();
+
+		static public const S_IOS_LOCALIZATION_UPDATE:Signal=new Signal("S_IOS_LOCALIZATION_UPDATE");
 		
 		// Web view
 		static public const S_WEBVIEW_REQUEST:S_WebViewRequest = new S_WebViewRequest();
