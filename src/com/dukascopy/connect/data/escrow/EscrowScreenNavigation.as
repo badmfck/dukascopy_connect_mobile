@@ -87,6 +87,10 @@ package com.dukascopy.connect.data.escrow
 			lastRequestData = null;
 			if (escrow != null)
 			{
+				if (escrow.inactive == true)
+				{
+					return;
+				}
 				
 				var screenData:Object = new Object();
 				screenData.escrowOffer = escrow;
@@ -104,11 +108,6 @@ package com.dukascopy.connect.data.escrow
 				   ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, EscrowReportScreen, screenData);
 				   return;*/
 				
-				/*ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, WaitCryptoScreen, screenData);
-				   return;*/
-				
-				/*ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, SendCryptoExpiredScreen, screenData);
-				   return;*/
 				
 				/*escrow.transactionId = "xf345dfg545hfgh65nmqgh390gghj90w2j45bv";
 				   escrow.status = EscrowStatus.deal_created;
@@ -173,9 +172,21 @@ package com.dukascopy.connect.data.escrow
 				{
 					if (isExpired(escrow, message.created))
 					{
-						ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, SendCryptoExpiredScreen, screenData);
+						//!TODO:;
+					//	ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, SendCryptoExpiredScreen, screenData);
 					}
 					else
+					{
+						//!TODO:;
+					}
+				}
+				else if (escrow.status == EscrowStatus.deal_mca_hold)
+				{
+					
+					
+					
+					
+					if (!isExpired(escrow, message.created))
 					{
 						if (escrow.direction == TradeDirection.sell)
 						{
@@ -190,6 +201,23 @@ package com.dukascopy.connect.data.escrow
 								ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, WaitCryptoScreen, screenData);
 							}
 						}
+						else
+						{
+							if (escrow.userUID != Auth.uid)
+							{
+								//!TODO: check exist escrow.cryptoWallet;
+								screenData.callback = onSendTransactionCommand;
+								ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, SendCryptoScreen, screenData);
+							}
+							else
+							{
+								ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, WaitCryptoScreen, screenData);
+							}
+						}
+					}
+					else
+					{
+						ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, SendCryptoExpiredScreen, screenData);
 					}
 				}
 			}
@@ -326,7 +354,7 @@ package com.dukascopy.connect.data.escrow
 			{
 				if (escrow != null)
 				{
-					PHP.escrow_addEvent(onEvent, {event_type: "paid_crypto", data: escrow.transactionId, deal_uid: escrow.deal_uid, notifyWS: true});
+					PHP.escrow_addEvent(onEventCryptoSend, {event_type: "paid_crypto", data: escrow.transactionId, deal_uid: escrow.deal_uid, notifyWS: true});
 				}
 				else
 				{
@@ -335,7 +363,7 @@ package com.dukascopy.connect.data.escrow
 			}
 		}
 		
-		static private function onEvent(respond:PHPRespond):void
+		static private function onEventCryptoSend(respond:PHPRespond):void
 		{
 			trace("123");
 		}
@@ -400,6 +428,7 @@ package com.dukascopy.connect.data.escrow
 		
 		static private function onDealEvent(escrowEventType:String, dealRawData:Object):void 
 		{
+			//!TODO:; - не использовать объект, получить deal;
 			if (escrowEventType == EscrowEventType.CREATED)
 			{
 				onDealCreated(dealRawData);
@@ -423,7 +452,12 @@ package com.dukascopy.connect.data.escrow
 				}
 				else if (dealRawData.side == "BUY")
 				{
-					//!TODO:;
+					if (dealRawData.crypto_user_uid == Auth.uid)
+					{
+						makeHold(dealRawData);
+					}
+					
+					//!TODO: проверять если был оффлайн или по нотификации;
 				}
 				else
 				{
@@ -542,6 +576,11 @@ package com.dukascopy.connect.data.escrow
 				return (((new Date()).time / 1000 - created) / 60) > EscrowSettings.offerMaxTime;
 			}
 			else if (escrow.status == EscrowStatus.deal_created)
+			{
+				//!TODO:;
+				return (((new Date()).time / 1000 - created) / 60) > EscrowSettings.dealMaxTime;
+			}
+			else if (escrow.status == EscrowStatus.deal_mca_hold)
 			{
 				//!TODO:;
 				return (((new Date()).time / 1000 - created) / 60) > EscrowSettings.dealMaxTime;

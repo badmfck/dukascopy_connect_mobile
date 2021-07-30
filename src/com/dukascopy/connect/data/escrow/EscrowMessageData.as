@@ -8,6 +8,7 @@ package com.dukascopy.connect.data.escrow
 	 */
 	public class EscrowMessageData 
 	{
+		public var inactive:Boolean;
 		public var price:Number;
 		public var amount:Number;
 		public var direction:TradeDirection;
@@ -73,6 +74,12 @@ package com.dukascopy.connect.data.escrow
 			}
 			if ("status" in data)
 			{
+				if (data.status != null && (data.status as String).indexOf("_inactive") != -1)
+				{
+					inactive = true;
+					data.status = (data.status as String).substring(0, (data.status as String).length - "_inactive".length);
+				}
+				
 				status = EscrowStatus.getStatus(data.status);
 			}
 			if ("userUID" in data)

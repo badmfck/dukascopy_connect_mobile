@@ -1,6 +1,7 @@
 package com.dukascopy.connect.screens.innerScreens {
 	
 	import com.dukascopy.connect.Config;
+	import com.dukascopy.connect.GD;
 	import com.dukascopy.connect.MobileGui;
 	import com.dukascopy.connect.data.LabelItem;
 	import com.dukascopy.connect.gui.components.StatusClip;
@@ -13,6 +14,7 @@ package com.dukascopy.connect.screens.innerScreens {
 	import com.dukascopy.connect.gui.list.renderers.ListLink;
 	import com.dukascopy.connect.gui.menuVideo.BitmapButton;
 	import com.dukascopy.connect.gui.tabs.FilterTabs;
+	import com.dukascopy.connect.managers.escrow.vo.EscrowInstrument;
 	import com.dukascopy.connect.screens.QuestionCreateUpdateScreen;
 	import com.dukascopy.connect.screens.RootScreen;
 	import com.dukascopy.connect.screens.base.BaseScreen;
@@ -152,6 +154,21 @@ package com.dukascopy.connect.screens.innerScreens {
 			if (selectedFilter == null)
 				selectedFilter = QuestionsManager.TAB_OTHER; 
 			tabs.setSelection(selectedFilter);
+			
+			GD.S_ESCROW_INSTRUMENTS.add(onInstrumentsLoaded);
+			GD.S_ESCROW_INSTRUMENTS_REQUEST.invoke();
+		}
+		
+		private function onInstrumentsLoaded(instruments:Vector.<EscrowInstrument>):void 
+		{
+			if (_isDisposed)
+			{
+				return;
+			}
+			if (isActivated)
+			{
+				list.refresh();
+			}
 		}
 		
 		public function onHide():void {
@@ -249,6 +266,7 @@ package com.dukascopy.connect.screens.innerScreens {
 		override public function dispose():void {
 			super.dispose();
 			
+			GD.S_ESCROW_INSTRUMENTS.remove(onInstrumentsLoaded);
 			DialogManager.closeDialog();
 		}
 		

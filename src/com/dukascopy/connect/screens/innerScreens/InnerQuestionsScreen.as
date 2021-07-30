@@ -3,6 +3,7 @@ package com.dukascopy.connect.screens.innerScreens {
 	import assets.FilterIcon;
 	import assets.MissBanner;
 	import com.dukascopy.connect.Config;
+	import com.dukascopy.connect.GD;
 	import com.dukascopy.connect.MobileGui;
 	import com.dukascopy.connect.data.LabelItem;
 	import com.dukascopy.connect.data.paidBan.PaidBanProtectionData;
@@ -21,6 +22,7 @@ package com.dukascopy.connect.screens.innerScreens {
 	import com.dukascopy.connect.gui.list.renderers.TopExtensionListRenderer;
 	import com.dukascopy.connect.gui.menuVideo.BitmapButton;
 	import com.dukascopy.connect.gui.tabs.FilterTabs;
+	import com.dukascopy.connect.managers.escrow.vo.EscrowInstrument;
 	import com.dukascopy.connect.screens.QuestionCreateUpdateScreen;
 	import com.dukascopy.connect.screens.RootScreen;
 	import com.dukascopy.connect.screens.UserProfileScreen;
@@ -243,6 +245,21 @@ package com.dukascopy.connect.screens.innerScreens {
 			banNotificationClip.y = _height;
 			banNotificationClip.setSize(_width);
 			PaidBan.S_UPDATED.add(onBansUpdated);
+			
+			GD.S_ESCROW_INSTRUMENTS.add(onInstrumentsLoaded);
+			GD.S_ESCROW_INSTRUMENTS_REQUEST.invoke();
+		}
+		
+		private function onInstrumentsLoaded(instruments:Vector.<EscrowInstrument>):void 
+		{
+			if (_isDisposed)
+			{
+				return;
+			}
+			if (isActivated)
+			{
+				list.refresh();
+			}
 		}
 		
 		private function onExtensionsLoaded(data:Array):void {
@@ -410,6 +427,7 @@ package com.dukascopy.connect.screens.innerScreens {
 		override public function dispose():void {
 			super.dispose();
 			
+			GD.S_ESCROW_INSTRUMENTS.remove(onInstrumentsLoaded);
 			TweenMax.killDelayedCallsTo(showMoreInfoButton);
 			DialogManager.closeDialog();
 			

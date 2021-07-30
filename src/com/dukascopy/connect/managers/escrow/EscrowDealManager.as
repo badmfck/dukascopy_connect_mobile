@@ -1,6 +1,7 @@
 package com.dukascopy.connect.managers.escrow{
 
     import com.dukascopy.connect.GD;
+	import com.dukascopy.connect.managers.escrow.vo.EscrowPrice;
     import com.dukascopy.connect.sys.Dispatcher;
     import com.dukascopy.connect.vo.EscrowDealVO;
     import com.telefision.utils.maps.EscrowDealMap;
@@ -29,6 +30,7 @@ package com.dukascopy.connect.managers.escrow{
 
         // Prices
         private var isPriceLoading:Boolean=false;
+		public static var instance:EscrowDealManager;
 
 
         public function EscrowDealManager(){
@@ -101,6 +103,7 @@ package com.dukascopy.connect.managers.escrow{
 
             // Escrow get offer calculation
             // instrument, price, amount
+			instance = this;
         }
 
 
@@ -216,7 +219,33 @@ package com.dukascopy.connect.managers.escrow{
 
             GD.S_ESCROW_DEALS_LOADED.invoke(escrowDeals);
         }
-
+		
+		public static function getPrice(instrument:String, currency:String):Number
+		{
+			var result:Number;
+			if (instance != null && instance.instruments != null)
+			{
+				for (var i:int = 0; i < instance.instruments.length; i++) 
+				{
+					if (instance.instruments[i].code == instrument)
+					{
+						if (instance.instruments[i].price != null)
+						{
+							var price:Vector.<EscrowPrice> = instance.instruments[i].price;
+							for (var j:int = 0; j < price.length; j++) 
+							{
+								if (price[j].name == currency)
+								{
+									result = price[j].value;
+									break;
+								}
+							}
+						}
+						break;
+					}
+				}
+			}
+			return result;
+		}
     }
-
 }

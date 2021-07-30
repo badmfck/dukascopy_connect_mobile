@@ -449,6 +449,19 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 				iconFail.y = int(resultHeight * .5 - iconFail.height * .5);
 				iconSuccess.y = int(resultHeight * .5 - iconSuccess.height * .5);
 				
+				if (messageData.systemMessageVO.escrow.inactive == true)
+				{
+					amount.alpha = 0.6;
+					title.alpha = 0.6;
+					price.alpha = 0.6;
+				}
+				else
+				{
+					amount.alpha = 1;
+					title.alpha = 1;
+					price.alpha = 1;
+				}
+				
 				if (messageData.systemMessageVO.escrow.status == EscrowStatus.offer_created)
 				{
 					iconTime.visible = true;
@@ -473,10 +486,12 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 					time.x = int(leftSideSize * .5 - time.width * .5);
 					time.y = int(resultHeight * .5 + Config.FINGER_SIZE * .05);
 				}
-				else if (messageData.systemMessageVO.escrow.status == EscrowStatus.deal_created)
+				else if (messageData.systemMessageVO.escrow.inactive == false && 
+						 (messageData.systemMessageVO.escrow.status == EscrowStatus.deal_created || messageData.systemMessageVO.escrow.status == EscrowStatus.deal_mca_hold))
 				{
 					iconTime.visible = false;
 					time.visible = false;
+					//!TODO: передать верное время
 					if (EscrowScreenNavigation.isExpired(messageData.systemMessageVO.escrow, messageData.created))
 					{
 						iconFail.visible = true;
@@ -497,6 +512,14 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 						time.x = int(leftSideSize * .5 - time.width * .5);
 						time.y = int(resultHeight * .5 + Config.FINGER_SIZE * .05);
 					}
+				}
+				else if (messageData.systemMessageVO.escrow.inactive == true)
+				{
+					iconTime.visible = false;
+					time.visible = false;
+					
+					iconSuccess.visible = true;
+					UI.colorize(iconSuccess, getIconColor(messageData.systemMessageVO.escrow.status, messageData.systemMessageVO.escrow.direction, messageData));
 				}
 				else if (messageData.systemMessageVO.escrow.status == EscrowStatus.offer_accepted)
 				{
@@ -606,6 +629,19 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 					}
 					case EscrowStatus.deal_created:
 					{
+						if (messageData.systemMessageVO.escrow.inactive == true)
+						{
+							return Color.GREY_DARK;
+						}
+						return Color.WHITE;
+						break;
+					}
+					case EscrowStatus.deal_mca_hold:
+					{
+						if (messageData.systemMessageVO.escrow.inactive == true)
+						{
+							return Color.GREY_DARK;
+						}
 						return Color.WHITE;
 						break;
 					}
@@ -718,6 +754,19 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 					}
 					case EscrowStatus.deal_created:
 					{
+						if (messageData.systemMessageVO.escrow.inactive == true)
+						{
+							return Color.GREY_LIGHT;
+						}
+						return Color.GREY_DARK;
+						break;
+					}
+					case EscrowStatus.deal_mca_hold:
+					{
+						if (messageData.systemMessageVO.escrow.inactive == true)
+						{
+							return Color.GREY_LIGHT;
+						}
 						return Color.GREY_DARK;
 						break;
 					}

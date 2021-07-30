@@ -7,6 +7,7 @@ package com.dukascopy.connect.gui.list.renderers {
 	import com.dukascopy.connect.gui.list.ListItem;
 	import com.dukascopy.connect.gui.megaText.MegaText;
 	import com.dukascopy.connect.gui.tabs.FilterTabs;
+	import com.dukascopy.connect.managers.escrow.EscrowDealManager;
 	import com.dukascopy.connect.sys.imageManager.ImageBitmapData;
 	import com.dukascopy.connect.sys.imageManager.ImageManager;
 	import com.dukascopy.connect.sys.questionsManager.QuestionsManager;
@@ -624,12 +625,32 @@ package com.dukascopy.connect.gui.list.renderers {
 			var result:String = "";
 			if (itemData.price != null)
 			{
-				result = "@" + itemData.price;
+				if (itemData.price.indexOf("%") != -1)
+				{
+					var realPrice:Number = parseFloat(itemData.price.replace("%", ""));
+					if (realPrice > 0)
+					{
+						result += "+";
+					}
+					if (!isNaN(EscrowDealManager.getPrice(itemData.tipsCurrency, itemData.priceCurrency)))
+					{
+						result += itemData.price + " " + "@" + EscrowDealManager.getPrice(itemData.tipsCurrency, itemData.priceCurrency);
+					}
+					else
+					{
+						result += itemData.price + " " + Lang.escrow_from_market_price;
+					}
+				}
+				else
+				{
+					result = "@" + itemData.price;
+					if (itemData.priceCurrency != null)
+					{
+						result += " " + itemData.priceCurrency;
+					}
+				}
 			}
-			if (itemData.priceCurrency != null)
-			{
-				result += " " + itemData.priceCurrency;
-			}
+			
 			return result;
 		}
 		
