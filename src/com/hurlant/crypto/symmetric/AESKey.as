@@ -2624,22 +2624,27 @@ package com.hurlant.crypto.symmetric
 		
 		public function decrypt(block:ByteArray, index:uint=0):void
 		{
-			var round:uint;
-			state.position=0;
-			state.writeBytes(block, index, Nb*4);
 
-			addRoundKey(key, Nr*Nb*4);
-			invShiftRows();
-			for( round = Nr; round--; )
-			{
-				addRoundKey( key, round*Nb*4);
-				if (round) {
-					invMixSubColumns();
-				}
-			}
-			
-			block.position=index;
-			block.writeBytes(state);
+            try{
+                var round:uint;
+                state.position=0;
+                state.writeBytes(block, index, Nb*4);
+
+                addRoundKey(key, Nr*Nb*4);
+                invShiftRows();
+                for( round = Nr; round--; )
+                {
+                    addRoundKey( key, round*Nb*4);
+                    if (round) {
+                        invMixSubColumns();
+                    }
+                }
+                
+                block.position=index;
+                block.writeBytes(state);
+            }catch(e:Error){
+                trace(e.message);
+            }
 		}
 		
 		public function dispose():void {

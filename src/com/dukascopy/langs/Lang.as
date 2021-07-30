@@ -931,7 +931,7 @@ package com.dukascopy.langs {
 		static public var needAuthorization:String = "Need authorization.";
 		static public var needFullAuthorization:String = "Need full nonguest authorization.";
 		static public var needToBeInside:String = "Need to be inside Dukascopy.";
-		static public var needToByAuthorized:String = "Need to by authorized.";
+		static public var needToByAuthorized:String = "Bank authorization needed";
 		static public var noAccess:String = "No access.";
 		static public var noAddFxcommUser:String = "Can`t add fxcomm user.";
 		static public var noCallRecord:String = "No call record.";
@@ -2510,6 +2510,8 @@ package com.dukascopy.langs {
 		static public var escrow_seller_sent_crypto_transaction:String = "Seller sent crypto tranaction ID";
 		static public var escrow_waiting_receipt_confirm:String = "Waiting for receipt confirmation by the Buyer";
 		static public var escrow_deal_completed:String = "Deal successfully completed";
+
+		static public var noRights:String="You don't have rights to perfom this action";
 		
 		static public function updateKeys(keys:Object):void {
 			for (var n:String in keys) {

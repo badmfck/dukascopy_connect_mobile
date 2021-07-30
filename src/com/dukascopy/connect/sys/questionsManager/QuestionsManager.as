@@ -1470,6 +1470,8 @@ package com.dukascopy.connect.sys.questionsManager {
 					DialogManager.alert(Lang.textAttention, Lang.questionYouAreBanned);
 				if (errorMsg.substr(0, 7) == "que..23")
 					DialogManager.alert(Lang.textAttention, Lang.questionHasUnpaid);
+				if (errorMsg.substr(0, 7) == "que..04")
+					DialogManager.alert(Lang.textAttention, Lang.noRights);
 				if (errorMsg.substr(0, 7) == "que..24")
 					DialogManager.alert(Lang.textAttention, Lang.questionNotEnoughMoney);
 				if (errorMsg.substr(0, 7) == "que..28") {

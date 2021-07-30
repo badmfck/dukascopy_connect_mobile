@@ -1208,10 +1208,9 @@ package com.dukascopy.connect.sys.auth {
 		static public function get eu_phase():String {
 		//	return BankPhaze.VIDID;
 			return _eu_phase; }
+			
 		static public function get bank_phase():String {
-			return BankPhaze.ACC_APPROVED;
-			if (_bank_phase == BankPhaze.SCAN)
-			{
+			if (_bank_phase == BankPhaze.SCAN){
 				return BankPhaze.SOLVENCY_CHECK;
 			}
 			return _bank_phase;
