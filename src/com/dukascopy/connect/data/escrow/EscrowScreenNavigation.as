@@ -72,7 +72,7 @@ package com.dukascopy.connect.data.escrow
 			}
 			else if (command == OfferCommand.confirm_crypto_recieve)
 			{
-				PHP.escrow_addEvent(onConfirmCryptoEvent, {event_type: "crypto_accepted", deal_uid: escrow.deal_uid, notifyWS: true});
+				PHP.escrow_addEvent(onConfirmCryptoEvent, {event_type: EscrowEventType.CRYPTO_ACCEPTED, deal_uid: escrow.deal_uid, notifyWS: true});
 			}
 		}
 		
@@ -370,7 +370,7 @@ package com.dukascopy.connect.data.escrow
 			{
 				if (escrow != null)
 				{
-					PHP.escrow_addEvent(onEventCryptoSend, {event_type: "paid_crypto", data: escrow.transactionId, deal_uid: escrow.deal_uid, notifyWS: true});
+					PHP.escrow_addEvent(onEventCryptoSend, {event_type: EscrowEventType.PAID_CRYPTO, data: escrow.transactionId, deal_uid: escrow.deal_uid, notifyWS: true});
 				}
 				else
 				{
@@ -400,21 +400,23 @@ package com.dukascopy.connect.data.escrow
 						if (escrow.userUID != Auth.uid)
 						{
 							cryptoWallet = escrow.cryptoWallet;
+							debitAccount = escrow.debitAccount;
 						}
 						else
 						{
-							debitAccount = escrow.debitAccount;
+							//!TODO:
 						}
 					}
 					else if (escrow.direction != TradeDirection.buy)
 					{
-						if (escrow.userUID != Auth.uid)
+						if (escrow.userUID == Auth.uid)
 						{
 							debitAccount = escrow.debitAccount;
+							cryptoWallet = escrow.cryptoWallet;
 						}
 						else
 						{
-							cryptoWallet = escrow.cryptoWallet;
+							//!TODO:
 						}
 					}
 					
@@ -544,30 +546,6 @@ package com.dukascopy.connect.data.escrow
 			//	dispose();
 			}
 		}
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
 		
 		static private function onSelfOfferCommand(escrow:EscrowMessageData, message:ChatMessageVO, chatVO:ChatVO, command:OfferCommand = null):void
 		{
