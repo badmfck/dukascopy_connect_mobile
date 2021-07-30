@@ -2201,7 +2201,9 @@ package com.dukascopy.langs {
 		static public var roadmap_solvencyCheck:String = "Solvency Check";
 		static public var selectVerificationMethod:String = "Select one of the following verification methods";
 		static public var verificationMethods:String = "Verification methods";
-		
+
+		static public var iosNotificationUnreadPrivate:String="You have %i unread messages from %@";
+		static public var iosNotificationUnreadGroup:String="You have %i unread messages in group chats";
 		
 		
 		static public var solvency_card_deposit:String = "Card deposit";

@@ -19,6 +19,7 @@ package com.dukascopy.connect.sys
 	import flash.geom.Rectangle;
 	import flash.utils.ByteArray;
 	import flash.utils.Endian;
+	import com.dukascopy.connect.sys.echo.echo;
 	/**
 	 * ...
 	 * @author ...
@@ -64,6 +65,7 @@ package com.dukascopy.connect.sys
 			var uploader:DocumentUploader = new DocumentUploader(media, chatUID);;
 			uploader.loadFile();
 			stock.push(uploader);
+			echo("DocumentUploader","upload","add to stock, items: "+stock.length);
 		}
 		
 		static public function cancelUpload(id:String):void 
@@ -97,9 +99,10 @@ package com.dukascopy.connect.sys
 		public function get unicalID():String{return _unicalID; }
 		
 		public function DocumentUploader(mediaData:MediaFileData, chatUID:String){
-			_unicalID = Math.random().toString();
+			_unicalID = Math.random().toString()+""+(new Date().getTime());
 			this.chatUID = chatUID;
 			this.mediaData = mediaData;
+			echo("DocumentUploader","constructor","id: "+_unicalID);
 		}
 		
 		public function getChatUID():String
@@ -131,19 +134,27 @@ package com.dukascopy.connect.sys
 		
 		private function loadFile():void 
 		{
+
+			echo("DocumentUploader","loadFile",mediaData.path);
 			if (mediaData.path != null)
 			{
 				var file:File = new File(mediaData.path);
 				if (file.exists)
 				{
 					var zStream:FileStream = new FileStream();
-					zStream.open(file, FileMode.READ);
-					var bytes:ByteArray = new ByteArray();
-					bytes.endian = Endian.LITTLE_ENDIAN; 
-					zStream.readBytes(bytes);
-					zStream.close();
-					zStream = null;
-					file = null;
+					try{
+						echo("DocumentUploader","loadFile","start reading file ");
+						zStream.open(file, FileMode.READ);
+						var bytes:ByteArray = new ByteArray();
+						bytes.endian = Endian.LITTLE_ENDIAN; 
+						zStream.readBytes(bytes,0,file.size);
+						zStream.close();
+						zStream = null;
+						echo("DocumentUploader","loadFile","file read: "+bytes.length);
+						file = null;
+					}catch(e:Error){
+						echo("DocumentUploader","loadFile","File read error "+e.message,true);
+					}
 					
 					videoFile = bytes;
 					
@@ -153,6 +164,7 @@ package com.dukascopy.connect.sys
 				}
 				else
 				{
+					echo("DocumentUploader","loadFile","File not exists!!",true);
 					completed(true);
 				}
 			}
@@ -160,11 +172,13 @@ package com.dukascopy.connect.sys
 		
 		private function sendFile():void 
 		{
+			echo("DocumentUploader","sendFile","Try to send file");
 			PHP.addDocument(onUploaded, mediaData.chatUID, videoFile, mediaData.name);
 		}
 		
 		private function onUploaded(respond:PHPRespond):void 
 		{
+			echo("DocumentUploader","onUploaded","File uploaded to server");
 			if (respond.error)
 			{
 				ToastMessage.display(respond.errorMsg);
@@ -217,6 +231,7 @@ package com.dukascopy.connect.sys
 					break;
 				}
 			}
+			echo("DocumentUploader","completed","file uploaded, remains: "+stock.length);
 		}
 	}
 }

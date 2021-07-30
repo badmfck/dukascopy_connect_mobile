@@ -8,7 +8,6 @@ package com.dukascopy.connect.vo {
 	import com.dukascopy.connect.vo.users.UserVO;
 	
 	/**
-	 * ...
 	 * @author Ilya Shcherbakov
 	 */
 	

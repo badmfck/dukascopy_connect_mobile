@@ -166,6 +166,7 @@ package com.dukascopy.connect.screens {
 	import flash.text.TextFormatAlign;
 	import com.dukascopy.connect.sys.chat.RichMessageDetector;
 	import com.dukascopy.connect.sys.chat.RichMessageDetector;
+	import com.greensock.TweenLite;
 	
 	/**
 	 * @author Igor Bloom
@@ -1098,6 +1099,7 @@ package com.dukascopy.connect.screens {
 				VideoUploader.uploadVideo(mediaData, ChatManager.getCurrentChat().uid, "", ChatManager.getCurrentChat().getImageString(), "123");
 			}
 			else if (mediaData.type == MediaFileData.MEDIA_TYPE_FILE) {
+				echo("ChatScreen","onMediaUploadReady",mediaData.path);
 				DocumentUploader.upload(mediaData, ChatManager.getCurrentChat().uid);
 			}
 		}
@@ -3188,14 +3190,26 @@ package com.dukascopy.connect.screens {
 			if (ChatManager.currentChatApproveStatus == false &&
 				chatData.additionalData != null &&
 				"openSendMoney" in chatData.additionalData == true &&
-				chatData.additionalData.openSendMoney == true)
-					Gifts.startSendMoney();
+				chatData.additionalData.openSendMoney == true){
+
+					TweenLite.delayedCall(
+						.5,function():void{
+							Gifts.startSendMoney();
+						}
+					)
+					
+				}
 			if (ChatManager.currentChatApproveStatus == false &&
 				chatData.additionalData != null &&
 				"openSendInvoice" in chatData.additionalData == true &&
 				chatData.additionalData.openSendInvoice == true) {
-					var invA:AddInvoiceAction = new AddInvoiceAction();
-					invA.execute();
+					TweenLite.delayedCall(
+						.5,function():void{
+							var invA:AddInvoiceAction = new AddInvoiceAction();
+							invA.execute();
+						}
+					)
+					
 				}
 		
 			

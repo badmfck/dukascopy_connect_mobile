@@ -32,6 +32,7 @@ package com.dukascopy.langs {
 import com.dukascopy.connect.sys.ws.WSClient;
 
 import flash.system.Capabilities;
+import com.dukascopy.connect.GD;
 	
 	/**
 	 * ...
@@ -299,6 +300,8 @@ import flash.system.Capabilities;
 				NativeExtensionController.updateLanguageData();
 				MobileGui.centerScreen.refreshEachScreen();
 				MobileGui.refreshManagers();
+
+				GD.S_IOS_LOCALIZATION_UPDATE.invoke();
 			}
 			if (initialized == true)
 				return;
@@ -416,8 +419,6 @@ import flash.system.Capabilities;
 			currentLanguageHash = "";
 			getLanguageFromLocalStore();
 			Store.save(Store.VAR_LANGUAGE_ID, { languageID:langID } );
-
-
 		}
 		
 		/**

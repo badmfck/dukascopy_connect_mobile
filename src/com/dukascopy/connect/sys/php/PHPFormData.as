@@ -23,6 +23,7 @@ package com.dukascopy.connect.sys.php {
 		private var postData:ByteArray;
 		
 		public function PHPFormData(){
+			echo("PHPFormData","constructor","create instance");
 			postData = new ByteArray();
 			postData.endian = Endian.BIG_ENDIAN;
 		}
@@ -34,6 +35,7 @@ package com.dukascopy.connect.sys.php {
 		 */
 		public function addParam(name:String, value:String):void {
 			 //add parameters to postData
+			echo("PHPFormData","addParam","name: "+name+", value: "+value);
 			postData = BOUNDARY(postData);
 			postData = LINEBREAK(postData);
 			var bytes:String = 'Content-Disposition: form-data; name="' + name + '"';
@@ -54,7 +56,7 @@ package com.dukascopy.connect.sys.php {
 		 * @param	callBack	Function - function():void
 		 */
 		public function addFile(name:String, filename:String, file:ByteArray, callBack:Function, fileType:String = null):void {
-			
+			echo("PHPFormData","addFile","try to add file: name: "+name+", filename: "+filename+", bytes: "+file.length+", fileType: "+(fileType?fileType:"null"));
 			postData = BOUNDARY(postData);
             postData = LINEBREAK(postData);
             var bytes:String = 'Content-Disposition: form-data; name="' + name+'"; filename="';
@@ -84,10 +86,13 @@ package com.dukascopy.connect.sys.php {
 				if (startPosition >= file.length){
 					postData = LINEBREAK(postData);
 					Loop.remove(__writeFile);
+					echo("PHPFormData","addFile","all chunks added");
 					callBack();
 					return;
 				}
-				//trace('FORM POST DATA '+startPosition, file.length);
+				
+				echo("PHPFormData","addFile","add chunk, startPosition: "+startPosition+", file length: "+file.length+", "+perFrame);
+
 				var len:int = perFrame;
 				var fl:int = file.length;
 				if (startPosition + perFrame > fl)
@@ -105,6 +110,9 @@ package com.dukascopy.connect.sys.php {
 		 * @param	callBack	function(r:PHPRespond):void
 		 */
 		public function send(url:String, callBack:Function):void {
+
+			echo("PHPFormData","send","send file to: "+url);
+
 			postData = BOUNDARY(postData);
 			postData = DOUBLEDASH(postData);
 			

@@ -28,6 +28,7 @@ import flash.ui.Multitouch;
 import flash.ui.MultitouchInputMode;
 import flash.utils.ByteArray;
 import flash.utils.getTimer;
+import flash.text.TextField;
 
 
 
@@ -45,6 +46,7 @@ public class Main extends Sprite {
 			stage.scaleMode = StageScaleMode.NO_SCALE;
 			stage.align = StageAlign.TOP_LEFT;
 			stage.displayState = StageDisplayState.NORMAL;
+
 			
 			Multitouch.inputMode = MultitouchInputMode.TOUCH_POINT;
 			EchoParser.init(stage);
@@ -116,6 +118,10 @@ public class Main extends Sprite {
 				cs = " " + MobileGui.centerScreen.currentScreenClass + " > " + MobileGui.centerScreen.currentScreen.getAdditionalDebugInfo();
 			
 			
+			try{	
+				echo("Main","sendError",message);
+			}catch(e:Error){}
+
 			var base64Screen:String="";
 			
 			try {
@@ -150,6 +156,7 @@ public class Main extends Sprite {
 			message +="last screen view:\n"+base64Screen;
 			
 			PHP.call_statVI("exception", message);
+			
 			EchoParser.clearStock();
 			BloomDebugger.start();
 		}

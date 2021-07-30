@@ -79,6 +79,9 @@ package com.dukascopy.connect {
 	import com.dukascopy.connect.utils.RenderUtils;
 	import com.dukascopy.connect.vo.screen.ChatScreenData;
 	import com.dukascopy.dccext.DCCExt;
+	import com.dukascopy.dccext.DCCExtData;
+	import com.dukascopy.dccext.DCCExtMethod;
+	import com.dukascopy.dccext.DCCExtCommand;
 	import com.dukascopy.dukascopyextension.DukascopyExtensionAndroid;
 	import com.dukascopy.langs.Lang;
 	import com.dukascopy.langs.LangManager;
@@ -105,6 +108,7 @@ package com.dukascopy.connect {
 	import flash.text.TextField;
 	import flash.text.TextFormat;
 	import flash.ui.Keyboard;
+	import com.dukascopy.langs.IOSLocalization;
 	
 	public class MobileGui {
 		
@@ -166,8 +170,42 @@ package com.dukascopy.connect {
 			
 			_softKeyboardYPosition = stage.stageHeight;
 			
-			initComponents();
-			create();
+
+		
+			if (Config.PLATFORM_APPLE){
+				DCCExt.init();
+
+				if(DCCExt.isContextCreated()){
+
+					 DCCExt.call(new DCCExtCommand(
+						DCCExtMethod.OS_VERSION,
+						{}
+						),function(data:DCCExtData):void{
+							if(data && data.data && data.data.insets){
+								var insets:Object=data.data.insets;
+								var top:int=parseInt(insets.top);
+								var bottom:int=parseInt(insets.bottom);
+								var ratio:int=parseInt(data.data.screenRatio)
+								top*=ratio;
+								bottom*=ratio;
+								if(top>0)
+									Config.setupAppleTopOffset(top);
+								if(bottom>0)
+									Config.setupAppleBottomOffset(bottom);
+								Config.setupFingerSize(55*ratio);
+							}
+							initComponents();
+						}
+					)
+
+				}else{
+					initComponents();
+				}
+			}else{
+				initComponents();
+			}
+			
+						
 			
 			NativeApplication.nativeApplication.addEventListener(Event.ACTIVATE, onActivate);
 			NativeApplication.nativeApplication.addEventListener(Event.DEACTIVATE, onDeativate);
@@ -180,15 +218,29 @@ package com.dukascopy.connect {
 		private function onTimezoneRequested(callback:Function):void {
 			if (Config.PLATFORM_ANDROID == true)
 				callback(androidExtension.getTimezoneId());
-			else
-				callback("Europe/Riga");
+			else if (Config.PLATFORM_APPLE==true){
+
+				if(DCCExt.isContextCreated()){
+				
+					DCCExt.call(new DCCExtCommand(
+	                	DCCExtMethod.LOCAL_TIMEZONE_NAME,
+                		{}
+            		),function(data:DCCExtData):void{
+						if(data && data.data && data.data.localTimeZoneName)
+							callback(data.data.localTimeZoneName);
+						else
+							callback("");
+            		});
+				}else
+					callback("");
+
+			}else
+				callback("Europe/Riga")
 		}
 		
 		private function initComponents():void {
 			
-			if (Config.PLATFORM_APPLE)
-				DCCExt.init();
-			
+			new IOSLocalization();
 			Loop.init(stage);
 			RenderUtils.stageRef = stage;
 			ToastMessage.setStage(stage);
@@ -223,6 +275,8 @@ package com.dukascopy.connect {
 			Calendar.init();
 			SoftKeyboard.startDetectHeight();
 			BankCacheManager.init();
+			
+			create();
 
 			/*if(Config.PLATFORM_WINDOWS)
 				stage.addChild(new MemoryMonitor());*/

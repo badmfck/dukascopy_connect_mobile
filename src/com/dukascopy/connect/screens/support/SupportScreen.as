@@ -102,7 +102,7 @@ package com.dukascopy.connect.screens.support {
 			swiper.S_ON_SWIPE.add(onSwipe);
 		}
 		
-		private function onSwipe(direction:String):void {
+		override protected function onSwipe(direction:String):void {
 			if (direction == Swiper.DIRECTION_RIGHT)
 				MobileGui.changeMainScreen(MainScreen, null, 1);
 		}
