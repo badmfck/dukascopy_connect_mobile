@@ -3,6 +3,7 @@ package com.dukascopy.connect {
 	import assets.JailedIllustrationClip;
 	import com.dukascopy.connect.data.ChatSettingsModel;
 	import com.dukascopy.connect.data.PopupData;
+	import com.dukascopy.connect.data.escrow.EscrowScreenNavigation;
 	import com.dukascopy.connect.data.screenAction.IScreenAction;
 	import com.dukascopy.connect.data.screenAction.customActions.OpenBankAccountAction;
 	import com.dukascopy.connect.gui.components.CirclePreloader;
@@ -225,6 +226,7 @@ package com.dukascopy.connect {
 			Calendar.init();
 			SoftKeyboard.startDetectHeight();
 			DraftMessage.init();
+			EscrowScreenNavigation.init();
 			
 			new EscrowDealManager();
 			BankCacheManager.init();

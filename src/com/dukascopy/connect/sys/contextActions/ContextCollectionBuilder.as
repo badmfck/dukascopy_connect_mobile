@@ -107,7 +107,7 @@ package com.dukascopy.connect.sys.contextActions {
 								break;
 							if (itemData.status == QuestionsManager.QUESTION_STATUS_CREATED || itemData.status == QuestionsManager.QUESTION_STATUS_EDITED)
 								actions.push(new ContextAction(HitZoneType.DELETE, Lang.textDelete.toUpperCase(), Style.color(Style.COLOR_SEPARATOR), ContectDeleteIcon));
-							else if (isNaN((itemData as QuestionVO).tipsAmount) == true && NetworkManager.isConnected == true)
+							else if (NetworkManager.isConnected == true)
 								actions.push(new ContextAction(HitZoneType.DELETE, Lang.textDelete.toUpperCase(), Style.color(Style.COLOR_SEPARATOR), ContectDeleteIcon));
 							else if (itemData.isPaid == true && NetworkManager.isConnected == true)
 								actions.push(new ContextAction(HitZoneType.DELETE, Lang.textDelete.toUpperCase(), Style.color(Style.COLOR_SEPARATOR), ContectDeleteIcon));

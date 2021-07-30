@@ -116,7 +116,7 @@ import com.dukascopy.connect.MobileGui;
 		static public var S_IDENTIFICATION_QUEUE:Signal = new Signal("WSClient.S_IDENTIFICATION_QUEUE");
 		static public var S_LOYALTY_CHANGE:Signal = new Signal("WSClient.S_LOYALTY_CHANGE");
 		static public var S_ACTIVITY:Signal = new Signal("WSClient.S_ACTIVITY");
-		static public var S_ESCROW_DEAL_CREATED:Signal = new Signal("WSClient.S_ESCROW_DEAL_CREATED");
+		static public var S_ESCROW_DEAL_EVENT:Signal = new Signal("WSClient.S_ESCROW_DEAL_EVENT");
 		
 		static private var wasMessage:Boolean;
 
@@ -981,7 +981,11 @@ import com.dukascopy.connect.MobileGui;
 			{
 				if (pack.action == "escrow_deal_created" && pack.data != null && pack.data.event != null && pack.data.event.type == EscrowEventType.CREATED)
 				{
-					S_ESCROW_DEAL_CREATED.invoke(pack.data.deal);
+					S_ESCROW_DEAL_EVENT.invoke(EscrowEventType.CREATED, pack.data.deal);
+				}
+				if (pack.action == "escrow_deal_created" && pack.data != null && pack.data.event != null && pack.data.event.type == EscrowEventType.HOLD_MCA)
+				{
+					S_ESCROW_DEAL_EVENT.invoke(EscrowEventType.HOLD_MCA, pack.data.deal);
 				}
 				return;
 			}

@@ -2503,6 +2503,7 @@ package com.dukascopy.langs {
 		static public var editEscrowAd:String = "Edit your ad";
 		static public var escrow_chat:String = "CHAT";
 		static public var escrow_chats:String = "CHATS";
+		static public var waiting_for_money_hold:String = "Waiting for money hold";
 		
 		static public function updateKeys(keys:Object):void {
 			for (var n:String in keys) {

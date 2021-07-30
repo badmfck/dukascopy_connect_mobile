@@ -52,6 +52,11 @@ package com.dukascopy.connect.data.escrow
 		
 		}
 		
+		public static function init():void
+		{
+			WSClient.S_ESCROW_DEAL_EVENT.add(onDealEvent);
+		}
+		
 		static private function confirmCryptoReceiveCommand(escrow:EscrowMessageData, message:ChatMessageVO, chatVO:ChatVO, command:OfferCommand = null):void
 		{
 			if (command == OfferCommand.request_imvestigation)
@@ -176,26 +181,9 @@ package com.dukascopy.connect.data.escrow
 						{
 							if (escrow.userUID == Auth.uid)
 							{
-								
 								//!TODO: check exist escrow.cryptoWallet;
 								screenData.callback = onSendTransactionCommand;
 								ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, SendCryptoScreen, screenData);
-								
-								/*if (lastRequestData != null)
-								   {
-								   ApplicationErrors.add("crit lastRequestData != null");
-								   }
-								
-								   lastRequestData = new Request();
-								   lastRequestData.escrow = escrow;
-								   lastRequestData.message = message;
-								   lastRequestData.userVO = userVO;
-								   lastRequestData.chatVO = chatVO;
-								   GD.S_START_LOAD.invoke();
-								   GD.S_ESCROW_INSTRUMENTS.remove(showAcceptScreen);
-								   GD.S_ESCROW_INSTRUMENTS.remove(showCryptoScreen);
-								   GD.S_ESCROW_INSTRUMENTS.add(showCryptoScreen);
-								   GD.S_ESCROW_INSTRUMENTS_REQUEST.invoke();*/
 							}
 							else
 							{
@@ -359,9 +347,6 @@ package com.dukascopy.connect.data.escrow
 			
 			if (command == OfferCommand.accept)
 			{
-				//!TODO: перенести;
-				WSClient.S_ESCROW_DEAL_CREATED.add(onDealCreated);
-				
 				if (escrow != null)
 				{
 					var debitAccount:String;
@@ -413,6 +398,18 @@ package com.dukascopy.connect.data.escrow
 			}
 		}
 		
+		static private function onDealEvent(escrowEventType:String, dealRawData:Object):void 
+		{
+			if (escrowEventType == EscrowEventType.CREATED)
+			{
+				onDealCreated(dealRawData);
+			}
+			else if (escrowEventType == EscrowEventType.HOLD_MCA)
+			{
+				//!TODO:;
+			}
+		}
+		
 		static private function onDealCreated(dealRawData:Object):void 
 		{
 			if (dealRawData != null && dealRawData.status == EscrowStatus.deal_created.value)
@@ -433,32 +430,11 @@ package com.dukascopy.connect.data.escrow
 					ApplicationErrors.add();
 				}
 			}
-			
-			/*amount : "2.0000000000" 
-			chat_uid : "WLDaDZWdWvW9IiWO" 
-			created_at : "2021-07-26 14:46:29" 
-			crypto_claim_id : null 
-			crypto_trn_id : null 
-			crypto_user_uid : "WgDIDQWGW4IEWAW9" 
-			crypto_wallet : null 
-			deal_uid : "6273107893191869083" 
-			debit_account : "314931366384" 
-			hash : "324f51d9011be2d1416b39f0cef75bd389c92150" 
-			instrument : "DUK+" 
-			mca_ccy : "EUR" 
-			mca_claim_id : null 
-			mca_trn_id : null 
-			mca_user_uid : "I6D5WsWZDLWj" 
-			msg_id : 35649197 [0x21ff6ad] 
-			price : "2.5100000000" 
-			side : "SELL" 
-			status : "created" 
-			updated_at : "2021-07-26 14:46:29"*/ 
 		}
 		
 		static private function makeHold(dealRawData:Object):void 
 		{
-			//!TODO: добавить комиссию; 
+			//!TODO: добавить комиссию;
 			
 			currenDealRawData = dealRawData;
 			

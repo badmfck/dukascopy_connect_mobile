@@ -1233,6 +1233,7 @@ package com.dukascopy.connect.sys.php {
 		}
 		
 		static private function call(method:String, callBack:Function = null, data:Object = null,  url:String = null, rawRespond:Boolean = false, requestMethod:String = 'POST', crypt:Boolean = true, noAuthKey:Boolean = false, additionalData:Object = null):void {
+			
 			if (Auth.key == "web" && methodsWithoutKey.indexOf(method) == -1 && rawRespond == false) {
 				
 				if (callBack != null) {

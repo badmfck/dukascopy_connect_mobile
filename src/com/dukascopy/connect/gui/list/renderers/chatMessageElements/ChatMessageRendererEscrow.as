@@ -398,8 +398,13 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 						
 						break;
 					}
-					
 					case EscrowStatus.deal_created:
+					{
+						result = Lang.waiting_for_money_hold;
+						
+						break;
+					}
+					case EscrowStatus.deal_mca_hold:
 					{
 						result = Lang.waiting_for_crypto;
 						
