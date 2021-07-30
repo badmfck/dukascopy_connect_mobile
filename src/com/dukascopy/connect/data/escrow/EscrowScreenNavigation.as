@@ -98,22 +98,6 @@ package com.dukascopy.connect.data.escrow
 				screenData.chat = chatVO;
 				screenData.message = message;
 				
-				/*escrow.transactionId = "xf345dfg545hfgh65nmqgh390gghj90w2j45bv";
-				escrow.status = EscrowStatus.deal_created;
-				screenData.callback = confirmCryptoReceiveCommand;
-				ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, ReceiveCryptoScreen, screenData);
-				return;*/
-				
-				/*screenData.title = Lang.indicate_issue_type;
-				   ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, EscrowReportScreen, screenData);
-				   return;*/
-				
-				
-				/*escrow.transactionId = "xf345dfg545hfgh65nmqgh390gghj90w2j45bv";
-				   escrow.status = EscrowStatus.deal_created;
-				   screenData.callback = confirmCryptoReceiveCommand;
-				   ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, ReceiveCryptoScreen, screenData);
-				   return;*/
 				
 				/*showFinishScreen(escrow);
 				   return;*/
@@ -182,10 +166,6 @@ package com.dukascopy.connect.data.escrow
 				}
 				else if (escrow.status == EscrowStatus.deal_mca_hold)
 				{
-					
-					
-					
-					
 					if (!isExpired(escrow, message.created))
 					{
 						if (escrow.direction == TradeDirection.sell)
@@ -220,6 +200,42 @@ package com.dukascopy.connect.data.escrow
 						ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, SendCryptoExpiredScreen, screenData);
 					}
 				}
+				else if (escrow.status == EscrowStatus.paid_crypto)
+				{
+					if (isExpired(escrow, message.created))
+					{
+						//!TODO:;
+					//	ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, SendCryptoExpiredScreen, screenData);
+					}
+					else
+					{
+						if (escrow.direction == TradeDirection.sell)
+						{
+							if (escrow.userUID == Auth.uid)
+							{
+								//!TODO:
+							}
+							else
+							{
+								screenData.callback = confirmCryptoReceiveCommand;
+								ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, ReceiveCryptoScreen, screenData);
+							}
+						}
+						else
+						{
+							if (escrow.userUID != Auth.uid)
+							{
+								//!TODO:
+							}
+							else
+							{
+								screenData.callback = confirmCryptoReceiveCommand;
+								ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, ReceiveCryptoScreen, screenData);
+							}
+						}
+					}
+				}
+				
 			}
 			else
 			{

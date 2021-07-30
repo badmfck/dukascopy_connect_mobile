@@ -1459,7 +1459,7 @@ package com.dukascopy.connect.sys.nativeExtensionController {
 		{
 			if (Config.PLATFORM_ANDROID && MobileGui.androidExtension != null)
 			{
-				return MobileGui.androidExtension.openFileInDownloads(fileName);
+				MobileGui.androidExtension.openFileInDownloads(fileName);
 			}
 		}
 		
