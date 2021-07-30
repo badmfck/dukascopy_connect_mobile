@@ -36,6 +36,11 @@ package com.dukascopy.connect.data.escrow
 		
 		private function parse(data:Object):void 
 		{
+			if ("crypto_trn_id" in data)
+			{
+				transactionId = data.crypto_trn_id;
+			}
+			
 			if ("chatUID" in data)
 			{
 				chatUID = data.chatUID;
