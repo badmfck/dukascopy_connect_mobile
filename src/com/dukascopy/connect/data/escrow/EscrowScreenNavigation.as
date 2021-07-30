@@ -470,7 +470,7 @@ package com.dukascopy.connect.data.escrow
 				}
 				else if (dealRawData.side == "BUY")
 				{
-					if (dealRawData.crypto_user_uid == Auth.uid)
+					if (dealRawData.crypto_user_uid != Auth.uid)
 					{
 						makeHold(dealRawData);
 					}
