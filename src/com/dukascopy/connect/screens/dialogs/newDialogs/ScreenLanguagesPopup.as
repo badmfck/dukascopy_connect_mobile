@@ -114,14 +114,14 @@ package com.dukascopy.connect.screens.dialogs.newDialogs {
 			btnCancel.x = _width * .5 - btnCancel.width - Config.MARGIN;
 			btnOk.x = _width * .5 + Config.MARGIN;
 			
-			selectedItems = QuestionsManager.getQuestionLanguages();
+			selectedItems = null;// QuestionsManager.getQuestionLanguages();
 		}
 		
 		private function onCategoriesLoaded():void {
 			selectorCategories.dataProvider = CategoryManager.getLanguagesArrayFiltered();
 			
 			var indexes:Vector.<int> = new Vector.<int>();
-			var vector:Vector.<SelectorItemData> = QuestionsManager.getQuestionLanguages();
+			var vector:Vector.<SelectorItemData> = null;//QuestionsManager.getQuestionLanguages();
 			if (vector != null && vector.length != 0) {
 				var l:int = CategoryManager.getLanguagesArrayFiltered().length;
 				for (var i:int = 0; i < l; i++) {
@@ -196,7 +196,7 @@ package com.dukascopy.connect.screens.dialogs.newDialogs {
 		}
 		
 		private function onOK():void {
-			QuestionsManager.saveLanguages(selectedItems);
+			//QuestionsManager.saveLanguages(selectedItems);
 			onCloseTap();
 		}
 		

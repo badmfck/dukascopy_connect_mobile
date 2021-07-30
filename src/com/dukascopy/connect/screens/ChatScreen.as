@@ -1,5 +1,6 @@
 package com.dukascopy.connect.screens {
 
+	import assets.ContectDeleteIcon;
 	import assets.HandStop;
 	import assets.ScrollBottomIcon;
 	import com.adobe.utils.StringUtil;
@@ -19,6 +20,8 @@ package com.dukascopy.connect.screens {
 	import com.dukascopy.connect.data.ScanPassportResult;
 	import com.dukascopy.connect.data.SoundStatusData;
 	import com.dukascopy.connect.data.UserBanData;
+	import com.dukascopy.connect.data.escrow.EscrowScreenNavigation;
+	import com.dukascopy.connect.data.escrow.TradeDirection;
 	import com.dukascopy.connect.data.location.Location;
 	import com.dukascopy.connect.data.screenAction.IScreenAction;
 	import com.dukascopy.connect.data.screenAction.customActions.AddInvoiceAction;
@@ -26,6 +29,7 @@ package com.dukascopy.connect.screens {
 	import com.dukascopy.connect.data.screenAction.customActions.BlockUserAction;
 	import com.dukascopy.connect.data.screenAction.customActions.BotReactionAction;
 	import com.dukascopy.connect.data.screenAction.customActions.CallGetEuroAction;
+	import com.dukascopy.connect.data.screenAction.customActions.CreateCoinTradeAction;
 	import com.dukascopy.connect.data.screenAction.customActions.DownloadFileAction;
 	import com.dukascopy.connect.data.screenAction.customActions.OpenFxProfileAction;
 	import com.dukascopy.connect.data.screenAction.customActions.PayByCardAction;
@@ -91,6 +95,7 @@ package com.dukascopy.connect.screens {
 	import com.dukascopy.connect.sys.auth.Auth;
 	import com.dukascopy.connect.sys.calendar.Calendar;
 	import com.dukascopy.connect.sys.callManager.CallManager;
+	import com.dukascopy.connect.sys.chat.DraftMessage;
 	import com.dukascopy.connect.sys.chatManager.ChatManager;
 	import com.dukascopy.connect.sys.chatManager.ForwardingManager;
 	import com.dukascopy.connect.sys.chatManager.typesManagers.AnswersManager;
@@ -118,6 +123,7 @@ package com.dukascopy.connect.screens {
 	import com.dukascopy.connect.sys.sound.SoundController;
 	import com.dukascopy.connect.sys.store.Store;
 	import com.dukascopy.connect.sys.style.Style;
+	import com.dukascopy.connect.sys.style.presets.Color;
 	import com.dukascopy.connect.sys.theme.AppTheme;
 	import com.dukascopy.connect.sys.usersManager.UsersManager;
 	import com.dukascopy.connect.sys.video.VideoUploader;
@@ -514,11 +520,10 @@ package com.dukascopy.connect.screens {
 				return;
 			if (currentQVO != qVO)
 				return;
-			if (currentQVO.userUID == Auth.uid && currentChat.type == ChatRoomType.QUESTION) {
-				createQuestionButtons();
-				questionButtonShowHide();
-				answersButtonShowHide(true);
+			if (currentChat.type == ChatRoomType.QUESTION) {
+				checkQuestionButtons();
 			}
+			
 			var msgVO:ChatMessageVO = ChatManager.getCurrentChat().getEuroActionMessageVO();
 			if (list != null && msgVO != null)
 				list.updateItem(msgVO);
@@ -533,6 +538,183 @@ package com.dukascopy.connect.screens {
 				chatTop.redrawTitle();
 			}
 			updateChatInput();
+		}
+		
+		private function checkQuestionButtons():void 
+		{
+			var qVO:QuestionVO = ChatManager.getCurrentChat().getQuestion();
+			
+			if (qVO.userUID == Auth.uid)
+			{
+				createQuestionButtons();
+				questionButtonShowHide();
+				answersButtonShowHide(true);
+			}
+			else
+			{
+				if (questionButtonBG == null)
+				{
+					createQuestionPanelBack();
+					createMakeOfferButton();
+				}
+				
+				if (questionLinkButton != null)
+				{
+					var action:Boolean = true;
+					
+					if (qVO.type != QuestionsManager.QUESTION_TYPE_PUBLIC)
+					{
+						if (qVO == null)
+							action = false;
+						else if (qVO.status == "closed" || qVO.status == "resolved" || qVO.status == "archived")
+							action = false;
+						else if (ChatManager.getCurrentChat().queStatus == true)
+							action = false;
+						if (questionLinkButton.getIsShown() != action)
+						{
+							if (action == true) {
+								questionLinkButton.show();
+								questionLinkButton.activate();
+								if (basketButton != null) {
+									basketButton.show();
+									basketButton.activate();
+								}	
+							} else {
+								questionLinkButton.hide();
+								questionLinkButton.deactivate();
+								if (basketButton != null) {
+									basketButton.hide();
+									basketButton.deactivate();
+								}
+							}
+							questionButtonBG.visible = (action);
+						}
+					}
+				}
+			}
+		}
+		
+		private function createQuestionPanelBack():void 
+		{
+			questionButtonBG ||= new Bitmap(new BitmapData(10, 10, false, Style.color(Style.COLOR_SEPARATOR_TOP_BAR)));
+			questionButtonBG.visible = false;
+			_view.addChild(questionButtonBG);
+		}
+		
+		private function createAnswersButton():void 
+		{
+			var o0:int = Config.MARGIN;
+			var o1:int = Config.MARGIN * .5;
+			
+			answersCountButton ||= new BubbleButton();
+			answersCountButton.setParams(Style.color(Style.COLOR_TEXT), Style.color(Style.COLOR_SEPARATOR_TOP_BAR), 1, Style.color(Style.COLOR_LINE_LIGHT), 1, TextFormatAlign.CENTER);
+			answersCountButton.setStandartButtonParams();
+				
+			var buttonWidth:int;
+			if (basketButton != null)
+			{
+				buttonWidth = (_width - Config.FINGER_SIZE * .15 * 3) * 5;
+			}
+			else
+			{
+				buttonWidth = (_width - Config.FINGER_SIZE * .15 * 2);
+			}
+			answersCountButton.setText("Pp", buttonWidth);
+			
+			answersCountButton.setDownScale(1);
+			answersCountButton.setDownAlpha(0);
+			answersCountButton.setOverflow(o0, o0, o0, o0);
+			answersCountButton.tapCallback = openOtherAnswers;
+			answersCountButton.hide();
+			_view.addChild(answersCountButton);
+		}
+		
+		private function createRemoveButton():void 
+		{
+			var o0:int = Config.MARGIN;
+			var o1:int = Config.MARGIN * .5;
+			
+			if (ChatManager.getCurrentChat().complainStatus == null || ChatManager.getCurrentChat().complainStatus == "") {
+				basketButton ||= createButton(ContectDeleteIcon, "basket_button");
+				basketButton.setStandartButtonParams();
+				basketButton.setDownScale(1);
+				basketButton.setDownAlpha(0);
+				basketButton.setOverflow(o0, o1, o0, o0);
+				basketButton.tapCallback = deleteAnswer;
+				basketButton.hide();
+				_view.addChild(basketButton);
+			}
+		}
+		
+		private function createMakeOfferButton():void 
+		{
+			var o0:int = Config.MARGIN;
+			var o1:int = Config.MARGIN * .5;
+			
+			questionLinkButton ||= new BubbleButton();
+			questionLinkButton.setParams(Color.WHITE, Color.GREEN, 1, NaN, 0, TextFormatAlign.CENTER);
+			questionLinkButton.setStandartButtonParams();
+			
+			var buttonWidth:int;
+			if (basketButton != null)
+			{
+				buttonWidth = (_width - Config.FINGER_SIZE * .15 * 3 - basketButton.width) * .5;
+			}
+			else
+			{
+				buttonWidth = (_width - Config.FINGER_SIZE * .15 * 2);
+			}
+			
+			questionLinkButton.setText(Lang.make_offer, buttonWidth);
+			questionLinkButton.setDownScale(1);
+			questionLinkButton.setDownAlpha(0);
+			questionLinkButton.setOverflow(o0, o0, o1, o0);
+			questionLinkButton.tapCallback = createOffer;
+			questionLinkButton.hide();
+			_view.addChild(questionLinkButton);
+		}
+		
+		private function createOffer():void 
+		{
+			var tradeAction:CreateCoinTradeAction = new CreateCoinTradeAction();
+			tradeAction.chat = ChatManager.getCurrentChat();
+			
+			var direction:TradeDirection;
+			var question:QuestionVO = ChatManager.getCurrentChat().getQuestion();
+			if (question != null)
+			{
+				if (question.subtype == "sell")
+				{
+					if (question.userUID == Auth.uid)
+					{
+						direction = TradeDirection.sell;
+					}
+					else
+					{
+						direction = TradeDirection.buy;
+					}
+				}
+				else
+				{
+					if (question.userUID == Auth.uid)
+					{
+						direction = TradeDirection.buy;
+					}
+					else
+					{
+						direction = TradeDirection.sell;
+					}
+				}
+			}
+			
+			tradeAction.direction = direction;
+			tradeAction.currency = question.priceCurrency;
+			tradeAction.price = question.price;
+			tradeAction.instrument = question.tipsCurrency;
+			tradeAction.amount = question.tipsAmount;
+			
+			tradeAction.setData(Lang.escrow);
+			tradeAction.execute();
 		}
 		
 		// Start Process invoice 
@@ -1674,6 +1856,11 @@ package com.dukascopy.connect.screens {
 			var editable:Boolean = (msgVO.created * 1000 > new Date().getTime() - 1800000);
 			var menuItems:Array = new Array();
 			
+			if (messageType == ChatSystemMsgVO.TYPE_ESCROW_OFFER)
+			{
+				return;
+			}
+			
 			//pending massages
 			if (msgVO.id < 0) {
 				if (messageType == ChatMessageType.TEXT && isMine) {
@@ -1755,13 +1942,16 @@ package com.dukascopy.connect.screens {
 					menuItems.push({fullLink:Lang.forwardMessage, id:ChatItemContextMenuItemType.FORWARD});
 				}
 			}
-			if (msgVO.renderInfo == null || msgVO.renderInfo.renderInforenderBigFont == false)
+			if (messageType != ChatSystemMsgVO.TYPE_FILE)
 			{
-				menuItems.push({fullLink:Lang.enlargeText, id:ChatItemContextMenuItemType.ENLARGE});
-			}
-			else
-			{
-				menuItems.push({fullLink:Lang.reduceText, id:ChatItemContextMenuItemType.MINIMIZE});
+				if (msgVO.renderInfo == null || msgVO.renderInfo.renderInforenderBigFont == false)
+				{
+					menuItems.push({fullLink:Lang.enlargeText, id:ChatItemContextMenuItemType.ENLARGE});
+				}
+				else
+				{
+					menuItems.push({fullLink:Lang.reduceText, id:ChatItemContextMenuItemType.MINIMIZE});
+				}
 			}
 			
 			if (menuItems.length == 0)
@@ -2144,10 +2334,10 @@ package com.dukascopy.connect.screens {
 				showInfo();
 				return;
 			}
-			if (cmsgVO.typeEnum == ChatSystemMsgVO.TYPE_COMPLAIN) {
+			/*if (cmsgVO.typeEnum == ChatSystemMsgVO.TYPE_COMPLAIN) {
 				showInfo();
 				return;
-			}
+			}*/
 			var selectedItem:ListItem = list.getItemByNum(n);
 			var lastHitzoneObject:Object =  selectedItem.getLastHitZoneObject();
 			var lhz:String = lastHitzoneObject!=null?lastHitzoneObject.type:null;// selectedItem.getLastHitZone();
@@ -2196,6 +2386,7 @@ package com.dukascopy.connect.screens {
 				if (list != null)
 				{
 					list.scrollToItem("num", cmsgVO.systemMessageVO.replayMessage.target, Config.FINGER_SIZE, true);
+					list.blinkItem("num", cmsgVO.systemMessageVO.replayMessage.target);
 				}
 			}
 			if (lhz == HitZoneType.BOT_MENU_ACTION) {
@@ -2235,6 +2426,9 @@ package com.dukascopy.connect.screens {
 					NativeExtensionController.showVideo(cmsgVO.systemMessageVO.videoVO, getTitleValue());
 				} else if (cmsgVO.systemMessageVO != null && cmsgVO.systemMessageVO.fileType == ChatSystemMsgVO.FILETYPE_GENERAL) {
 					downloadFile(cmsgVO.systemMessageVO);
+				} else if (cmsgVO.systemMessageVO != null && cmsgVO.systemMessageVO.type == ChatSystemMsgVO.TYPE_ESCROW_OFFER) {
+					
+					EscrowScreenNavigation.showScreen(cmsgVO.systemMessageVO.escrow, cmsgVO, UsersManager.getInterlocutor(ChatManager.getCurrentChat()).userVO, ChatManager.getCurrentChat());
 				}
 				else if (cmsgVO.systemMessageVO != null && cmsgVO.systemMessageVO.fileType == ChatSystemMsgVO.FILETYPE_PUZZLE_CRYPTED && cmsgVO.systemMessageVO.puzzleVO != null) {
 					var url:String = cmsgVO.imageURLWithKey;
@@ -3142,9 +3336,11 @@ package com.dukascopy.connect.screens {
 			if (chatInput)
 				chatInput.initButtons(showPayButtons);
 			if (ChatManager.getCurrentChat().type == ChatRoomType.QUESTION &&
-				ChatManager.getCurrentChat().getQuestion() != null &&
-				ChatManager.getCurrentChat().getQuestion().userUID == Auth.uid)
-					createQuestionButtons();
+				ChatManager.getCurrentChat().getQuestion() != null)
+				{
+					checkQuestionButtons();
+					updateChatInput();
+				}
 			if (userWritings == null) {
 				if (Config.PLATFORM_APPLE) {
 					if (chatInput)
@@ -3212,7 +3408,7 @@ package com.dukascopy.connect.screens {
 					
 				}
 		
-			
+			checkDraftMessage();
 				
 			//------visual iploaders
 			
@@ -3253,9 +3449,26 @@ package com.dukascopy.connect.screens {
 			repositionImageUploaders();
 		}
 		
+		private function checkDraftMessage():void 
+		{
+			if (chatInput != null)
+			{
+				var draft:String = DraftMessage.getValue(ChatManager.getCurrentChat().uid, ChatManager.getCurrentChat().chatSecurityKey);
+				if (draft != null && draft != "")
+				{
+					chatInput.setValue(draft);
+				}
+			}
+		}
+		
 		private function updateReportButton():void 
 		{
-			trace("updateReportButton", ChatManager.getCurrentChat().uid);
+			if (ChatManager.getCurrentChat() != null && UsersManager.getInterlocutor(ChatManager.getCurrentChat()) != null && UsersManager.getInterlocutor(ChatManager.getCurrentChat()).uid == Config.NOTEBOOK_USER_UID)
+			{
+				return;
+			}
+			
+			
 			if (reportButton == null &&
 				ChatManager.getCurrentChat() != null && 
 				ChatManager.getCurrentChat().isLocalIncomeChat() == false && 
@@ -3859,28 +4072,27 @@ package com.dukascopy.connect.screens {
 		}*/
 		
 		private function getAnswersOffset(bottomY:int):int {
-			if (ChatManager.getCurrentChat() == null ||
-				ChatManager.getCurrentChat().type != ChatRoomType.QUESTION ||
-				ChatManager.getCurrentChat().ownerUID == Auth.uid)
+			var chat:ChatVO = ChatManager.getCurrentChat();
+			if (chat == null ||	chat.type != ChatRoomType.QUESTION)
 					return 0;
 			var lastY:Number = 0;
-			if (questionLinkButton) {
+			if (questionLinkButton != null) {
 				questionLinkButton.y = bottomY - questionLinkButton.height - Config.MARGIN;
 				questionLinkButton.x = Config.MARGIN;
 				if (questionLinkButton.getIsShown())
 					lastY = questionLinkButton.height + Config.MARGIN * 2;
 			}
-			if (basketButton) {
+			if (basketButton != null) {
 				basketButton.y = questionLinkButton.y;
 				basketButton.x = questionLinkButton.width + Config.MARGIN * 2;
 			}
-			if (answersCountButton) {
+			if (answersCountButton != null) {
 				answersCountButton.y = int(bottomY - answersCountButton.height - Config.MARGIN - (questionLinkButton.height - answersCountButton.height) * .5);
 				answersCountButton.x = _width * .6 ;
 				if (answersCountButton.getIsShown() && questionLinkButton != null &&  lastY<answersCountButton.height )
 					lastY = answersCountButton.height + Config.MARGIN * 2;
 			}
-			if (questionButtonBG) {
+			if (questionButtonBG != null) {
 				questionButtonBG.width = _width;
 				questionButtonBG.height = lastY;
 				questionButtonBG.y =  bottomY - questionButtonBG.height;
@@ -4365,61 +4577,24 @@ package com.dukascopy.connect.screens {
 		private function createQuestionButtons():void {
 			if (questionButtonBG != null)
 				return;
-			questionButtonBG ||= new Bitmap(new BitmapData(10, 10, false, 0xc4def1));
-			questionButtonBG.visible = false;
-			_view.addChild(questionButtonBG);
-			var o0:int = Config.MARGIN;
-			var o1:int = Config.MARGIN * .5;
-			
-			questionLinkButton ||= new BubbleButton();
-			questionLinkButton.setStandartButtonParams();
-			questionLinkButton.setText(Lang.questionSatisfied, _width * .4 - Config.MARGIN * 2);
-			questionLinkButton.setDownScale(.9);
-			questionLinkButton.setDownAlpha(0);
-			questionLinkButton.setOverflow(o0, o0, o1, o0);
-			questionLinkButton.tapCallback = openQuestionInfo;
-			questionLinkButton.hide();
-			_view.addChild(questionLinkButton);
-			
-			if (ChatManager.getCurrentChat().complainStatus == null || ChatManager.getCurrentChat().complainStatus == "") {
-				basketButton ||= createButton(SWFTrashIcon, "basket_button");
-				basketButton.setStandartButtonParams();
-				basketButton.setDownScale(.9);
-				basketButton.setDownAlpha(0);
-				basketButton.setOverflow(o0, o1, o0, o0);
-				basketButton.tapCallback = deleteAnswer;
-				basketButton.hide();
-				_view.addChild(basketButton);
-			}
-			
-			answersCountButton ||= new BubbleButton();
-			answersCountButton.setStandartButtonParams();
-			if (basketButton == null)
-				answersCountButton.setText("Pp", (_width - questionLinkButton.width - Config.MARGIN * 3));
-			else
-				answersCountButton.setText("Pp", (_width - questionLinkButton.width - basketButton.width - Config.MARGIN * 4));
-			answersCountButton.setDownScale(.9);
-			answersCountButton.setDownAlpha(0);
-			answersCountButton.setOverflow(o0, o0, o0, o0);
-			answersCountButton.setParams(0xffffff, AppTheme.RED_MEDIUM, 1, AppTheme.RED_MEDIUM, 0,"center");
-			answersCountButton.tapCallback = openOtherAnswers;
-			answersCountButton.hide();
-			_view.addChild(answersCountButton);
+			createQuestionPanelBack();
+			createRemoveButton();
+			createMakeOfferButton();
+			createAnswersButton();
 		}
 		
 		private function createButton (img:Class, id:String):BitmapButton {
 			var btn:BitmapButton = new BitmapButton();
-			var hh:int = questionLinkButton.height;
 			var ss:Sprite = new Sprite();
-			ss.graphics.lineStyle(2, 0x0051ca);
-			ss.graphics.drawRoundRect(1, 1, Config.FINGER_SIZE-1, hh - 1, Config.FINGER_SIZE_DOT_25, Config.FINGER_SIZE_DOT_25);
+			ss.graphics.beginFill(Style.color(Style.COLOR_ICON_SETTINGS));
+			ss.graphics.drawRoundRect(0, 0, Config.FINGER_SIZE * .9, Config.FINGER_SIZE * .9, Style.size(Style.SIZE_BUTTON_CORNER), Style.size(Style.SIZE_BUTTON_CORNER));
 			var ico:Sprite = new img() as Sprite;
-			UI.colorize(ico, 0x123888);
-			ico.width = Config.FINGER_SIZE_DOT_5;
+			UI.colorize(ico, Color.WHITE);
+			ico.width = int(Config.FINGER_SIZE * .35);
 			ico.scaleY *= ico.scaleX;
 			ss.addChild(ico);
-			ico.x = Math.round((Config.FINGER_SIZE - ico.width) * .5);
-			ico.y = Math.round((hh - ico.height) * .5);
+			ico.x = Math.round((Config.FINGER_SIZE * .9 - ico.width) * .5);
+			ico.y = Math.round((Config.FINGER_SIZE * .9 - ico.height) * .5);
 			btn.setBitmapData(UI.getSnapshot(ss, StageQuality.HIGH, id), true);
 			return btn;
 		} 
@@ -4454,10 +4629,6 @@ package com.dukascopy.connect.screens {
 			if (qVO.type == QuestionsManager.QUESTION_TYPE_PUBLIC)
 				return false;
 			if (qVO == null)
-				action = false;
-			else if (qVO.userUID != Auth.uid)
-				action = false;
-			else if (ChatManager.getCurrentChat().hasQuestionAnswer == false)
 				action = false;
 			else if (qVO.status == "closed" || qVO.status == "resolved" || qVO.status == "archived")
 				action = false;
@@ -4509,14 +4680,13 @@ package com.dukascopy.connect.screens {
 				}
 				else {
 					if (ChatManager.getCurrentChat().queStatus == true) {
-						textAnswer = (qVO.answersCount == 1) ? Lang.textAnswer.toLowerCase() : Lang.textAnswers.toLowerCase();
+						textAnswer = (qVO.answersCount == 1) ? Lang.escrow_chat : Lang.escrow_chats;
 						answersCountButton.setText("+" + (qVO.answersCount) + " " + textAnswer, _width * .4 - Config.MARGIN);
 					} else {
-						textAnswer = (qVO.answersCount == 2) ? Lang.textAnswer.toLowerCase() : Lang.textAnswers.toLowerCase();
+						textAnswer = (qVO.answersCount == 2) ? Lang.escrow_chat : Lang.escrow_chats;
 						answersCountButton.setText("+" + (qVO.answersCount - 1) + " " + textAnswer, _width * .4 - Config.MARGIN);
 					}
 				}
-				
 				
 				answersCountButton.show();
 				answersCountButton.activate();

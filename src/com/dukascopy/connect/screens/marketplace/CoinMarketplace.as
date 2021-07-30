@@ -27,7 +27,7 @@ package com.dukascopy.connect.screens.marketplace {
 	import com.dukascopy.connect.gui.topBar.TopBarScreen;
 	import com.dukascopy.connect.screens.base.BaseScreen;
 	import com.dukascopy.connect.screens.context.ContextMenuScreen;
-	import com.dukascopy.connect.screens.dialogs.bottom.CoinsBalancePopup;
+	import com.dukascopy.connect.screens.dialogs.x.base.content.CoinsBalancePopup;
 	import com.dukascopy.connect.screens.dialogs.paymentDialogs.BuySellCoinPopup;
 	import com.dukascopy.connect.screens.dialogs.paymentDialogs.TradeCoinPopup;
 	import com.dukascopy.connect.screens.dialogs.paymentDialogs.TradeCoinsExtendedPopup;
@@ -127,6 +127,13 @@ package com.dukascopy.connect.screens.marketplace {
 					return -1;
 				else if (first.price < second.price)
 					return 1;
+				else
+				{
+					if (first.quantity > second.quantity)
+						return -1;
+					else if (first.quantity < second.quantity)
+						return 1;
+				}
 				return -1;
 			}
 			
@@ -135,6 +142,13 @@ package com.dukascopy.connect.screens.marketplace {
 					return 1;
 				else if (first.price < second.price)
 					return -1;
+				else
+				{
+					if (first.quantity > second.quantity)
+						return -1;
+					else if (first.quantity < second.quantity)
+						return 1;
+				}
 				return -1;
 			}
 		}

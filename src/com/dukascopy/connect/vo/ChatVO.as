@@ -167,7 +167,8 @@ package com.dukascopy.connect.vo {
 						_title = obj.title;
 					wasGroupTitle = true;
 				} else {
-					if (_users != null && _users.length > 0) {
+					_title = Lang.groupChat;
+					/*if (_users != null && _users.length > 0) {
 						_title = '';
 						for (var m:int = 0; m < _users.length; m++) {
 							if (_users[m].secretMode == true)
@@ -178,7 +179,7 @@ package com.dukascopy.connect.vo {
 						}
 						if (_title == "")
 							_title = "Secret chat";
-					}
+					}*/
 				}
 			}
 			if (_title == null)
@@ -464,7 +465,7 @@ package com.dukascopy.connect.vo {
 				return;
 			lastMessagesHash = null;
 			var messageData:Object = { };
-			if (_qVO.userUID != Auth.uid) {
+			/*if (_qVO.userUID != Auth.uid) {
 				var createdTime:Number = (_qVO.messages != null && _qVO.messages.length > 0) ? _qVO.messages[0].createdTime : _qVO.createdTime;
 				messageData.created = createdTime;
 				
@@ -485,7 +486,7 @@ package com.dukascopy.connect.vo {
 				}
 				euroActionMessageVO = actionEuro;
 				_messages.unshift(actionEuro);
-			}
+			}*/
 			
 			var userAvatar:String;
 			
@@ -506,7 +507,27 @@ package com.dukascopy.connect.vo {
 					if (_qVO.user != null)
 						userName = _qVO.user.getDisplayName();
 					messageData.user_name = userName;
-					messageData.text = _qVO.messages[j].text;
+					
+					var text:String = Lang.escrow_ad_intro_message;
+					if (_qVO.subtype == "buy")
+					{
+						text = text.replace("%@1", Lang.escrow_buy);
+					}
+					else
+					{
+						text = text.replace("%@1", Lang.escrow_sell);
+					}
+					text = text.replace("%@2", _qVO.cryptoAmount + " " + _qVO.tipsCurrency);
+					
+					var price:String = _qVO.price;
+					if (_qVO.priceCurrency != null)
+					{
+						price += " " + _qVO.priceCurrency;
+					}
+					
+					text = text.replace("%@3", price);
+					
+					messageData.text = text;
 					messageData.usePlainText = true;
 					messageData.created = _qVO.messages[j].createdTime;
 					messageData.user_uid = _qVO.userUID;

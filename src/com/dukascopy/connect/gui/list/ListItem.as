@@ -54,6 +54,7 @@ package com.dukascopy.connect.gui.list {
 		private var _customData:Object;
 		private var needAnimation:Boolean;
 		private var animationDelay:Number = 0;
+		private var blinkRequest:Boolean;
 		public function getCustomData():Object
 		{
 			if (_customData == null)
@@ -91,6 +92,12 @@ package com.dukascopy.connect.gui.list {
 				_liView.y = _y;
 			}
 			_liView.draw(listName, num, _width, _height, renderer.isTransparent);
+			
+			if (blinkRequest)
+			{
+				blinkRequest = false;
+				_liView.blink();
+			}
 			
 			if (renderer == null)
 				return;
@@ -447,6 +454,7 @@ package com.dukascopy.connect.gui.list {
 		}
 		
 		public function dispose():void {
+			blinkRequest = false;
 			TweenMax.killDelayedCallsTo(animateShow);
 			TweenMax.killTweensOf(_liView);
 			//TODO - dispose loaded images
@@ -550,6 +558,11 @@ package com.dukascopy.connect.gui.list {
 		public function hideWithDispose():void 
 		{
 			TweenMax.to(_liView, 0.5, {alpha:0, onComplete:dispose});
+		}
+		
+		public function blink():void 
+		{
+			blinkRequest = true;
 		}
 		
 		public function get renderer():IListRenderer { return _renderer; }

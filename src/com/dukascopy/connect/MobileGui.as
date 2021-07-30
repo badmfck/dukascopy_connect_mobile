@@ -3,6 +3,7 @@ package com.dukascopy.connect {
 	import assets.JailedIllustrationClip;
 	import com.dukascopy.connect.data.ChatSettingsModel;
 	import com.dukascopy.connect.data.PopupData;
+	import com.dukascopy.connect.data.escrow.EscrowScreenNavigation;
 	import com.dukascopy.connect.data.screenAction.IScreenAction;
 	import com.dukascopy.connect.data.screenAction.customActions.OpenBankAccountAction;
 	import com.dukascopy.connect.gui.components.CirclePreloader;
@@ -13,6 +14,7 @@ package com.dukascopy.connect {
 	import com.dukascopy.connect.gui.networkIndicator.NetworkIndicator;
 	import com.dukascopy.connect.gui.puzzle.Puzzle;
 	import com.dukascopy.connect.gui.tools.ImagePreviewCrop;
+	import com.dukascopy.connect.managers.escrow.EscrowDealManager;
 	import com.dukascopy.connect.screens.ChatScreen;
 	import com.dukascopy.connect.screens.LoginScreen;
 	import com.dukascopy.connect.screens.MyAccountScreen;
@@ -32,6 +34,7 @@ package com.dukascopy.connect {
 	import com.dukascopy.connect.sys.calendar.Calendar;
 	import com.dukascopy.connect.sys.callManager.CallManager;
 	import com.dukascopy.connect.sys.callManager.CallsHistoryManager;
+	import com.dukascopy.connect.sys.chat.DraftMessage;
 	import com.dukascopy.connect.sys.chatManager.ChatManager;
 	import com.dukascopy.connect.sys.chatManager.ChatUsersManager;
 	import com.dukascopy.connect.sys.chatManager.typesManagers.ChannelsManager;
@@ -274,6 +277,10 @@ package com.dukascopy.connect {
 			UserExtensionsManager.init();
 			Calendar.init();
 			SoftKeyboard.startDetectHeight();
+			DraftMessage.init();
+			EscrowScreenNavigation.init();
+			
+			new EscrowDealManager();
 			BankCacheManager.init();
 			
 			create();

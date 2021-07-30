@@ -25,6 +25,9 @@ package com.dukascopy.connect.gui.list {
 		private var animationObject:Object;
 		private var overlay:Sprite;
 		private var overlays:Object;
+		private var blinkClip:Sprite;
+		private var _width:int;
+		private var _height:int;
 		public var image:Bitmap;
 		
 		public function ListItemView() {
@@ -34,6 +37,9 @@ package com.dukascopy.connect.gui.list {
 		}
 		
 		public function draw(listName:String, num:int, _width:int, _height:int, isRendererTransparent:Boolean):void {
+			this._width = _width;
+			this._height = _height;
+			
 			var created:Boolean = false;
 			if (image == null) {
 				image = new Bitmap()
@@ -77,6 +83,12 @@ package com.dukascopy.connect.gui.list {
 			{
 				UI.destroy(overlay);
 				overlay = null;
+			}
+			if (blinkClip != null)
+			{
+				TweenMax.killTweensOf(blinkClip);
+				UI.destroy(blinkClip);
+				blinkClip = null;
 			}
 			removeAnimations();
 			animations = null;
@@ -198,6 +210,30 @@ package com.dukascopy.connect.gui.list {
 			else
 			{
 				hideOverlay(OverlayData.FLOWER_4);
+			}
+		}
+		
+		public function blink():void 
+		{
+			removeblinkClip();
+			if (blinkClip == null)
+			{
+				blinkClip = new Sprite();
+				blinkClip.graphics.beginFill(0, 0.35);
+				blinkClip.graphics.drawRect(0, 0, _width, _height);
+				blinkClip.graphics.endFill();
+				addChildAt(blinkClip, 0);
+				TweenMax.to(blinkClip, 1, {alpha:0, onComplete:removeblinkClip});
+			}
+		}
+		
+		private function removeblinkClip():void 
+		{
+			if (blinkClip != null)
+			{
+				TweenMax.killTweensOf(blinkClip);
+				UI.destroy(blinkClip);
+				blinkClip = null;
 			}
 		}
 		

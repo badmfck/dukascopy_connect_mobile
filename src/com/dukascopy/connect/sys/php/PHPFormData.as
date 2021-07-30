@@ -127,6 +127,7 @@ package com.dukascopy.connect.sys.php {
 				postData.clear();
 				postData = null;
 				TweenMax.delayedCall(1, function():void {
+					echo("file:", "PHPFormData finish: ");
 					echo("PHPFormData","send.finish", "TweenMax.delayedCall");
 					BaseServerLoader.createRespond(err, data, callBack);
 				}, null, true);

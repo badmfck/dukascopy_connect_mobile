@@ -27,9 +27,8 @@ package com.dukascopy.connect.sys.bankManager {
 	import com.dukascopy.connect.screens.dialogs.CreateTemplateDialog;
 	import com.dukascopy.connect.screens.dialogs.ScreenAddInvoiceDialog;
 	import com.dukascopy.connect.screens.dialogs.ScreenPayDialog;
-	import com.dukascopy.connect.screens.dialogs.bottom.ListSelectionPopup;
-	import com.dukascopy.connect.screens.dialogs.bottom.SearchListSelectionPopup;
-	import com.dukascopy.connect.screens.dialogs.bottom.ShareLinkPopup;
+	import com.dukascopy.connect.screens.dialogs.x.base.bottom.ListSelectionPopup;
+	import com.dukascopy.connect.screens.dialogs.x.base.content.ShareLinkPopup;
 	import com.dukascopy.connect.screens.dialogs.gifts.CreateGiftPopup;
 	import com.dukascopy.connect.screens.dialogs.paymentDialogs.BuyCommodityPopup;
 	import com.dukascopy.connect.screens.dialogs.paymentDialogs.CoinsDepositPopup;
@@ -1448,7 +1447,7 @@ package com.dukascopy.connect.sys.bankManager {
 				return;
 			if (value == null)
 				return;
-			var temp:int;
+			/*var temp:int;
             var from:String = value.dateFrom.getFullYear();
             temp = value.dateFrom.getMonth() + 1;
             from += "-";
@@ -1469,8 +1468,8 @@ package com.dukascopy.connect.sys.bankManager {
                 data.value, true
             );
             sendMessage(data.action, true);
-			return;
-			/*var from:String = Number(value.dateFrom.getTime() * .001).toFixed(0);
+			return;*/
+			var from:String = Number(value.dateFrom.getTime() * .001).toFixed(0);
 			var to:String = Number(value.dateTo.getTime() * .001).toFixed(0);
 			GD.S_TIMEZONE_REQUEST.invoke(function(val:String):void {
 				sendMessage("val:" +
@@ -1480,7 +1479,7 @@ package com.dukascopy.connect.sys.bankManager {
 					val, true
 				);
 				sendMessage(data.action, true);
-			} );*/
+			} );
 		}
 		
 		static private function openLink(data:Object):void {
@@ -2554,7 +2553,12 @@ package com.dukascopy.connect.sys.bankManager {
 			var startObjectIndex:int = val.indexOf(":", 15);
 			var command:String = val.substring(15, startObjectIndex);
 			if (command == "error") {
-				DialogManager.alert(Lang.information, "Payments Error: " + val.substr(6));
+				var message:String = "";
+				if (val != null && val.length > startObjectIndex)
+				{
+					message = val.substr(startObjectIndex + 1)
+				}
+				DialogManager.alert(Lang.information, "Payments Error: " + message);
 				S_ERROR.invoke();
 				return true;
 			}
@@ -2956,12 +2960,14 @@ package com.dukascopy.connect.sys.bankManager {
 		
 		static public function getInvestments(local:Boolean = true):void {
 			init();
+
 			if (local == true) {
 				if (investments != null) {
 					investments.sort(sortInvestments);
 					S_INVESTMENTS.invoke(investments, true);
-				}else
+				} else {
 					S_INVESTMENTS.invoke(null, true);
+				}
 			} else
 				BankBotController.getAnswer("bot:bankbot payments:investments");
 		}

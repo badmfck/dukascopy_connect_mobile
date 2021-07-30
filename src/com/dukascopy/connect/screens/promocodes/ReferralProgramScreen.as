@@ -18,7 +18,7 @@ package com.dukascopy.connect.screens.promocodes
 	import com.dukascopy.connect.screens.ReferralInvitesListScreen;
 	import com.dukascopy.connect.screens.base.BaseScreen;
 	import com.dukascopy.connect.screens.base.ScreenManager;
-	import com.dukascopy.connect.screens.dialogs.bottom.implementation.BottomAlertPopup;
+	import com.dukascopy.connect.screens.dialogs.x.base.bottom.BottomAlertPopup;
 	import com.dukascopy.connect.sys.imageManager.ImageBitmapData;
 	import com.dukascopy.connect.sys.nativeExtensionController.NativeExtensionController;
 	import com.dukascopy.connect.sys.pointerManager.PointerManager;

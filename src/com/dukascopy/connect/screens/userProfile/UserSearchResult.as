@@ -49,6 +49,8 @@ package com.dukascopy.connect.screens.userProfile
 		private var titleContainer:Sprite;
 		private var subtitleContainer:Sprite;
 		private var customNameValue:String;
+		private var disposed:Boolean;
+		private var loadingURL:String;
 		
 		public function UserSearchResult() 
 		{
@@ -140,6 +142,8 @@ package com.dukascopy.connect.screens.userProfile
 				
 				var path:String = data.avatarURL;
 				
+				loadingURL = path;
+				
 				if (path)
 					ImageManager.loadImage(path, onAvatarLoaded);
 				else
@@ -225,6 +229,12 @@ package com.dukascopy.connect.screens.userProfile
 		
 		private function onAvatarLoaded(url:String, bitmapData:ImageBitmapData, success:Boolean):void 
 		{
+			if (disposed)
+			{
+				bitmapData.dispose();
+				return;
+			}
+			
 			if (!success)
 			{
 				displaySimpleAvatar(currentNameValue);
@@ -261,6 +271,8 @@ package com.dukascopy.connect.screens.userProfile
 		
 		public function dispose():void
 		{
+			disposed = true;
+			ImageManager.cancelLoad(loadingURL, onAvatarLoaded);
 			if (avatar)
 			{
 				UI.destroy(avatar);

@@ -24,27 +24,27 @@ package com.dukascopy.connect.screens.dialogs {
 	
 	public class UseFingerprintDialog extends ScreenAlertDialog {
 		
-		private var priceLimitSwitch:OptionSwitcher;
+		private var dontAskSwitch:OptionSwitcher;
 		
 		public function UseFingerprintDialog() {
 			super();
 		}
 		
-		override protected function createView():void {
+		/*override protected function createView():void {
 			super.createView();
 			
-			priceLimitSwitch = new OptionSwitcher();
-			priceLimitSwitch.onSwitchCallback = switchLimit;
-		}
+			dontAskSwitch = new OptionSwitcher();
+			dontAskSwitch.onSwitchCallback = switchLimit;
+		}*/
 		
 		override public function initScreen(data:Object = null):void {
 			super.initScreen(data);
 		}
 		
-		private function switchLimit(selected:Boolean):void 
+		/*private function switchLimit(selected:Boolean):void 
 		{
-			priceLimitSwitch.isSelected = selected;
-		}
+			dontAskSwitch.isSelected = selected;
+		}*/
 		
 		override protected function fireCallbackFunctionWithValue(value:int):void 
 		{
@@ -52,7 +52,8 @@ package com.dukascopy.connect.screens.dialogs {
 			callback = null;
 			if (callBackFunction != null && callBackFunction.length == 2)
 			{
-				callBackFunction(value, priceLimitSwitch.isSelected);
+			//	callBackFunction(value, dontAskSwitch.isSelected);
+				callBackFunction(value, true);
 			}
 			else
 			{
@@ -75,33 +76,33 @@ package com.dukascopy.connect.screens.dialogs {
 			super.repositionButtons();
 		}
 		
-		override protected function recreateContent(padding:Number):void 
+		/*override protected function recreateContent(padding:Number):void 
 		{
 			super.recreateContent(padding);
 			
-			priceLimitSwitch.y = (content.itemsHeight == 0 )? 0 :int(content.itemsHeight + padding);
+			dontAskSwitch.y = (content.itemsHeight == 0 )? 0 :int(content.itemsHeight + padding);
 			
-			priceLimitSwitch.create(_width - Config.DIALOG_MARGIN * 2, Config.FINGER_SIZE * .8, null, Lang.dontAskAgain, false, true, 0x47515B, Config.FINGER_SIZE * .3, 0);
+			dontAskSwitch.create(_width - Config.DIALOG_MARGIN * 2, Config.FINGER_SIZE * .8, null, Lang.dontAskAgain, false, true, 0x47515B, Config.FINGER_SIZE * .3, 0);
 			
-			content.addObject(priceLimitSwitch);
-		}
+			content.addObject(dontAskSwitch);
+		}*/
 		
 		override protected function updateContentHeight():void 
 		{
 			contentHeight = (padding * 1.3 * 3 + headerHeight + buttonsAreaHeight + content.itemsHeight);
 		}
 		
-		override public function activateScreen():void {
+		/*override public function activateScreen():void {
 			super.activateScreen();
 			
-			priceLimitSwitch.activate();
-		}
+			dontAskSwitch.activate();
+		}*/
 		
-		override public function deactivateScreen():void {
+		/*override public function deactivateScreen():void {
 			super.deactivateScreen();
 			
-			priceLimitSwitch.deactivate();
-		}
+			dontAskSwitch.deactivate();
+		}*/
 		
 		override protected function btn0Clicked():void {
 			if (callback != null) {
@@ -117,14 +118,14 @@ package com.dukascopy.connect.screens.dialogs {
 			DialogManager.closeDialog();
 		}
 		
-		override public function dispose():void {
+		/*override public function dispose():void {
 			super.dispose();
 			
-			if (priceLimitSwitch != null)
+			if (dontAskSwitch != null)
 			{
-				priceLimitSwitch.dispose();
-				priceLimitSwitch = null;
+				dontAskSwitch.dispose();
+				dontAskSwitch = null;
 			}
-		}
+		}*/
 	}
 }

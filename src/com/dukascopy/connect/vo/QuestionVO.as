@@ -1,6 +1,9 @@
 package com.dukascopy.connect.vo {
 	
+	import com.dukascopy.connect.GD;
 	import com.dukascopy.connect.data.location.Location;
+	import com.dukascopy.connect.managers.escrow.vo.EscrowInstrument;
+	import com.dukascopy.connect.managers.escrow.vo.EscrowPrice;
 	import com.dukascopy.connect.sys.auth.Auth;
 	import com.dukascopy.connect.sys.crypter.Crypter;
 	import com.dukascopy.connect.sys.questionsManager.QuestionsManager;
@@ -38,6 +41,7 @@ package com.dukascopy.connect.vo {
 		private var _userVO:UserVO;
 		private var _newbie:Boolean;
 		private var _type:String;
+		private var _subtype:String;
 		private var _freshTime:Number = 0;
 		
 		private var _unread:Array;
@@ -47,6 +51,10 @@ package com.dukascopy.connect.vo {
 		
 		private var _geo:Boolean = false;
 		private var _geolocation:Location;
+		private var _instrument:EscrowInstrument;
+		private var _cryptoAmount:String;
+		private var _priceCurrency:String;
+		private var _price:String;
 		
 		public var needPayBeforeClose:Boolean;
 		
@@ -91,6 +99,11 @@ package com.dukascopy.connect.vo {
 			if ("tips" in data == true && data.tips != null && "amount" in data.tips == true && data.tips.amount != "" && data.tips.amount != 0) {
 				_tipsAmount = data.tips.amount;
 				_tipsCurrency = data.tips.currency;
+				if (_tipsCurrency == "DCO")
+					_tipsCurrency = "DUK+";
+				_cryptoAmount = _tipsAmount.toString();
+				GD.S_ESCROW_INSTRUMENTS.add(onResult);
+				GD.S_ESCROW_INSTRUMENTS_REQUEST.invoke();
 			} else {
 				_tipsAmount = NaN;
 				_tipsCurrency = null;
@@ -99,10 +112,22 @@ package com.dukascopy.connect.vo {
 				_isPaid = true;
 			_status = data.status;
 			_type = data.type;
+			_subtype = data.subtype;
 			_unread = data.unread;
-			
-			if (data.categories != null)
-				_categories = data.categories;
+			if ("price" in data == true)
+				_price = data.price;
+			if (data.categories != null) {
+				_categories = new Array();
+				for (var key:Object in data.categories) 
+				{
+					_categories.push(data.categories[key]);
+				}
+				
+				
+			//	_categories = data.categories;
+				if (_categories != null && _categories.length != 0)
+					_priceCurrency = _categories[0];
+			}
 			
 			_incognito = data.anonymous == 1;
 			
@@ -116,11 +141,19 @@ package com.dukascopy.connect.vo {
 			}
 			
 			if ("paidBySuspend" in data && data.paidBySuspend == false)
-			{
 				needPayBeforeClose = true;
-			}
 			
 			busy = false;
+		}
+		
+		private function onResult(instruments:Vector.<EscrowInstrument>):void {
+			GD.S_ESCROW_INSTRUMENTS.remove(onResult);
+			for (var i:int = 0; i < instruments.length; i++) {
+				if (instruments[i].code == _tipsCurrency) {
+					_instrument = instruments[i];
+					return;
+				}
+			}
 		}
 		
 		public function get avatarURL():String {
@@ -171,13 +204,38 @@ package com.dukascopy.connect.vo {
 		public function get isPaid():Boolean { return _isPaid; }
 		public function get anonymData():Object { return _anonymData; }
 		public function get type():String { return _type; }
+		public function get subtype():String { return _subtype; }
 		public function get freshTime():Number { return _freshTime; }
 		public function get geo():Boolean { return _geo; }
 		public function get geolocation():Location { return _geolocation; }
 		public function get isHeader():Boolean { return _isHeader; }
+		public function get instrument():EscrowInstrument { return _instrument; }
+		public function get cryptoAmount():String { return _cryptoAmount; }
+		public function get priceCurrency():String { return _priceCurrency; }
+		public function get price():String { return _price; }
 		
 		public function set type(value:String):void {
 			_type = value;
+		}
+		
+		public function set subtype(value:String):void {
+			_subtype = value;
+		}
+		
+		public function set instrument(value:EscrowInstrument):void {
+			_instrument = value;
+		}
+		
+		public function set priceCurrency(value:String):void {
+			_priceCurrency = value;
+		}
+		
+		public function set price(value:String):void {
+			_price = value;
+		}
+		
+		public function set cryptoAmount(val:String):void {
+			_cryptoAmount = val;
 		}
 		
 		public function dispose():void {

@@ -23,6 +23,7 @@ package com.dukascopy.connect.sys.errors {
 		private static const CALLS_LIMIT:String = 'sms..11'; //Todays calls limit reached
 		
 		static public const PAYMENTS_ERROR_NO_MONEY:String = "3302";
+		static public const PAYMENTS_ERROR_AMOUNT_TOO_SMALL:String = "4501";
 
 		private static const alert_from_server:Object = {
 			auth_01:"noCreateCode",
@@ -267,6 +268,10 @@ package com.dukascopy.connect.sys.errors {
 				case PAYMENTS_ERROR_NO_MONEY:
 				{
 					return Lang.notEnoughAssets;
+				}
+				case PAYMENTS_ERROR_NO_MONEY:
+				{
+					return Lang.payments_error_amount_too_small;
 				}
 			}
 			return defaultText;

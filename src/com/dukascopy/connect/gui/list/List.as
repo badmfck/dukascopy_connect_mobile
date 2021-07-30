@@ -1786,6 +1786,10 @@ package com.dukascopy.connect.gui.list {
 			{
 				newY = 0;
 			}
+			if (newY < -itemsHeight + height)
+			{
+				newY = -itemsHeight + height;
+			}
 			if (animate)
 			{
 				TweenMax.killTweensOf(box);
@@ -1929,6 +1933,29 @@ package com.dukascopy.connect.gui.list {
 					updateItemByIndex(i);
 			}
 			return null;
+		}
+		
+		public function blinkItem(field:String, value:Object):void 
+		{
+			if (stock == null)
+				return;
+			var l:int = stock.length;
+			for (var i:int = 0; i < l; i++) {
+				var d:Object = stock[i].data;
+				if (field == null) {
+					if (d == value) {
+						break;
+					}
+				} else {
+					if (d != null && field in d && d[field] == value) {
+						break;
+					}
+				}
+			}
+			if (i == l)
+				return;
+			
+			stock[i].blink();
 		}
 	}
 }

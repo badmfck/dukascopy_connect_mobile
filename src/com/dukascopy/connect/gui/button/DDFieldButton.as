@@ -15,6 +15,7 @@ package com.dukascopy.connect.gui.button {
 	import flash.geom.ColorTransform;
 	import flash.text.TextFieldAutoSize;
 	import flash.text.TextFormatAlign;
+	import flash.text.TextLineMetrics;
 
 	import flash.display.Sprite;
 	import flash.display.StageQuality;
@@ -41,11 +42,19 @@ package com.dukascopy.connect.gui.button {
 		private var underlineColor:Number;
 		private var title:String;
 		private var container:Sprite;
+		private var selectedData:Object;
+		private var icon:Bitmap;
+		private var innerHeight:int;
+		private var lineThickness:int;
 
-		public function DDFieldButton(callBack:Function, value:String = "", showArrow:Boolean = true, underlineColor:Number = NaN, title:String = null) {
+		public function DDFieldButton(callBack:Function, value:String = "", showArrow:Boolean = true, underlineColor:Number = NaN, title:String = null, fontSize:Number = NaN) {
 			this._value = value;
 			this.arrowShow = showArrow;
 			this.title = title;
+			if (isNaN(fontSize))
+			{
+				fontSize = FontSize.BODY;
+			}
 			
 			if (!isNaN(underlineColor))
 			{
@@ -68,9 +77,9 @@ package com.dukascopy.connect.gui.button {
 			
 			container = new Sprite();
 			titleClip = new Bitmap();
-
+			
 			box = new Sprite();
-			tf = UIFactory.createTextField(FontSize.BODY);
+			tf = UIFactory.createTextField(fontSize);
 			tf.textColor = Style.color(Style.COLOR_TEXT);
 			if (showArrow == false)
 			{
@@ -78,16 +87,36 @@ package com.dukascopy.connect.gui.button {
 			}
 			box.addChild(tf);
 			setOverlay(HitZoneType.MENU_MIDDLE_ELEMENT);
-
+			
 			if (title != null)
 			{
 				drawTitle(title);
 			}
-
+			
 			container.addChild(titleClip);
 			container.addChild(box);
 		}
-
+		
+		private function createIcon(iconClip:Sprite):void 
+		{
+			if (iconClip != null)
+			{
+				var iconSize:int = Config.FINGER_SIZE * .5;
+				UI.scaleToFit(iconClip, iconSize, iconSize);
+				if (icon == null)
+				{
+					icon = new Bitmap();
+					box.addChild(icon);
+				}
+				if (icon.bitmapData != null)
+				{
+					icon.bitmapData.dispose();
+					icon.bitmapData = null;
+				}
+				icon.bitmapData = UI.getSnapshot(iconClip);
+			}
+		}
+		
 		private function drawTitle(value:String):void
 		{
 			if (titleClip.bitmapData)
@@ -139,7 +168,7 @@ package com.dukascopy.connect.gui.button {
 			this.w = w;
 			this.h = h;
 			
-			var lineThickness:int = int(Math.max(1, Config.FINGER_SIZE * .03));
+			lineThickness = int(Math.max(1, Config.FINGER_SIZE * .03));
 
 			if (generatedBitmap != null) {
 				if (generatedBitmap.height != h || generatedBitmap.width != w) {
@@ -150,10 +179,16 @@ package com.dukascopy.connect.gui.button {
 			
 			tf.x = 0;
 			tf.text = _value;
-			tf.width = int(w - arrowHeight * 2 - Config.DIALOG_MARGIN - Config.MARGIN);
+			tf.width = int(w - arrowHeight * 2 - Config.MARGIN);
+			if (icon != null && icon.width > 0)
+			{
+				tf.x = int(icon.x + icon.width + Config.FINGER_SIZE * .15);
+				icon.y = int(tf.y + tf.height * .5 - icon.height * .5);
+				tf.width -= icon.x + icon.width - Config.FINGER_SIZE * .15;
+			}
 			
 			var resultheight:int = h;
-			var innerHeight:int = h;
+			innerHeight = h;
 			if (titleClip.height > 0)
 			{
 				box.y = int(FontSize.SUBHEAD - Config.FINGER_SIZE * .1);
@@ -180,8 +215,6 @@ package com.dukascopy.connect.gui.button {
 				box.graphics.endFill();
 			//	box.graphics.lineTo(w, innerHeight - lineThickness / 2);
 			//	box.graphics.lineStyle();
-
-			trace("CURR", box.y + innerHeight - lineThickness);
 			
 			// arrow
 			var xOffset:int = w;
@@ -189,7 +222,7 @@ package com.dukascopy.connect.gui.button {
 			if (arrowShow == true) {
 				arrowHeight = Config.FINGER_SIZE * .8 * 0.15;
 				arrowCathetus = Config.FINGER_SIZE * .8 * 0.12;
-				box.graphics.beginFill(Style.color(Style.COLOR_TEXT));
+				box.graphics.beginFill(Style.color(Style.COLOR_SUBTITLE));
 				box.graphics.moveTo(xOffset, int((innerHeight - arrowHeight) * .5));
 				box.graphics.lineTo(xOffset - arrowCathetus, int((innerHeight + arrowHeight) * .5));
 				box.graphics.lineTo(xOffset - arrowCathetus * 2, int((innerHeight - arrowHeight) * .5));
@@ -202,13 +235,8 @@ package com.dukascopy.connect.gui.button {
 			} else {
 				generatedBitmap.fillRect(generatedBitmap.rect, 0);
 			}
-
-
-
 			
-
 			generatedBitmap.drawWithQuality(container, null, null, null, null, true, StageQuality.BEST);
-			
 			setBitmapData(generatedBitmap);
 		}
 		
@@ -216,7 +244,7 @@ package com.dukascopy.connect.gui.button {
 		 *
 		 * @param value set null for set default value // Choosing...
 		 */
-		public function setValue(value:String = null):void {
+		public function setValue(value:String = null, clearIcon:Boolean = true):void {
 			if (value == null || value == "") {			// Ljoha, pochemu zakomentiroval etu proverku? )))	-> ne pomny(, :)
 				this._value = "";
 				updateDefaultLabel();
@@ -228,11 +256,52 @@ package com.dukascopy.connect.gui.button {
 				this._value = value;
 				setSize(w, h);
 			}
+			if (clearIcon)
+			{
+				clearIconFun();
+			}
+			
+			selectedData = null;
+		}
+		
+		private function clearIconFun():void 
+		{
+			if (icon != null)
+			{
+				if (icon.bitmapData != null)
+				{
+					icon.bitmapData.dispose();
+					icon.bitmapData = null;
+				}
+				if (box != null && box.contains(icon))
+				{
+					try
+					{
+						box.removeChild(icon);
+					}
+					catch (e:Error)
+					{
+						
+					}
+					icon = null;
+				}
+			}
+		}
+		
+		public function setValueExtend(value:String = null, data:Object = null, iconClip:Sprite = null):void {
+			if (iconClip != null)
+			{
+				createIcon(iconClip);
+			}
+			setValue(value, iconClip == true);
+			selectedData = data;
 		}
 		
 		override public function dispose():void {
 			UI.safeRemoveChild(tf);
 			tf = null;
+			selectedData = null;
+			
 			if (box != null) {
 				box.graphics.clear();
 				box = null;
@@ -240,18 +309,39 @@ package com.dukascopy.connect.gui.button {
 			if (titleClip != null)
 			{
 				UI.destroy(titleClip);
-				titleClip = null
+				titleClip = null;
 			}
 			if (container != null)
 			{
 				UI.destroy(container);
-				container = null
+				container = null;
+			}
+			if (icon != null)
+			{
+				UI.destroy(icon);
+				icon = null;
 			}
 			if (generatedBitmap != null) {
 				generatedBitmap.dispose();
 				generatedBitmap = null;
 			}
 			super.dispose();
+		}
+		
+		public function linePosition():int 
+		{
+			return innerHeight - lineThickness;
+		}
+		
+		public function getFieldHeight():int 
+		{
+			var line:TextLineMetrics = tf.getLineMetrics(0);
+			return line.ascent + 2;
+		}
+		
+		public function getFieldPosition():int 
+		{
+			return tf.y + box.y + 1;
 		}
 		
 		public function setTextAlpha(value:Number):void 

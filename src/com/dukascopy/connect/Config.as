@@ -10,7 +10,7 @@ package com.dukascopy.connect {
 	
     public class Config {
 		
-/* LIVE */
+/* LIVE * /
         static public const URL_PHP_CORE_SERVER:String = 'https://dccapi.dukascopy.online/';
         static public const URL_WS_HOST_1:String = "wss://ws.dukascopy.online"; //192.168.240.142; // 144 или 142
         static public const URL_WS_HOST_2:String = "wss://ws.dukascopy.ch"; //192.168.240.142; // 144 или 142
@@ -48,8 +48,8 @@ package com.dukascopy.connect {
 		
 /* PRE * /
 		static public const URL_PHP_CORE_SERVER:String = 'https://pre-dccapi.dukascopy.com/';
-        static public const URL_WS_HOST_1:String = "wss://ws.dukascopy.online"; //192.168.240.142; // 144 или 142
-        static public const URL_WS_HOST_2:String = "wss://ws.dukascopy.ch"; //192.168.240.142; // 144 или 142
+        static public const URL_WS_HOST_1:String = "wss://ws-pre.dukascopy.com/"; //192.168.240.142; // 144 или 142
+        static public const URL_WS_HOST_2:String = "wss://ws-pre.dukascopy.com/"; //192.168.240.142; // 144 или 142
 		static public const URL_MEDIA_VI:String = "rtmp://socket.dukascopy.com/recognition";
 		
 		static public const URL_FXCOMM_PROFILE:String = "https://www.dukascopy.com/fxcomm/profile/?nickname=";
@@ -68,7 +68,7 @@ package com.dukascopy.connect {
 		static public const CAT_DATING:int = 5;
 		static public const CAT_GENERAL:int = 2;
 		static public const SERVER_NAME:String = " PRE";
-		static public const test:Boolean = true;
+		static public const test:Boolean = false;
 		
 		static public const ADMIN_UIDS:String = "WdW6DJI1WbWo," +	// Igor Bloom
 			"WdW6DJWbW3IsIb," +	// Ilya Shcherbakov
@@ -81,7 +81,7 @@ package com.dukascopy.connect {
             "I6DzDaWqWKWE";		// Sergey Dobarin
         static public const BOT_UIDS:String = "WgDNWdIEW4I6IsWg" // Support bot
 		
-/* TEST * /
+/* TEST */
 		static public const URL_PHP_CORE_SERVER:String = 'https://loki.telefision.com/master/';
 		static public const URL_WS_HOST_1:String = "wss://loki.telefision.com/wss/";
 		static public const URL_WS_HOST_2:String = "wss://loki.telefision.com/wss/";
@@ -160,6 +160,7 @@ package com.dukascopy.connect {
 		
         static public const BOUNDS:String = ".&70o}.?F";
         static public const BOUNDS_INVOICE:String = "#07INVOICE";
+		static public const BOUNDS_ESCROW:String = "#06ESCROW";
 		
         static public const CHAT_AVATAR_SIZE_MAX:int = 200;
         static public const USER_AVATAR_SIZE_MAX:int = 1280;

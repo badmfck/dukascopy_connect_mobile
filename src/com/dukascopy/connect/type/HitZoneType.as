@@ -91,6 +91,10 @@ package com.dukascopy.connect.type
 		static public const REPLY:String = "reply";
 		static public const REPLY_MESSAGE:String = "replyMessage";
 		
+		static public const SIDE_INFO:String = "sideInfo";
+		static public const CRYPTO_AMOUNT_INFO:String = "cryptoAmountInfo";
+		static public const CURRENCY_INFO:String = "currencyInfo";
+		
 		public function HitZoneType() { }
 	}
 }

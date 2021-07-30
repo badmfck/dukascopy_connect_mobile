@@ -1,5 +1,4 @@
 package com.dukascopy.connect.screens.dialogs.paymentDialogs {
-	
 	import assets.QrIcon;
 	import com.dukascopy.connect.Config;
 	import com.dukascopy.connect.data.GiftData;
@@ -18,7 +17,8 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs {
 	import com.dukascopy.connect.screens.base.BaseScreen;
 	import com.dukascopy.connect.screens.dialogs.ScreenPayDialog;
 	import com.dukascopy.connect.screens.dialogs.ScreenWebviewDialogBase;
-	import com.dukascopy.connect.screens.dialogs.bottom.ListSelectionPopup;
+	import com.dukascopy.connect.screens.dialogs.x.base.bottom.BottomAlertPopup;
+	import com.dukascopy.connect.screens.dialogs.x.base.bottom.ListSelectionPopup;
 	import com.dukascopy.connect.screens.payments.card.TypeCurrency;
 	import com.dukascopy.connect.screens.serviceScreen.Overlay;
 	import com.dukascopy.connect.sys.bankManager.BankManager;
@@ -31,11 +31,9 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs {
 	import com.dukascopy.connect.sys.softKeyboard.SoftKeyboard;
 	import com.dukascopy.connect.sys.style.FontSize;
 	import com.dukascopy.connect.sys.style.Style;
-	import com.dukascopy.connect.sys.theme.AppTheme;
 	import com.dukascopy.connect.type.HitZoneType;
 	import com.dukascopy.connect.utils.TextUtils;
 	import com.dukascopy.langs.Lang;
-	import com.dukascopy.langs.LangManager;
 	import com.greensock.TweenMax;
 	import flash.display.Bitmap;
 	import flash.display.Shape;
@@ -46,6 +44,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs {
 	import flash.text.TextFieldAutoSize;
 	import flash.text.TextFormat;
 	import flash.text.TextFormatAlign;
+	
 	
 	/**
 	 * ...
@@ -494,10 +493,18 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs {
 						title:Lang.TEXT_SELECT_ACCOUNT,
 						renderer:ListPayWalletItem,
 						callback:onWalletFiatSelect
-					}, ServiceScreenManager.TYPE_SCREEN
+					}, DialogManager.TYPE_SCREEN
 				);
-				
-			//	DialogManager.showDialog(ScreenPayDialog, {callback: onWalletFiatSelect, data: wallets, itemClass: ListPayWalletItem/*ListPayAccount*/, label: Lang.TEXT_SELECT_ACCOUNT});
+			}
+			else
+			{
+				DialogManager.showDialog(
+					BottomAlertPopup,
+					{
+						title:Lang.TEXT_SELECT_ACCOUNT,
+						message:Lang.noFundedAccounts
+					}, DialogManager.TYPE_SCREEN
+				);
 			}
 		}
 		
@@ -775,7 +782,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs {
 				drawWalletAddress();
 				moreInfo.visible = true;
 				moreInfo.htmlText = Lang.investmentDeliveryLink;
-				moreInfo.width = _width;
+				moreInfo.width = componentsWidth;
 				moreInfo.height = moreInfo.textHeight + 4;
 				moreInfo.x = Config.DIALOG_MARGIN;
 			}

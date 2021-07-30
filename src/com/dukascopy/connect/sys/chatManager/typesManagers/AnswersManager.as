@@ -2,6 +2,7 @@ package com.dukascopy.connect.sys.chatManager.typesManagers {
 	
 	import com.dukascopy.connect.MobileGui;
 	import com.dukascopy.connect.gui.components.message.ToastMessage;
+	import com.dukascopy.connect.screens.dialogs.ScreenQuestionsDialog;
 	import com.dukascopy.connect.sys.auth.Auth;
 	import com.dukascopy.connect.sys.chatManager.ChatManager;
 	import com.dukascopy.connect.sys.dialogManager.DialogManager;
@@ -10,6 +11,7 @@ package com.dukascopy.connect.sys.chatManager.typesManagers {
 	import com.dukascopy.connect.sys.php.PHP;
 	import com.dukascopy.connect.sys.php.PHPRespond;
 	import com.dukascopy.connect.sys.questionsManager.QuestionsManager;
+	import com.dukascopy.connect.sys.serviceScreenManager.ServiceScreenManager;
 	import com.dukascopy.connect.sys.store.Store;
 	import com.dukascopy.connect.sys.ws.WS;
 	import com.dukascopy.connect.type.ChatInitType;
@@ -360,7 +362,18 @@ package com.dukascopy.connect.sys.chatManager.typesManagers {
 			echo("QuestionsManager", "onLoadAnswersFromStore", "START");
 			S_ANSWERS_LOADED_FROM_STORE.invoke(data, error);
 			if (data != null)
-				DialogManager.showQuestionsDialog( { label:Lang.latestAnswer, data:data.answers, qUID:loadingAnswersUID } );
+			{
+				 DialogManager.showDialog(
+                                ScreenQuestionsDialog,
+                                {
+									qUID:loadingAnswersUID,
+                                    items:data.answers,
+                                    title:Lang.latestAnswer
+                                }, ServiceScreenManager.TYPE_SCREEN
+                            );
+				
+			//	DialogManager.showQuestionsDialog( { label:Lang.latestAnswer, data:data.answers, qUID:loadingAnswersUID } );
+			}
 			else
 				DialogManager.showQuestionsDialog( { label:Lang.latestAnswer, data:[], qUID:loadingAnswersUID } );
 			if (data != null && data.hash != null)

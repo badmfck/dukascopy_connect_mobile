@@ -5,8 +5,8 @@ package com.dukascopy.connect.screens.roadMap.actions
 	import com.dukascopy.connect.data.screenAction.IAction;
 	import com.dukascopy.connect.gui.components.message.ToastMessage;
 	import com.dukascopy.connect.screens.dialogs.ScreenWebviewDialogBase;
-	import com.dukascopy.connect.screens.dialogs.bottom.implementation.BottomAlertPopup;
-	import com.dukascopy.connect.screens.dialogs.bottom.implementation.BottomConfirmPopup;
+	import com.dukascopy.connect.screens.dialogs.x.base.bottom.BottomAlertPopup;
+	import com.dukascopy.connect.screens.dialogs.x.base.bottom.BottomConfirmPopup;
 	import com.dukascopy.connect.sys.applicationError.ApplicationErrors;
 	import com.dukascopy.connect.sys.auth.Auth;
 	import com.dukascopy.connect.sys.dialogManager.DialogManager;

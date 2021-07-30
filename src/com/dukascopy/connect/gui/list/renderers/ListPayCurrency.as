@@ -24,17 +24,17 @@ package com.dukascopy.connect.gui.list.renderers {
 	 */
 	public class ListPayCurrency extends BaseRenderer implements IListRenderer {
 		
-		private var tfLabel:TextField;
-		private var tfName:TextField;
+		protected var tfLabel:TextField;
+		protected var tfName:TextField;
 		
-		private var padding:int = Config.DOUBLE_MARGIN;
+		protected var padding:int = Config.FINGER_SIZE * .2;
 		
-		private var itemHeight:int = Config.FINGER_SIZE;
-		private var format:TextFormat = new TextFormat(Config.defaultFontName, FontSize.BODY, Style.color(Style.COLOR_TEXT));
-		private var format2:TextFormat = new TextFormat(Config.defaultFontName, FontSize.SUBHEAD, Style.color(Style.COLOR_TEXT));
-		private var flagIcon:Bitmap;
+		protected var itemHeight:int = Config.FINGER_SIZE;
+		protected var format:TextFormat = new TextFormat(Config.defaultFontName, FontSize.BODY, Style.color(Style.COLOR_TEXT));
+		protected var format2:TextFormat = new TextFormat(Config.defaultFontName, FontSize.SUBHEAD, Style.color(Style.COLOR_TEXT));
+		protected var flagIcon:Sprite;
 		
-		private var ICON_SIZE:int = Config.FINGER_SIZE * .6;
+		protected var ICON_SIZE:int = Config.FINGER_SIZE * .6;
 		
 		public function ListPayCurrency() {
 			tfLabel = new TextField();
@@ -57,7 +57,7 @@ package com.dukascopy.connect.gui.list.renderers {
 			tfName.y = Math.round((itemHeight - tfName.textHeight) * .5);
 			addChild(tfName);
 			
-			flagIcon = new Bitmap();
+			flagIcon = new Sprite();
 			addChild(flagIcon);
 		}
 		
@@ -66,23 +66,16 @@ package com.dukascopy.connect.gui.list.renderers {
 			return itemHeight;
 		}
 		
-		public function getView(li:ListItem, h:int, width:int, highlight:Boolean=false):IBitmapDrawable {
-			var data:Object = li.data;
+		public function getView(li:ListItem, h:int, w:int, highlight:Boolean=false):IBitmapDrawable {
+			var data:Object = getItemData(li.data);
 			
-			graphics.clear();
-			if (highlight) {
-				graphics.beginFill(Style.color(Style.FILTER_TABS_COLOR_TAB_BG_SELECTED));
-				graphics.drawRect(0, 0, width, h);
-				graphics.endFill();
-			}
+			redrawBack(highlight, h, w);
 			
-			graphics.beginFill(Style.color(Style.COLOR_LINE_SSL));
-			graphics.drawRect(0, itemHeight - 1, width, 1);
 			var originalCurrency:String;
-			if(li.data != null){
-				if (li.data is String)
+			if(data != null){
+				if (data is String)
 				{
-					var currencyText:String = li.data as String;
+					var currencyText:String = data as String;
 					originalCurrency = currencyText;
 					if (Lang[currencyText] != null)
 					{
@@ -90,16 +83,13 @@ package com.dukascopy.connect.gui.list.renderers {
 					}
 					tfLabel.text = currencyText;
 				}
-				if ("label" in li.data == true)
+				if ("label" in data == true)
 				{
-					originalCurrency = li.data.label as String;
-					tfLabel.text = li.data.label as String;
+					originalCurrency = data.label as String;
+					tfLabel.text = data.label as String;
 				}
+				
 			}
-			tfLabel.width = width - tfLabel.x - padding;
-			tfLabel.x = int(width - padding - tfLabel.width);
-			
-			
 			if (Lang["currency_" + originalCurrency] != null)
 			{
 				tfName.text = Lang["currency_" + originalCurrency];
@@ -108,22 +98,56 @@ package com.dukascopy.connect.gui.list.renderers {
 				tfName.text = "";
 			}
 			
-			UI.disposeBMD(flagIcon.bitmapData);			
+			updatePositions(h, w);
 			
+			drawIcon(li, h);
+			
+			return this;
+		}
+		
+		protected function updatePositions(h:int, w:int):void 
+		{
+		//	tfLabel.y = int(h * .5 - tfLabel.height - Config.FINGER_SIZE * .1);
+		//!TODO:?
+			tfLabel.y = Math.round((h - tfLabel.textHeight) * .5);
+			tfLabel.width = w - tfLabel.x - padding;
+			tfLabel.x = int(w - padding - tfLabel.width);
+		}
+		
+		protected function drawIcon(li:ListItem, h:int):void 
+		{
+			flagIcon.removeChildren();
+			var data:Object = getItemData(li.data);
 			if (data != ""){
 				flagIcon.visible = true;
-				var flagAsset:Sprite = UI.getFlagByCurrency(data as String);			
-				flagIcon.bitmapData = UI.renderAsset(flagAsset, ICON_SIZE, ICON_SIZE, false, "ListPayCurrency.flagIcon");
+				var flagAsset:Sprite = UI.getFlagByCurrency(data as String);
+				UI.scaleToFit(flagAsset, ICON_SIZE, ICON_SIZE);
+				flagIcon.addChild(flagAsset);
 				
-				flagIcon.y = int(h * .5 - ICON_SIZE * .5); // beacause height is FINGER SIZE
+				flagIcon.y = int(h * .5 - ICON_SIZE * .5);
 				flagIcon.x = padding;
 				
 				tfName.x = flagIcon.x + flagIcon.width + padding;
 			}else{
 				tfName.x = padding;
 			}
-			
-			return this;
+		}
+		
+		private function redrawBack(highlight:Boolean, h:int, w:int):void 
+		{
+			graphics.clear();
+			if (highlight) {
+				graphics.beginFill(Style.color(Style.FILTER_TABS_COLOR_TAB_BG_SELECTED));
+				graphics.drawRect(0, 0, w, h);
+				graphics.endFill();
+			}
+			graphics.beginFill(Style.color(Style.COLOR_LINE_SSL));
+			graphics.drawRect(0, h - 1, w, 1);
+		}
+		
+		protected function getItemData(data:Object):Object 
+		{
+			return data;
 		}
 		
 		public function dispose():void {

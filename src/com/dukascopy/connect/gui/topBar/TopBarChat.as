@@ -292,8 +292,8 @@ package com.dukascopy.connect.gui.topBar {
 			if (chat.type == ChatRoomType.PRIVATE ||
 				chat.type == ChatRoomType.QUESTION)
 					displayUserStatus();
-			if (chat.type == ChatRoomType.QUESTION)
-				showInfoButton();
+			/*if (chat.type == ChatRoomType.QUESTION)
+				showInfoButton();*/
 				
 			var needShowSettingsButton:Boolean = true;
 			if (chat.type == ChatRoomType.COMPANY) {

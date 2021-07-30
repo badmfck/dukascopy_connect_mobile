@@ -29,13 +29,15 @@ package com.dukascopy.connect.screens.dialogs.gifts
 	import com.dukascopy.connect.gui.preloader.Preloader;
 	import com.dukascopy.connect.screens.base.BaseScreen;
 	import com.dukascopy.connect.screens.dialogs.ScreenPayDialog;
-	import com.dukascopy.connect.screens.dialogs.bottom.ListSelectionPopup;
+	import com.dukascopy.connect.screens.dialogs.x.base.bottom.BottomAlertPopup;
+	import com.dukascopy.connect.screens.dialogs.x.base.bottom.ListSelectionPopup;
 	import com.dukascopy.connect.screens.payments.card.TypeCurrency;
 	import com.dukascopy.connect.screens.payments.managers.SendMoneySecureCodeItem;
 	import com.dukascopy.connect.sys.Gifts;
 	import com.dukascopy.connect.sys.auth.Auth;
 	import com.dukascopy.connect.sys.dialogManager.DialogManager;
 	import com.dukascopy.connect.sys.echo.echo;
+	import com.dukascopy.connect.sys.errors.ErrorLocalizer;
 	import com.dukascopy.connect.sys.imageManager.ImageBitmapData;
 	import com.dukascopy.connect.sys.imageManager.ImageManager;
 	import com.dukascopy.connect.sys.payments.InvoiceManager;
@@ -324,15 +326,29 @@ package com.dukascopy.connect.screens.dialogs.gifts
 				}
 			}
 			
-			DialogManager.showDialog(
-				ListSelectionPopup,
-				{
-					items:acc,
-					title:Lang.TEXT_SELECT_ACCOUNT,
-					renderer:ListPayWalletItem,
-					callback:onWalletSelect
-				}, ServiceScreenManager.TYPE_SCREEN
-			);
+			if (acc != null && acc.length > 0)
+			{
+				DialogManager.showDialog(
+					ListSelectionPopup,
+					{
+						items:acc,
+						title:Lang.TEXT_SELECT_ACCOUNT,
+						renderer:ListPayWalletItem,
+						callback:onWalletSelect
+					}, DialogManager.TYPE_SCREEN
+				);
+			}
+			else
+			{
+				DialogManager.showDialog(
+					BottomAlertPopup,
+					{
+						title:Lang.TEXT_SELECT_ACCOUNT,
+						message:Lang.noFundedAccounts
+					}, DialogManager.TYPE_SCREEN
+				);
+			}
+			
 			
 		//	DialogManager.showDialog(ScreenPayDialog, {callback: onWalletSelect, data: acc, itemClass: ListPayWalletItem/*ListPayAccount*/, label: Lang.TEXT_SELECT_ACCOUNT});
 		}
@@ -849,6 +865,8 @@ package com.dukascopy.connect.screens.dialogs.gifts
 					inPaymentProcess = false;
 					activateScreen();
 					hidePreloader();
+					
+					ToastMessage.display(ErrorLocalizer.getPaymentsError(respond.errorCode.toString(), respond.errorMsg));
 				}
 				return;
 			}
@@ -2352,17 +2370,31 @@ package com.dukascopy.connect.screens.dialogs.gifts
 				
 				var currencyNeeded:String = currency;
 				var wallets:Array = PayManager.accountInfo.accounts;
+				
 				var l:int = wallets.length;
 				var walletItem:Object;
 				for (var i:int = 0; i < l; i++)
 				{
 					walletItem = wallets[i];
-					if (currencyNeeded == walletItem.CURRENCY)
+					if (currencyNeeded == walletItem.CURRENCY && Number(walletItem.BALANCE) > 0)
 					{
 						defaultAccount = walletItem;
 						break;
 					}
 				}
+				if (defaultAccount == null)
+				{
+					for (var i2:int = 0; i2 < l; i2++)
+					{
+						walletItem = wallets[i2];
+						if (Number(walletItem.BALANCE) > 0)
+						{
+							defaultAccount = walletItem;
+							break;
+						}
+					}
+				}
+				
 				if (defaultAccount != null)
 				{
 					onWalletSelect(defaultAccount);
@@ -2567,12 +2599,30 @@ package com.dukascopy.connect.screens.dialogs.gifts
 			for (var i:int = 0; i < l; i++)
 			{
 				walletItem = wallets[i];
-				if (currencyNeeded == walletItem.CURRENCY)
+				if (currencyNeeded == walletItem.CURRENCY && Number(walletItem.BALANCE) > 0)
 				{
 					defaultAccount = walletItem;
 					break;
 				}
 			}
+			
+			if (defaultAccount == null)
+			{
+				for (var i2:int = 0; i2 < l; i2++)
+				{
+					walletItem = wallets[i2];
+					if (Number(walletItem.BALANCE) > 0)
+					{
+						defaultAccount = walletItem;
+						break;
+					}
+				}
+			}
+			if (defaultAccount != null && "CURRENCY" in defaultAccount)
+			{
+				selectorCurrency.setValue(defaultAccount.CURRENCY);
+			}
+			
 			if (defaultAccount != null && !selfTransfer)
 			{
 				if (giftData != null && giftData.currency == "DCO" && ("COIN" in defaultAccount) == false)

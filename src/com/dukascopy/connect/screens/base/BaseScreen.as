@@ -193,7 +193,7 @@ package com.dukascopy.connect.screens.base {
 				return;
 			}
 			
-			if (data && "backScreen" in data == true && data.backScreen != null) {
+			if (data != null && "backScreen" in data == true && data.backScreen != null) {
 				MobileGui.changeMainScreen(data.backScreen, data.backScreenData, ScreenManager.DIRECTION_LEFT_RIGHT);
 				return;
 			}

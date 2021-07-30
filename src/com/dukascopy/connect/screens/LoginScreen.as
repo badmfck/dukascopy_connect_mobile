@@ -22,8 +22,8 @@ package com.dukascopy.connect.screens {
 	import com.dukascopy.connect.gui.menuVideo.BitmapButton;
 	import com.dukascopy.connect.screens.base.BaseScreen;
 	import com.dukascopy.connect.screens.dialogs.ScreenCountryPicker;
-	import com.dukascopy.connect.screens.dialogs.bottom.ListSelectionPopup;
-	import com.dukascopy.connect.screens.dialogs.bottom.SearchListSelectionPopup;
+	import com.dukascopy.connect.screens.dialogs.x.base.bottom.ListSelectionPopup;
+	import com.dukascopy.connect.screens.dialogs.x.base.bottom.SearchListSelectionPopup;
 	import com.dukascopy.connect.screens.serviceScreen.BottomContextMenuScreen;
 	import com.dukascopy.connect.screens.serviceScreen.Overlay;
 	import com.dukascopy.connect.sys.auth.Auth;
@@ -70,7 +70,7 @@ package com.dukascopy.connect.screens {
 		private static const BUTTON_REQUEST_CALL_SHOW_DELAY:int = 60;
 		
 		private var keyboard:NumericKeyboard;
-		private var logo:Sprite;
+		private var logo:Bitmap;
 		private var nextButton:BitmapButton;
 		private var clearPhoneButton:BitmapButton;
 		private var selectCountryButton:CountryButton;
@@ -124,8 +124,10 @@ package com.dukascopy.connect.screens {
 			keyboard = new NumericKeyboard(onKeyboard);
 			view.addChild(keyboard);
 			
-			logo = new (Style.icon(Style.ICON_LOGIN_LOGO))();
-			UI.scaleToFit(logo, Config.FINGER_SIZE * 10, Config.FINGER_SIZE * 1.7);
+			logo = new Bitmap();
+			var logoClip:Sprite = new (Style.icon(Style.ICON_LOGIN_LOGO))();
+			UI.scaleToFit(logoClip, Config.FINGER_SIZE * 10, Config.FINGER_SIZE * 1.7);
+			logo.bitmapData = UI.getSnapshot(logoClip);
 			view.addChild(logo);
 			
 			nextButton = new BitmapButton();

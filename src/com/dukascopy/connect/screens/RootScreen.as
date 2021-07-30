@@ -23,6 +23,7 @@ package com.dukascopy.connect.screens {
 	import com.dukascopy.connect.screens.innerScreens.InnerCallsScreen;
 	import com.dukascopy.connect.screens.innerScreens.InnerChatScreen;
 	import com.dukascopy.connect.screens.innerScreens.InnerContactScreen;
+	import com.dukascopy.connect.screens.innerScreens.InnerEscrowScreen;
 	import com.dukascopy.connect.screens.innerScreens.InnerQuestionsScreen;
 	import com.dukascopy.connect.screens.promoEvent.PromoEventsScreen;
 	import com.dukascopy.connect.sys.auth.Auth;
@@ -62,8 +63,8 @@ package com.dukascopy.connect.screens {
 		
 		private static var questionTabObject:Object = {
 			id: QUESTIONS_SCREEN_ID,
-			titleIcon: Icon911,
-			screenClass: InnerQuestionsScreen,
+			title: Lang.escrow_title,
+			screenClass: InnerEscrowScreen,
 			hasSearchBar: false
 		};
 		
@@ -514,6 +515,10 @@ package com.dukascopy.connect.screens {
 			if (LightBox.isShowing || ImagePreviewCrop.isShowing) {
 				return;
 			}
+			if (MobileGui.serviceScreen.isActive || MobileGui.dialogScreen.isActive)
+			{
+				return;
+			}
 			var tapIndex:int = currentTabIndex;
 			if (direction == Swiper.DIRECTION_RIGHT) {
 				if (tapIndex == 0)
@@ -615,7 +620,7 @@ package com.dukascopy.connect.screens {
 			
 			innerScreenManager.show(screenClass, screenData, dir, time);
 			
-			if (screenClass == InnerQuestionsScreen) {
+			if (screenClass == InnerEscrowScreen) {
 				bottomTabs.busy = false;
 				bottomTabs.selectTap(null);
 			}
@@ -624,10 +629,10 @@ package com.dukascopy.connect.screens {
 		private function getActions(id:String):Vector.<IScreenAction> {
 			var array:Vector.<IScreenAction> = new Vector.<IScreenAction>();
 			if (id == QUESTIONS_SCREEN_ID) {
-				if (Config.GEO_POSITION == true || Auth.companyID == "08A29C35B3") {
+				/*if (Config.GEO_POSITION == true || Auth.companyID == "08A29C35B3") {
 					actionOpen911Geolocation ||= new Open911GeolocationAction();
 					array.push(actionOpen911Geolocation);
-				}
+				}*/
 				actionOpen911Info ||= new Open911InfoAction();
 				array.push(actionOpen911Info);
 				actionCreateQuestion ||= new Create911QuestionAction();

@@ -9,6 +9,7 @@ package com.dukascopy.connect.data.screenAction.customActions
 	import com.dukascopy.connect.gui.components.message.ToastMessage;
 	import com.dukascopy.connect.gui.lightbox.IBitmapProvider;
 	import com.dukascopy.connect.sys.dialogManager.DialogManager;
+	import com.dukascopy.connect.sys.echo.echo;
 	import com.dukascopy.connect.utils.FilesSaveUtility;
 	import com.dukascopy.langs.Lang;
 	import flash.display.BitmapData;
@@ -64,14 +65,17 @@ package com.dukascopy.connect.data.screenAction.customActions
 						break;
 				}
 			}
-				
-			ToastMessage.display(Lang.textSaving);
-			var bmd:BitmapData = bitmapSource.getBitmapData();
-			FilesSaveUtility.signalOnImageSaved.add(onSaveSuccess);
-			FilesSaveUtility.saveFileToForGallery(bmd, url);
+			if (bitmapSource != null)
+			{
+				ToastMessage.display(Lang.textSaving);
+				var bmd:BitmapData = bitmapSource.getBitmapData();
+				FilesSaveUtility.signalOnImageSaved.add(onSaveSuccess);
+				FilesSaveUtility.saveFileToForGallery(bmd, url, true, false);
+			}
 		}
 		
 		private function onSaveSuccess():void {
+			echo("FILE!", "SaveOpenImageAction.onSaveSuccess");
 			FilesSaveUtility.signalOnImageSaved.remove(onSaveSuccess);
 			ToastMessage.display(Lang.textSaved);
 		}

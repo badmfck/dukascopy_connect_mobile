@@ -32,11 +32,11 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 		
 		protected const bgColor:uint = 0xFFF000;
 		protected const textColor:uint = 0x0051CA;
-		private const iconSize:int = Config.FINGER_SIZE_DOT_35;
+		protected const iconSize:int = Config.FINGER_SIZE_DOT_35;
 		
 		protected var fontSize:int = Math.ceil(Config.FINGER_SIZE * .25);
 		
-		private var icon:Sprite;
+		protected var icon:Sprite;
 		protected var tf:TextField;
 		protected var textFormat:TextFormat;
 		protected var textFormat1:TextFormat;
@@ -62,7 +62,7 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 		
 		public function updateHitzones(itemHitzones:Array):void { }
 		
-		private function setIconByClass(iconClass:Class):void {
+		protected function setIconByClass(iconClass:Class):void {
 			if (iconClass == null) {
 				removeIcon();
 				return;

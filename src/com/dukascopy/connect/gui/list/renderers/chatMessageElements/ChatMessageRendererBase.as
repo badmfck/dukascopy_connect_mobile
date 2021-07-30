@@ -34,12 +34,16 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 		static private var COLOR_BG_MINE_NOT_SENT:uint = 0x97CE9C;
 		static private var COLOR_BG_USER:uint = Style.color(Style.MESSAGE_COLOR);
 		static protected var COLOR_BG_WHITE:uint = Style.color(Style.MESSAGE_COLOR);
-		static protected var COLOR_BG_INFO:uint = 0xFFF000;
+		static protected var COLOR_BG_INFO:uint = 0xFFFFFF;
 		static protected var COLOR_BG_ABUSE:uint = Color.RED;
 		static protected var COLOR_BG_SATISFIED:uint = 0X0889EC;
 		static protected var COLOR_TEXT_MINE:uint = 0xFFFFFF;
 		static protected var COLOR_TEXT_USER:uint = Style.color(Style.COLOR_TEXT);
-		static protected var COLOR_TEXT_INFO:uint = 0x0051CA;
+		static protected var COLOR_TEXT_INFO:uint = 0x363D4D;
+		static protected var COLOR_TEXT_SELECTOR_TITLE:uint = 0x464E62;
+		static protected var COLOR_TEXT_SELECTOR_VALUE:uint = 0xC5D1DB;
+		static protected var COLOR_TEXT_SELECTOR_TITLE_SELECTED:uint = 0x7E95A8;
+		static protected var COLOR_TEXT_SELECTOR_VALUE_SELECTED:uint = 0x363D4D;
 		
 		protected var colorText:uint;
 		protected var boxBg:Shape;

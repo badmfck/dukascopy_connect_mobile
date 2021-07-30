@@ -7,7 +7,7 @@ package com.dukascopy.connect.screens.serviceScreen {
 	import com.dukascopy.connect.gui.list.renderers.ListChatUsers;
 	import com.dukascopy.connect.gui.menuVideo.BitmapButton;
 	import com.dukascopy.connect.screens.base.BaseScreen;
-	import com.dukascopy.connect.screens.dialogs.bottom.SearchListSelectionPopup;
+	import com.dukascopy.connect.screens.dialogs.x.base.bottom.SearchListSelectionPopup;
 	import com.dukascopy.connect.sys.dialogManager.DialogManager;
 	import com.dukascopy.connect.sys.imageManager.ImageBitmapData;
 	import com.dukascopy.connect.sys.imageManager.ImageManager;

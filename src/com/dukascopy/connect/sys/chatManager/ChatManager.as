@@ -29,6 +29,7 @@ package com.dukascopy.connect.sys.chatManager {
 	import com.dukascopy.connect.sys.chat.RichMessageDetector;
 	import com.dukascopy.connect.sys.chatManager.typesManagers.AnswersManager;
 	import com.dukascopy.connect.sys.chatManager.typesManagers.ChannelsManager;
+	import com.dukascopy.connect.sys.configManager.ConfigManager;
 	import com.dukascopy.connect.sys.connectionManager.NetworkManager;
 	import com.dukascopy.connect.sys.contactsManager.ContactsManager;
 	import com.dukascopy.connect.sys.crypter.Crypter;
@@ -2226,6 +2227,7 @@ package com.dukascopy.connect.sys.chatManager {
 		}
 		
 		static private function onChatMessage(data:Object):void {
+			trace("NEW MESSAGE WEB SOCKET RECEIVED")
 			if (!('chatUID' in data))
 				return;
 			
@@ -2238,8 +2240,6 @@ package com.dukascopy.connect.sys.chatManager {
 			var isMine:Boolean = data.user_uid == Auth.uid;
 			var chatVO:ChatVO = getChatByUID(data.chatUID);
 			GD.S_DEBUG_WS.invoke("CM: Trying to show message");
-			
-			
 			
 			if (chatVO == null) {
 				if (data.num == 1) {
@@ -2326,10 +2326,18 @@ package com.dukascopy.connect.sys.chatManager {
 			}else{
 				SoundController.playChatMessageReceive();
 			}
-
+			trace("CHECK APPROVED");
 			if (_notApproved == false) {
+				trace("APPROVED");
 				var message:ChatMessageVO = new ChatMessageVO(data);
-				if (message.userVO != null && message.userVO.type == UserType.BOT){
+				if (message.userVO != null) {
+					trace("APPROVED -> " + message.userVO.type + "; " + message.userVO.uid);
+				} else {
+					trace("APPROVED -> " + message.userUID);
+				}
+				//if (message.userVO != null && message.userVO.type == UserType.BOT){
+				if (message.userUID == ConfigManager.config.supportBotUID) {
+					trace("FROM BOT");
 					message.checkForImmediatelyMessage = true;
 				}
 				var userAvatar:String = currentChat.getUserAvatar(message.userUID);
@@ -2340,6 +2348,7 @@ package com.dukascopy.connect.sys.chatManager {
 				if(isMine)
 					GD.S_DEBUG_WS.invoke("CM: message must be shown!");
 			}else{
+				trace("NOT APPROVED");
 				GD.S_DEBUG_WS.invoke("CM: message not shown! mine:"+isMine)
 			}
 		}

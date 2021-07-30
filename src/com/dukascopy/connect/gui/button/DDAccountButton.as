@@ -5,6 +5,9 @@ package com.dukascopy.connect.gui.button
 	import com.dukascopy.connect.gui.menuVideo.BitmapButton;
 	import com.dukascopy.connect.screens.payments.card.TypeCurrency;
 	import com.dukascopy.connect.sys.imageManager.ImageBitmapData;
+	import com.dukascopy.connect.sys.payments.CurrencyHelpers;
+	import com.dukascopy.connect.sys.payments.PayManager;
+	import com.dukascopy.connect.sys.payments.PaymentsManager;
 	import com.dukascopy.connect.sys.payments.PayManager;
 	import com.dukascopy.connect.sys.style.FontSize;
 	import com.dukascopy.connect.sys.style.Style;
@@ -54,17 +57,21 @@ package com.dukascopy.connect.gui.button
 		private var ammountColor:Number;
 		
 		private var description:Bitmap;
+		private var accountTitle:Bitmap;
 		private var isInvestment:Boolean;
 		private var underlineColor:Number;
+		private var title:String;
+		private var container:Sprite;
 		private var textFormatLabel:TextFormat;
 		private var textFormatPlaceholder:TextFormat;
 		
-		public function DDAccountButton(callBack:Function, data:Object = null/*, defaultLabel:String = ""*/, showArrow:Boolean = true, ammountColor:Number=-1, underlineColor:Number = NaN)
+		public function DDAccountButton(callBack:Function, data:Object = null/*, defaultLabel:String = ""*/, showArrow:Boolean = true, ammountColor:Number=-1, underlineColor:Number = NaN, title:String = null)
 		{
 			super();
 			this.ammountColor = ammountColor;
 			this.underlineColor = underlineColor;
 			this.showArrow = showArrow;
+			this.title = title;
 			/*this.defaultLabel = defaultLabel == ""? Lang.textChoose+"..." : defaultLabel;*/
 			updateDefaultLabel();
 			
@@ -80,7 +87,13 @@ package com.dukascopy.connect.gui.button
 			cancelOnVerticalMovement = true;
 			tapCallback = callBack;
 			
+			container = new Sprite();
+			
 			box = new Sprite();
+			container.addChild(box);
+			tf = UIFactory.createTextField();
+			tf.textColor = Style.color(Style.COLOR_SUBTITLE);
+			//tf.border = true;
 			
 			textFormatLabel = new TextFormat();
 			textFormatLabel.size = FontSize.CAPTION_1;
@@ -126,6 +139,9 @@ package com.dukascopy.connect.gui.button
 			icon = new Bitmap();
 			box.addChild(icon);
 			
+			accountTitle = new Bitmap();
+			container.addChild(accountTitle);
+			
 			description = new Bitmap();
 			box.addChild(description);
 		//	drawDescription();
@@ -141,6 +157,19 @@ package com.dukascopy.connect.gui.button
 			description.bitmapData = TextUtils.createTextFieldData(Lang.amountAvaliable, w, 10, false, 
 															TextFormatAlign.LEFT, TextFieldAutoSize.LEFT, 
 															FontSize.CAPTION_1, false, Style.color(Style.COLOR_SUBTITLE), 
+															Style.color(Style.COLOR_BACKGROUND), false, true);
+		}
+		
+		public function drawTitle():void
+		{
+			if (accountTitle.bitmapData != null)
+			{
+				accountTitle.bitmapData.dispose();
+				accountTitle.bitmapData = null;
+			}
+			accountTitle.bitmapData = TextUtils.createTextFieldData(title, w, 10, false, 
+															TextFormatAlign.LEFT, TextFieldAutoSize.LEFT, 
+															FontSize.SUBHEAD, false, Style.color(Style.COLOR_SUBTITLE), 
 															Style.color(Style.COLOR_BACKGROUND), false, true);
 		}
 		
@@ -169,7 +198,7 @@ package com.dukascopy.connect.gui.button
 			
 			if (generatedBitmap == null)
 			{
-				generatedBitmap = new ImageBitmapData("DDAccountButton.generatedBitmap", w, h + Config.FINGER_SIZE * .4, true, 0);
+				generatedBitmap = new ImageBitmapData("DDAccountButton.generatedBitmap", w, h + Config.FINGER_SIZE * .4 + FontSize.SUBHEAD + Config.FINGER_SIZE*.07, true, 0);
 			}
 			else
 			{
@@ -194,7 +223,7 @@ package com.dukascopy.connect.gui.button
 			if (showArrow == true) {
 				arrowHeight = h * 0.15;
 				arrowCathetus = h * 0.12;
-				box.graphics.beginFill(Style.color(Style.COLOR_TEXT));
+				box.graphics.beginFill(Style.color(Style.COLOR_SUBTITLE));
 				box.graphics.moveTo(xOffset, int((h - arrowHeight) * .5));
 				box.graphics.lineTo(xOffset - arrowCathetus, int((h + arrowHeight) * .5));
 				box.graphics.lineTo(xOffset - arrowCathetus * 2, int((h - arrowHeight) * .5));
@@ -207,6 +236,15 @@ package com.dukascopy.connect.gui.button
 		//	tf.x = (w - xOffset);
 			tf.x = 0;
 			drawDescription();
+			if (title != null)
+			{
+				drawTitle();
+				box.y = int(accountTitle.height + Config.FINGER_SIZE * .07);
+			}
+			else
+			{
+				box.y = 0;
+			}
 			
 			if (data == null)
 			{
@@ -228,7 +266,7 @@ package com.dukascopy.connect.gui.button
 				tf.width = tf.textWidth + 4;
 				tf.height = tf.textHeight + 4;
 				
-				generatedBitmap.drawWithQuality(box, null, null, null, null, true, StageQuality.BEST);
+				generatedBitmap.drawWithQuality(container, null, null, null, null, true, StageQuality.BEST);
 			}
 			else if (data is String)
 			{
@@ -247,7 +285,7 @@ package com.dukascopy.connect.gui.button
 				tf.width = tf.textWidth + 4;
 				tf.height = tf.textHeight + 4;
 				
-				generatedBitmap.drawWithQuality(box, null, null, null, null, true, StageQuality.BEST);
+				generatedBitmap.drawWithQuality(container, null, null, null, null, true, StageQuality.BEST);
 			}
 			else if (data is Object)
 			{
@@ -314,7 +352,7 @@ package com.dukascopy.connect.gui.button
 				else
 				{
 					var decimals:int = 2;
-					if (PayManager.systemOptions != null && PayManager.systemOptions.currencyDecimalRules != null && PayManager.systemOptions.currencyDecimalRules[currencyOrigin])
+					if (PayManager.systemOptions != null && PayManager.systemOptions.currencyDecimalRules != null && !isNaN(PayManager.systemOptions.currencyDecimalRules[currencyOrigin]))
 					{
 						decimals = PayManager.systemOptions.currencyDecimalRules[currencyOrigin];
 					}
@@ -432,7 +470,7 @@ package com.dukascopy.connect.gui.button
 				resize(tf, tfRight.x - Config.FINGER_SIZE * .15);
 				
 				icon.x = 0;
-				icon.y = h * .5 - ICON_SIZE * .5;
+				icon.y = int(h * .5 - ICON_SIZE * .5);
 				
 				description.visible = true;
 				description.x = int(w - description.width);
@@ -451,7 +489,7 @@ package com.dukascopy.connect.gui.button
 				{
 					walletName.text = "";
 				}
-				generatedBitmap.drawWithQuality(box, null, null, null, null, true, StageQuality.BEST);
+				generatedBitmap.drawWithQuality(container, null, null, null, null, true, StageQuality.BEST);
 			}
 			
 			//generatedBitmap.drawWithQuality(box, null, null, null, null, true, StageQuality.BEST);
@@ -510,6 +548,16 @@ package com.dukascopy.connect.gui.button
 			{
 				UI.destroy(description);
 				description = null;
+			}
+			if (accountTitle != null)
+			{
+				UI.destroy(accountTitle);
+				accountTitle = null;
+			}
+			if (container != null)
+			{
+				UI.destroy(container);
+				container = null;
 			}
 			
 			super.dispose();

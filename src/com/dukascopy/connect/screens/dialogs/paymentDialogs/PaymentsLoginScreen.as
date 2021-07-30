@@ -1,14 +1,6 @@
 package com.dukascopy.connect.screens.dialogs.paymentDialogs {
 
-	import assest.LockIconGrey2;
-	import assets.EditIcon;
-	import assets.EyeIcon;
 	import assets.FingerprintIcon;
-	import assets.LoginLogo;
-	import assets.NextButton4;
-	import assets.PaymentsLogo;
-	import assets.SendToMailIcon2;
-	import com.adobe.utils.StringUtil;
 	import com.dukascopy.connect.Config;
 	import com.dukascopy.connect.GD;
 	import com.dukascopy.connect.MobileGui;
@@ -18,23 +10,18 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs {
 	import com.dukascopy.connect.gui.input.Input;
 	import com.dukascopy.connect.gui.lightbox.UI;
 	import com.dukascopy.connect.gui.menuVideo.BitmapButton;
-	import com.dukascopy.connect.gui.scrollPanel.ScrollPanel;
 	import com.dukascopy.connect.screens.base.BaseScreen;
 	import com.dukascopy.connect.screens.serviceScreen.FingerprintScreen;
 	import com.dukascopy.connect.sys.applicationError.ApplicationErrors;
 	import com.dukascopy.connect.sys.dialogManager.DialogManager;
+	import com.dukascopy.connect.sys.echo.echo;
 	import com.dukascopy.connect.sys.imageManager.ImageBitmapData;
 	import com.dukascopy.connect.sys.nativeExtensionController.NativeExtensionController;
 	import com.dukascopy.connect.sys.payments.PayAPIManager;
-	import com.dukascopy.connect.sys.pointerManager.PointerManager;
-	import com.dukascopy.connect.sys.serviceScreenManager.ServiceScreenManager;
-	import com.dukascopy.connect.sys.softKeyboard.SoftKeyboard;
 	import com.dukascopy.connect.sys.store.Store;
 	import com.dukascopy.connect.sys.style.FontSize;
 	import com.dukascopy.connect.sys.style.Style;
 	import com.dukascopy.connect.sys.style.presets.Color;
-	import com.dukascopy.connect.sys.theme.AppTheme;
-	import com.dukascopy.connect.sys.touchID.TouchIDManager;
 	import com.dukascopy.connect.type.HitZoneType;
 	import com.dukascopy.connect.utils.TextUtils;
 	import com.dukascopy.langs.Lang;
@@ -1000,6 +987,8 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs {
 		
 		private function setInitialYPositions(firstTime:Boolean = false):void 
 		{
+			echo("setInitialYPositions", firstTime.toString());
+			
 			initialHeight = _height;
 			
 			description.y = int(_height * .5 - description.height - Config.FINGER_SIZE * .6);
@@ -1062,6 +1051,8 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs {
 		
 		private function updateFingerprintButtonPosition(loadFingerprintStatus:Boolean = true):void 
 		{
+			echo("updateFingerprintButtonPosition", loadFingerprintStatus.toString());
+			
 			if (input.visible == true)
 			{
 				var fingerprintWidth:int = 0;
@@ -1093,6 +1084,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs {
 		
 		private function onFingerprintStatusLoaded(data:Boolean, error:Boolean):void 
 		{
+			echo("onFingerprintStatusLoaded", data + " " + error);
 			if (isDisposed == true)
 			{
 				return;

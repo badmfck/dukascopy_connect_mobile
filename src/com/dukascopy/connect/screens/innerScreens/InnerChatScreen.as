@@ -248,7 +248,7 @@ package com.dukascopy.connect.screens.innerScreens {
 					return;
 				}
 				MobileGui.changeMainScreen(QuestionCreateUpdateScreen, { backScreen:MobileGui.centerScreen.currentScreenClass,
-														   title:Lang.askQuestions, 
+														   title:Lang.addTender, 
 														   backScreenData:this.data,
 														   data:null}, 
 														   ScreenManager.DIRECTION_RIGHT_LEFT);
@@ -274,7 +274,7 @@ package com.dukascopy.connect.screens.innerScreens {
 			}
 			if (id == TAB_911) {
 				addQuestionIcon ||= new SWFAddQuestionButton();
-				createChatButton.setDesign(addQuestionIcon);	
+				createChatButton.setDesign(addQuestionIcon);
 				createChatButton.visible = true;
 				return;
 			}

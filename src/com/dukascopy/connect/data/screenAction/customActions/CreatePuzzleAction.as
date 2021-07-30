@@ -1,7 +1,9 @@
 package com.dukascopy.connect.data.screenAction.customActions 
 {
+	import com.dukascopy.connect.Config;
 	import com.dukascopy.connect.data.screenAction.IScreenAction;
 	import com.dukascopy.connect.data.screenAction.ScreenAction;
+	import com.dukascopy.connect.gui.chatInput.ChatInputAndroid;
 	import com.dukascopy.connect.sys.chatManager.ChatManager;
 	import com.dukascopy.connect.sys.dialogManager.DialogManager;
 	import com.dukascopy.connect.sys.imageManager.ImageBitmapData;
@@ -21,6 +23,10 @@ package com.dukascopy.connect.data.screenAction.customActions
 		
 		public function execute():void
 		{
+			if (Config.PLATFORM_ANDROID == true)
+			{
+				ChatInputAndroid.S_CLOSE_MEDIA_KEYBOARD.invoke();
+			}
 			DialogManager.showAddPuzzle(callBackAddInvoice);
 		}
 		

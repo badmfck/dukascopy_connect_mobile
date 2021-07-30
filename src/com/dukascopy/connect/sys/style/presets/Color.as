@@ -20,6 +20,7 @@ package com.dukascopy.connect.sys.style.presets
 		
 		static public var BLACK_OLD:uint = 0x3b4452;
 		static public const RED_DARK:Number = 0xB9363A;
+		static public const RED_LIGHT:Number = 0xE1666A;
 		static public const BLACK_TRUE:Number = 0x000000;
 		static public const IOS_TEXT_BLUE:Number = 0x007AFF;
 		
@@ -27,6 +28,10 @@ package com.dukascopy.connect.sys.style.presets
 		static public const BLUE_DARK:Number = 0x2A7CA9;
 		static public const BLUE_DARK_2:Number = 0x515670;
 		static public const BLUE_2:Number = 0x757CA1;
+		
+		static public const GREEN_10:Number = 0xEFF9F0;
+		static public const RED_10:Number = 0xFAECEC;
+		
 		
 		public function Color() 
 		{

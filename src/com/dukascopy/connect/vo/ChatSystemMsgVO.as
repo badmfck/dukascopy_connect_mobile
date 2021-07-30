@@ -4,6 +4,7 @@ package com.dukascopy.connect.vo {
 	import com.dukascopy.connect.Config;
 	import com.dukascopy.connect.data.GiftData;
 	import com.dukascopy.connect.data.RateBotData;
+	import com.dukascopy.connect.data.escrow.EscrowMessageData;
 	import com.dukascopy.connect.data.location.Location;
 	import com.dukascopy.connect.gui.puzzle.Puzzle;
 	import com.dukascopy.connect.sys.auth.Auth;
@@ -85,6 +86,11 @@ package com.dukascopy.connect.vo {
 		static public const METHOD_LOCAL_TYPE:String = "type";
 		static public const METHOD_LOCAL_GEO:String = "Geolocation";
 		static public const METHOD_LOCAL_LANGUAGES:String = "languages";
+		static public const METHOD_LOCAL_SIDE:String = "side";
+		static public const METHOD_LOCAL_CRYPTO:String = "crypto";
+		static public const METHOD_LOCAL_CRYPTO_AMOUNT:String = "cryptoAmount";
+		static public const METHOD_LOCAL_PRICE:String = "price";
+		static public const METHOD_LOCAL_CURRENCY:String = "currency";
 		
 		static public const METHOD_USER_ADD:String = "userAdd";
 		static public const METHOD_USER_REMOVE:String = "userRemove";
@@ -110,12 +116,16 @@ package com.dukascopy.connect.vo {
 		static public const REPLAY_START_BOUND_FIXED:String = "<quote ";
 		static public const TYPE_REPLY:String = "typeReply";
 		static public const TYPE_LINK_PREVIEW:String = "typeLinkPreview";
+		static public const TYPE_ESCROW_OFFER:String = "typeEscrowOffer";
+		static public const TYPE_ESCROW_DEAL:String = "typeEscrowDeal";
+		static public const METHOD_LOCAL_CREATE:String = "methodLocalCreate";
 		
 		private var _type:String;
 		private var _method:String;
 		private var _title:String;
 		private var _text:String;
 		private var _textSmall:String;
+		private var _defaultText:String;
 		
 		private var _fileType:String;
 		private var _imageURL:String;
@@ -167,6 +177,8 @@ package com.dukascopy.connect.vo {
 				_title = data.title;
 			if ("fileType" in data && data.fileType != null)
 				_fileType = data.fileType;
+			if ("defaultText" in data && data.defaultText != null)
+				_defaultText = data.defaultText;
 			var tmp:Array;
 			if (_type != null) {
 				if (_type == TYPE_VI) {
@@ -408,7 +420,15 @@ package com.dukascopy.connect.vo {
 							_geolocation = new Location(tmp[0], tmp[1]);
 						}
 					}
+				} else if (_type == TYPE_ESCROW_OFFER) {
+					_additionalData = new EscrowMessageData(data);
+					_title = Lang.escrow_offer_message;
+				} else if (_type == TYPE_ESCROW_DEAL) {
+					_type = TYPE_ESCROW_OFFER;
+					_additionalData = new EscrowMessageData(data);
+					_title = Lang.escrow_deal_message;
 				}
+				
 				
 				if (_method != null && _method == METHOD_CONTACT) {
 					//!TODO: replace title from locale
@@ -485,6 +505,7 @@ package com.dukascopy.connect.vo {
 		public function get newsVO():NewsMessageVO { return _additionalData as NewsMessageVO; }
 		public function get fileVO():FileMessageVO { return _additionalData as FileMessageVO; }
 		public function get callVO():CallMessageVO { return _additionalData as CallMessageVO; }
+		public function get escrow():EscrowMessageData { return _additionalData as EscrowMessageData; }
 		
 		public function set originalImageHeight(value:int):void{
 			_originalImageHeight = value;
@@ -584,8 +605,11 @@ package com.dukascopy.connect.vo {
 						_text = _title;
 				} else
 					_text = _title;
-			} else
+			} else if (_defaultText != null) {
+				_text = _defaultText;
+			} else {
 				_text = _title;
+			}
 			return _text;
 		}
 		

@@ -584,15 +584,17 @@ package com.dukascopy.connect.sys.php {
 			type:String = QuestionsManager.QUESTION_TYPE_PRIVATE,
 			lat:Number = NaN,
 			lon:Number = NaN,
-			reservedQuestionId:String = null):void {
+			reservedQuestionId:String = null,
+			price:String = ""):void {
 				var data:Object = { };
 				data.text = text;
 				data.ver = 4;
 				if (isNaN(tipsAmount) == false) {
 					data.tipsAmount = tipsAmount;
-					data.tipsCurrency = tipsCurrency;
+					data.tipsCurrency = (tipsCurrency == "DUK+") ? "DCO" : tipsCurrency;
 				}
 				data.type = type;
+				data.price = price;
 				if (categories != null)
 					data.categories = categories;
 				if (incognito == true)
@@ -613,7 +615,7 @@ package com.dukascopy.connect.sys.php {
 				data.text = text;
 			if (isNaN(tipsAmount) == false) {
 				data.tipsAmount = tipsAmount;
-				data.tipsCurrency = tipsCurrency;
+				data.tipsCurrency = (tipsCurrency == "DUK+") ? "DCO" : tipsCurrency;
 			}
 			if (categories != null)
 				data.categories = categories;
@@ -1218,11 +1220,22 @@ package com.dukascopy.connect.sys.php {
 			data.b64 = true;
 			data.method = "files.addImage";
 			data.crypted = false;
-
+			
 			call('files.addImage', callBack, data, Config.URL_PHP_CORE_SERVER_FILE);
 		}
-
+		
+		static public function escrow_requestInvestigation(callBack:Function = null, data:Object = null):void 
+		{
+			call('escrow.claim', callBack, data);
+		}
+		
+		static public function escrow_addEvent(callBack:Function = null, data:Object = null):void 
+		{
+			call('escrow.addEvent', callBack, data);
+		}
+		
 		static private function call(method:String, callBack:Function = null, data:Object = null,  url:String = null, rawRespond:Boolean = false, requestMethod:String = 'POST', crypt:Boolean = true, noAuthKey:Boolean = false, additionalData:Object = null):void {
+			
 			if (Auth.key == "web" && methodsWithoutKey.indexOf(method) == -1 && rawRespond == false) {
 				
 				if (callBack != null) {

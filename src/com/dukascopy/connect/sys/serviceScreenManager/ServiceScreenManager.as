@@ -4,7 +4,6 @@ package com.dukascopy.connect.sys.serviceScreenManager {
 	import com.dukascopy.connect.data.GiftData;
 	import com.dukascopy.connect.screens.dialogs.bankBot.OrderCardDialog;
 	import com.dukascopy.connect.screens.dialogs.gifts.CreateGiftPopup;
-	import com.dukascopy.connect.screens.dialogs.newDialogs.ScreenExtraTipsPopup;
 	import com.dukascopy.connect.screens.gifts.GiftInfoScreen;
 	import com.dukascopy.connect.screens.gifts.GiftsTutorialScreen;
 	import com.dukascopy.connect.vo.users.UserVO;
@@ -40,11 +39,6 @@ package com.dukascopy.connect.sys.serviceScreenManager {
 			_hasOpenedDialog = true;
 			currentScreenType = TYPE_DIALOG;
 			S_SHOW.invoke(CreateGiftPopup, { user:userModel, giftType:giftType, giftData:predefinedGiftData, receiverSecret:receiverSecret } );
-		}
-		
-		public static function showExtraTipsPopup(currency:String = null, type:String = null):void {
-			var data:Object = { buttonSecond:Lang.textCancel, title:Lang.addExtraTips, currency:currency, type:type };
-			showScreen(TYPE_DIALOG, ScreenExtraTipsPopup, data, 0.5);
 		}
 		
 		/**

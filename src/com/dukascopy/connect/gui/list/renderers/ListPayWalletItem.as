@@ -106,6 +106,15 @@ package com.dukascopy.connect.gui.list.renderers {
 			
 			position(w);
 			
+			if (data != null && "disabled" in data && data.disabled == true)
+			{
+				alpha = 0.4;
+			}
+			else
+			{
+				alpha = 1;
+			}
+			
 			return this;
 		}
 		

@@ -309,6 +309,63 @@ package com.dukascopy.connect.utils {
 			return "";
 		}
 		
+		static public function getTimeInNumbers2(difference:Number):String 
+		{
+			var seconds:Number = Math.floor((difference / (1000)) % 60);
+			var minutes:Number = Math.floor((difference / (1000 * 60)) % 60);
+			var hours:Number = Math.floor((difference / (1000 * 60 * 60)) % 24);
+			var days:Number = Math.floor((difference / (1000 * 60 * 60)) / 24);
+			
+			if (days > 0)
+			{
+				var day:String;
+				if (days > 1)
+				{
+					day = Lang.days;
+				}
+				else{
+					day = Lang.day;
+				}
+				if (hours > 0)
+				{
+					return days.toString() + " " + day + " " + hours.toString() + " " + Lang.textHours;
+				}
+				else
+				{
+					return days.toString() + " " + day;
+				}
+			}
+			else{
+				var result:String = seconds.toString();
+				if (result.length == 1)
+				{
+					result = "0" + result;
+				}
+				result = ":" + result;
+				
+				result = minutes + result;
+				
+				
+				if (hours > 0)
+				{
+					if (result.length == 4)
+					{
+						result = "0" + result;
+					}
+					
+					result = ":" + result;
+					result = hours + result;
+					if (result.length == 7)
+					{
+						result = "0" + result;
+					}
+				}
+				
+				return result;
+			}
+			return "";
+		}
+		
 		static public function getTimeString(date:Date, onlyDate:Boolean = false, plusYears:int = 0, byUTC:Boolean = true, delimiter:String = "-", needSeconds:Boolean = false):String {
 			if (plusYears != 0)
 				date.setFullYear(date.getFullYear() + plusYears);

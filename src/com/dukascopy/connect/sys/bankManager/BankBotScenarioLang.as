@@ -309,6 +309,8 @@ package com.dukascopy.connect.sys.bankManager {
 		static public var itemSendToCard:String = "Top up card @3 from @4 account by @1 @2.";
 		static public var itemOpenAccount:String = "Open new @1 account.";
 		static public var itemExchange:String = "Transfer @1 @2 from @3 account to @4 account.";
+		static public var itemSendToSaving:String = "Transfer @1 @2 from @3 account to Saving @4 account.";
+		static public var itemSendToTrading:String = "Transfer @1 @2 from @3 account to Trading @4 account.";
 		static public var itemOpenAccountAuto:String = "@@1 account will be opened automatically.";
 		static public var itemInvestmentSell1:String = "Sell @1.";
 		static public var itemInvestmentSell2:String = "Sell @1 worth of @2.";

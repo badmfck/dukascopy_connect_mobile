@@ -207,8 +207,22 @@ package com.dukascopy.connect.sys.nativeExtensionController {
 												}
 										}});
 									}
+									else
+									{
+										if (Config.PLATFORM_ANDROID && MobileGui.androidExtension.fingerprint_pinExist() == false && MobileGui.androidExtension.fingerprint_avaliable() == true)
+										{
+											savePin(loginData.data.password);
+										}
+									}
 								}
 							);
+						}
+						else
+						{
+							if (Config.PLATFORM_ANDROID && MobileGui.androidExtension.fingerprint_pinExist() == false && MobileGui.androidExtension.fingerprint_avaliable() == true)
+							{
+								savePin(loginData.data.password);
+							}
 						}
 					}
 				);
@@ -329,7 +343,7 @@ package com.dukascopy.connect.sys.nativeExtensionController {
 			switch (e.code) {
 				
 				case "filePicker": {
-					trace("file:", "imagePicker");
+					echo("file:", "imagePicker");
 					var resultData:Object;
 					try
 					{
@@ -343,14 +357,14 @@ package com.dukascopy.connect.sys.nativeExtensionController {
 					{
 						if (resultData.signal == "didPick")
 						{
-							trace("file:", "didPick");
+							echo("file:", "didPick");
 							if (Config.PLATFORM_ANDROID && MobileGui.androidExtension != null)
 							{
 								var mediaFileData:MediaFileData = new MediaFileData();	
 								var file:File = new File(resultData.path);
 								if (file.exists)
 								{
-									trace("file:", "File: " + resultData.path);
+									echo("file:", "File: " + resultData.path);
 									mediaFileData.path = resultData.path;
 									mediaFileData.id = resultData.path;
 									
@@ -1198,10 +1212,10 @@ package com.dukascopy.connect.sys.nativeExtensionController {
 			}
 		}
 		
-		static public function saveFileToDownloadFolder(url:String):String {
+		static public function saveFileToDownloadFolder(url:String, openFile:Boolean = true):String {
 			if (Config.PLATFORM_ANDROID == true) {
 				MobileGui.preventScreenRemove = true;
-				return MobileGui.androidExtension.moveToDownloadFolder(url);
+				return MobileGui.androidExtension.moveToDownloadFolder(url, openFile);
 			}
 			return null;
 		}
@@ -1430,6 +1444,23 @@ package com.dukascopy.connect.sys.nativeExtensionController {
 				result = MobileGui.androidExtension.getTimezoneId();
 			}
 			return result;
+		}
+		
+		static public function existInDownloadFolder(fileName:String):Boolean 
+		{
+			if (Config.PLATFORM_ANDROID && MobileGui.androidExtension != null)
+			{
+				return MobileGui.androidExtension.existInDownloadFolder(fileName);
+			}
+			return false;
+		}
+		
+		static public function openFileInDownloads(fileName:String):void 
+		{
+			if (Config.PLATFORM_ANDROID && MobileGui.androidExtension != null)
+			{
+				return MobileGui.androidExtension.openFileInDownloads(fileName);
+			}
 		}
 		
 		static private function onFileSelect(e:Event):void 

@@ -6,7 +6,7 @@ package com.dukascopy.connect.screens.settings
 	import com.dukascopy.connect.gui.components.CirclePreloader;
 	import com.dukascopy.connect.gui.components.renderer.SettingsControlRenderer;
 	import com.dukascopy.connect.gui.list.renderers.ListSimpleText;
-	import com.dukascopy.connect.screens.dialogs.bottom.ListSelectionPopup;
+	import com.dukascopy.connect.screens.dialogs.x.base.bottom.ListSelectionPopup;
 	import com.dukascopy.connect.sys.applicationError.ApplicationErrors;
 	import com.dukascopy.connect.sys.serviceScreenManager.ServiceScreenManager;
 	import com.dukascopy.connect.sys.settings.GlobalSettings;

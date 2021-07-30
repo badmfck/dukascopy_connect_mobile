@@ -5,6 +5,7 @@ import com.dukascopy.connect.GD;
 import com.dukascopy.connect.MobileGui;
 	import com.dukascopy.connect.data.MessageData;
 	import com.dukascopy.connect.data.UserBanData;
+	import com.dukascopy.connect.data.escrow.EscrowEventType;
 	import com.dukascopy.connect.data.location.Location;
 	import com.dukascopy.connect.gui.components.message.ToastMessage;
 	import com.dukascopy.connect.gui.lightbox.UI;
@@ -115,6 +116,7 @@ import com.dukascopy.connect.MobileGui;
 		static public var S_IDENTIFICATION_QUEUE:Signal = new Signal("WSClient.S_IDENTIFICATION_QUEUE");
 		static public var S_LOYALTY_CHANGE:Signal = new Signal("WSClient.S_LOYALTY_CHANGE");
 		static public var S_ACTIVITY:Signal = new Signal("WSClient.S_ACTIVITY");
+		static public var S_ESCROW_DEAL_EVENT:Signal = new Signal("WSClient.S_ESCROW_DEAL_EVENT");
 		
 		static private var wasMessage:Boolean;
 
@@ -957,6 +959,36 @@ import com.dukascopy.connect.MobileGui;
 				S_IDENTIFICATION_QUEUE.invoke(pack.total);
 				return;
 			}
+			
+			if (pack.method == WSMethodType.ESCROW_OFFER_ACCEPT)
+			{
+				trace("123");
+				return;
+			}
+			if (pack.method == WSMethodType.ESCROW_OFFER_CANCEL)
+			{
+				trace("123");
+				/*data : Object {
+					error : Object {
+						code : "ESCROW16" 
+						msg : "Escrow deal offer error: Cannot decode message" 
+					}
+				}*/
+				
+				return;
+			}
+			if (pack.method == WSMethodType.ESCROW_EVENT)
+			{
+				if (pack.action == "escrow_deal_created" && pack.data != null && pack.data.event != null && pack.data.event.type == EscrowEventType.CREATED)
+				{
+					S_ESCROW_DEAL_EVENT.invoke(EscrowEventType.CREATED, pack.data.deal);
+				}
+				if (pack.action == "escrow_deal_created" && pack.data != null && pack.data.event != null && pack.data.event.type == EscrowEventType.HOLD_MCA)
+				{
+					S_ESCROW_DEAL_EVENT.invoke(EscrowEventType.HOLD_MCA, pack.data.deal);
+				}
+				return;
+			}
 		}
 		
 		static public function sendLocationUpdate(uid:String, location:Location):void 
@@ -969,6 +1001,26 @@ import com.dukascopy.connect.MobileGui;
 				lat:location.latitude,
 				lon:location.longitude
 			} );
+		}
+		
+		static public function call_accept_offer(id:Number, debitAccount:String, cryptoWallet:String):void 
+		{
+			var request:Object = new Object();
+			request.msg_id = id;
+			if (debitAccount != null)
+			{
+				request.debit_account = debitAccount;
+			}
+			if (cryptoWallet != null)
+			{
+				request.crypto_wallet = cryptoWallet;
+			}
+			send(WSMethodType.ESCROW_OFFER_ACCEPT, request);
+		}
+		
+		static public function call_cancel_offer(id:Number):void 
+		{
+			send(WSMethodType.ESCROW_OFFER_CANCEL, {msg_id:id});
 		}
 		
 		static private function checkBlackHoleMethod(pack:Object):void {

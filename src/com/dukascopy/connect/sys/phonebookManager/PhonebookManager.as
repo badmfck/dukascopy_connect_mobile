@@ -68,7 +68,7 @@ package com.dukascopy.connect.sys.phonebookManager {
 		static private var phonesToPHP:Array;
 		static private var needToSync:Boolean = false;
 		static private var viContact:ContactVO;
-		static private var addNewContactAction:com.dukascopy.connect.data.screenAction.customActions.AddNewContactAction;
+		static private var addNewContactAction:AddNewContactAction;
 
 		public function PhonebookManager() { }
 		

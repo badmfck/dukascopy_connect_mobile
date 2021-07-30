@@ -71,6 +71,15 @@ package com.dukascopy.connect.data.coinMarketplace {
 				ApplicationErrors.add("crit");
 			}
 			
+			if (PaymentsManager.S_BACK != null)
+			{
+				PaymentsManager.S_BACK.add(onAuthCancelled);
+			}
+			else
+			{
+				ApplicationErrors.add("crit");
+			}
+			
 			if (PayManager.S_CANCEL_AUTH != null)
 			{
 				PayManager.S_CANCEL_AUTH.add(onAuthCancelled);
@@ -111,6 +120,7 @@ package com.dukascopy.connect.data.coinMarketplace {
 		
 		private function onAuthCancelled():void 
 		{
+			PaymentsManager.deactivate();
 			if (failCallback != null) {
 				failCallback();
 			}
@@ -162,6 +172,8 @@ package com.dukascopy.connect.data.coinMarketplace {
 				PaymentsManager.S_ACCOUNT.remove(onAccountReady);
 			if (PayManager.S_ACCOUNT != null)
 				PayManager.S_ACCOUNT.remove(onAccountUpdated);
+			if (PaymentsManager.S_BACK != null)
+				PaymentsManager.S_BACK.remove(onAuthCancelled);
 			readyCallback = null;
 			failCallback = null;
 		}

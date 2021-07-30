@@ -178,6 +178,13 @@ package com.dukascopy.connect.gui.scrollPanel {
 			if (scrollStopped == false)
 				scrollBar.alpha = 1;
 			checkBoxBounds(scrollStopped);
+			if (scrollStopped == false && _blockTopOvermove)
+			{
+				if (box.y > 0)
+				{
+					box.y = 0;
+				}
+			}
 			var l:int = items.length;
 			for (var n:int = 0; n < l; n++) {
 				var i:DisplayObject = (items[n] is MobileClip) ? items[n].view : items[n];
@@ -208,8 +215,16 @@ package com.dukascopy.connect.gui.scrollPanel {
 						TweenMax.to(box, 10, { useFrames:true, y:int(_height - box.height), 
 						onUpdate:onMoved } );
 					} else if (box.y > 0) {
-						TweenMax.to(box, 10, { useFrames:true, y:0, 
-						onUpdate:onMoved, onComplete:onTweenMovingComplete } );
+						if (box.y < 2)
+						{
+							box.y = 0;
+							onMoved();
+						}
+						else
+						{
+							TweenMax.to(box, 10, { useFrames:true, y:0, 
+							onUpdate:onMoved, onComplete:onTweenMovingComplete } );
+						}
 					}
 					TweenMax.to(scrollBar, 10, { useFrames:true, alpha:0});
 				}else {
@@ -268,6 +283,7 @@ package com.dukascopy.connect.gui.scrollPanel {
 		}
 		
 		private var __pt:Point = null;
+		private var _blockTopOvermove:Boolean;
 		protected var changeItemVisibility:Boolean = true;
 		protected var scrollCallbackFunction:Function;
 		
@@ -441,9 +457,13 @@ package com.dukascopy.connect.gui.scrollPanel {
 			return true;
 		}
 		
-		public function hideScrollBar():void 
+		public function hideScrollBar(permanent:Boolean = false):void 
 		{
 			scrollBar.alpha = 0;
+			if(permanent && scrollBar.parent != null)
+			{
+				scrollBar.parent.removeChild(scrollBar);
+			}
 		}
 		
 		public function getScrollBarWidth():int {
@@ -453,6 +473,18 @@ package com.dukascopy.connect.gui.scrollPanel {
 		public function disableVisibilityChange():void 
 		{
 			changeItemVisibility = false;
+		}
+		
+		public function toBack(item:DisplayObject):void 
+		{
+			if(box != null && box.contains(item)) {
+				box.setChildIndex(item, 0);
+			}
+		}
+		
+		public function blockTopOvermove():void 
+		{
+			_blockTopOvermove = true;
 		}
 		
 		public function set scrollCallback(value:Function):void 

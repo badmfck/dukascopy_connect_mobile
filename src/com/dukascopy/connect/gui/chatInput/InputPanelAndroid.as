@@ -3,6 +3,7 @@ package com.dukascopy.connect.gui.chatInput
 	import com.dukascopy.connect.Config;
 	import com.dukascopy.connect.MobileGui;
 	import com.dukascopy.connect.gui.lightbox.UI;
+	import com.dukascopy.connect.sys.echo.echo;
 	import com.greensock.TweenMax;
 	import flash.desktop.NativeApplication;
 	import flash.display.Bitmap;
@@ -29,6 +30,7 @@ package com.dukascopy.connect.gui.chatInput
 		private var onSoftKeyboardActivateFunction:Function;
 		private var onSoftKeyboardDeactivateFunction:Function;
 		private static var inputDefaultBitmap:BitmapData;
+		private var onChangedFunction:Function;
 		
 		static public const SHOW_INPUT:String = "showInput";
 		static public const ATTACH_INPUT:String = "attachInput";
@@ -203,8 +205,21 @@ package com.dukascopy.connect.gui.chatInput
 						redrawScreenshot(true);
 						break;
 					}
+					case "valueChanged": 
+					{
+						onValueChanged();
+						break;
+					}
 					}
 				}
+			}
+		}
+		
+		private function onValueChanged():void 
+		{
+			if (onChangedFunction != null)
+			{
+				onChangedFunction();
 			}
 		}
 		
@@ -318,6 +333,7 @@ package com.dukascopy.connect.gui.chatInput
 			onPositionChangedFunction = null;
 			onSoftKeyboardActivateFunction = null;
 			onSoftKeyboardDeactivateFunction = null;
+			onChangedFunction = null;
 			
 			MobileGui.androidExtension.callChatInput(REMOVE_INPUT);
 			MobileGui.androidExtension.removeEventListener(StatusEvent.STATUS, extensionAndroidStatusHandler);
@@ -409,7 +425,7 @@ package com.dukascopy.connect.gui.chatInput
 		
 		public function onInputChangedCallback(callback:Function):void
 		{
-		
+			onChangedFunction = callback;
 		}
 		
 		public function show(defaultText:String):void
@@ -427,11 +443,13 @@ package com.dukascopy.connect.gui.chatInput
 		
 		public function setY(value:int):void
 		{
+			echo("imput! setY y=", value.toString());
 			TweenMax.killDelayedCallsTo(setY);
 			if (value > 0)
 			{
 				if (Config.PLATFORM_ANDROID)
 				{
+					echo("imput! setY2 y=", value.toString());
 					MobileGui.androidExtension.callChatInput(SET_POSITION, {position: value});
 				}
 			}
