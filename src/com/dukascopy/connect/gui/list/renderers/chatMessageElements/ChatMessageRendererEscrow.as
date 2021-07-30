@@ -487,12 +487,20 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 					amount.alpha = 0.4;
 					title.alpha = 0.6;
 					price.alpha = 0.4;
+					if (iconCoin)
+					{
+						iconCoin.alpha = 0.4;
+					}
 				}
 				else
 				{
 					amount.alpha = 1;
 					title.alpha = 1;
 					price.alpha = 1;
+					if (iconCoin)
+					{
+						iconCoin.alpha = 1;
+					}
 				}
 				
 				if (messageData.systemMessageVO.escrow.status == EscrowStatus.offer_created)
