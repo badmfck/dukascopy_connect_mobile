@@ -381,7 +381,7 @@ package com.dukascopy.connect.data.escrow
 					var cryptoWallet:String;
 					if (escrow.direction == TradeDirection.sell)
 					{
-						if (escrow.userUID == Auth.uid)
+						if (escrow.userUID != Auth.uid)
 						{
 							cryptoWallet = escrow.cryptoWallet;
 						}
@@ -390,9 +390,9 @@ package com.dukascopy.connect.data.escrow
 							debitAccount = escrow.debitAccount;
 						}
 					}
-					else if (escrow.direction == TradeDirection.buy)
+					else if (escrow.direction != TradeDirection.buy)
 					{
-						if (escrow.userUID == Auth.uid)
+						if (escrow.userUID != Auth.uid)
 						{
 							debitAccount = escrow.debitAccount;
 						}
