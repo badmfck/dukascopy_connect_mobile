@@ -492,7 +492,8 @@ package com.dukascopy.connect.data.escrow
 			
 			currentPayTask = new PayTaskVO(PayTaskVO.TASK_TYPE_RESERVE_TIPS);
 			currentPayTask.handleInCustomScreenName = "CreateDeal";
-			currentPayTask.amount = Number(dealRawData.amount) * Number(dealRawData.price);
+			//!TODO decimals;
+			currentPayTask.amount = parseFloat((Number(dealRawData.amount) * Number(dealRawData.price)).toFixed(2));
 			currentPayTask.currency = dealRawData.mca_ccy;
 			//TODO: hash; 
 			currentPayTask.to_uid = dealRawData.hash;

@@ -484,9 +484,9 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 				
 				if (messageData.systemMessageVO.escrow.inactive == true)
 				{
-					amount.alpha = 0.6;
+					amount.alpha = 0.4;
 					title.alpha = 0.6;
-					price.alpha = 0.6;
+					price.alpha = 0.4;
 				}
 				else
 				{
