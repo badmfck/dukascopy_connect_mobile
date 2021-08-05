@@ -670,7 +670,7 @@ package com.dukascopy.connect.screens.payments {
 				return Lang.textCommission;
 			}
 			
-			if (paramsObj != null && "delivery" in paramsObj && paramsObj.delivery == "EXPEDITED")
+			if (paramsObj != null && "delivery" && paramsObj && (paramsObj.delivery == "EXPEDITED" || paramsObj && paramsObj.delivery == "STANDARD"))
 			{
 				return Lang.cardOrderDelivery;
 			} else {
