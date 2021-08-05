@@ -26,6 +26,11 @@ package com.dukascopy.connect.screens.payments.settings {
 	import com.greensock.easing.Power3;
 	import flash.display.Bitmap;
 	import flash.display.Sprite;
+	import flash.events.TextEvent;
+	import flash.net.URLRequest;
+	import flash.net.navigateToURL;
+	import flash.text.StyleSheet;
+	import flash.text.TextField;
 	import flash.text.TextFieldAutoSize;
 	import flash.text.TextFormat;
 	import flash.text.TextFormatAlign;
@@ -36,7 +41,7 @@ package com.dukascopy.connect.screens.payments.settings {
 		private var regularType:SelectorClip;
 		private var accumulatedType:SelectorClip;
 		private var title:Bitmap;
-		private var message:Bitmap;
+		private var message:TextField;
 		private var amountInput:InputField;
 		private var successClip:Bitmap;
 		
@@ -176,11 +181,36 @@ package com.dukascopy.connect.screens.payments.settings {
 		{
 			if (message == null)
 			{
-				message = new Bitmap();
+				message = new TextField();
+				var tf:TextFormat = new TextFormat();
+				tf.font = Config.defaultFontName;
+				tf.size = FontSize.BODY;
+				tf.color = Style.color(Style.COLOR_TEXT);
+				message.defaultTextFormat = tf;
+				message.multiline = true;
+				message.wordWrap = true;
+				message.width = _width - Config.DIALOG_MARGIN * 2;
 				addObject(message);
+				message.addEventListener(TextEvent.LINK, openLink);
+				
+				var link:Object = new Object();
+			//	link.fontWeight = "bold";
+				link.textDecoration= "underline";
+				link.color = "#36A1DC";
+				var style:StyleSheet = new StyleSheet();
+				style.setStyle("a", link);
+
+				message.styleSheet = style;
 			}
+			/*var r:RegExp = /<a href/g;
+			var r2:RegExp = /<\/a>/g;
+			text = text.replace(r, "<font color='#5DC269'><a  href");
+			text = text.replace(r2, "</a></font>");*/
 			
-			if (message.bitmapData != null)
+			message.htmlText = text;
+			message.height = message.textHeight + 6;
+			message.selectable = false;
+			/*if (message.bitmapData != null)
 			{
 				message.bitmapData.dispose();
 				message.bitmapData = null;
@@ -188,9 +218,14 @@ package com.dukascopy.connect.screens.payments.settings {
 			message.bitmapData = TextUtils.createTextFieldData(text, 
 																_width - Config.DIALOG_MARGIN * 2, 10, true, 
 																TextFormatAlign.LEFT, TextFieldAutoSize.LEFT, 
-																FontSize.BODY, true, Style.color(Style.COLOR_TEXT));
+																FontSize.BODY, true, Style.color(Style.COLOR_TEXT), Style.color(Style.COLOR_BACKGROUND), false, true);*/
 			updatePositions();
 			drawView();
+		}
+		
+		private function openLink(e:TextEvent):void 
+		{
+			navigateToURL(new URLRequest(e.text));
 		}
 		
 		private function selectAccumulated(ignoreLocked:Boolean = false):void 
@@ -527,7 +562,10 @@ package com.dukascopy.connect.screens.payments.settings {
 			title = null;
 			
 			if (message != null)
+			{
+				message.removeEventListener(TextEvent.LINK, openLink);
 				UI.destroy(message);
+			}
 			message = null;
 			
 			if (successClip != null)

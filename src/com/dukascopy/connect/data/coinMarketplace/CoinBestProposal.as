@@ -34,14 +34,14 @@ package com.dukascopy.connect.data.coinMarketplace
 					return 1;
 				else if (first.price == second.price)
 				{
-					if (first.publicOrder)
+					/*if (first.publicOrder)
 					{
 						return -1;
 					}
 					if (second.publicOrder)
 					{
 						return 1;
-					}
+					}*/
 					
 					if (first.created < second.created)
 					{
