@@ -2468,6 +2468,21 @@ package com.dukascopy.connect.screens.dialogs.gifts
 					acceptButton.deactivate();
 					acceptButton.alpha = 0.5;
 				}
+				if (selectedAccount != null && "COIN" in selectedAccount && selectedAccount.COIN != null)
+				{
+					var coinCurrency:String = selectedAccount.COIN;
+					if (Lang[coinCurrency] != null)
+					{
+						coinCurrency = Lang[coinCurrency];
+					}
+					if (iAmount != null && isCurrrencySelected() && selectorCurrency.value == coinCurrency && iAmount.value != null && iAmount.value != "" && !isNaN(Number(iAmount.value)) && Number(iAmount.value) > Number(selectedAccount.BALANCE))
+					{
+						acceptButton.deactivate();
+						acceptButton.alpha = 0.5;
+					}
+				}
+				
+				
 			}
 		}
 		

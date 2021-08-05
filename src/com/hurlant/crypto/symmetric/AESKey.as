@@ -2625,8 +2625,14 @@ package com.hurlant.crypto.symmetric
 		public function decrypt(block:ByteArray, index:uint=0):void
 		{
 			var round:uint;
-			state.position=0;
-			state.writeBytes(block, index, Nb*4);
+			state.position = 0;
+			try{
+				state.writeBytes(block, index, Nb*4);
+			}
+			catch (e:Error)
+			{
+				
+			}
 
 			addRoundKey(key, Nr*Nb*4);
 			invShiftRows();

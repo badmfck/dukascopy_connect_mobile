@@ -18,6 +18,7 @@ package com.dukascopy.connect.sys.softKeyboard {
 	import flash.display.Stage;
 	import flash.display.StageQuality;
 	import flash.events.Event;
+	import flash.events.KeyboardEvent;
 	import flash.events.StatusEvent;
 	import flash.geom.Matrix;
 	import flash.geom.Point;
@@ -341,6 +342,82 @@ package com.dukascopy.connect.sys.softKeyboard {
 			PointerManager.addDown(view, onDown);
 			PointerManager.addUp(view.stage, onUp);
 			S_OPENED.invoke(height);
+			
+			if (Config.PLATFORM_WINDOWS && currentTextField != null)
+			{
+				currentTextField.addEventListener(KeyboardEvent.KEY_DOWN, insertFromKeyboard);
+			}
+		}
+		
+		private function insertFromKeyboard(e:KeyboardEvent):void 
+		{
+			if (!isCharValid(e.charCode))
+			{
+				return;
+			}
+			if (e.keyCode == 8)
+			{
+				delText();
+			}
+			else
+			{
+				setText(String.fromCharCode(e.charCode));
+			}
+			
+		}
+		
+		private function isCharValid(keyCode:uint):Boolean 
+		{
+			if (keyCode == 8)
+			{
+				return true;
+			}
+			var char:String = String.fromCharCode(keyCode);
+			if (char == "0")
+			{
+				return true;
+			}
+			if (char == "1")
+			{
+				return true;
+			}
+			if (char == "2")
+			{
+				return true;
+			}
+			if (char == "3")
+			{
+				return true;
+			}
+			if (char == "4")
+			{
+				return true;
+			}
+			if (char == "5")
+			{
+				return true;
+			}
+			if (char == "6")
+			{
+				return true;
+			}
+			if (char == "7")
+			{
+				return true;
+			}
+			if (char == "8")
+			{
+				return true;
+			}
+			if (char == "9")
+			{
+				return true;
+			}
+			if (char == ".")
+			{
+				return true;
+			}
+			return false;
 		}
 		
 		private function hideImmediately():void {
@@ -352,6 +429,11 @@ package com.dukascopy.connect.sys.softKeyboard {
 				carret.graphics.clear();
 			}
 			PointerManager.removeDown(view, onDown);
+			if (currentTextField != null)
+			{
+				currentTextField.removeEventListener(KeyboardEvent.KEY_DOWN, insertFromKeyboard);
+			}
+			
 			PointerManager.removeUp(view.stage, onUp);
 			busy = true;
 			keyMap.y = height;
@@ -367,6 +449,10 @@ package com.dukascopy.connect.sys.softKeyboard {
 				carret.graphics.clear();
 			}
 			PointerManager.removeDown(view, onDown);
+			if (currentTextField != null)
+			{
+				currentTextField.removeEventListener(KeyboardEvent.KEY_DOWN, insertFromKeyboard);
+			}
 			PointerManager.removeUp(view.stage, onUp);
 			busy = true;
 			TweenMax.to(keyMap, 12, { y:height, onComplete:hided, onUpdate:onHideUpdate, useFrames:true } );
