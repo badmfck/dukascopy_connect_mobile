@@ -835,7 +835,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			{
 				if (escrowOffer.direction == TradeDirection.sell)
 				{
-					escrowOffer.debitAccount = selectedFiatAccount.ACCOUNT_NUMBER;
+					escrowOffer.debit_account = selectedFiatAccount.ACCOUNT_NUMBER;
 				}
 				
 				(data.callback as Function)(escrowOffer, message, chat, command);

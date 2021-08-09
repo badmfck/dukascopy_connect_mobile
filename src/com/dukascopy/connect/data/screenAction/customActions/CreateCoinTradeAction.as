@@ -218,7 +218,11 @@ package com.dukascopy.connect.data.screenAction.customActions {
 			messageData.instrument = dealData.instrument;
 			messageData.direction = dealData.direction;
 			messageData.userUID = Auth.uid;
-			messageData.status = EscrowStatus.offer_created; 
+			messageData.status = EscrowStatus.offer_created;
+			if (dealData.accountNumber != null)
+			{
+				messageData.debit_account = dealData.accountNumber;
+			}
 			
 			var text:String = messageData.toJsonString();
 			WSClient.call_sendTextMessage(chat.uid, Config.BOUNDS_ESCROW + ChatManager.cryptTXT(text));

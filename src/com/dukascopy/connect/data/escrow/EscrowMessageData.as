@@ -19,7 +19,6 @@ package com.dukascopy.connect.data.escrow
 		public var cryptoWallet:String;
 		public var transactionId:String;
 		public var userUID:String;
-		public var debitAccount:String;
 		
 		public var chatUID:String;
 		public var deal_uid:String;
@@ -121,6 +120,13 @@ package com.dukascopy.connect.data.escrow
 			{
 				ApplicationErrors.add("status");
 			}
+			
+			
+			if (debit_account != null)
+			{
+				result.debit_account = debit_account;
+			}
+			
 			result.mca_ccy = currency;
 			result.instrument = instrument;
 			

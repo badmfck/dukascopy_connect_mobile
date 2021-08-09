@@ -87,12 +87,13 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 		
 		private function initTextFormats():void {
 			textFormatTitle.font = Config.defaultFontName;
-			textFormatTitle.size = FontSize.SUBHEAD;
-			textFormatTitle.color = Style.color(Style.COLOR_SUBTITLE);
+			textFormatTitle.size = FontSize.TITLE_2;
+			textFormatTitle.color = Style.color(Style.COLOR_TEXT);
 			textFormatTitle.align = TextFormatAlign.LEFT;
+		//	textFormatTitle.bold = true;
 			
 			textFormatAmount.font = Config.defaultFontName;
-			textFormatAmount.size = FontSize.TITLE_3;
+			textFormatAmount.size = FontSize.BODY;
 			textFormatAmount.color = Style.color(Style.COLOR_TEXT);
 			textFormatAmount.align = TextFormatAlign.LEFT;
 			
@@ -124,7 +125,7 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 			
 			radiusBack = Math.ceil(Config.FINGER_SIZE * .3);
 			padding = Config.FINGER_SIZE * .3;
-			paddingV = Config.FINGER_SIZE * .18;
+			paddingV = Config.FINGER_SIZE * .2;
 			mainWidth = Config.FINGER_SIZE * 5;
 			leftSideSize = Config.FINGER_SIZE * 1.17;
 			maxTextWidth = mainWidth - leftSideSize - padding * 2;
@@ -241,7 +242,7 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 			amount.width = amount.textWidth + 5;
 			amount.height = amount.textHeight + 5;
 			
-			amount.y = int(title.y + title.height + paddingV * 0.2);
+			amount.y = int(title.y + title.height + paddingV * 0.4);
 			
 			price.width = maxTextWidth;
 			price.text = getPriceText(data);
@@ -249,7 +250,7 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 			price.width = price.textWidth + 5;
 			price.height = price.textHeight + 5;
 			
-			price.y = int(amount.y + amount.height + paddingV * 0.2);
+			price.y = int(amount.y + amount.height + paddingV * 0.4);
 		}
 		
 		private function getAmountColor(status:EscrowStatus, messageData:ChatMessageVO):Number 

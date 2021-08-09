@@ -402,7 +402,7 @@ package com.dukascopy.connect.data.escrow
 						if (escrow.userUID != Auth.uid)
 						{
 							cryptoWallet = escrow.cryptoWallet;
-							debitAccount = escrow.debitAccount;
+							debitAccount = escrow.debit_account;
 						}
 						else
 						{
@@ -411,11 +411,11 @@ package com.dukascopy.connect.data.escrow
 					}
 
 					//TODO: BUY - FIX!!!!!!!
-					else if (escrow.direction != TradeDirection.buy)
+					else if (escrow.direction == TradeDirection.buy)
 					{
 						if (escrow.userUID != Auth.uid)
 						{
-							debitAccount = escrow.debitAccount;
+							debitAccount = escrow.debit_account;
 							cryptoWallet = escrow.cryptoWallet;
 						}
 						else
@@ -474,7 +474,7 @@ package com.dukascopy.connect.data.escrow
 				}
 				else if (dealRawData.side == "BUY")
 				{
-					if (dealRawData.crypto_user_uid == Auth.uid)
+					if (dealRawData.crypto_user_uid != Auth.uid)
 					{
 						makeHold(dealRawData);
 					}
