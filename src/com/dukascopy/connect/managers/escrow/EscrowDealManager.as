@@ -35,7 +35,7 @@ package com.dukascopy.connect.managers.escrow{
 
         public function EscrowDealManager(){
             
-            SimpleLoader.URL_DEFAULT="https://loki.telefision.com/master/";
+            SimpleLoader.URL_DEFAULT="https://loki.telefision.com/escrow/";
 
             //loadDeals();
 

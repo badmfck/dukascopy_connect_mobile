@@ -15,6 +15,7 @@ import com.dukascopy.connect.managers.escrow.EscrowDealManager;
 import com.dukascopy.connect.managers.webview.WebViewManager;
 import com.dukascopy.connect.managers.escrow.test.EscrowTest;
 import com.dukascopy.connect.managers.escrow.test.EscrowTestForm;
+import com.dukascopy.connect.managers.escrow.EscrowOfferManager;
 
 
 [SWF(backgroundColor="#ffffff")]
@@ -37,7 +38,9 @@ public class MainEscrow extends Sprite {
 		
 		private function start():void{
 
+
             new EscrowDealManager();
+			new EscrowOfferManager();
 			new EscrowTest();
 			new WebViewManager();
 
