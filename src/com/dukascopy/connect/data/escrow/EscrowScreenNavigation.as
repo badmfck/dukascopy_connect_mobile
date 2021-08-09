@@ -395,6 +395,8 @@ package com.dukascopy.connect.data.escrow
 				{
 					var debitAccount:String;
 					var cryptoWallet:String;
+
+					// SELL - OK
 					if (escrow.direction == TradeDirection.sell)
 					{
 						if (escrow.userUID != Auth.uid)
@@ -407,6 +409,8 @@ package com.dukascopy.connect.data.escrow
 							//!TODO:
 						}
 					}
+
+					//TODO: BUY - FIX!!!!!!!
 					else if (escrow.direction != TradeDirection.buy)
 					{
 						if (escrow.userUID == Auth.uid)
@@ -470,7 +474,7 @@ package com.dukascopy.connect.data.escrow
 				}
 				else if (dealRawData.side == "BUY")
 				{
-					if (dealRawData.crypto_user_uid != Auth.uid)
+					if (dealRawData.crypto_user_uid == Auth.uid)
 					{
 						makeHold(dealRawData);
 					}
@@ -512,6 +516,7 @@ package com.dukascopy.connect.data.escrow
 		
 		private static function onError(errorCode:String = null, errorMessage:String = null):void {
 			trace("123"); //!TODO:;
+			
 		//	S_ACTION_FAIL.invoke(ErrorLocalizer.getPaymentsError(errorCode, errorMessage));
 		//	dispose();
 		}
