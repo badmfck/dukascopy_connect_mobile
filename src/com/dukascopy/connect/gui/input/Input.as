@@ -459,6 +459,7 @@ package com.dukascopy.connect.gui.input {
 					textField.addEventListener(FocusEvent.FOCUS_IN, onESKFocusIn);
 					textField.addEventListener(FocusEvent.FOCUS_OUT, onESKFocusOut);
 				}
+				
 			} else if (mode == MODE_DIGIT || mode == MODE_PHONE || mode == MODE_DIGIT_DECIMAL) {
 				textField.needsSoftKeyboard = false;
 				textField.mouseEnabled = true;
@@ -515,6 +516,7 @@ package com.dukascopy.connect.gui.input {
 			
 			textField.removeEventListener(FocusEvent.FOCUS_IN, onESKFocusIn);
 			textField.removeEventListener(FocusEvent.FOCUS_OUT, onESKFocusOut);
+			
 			PointerManager.removeTap(view, onButtonModeViewTap);
 			if (infoBox != null)
 				PointerManager.removeTap(infoBox, onInfoBoxTap);

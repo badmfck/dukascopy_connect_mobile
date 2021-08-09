@@ -413,7 +413,7 @@ package com.dukascopy.connect.data.escrow
 					//TODO: BUY - FIX!!!!!!!
 					else if (escrow.direction != TradeDirection.buy)
 					{
-						if (escrow.userUID == Auth.uid)
+						if (escrow.userUID != Auth.uid)
 						{
 							debitAccount = escrow.debitAccount;
 							cryptoWallet = escrow.cryptoWallet;

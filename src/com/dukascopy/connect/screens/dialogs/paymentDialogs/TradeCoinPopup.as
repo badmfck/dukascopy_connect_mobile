@@ -35,6 +35,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 	import com.dukascopy.connect.sys.dialogManager.DialogManager;
 	import com.dukascopy.connect.sys.imageManager.ImageBitmapData;
 	import com.dukascopy.connect.sys.payments.CoinComissionChecker;
+	import com.dukascopy.connect.sys.payments.CurrencyHelpers;
 	import com.dukascopy.connect.sys.payments.PayManager;
 	import com.dukascopy.connect.sys.payments.PayRespond;
 	import com.dukascopy.connect.sys.pointerManager.PointerManager;
@@ -43,6 +44,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 	import com.dukascopy.connect.sys.style.Style;
 	import com.dukascopy.connect.sys.style.presets.Color;
 	import com.dukascopy.connect.type.HitZoneType;
+	import com.dukascopy.connect.utils.NumberFormat;
 	import com.dukascopy.connect.utils.TextUtils;
 	import com.dukascopy.connect.vo.users.UserVO;
 	import com.dukascopy.langs.Lang;
@@ -435,7 +437,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 				if (!isNaN(inputPrice.value) && inputPrice.value > 0)
 				{
 					var value:Number = maxEurosAvaliable/inputPrice.value;
-					inputQuantity.drawUnderlineValue(Lang.max + ": " + value.toFixed(4) + " " + Lang[TypeCurrency.DCO]);
+					inputQuantity.drawUnderlineValue(Lang.max + ": " + NumberFormat.formatAmount(value, TypeCurrency.DCO));
 				}
 				else
 				{
@@ -517,7 +519,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 		
 		private function getIncome(commissionValue:Number):Number
 		{
-			return Math.round((inputPrice.value * inputQuantity.value - commissionValue) * 1000) / 1000;
+			return Math.round((inputPrice.value * inputQuantity.value - commissionValue) * 100) / 100;
 		}
 		
 		private function checkDataValid():Boolean 
@@ -850,15 +852,16 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 				startQuantityValue = orderToEdit.quantity;
 			}
 			
-			var itemWidth:int = (componentsWidth - hPadding) / 2;
+			var priceWidth:int = (componentsWidth - hPadding) * 0.4;
+			var quantityWidth:int = (componentsWidth - hPadding) * 0.6;
 			
-			inputPrice.draw(itemWidth, Lang.pricePerCoin, startPriceValue, null, "€");
-			inputQuantity.draw(itemWidth, Lang.textQuantity, startQuantityValue, null, "DUK+");
+			inputPrice.draw(priceWidth, Lang.pricePerCoin, startPriceValue, null, "€");
+			inputQuantity.draw(quantityWidth, Lang.textQuantity, startQuantityValue, null, "DUK+");
 			
 			if (screenData.type == TradingOrder.BUY)
 			{
 				inputQuantity.x = hPadding;
-				inputPrice.x = int(inputQuantity.x + itemWidth + hPadding);
+				inputPrice.x = int(inputQuantity.x + quantityWidth + hPadding);
 			}
 			else
 			{
@@ -866,7 +869,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 				inputQuantity.x = int(inputPrice.x + itemWidth + hPadding);*/
 				
 				inputQuantity.x = hPadding;
-				inputPrice.x = int(inputQuantity.x + itemWidth + hPadding);
+				inputPrice.x = int(inputQuantity.x + quantityWidth + hPadding);
 			}
 			
 			drawNextButton(Lang.create);
@@ -914,7 +917,21 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 				{
 					currency = Lang[currency];
 				}
-				maxCoinsAvaliable = Lang.avaliable + ": " + accounts.coinsAccounts[0].BALANCE + " " + currency;
+				
+				var balance:Number = 0;
+				var reserved:Number = 0;
+				var account:Object = accounts.coinsAccounts[0];
+				if ("BALANCE" in account && account.BALANCE != null)
+				{
+					balance = parseFloat(account.BALANCE);
+				}
+				if ("RESERVED" in account && account.RESERVED != null)
+				{
+					reserved = parseFloat(account.RESERVED);
+				}
+				var resultSum:Number = balance - reserved;
+				
+				maxCoinsAvaliable = Lang.avaliable + ": " + NumberFormat.formatAmount(resultSum, account.COIN);
 			}
 			
 			var maxEurosAvaliable:String;
@@ -949,9 +966,12 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 			{
 				maxEurosAvaliable = null;
 			}
+			
+			var priceWidth:int = (componentsWidth - hPadding) * 0.4;
+			var quantityWidth:int = (componentsWidth - hPadding) * 0.6;
 				
-			inputPrice.draw(itemWidth, Lang.pricePerCoin, startPriceValue, maxEurosAvaliable, "€");
-			inputQuantity.draw(itemWidth, Lang.textQuantity, startQuantityValue, maxCoinsAvaliable, "DUK+");
+			inputPrice.draw(priceWidth, Lang.pricePerCoin, startPriceValue, maxEurosAvaliable, "€");
+			inputQuantity.draw(quantityWidth, Lang.textQuantity, startQuantityValue, maxCoinsAvaliable, "DUK+");
 			
 			updatePositions();
 			drawView();

@@ -108,7 +108,7 @@ package com.dukascopy.connect.screens.dialogs.x.base.bottom
 		
 		protected function onItemTap(data:Object, n:int):void {
 			needCallback = true;
-			selectedItem = getSelectedData(data);
+			
 			selectedNum = n;
 			if (list.data != null)
 			{
@@ -116,8 +116,8 @@ package com.dukascopy.connect.screens.dialogs.x.base.bottom
 				{
 					return;
 				}
-				
-				for (var i:int = 0; i < list.data.length; i++) 
+				var l:int = list.data.length;
+				for (var i:int = 0; i < l; i++) 
 				{
 					if ("selected" in list.data[i])
 					{
@@ -125,6 +125,7 @@ package com.dukascopy.connect.screens.dialogs.x.base.bottom
 					}
 				}
 			}
+			selectedItem = getSelectedData(data);
 			if ("selected" in selectedItem)
 			{
 				selectedItem.selected = true;

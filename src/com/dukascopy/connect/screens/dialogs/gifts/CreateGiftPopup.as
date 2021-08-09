@@ -481,6 +481,7 @@ package com.dukascopy.connect.screens.dialogs.gifts
 				acceptButton.activate();
 				acceptButton.alpha = 1;
 			}
+			checkNextButton();
 			checkWarningSelection();
 			
 			loadCommision();
@@ -507,6 +508,7 @@ package com.dukascopy.connect.screens.dialogs.gifts
 				acceptButton.activate();
 				acceptButton.alpha = 1;
 			}
+			checkNextButton();
 			checkWarningSelection();
 			
 			loadCommision();
@@ -1755,6 +1757,7 @@ package com.dukascopy.connect.screens.dialogs.gifts
 				acceptButton.activate();
 				acceptButton.alpha = 1;
 			}
+			checkNextButton();
 			checkWarningSelection();
 		}
 		
@@ -2451,7 +2454,36 @@ package com.dukascopy.connect.screens.dialogs.gifts
 					acceptButton.alpha = 0.5;
 				}
 			}
+			checkNextButton();
 			checkWarningSelection();
+		}
+		
+		private function checkNextButton():void 
+		{
+			if (selectedAccount != null)
+			{
+				trace(iAmount != null, isCurrrencySelected(), iAmount.value, !isNaN(Number(iAmount.value)), Number(iAmount.value) < Number(selectedAccount.BALANCE));
+				if (iAmount != null && isCurrrencySelected() && selectorCurrency.value == selectedAccount.CURRENCY && iAmount.value != null && iAmount.value != "" && !isNaN(Number(iAmount.value)) && Number(iAmount.value) > Number(selectedAccount.BALANCE))
+				{
+					acceptButton.deactivate();
+					acceptButton.alpha = 0.5;
+				}
+				if (selectedAccount != null && "COIN" in selectedAccount && selectedAccount.COIN != null)
+				{
+					var coinCurrency:String = selectedAccount.COIN;
+					if (Lang[coinCurrency] != null)
+					{
+						coinCurrency = Lang[coinCurrency];
+					}
+					if (iAmount != null && isCurrrencySelected() && selectorCurrency.value == coinCurrency && iAmount.value != null && iAmount.value != "" && !isNaN(Number(iAmount.value)) && Number(iAmount.value) > Number(selectedAccount.BALANCE))
+					{
+						acceptButton.deactivate();
+						acceptButton.alpha = 0.5;
+					}
+				}
+				
+				
+			}
 		}
 		
 		private function checkWarningSelection():void 
@@ -3003,6 +3035,7 @@ package com.dukascopy.connect.screens.dialogs.gifts
 				}
 				checkWarningSelection();
 			}
+			checkNextButton();
 			
 			if (!isAccountAvaliable() && isSimpleGift())
 			{

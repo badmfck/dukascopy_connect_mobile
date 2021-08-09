@@ -82,7 +82,8 @@ package com.dukascopy.connect {
         static public const BOT_UIDS:String = "WgDNWdIEW4I6IsWg" // Support bot
 		
 /* TEST */
-		static public const URL_PHP_CORE_SERVER:String = 'https://loki.telefision.com/master/';
+	//	static public const URL_PHP_CORE_SERVER:String = 'https://loki.telefision.com/master/';
+		static public const URL_PHP_CORE_SERVER:String = 'https://loki.telefision.com/escrow/';
 		static public const URL_WS_HOST_1:String = "wss://loki.telefision.com/wss/";
 		static public const URL_WS_HOST_2:String = "wss://loki.telefision.com/wss/";
 		static public const URL_MEDIA_VI:String = "rtmp://vi.telefision.com/recognition";

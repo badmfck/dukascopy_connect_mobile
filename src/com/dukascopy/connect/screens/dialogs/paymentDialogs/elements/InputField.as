@@ -89,6 +89,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs.elements
 		
 		public function get valueString():String
 		{
+			trace(input.value);
 			if (input != null)
 			{
 				return input.value;
@@ -325,7 +326,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs.elements
 			}
 			else
 			{
-				if (!isNaN(defaultValue))
+				if (!isNaN(defaultValue) && value != defaultValue)
 				{
 					value = defaultValue;
 				}

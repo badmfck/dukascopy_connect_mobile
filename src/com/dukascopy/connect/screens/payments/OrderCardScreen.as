@@ -264,11 +264,11 @@ package com.dukascopy.connect.screens.payments {
 			tfAccountsTitle.y = iCurrency.y + iCurrency.height + Config.DOUBLE_MARGIN;
 			iAccounts.y = tfAccountsTitle.y + tfAccountsTitle.height;
 			if (paramsObj.type == CARD_TYPE_VIRTUAL) {
-				tfCommissionAmount.y = iAccounts.y + iAccounts.height + Config.MARGIN;
+				tfCommissionAmount.y = iAccounts.y + iAccounts.height - Config.MARGIN;
 				drawDescription(null);
 			} else {
 				if (tfDelivery != null && tfDelivery.parent != null) {
-					tfDelivery.y = iAccounts.y + iAccounts.height + Config.DOUBLE_MARGIN;
+					tfDelivery.y = iAccounts.y + iAccounts.height - Config.MARGIN;
 					iDelivery.y = tfDelivery.y + tfDelivery.height;
 					tfCommissionAmount.y = iDelivery.y + iDelivery.height + Config.MARGIN;
 				} else {
@@ -670,7 +670,7 @@ package com.dukascopy.connect.screens.payments {
 				return Lang.textCommission;
 			}
 			
-			if (paramsObj != null && "delivery" in paramsObj && paramsObj.delivery == "EXPEDITED")
+			if (paramsObj != null && "delivery" && paramsObj && (paramsObj.delivery == "EXPEDITED" || paramsObj && paramsObj.delivery == "STANDARD"))
 			{
 				return Lang.cardOrderDelivery;
 			} else {
