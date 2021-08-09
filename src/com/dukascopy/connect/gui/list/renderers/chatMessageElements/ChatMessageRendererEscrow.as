@@ -401,7 +401,8 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 					}
 					case EscrowStatus.deal_created:
 					{
-						result = Lang.waiting_for_money_hold;
+					//	result = Lang.waiting_for_money_hold;
+						result = Lang.deal_created;
 						
 						break;
 					}

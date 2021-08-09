@@ -2512,6 +2512,7 @@ package com.dukascopy.langs {
 		static public var escrow_deal_completed:String = "Deal successfully completed";
 
 		static public var noRights:String="You don't have rights to perfom this action";
+		static public var deal_created:String = "Deal created";
 		
 		static public function updateKeys(keys:Object):void {
 			for (var n:String in keys) {
