@@ -130,7 +130,7 @@ package com.dukascopy.connect.data.escrow
 			result.mca_ccy = currency;
 			result.instrument = instrument;
 			
-			return Config.BOUNDS + JSON.stringify(result);
+			return JSON.stringify(result);
 		}
 	}
 }
