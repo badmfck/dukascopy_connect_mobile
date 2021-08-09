@@ -224,7 +224,7 @@ package com.dukascopy.connect.data.screenAction.customActions {
 				messageData.debit_account = dealData.accountNumber;
 			}
 			
-			var text:String = messageData.toJsonString();
+			var text:String = Config.BOUNDS + messageData.toJsonString();
 			WSClient.call_sendTextMessage(chat.uid, Config.BOUNDS_ESCROW + ChatManager.cryptTXT(text));
 			
 			if (S_ACTION_SUCCESS != null)
