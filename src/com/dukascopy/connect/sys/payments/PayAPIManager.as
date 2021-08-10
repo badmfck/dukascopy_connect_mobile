@@ -330,7 +330,7 @@ package com.dukascopy.connect.sys.payments {
 					
 				} else if (respond.errorCode == -1) {
 					
-				} else {
+				} else if(respond.errorCode != 1999) {
 					ToastMessage.display(Lang.somethingWentWrong);
 				}
 				onSwissAPICheckComplete();
