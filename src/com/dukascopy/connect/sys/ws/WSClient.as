@@ -764,7 +764,6 @@ import com.dukascopy.connect.MobileGui;
 			}*/
 			
 			if (pack.method == 'msgAdd') {
-				trace("msgAdd", pack.data.id);
 				if (pack.data.error == true) {
 					echo("WSClinet", "onMessage.msgAdd", pack.data.reason, true);
 					if (pack.data.reason == "Wrong status") {
@@ -837,7 +836,6 @@ import com.dukascopy.connect.MobileGui;
 			}
 			
 			if (pack.method == "msgChange") {
-				trace("msgChange", pack.data.id);
 				S_CHAT_MSG_UPDATED.invoke(pack.data);
 				return;
 			}
@@ -964,12 +962,10 @@ import com.dukascopy.connect.MobileGui;
 			
 			if (pack.method == WSMethodType.ESCROW_OFFER_ACCEPT)
 			{
-				trace("123");
 				return;
 			}
 			if (pack.method == WSMethodType.ESCROW_OFFER_CANCEL)
 			{
-				trace("123");
 				/*data : Object {
 					error : Object {
 						code : "ESCROW16" 

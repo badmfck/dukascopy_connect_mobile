@@ -47,7 +47,7 @@ package com.dukascopy.connect.sys.payments {
 		static public var S_INVALID_PASS_DIALOG_CLOSED:Signal;
 		static public var S_CANCEL_AUTH:Signal = new Signal("PayManager.S_CANCEL_AUTH");
 		static public var S_ACCOUNT:Signal;
-		static public var S_ACCOUNT_RESPOND:Signal;
+		static public var S_ACCOUNT_RESPOND:Signal = new Signal("PayManager.S_ACCOUNT_RESPOND");;
 		static public var S_ENTER_PASSWORD_DISMISS:Signal;
 		static public var S_MONEY_TRANSFERED:Signal;
 		static public var S_MONEY_TRANSFERED_ERROR:Signal;
@@ -133,7 +133,7 @@ package com.dukascopy.connect.sys.payments {
 		//	S_CANCEL_AUTH = new Signal("PayManager.S_CANCEL_AUTH");
 			S_INVALID_PASS_DIALOG_CLOSED = new Signal("PayManager.S_INVALID_PASS_DIALOG_CLOSED");
 			S_ACCOUNT = new Signal("PayManager.S_ACCOUNT");
-			S_ACCOUNT_RESPOND = new Signal("PayManager.S_ACCOUNT_RESPOND");
+		//	S_ACCOUNT_RESPOND = new Signal("PayManager.S_ACCOUNT_RESPOND");
 			S_MONEY_TRANSFERED = new Signal("PayManager.S_MONEY_TRANSFERED");
 			S_MONEY_TRANSFERED_ERROR = new Signal("PayManager.S_MONEY_TRANSFERED_ERROR");
 			S_INTERNAL_TRANSFER_CALL = new Signal("PayManager.S_INTERNAL_TRANSFER_CALL");

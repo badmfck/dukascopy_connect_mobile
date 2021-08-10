@@ -2516,6 +2516,8 @@ package com.dukascopy.langs {
 		static public var escrow_account_not_found:String = "Account not found";
 		static public var escrow_offer_type_not_set:String = "Offer type not set";
 		static public var escrow_not_enougth_money:String = "Insufficient funds on the selected account ";
+		static public var escrow_cant_load_account_limits:String = "Can't load account limits";
+		static public var escrow_credit_amount_not_in_limits:String = "Up limits";
 		
 		static public function updateKeys(keys:Object):void {
 			for (var n:String in keys) {
