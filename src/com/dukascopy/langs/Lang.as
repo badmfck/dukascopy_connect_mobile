@@ -2513,6 +2513,9 @@ package com.dukascopy.langs {
 
 		static public var noRights:String="You don't have rights to perfom this action";
 		static public var deal_created:String = "Deal created";
+		static public var escrow_account_not_found:String = "Account not found";
+		static public var escrow_offer_type_not_set:String = "Offer type not set";
+		static public var escrow_not_enougth_money:String = "Insufficient funds on the selected account ";
 		
 		static public function updateKeys(keys:Object):void {
 			for (var n:String in keys) {

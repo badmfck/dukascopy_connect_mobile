@@ -1,6 +1,5 @@
 package com.dukascopy.connect.sys.applicationError 
 {
-	import com.dukascopy.connect.sys.usersManager.UsersManager;
 	import flash.system.Capabilities;
 	/**
 	 * ...

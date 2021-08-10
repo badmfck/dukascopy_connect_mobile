@@ -701,6 +701,8 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 					}
 					needCallback = true;
 					close();
+					
+					//!TODO: sell, check payments;
 				}
 				else
 				{

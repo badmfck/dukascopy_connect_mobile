@@ -103,6 +103,11 @@ package com.dukascopy.connect.vo {
 		}
 		
 		public function setData(obj:Object):void {
+			if (text != null && text.indexOf("I would like to") != -1)
+			{
+				trace("123");
+			}
+			
 			_rawObject = obj;
 			_id = obj['id'];
 			_num = obj['num'];
@@ -304,6 +309,13 @@ package com.dukascopy.connect.vo {
 				_systemMessageVO.type = ChatSystemMsgVO.TYPE_REPLY;
 				_text = replayVO.text;
 			}
+			
+			var result:String = text;
+			if (_systemMessageVO != null && _systemMessageVO.escrow != null)
+			{
+				result = _systemMessageVO.escrow.toJsonString();
+			}
+			trace("decrypted", id, result);
 		}
 		
 		private function detectLink(str:String):String {					
