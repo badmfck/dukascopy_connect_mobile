@@ -26,6 +26,7 @@ package com.dukascopy.connect.data.screenAction.customActions {
 		private var account:String;
 		private var accounts:PaymentsAccountsProvider;
 		private var instrument:EscrowInstrument;
+		public var disposeOnResult:Boolean;
 		
 		public function TestCreateOfferAction(direction:TradeDirection, fiatAmount:Number, currency:String, instrument:EscrowInstrument, account:String = null) {
 			setIconClass(null);
@@ -245,6 +246,10 @@ package com.dukascopy.connect.data.screenAction.customActions {
 			{
 				S_ACTION_SUCCESS.invoke();
 			}
+			if (disposeOnResult)
+			{
+				dispose();
+			}
 		}
 		
 		private function onFail(message:String = null):void 
@@ -252,6 +257,10 @@ package com.dukascopy.connect.data.screenAction.customActions {
 			if (S_ACTION_FAIL != null)
 			{
 				S_ACTION_FAIL.invoke(message);
+			}
+			if (disposeOnResult)
+			{
+				dispose();
 			}
 		}
 		

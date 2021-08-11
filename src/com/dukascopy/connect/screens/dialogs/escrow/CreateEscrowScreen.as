@@ -1092,15 +1092,6 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			ToastMessage.display(errorMessage);
 		}
 		
-		private function dataValid():Boolean 
-		{
-			//!TODO:;
-			
-			// state?
-			// prices?
-			return true;
-		}
-		
 		private function createInputAmount():void 
 		{
 			var tf:TextFormat = new TextFormat();
