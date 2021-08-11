@@ -504,7 +504,7 @@ package com.dukascopy.connect.gui.list.renderers {
 				return MESSAGE_TYPE_TEXT;
 			if (messageData.typeEnum == ChatMessageType.STICKER)
 				return MESSAGE_TYPE_STICKER;
-			if (messageData.typeEnum == ChatSystemMsgVO.TYPE_LOCAL_QUESTION)
+			if (messageData.typeEnum == ChatSystemMsgVO.TYPE_LOCAL_QUESTION || messageData.isEntryMessage == true)
 				return MESSAGE_TYPE_EXTRA_REWARDS;
 			if (messageData.typeEnum == ChatSystemMsgVO.TYPE_VOICE)
 				return MESSAGE_TYPE_VOICE;
@@ -565,6 +565,8 @@ package com.dukascopy.connect.gui.list.renderers {
 				result = widthValue * .8 - sideMargin * 2;
 			else if (messageType == MESSAGE_TYPE_NEWS)
 				result = (widthValue * 1.0 - tfDateWidth) - (avatarDoubleSize + sideMargin * 3.5) - birdSize;
+			else if (messageType == MESSAGE_TYPE_EXTRA_REWARDS)
+				result = (widthValue * .9 - tfDateWidth) - (avatarDoubleSize + sideMargin * 2) - birdSize;
 			else
 				result = (widthValue * .9 - tfDateWidth) - (avatarDoubleSize + sideMargin * 2) - birdSize;
 			return result;
