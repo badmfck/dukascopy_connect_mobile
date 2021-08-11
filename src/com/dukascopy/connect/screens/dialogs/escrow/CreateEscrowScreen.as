@@ -1071,7 +1071,8 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			
 			//TODO: неверное значение при процентном прайсе;
 			var amount:Number = inputAmount.value;
-			var resultAmount:Number = (amount * selectedPrice * EscrowSettings.refundableFee + amount * selectedPrice);
+			var fiatAmount:Number = amount * selectedPrice;
+			var resultAmount:Number = (fiatAmount + fiatAmount * EscrowSettings.refundableFee);
 			
 			checkPaymentsAction = new TestCreateOfferAction(selectedDirection, resultAmount, currencySign, selectedCrypto, selectedFiatAccount.ACCOUNT_NUMBER);
 			checkPaymentsAction.getFailSignal().add(onPaymentsBuyCheckFail);
