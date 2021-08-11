@@ -508,7 +508,20 @@ package com.dukascopy.connect.vo {
 						userName = _qVO.user.getDisplayName();
 					messageData.user_name = userName;
 					
-					var text:String = Lang.escrow_ad_intro_message;
+					var text:String;
+					if (_qVO.price != null && _qVO.price.indexOf("%") != -1)
+					{
+						var realPrice:String = _qVO.price.replace("%", "");
+						if (!isNaN(Number(realPrice)) && Number(realPrice) == 0)
+						{
+							text = Lang.escrow_ad_intro_message_at_market_price;
+						}
+					}
+					if (text == null)
+					{
+						text = Lang.escrow_ad_intro_message;
+					}
+					
 					if (_qVO.subtype == "buy")
 					{
 						text = text.replace("%@1", Lang.escrow_buy);
