@@ -6,6 +6,9 @@ package com.dukascopy.connect.sys.questionsManager {
 	import com.dukascopy.connect.data.GiftData;
 	import com.dukascopy.connect.data.MediaFileData;
 	import com.dukascopy.connect.data.SelectorItemData;
+	import com.dukascopy.connect.data.escrow.EscrowSettings;
+	import com.dukascopy.connect.data.escrow.TradeDirection;
+	import com.dukascopy.connect.data.screenAction.customActions.TestCreateOfferAction;
 	import com.dukascopy.connect.gui.components.message.ToastMessage;
 	import com.dukascopy.connect.managers.escrow.vo.EscrowInstrument;
 	import com.dukascopy.connect.screens.QuestionCreateUpdateScreen;
@@ -979,9 +982,21 @@ package com.dukascopy.connect.sys.questionsManager {
 				return;
 			if (currentQuestion.price == null)
 				return;
+			var selectedDirection:TradeDirection = (currentQuestion.subtype == QUESTION_SIDE_BUY) ? TradeDirection.buy : TradeDirection.sell;
+			var fiatAmount:Number = Number(currentQuestion.cryptoAmount) * Number(currentQuestion.price);
+			var resultAmount:Number = fiatAmount + ((currentQuestion.subtype == QUESTION_SIDE_BUY) ?  fiatAmount * EscrowSettings.refundableFee : fiatAmount * EscrowSettings.commission);
+			
+			var checkPaymentsAction:TestCreateOfferAction = new TestCreateOfferAction(selectedDirection, resultAmount, currentQuestion.priceCurrency, currentQuestion.instrument);
+			checkPaymentsAction.disposeOnResult = true;
+			checkPaymentsAction.getFailSignal().add(onPaymentsBuyCheckFail);
+			checkPaymentsAction.getSuccessSignal().add(onPaymentsBuyCheckSuccess);
+			checkPaymentsAction.execute();
+		}
+		
+		static private function onPaymentsBuyCheckSuccess():void {
 			PHP.question_create(
 				onQuestionCreated,
-				Crypter.crypt(text, MESSAGE_KEY),
+				Crypter.crypt("Escrow", MESSAGE_KEY),
 				Number(currentQuestion.cryptoAmount),
 				currentQuestion.instrument.code,
 				currentQuestion.priceCurrency,
@@ -992,6 +1007,10 @@ package com.dukascopy.connect.sys.questionsManager {
 				null,
 				currentQuestion.price
 			);
+		}
+		
+		static private function onPaymentsBuyCheckFail(errorMessage:String):void {
+			ToastMessage.display(errorMessage);
 		}
 		
 		static private function onCreateQuestionSuccess(data:Object):void {
