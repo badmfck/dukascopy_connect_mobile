@@ -2499,6 +2499,7 @@ package com.dukascopy.langs {
 		static public var escrow_offer_closed:String = "Closed";
 		static public var escrow_your_ad_created:String = "Your AD created!";
 		static public var escrow_ad_intro_message:String = "I would like to %@1 %@2 at %@3 per coin.";
+		static public var escrow_ad_intro_message_at_market_price:String = "I would like to %@1 %@2 at market price.";
 		static public var escrow_buy:String = "Buy";
 		static public var escrow_sell:String = "Sell";
 		static public var make_offer:String = "MAKE OFFER";
