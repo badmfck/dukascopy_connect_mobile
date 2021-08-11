@@ -971,18 +971,30 @@ package com.dukascopy.connect.sys.questionsManager {
 		
 		static private function createQuestion(text:String):void {
 			firstQuestionCreated = true;
-			if (text == null)
+			if (text == null) {
+				S_QUESTION_CREATE_FAIL.invoke();
 				return;
-			if (currentQuestion.subtype == null)
+			}
+			if (currentQuestion.subtype == null) {
+				S_QUESTION_CREATE_FAIL.invoke();
 				return;
-			if (currentQuestion.instrument == null)
+			}
+			if (currentQuestion.instrument == null) {
+				S_QUESTION_CREATE_FAIL.invoke();
 				return;
-			if (currentQuestion.cryptoAmount == null)
+			}
+			if (currentQuestion.cryptoAmount == null) {
+				S_QUESTION_CREATE_FAIL.invoke();
 				return;
-			if (currentQuestion.priceCurrency == null)
+			}
+			if (currentQuestion.priceCurrency == null) {
+				S_QUESTION_CREATE_FAIL.invoke();
 				return;
-			if (currentQuestion.price == null)
+			}
+			if (currentQuestion.price == null) {
+				S_QUESTION_CREATE_FAIL.invoke();
 				return;
+			}
 			var selectedDirection:TradeDirection = (currentQuestion.subtype == QUESTION_SIDE_BUY) ? TradeDirection.buy : TradeDirection.sell;
 			var price:Number = 0;
 			if (currentQuestion.price.indexOf("%") == -1) {
@@ -994,8 +1006,10 @@ package com.dukascopy.connect.sys.questionsManager {
 						break;
 					}
 				}
-				if (price == 0)
+				if (price == 0) {
+					S_QUESTION_CREATE_FAIL.invoke();
 					return;
+				}
 			}
 			var fiatAmount:Number = Number(currentQuestion.cryptoAmount) * price;
 			var resultAmount:Number = fiatAmount + ((currentQuestion.subtype == QUESTION_SIDE_BUY) ?  fiatAmount * EscrowSettings.refundableFee : fiatAmount * EscrowSettings.commission);
@@ -1531,6 +1545,7 @@ package com.dukascopy.connect.sys.questionsManager {
 			}
 			onCreateQuestionSuccess(phpRespond.data);
 			phpRespond.dispose();
+			getQuestions();
 		}
 		
 		/*static public function preAskFirstQuestion():void {
