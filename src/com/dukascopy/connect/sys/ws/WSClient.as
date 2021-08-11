@@ -962,12 +962,10 @@ import com.dukascopy.connect.MobileGui;
 			
 			if (pack.method == WSMethodType.ESCROW_OFFER_ACCEPT)
 			{
-				trace("123");
 				return;
 			}
 			if (pack.method == WSMethodType.ESCROW_OFFER_CANCEL)
 			{
-				trace("123");
 				/*data : Object {
 					error : Object {
 						code : "ESCROW16" 

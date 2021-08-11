@@ -317,12 +317,6 @@ package com.dukascopy.connect.sys.dialogManager {
 			S_SHOW.invoke(ScreenNotificationDialog, { name:data.name } );
 		}
 		
-		static public function showQuestionsDialog(data:Object):void {
-			hasOpenedDialog = true;
-			currentScreenType = TYPE_DIALOG;
-			S_SHOW.invoke(ScreenQuestionsDialog, data);
-		}
-		
 		static public function show911Rules(data:Object):void {
 			hasOpenedDialog = true;
 			currentScreenType = TYPE_DIALOG;

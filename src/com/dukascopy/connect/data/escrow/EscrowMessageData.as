@@ -1,6 +1,5 @@
 package com.dukascopy.connect.data.escrow 
 {
-	import com.dukascopy.connect.Config;
 	import com.dukascopy.connect.sys.applicationError.ApplicationErrors;
 	/**
 	 * ...

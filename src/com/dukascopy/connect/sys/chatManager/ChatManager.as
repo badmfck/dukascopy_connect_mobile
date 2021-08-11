@@ -1122,7 +1122,7 @@ package com.dukascopy.connect.sys.chatManager {
 				loadMessagesFromPHP(false);
 			}else {
 				echo("ChatManager", "loadChatMessages", 'Loading from sql');
-				trace("dukascopy.test", "loadChatMessages.onlyFromPHP currentChat=", currentChat.uid);
+			//	trace("dukascopy.test", "loadChatMessages.onlyFromPHP currentChat=", currentChat.uid);
 				SQLite.call_getMessages(onMessagesLoadedFromSQLite, currentChat.uid);
 			}
 		}

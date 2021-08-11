@@ -2019,7 +2019,16 @@ package com.dukascopy.connect.sys.bankManager {
 				return;
 			}
 			if (PayConfig.PAY_SESSION_ID == "") {
-				sendBlock("payError", BankManager.PWP_NOT_ENTERED);
+				if (errorCode == 1999)
+				{
+					//server error;
+					MobileGui.changeMainScreen(PaymentsUnavaliableScreen);
+				}
+				else
+				{
+					sendBlock("payError", BankManager.PWP_NOT_ENTERED);
+				}
+				
 				return;
 			}
 			recall();

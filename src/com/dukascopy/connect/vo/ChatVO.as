@@ -685,7 +685,7 @@ package com.dukascopy.connect.vo {
 						_messages[i].updateText(data.text);
 						_messages[i].setStatus(data.status);
 						return _messages[i];
-					} else if (("mid" in data) && data.mid != "" && _messages[i].id == -data.mid && data.id >= 0) {
+					} else if (("mid" in data) && data.mid != "" && data.mid != null && _messages[i].id == -data.mid && data.id >= 0) {
 						_messages[i].setData(data);
 						return _messages[i];
 					}

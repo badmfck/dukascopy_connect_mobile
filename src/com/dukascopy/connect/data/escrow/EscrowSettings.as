@@ -12,6 +12,7 @@ package com.dukascopy.connect.data.escrow
 		static public var dealMaxTime:Number = 30000;
 		static public var confirmTransactionTime:Number = 1440;
 		static public var penalty:Number = 0.01;
+		static public var limitAmountKoef:Number = 0.9;
 		
 		static public function get commission():Number 
 		{

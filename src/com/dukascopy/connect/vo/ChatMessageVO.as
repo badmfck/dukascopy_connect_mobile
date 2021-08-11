@@ -304,6 +304,12 @@ package com.dukascopy.connect.vo {
 				_systemMessageVO.type = ChatSystemMsgVO.TYPE_REPLY;
 				_text = replayVO.text;
 			}
+			
+			var result:String = text;
+			if (_systemMessageVO != null && _systemMessageVO.escrow != null)
+			{
+				result = _systemMessageVO.escrow.toJsonString();
+			}
 		}
 		
 		private function detectLink(str:String):String {					

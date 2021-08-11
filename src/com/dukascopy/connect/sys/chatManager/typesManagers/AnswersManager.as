@@ -361,21 +361,22 @@ package com.dukascopy.connect.sys.chatManager.typesManagers {
 		static private function onLoadAnswersFromStore(data:Object, error:Boolean):void {
 			echo("QuestionsManager", "onLoadAnswersFromStore", "START");
 			S_ANSWERS_LOADED_FROM_STORE.invoke(data, error);
+			
+			var items:Array = [];
 			if (data != null)
-			{
-				 DialogManager.showDialog(
+				items = data.answers;
+			
+			if (data != null) {
+				DialogManager.showDialog(
                                 ScreenQuestionsDialog,
                                 {
 									qUID:loadingAnswersUID,
-                                    items:data.answers,
+                                    items:items,
                                     title:Lang.latestAnswer
                                 }, ServiceScreenManager.TYPE_SCREEN
                             );
-				
-			//	DialogManager.showQuestionsDialog( { label:Lang.latestAnswer, data:data.answers, qUID:loadingAnswersUID } );
 			}
-			else
-				DialogManager.showQuestionsDialog( { label:Lang.latestAnswer, data:[], qUID:loadingAnswersUID } );
+			
 			if (data != null && data.hash != null)
 				loadAnswersFromPHP(loadingAnswersUID, data.hash);
 			else

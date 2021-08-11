@@ -9,6 +9,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 	import com.dukascopy.connect.data.escrow.EscrowSettings;
 	import com.dukascopy.connect.data.escrow.PriceVO;
 	import com.dukascopy.connect.data.escrow.TradeDirection;
+	import com.dukascopy.connect.data.screenAction.customActions.TestCreateOfferAction;
 	import com.dukascopy.connect.gui.button.DDAccountButton;
 	import com.dukascopy.connect.gui.button.DDFieldButton;
 	import com.dukascopy.connect.gui.components.message.ToastMessage;
@@ -100,6 +101,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		private var priceSummary:PriceClip;
 		private var alert:AlertTextArea;
 		private var lockInstrumentSelector:Boolean;
+		private var checkPaymentsAction:TestCreateOfferAction;
 		
 		public function CreateEscrowScreen() { }
 		
@@ -126,7 +128,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			if (selectedDirection == TradeDirection.buy)
 			{
 				balanceTexts.push(Lang.to_pay_for_crypto);
-				balanceTexts.push(Lang.refundable_fee.replace("%@", (EscrowSettings.refundableFee*100)));
+				balanceTexts.push(Lang.refundable_fee.replace("%@", (EscrowSettings.refundableFee * 100)));
 				balanceTexts.push(Lang.amount_to_be_debited);
 				
 				colors.push(Style.color(Style.COLOR_SUBTITLE));
@@ -136,7 +138,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			else
 			{
 				balanceTexts.push(Lang.to_get_for_crypto);
-				balanceTexts.push(Lang.commission_crypto.replace("%@", (EscrowSettings.commission*100)));
+				balanceTexts.push(Lang.commission_crypto.replace("%@", (EscrowSettings.commission * 100)));
 				balanceTexts.push(Lang.amount_to_be_credited);
 				
 				colors.push(Style.color(Style.COLOR_SUBTITLE));
@@ -700,7 +702,8 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 						offerData.accountNumber = selectedFiatAccount.ACCOUNT_NUMBER;
 					}
 					needCallback = true;
-					close();
+					
+					checkPaymentsSell();
 				}
 				else
 				{
@@ -710,6 +713,56 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			else
 			{
 				ApplicationErrors.add();
+			}
+		}
+		
+		private function checkPaymentsSell():void 
+		{
+			GD.S_START_LOAD.invoke();
+			
+			//	values.push((amount * targetPrice * EscrowSettings.refundableFee + amount * targetPrice).toFixed(decimals) + " " + currency);
+			
+			//TODO: неверное значение при процентном прайсе;
+			var resultAmount:Number = (offerData.amount * offerData.price - offerData.amount * offerData.price * EscrowSettings.commission);
+			
+			
+			checkPaymentsAction = new TestCreateOfferAction(selectedDirection, resultAmount, offerData.currency, selectedCrypto, offerData.accountNumber);
+			checkPaymentsAction.getFailSignal().add(onPaymentsSellCheckFail);
+			checkPaymentsAction.getSuccessSignal().add(onPaymentsSellCheckSuccess);
+			checkPaymentsAction.execute();
+		}
+		
+		private function onPaymentsSellCheckSuccess():void 
+		{
+			GD.S_STOP_LOAD.invoke();
+			
+			removeCheckPaymentsAction();
+			close();
+		}
+		
+		private function onPaymentsSellCheckFail(errorMessage:String):void 
+		{
+			GD.S_STOP_LOAD.invoke();
+			
+			removeCheckPaymentsAction();
+			ToastMessage.display(errorMessage);
+		}
+		
+		private function removeCheckPaymentsAction():void 
+		{
+			if (checkPaymentsAction != null)
+			{
+				if (checkPaymentsAction.getFailSignal() != null)
+				{
+					checkPaymentsAction.getFailSignal().remove(onPaymentsSellCheckFail);
+					checkPaymentsAction.getSuccessSignal().remove(onPaymentsSellCheckSuccess);
+					
+					checkPaymentsAction.getFailSignal().remove(onPaymentsBuyCheckFail);
+					checkPaymentsAction.getSuccessSignal().remove(onPaymentsBuyCheckSuccess);
+				}
+				
+				checkPaymentsAction.dispose();
+				checkPaymentsAction = null;
 			}
 		}
 		
@@ -1000,7 +1053,9 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 				
 				if (dataValid)
 				{
-					toState(STATE_FINISH);
+					checkPaymentsBuy();
+					
+				//	toState(STATE_FINISH);
 				}
 			}
 			
@@ -1014,6 +1069,39 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 				
 				close();
 			}*/
+		}
+		
+		private function checkPaymentsBuy():void 
+		{
+			GD.S_START_LOAD.invoke();
+			//!TODO: lock;
+			//	values.push((amount * targetPrice * EscrowSettings.refundableFee + amount * targetPrice).toFixed(decimals) + " " + currency);
+			
+			//TODO: неверное значение при процентном прайсе;
+			var amount:Number = inputAmount.value;
+			var resultAmount:Number = (amount * selectedPrice * EscrowSettings.refundableFee + amount * selectedPrice);
+			
+			
+			checkPaymentsAction = new TestCreateOfferAction(selectedDirection, resultAmount, currencySign, selectedCrypto, selectedFiatAccount.ACCOUNT_NUMBER);
+			checkPaymentsAction.getFailSignal().add(onPaymentsBuyCheckFail);
+			checkPaymentsAction.getSuccessSignal().add(onPaymentsBuyCheckSuccess);
+			checkPaymentsAction.execute();
+		}
+		
+		private function onPaymentsBuyCheckSuccess():void 
+		{
+			GD.S_STOP_LOAD.invoke();
+			
+			removeCheckPaymentsAction();
+			toState(STATE_FINISH);
+		}
+		
+		private function onPaymentsBuyCheckFail(errorMessage:String):void 
+		{
+			GD.S_STOP_LOAD.invoke();
+			
+			removeCheckPaymentsAction();
+			ToastMessage.display(errorMessage);
 		}
 		
 		private function dataValid():Boolean 
@@ -1769,7 +1857,10 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		override public function dispose():void {
 			super.dispose();
 			
+			GD.S_STOP_LOAD.invoke();
 			GD.S_ESCROW_INSTRUMENTS.remove(instrumentsLoaded);
+			
+			removeCheckPaymentsAction();
 			
 			if (selectorInstrument != null)
 			{

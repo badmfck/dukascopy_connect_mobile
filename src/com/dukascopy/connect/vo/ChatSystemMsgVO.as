@@ -421,9 +421,17 @@ package com.dukascopy.connect.vo {
 						}
 					}
 				} else if (_type == TYPE_ESCROW_OFFER) {
+					if (escrow != null)
+					{
+						trace("old escrow", escrow.toJsonString());
+					}
 					_additionalData = new EscrowMessageData(data);
 					_title = Lang.escrow_offer_message;
 				} else if (_type == TYPE_ESCROW_DEAL) {
+					if (escrow != null)
+					{
+						trace("old escrow", escrow.toJsonString());
+					}
 					_type = TYPE_ESCROW_OFFER;
 					_additionalData = new EscrowMessageData(data);
 					_title = Lang.escrow_deal_message;
