@@ -38,7 +38,6 @@ public class MainEscrow extends Sprite {
 		
 		private function start():void{
 
-
             new EscrowDealManager();
 			new EscrowOfferManager();
 			new EscrowTest();

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="Flex" version="4">
+  <component name="FlexBuildConfigurationManager" active="mobile">
+    <configurations>
+      <configuration name="mobile" target-platform="Mobile" pure-as="true" output-file="Dukascopy.swf" output-folder="$MODULE_DIR$/bin">
+        <dependencies target-player="32.0">
+          <entries>
+            <entry library-id="35134f16-cc69-478f-9b7f-e55c2c28f5e1">
+              <dependency linkage="Merged" />
+            </entry>
+          </entries>
+          <sdk name="AIRSDK_H_33.1.1.476" />
+        </dependencies>
+        <compiler-options>
+          <option name="resourceFilesMode" value="None" />
+        </compiler-options>
+        <packaging-air-desktop />
+        <packaging-android enabled="true" use-generated-descriptor="false" custom-descriptor-path="$MODULE_DIR$/conf/desktop.xml" package-file-name="mobile">
+          <AirSigningOptions keystore-path="$MODULE_DIR$/cert/Android.p12" use-temp-certificate="false" />
+        </packaging-android>
+        <packaging-ios package-file-name="mobile" />
+      </configuration>
+    </configurations>
+    <compiler-options />
+  </component>
+  <component name="NewModuleRootManager" inherit-compiler-output="true">
+    <exclude-output />
+    <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
+      <excludeFolder url="file://$MODULE_DIR$/vscode" />
+    </content>
+    <orderEntry type="jdk" jdkName="AIRSDK_H_33.1.1.476" jdkType="Flex SDK Type (new)" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module-library" exported="">
+      <library type="flex">
+        <properties id="35134f16-cc69-478f-9b7f-e55c2c28f5e1" />
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/src/swc/greensock.swc!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+  </component>
+</module>
