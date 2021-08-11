@@ -717,15 +717,13 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		
 		private function checkPaymentsSell():void 
 		{
-			GD.S_START_LOAD.invoke();
-			
 			//	values.push((amount * targetPrice * EscrowSettings.refundableFee + amount * targetPrice).toFixed(decimals) + " " + currency);
 			
 			//TODO: неверное значение при процентном прайсе;
 			var resultAmount:Number = (offerData.amount * offerData.price - offerData.amount * offerData.price * EscrowSettings.commission);
 			
 			
-			checkPaymentsAction = new TestCreateOfferAction(selectedDirection, resultAmount, offerData.currency, selectedCrypto, offerData.accountNumber);
+			checkPaymentsAction = new TestCreateOfferAction(selectedDirection, resultAmount, offerData.currency, selectedCrypto);
 			checkPaymentsAction.getFailSignal().add(onPaymentsSellCheckFail);
 			checkPaymentsAction.getSuccessSignal().add(onPaymentsSellCheckSuccess);
 			checkPaymentsAction.execute();
@@ -733,8 +731,6 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		
 		private function onPaymentsSellCheckSuccess():void 
 		{
-			GD.S_STOP_LOAD.invoke();
-			
 			needCallback = true;
 			removeCheckPaymentsAction();
 			close();
@@ -742,8 +738,6 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		
 		private function onPaymentsSellCheckFail(errorMessage:String):void 
 		{
-			GD.S_STOP_LOAD.invoke();
-			
 			removeCheckPaymentsAction();
 			ToastMessage.display(errorMessage);
 		}
@@ -1073,14 +1067,14 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		
 		private function checkPaymentsBuy():void 
 		{
-			GD.S_START_LOAD.invoke();
 			//!TODO: lock;
 			
 			//TODO: неверное значение при процентном прайсе;
 			var amount:Number = inputAmount.value;
-			var resultAmount:Number = (amount * selectedPrice * EscrowSettings.refundableFee + amount * selectedPrice);
+			var fiatAmount:Number = amount * selectedPrice;
+			var resultAmount:Number = (fiatAmount + fiatAmount * EscrowSettings.refundableFee);
 			
-			checkPaymentsAction = new TestCreateOfferAction(selectedDirection, resultAmount, currencySign, selectedCrypto, selectedFiatAccount.ACCOUNT_NUMBER);
+			checkPaymentsAction = new TestCreateOfferAction(selectedDirection, resultAmount, currencySign, selectedCrypto);
 			checkPaymentsAction.getFailSignal().add(onPaymentsBuyCheckFail);
 			checkPaymentsAction.getSuccessSignal().add(onPaymentsBuyCheckSuccess);
 			checkPaymentsAction.execute();
@@ -1088,27 +1082,14 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		
 		private function onPaymentsBuyCheckSuccess():void 
 		{
-			GD.S_STOP_LOAD.invoke();
-			
 			removeCheckPaymentsAction();
 			toState(STATE_FINISH);
 		}
 		
 		private function onPaymentsBuyCheckFail(errorMessage:String):void 
 		{
-			GD.S_STOP_LOAD.invoke();
-			
 			removeCheckPaymentsAction();
 			ToastMessage.display(errorMessage);
-		}
-		
-		private function dataValid():Boolean 
-		{
-			//!TODO:;
-			
-			// state?
-			// prices?
-			return true;
 		}
 		
 		private function createInputAmount():void 
@@ -1186,7 +1167,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			
 			drawControls();
 			createBalance();
-			showDeviationControl();
+			showFixedPriceControl();
 			updatePositions();
 			updateScroll();
 			
@@ -1430,7 +1411,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			radioSelection.push(new SelectorItemData(Lang.deviation_from_market, showDeviationControl));
 			radioSelection.push(new SelectorItemData(Lang.fixed_price, showFixedPriceControl));
 			radio.draw(radioSelection, _width - contentPadding * 2, RadioItem);
-			radio.select(radioSelection[0]);
+			radio.select(radioSelection[1]);
 			
 			if (selectorAccont != null)
 			{
@@ -1855,7 +1836,6 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		override public function dispose():void {
 			super.dispose();
 			
-			GD.S_STOP_LOAD.invoke();
 			GD.S_ESCROW_INSTRUMENTS.remove(instrumentsLoaded);
 			
 			removeCheckPaymentsAction();

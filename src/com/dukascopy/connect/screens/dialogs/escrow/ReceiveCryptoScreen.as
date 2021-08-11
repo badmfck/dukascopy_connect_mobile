@@ -1,6 +1,7 @@
 package com.dukascopy.connect.screens.dialogs.escrow {
 	
 	import com.dukascopy.connect.Config;
+	import com.dukascopy.connect.data.AlertScreenData;
 	import com.dukascopy.connect.data.TextFieldSettings;
 	import com.dukascopy.connect.data.coinMarketplace.PaymentsAccountsProvider;
 	import com.dukascopy.connect.data.escrow.EscrowMessageData;
@@ -14,8 +15,11 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 	import com.dukascopy.connect.gui.lightbox.UI;
 	import com.dukascopy.connect.gui.menuVideo.BitmapButton;
 	import com.dukascopy.connect.screens.dialogs.paymentDialogs.elements.InputField;
+	import com.dukascopy.connect.screens.dialogs.x.base.float.FloatAlert;
 	import com.dukascopy.connect.sys.applicationError.ApplicationErrors;
+	import com.dukascopy.connect.sys.dialogManager.DialogManager;
 	import com.dukascopy.connect.sys.imageManager.ImageBitmapData;
+	import com.dukascopy.connect.sys.serviceScreenManager.ServiceScreenManager;
 	import com.dukascopy.connect.sys.style.FontSize;
 	import com.dukascopy.connect.sys.style.Style;
 	import com.dukascopy.connect.sys.style.presets.Color;
@@ -116,6 +120,19 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		
 		private function onAcceptClick():void 
 		{
+			trace((new Date()).time/1000 - message.created);
+			if (((new Date()).time/1000 - message.created) < 6000 && escrowOffer.transactionConfirmShown == false)
+			{
+				escrowOffer.transactionConfirmShown = true;
+				
+				var screenDataAlert:AlertScreenData = new AlertScreenData();
+				screenDataAlert.text = Lang.escrow_check_transaction;
+				screenDataAlert.button = Lang.textOk.toUpperCase();
+				DialogManager.showDialog(FloatAlert, screenDataAlert, DialogManager.TYPE_SCREEN);
+				
+				return;
+			}
+			
 			if (escrowOffer != null && !EscrowScreenNavigation.isExpired(escrowOffer, offerCreatedTime))
 			{
 				command = OfferCommand.confirm_crypto_recieve;

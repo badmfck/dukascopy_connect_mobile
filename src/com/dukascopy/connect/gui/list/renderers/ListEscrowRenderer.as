@@ -628,17 +628,36 @@ package com.dukascopy.connect.gui.list.renderers {
 				if (itemData.price.indexOf("%") != -1)
 				{
 					var realPrice:Number = parseFloat(itemData.price.replace("%", ""));
-					if (realPrice > 0)
-					{
-						result += "+";
-					}
+					
 					if (!isNaN(EscrowDealManager.getPrice(itemData.tipsCurrency, itemData.priceCurrency)))
 					{
-						result += itemData.price + " " + "@" + EscrowDealManager.getPrice(itemData.tipsCurrency, itemData.priceCurrency);
+						result += "@" + EscrowDealManager.getPrice(itemData.tipsCurrency, itemData.priceCurrency);
+						if (itemData.priceCurrency != null)
+						{
+							result += " " + itemData.priceCurrency;
+						}
+						result += " ";
+						
+						if (realPrice != 0)
+						{
+							if (realPrice > 0)
+							{
+								result += "+";
+							}
+							result += itemData.price;
+						}
 					}
 					else
 					{
-						result += itemData.price + " " + Lang.escrow_from_market_price;
+						result += "@MKT" + " ";
+						if (realPrice != 0)
+						{
+							if (realPrice > 0)
+							{
+								result += "+";
+							}
+							result += itemData.price;
+						}
 					}
 				}
 				else

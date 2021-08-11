@@ -21,6 +21,7 @@ package com.dukascopy.connect.data.escrow
 	import com.dukascopy.connect.sys.applicationError.ApplicationErrors;
 	import com.dukascopy.connect.sys.auth.Auth;
 	import com.dukascopy.connect.sys.chatManager.ChatManager;
+	import com.dukascopy.connect.sys.dialogManager.DialogManager;
 	import com.dukascopy.connect.sys.errors.ErrorLocalizer;
 	import com.dukascopy.connect.sys.payments.PaymentsManager;
 	import com.dukascopy.connect.sys.payments.advancedPayments.vo.PayTaskVO;
@@ -370,7 +371,8 @@ package com.dukascopy.connect.data.escrow
 			{
 				if (escrow != null)
 				{
-					PHP.escrow_addEvent(onEventCryptoSend, {event_type: EscrowEventType.PAID_CRYPTO, data: escrow.transactionId, deal_uid: escrow.deal_uid, notifyWS: true});
+					PHP.escrow_addEvent(onEventCryptoSend, {event_type: EscrowEventType.PAID_CRYPTO, data: escrow.transactionId, deal_uid: escrow.deal_uid, notifyWS: true}, 
+										{transaction:escrow.transactionId, chatVO:chatVO});
 				}
 				else
 				{
@@ -381,7 +383,29 @@ package com.dukascopy.connect.data.escrow
 		
 		static private function onEventCryptoSend(respond:PHPRespond):void
 		{
-			trace("123");
+			if (respond.additionalData != null)
+			{
+				if ("transaction" in respond.additionalData && "chatVO" in respond.additionalData)
+				{
+					sendTransactionId(respond.additionalData.transaction, respond.additionalData.chatVO);
+				}
+				else
+				{
+					ApplicationErrors.add();
+				}
+			}
+		}
+		
+		static private function sendTransactionId(transaction:String, chatVO:ChatVO):void 
+		{
+			/*if (chatVO != null && transaction != null)
+			{
+				ChatManager.sendMessageToOtherChat("");
+			}
+			else
+			{
+				ApplicationErrors.add();
+			}*/
 		}
 		
 		static private function onOfferCommand(escrow:EscrowMessageData, message:ChatMessageVO, chatVO:ChatVO, command:OfferCommand = null):void

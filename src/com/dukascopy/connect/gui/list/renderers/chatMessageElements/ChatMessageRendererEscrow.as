@@ -232,7 +232,7 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 		private function setTexts(data:EscrowMessageData, maxWidth:int, messageData:ChatMessageVO):void 
 		{
 			title.width = maxTextWidth;
-			title.text = getTitleText(data.status, data.direction, messageData);
+			title.text = getTitleText(data, messageData);
 			title.width = title.textWidth + 5;
 			title.height = title.textHeight + 5;
 			
@@ -328,8 +328,11 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 			return result;
 		}
 		
-		private function getTitleText(status:EscrowStatus, direction:TradeDirection, messageData:ChatMessageVO):String 
+		private function getTitleText(data:EscrowMessageData, messageData:ChatMessageVO):String 
 		{
+			var status:EscrowStatus = data.status;
+			var direction:TradeDirection = data.direction;
+			
 			var result:String = "";
 			if (EscrowScreenNavigation.isExpired(messageData.systemMessageVO.escrow, messageData.created))
 			{
@@ -419,6 +422,10 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 							if (messageData.userUID != Auth.uid)
 							{
 								result = Lang.escrow_seller_sent_crypto_transaction;
+								if (data.transactionId != null)
+								{
+									result += ":\n" + data.transactionId;
+								}
 							}
 							else
 							{
@@ -434,6 +441,10 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 							else
 							{
 								result = Lang.escrow_seller_sent_crypto_transaction;
+								if (data.transactionId != null)
+								{
+									result += ":\n" + data.transactionId;
+								}
 							}
 						}
 						

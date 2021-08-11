@@ -1229,9 +1229,9 @@ package com.dukascopy.connect.sys.php {
 			call('escrow.claim', callBack, data);
 		}
 		
-		static public function escrow_addEvent(callBack:Function = null, data:Object = null):void 
+		static public function escrow_addEvent(callBack:Function = null, data:Object = null, additionalData:Object = null):void 
 		{
-			call('escrow.addEvent', callBack, data);
+			call('escrow.addEvent', callBack, data, null, false, "POST", true, false, additionalData);
 		}
 		
 		static private function call(method:String, callBack:Function = null, data:Object = null,  url:String = null, rawRespond:Boolean = false, requestMethod:String = 'POST', crypt:Boolean = true, noAuthKey:Boolean = false, additionalData:Object = null):void {

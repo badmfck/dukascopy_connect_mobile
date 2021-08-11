@@ -1858,101 +1858,105 @@ package com.dukascopy.connect.screens {
 			
 			if (messageType == ChatSystemMsgVO.TYPE_ESCROW_OFFER)
 			{
-				return;
+				menuItems.push( { fullLink:Lang.escrow_copy_transaction, id:ChatItemContextMenuItemType.COPY } );
 			}
-			
-			//pending massages
-			if (msgVO.id < 0) {
-				if (messageType == ChatMessageType.TEXT && isMine) {
-					menuItems.push( { fullLink:Lang.textCopy, id:ChatItemContextMenuItemType.COPY } );
-					menuItems.push( { fullLink:Lang.resendMessage, id:ChatItemContextMenuItemType.RESEND } );
-				}
-				else if (messageType == ChatMessageType.FILE && isMine) {
-					if (msgVO.systemMessageVO != null && msgVO.systemMessageVO.fileType == ChatSystemMsgVO.FILETYPE_VIDEO) {
-						menuItems.push( { fullLink:Lang.textRemove, id:ChatItemContextMenuItemType.REMOVE } );
+			else{
+				
+				
+				//pending massages
+				if (msgVO.id < 0) {
+					if (messageType == ChatMessageType.TEXT && isMine) {
+						menuItems.push( { fullLink:Lang.textCopy, id:ChatItemContextMenuItemType.COPY } );
+						menuItems.push( { fullLink:Lang.resendMessage, id:ChatItemContextMenuItemType.RESEND } );
 					}
-				}
-			} else {
-				if (messageType == ChatMessageType.TEXT) {
-					
-					menuItems.push( { fullLink:Lang.reply, id:ChatItemContextMenuItemType.REPLY } );
-					
-					if (msgVO.linksArray == null || (msgVO.linksArray.length > 0 && canOpenLink(msgVO)))
+					else if (messageType == ChatMessageType.FILE && isMine) {
+						if (msgVO.systemMessageVO != null && msgVO.systemMessageVO.fileType == ChatSystemMsgVO.FILETYPE_VIDEO) {
+							menuItems.push( { fullLink:Lang.textRemove, id:ChatItemContextMenuItemType.REMOVE } );
+						}
+					}
+				} else {
+					if (messageType == ChatMessageType.TEXT) {
+						
+						menuItems.push( { fullLink:Lang.reply, id:ChatItemContextMenuItemType.REPLY } );
+						
+						if (msgVO.linksArray == null || (msgVO.linksArray.length > 0 && canOpenLink(msgVO)))
+						{
+							menuItems.push( { fullLink:Lang.textCopy, id:ChatItemContextMenuItemType.COPY } );
+						}
+						
+						if (isMine && editable)
+							menuItems.push( { fullLink:Lang.textEdit, id:ChatItemContextMenuItemType.EDIT } );
+					}
+					else if (msgVO.typeEnum == ChatMessageType.FORWARDED)
 					{
 						menuItems.push( { fullLink:Lang.textCopy, id:ChatItemContextMenuItemType.COPY } );
 					}
-					
-					if (isMine && editable)
-						menuItems.push( { fullLink:Lang.textEdit, id:ChatItemContextMenuItemType.EDIT } );
-				}
-				else if (msgVO.typeEnum == ChatMessageType.FORWARDED)
-				{
-					menuItems.push( { fullLink:Lang.textCopy, id:ChatItemContextMenuItemType.COPY } );
-				}
 
-				if (messageType == ChatSystemMsgVO.TYPE_CHAT_SYSTEM) {
-					menuItems.push( { fullLink:Lang.textCopy, id:ChatItemContextMenuItemType.COPY } );
-				}
-				
-				var removeExist:Boolean = false;
-				
-				if (isMine) {
-					if (Config.ADMIN_UIDS.indexOf(Auth.uid) != -1)
+					if (messageType == ChatSystemMsgVO.TYPE_CHAT_SYSTEM) {
+						menuItems.push( { fullLink:Lang.textCopy, id:ChatItemContextMenuItemType.COPY } );
+					}
+					
+					var removeExist:Boolean = false;
+					
+					if (isMine) {
+						if (Config.ADMIN_UIDS.indexOf(Auth.uid) != -1)
+						{
+							removeExist = true;
+							menuItems.push( { fullLink:Lang.textRemove, id:ChatItemContextMenuItemType.REMOVE } );
+						}
+						else if (editable && messageType != ChatSystemMsgVO.TYPE_CHAT_SYSTEM) {
+							removeExist = true;
+							menuItems.push( { fullLink:Lang.textRemove, id:ChatItemContextMenuItemType.REMOVE } );
+						}
+						if (msgVO.id < 0)
+							menuItems.push( { fullLink:Lang.resendMessage, id:ChatItemContextMenuItemType.RESEND } );
+					} else if (Config.ADMIN_UIDS.indexOf(Auth.uid) != -1) {
+						removeExist = true;
+						menuItems.push( { fullLink:Lang.textRemove, id:ChatItemContextMenuItemType.REMOVE } );
+					}
+					
+					//public
+					if (removeExist == false && ChatManager.getCurrentChat() != null && ChatManager.getCurrentChat().type == ChatRoomType.CHANNEL && 
+						(ChatManager.getCurrentChat().isOwner(Auth.uid) || ChatManager.getCurrentChat().isModerator(Auth.uid)))
 					{
 						removeExist = true;
 						menuItems.push( { fullLink:Lang.textRemove, id:ChatItemContextMenuItemType.REMOVE } );
 					}
-					else if (editable && messageType != ChatSystemMsgVO.TYPE_CHAT_SYSTEM) {
-						removeExist = true;
-						menuItems.push( { fullLink:Lang.textRemove, id:ChatItemContextMenuItemType.REMOVE } );
-					}
-					if (msgVO.id < 0)
-						menuItems.push( { fullLink:Lang.resendMessage, id:ChatItemContextMenuItemType.RESEND } );
-				} else if (Config.ADMIN_UIDS.indexOf(Auth.uid) != -1) {
-					removeExist = true;
-					menuItems.push( { fullLink:Lang.textRemove, id:ChatItemContextMenuItemType.REMOVE } );
-				}
-				
-				//public
-				if (removeExist == false && ChatManager.getCurrentChat() != null && ChatManager.getCurrentChat().type == ChatRoomType.CHANNEL && 
-					(ChatManager.getCurrentChat().isOwner(Auth.uid) || ChatManager.getCurrentChat().isModerator(Auth.uid)))
-				{
-					removeExist = true;
-					menuItems.push( { fullLink:Lang.textRemove, id:ChatItemContextMenuItemType.REMOVE } );
-				}
-				
-				//GIFT
-				if (ChatManager.getCurrentChat() != null && ChatManager.getCurrentChat().type == ChatRoomType.CHANNEL &&
-					ChatManager.getCurrentChat().questionID != null && ChatManager.getCurrentChat().questionID != "" &&
-					ChatManager.getCurrentChat().getQuestion() != null && ChatManager.getCurrentChat().getQuestion().isPaid == false &&
-					isMine == false && ChatManager.getCurrentChat().getQuestion().userUID == Auth.uid &&
-					msgVO.userVO != null)
-				{
-					menuItems.push( { fullLink:Lang.sendGift, id:ChatItemContextMenuItemType.SEND_GIFT } );
-				}
-				
-				if (messageType == ChatMessageType.INVOICE || 
-					messageType == ChatMessageType.TEXT || 
-					messageType == ChatMessageType.STICKER || 
 					
-					(messageType == ChatSystemMsgVO.TYPE_FILE && 
-					msgVO.systemMessageVO != null && 
-					(msgVO.systemMessageVO.fileType == ChatSystemMsgVO.FILETYPE_IMG || msgVO.systemMessageVO.fileType == ChatSystemMsgVO.FILETYPE_IMG_CRYPTED)))
+					//GIFT
+					if (ChatManager.getCurrentChat() != null && ChatManager.getCurrentChat().type == ChatRoomType.CHANNEL &&
+						ChatManager.getCurrentChat().questionID != null && ChatManager.getCurrentChat().questionID != "" &&
+						ChatManager.getCurrentChat().getQuestion() != null && ChatManager.getCurrentChat().getQuestion().isPaid == false &&
+						isMine == false && ChatManager.getCurrentChat().getQuestion().userUID == Auth.uid &&
+						msgVO.userVO != null)
+					{
+						menuItems.push( { fullLink:Lang.sendGift, id:ChatItemContextMenuItemType.SEND_GIFT } );
+					}
+					
+					if (messageType == ChatMessageType.INVOICE || 
+						messageType == ChatMessageType.TEXT || 
+						messageType == ChatMessageType.STICKER || 
+						
+						(messageType == ChatSystemMsgVO.TYPE_FILE && 
+						msgVO.systemMessageVO != null && 
+						(msgVO.systemMessageVO.fileType == ChatSystemMsgVO.FILETYPE_IMG || msgVO.systemMessageVO.fileType == ChatSystemMsgVO.FILETYPE_IMG_CRYPTED)))
+					{
+						menuItems.push({fullLink:Lang.forwardMessage, id:ChatItemContextMenuItemType.FORWARD});
+					}
+				}
+				if (messageType != ChatSystemMsgVO.TYPE_FILE)
 				{
-					menuItems.push({fullLink:Lang.forwardMessage, id:ChatItemContextMenuItemType.FORWARD});
+					if (msgVO.renderInfo == null || msgVO.renderInfo.renderInforenderBigFont == false)
+					{
+						menuItems.push({fullLink:Lang.enlargeText, id:ChatItemContextMenuItemType.ENLARGE});
+					}
+					else
+					{
+						menuItems.push({fullLink:Lang.reduceText, id:ChatItemContextMenuItemType.MINIMIZE});
+					}
 				}
 			}
-			if (messageType != ChatSystemMsgVO.TYPE_FILE)
-			{
-				if (msgVO.renderInfo == null || msgVO.renderInfo.renderInforenderBigFont == false)
-				{
-					menuItems.push({fullLink:Lang.enlargeText, id:ChatItemContextMenuItemType.ENLARGE});
-				}
-				else
-				{
-					menuItems.push({fullLink:Lang.reduceText, id:ChatItemContextMenuItemType.MINIMIZE});
-				}
-			}
+			
 			
 			if (menuItems.length == 0)
 				return;

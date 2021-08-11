@@ -1,6 +1,7 @@
 package com.dukascopy.connect.data.screenAction.customActions.chatMessageAction {
 	
 	import assets.CopyClipboardIcon;
+	import com.dukascopy.connect.data.escrow.EscrowStatus;
 	import com.dukascopy.connect.data.screenAction.IScreenAction;
 	import com.dukascopy.connect.data.screenAction.ScreenAction;
 	import com.dukascopy.connect.sys.chatManager.ChatManager;
@@ -40,6 +41,11 @@ package com.dukascopy.connect.data.screenAction.customActions.chatMessageAction 
 			if (msgVO.systemMessageVO != null && msgVO.systemMessageVO.newsVO != null)
 			{
 				message = msgVO.systemMessageVO.newsVO.link;
+			}
+			
+			if (msgVO.systemMessageVO != null && msgVO.systemMessageVO.escrow != null && msgVO.systemMessageVO.escrow.status == EscrowStatus.paid_crypto)
+			{
+				message = msgVO.systemMessageVO.escrow.transactionId;
 			}
 			
 			if (message != null)
