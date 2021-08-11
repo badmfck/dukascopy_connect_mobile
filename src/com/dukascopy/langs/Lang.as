@@ -2520,6 +2520,7 @@ package com.dukascopy.langs {
 		static public var escrow_credit_amount_not_in_limits:String = "Up limits";
 		static public var escrow_check_transaction:String = "Please carefully check the transaction before your confirmation";
 		static public var escrow_copy_transaction:String = "Copy transaction";
+		static public var escrow_at_market_price:String = "At market price";
 		
 		static public function updateKeys(keys:Object):void {
 			for (var n:String in keys) {
