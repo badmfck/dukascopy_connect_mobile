@@ -984,7 +984,20 @@ package com.dukascopy.connect.sys.questionsManager {
 			if (currentQuestion.price == null)
 				return;
 			var selectedDirection:TradeDirection = (currentQuestion.subtype == QUESTION_SIDE_BUY) ? TradeDirection.buy : TradeDirection.sell;
-			var fiatAmount:Number = Number(currentQuestion.cryptoAmount) * Number(currentQuestion.price);
+			var price:Number = 0;
+			if (currentQuestion.price.indexOf("%") == -1) {
+				price = Number(currentQuestion.price);
+			} else {
+				for (var i:int = 0; i < currentQuestion.instrument.price.length; i++) {
+					if (currentQuestion.instrument.price[i].name == currentQuestion.priceCurrency) {
+						price = currentQuestion.instrument.price[i].value * Number(currentQuestion.price.substr(0, currentQuestion.price.length -1));
+						break;
+					}
+				}
+				if (price == 0)
+					return;
+			}
+			var fiatAmount:Number = Number(currentQuestion.cryptoAmount) * price;
 			var resultAmount:Number = fiatAmount + ((currentQuestion.subtype == QUESTION_SIDE_BUY) ?  fiatAmount * EscrowSettings.refundableFee : fiatAmount * EscrowSettings.commission);
 			
 			var checkPaymentsAction:TestCreateOfferAction = new TestCreateOfferAction(selectedDirection, resultAmount, currentQuestion.priceCurrency, currentQuestion.instrument);
