@@ -1167,7 +1167,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			
 			drawControls();
 			createBalance();
-			showDeviationControl();
+			showFixedPriceControl();
 			updatePositions();
 			updateScroll();
 			
@@ -1411,7 +1411,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			radioSelection.push(new SelectorItemData(Lang.deviation_from_market, showDeviationControl));
 			radioSelection.push(new SelectorItemData(Lang.fixed_price, showFixedPriceControl));
 			radio.draw(radioSelection, _width - contentPadding * 2, RadioItem);
-			radio.select(radioSelection[0]);
+			radio.select(radioSelection[1]);
 			
 			if (selectorAccont != null)
 			{

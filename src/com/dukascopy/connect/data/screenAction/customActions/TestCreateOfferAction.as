@@ -189,6 +189,7 @@ package com.dukascopy.connect.data.screenAction.customActions {
 		
 		override public function dispose():void {
 			instrument = null;
+			direction = null;
 			removePaymetsListeners();
 			PaymentsManager.deactivate();
 			if (accounts != null) {

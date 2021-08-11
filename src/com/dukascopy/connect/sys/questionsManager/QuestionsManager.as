@@ -9,6 +9,7 @@ package com.dukascopy.connect.sys.questionsManager {
 	import com.dukascopy.connect.data.escrow.EscrowSettings;
 	import com.dukascopy.connect.data.escrow.TradeDirection;
 	import com.dukascopy.connect.data.screenAction.customActions.TestCreateOfferAction;
+	import com.dukascopy.connect.data.screenAction.customActions.TestCreateOfferAction;
 	import com.dukascopy.connect.gui.components.message.ToastMessage;
 	import com.dukascopy.connect.managers.escrow.vo.EscrowInstrument;
 	import com.dukascopy.connect.screens.QuestionCreateUpdateScreen;
@@ -1010,6 +1011,7 @@ package com.dukascopy.connect.sys.questionsManager {
 		}
 		
 		static private function onPaymentsBuyCheckFail(errorMessage:String):void {
+			S_QUESTION_CREATE_FAIL.invoke();
 			ToastMessage.display(errorMessage);
 		}
 		
