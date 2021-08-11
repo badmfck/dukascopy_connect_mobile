@@ -1545,6 +1545,7 @@ package com.dukascopy.connect.sys.questionsManager {
 			}
 			onCreateQuestionSuccess(phpRespond.data);
 			phpRespond.dispose();
+			getQuestions();
 		}
 		
 		/*static public function preAskFirstQuestion():void {
