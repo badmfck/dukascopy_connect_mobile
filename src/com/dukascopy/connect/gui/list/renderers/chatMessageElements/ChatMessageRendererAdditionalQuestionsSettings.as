@@ -119,13 +119,20 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 				{
 					if (QuestionsManager.getCurrentQuestion() != null && QuestionsManager.getCurrentQuestion().price != null)
 					{
-						res = QuestionsManager.getCurrentQuestion().price;
+						var price:String = QuestionsManager.getCurrentQuestion().price;
+						res = price;
 						if (res.charAt(res.length -1) == "%")
 						{
 							res += " " + Lang.tenderPricePercent;
 							if (res.charAt(0) != "-")
 							{
 								res = "+" + res;
+							}
+							
+							var realPrice:String = price.replace("%", "");
+							if (!isNaN(Number(realPrice)) && Number(realPrice) == 0)
+							{
+								res = Lang.escrow_at_market_price;
 							}
 						}
 						else if (QuestionsManager.getCurrentQuestion().priceCurrency != null)

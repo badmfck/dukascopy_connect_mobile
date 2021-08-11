@@ -433,14 +433,7 @@ package com.dukascopy.connect.screens {
 				QuestionsManager.getCurrentQuestion().priceCurrency = currency;
 				list.updateItemByIndex(4);
 			} else {
-				if (price == 0)
-				{
-					val = Lang.escrow_at_market_price;
-				}
-				else
-				{
-					val += "%";
-				}
+				val += "%";
 			}
 			
 			QuestionsManager.getCurrentQuestion().price = val;
