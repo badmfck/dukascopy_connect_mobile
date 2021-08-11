@@ -990,7 +990,7 @@ package com.dukascopy.connect.sys.questionsManager {
 			} else {
 				for (var i:int = 0; i < currentQuestion.instrument.price.length; i++) {
 					if (currentQuestion.instrument.price[i].name == currentQuestion.priceCurrency) {
-						price = currentQuestion.instrument.price[i].value * Number(currentQuestion.price.substr(0, currentQuestion.price.length -1));
+						price = currentQuestion.instrument.price[i].value + currentQuestion.instrument.price[i].value * Number(currentQuestion.price.substr(0, currentQuestion.price.length -1));
 						break;
 					}
 				}
