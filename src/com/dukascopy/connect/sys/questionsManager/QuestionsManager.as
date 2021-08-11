@@ -711,7 +711,7 @@ package com.dukascopy.connect.sys.questionsManager {
 			
 			if (prolong.length == 0 || needProlong == false)
 				return;
-			askForProlong(prolong);
+			//askForProlong(prolong);
 		}
 		
 		static private function askForProlong(prolong:Array):void {
