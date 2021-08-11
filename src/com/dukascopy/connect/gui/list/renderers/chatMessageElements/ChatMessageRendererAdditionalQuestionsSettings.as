@@ -193,9 +193,7 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 				initBg(0xFFFFFF, roundedTop, roundedBottom);
 				boxBg.width = maxWidth;
 				boxBg.height = buttonBack.height + Config.FINGER_SIZE * .2;
-			}
-			else
-			{
+			} else {
 				tf.x = vTextMargin;
 				tipsText.visible = true;
 				line.visible = true;
@@ -233,10 +231,6 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 				boxBg.width = maxWidth;
 				boxBg.height = line.y + line.height + vTextMargin;
 			}
-			
-			
-			
-			
 		}
 		
 		private function getIcon(messageData:ChatMessageVO):void {
