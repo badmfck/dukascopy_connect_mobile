@@ -1,7 +1,7 @@
 package com.dukascopy.connect {
 
-    //import com.dukascopy.connect.data.BarabanSettings;
-    //import com.dukascopy.connect.sys.auth.Auth;
+    import com.dukascopy.connect.data.BarabanSettings;
+    import com.dukascopy.connect.sys.auth.Auth;
     import flash.system.Capabilities;
 	
     /**
