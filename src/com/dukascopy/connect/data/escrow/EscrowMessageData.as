@@ -23,6 +23,7 @@ package com.dukascopy.connect.data.escrow
 		public var deal_uid:String;
 		public var debit_account:String;
 		public var msg_id:String;
+		public var transactionConfirmShown:Boolean;
 		
 		public function EscrowMessageData(data:Object = null) 
 		{
