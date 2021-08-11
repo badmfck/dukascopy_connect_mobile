@@ -723,7 +723,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			var resultAmount:Number = (offerData.amount * offerData.price - offerData.amount * offerData.price * EscrowSettings.commission);
 			
 			
-			checkPaymentsAction = new TestCreateOfferAction(selectedDirection, resultAmount, offerData.currency, selectedCrypto, offerData.accountNumber);
+			checkPaymentsAction = new TestCreateOfferAction(selectedDirection, resultAmount, offerData.currency, selectedCrypto);
 			checkPaymentsAction.getFailSignal().add(onPaymentsSellCheckFail);
 			checkPaymentsAction.getSuccessSignal().add(onPaymentsSellCheckSuccess);
 			checkPaymentsAction.execute();
@@ -1074,7 +1074,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			var fiatAmount:Number = amount * selectedPrice;
 			var resultAmount:Number = (fiatAmount + fiatAmount * EscrowSettings.refundableFee);
 			
-			checkPaymentsAction = new TestCreateOfferAction(selectedDirection, resultAmount, currencySign, selectedCrypto, selectedFiatAccount.ACCOUNT_NUMBER);
+			checkPaymentsAction = new TestCreateOfferAction(selectedDirection, resultAmount, currencySign, selectedCrypto);
 			checkPaymentsAction.getFailSignal().add(onPaymentsBuyCheckFail);
 			checkPaymentsAction.getSuccessSignal().add(onPaymentsBuyCheckSuccess);
 			checkPaymentsAction.execute();

@@ -23,18 +23,16 @@ package com.dukascopy.connect.data.screenAction.customActions {
 		private var direction:TradeDirection;
 		private var fiatAmount:Number;
 		private var currency:String;
-		private var account:String;
 		private var accounts:PaymentsAccountsProvider;
 		private var instrument:EscrowInstrument;
 		public var disposeOnResult:Boolean;
 		
-		public function TestCreateOfferAction(direction:TradeDirection, fiatAmount:Number, currency:String, instrument:EscrowInstrument, account:String = null) {
+		public function TestCreateOfferAction(direction:TradeDirection, fiatAmount:Number, currency:String, instrument:EscrowInstrument) {
 			setIconClass(null);
 			
 			this.direction = direction;
 			this.fiatAmount = fiatAmount;
 			this.currency = currency;
-			this.account = account;
 			this.instrument = instrument;
 		}
 		
@@ -42,14 +40,7 @@ package com.dukascopy.connect.data.screenAction.customActions {
 			
 			if (direction == TradeDirection.buy)
 			{
-				if (account != null)
-				{
-					getAccounts();
-				}
-				else
-				{
-					onFail(Lang.escrow_account_not_found);
-				}
+				getAccounts();
 			}
 			else if (direction == TradeDirection.sell)
 			{
@@ -199,7 +190,7 @@ package com.dukascopy.connect.data.screenAction.customActions {
 					var targetAccount:Object;
 					for (var i:int = 0; i < moneyAccounts.length; i++) 
 					{
-						if (moneyAccounts[i].ACCOUNT_NUMBER == account)
+						if (moneyAccounts[i].CURRENCY == currency)
 						{
 							targetAccount = moneyAccounts[i];
 							break;
