@@ -701,7 +701,6 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 					{
 						offerData.accountNumber = selectedFiatAccount.ACCOUNT_NUMBER;
 					}
-					needCallback = true;
 					
 					checkPaymentsSell();
 				}
@@ -736,6 +735,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		{
 			GD.S_STOP_LOAD.invoke();
 			
+			needCallback = true;
 			removeCheckPaymentsAction();
 			close();
 		}
@@ -1075,12 +1075,10 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		{
 			GD.S_START_LOAD.invoke();
 			//!TODO: lock;
-			//	values.push((amount * targetPrice * EscrowSettings.refundableFee + amount * targetPrice).toFixed(decimals) + " " + currency);
 			
 			//TODO: неверное значение при процентном прайсе;
 			var amount:Number = inputAmount.value;
 			var resultAmount:Number = (amount * selectedPrice * EscrowSettings.refundableFee + amount * selectedPrice);
-			
 			
 			checkPaymentsAction = new TestCreateOfferAction(selectedDirection, resultAmount, currencySign, selectedCrypto, selectedFiatAccount.ACCOUNT_NUMBER);
 			checkPaymentsAction.getFailSignal().add(onPaymentsBuyCheckFail);

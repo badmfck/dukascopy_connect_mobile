@@ -52,6 +52,7 @@ package com.dukascopy.connect.data.screenAction.customActions {
 			else if (direction == TradeDirection.sell)
 			{
 				//!TODO: проверить на отказ ввода пароля;
+				PayManager.init();
 				PayManager.callGetAccountInfo(onLimitsReady);
 			}
 			else
