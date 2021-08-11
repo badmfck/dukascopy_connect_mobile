@@ -5,6 +5,7 @@ package com.dukascopy.connect.data.screenAction.customActions {
 	import com.dukascopy.connect.data.escrow.TradeDirection;
 	import com.dukascopy.connect.data.screenAction.IScreenAction;
 	import com.dukascopy.connect.data.screenAction.ScreenAction;
+	import com.dukascopy.connect.gui.components.message.ToastMessage;
 	import com.dukascopy.connect.managers.escrow.vo.EscrowInstrument;
 	import com.dukascopy.connect.screens.payments.card.TypeCurrency;
 	import com.dukascopy.connect.sys.applicationError.ApplicationErrors;
@@ -51,9 +52,19 @@ package com.dukascopy.connect.data.screenAction.customActions {
 			}
 			else if (direction == TradeDirection.sell)
 			{
-				//!TODO: проверить на отказ ввода пароля;
-				PayManager.init();
-				PayManager.callGetAccountInfo(onLimitsReady);
+				if (PaymentsManager.activate() == false)
+				{
+					onLimitsReady();
+				}
+				else
+				{
+					PaymentsManager.S_ACCOUNT.add(onLimitsReady);
+					PaymentsManager.S_ERROR.add(onPayError);
+					if (PaymentsManager.S_BACK != null)
+					{
+						PaymentsManager.S_BACK.add(onAuthCancelled);
+					}
+				}
 			}
 			else
 			{
@@ -62,8 +73,31 @@ package com.dukascopy.connect.data.screenAction.customActions {
 			}
 		}
 		
+		private function onAuthCancelled():void 
+		{
+			removePaymetsListeners();
+			onFail();
+		}
+		
+		private function onPayError(code:String = null, message:String = null):void {
+			
+			removePaymetsListeners();
+			ToastMessage.display(message);
+		}
+		
+		private function removePaymetsListeners():void 
+		{
+			PaymentsManager.S_ACCOUNT.remove(onLimitsReady);
+			PaymentsManager.S_ERROR.remove(onPayError);
+			if (PaymentsManager.S_BACK != null)
+			{
+				PaymentsManager.S_BACK.remove(onAuthCancelled);
+			}
+		}
+		
 		private function onLimitsReady():void 
 		{
+			removePaymetsListeners();
 			if (disposed)
 			{
 				return;
@@ -129,9 +163,6 @@ package com.dukascopy.connect.data.screenAction.customActions {
 			{
 				onFail(Lang.escrow_cant_load_account_limits);
 			}
-			/*for (var i:int = 0; i < PayManager.accountInfo.limits.length; i++) {
-				itemVL = new ItemVerificationLimit(PayManager.accountInfo.limits[i]);
-			}*/
 		}
 		
 		private function getAccounts():void 
@@ -216,7 +247,7 @@ package com.dukascopy.connect.data.screenAction.customActions {
 			}
 		}
 		
-		private function onFail(message:String):void 
+		private function onFail(message:String = null):void 
 		{
 			if (S_ACTION_FAIL != null)
 			{
@@ -227,6 +258,8 @@ package com.dukascopy.connect.data.screenAction.customActions {
 		override public function dispose():void {
 			
 			instrument = null;
+			removePaymetsListeners();
+			PaymentsManager.deactivate();
 			
 			if (accounts != null)
 			{

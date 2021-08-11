@@ -717,8 +717,6 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		
 		private function checkPaymentsSell():void 
 		{
-			GD.S_START_LOAD.invoke();
-			
 			//	values.push((amount * targetPrice * EscrowSettings.refundableFee + amount * targetPrice).toFixed(decimals) + " " + currency);
 			
 			//TODO: неверное значение при процентном прайсе;
@@ -733,8 +731,6 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		
 		private function onPaymentsSellCheckSuccess():void 
 		{
-			GD.S_STOP_LOAD.invoke();
-			
 			needCallback = true;
 			removeCheckPaymentsAction();
 			close();
@@ -742,8 +738,6 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		
 		private function onPaymentsSellCheckFail(errorMessage:String):void 
 		{
-			GD.S_STOP_LOAD.invoke();
-			
 			removeCheckPaymentsAction();
 			ToastMessage.display(errorMessage);
 		}
@@ -1073,7 +1067,6 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		
 		private function checkPaymentsBuy():void 
 		{
-			GD.S_START_LOAD.invoke();
 			//!TODO: lock;
 			
 			//TODO: неверное значение при процентном прайсе;
@@ -1088,16 +1081,12 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		
 		private function onPaymentsBuyCheckSuccess():void 
 		{
-			GD.S_STOP_LOAD.invoke();
-			
 			removeCheckPaymentsAction();
 			toState(STATE_FINISH);
 		}
 		
 		private function onPaymentsBuyCheckFail(errorMessage:String):void 
 		{
-			GD.S_STOP_LOAD.invoke();
-			
 			removeCheckPaymentsAction();
 			ToastMessage.display(errorMessage);
 		}
@@ -1855,7 +1844,6 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		override public function dispose():void {
 			super.dispose();
 			
-			GD.S_STOP_LOAD.invoke();
 			GD.S_ESCROW_INSTRUMENTS.remove(instrumentsLoaded);
 			
 			removeCheckPaymentsAction();
