@@ -143,7 +143,10 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 			if (isLastMessageForwarded) {
 				messageVO = messageVO.systemMessageVO.forwardVO;
 				maxTextWidth -= forwardView.leftQuoteWidth + forwardView.rightQuoteWidth + hTextMargin * 2;
-			}	
+			}
+			if (messageVO.isEntryMessage == true) {
+				maxTextWidth = targetWidth - hTextMargin * 2;
+			}
 			listItem.getCustomData()[calculatedTextWidthCachedAdress] = maxTextWidth;
 			var megaTextHeight:int = getMegaTextHeightByChatMessage(messageVO, maxTextWidth);
 			
@@ -295,7 +298,9 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 			{
 				bgW = Math.max(minWidth, bgW);
 			}
-			
+			if (messageVO.isEntryMessage == true) {
+				bgW = maxWidth;
+			}
 			boxBg.width = bgW;
 			boxBg.height = bgH;
 			
