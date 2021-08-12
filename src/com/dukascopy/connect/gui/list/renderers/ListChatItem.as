@@ -415,7 +415,7 @@ package com.dukascopy.connect.gui.list.renderers {
 			if (messageData.systemMessageVO != null && messageData.systemMessageVO.imageThumbURL != null)
 				listItem.addImageFieldForLoading('imageThumbURLWithKey');
 			var messageType:String = getMessageType(messageData);
-			var maxItemWidth:int = getMaxItemWidth(width, messageType);
+			var maxItemWidth:int = getMaxItemWidth(width, messageType, messageData.isEntryMessage);
 			var renderer:IMessageRenderer = getRenderer(messageType);
 			setChildIndex(avatar, numChildren - 1);
 			setChildIndex(avatarDefault, numChildren - 1);
@@ -559,14 +559,16 @@ package com.dukascopy.connect.gui.list.renderers {
 			return null;
 		}
 		
-		private function getMaxItemWidth(widthValue:int, messageType:String):int {
+		private function getMaxItemWidth(widthValue:int, messageType:String, isEntryMessage:Boolean):int {
 			var result:int;
 			if (messageType == MESSAGE_TYPE_SYSTEM_MESSAGE || messageType == MESSAGE_TYPE_CALL)
 				result = widthValue * .8 - sideMargin * 2;
 			else if (messageType == MESSAGE_TYPE_NEWS)
 				result = (widthValue * 1.0 - tfDateWidth) - (avatarDoubleSize + sideMargin * 3.5) - birdSize;
 			else if (messageType == MESSAGE_TYPE_EXTRA_REWARDS)
-				result = (widthValue * .9 - tfDateWidth) - (avatarDoubleSize + sideMargin * 2) - birdSize;
+				result = (widthValue * 0.97 - tfDateWidth) - (avatarDoubleSize + sideMargin * 2) - birdSize;
+			else if (messageType == MESSAGE_TYPE_TEXT && isEntryMessage)
+				result = (widthValue * 0.97 - tfDateWidth) - (avatarDoubleSize + sideMargin * 2) - birdSize;
 			else
 				result = (widthValue * .9 - tfDateWidth) - (avatarDoubleSize + sideMargin * 2) - birdSize;
 			return result;
@@ -719,7 +721,7 @@ package com.dukascopy.connect.gui.list.renderers {
 			var isMine:Boolean = Auth.uid === messageData.userUID;
 			var messageType:String = getMessageType(messageData);
 			
-			var maxItemWidth:int = getMaxItemWidth(width, messageType);
+			var maxItemWidth:int = getMaxItemWidth(width, messageType, messageData.isEntryMessage);
 			
 			var renderer:IMessageRenderer = getRenderer(messageType);
 			lastRenderer = renderer;
