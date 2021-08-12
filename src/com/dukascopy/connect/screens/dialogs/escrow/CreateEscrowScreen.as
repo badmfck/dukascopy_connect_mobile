@@ -40,6 +40,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 	import com.dukascopy.connect.sys.style.Style;
 	import com.dukascopy.connect.sys.style.presets.Color;
 	import com.dukascopy.connect.type.HitZoneType;
+	import com.dukascopy.connect.utils.NumberFormat;
 	import com.dukascopy.connect.utils.TextUtils;
 	import com.dukascopy.langs.Lang;
 	import flash.display.Bitmap;
@@ -1693,12 +1694,14 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 							if (selectedCrypto.price[k].name == currencySign)
 							{
 								selectedPrice = selectedCrypto.price[k];
+								
 								break;
 							}
 						}
 						if (selectedPrice != null)
 						{
 							price = selectedPrice.value;
+							price = parseFloat(NumberFormat.formatAmount(price, currencySign, true));
 						}
 						else
 						{

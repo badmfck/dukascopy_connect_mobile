@@ -121,7 +121,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		private function onAcceptClick():void 
 		{
 			trace((new Date()).time/1000 - message.created);
-			if (((new Date()).time/1000 - message.created) < 6000 && escrowOffer.transactionConfirmShown == false)
+			if (((new Date()).time/1000 - message.created) < 60 && escrowOffer.transactionConfirmShown == false)
 			{
 				escrowOffer.transactionConfirmShown = true;
 				
