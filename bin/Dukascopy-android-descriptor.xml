@@ -1,0 +1,24 @@
+<application xmlns="http://ns.adobe.com/air/application/32.0">
+  <id>com.iswfx.connect</id>
+  <versionLabel>3.5.50</versionLabel>
+  <versionNumber>3.5.50</versionNumber>
+  <supportedProfiles>mobileDevice</supportedProfiles>
+  <filename>Dukascopy</filename>
+  <name>Dukascopy</name>
+  <allowBrowserInvocation>true</allowBrowserInvocation>
+  <initialWindow>
+    <title>Dukascopy</title>
+    <content>Dukascopy.swf</content>
+    <visible>true</visible>
+    <renderMode>gpu</renderMode>
+    <systemChrome>standard</systemChrome>
+    <autoOrients>false</autoOrients>
+    <fullScreen>false</fullScreen>
+    <softKeyboardBehavior>none</softKeyboardBehavior>
+  </initialWindow>
+  <extensions>
+    <extensionID>com.freshplanet.ane.AirAddressBook</extensionID>
+    <extensionID>com.freshplanet.KeyboardSize</extensionID>
+    <extensionID>ru.flashpress.FPUniqueId</extensionID>
+  </extensions>
+</application>

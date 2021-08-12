@@ -8,6 +8,9 @@
             <entry library-id="35134f16-cc69-478f-9b7f-e55c2c28f5e1">
               <dependency linkage="Merged" />
             </entry>
+            <entry library-id="42820159-720a-42bf-af97-17c3c943c4bb">
+              <dependency linkage="Merged" />
+            </entry>
           </entries>
           <sdk name="AIRSDK_H_33.1.1.476" />
         </dependencies>
@@ -36,6 +39,16 @@
         <properties id="35134f16-cc69-478f-9b7f-e55c2c28f5e1" />
         <CLASSES>
           <root url="jar://$MODULE_DIR$/src/swc/greensock.swc!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library type="flex">
+        <properties id="42820159-720a-42bf-af97-17c3c943c4bb" />
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/ios/AirAddressBook.ane!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
