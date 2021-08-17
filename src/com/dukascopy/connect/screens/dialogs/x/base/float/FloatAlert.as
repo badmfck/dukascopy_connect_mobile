@@ -199,9 +199,16 @@ package com.dukascopy.connect.screens.dialogs.x.base.float {
 		
 		override protected function onRemove():void 
 		{
-			if (screenData.callback != null && screenData.callback.length == 0)
+			if (screenData.callback != null)
 			{
-				screenData.callback();
+				if (screenData.callback.length == 0)
+				{
+					screenData.callback();
+				}
+				else if (screenData.callback.length == 1)
+				{
+					screenData.callback(screenData.callbackData);
+				}
 			}
 		}
 		

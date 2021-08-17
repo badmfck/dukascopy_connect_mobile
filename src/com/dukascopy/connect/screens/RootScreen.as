@@ -13,6 +13,7 @@ package com.dukascopy.connect.screens {
 	import com.dukascopy.connect.data.screenAction.customActions.Open911SupportAction;
 	import com.dukascopy.connect.data.screenAction.customActions.OpenPromoEventsInfoAction;
 	import com.dukascopy.connect.data.screenAction.customActions.RefreshLotteryDataAction;
+	import com.dukascopy.connect.data.screenAction.customActions.ShowFilterEscrowAction;
 	import com.dukascopy.connect.gui.lightbox.LightBox;
 	import com.dukascopy.connect.gui.lightbox.UI;
 	import com.dukascopy.connect.gui.tabs.TabBar;
@@ -135,6 +136,7 @@ package com.dukascopy.connect.screens {
 		private var actionOpen911FAQ:Open911FaqAction;
 		private var actionOpen911Geolocation:Open911GeolocationAction;
 		private var actionOpen911Info:Open911InfoAction;
+		private var filter911:IScreenAction;
 		private var actionCreateGroupChat:CreateChatAction;
 		
 		private var topBar:TopBar;
@@ -633,10 +635,16 @@ package com.dukascopy.connect.screens {
 					actionOpen911Geolocation ||= new Open911GeolocationAction();
 					array.push(actionOpen911Geolocation);
 				}*/
+				
+				filter911 ||= new ShowFilterEscrowAction();
+				array.push(filter911);
+				
 				actionOpen911Info ||= new Open911InfoAction();
 				array.push(actionOpen911Info);
+				
 				actionCreateQuestion ||= new Create911QuestionAction();
 				array.push(actionCreateQuestion);
+				
 				return array;
 			}
 			if (SocialManager.available == true) {

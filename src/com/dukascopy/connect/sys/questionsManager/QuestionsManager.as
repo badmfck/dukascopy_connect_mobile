@@ -50,6 +50,7 @@ package com.dukascopy.connect.sys.questionsManager {
 	import com.dukascopy.connect.type.ChatRoomType;
 	import com.dukascopy.connect.type.InvoiceStatus;
 	import com.dukascopy.connect.type.UserBlockStatusType;
+	import com.dukascopy.connect.utils.NumberFormat;
 	import com.dukascopy.connect.utils.TextUtils;
 	import com.dukascopy.connect.vo.ChatSystemMsgVO;
 	import com.dukascopy.connect.vo.ChatVO;
@@ -995,6 +996,9 @@ package com.dukascopy.connect.sys.questionsManager {
 				S_QUESTION_CREATE_FAIL.invoke();
 				return;
 			}
+			
+			currentQuestion.cryptoAmount = NumberFormat.formatAmount(Number(currentQuestion.cryptoAmount), currentQuestion.instrument.code, true);
+			
 			var selectedDirection:TradeDirection = (currentQuestion.subtype == QUESTION_SIDE_BUY) ? TradeDirection.buy : TradeDirection.sell;
 			var price:Number = 0;
 			if (currentQuestion.price.indexOf("%") == -1) {
@@ -1012,7 +1016,7 @@ package com.dukascopy.connect.sys.questionsManager {
 				}
 			}
 			var fiatAmount:Number = Number(currentQuestion.cryptoAmount) * price;
-			var resultAmount:Number = fiatAmount + ((currentQuestion.subtype == QUESTION_SIDE_BUY) ?  fiatAmount * EscrowSettings.refundableFee : fiatAmount * EscrowSettings.commission);
+			var resultAmount:Number = fiatAmount + ((currentQuestion.subtype == QUESTION_SIDE_BUY) ?  fiatAmount * EscrowSettings.refundableFee : fiatAmount * EscrowSettings.getCommission(currentQuestion.instrument.code));
 			
 			var checkPaymentsAction:TestCreateOfferAction = new TestCreateOfferAction(selectedDirection, resultAmount, currentQuestion.priceCurrency, currentQuestion.instrument);
 			checkPaymentsAction.disposeOnResult = true;
@@ -1087,7 +1091,8 @@ package com.dukascopy.connect.sys.questionsManager {
 		static public function editQuestion(quid:String, text:String):void {
 			if (tipsCurrency != null)
 			{
-				PHP.question_edit(onQuestionEdited, quid, (text == null) ? null : Crypter.crypt(text, MESSAGE_KEY), tipsAmount, tipsCurrency.code, createCategoriesString(), incognito);
+				var amount:Number = parseFloat(NumberFormat.formatAmount(tipsAmount, tipsCurrency.code, true));
+				PHP.question_edit(onQuestionEdited, quid, (text == null) ? null : Crypter.crypt(text, MESSAGE_KEY), amount, tipsCurrency.code, createCategoriesString(), incognito);
 			}
 			else
 			{

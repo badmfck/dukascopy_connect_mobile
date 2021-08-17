@@ -20,7 +20,12 @@ package com.dukascopy.connect.screens.dialogs.escrow
 		private var colors:Vector.<Number>;
 		private var clips:Vector.<Bitmap>;
 		
-		public function BalanceCalculation(titles:Vector.<String>, colors:Vector.<Number>) 
+		public function BalanceCalculation() 
+		{
+			
+		}
+		
+		public function drawTexts(titles:Vector.<String>, colors:Vector.<Number>):void
 		{
 			this.titles = titles;
 			this.colors = colors;
@@ -30,6 +35,8 @@ package com.dukascopy.connect.screens.dialogs.escrow
 		
 		private function createClips():void 
 		{
+			clearClips();
+			
 			clips = new Vector.<Bitmap>();
 			var clip:Bitmap;
 			for (var i:int = 0; i < titles.length; i++) 
@@ -37,6 +44,19 @@ package com.dukascopy.connect.screens.dialogs.escrow
 				clip = new Bitmap();
 				addChild(clip);
 				clips.push(clip);
+			}
+		}
+		
+		private function clearClips():void 
+		{
+			if (clips != null)
+			{
+				for (var i:int = 0; i < clips.length; i++) 
+				{
+					UI.destroy(clips[i]);
+				}
+				clips.length = 0;
+				clips = null;
 			}
 		}
 		
@@ -102,15 +122,8 @@ package com.dukascopy.connect.screens.dialogs.escrow
 		
 		public function dispose():void
 		{
-			if (clips != null)
-			{
-				for (var i:int = 0; i < clips.length; i++) 
-				{
-					UI.destroy(clips[i]);
-				}
-				clips.length = 0;
-				clips = null;
-			}
+			clearClips();
+			
 			colors = null;
 			titles = null;
 		}

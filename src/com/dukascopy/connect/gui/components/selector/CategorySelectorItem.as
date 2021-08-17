@@ -74,15 +74,28 @@ package com.dukascopy.connect.gui.components.selector
 			back.graphics.clear();	
 			countTextFormat.color = (select == true) ? Style.color(Style.COLOR_BACKGROUND) : Style.color(Style.COLOR_SUBTITLE);
 			textFormat.color = (select == true) ? Style.color(Style.COLOR_TEXT) : Style.color(Style.COLOR_SUBTITLE);
-			
-			_labelField.text = data.data.name;
+			var labelText:String = "";
+			if (data.label != null)
+			{
+				labelText = data.label;
+			}
+			else if(data.data != null && "name" in data.data)
+			{
+				labelText = data.data.name;
+			}
+			_labelField.text = labelText;
 			_labelField.setTextFormat(textFormat);
 			_labelField.width = _labelField.textWidth + 4;
 			_labelField.height = _labelField.textHeight + 4;
 			_labelField.x = horizontalPadding;
 			_labelField.y = verticalPadding;
 			
-			_countField.text = data.data.total;
+			var countText:String = "";
+			if (data.data != null && "total" in data.data)
+			{
+				countText = data.data.total;
+			}
+			_countField.text = countText;
 			_countField.setTextFormat(countTextFormat);
 			_countField.width = _countField.textWidth + 4;
 			_countField.height = _countField.textHeight + 4;

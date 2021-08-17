@@ -9,6 +9,7 @@ package com.dukascopy.connect.vo {
 	import com.dukascopy.connect.sys.questionsManager.QuestionsManager;
 	import com.dukascopy.connect.sys.usersManager.UsersManager;
 	import com.dukascopy.connect.vo.users.UserVO;
+	import com.dukascopy.langs.Lang;
 	
 	/**
 	 * @author Ilya Shcherbakov
@@ -55,6 +56,7 @@ package com.dukascopy.connect.vo {
 		private var _cryptoAmount:String;
 		private var _priceCurrency:String;
 		private var _price:String;
+		private var _tipsCurrencyDisplay:String;
 		
 		public var needPayBeforeClose:Boolean;
 		
@@ -99,14 +101,23 @@ package com.dukascopy.connect.vo {
 			if ("tips" in data == true && data.tips != null && "amount" in data.tips == true && data.tips.amount != "" && data.tips.amount != 0) {
 				_tipsAmount = data.tips.amount;
 				_tipsCurrency = data.tips.currency;
-				if (_tipsCurrency == "DCO")
-					_tipsCurrency = "DUK+";
+				if (Lang[_tipsCurrency])
+				{
+					_tipsCurrencyDisplay = Lang[_tipsCurrency];
+				}
+				else
+				{
+					_tipsCurrencyDisplay = _tipsCurrency;
+				}
+				/*if (_tipsCurrency == "DCO")
+					_tipsCurrency = "DUK+";*/
 				_cryptoAmount = _tipsAmount.toString();
 				GD.S_ESCROW_INSTRUMENTS.add(onResult);
 				GD.S_ESCROW_INSTRUMENTS_REQUEST.invoke();
 			} else {
 				_tipsAmount = NaN;
 				_tipsCurrency = null;
+				_tipsCurrencyDisplay = null;
 			}
 			if (isNaN(_tipsAmount) == true)
 				_isPaid = true;
@@ -148,12 +159,18 @@ package com.dukascopy.connect.vo {
 		
 		private function onResult(instruments:Vector.<EscrowInstrument>):void {
 			GD.S_ESCROW_INSTRUMENTS.remove(onResult);
-			for (var i:int = 0; i < instruments.length; i++) {
-				if (instruments[i].code == _tipsCurrency) {
-					_instrument = instruments[i];
-					return;
+			//!TODO: instruments == null
+			if (instruments != null)
+			{
+				for (var i:int = 0; i < instruments.length; i++) {
+					if (instruments[i].code == _tipsCurrency) {
+						_instrument = instruments[i];
+						return;
+					}
 				}
 			}
+			
+			
 		}
 		
 		public function get avatarURL():String {
@@ -199,6 +216,7 @@ package com.dukascopy.connect.vo {
 		public function get bind():Boolean { return _bind; }
 		public function get tipsAmount():Number { return _tipsAmount; }
 		public function get tipsCurrency():String { return _tipsCurrency; }
+		public function get tipsCurrencyDisplay():String { return _tipsCurrencyDisplay; }
 		public function get categories():Array { return _categories; }
 		public function get incognito():Boolean { return _incognito; }
 		public function get isPaid():Boolean { return _isPaid; }

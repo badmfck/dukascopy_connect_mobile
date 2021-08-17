@@ -521,11 +521,6 @@ package com.dukascopy.connect.gui.list.renderers {
 				
 				
 				if (isNaN(itemData.tipsAmount) == false) {
-					var tipsCurrency:String = itemData.tipsCurrency;
-					if (Lang[tipsCurrency] != null)
-					{
-						tipsCurrency = Lang[tipsCurrency];
-					}
 					
 					if (itemData.isMine() == true && itemData.isPaid == true) {
 						paidIcon.visible = true;
@@ -687,7 +682,7 @@ package com.dukascopy.connect.gui.list.renderers {
 			result += " ";
 			result += itemData.cryptoAmount;
 			result += " ";
-			result += itemData.tipsCurrency;
+			result += itemData.tipsCurrencyDisplay;
 			
 			return result;
 		}

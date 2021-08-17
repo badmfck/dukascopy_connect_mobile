@@ -3,7 +3,9 @@ package com.dukascopy.connect.screens {
 	import com.dukascopy.connect.Config;
 	import com.dukascopy.connect.GD;
 	import com.dukascopy.connect.MobileGui;
+	import com.dukascopy.connect.data.AlertScreenData;
 	import com.dukascopy.connect.data.LocalAvatars;
+	import com.dukascopy.connect.data.escrow.EscrowScreenNavigation;
 	import com.dukascopy.connect.data.escrow.TradeDirection;
 	import com.dukascopy.connect.data.screenAction.IScreenAction;
 	import com.dukascopy.connect.data.screenAction.customActions.GetNumericKeyboardAction;
@@ -23,6 +25,7 @@ package com.dukascopy.connect.screens {
 	import com.dukascopy.connect.screens.base.BaseScreen;
 	import com.dukascopy.connect.screens.dialogs.escrow.EscrowPriceScreen;
 	import com.dukascopy.connect.screens.dialogs.x.base.bottom.ListSelectionPopup;
+	import com.dukascopy.connect.screens.dialogs.x.base.float.FloatAlert;
 	import com.dukascopy.connect.screens.payments.card.TypeCurrency;
 	import com.dukascopy.connect.sys.applicationError.ApplicationErrors;
 	import com.dukascopy.connect.sys.auth.Auth;
@@ -33,6 +36,7 @@ package com.dukascopy.connect.screens {
 	import com.dukascopy.connect.sys.serviceScreenManager.ServiceScreenManager;
 	import com.dukascopy.connect.sys.theme.AppTheme;
 	import com.dukascopy.connect.type.HitZoneType;
+	import com.dukascopy.connect.utils.NumberFormat;
 	import com.dukascopy.connect.vo.ChatMessageVO;
 	import com.dukascopy.connect.vo.ChatSystemMsgVO;
 	import com.dukascopy.connect.vo.QuestionVO;
@@ -428,6 +432,12 @@ package com.dukascopy.connect.screens {
 		private function onPriceChange(price:Number, isPercent:Boolean, currency:String):void {
 			if (isDisposed)
 				return;
+			
+			if (isPercent == false)
+			{
+				price = parseFloat(NumberFormat.formatAmount(price, currency, true));
+			}
+			
 			var val:String = price.toString();
 			if (isPercent == false) {
 				QuestionsManager.getCurrentQuestion().priceCurrency = currency;
@@ -521,12 +531,31 @@ package com.dukascopy.connect.screens {
 		}
 		
 		private function callBackSelectInstrument(ei:EscrowInstrument):void {
-			QuestionsManager.getCurrentQuestion().instrument = ei;
-			if (ei.price.length == 1)
-				QuestionsManager.getCurrentQuestion().priceCurrency = ei.price[0].name;
+			
+			if (ei.isLinked)
+			{
+				QuestionsManager.getCurrentQuestion().instrument = ei;
+				if (ei.price.length == 1)
+					QuestionsManager.getCurrentQuestion().priceCurrency = ei.price[0].name;
+				else
+					QuestionsManager.getCurrentQuestion().priceCurrency = null;
+				list.updateItemByIndex(2, true, true);
+			}
 			else
-				QuestionsManager.getCurrentQuestion().priceCurrency = null;
-			list.updateItemByIndex(2, true, true);
+			{
+				var screenData:AlertScreenData = new AlertScreenData();
+				screenData.text = Lang.escrow_blockchain_address_needed.replace(Lang.regExtValue, ei.name);
+				screenData.button = Lang.textRegister.toUpperCase();
+				screenData.callback = registerBlockchain;
+				screenData.callbackData = ei.code;
+				
+				ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, FloatAlert, screenData);
+			}
+		}
+		
+		private function registerBlockchain(instrumentCode:String):void 
+		{
+			EscrowScreenNavigation.registerBlockchain(instrumentCode);
 		}
 		
 		private function callBackSelectCurrency(currency:String):void {

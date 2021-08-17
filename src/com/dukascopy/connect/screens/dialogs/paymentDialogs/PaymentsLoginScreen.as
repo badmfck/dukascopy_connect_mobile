@@ -836,6 +836,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs {
 		override public function initScreen(data:Object = null):void {
 			super.initScreen(data);
 			
+			GD.S_STOP_LOAD.invoke();
 			state = STATE_PASSWORD;
 			
 			contentPadding = Config.FINGER_SIZE * .7;

@@ -145,7 +145,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 					else if (escrowOffer.direction == TradeDirection.sell)
 					{
 						texts.push(Lang.amount_of_transaction);
-						texts.push(Lang.commission_crypto.replace("%@", (EscrowSettings.commission*100)));
+						texts.push(Lang.commission_crypto.replace("%@", (EscrowSettings.getCommission(escrowOffer.instrument) * 100)));
 						texts.push(Lang.amount_to_be_credited);
 						
 						colors.push(Style.color(Style.COLOR_SUBTITLE));
@@ -153,7 +153,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 						colors.push(Color.WHITE);
 						
 						values.push(NumberFormat.formatAmount(escrowOffer.amount * escrowOffer.price, escrowOffer.currency));
-						values.push(NumberFormat.formatAmount(escrowOffer.amount * escrowOffer.price * EscrowSettings.commission, escrowOffer.currency));
+						values.push(NumberFormat.formatAmount(escrowOffer.amount * escrowOffer.price * EscrowSettings.getCommission(escrowOffer.instrument), escrowOffer.currency));
 						values.push(NumberFormat.formatAmount(escrowOffer.amount * escrowOffer.price * EscrowSettings.refundableFee + escrowOffer.amount * escrowOffer.price, escrowOffer.currency));
 					}
 				}
@@ -161,10 +161,10 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			
 			if (balance == null)
 			{
-				balance = new BalanceCalculation(texts, colors);
+				balance = new BalanceCalculation();
 				addItem(balance);
 			}
-			
+			balance.drawTexts(texts, colors);
 			balance.draw(getWidth() - contentPadding * 2, values);
 		}
 		

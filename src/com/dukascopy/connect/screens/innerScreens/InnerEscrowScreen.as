@@ -26,19 +26,24 @@ package com.dukascopy.connect.screens.innerScreens {
 	import com.dukascopy.connect.sys.dialogManager.DialogManager;
 	import com.dukascopy.connect.sys.imageManager.ImageBitmapData;
 	import com.dukascopy.connect.sys.questionsManager.QuestionsManager;
+	import com.dukascopy.connect.sys.style.FontSize;
 	import com.dukascopy.connect.sys.style.Style;
 	import com.dukascopy.connect.sys.usersManager.OnlineStatus;
 	import com.dukascopy.connect.sys.usersManager.UsersManager;
 	import com.dukascopy.connect.type.ChatInitType;
 	import com.dukascopy.connect.type.HitZoneType;
+	import com.dukascopy.connect.utils.TextUtils;
 	import com.dukascopy.connect.vo.ChatVO;
 	import com.dukascopy.connect.vo.QuestionVO;
 	import com.dukascopy.connect.vo.screen.ChatScreenData;
 	import com.dukascopy.connect.vo.users.adds.ChatUserVO;
 	import com.dukascopy.langs.Lang;
+	import flash.display.Bitmap;
 	import flash.display.Sprite;
 	import flash.display.StageQuality;
 	import flash.events.Event;
+	import flash.text.TextFieldAutoSize;
+	import flash.text.TextFormatAlign;
 	
 	/**
 	 * ...
@@ -62,6 +67,7 @@ package com.dukascopy.connect.screens.innerScreens {
 		
 		private var tweenObj:Object = {};
 		private var statusClip:StatusClip;
+		private var placeholder:Bitmap;
 		
 		public function InnerEscrowScreen() { }
 		
@@ -266,6 +272,7 @@ package com.dukascopy.connect.screens.innerScreens {
 		override public function dispose():void {
 			super.dispose();
 			
+			removePlaceholder();
 			GD.S_ESCROW_INSTRUMENTS.remove(onInstrumentsLoaded);
 			DialogManager.closeDialog();
 		}
@@ -278,7 +285,7 @@ package com.dukascopy.connect.screens.innerScreens {
 			MobileGui.changeMainScreen(
 				QuestionCreateUpdateScreen, {
 					backScreen:MobileGui.centerScreen.currentScreenClass,
-					title:Lang.askQuestions,
+					title:Lang.escrow_create_your_ad,
 					backScreenData:this.data,
 					data:null
 				},
@@ -488,7 +495,7 @@ package com.dukascopy.connect.screens.innerScreens {
 						return;
 					}
 					if (itemHitZone == HitZoneType.TIPS) {
-						DialogManager.alert(Lang.information, qVO.tipsAmount + " " + qVO.tipsCurrency + Lang.textAdditionalTips);
+						DialogManager.alert(Lang.information, qVO.tipsAmount + " " + qVO.tipsCurrencyDisplay + Lang.textAdditionalTips);
 						return;
 					}
 				}
@@ -612,6 +619,44 @@ package com.dukascopy.connect.screens.innerScreens {
 						if ("listBoxY" in storedTabListPosition[id] == true)
 							list.setBoxY(storedTabListPosition[id].listBoxY);
 			list.setContextAvaliable(true);
+			
+			if (listData == null || listData.length == 0)
+			{
+				addPlaceholder(Lang.escrow_no_active_ads_placeholder);
+			}
+			else
+			{
+				removePlaceholder();
+			}
+		}
+		
+		private function removePlaceholder():void 
+		{
+			if (placeholder != null)
+			{
+				UI.destroy(placeholder);
+				placeholder = null;
+			}
+		}
+		
+		private function addPlaceholder(text:String):void 
+		{
+			if (placeholder == null)
+			{
+				placeholder = new Bitmap();
+				view.addChild(placeholder);
+			}
+			if (placeholder.bitmapData != null)
+			{
+				placeholder.bitmapData.dispose();
+				placeholder.bitmapData = null;
+			}
+			placeholder.bitmapData = TextUtils.createTextFieldData(text, _width - Config.FINGER_SIZE, 10, true,
+																	TextFormatAlign.CENTER, TextFieldAutoSize.CENTER, 
+																	FontSize.TITLE_2, true, Style.color(Style.COLOR_TEXT),
+																	Style.color(Style.COLOR_BACKGROUND), false);
+			placeholder.y = list.view.y + Config.FINGER_SIZE;
+			placeholder.x = int(_width * .5 - placeholder.width * .5);
 		}
 	}
 }

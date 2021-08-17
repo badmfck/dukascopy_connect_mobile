@@ -2347,7 +2347,7 @@ package com.dukascopy.langs {
 		
 		static public var wantSellCrypto:String = "I WANT TO SELL CRYPTO";
 		static public var wantBuyCrypto:String = "I WANT TO BUY CRYPTO";
-		static public var escrow_description:String = "You can use Dukascopy Bank as intermediary providing an escrow service to secure exchange of crypto currencies versus fiat.";
+		static public var escrow_description:String = "You can use Dukascopy Bank as intermediary to secure exchange of cryptocurrency versus fiat and vice versa.";
 		static public var escrow_about_service_url:String = "https://dukascopy.com";
 		static public var aboutService:String = "About service";
 		static public var openMcaAccount:String = "OPEN MCA ACCOUNT";
@@ -2394,7 +2394,7 @@ package com.dukascopy.langs {
 		static public var sell_offer_awaiting_acceptance:String = "SELL offer is awaiting acceptance";
 		static public var buy_offer_description:String = "If it is not accepted within %@1 minutes, the offer is canceled automatically and the fiat funds on your account get unblocked. Until the offer is confirmed by the %@2, you can cancel it at any moment, without penalties.";
 		static public var sell_offer_description:String = "Once the offer is accepted, you will have %@ minutes to sent the crypto to the indicated wallet address of the buyer. Please get prepared in advance.";
-		static public var escrow_send_obligation_penalty:String = "Failure to fulfil the sending obligation will incur penalties. See Terms & Conditions for details";
+		static public var escrow_send_obligation_penalty:String = "Failure to fulfill the sending obligation will incur penalties. See Terms & Conditions for details";
 		static public var escrow_send_obligation_penalty_url:String = "http://google.com";
 		static public var offer_buy_expired_details:String = "Offer expired. The funds were unblocked.";
 		static public var offer_sell_expired_details:String = "Offer expired.";
@@ -2460,8 +2460,8 @@ package com.dukascopy.langs {
 		static public var launchCurrentAccount:String = "Current account";
 		static public var cardOrderDelivery:String = "Card order and delivery";
 		static public var noFundedAccounts:String = "You have no funded accounts";
-		static public var escrow_to_sell:String = "To SELL";
-		static public var escrow_to_buy:String = "To BUY";
+		static public var escrow_to_sell:String = "I SELL";
+		static public var escrow_to_buy:String = "I BUY";
 		static public var please_select_debit_account:String = "Please select account to be debited";
 		static public var escrow_deal_message:String = "Escrow deal";
 		static public var deal_expired:String = "Deal expired";
@@ -2476,7 +2476,7 @@ package com.dukascopy.langs {
 		static public var escrow_target_price_per_coin:String = "Target price per Coin";
 		
 		static public var addTender:String = "Add your tender";
-		static public var tenderStartText:String = "Compose your tender, indicating the details of the offer you intend to publish.\nOnce someonce reacts to your tender, switch to the one-to-one chat with the counterparty, agree on the ultimate conditions of deal and initiate a binding offer through a dedicated form right from the chat.";
+		static public var tenderStartText:String = "Create your ad you intend to publish, indicating the required details. Once someonce reacts to your ad, switch to the one-to-one chat with the counterparty, agree on the ultimate conditions of the future deal and initiate a binding offer through a dedicated form right from the chat.";
 		static public var tenderSide:String = "I would like to";
 		static public var tenderTypeOperation:String = "Choose operation type";
 		static public var tenderCrypto:String = "Crypto";
@@ -2497,9 +2497,10 @@ package com.dukascopy.langs {
 		static public var escrow_rules:String = "Rules";
 		static public var escrow_already_participate:String = "Already participate %@ of %@";
 		static public var escrow_offer_closed:String = "Closed";
-		static public var escrow_your_ad_created:String = "Your AD created!";
+		static public var escrow_your_ad_created:String = "Your ad has been successfully created";
 		static public var escrow_ad_intro_message:String = "I would like to %@1 %@2 at %@3 per coin.";
-		static public var escrow_ad_intro_message_at_market_price:String = "I would like to %@1 %@2 at market price.";
+		static public var escrow_ad_intro_message_percent:String = "I would like to %@1 %@2 at %@3 per coin. (%@4 %@5 the market price)";
+		static public var escrow_ad_intro_message_at_market_price:String = "I would like to %@1 %@2 at market price";
 		static public var escrow_buy:String = "Buy";
 		static public var escrow_sell:String = "Sell";
 		static public var make_offer:String = "MAKE OFFER";
@@ -2518,10 +2519,21 @@ package com.dukascopy.langs {
 		static public var escrow_offer_type_not_set:String = "Offer type not set";
 		static public var escrow_not_enougth_money:String = "Insufficient funds on the selected account ";
 		static public var escrow_cant_load_account_limits:String = "Can't load account limits";
-		static public var escrow_credit_amount_not_in_limits:String = "Up limits";
+		static public var escrow_credit_amount_not_in_limits:String = "You have reached your account limit(s). Please consider increasing it or decrease the amount of your offer";
 		static public var escrow_check_transaction:String = "Please carefully check the transaction before your confirmation";
 		static public var escrow_copy_transaction:String = "Copy transaction";
 		static public var escrow_at_market_price:String = "At market price";
+		static public var date:String = "Date";
+		static public var filter_price:String = "Price";
+		static public var filter_amount:String = "Amount";
+		static public var escrow_filter_title:String = "I want to see";
+		static public var blackList:String = "Black list";
+		static public var buy_ads:String = "BUY ads";
+		static public var sell_ads:String = "SELL ads";
+		static public var escrow_no_active_ads_placeholder:String = 'There are no active ads so far. Press "+" sign in the right upper corner to create your Crypto P2P ad.';
+		static public var escrow_blockchain_address_needed:String = "In order to get access to external blockchain operations with %@ you need to register a blockchain address that will be used for withdrawal operations.";
+		static public var escrow_create_your_ad:String = "Create your ad";
+		static public var escrow_amount_exceeds:String = "The amount of your offer exceeds the amount of the ad. Please note that it can be equal or less than the amount of the ad.";
 		
 		static public function updateKeys(keys:Object):void {
 			for (var n:String in keys) {

@@ -167,16 +167,16 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 				colors.push(Color.WHITE);
 				
 				values.push(NumberFormat.formatAmount(escrowOffer.amount * escrowOffer.price, escrowOffer.currency));
-				values.push(NumberFormat.formatAmount(escrowOffer.amount * escrowOffer.price * EscrowSettings.commission, escrowOffer.currency));
+				values.push(NumberFormat.formatAmount(escrowOffer.amount * escrowOffer.price * EscrowSettings.getCommission(escrowOffer.instrument), escrowOffer.currency));
 				values.push(NumberFormat.formatAmount(escrowOffer.amount * escrowOffer.price * EscrowSettings.refundableFee + escrowOffer.amount * escrowOffer.price, escrowOffer.currency));
 			}
 			
 			if (balance == null)
 			{
-				balance = new BalanceCalculation(texts, colors);
+				balance = new BalanceCalculation();
 				addItem(balance);
 			}
-			
+			balance.drawTexts(texts, colors);
 			balance.draw(getWidth() - contentPadding * 2, values);
 		}
 		

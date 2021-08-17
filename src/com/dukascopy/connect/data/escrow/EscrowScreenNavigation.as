@@ -7,6 +7,7 @@ package com.dukascopy.connect.data.escrow
 	import com.dukascopy.connect.data.SelectorItemData;
 	import com.dukascopy.connect.gui.components.message.ToastMessage;
 	import com.dukascopy.connect.managers.escrow.vo.EscrowInstrument;
+	import com.dukascopy.connect.screens.dialogs.ScreenWebviewDialogBase;
 	import com.dukascopy.connect.screens.dialogs.escrow.AcceptOfferScreen;
 	import com.dukascopy.connect.screens.dialogs.escrow.EscrowOfferScreen;
 	import com.dukascopy.connect.screens.dialogs.escrow.EscrowPriceScreen;
@@ -20,9 +21,11 @@ package com.dukascopy.connect.data.escrow
 	import com.dukascopy.connect.screens.payments.card.TypeCurrency;
 	import com.dukascopy.connect.sys.applicationError.ApplicationErrors;
 	import com.dukascopy.connect.sys.auth.Auth;
+	import com.dukascopy.connect.sys.bankManager.BankManager;
 	import com.dukascopy.connect.sys.chatManager.ChatManager;
 	import com.dukascopy.connect.sys.dialogManager.DialogManager;
 	import com.dukascopy.connect.sys.errors.ErrorLocalizer;
+	import com.dukascopy.connect.sys.payments.PayManager;
 	import com.dukascopy.connect.sys.payments.PaymentsManager;
 	import com.dukascopy.connect.sys.payments.advancedPayments.vo.PayTaskVO;
 	import com.dukascopy.connect.sys.php.PHP;
@@ -287,7 +290,7 @@ package com.dukascopy.connect.data.escrow
 			if (escrow.direction == TradeDirection.buy)
 			{
 				description = Lang.escrow_deal_completed_sell;
-				description = description.replace("%@", (EscrowSettings.commission * 100));
+				description = description.replace("%@", (EscrowSettings.getCommission(escrow.instrument) * 100));
 			}
 			else
 			{
@@ -305,10 +308,15 @@ package com.dukascopy.connect.data.escrow
 			GD.S_ESCROW_INSTRUMENTS.remove(showAcceptScreen);
 			GD.S_STOP_LOAD.invoke();
 			
+			if (instruments == null)
+			{
+				return;
+			}
+			
 			var selectedInstrument:EscrowInstrument;
 			if (lastRequestData != null && lastRequestData.escrow != null && lastRequestData.escrow.status == EscrowStatus.offer_created)
 			{
-				if (lastRequestData.escrow.instrument != null && instruments != null)
+				if (lastRequestData.escrow.instrument != null)
 				{
 					for (var i:int = 0; i < instruments.length; i++)
 					{
@@ -322,7 +330,7 @@ package com.dukascopy.connect.data.escrow
 				}
 				
 				var screenData:Object = new Object();
-				if (selectedInstrument != null)
+				if (selectedInstrument != null && selectedInstrument.isLinked)
 				{
 					lastRequestData.escrow.cryptoWallet = selectedInstrument.wallet;
 					screenData.escrowOffer = lastRequestData.escrow;
@@ -419,8 +427,7 @@ package com.dukascopy.connect.data.escrow
 				{
 					var debitAccount:String;
 					var cryptoWallet:String;
-
-					// SELL - OK
+					
 					if (escrow.direction == TradeDirection.sell)
 					{
 						if (escrow.userUID != Auth.uid)
@@ -433,8 +440,7 @@ package com.dukascopy.connect.data.escrow
 							//!TODO:
 						}
 					}
-
-					//TODO: BUY - FIX!!!!!!!
+					
 					else if (escrow.direction == TradeDirection.buy)
 					{
 						if (escrow.userUID != Auth.uid)
@@ -468,7 +474,48 @@ package com.dukascopy.connect.data.escrow
 			}
 			else if (command == OfferCommand.register_blockchain)
 			{
-				//!TODO:;
+				registerBlockchain(escrow.instrument);
+			}
+		}
+		
+		static public function registerBlockchain(instrument:String):void 
+		{
+			PayManager.S_DECLARE_BLOCKCHAIN_ADDRESS_ERROR.add(registerAddressLinkError);
+			PayManager.S_DECLARE_BLOCKCHAIN_ADDRESS_SUCCESS.add(registerAddressLinkReady);
+			
+			PayManager.getDeclareBlockchainAddressLink(instrument);
+		}
+		
+		static private function registerAddressLinkReady(callId:String, url:Object):void 
+		{
+			PayManager.S_DECLARE_BLOCKCHAIN_ADDRESS_ERROR.remove(registerAddressLinkError);
+			PayManager.S_DECLARE_BLOCKCHAIN_ADDRESS_SUCCESS.remove(registerAddressLinkReady);
+			
+			DialogManager.showDialog(ScreenWebviewDialogBase, 
+										{
+											preventCloseOnBgTap: true, 
+											url:url.url, 
+											callback: onRegisterblockchainFinish, 
+											label: Lang.registerBlockchainAddress
+										});
+		}
+		
+		static private function onRegisterblockchainFinish(success:Boolean):void 
+		{
+			if (success)
+			{
+				PaymentsManager.updateAccount();
+			}
+		}
+		
+		static private function registerAddressLinkError(callId:String, message:String):void 
+		{
+			PayManager.S_DECLARE_BLOCKCHAIN_ADDRESS_ERROR.remove(registerAddressLinkError);
+			PayManager.S_DECLARE_BLOCKCHAIN_ADDRESS_SUCCESS.remove(registerAddressLinkReady);
+			
+			if (message != null)
+			{
+				ToastMessage.display(message);
 			}
 		}
 		

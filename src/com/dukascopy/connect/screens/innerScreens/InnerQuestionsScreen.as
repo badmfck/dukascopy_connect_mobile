@@ -548,7 +548,7 @@ package com.dukascopy.connect.screens.innerScreens {
 			MobileGui.changeMainScreen(
 				QuestionCreateUpdateScreen, {
 					backScreen:MobileGui.centerScreen.currentScreenClass,
-					title:Lang.askQuestions,
+					title:Lang.escrow_create_your_ad,
 					backScreenData:this.data,
 					data:null
 				},
@@ -813,7 +813,7 @@ package com.dukascopy.connect.screens.innerScreens {
 						return;
 					}
 					if (itemHitZone == HitZoneType.TIPS) {
-						DialogManager.alert(Lang.information, qVO.tipsAmount + " " + qVO.tipsCurrency + Lang.textAdditionalTips);
+						DialogManager.alert(Lang.information, qVO.tipsAmount + " " + qVO.tipsCurrencyDisplay + Lang.textAdditionalTips);
 						return;
 					}
 				}

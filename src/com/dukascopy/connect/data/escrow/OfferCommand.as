@@ -15,6 +15,7 @@ package com.dukascopy.connect.data.escrow
 		private static const SEND_TRANSACTION_ID:String = "sendTransactionId";
 		private static const CONFIRM_CRYPTO_RECIEVE:String = "confirm_crypto_recieve";
 		private static const REQUEST_INVESTIGATION:String = "request_imvestigation";
+		private static const CREATE_OFFER:String = "create_offer";
 		
 		public static const cancel:OfferCommand = new OfferCommand(OfferCommand.CANCEL);
 		public static const accept:OfferCommand = new OfferCommand(OfferCommand.ACCEPT);
@@ -23,6 +24,7 @@ package com.dukascopy.connect.data.escrow
 		public static const send_transaction_id:OfferCommand = new OfferCommand(OfferCommand.SEND_TRANSACTION_ID);
 		public static const confirm_crypto_recieve:OfferCommand = new OfferCommand(OfferCommand.CONFIRM_CRYPTO_RECIEVE);
 		public static const request_imvestigation:OfferCommand = new OfferCommand(OfferCommand.REQUEST_INVESTIGATION);
+		public static const create_offer:OfferCommand = new OfferCommand(OfferCommand.CREATE_OFFER);
 		
 		public function get type():String 
 		{

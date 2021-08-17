@@ -166,7 +166,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 				{
 					texts.push(Lang.amount_unblocked);
 					colors.push(Color.WHITE);
-					values.push(NumberFormat.formatAmount(escrowOffer.amount * escrowOffer.price * EscrowSettings.commission + escrowOffer.amount * escrowOffer.price, escrowOffer.currency));
+					values.push(NumberFormat.formatAmount(escrowOffer.amount * escrowOffer.price * EscrowSettings.getCommission(escrowOffer.instrument) + escrowOffer.amount * escrowOffer.price, escrowOffer.currency));
 				}
 			}
 			else
@@ -176,10 +176,10 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			
 			if (balance == null)
 			{
-				balance = new BalanceCalculation(texts, colors);
+				balance = new BalanceCalculation();
 				addItem(balance);
 			}
-			
+			balance.drawTexts(texts, colors);
 			balance.draw(getWidth() - contentPadding * 2, values);
 		}
 		

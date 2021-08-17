@@ -7,7 +7,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 	import com.dukascopy.connect.data.coinMarketplace.PaymentsAccountsProvider;
 	import com.dukascopy.connect.data.escrow.EscrowDealData;
 	import com.dukascopy.connect.data.escrow.EscrowSettings;
-	import com.dukascopy.connect.data.escrow.PriceVO;
+	import com.dukascopy.connect.data.escrow.OfferCommand;
 	import com.dukascopy.connect.data.escrow.TradeDirection;
 	import com.dukascopy.connect.data.screenAction.customActions.TestCreateOfferAction;
 	import com.dukascopy.connect.gui.button.DDAccountButton;
@@ -21,10 +21,8 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 	import com.dukascopy.connect.gui.list.renderers.ListPayCurrency;
 	import com.dukascopy.connect.gui.list.renderers.ListPayWalletItem;
 	import com.dukascopy.connect.gui.menuVideo.BitmapButton;
-	import com.dukascopy.connect.managers.escrow.EscrowDealManager;
 	import com.dukascopy.connect.managers.escrow.vo.EscrowInstrument;
 	import com.dukascopy.connect.managers.escrow.vo.EscrowPrice;
-	import com.dukascopy.connect.screens.dialogs.ScreenPayDialog;
 	import com.dukascopy.connect.screens.dialogs.paymentDialogs.elements.InputField;
 	import com.dukascopy.connect.screens.dialogs.x.base.bottom.ListSelectionPopup;
 	import com.dukascopy.connect.screens.dialogs.x.base.bottom.ScrollAnimatedTitlePopup;
@@ -103,6 +101,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		private var alert:AlertTextArea;
 		private var lockInstrumentSelector:Boolean;
 		private var checkPaymentsAction:TestCreateOfferAction;
+		private var command:OfferCommand;
 		
 		public function CreateEscrowScreen() { }
 		
@@ -124,31 +123,39 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		
 		private function createBalance():void 
 		{
-			var balanceTexts:Vector.<String> = new Vector.<String>();
-			var colors:Vector.<Number> = new Vector.<Number>();
-			if (selectedDirection == TradeDirection.buy)
-			{
-				balanceTexts.push(Lang.to_pay_for_crypto);
-				balanceTexts.push(Lang.refundable_fee.replace("%@", (EscrowSettings.refundableFee * 100)));
-				balanceTexts.push(Lang.amount_to_be_debited);
-				
-				colors.push(Style.color(Style.COLOR_SUBTITLE));
-				colors.push(Style.color(Style.COLOR_SUBTITLE));
-				colors.push(Color.RED);
-			}
-			else
-			{
-				balanceTexts.push(Lang.to_get_for_crypto);
-				balanceTexts.push(Lang.commission_crypto.replace("%@", (EscrowSettings.commission * 100)));
-				balanceTexts.push(Lang.amount_to_be_credited);
-				
-				colors.push(Style.color(Style.COLOR_SUBTITLE));
-				colors.push(Style.color(Style.COLOR_SUBTITLE));
-				colors.push(Color.GREEN);
-			}
-			
-			balance = new BalanceCalculation(balanceTexts, colors);
+			balance = new BalanceCalculation();
 			addItem(balance);
+			updateBalanceTexts();
+		}
+		
+		private function updateBalanceTexts():void 
+		{
+			if (selectedCrypto != null)
+			{
+				var balanceTexts:Vector.<String> = new Vector.<String>();
+				var colors:Vector.<Number> = new Vector.<Number>();
+				if (selectedDirection == TradeDirection.buy)
+				{
+					balanceTexts.push(Lang.to_pay_for_crypto);
+					balanceTexts.push(Lang.refundable_fee.replace("%@", (EscrowSettings.refundableFee * 100)));
+					balanceTexts.push(Lang.amount_to_be_debited);
+					
+					colors.push(Style.color(Style.COLOR_SUBTITLE));
+					colors.push(Style.color(Style.COLOR_SUBTITLE));
+					colors.push(Color.RED);
+				}
+				else
+				{
+					balanceTexts.push(Lang.to_get_for_crypto);
+					balanceTexts.push(Lang.commission_crypto.replace("%@", (EscrowSettings.getCommission(selectedCrypto.code) * 100)));
+					balanceTexts.push(Lang.amount_to_be_credited);
+					
+					colors.push(Style.color(Style.COLOR_SUBTITLE));
+					colors.push(Style.color(Style.COLOR_SUBTITLE));
+					colors.push(Color.GREEN);
+				}
+				balance.drawTexts(balanceTexts, colors);
+			}
 		}
 		
 		private function createPriceSelector():void 
@@ -174,38 +181,38 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		
 		private function updateBalance():void 
 		{
-			var values:Vector.<String> = new Vector.<String>();
-			var currency:String = getCurrency();
-			
-			var decimals:int = 2;
-			if (PayManager.systemOptions != null && PayManager.systemOptions.currencyDecimalRules != null && !isNaN(PayManager.systemOptions.currencyDecimalRules[currencySign]))
+			if (selectedCrypto != null)
 			{
-				decimals = PayManager.systemOptions.currencyDecimalRules[currencySign];
+				updateBalanceTexts();
+				
+				var values:Vector.<String> = new Vector.<String>();
+				var currency:String = getCurrency();
+				
+				
+				var amount:Number = getAmount();
+				var targetPrice:Number = 0;
+				if (!isNaN(selectedPrice))
+				{
+					targetPrice = selectedPrice;
+				}
+				if (selectedDirection == TradeDirection.buy)
+				{
+					values.push(NumberFormat.formatAmount((amount * targetPrice), currency));
+					values.push(NumberFormat.formatAmount((amount * targetPrice * EscrowSettings.refundableFee), currency));
+					values.push(NumberFormat.formatAmount((amount * targetPrice * EscrowSettings.refundableFee + amount * targetPrice), currency));
+				}
+				else
+				{
+					values.push(NumberFormat.formatAmount((amount * targetPrice), currency));
+					values.push(NumberFormat.formatAmount((amount * targetPrice * EscrowSettings.getCommission(selectedCrypto.code)), currency));
+					values.push(NumberFormat.formatAmount((amount * targetPrice - amount * targetPrice * EscrowSettings.getCommission(selectedCrypto.code)), currency));
+				}
+				
+				balance.draw(_width, values);
+				
+				updatePositions();
+				updateScroll();
 			}
-			
-			var amount:Number = getAmount();
-			var targetPrice:Number = 0;
-			if (!isNaN(selectedPrice))
-			{
-				targetPrice = selectedPrice;
-			}
-			if (selectedDirection == TradeDirection.buy)
-			{
-				values.push((amount * targetPrice).toFixed(decimals) + " " + currency);
-				values.push((amount * targetPrice * EscrowSettings.refundableFee).toFixed(decimals) + " " + currency);
-				values.push((amount * targetPrice * EscrowSettings.refundableFee + amount * targetPrice).toFixed(decimals) + " " + currency);
-			}
-			else
-			{
-				values.push((amount * targetPrice).toFixed(decimals) + " " + currency);
-				values.push((amount * targetPrice * EscrowSettings.commission).toFixed(decimals) + " " + currency);
-				values.push((amount * targetPrice - amount * targetPrice * EscrowSettings.commission).toFixed(decimals) + " " + currency);
-			}
-			
-			balance.draw(_width, values);
-			
-			updatePositions();
-			updateScroll();
 		}
 		
 		private function getCurrency():String 
@@ -264,7 +271,12 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		
 		private function onRegisterClick():void 
 		{
-			//!TODO:;
+			offerData = new EscrowDealData();
+			offerData.instrument = selectedCrypto.code;
+			
+			needCallback = true;
+			command = OfferCommand.register_blockchain;
+			close();
 		}
 		
 		private function createRadio():void 
@@ -468,7 +480,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 				priceSummary = new PriceClip();
 			}
 			addItem(priceSummary);
-			priceSummary.draw(Lang.escrow_you_buy, getAmount() + " " + selectedCrypto.name, Lang.escrow_price, selectedPrice + " " + getCurrency(), _width, contentPadding);
+			priceSummary.draw(Lang.escrow_you_buy, getAmount() + " " + selectedCrypto.name, Lang.escrow_price, NumberFormat.formatAmount(selectedPrice, getCurrency()), _width, contentPadding);
 			
 			if (alert == null)
 			{
@@ -690,12 +702,18 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			
 			if (terms != null)
 			{
+				if (initialAmountExist() && getInitialAmount() < inputAmount.value)
+				{
+					ToastMessage.display(Lang.escrow_amount_exceeds);
+					return;
+				}
+				
 				if (terms.isSelected())
 				{
 					offerData = new EscrowDealData();
-					offerData.price = selectedPrice;
+					offerData.price = parseFloat(NumberFormat.formatAmount(selectedPrice, currencySign, true));
 					offerData.direction = selectedDirection;
-					offerData.amount = inputAmount.value;
+					offerData.amount = parseFloat(NumberFormat.formatAmount(inputAmount.value, selectedCrypto.code, true));
 					offerData.instrument = selectedCrypto.code;
 					offerData.currency = currencySign;
 					if (selectedFiatAccount != null)
@@ -721,7 +739,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			//	values.push((amount * targetPrice * EscrowSettings.refundableFee + amount * targetPrice).toFixed(decimals) + " " + currency);
 			
 			//TODO: неверное значение при процентном прайсе;
-			var resultAmount:Number = (offerData.amount * offerData.price - offerData.amount * offerData.price * EscrowSettings.commission);
+			var resultAmount:Number = (offerData.amount * offerData.price - offerData.amount * offerData.price * EscrowSettings.getCommission(offerData.instrument));
 			
 			
 			checkPaymentsAction = new TestCreateOfferAction(selectedDirection, resultAmount, offerData.currency, selectedCrypto);
@@ -733,6 +751,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		private function onPaymentsSellCheckSuccess():void 
 		{
 			needCallback = true;
+			command = OfferCommand.create_offer;
 			removeCheckPaymentsAction();
 			close();
 		}
@@ -1046,24 +1065,20 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 					dataValid = false;
 				}
 				
+				if (initialAmountExist())
+				{
+					if (getInitialAmount() < inputAmount.value)
+					{
+						dataValid = false;
+						ToastMessage.display(Lang.escrow_amount_exceeds);
+					}
+				}
+				
 				if (dataValid)
 				{
 					checkPaymentsBuy();
-					
-				//	toState(STATE_FINISH);
 				}
 			}
-			
-			/*if (dataValid())
-			{
-				needCallback = true;
-				
-				dealDetails = new EscrowDealData();
-				dealDetails.price = inputPrice.value;
-				dealDetails.amount = inputAmount.value;
-				
-				close();
-			}*/
 		}
 		
 		private function checkPaymentsBuy():void 
@@ -1129,8 +1144,40 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		
 		private function onAmountChange():void 
 		{
-			inputAmount.valid();
+			if (initialAmountExist())
+			{
+				if (getInitialAmount() < inputAmount.value)
+				{
+					inputAmount.invalid();
+				}
+				else
+				{
+					inputAmount.valid();
+				}
+			}
+			else
+			{
+				inputAmount.valid();
+			}
+			
 			updateBalance();
+		}
+		
+		private function getInitialAmount():Number 
+		{
+			if (initialAmountExist())
+			{
+				return data.amount;
+			}
+			else
+			{
+				return 0;
+			}
+		}
+		
+		private function initialAmountExist():Boolean 
+		{
+			return (data != null && "amount" in data && !isNaN(data.amount));
 		}
 		
 		override public function initScreen(data:Object = null):void {
@@ -1470,9 +1517,21 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 				}
 				if (targetInstrument == null)
 				{
-					targetInstrument = instruments[0];
+					for (var j:int = 0; j < instruments.length; j++) 
+					{
+						if (instruments[j].isLinked)
+						{
+							targetInstrument = instruments[j];
+							break;
+						}
+					}
+					if (targetInstrument == null)
+					{
+						targetInstrument = instruments[0];
+					}
 				}
 				selectInstrument(targetInstrument);
+				
 			}
 			else
 			{
@@ -1502,9 +1561,9 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 				}
 			}
 			
-			if (data != null && "amount" in data && !isNaN(data.amount))
+			if (initialAmountExist())
 			{
-				inputAmount.value = data.amount
+				inputAmount.value = data.amount;
 			}
 			if (data != null && "currency" in data && data.currency != null)
 			{
@@ -1539,6 +1598,11 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			else
 			{
 				refreshPrice();
+			}
+			
+			if (selectedCrypto != null && !selectedCrypto.isLinked && state != STATE_REGISTER)
+			{
+				toState(STATE_REGISTER);
 			}
 		}
 		
@@ -1828,10 +1892,11 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			if (needCallback == true)
 			{
 				needCallback = false;
-				if (data != null && "callback" in data && data.callback != null && data.callback is Function && (data.callback as Function).length == 1 && offerData != null)
+				if (data != null && "callback" in data && data.callback != null && data.callback is Function && (data.callback as Function).length == 2 && offerData != null)
 				{
-					(data.callback as Function)(offerData);
+					(data.callback as Function)(command, offerData);
 				}
+				command = null;
 				offerData = null;
 			}
 		}

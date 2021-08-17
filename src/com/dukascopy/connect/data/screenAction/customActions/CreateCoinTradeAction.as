@@ -5,8 +5,10 @@ package com.dukascopy.connect.data.screenAction.customActions {
 	import com.dukascopy.connect.data.AlertScreenData;
 	import com.dukascopy.connect.data.escrow.EscrowDealData;
 	import com.dukascopy.connect.data.escrow.EscrowMessageData;
+	import com.dukascopy.connect.data.escrow.EscrowScreenNavigation;
 	import com.dukascopy.connect.data.escrow.EscrowSettings;
 	import com.dukascopy.connect.data.escrow.EscrowStatus;
+	import com.dukascopy.connect.data.escrow.OfferCommand;
 	import com.dukascopy.connect.data.escrow.TradeDirection;
 	import com.dukascopy.connect.data.screenAction.IScreenAction;
 	import com.dukascopy.connect.data.screenAction.ScreenAction;
@@ -26,9 +28,11 @@ package com.dukascopy.connect.data.screenAction.customActions {
 	import com.dukascopy.connect.sys.usersManager.UsersManager;
 	import com.dukascopy.connect.sys.ws.WSClient;
 	import com.dukascopy.connect.type.BankPhaze;
+	import com.dukascopy.connect.type.ChatRoomType;
 	import com.dukascopy.connect.vo.ChatMessageVO;
 	import com.dukascopy.connect.vo.ChatSystemMsgVO;
 	import com.dukascopy.connect.vo.ChatVO;
+	import com.dukascopy.connect.vo.QuestionVO;
 	import com.dukascopy.connect.vo.users.adds.ChatUserVO;
 	import com.dukascopy.langs.Lang;
 
@@ -52,7 +56,9 @@ package com.dukascopy.connect.data.screenAction.customActions {
 		
 		public function execute():void {
 			
-			if (Config.PLATFORM_ANDROID == true)
+			checkCurrentQuestion();
+			
+			if (Config.PLATFORM_ANDROID == true || Config.PLATFORM_WINDOWS)
 			{
 				ChatInputAndroid.S_CLOSE_MEDIA_KEYBOARD.invoke();
 			}
@@ -70,6 +76,44 @@ package com.dukascopy.connect.data.screenAction.customActions {
 			else
 			{
 				ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, RegisterEscrowScreen);
+			}
+		}
+		
+		private function checkCurrentQuestion():void 
+		{
+			if (ChatManager.getCurrentChat() != null && ChatManager.getCurrentChat().type == ChatRoomType.QUESTION)
+			{
+				var question:QuestionVO = ChatManager.getCurrentChat().getQuestion();
+				if (question != null)
+				{
+					if (question.subtype == "sell")
+					{
+						if (question.userUID == Auth.uid)
+						{
+							direction = TradeDirection.sell;
+						}
+						else
+						{
+							direction = TradeDirection.buy;
+						}
+					}
+					else
+					{
+						if (question.userUID == Auth.uid)
+						{
+							direction = TradeDirection.buy;
+						}
+						else
+						{
+							direction = TradeDirection.sell;
+						}
+					}
+				}
+				
+				currency = question.priceCurrency;
+				price = question.price;
+				instrument = question.tipsCurrency;
+				amount = question.tipsAmount;
 			}
 		}
 		
@@ -104,35 +148,48 @@ package com.dukascopy.connect.data.screenAction.customActions {
 				screenData.amount = amount;
 			}
 			
-			/*screenData.price = "5";
-			screenData.amount = "15";
-			screenData.instrument = TypeCurrency.BTC;
-			screenData.currency = TypeCurrency.USD;*/
-			
 			ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, CreateEscrowScreen, screenData);
 		}
 		
-		private function createEscrowOffer(offer:EscrowDealData):void 
+		private function createQuestionOffer():void 
 		{
-			if (chat != null && ChatManager.getCurrentChat() && chat.uid == ChatManager.getCurrentChat().uid)
+			var tradeAction:CreateCoinTradeAction = new CreateCoinTradeAction();
+			tradeAction.chat = ChatManager.getCurrentChat();
+			
+			
+			
+			tradeAction.setData(Lang.escrow);
+			tradeAction.execute();
+		}
+		
+		private function createEscrowOffer(command:OfferCommand, offer:EscrowDealData):void 
+		{
+			if (command == OfferCommand.register_blockchain)
 			{
-				if (offer != null)
+				EscrowScreenNavigation.registerBlockchain(offer.instrument);
+			}
+			else if (command == OfferCommand.create_offer)
+			{
+				if (chat != null && ChatManager.getCurrentChat() && chat.uid == ChatManager.getCurrentChat().uid)
 				{
-					sendDeal(offer);
+					if (offer != null)
+					{
+						sendDeal(offer);
+					}
+					else
+					{
+						ApplicationErrors.add();
+						onFail();
+					}
 				}
 				else
 				{
 					ApplicationErrors.add();
 					onFail();
 				}
+				
+				showCreateSuccessPopup(offer);
 			}
-			else
-			{
-				ApplicationErrors.add();
-				onFail();
-			}
-			
-			showCreateSuccessPopup(offer);
 		}
 		
 		private function showCreateSuccessPopup(offer:EscrowDealData):void 
@@ -169,7 +226,7 @@ package com.dukascopy.connect.data.screenAction.customActions {
 			}
 			else
 			{
-				sum = (offer.amount * offer.price -offer.amount * offer.price * EscrowSettings.commission).toFixed(decimals) + " " + offer.currency;
+				sum = (offer.amount * offer.price -offer.amount * offer.price * EscrowSettings.getCommission(offer.instrument)).toFixed(decimals) + " " + offer.currency;
 				description = Lang.sent_sell_offer_description;
 				description = description.replace("%@1", userName);
 				description = description.replace("%@2", EscrowSettings.offerMaxTime);

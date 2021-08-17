@@ -6,6 +6,7 @@ package com.dukascopy.connect.vo {
 	import com.dukascopy.connect.data.LocalAvatars;
 	import com.dukascopy.connect.data.screenAction.customActions.CallChatInfoAction;
 	import com.dukascopy.connect.data.screenAction.customActions.CallGetEuroAction;
+	import com.dukascopy.connect.managers.escrow.EscrowDealManager;
 	import com.dukascopy.connect.sys.applicationShop.parser.ShopProductDataParser;
 	import com.dukascopy.connect.sys.applicationShop.product.ProductType;
 	import com.dukascopy.connect.sys.applicationShop.product.ShopProduct;
@@ -19,6 +20,7 @@ package com.dukascopy.connect.vo {
 	import com.dukascopy.connect.sys.video.VideoUploader;
 	import com.dukascopy.connect.type.ChatRoomType;
 	import com.dukascopy.connect.type.UserType;
+	import com.dukascopy.connect.utils.NumberFormat;
 	import com.dukascopy.connect.vo.users.UserVO;
 	import com.dukascopy.connect.vo.users.adds.ChatUserVO;
 	import com.dukascopy.connect.vo.users.adds.MemberVO;
@@ -496,6 +498,13 @@ package com.dukascopy.connect.vo {
 					messageData = { };
 					messageData.id = 0;
 					
+					var marketPrice:Number;
+					
+					if (_qVO.instrument != null)
+					{
+						marketPrice = EscrowDealManager.getPrice(_qVO.instrument.code, _qVO.priceCurrency);
+					}
+					
 					userAvatar = getUserAvatar(_qVO.userUID);
 					if (userAvatar) {
 						messageData.user_avatar = userAvatar;
@@ -509,15 +518,26 @@ package com.dukascopy.connect.vo {
 					messageData.user_name = userName;
 					
 					var text:String;
+					var isPercent:Boolean = false;
+					var realPrice:String;
 					if (_qVO.price != null && _qVO.price.indexOf("%") != -1)
 					{
-						var realPrice:String = _qVO.price.replace("%", "");
+						isPercent = true;
+						realPrice = _qVO.price.replace("%", "");
 						if (!isNaN(Number(realPrice)) && Number(realPrice) == 0)
 						{
 							text = Lang.escrow_ad_intro_message_at_market_price;
+							if (!isNaN(marketPrice))
+							{
+								text += " (" + Lang.price_per_coin.replace("%@", NumberFormat.formatAmount(marketPrice, _qVO.priceCurrency)) + ")";
+							}
+						}
+						else
+						{
+							text = Lang.escrow_ad_intro_message_percent;
 						}
 					}
-					if (text == null)
+					else
 					{
 						text = Lang.escrow_ad_intro_message;
 					}
@@ -530,12 +550,32 @@ package com.dukascopy.connect.vo {
 					{
 						text = text.replace("%@1", Lang.escrow_sell);
 					}
-					text = text.replace("%@2", _qVO.cryptoAmount + " " + _qVO.tipsCurrency);
+					text = text.replace("%@2", _qVO.cryptoAmount + " " + _qVO.tipsCurrencyDisplay);
+					
 					
 					var price:String = _qVO.price;
-					if (_qVO.priceCurrency != null)
+					
+					if (isPercent)
 					{
-						price += " " + _qVO.priceCurrency;
+						text = text.replace("%@4", price);
+						
+						if (Number(realPrice) > 0)
+						{
+							text = text.replace("%@5", Lang.above);
+						}
+						else
+						{
+							text = text.replace("%@5", Lang.below);
+						}
+						
+						if (!isNaN(marketPrice))
+						{
+							price = NumberFormat.formatAmount(marketPrice * (1 + Number(realPrice)/100), _qVO.priceCurrency);
+						}
+						else
+						{
+							price = "@MKT";
+						}
 					}
 					
 					text = text.replace("%@3", price);

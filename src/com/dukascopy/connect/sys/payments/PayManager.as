@@ -95,6 +95,9 @@ package com.dukascopy.connect.sys.payments {
 		static public var S_LIMITS_INCREASE_RESPOND:Signal = new Signal("PayManager.S_LIMITS_INCREASE_RESPOND");
 		static public var S_LIMITS_INCREASE_ERROR:Signal = new Signal("PayManager.S_LIMITS_INCREASE_ERROR");
 		
+		static public var S_DECLARE_BLOCKCHAIN_ADDRESS_ERROR:Signal = new Signal("PayManager.S_DECLARE_BLOCKCHAIN_ADDRESS_ERROR");
+		static public var S_DECLARE_BLOCKCHAIN_ADDRESS_SUCCESS:Signal = new Signal("PayManager.S_DECLARE_BLOCKCHAIN_ADDRESS_SUCCESS");
+		
 		static private var savedData:Object;
 		static public var respondThatTriggeredAuthorization:PayRespond;
 		static private var _hasPendingTransfer:Boolean = false;
@@ -1366,6 +1369,44 @@ package com.dukascopy.connect.sys.payments {
 			accountInfo.update(data.account);
 			if ("coins" in data == true)
 				_accountInfo.setCoins(data.coins);
+		}
+		
+		static public function getDeclareBlockchainAddressLink(currency:String):void {
+			if (!NetworkManager.isConnected) {
+				showAlert(Lang.textError, Lang.noInternetConnection);
+				return;
+			}
+			PayServer.call_getDeclareEthAddressLink(onDeclareBlockchainAddressLinkGetted, currency);
+		}
+		
+		static public function getDCOWallet(currency:String = "DCO"):String {
+			if (accountInfo != null) {
+				if (currency == null || currency.toLowerCase() == "dco" || currency.toLowerCase() == "eth" || currency.toLowerCase() == "ust")
+					return accountInfo.ethAddress;
+				if (currency.toLowerCase() == "btc")
+					return accountInfo.btcAddress;
+			}
+			return null;
+		}
+		
+		static private function onDeclareBlockchainAddressLinkGetted(respond:PayRespond):void {
+			if (respond.hasAuthorizationError) {
+				savedData = respond.savedRequestData;
+				validateAuthorization(respond);
+				return;
+			}
+			if (respond.hasTrialVersionError) {
+				savedData = respond.savedRequestData;
+				_trialReached = true;
+				S_TRIAL_REACHED.invoke();
+				return;
+			}
+			if (respond.error) {
+				
+				S_DECLARE_BLOCKCHAIN_ADDRESS_ERROR.invoke(respond.savedRequestData.callID, respond.errorMsg);
+				return;
+			}
+			S_DECLARE_BLOCKCHAIN_ADDRESS_SUCCESS.invoke(respond.savedRequestData.callID, respond.data);
 		}
 	}
 }

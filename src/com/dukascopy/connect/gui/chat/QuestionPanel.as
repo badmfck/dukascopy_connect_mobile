@@ -185,7 +185,7 @@ package com.dukascopy.connect.gui.chat
 			{
 				if (e != null && e.target == tipsContainer)
 				{
-					DialogManager.alert(Lang.information, data.tipsAmount + " " + data.tipsCurrency + Lang.textAdditionalTips);
+					DialogManager.alert(Lang.information, data.tipsAmount + " " + data.tipsCurrencyDisplay + Lang.textAdditionalTips);
 					return;
 				}
 				
@@ -699,7 +699,7 @@ package com.dukascopy.connect.gui.chat
 			tips.visible = true;
 			var colorText:Number;
 			var colorBack:Number;
-			var text:String = Lang.textReward + ":" + data.tipsAmount + " " + data.tipsCurrency.toUpperCase();
+			var text:String = Lang.textReward + ":" + data.tipsAmount + " " + data.tipsCurrencyDisplay.toUpperCase();
 			if (data.isPaid) {
 				text += " " + Lang.textPaid;
 				colorBack = 0xD9FADE;

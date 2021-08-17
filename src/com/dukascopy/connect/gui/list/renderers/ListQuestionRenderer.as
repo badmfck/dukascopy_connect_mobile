@@ -597,12 +597,7 @@ package com.dukascopy.connect.gui.list.renderers {
 				newMessages.y = int((height / 2 - newMessages.height / 2));
 				
 				if (isNaN(itemData.tipsAmount) == false) {
-					var tipsCurrency:String = itemData.tipsCurrency;
-					if (Lang[tipsCurrency] != null)
-					{
-						tipsCurrency = Lang[tipsCurrency];
-					}
-					tfTips.text = "+" + itemData.tipsAmount + " " + tipsCurrency;
+					tfTips.text = "+" + itemData.tipsAmount + " " + itemData.tipsCurrencyDisplay;
 					tfTips.visible = true;
 					tfTips.y = int(newMessages.y + (newMessages.height -tfTips.height) * .5);
 					tfTips.x = (newMessages.visible == true) ? int(newMessages.x - tfTips.width - Config.MARGIN) : int(width - tfTips.width - FilterTabs.MARGIN + 2);

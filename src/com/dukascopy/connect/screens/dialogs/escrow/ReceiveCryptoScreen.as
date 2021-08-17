@@ -120,7 +120,6 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		
 		private function onAcceptClick():void 
 		{
-			trace((new Date()).time/1000 - message.created);
 			if (((new Date()).time/1000 - message.created) < 60 && escrowOffer.transactionConfirmShown == false)
 			{
 				escrowOffer.transactionConfirmShown = true;
@@ -249,7 +248,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 						colors.push(Color.WHITE);
 						
 						values.push(NumberFormat.formatAmount(escrowOffer.amount * escrowOffer.price, escrowOffer.currency));
-						values.push(NumberFormat.formatAmount(escrowOffer.amount * escrowOffer.price * EscrowSettings.commission, escrowOffer.currency));
+						values.push(NumberFormat.formatAmount(escrowOffer.amount * escrowOffer.price * EscrowSettings.getCommission(escrowOffer.instrument), escrowOffer.currency));
 						values.push(NumberFormat.formatAmount(escrowOffer.amount * escrowOffer.price * EscrowSettings.refundableFee + escrowOffer.amount * escrowOffer.price, escrowOffer.currency));
 					
 					}
@@ -258,10 +257,10 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			
 			if (balance == null)
 			{
-				balance = new BalanceCalculation(texts, colors);
+				balance = new BalanceCalculation();
 				addItem(balance);
 			}
-			
+			balance.drawTexts(texts, colors);
 			balance.draw(getWidth() - contentPadding * 2, values);
 		}
 		

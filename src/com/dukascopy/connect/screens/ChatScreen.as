@@ -586,6 +586,7 @@ package com.dukascopy.connect.screens {
 									basketButton.hide();
 									basketButton.deactivate();
 								}
+								disableEscrowButtons();
 							}
 							questionButtonBG.visible = (action);
 						}
@@ -3339,12 +3340,21 @@ package com.dukascopy.connect.screens {
 			
 			if (chatInput)
 				chatInput.initButtons(showPayButtons);
-			if (ChatManager.getCurrentChat().type == ChatRoomType.QUESTION &&
-				ChatManager.getCurrentChat().getQuestion() != null)
+			if (ChatManager.getCurrentChat().type == ChatRoomType.QUESTION)
+			{
+				if (ChatManager.getCurrentChat().getQuestion() != null)
 				{
 					checkQuestionButtons();
 					updateChatInput();
 				}
+				else
+				{
+					if (ChatManager.getCurrentChat().queStatus)
+					{
+						disableEscrowButtons();
+					}
+				}
+			}
 			if (userWritings == null) {
 				if (Config.PLATFORM_APPLE) {
 					if (chatInput)
@@ -3451,6 +3461,25 @@ package com.dukascopy.connect.screens {
 				imagesUploaders[imagesUploaders.length - 1].x = Config.MARGIN;
 			}
 			repositionImageUploaders();
+		}
+		
+		private function disableEscrowButtons():void 
+		{
+			if (questionLinkButton != null)
+			{
+				questionLinkButton.hide();
+				questionLinkButton.deactivate();
+			}
+			
+			if (basketButton != null) {
+				basketButton.hide();
+				basketButton.deactivate();
+			}
+			
+			if (questionButtonBG != null)
+			{
+				questionButtonBG.visible = false;
+			}
 		}
 		
 		private function checkDraftMessage():void 
@@ -3679,7 +3708,7 @@ package com.dukascopy.connect.screens {
 			if (ChatManager.getCurrentChat() != null && ChatManager.getCurrentChat().getQuestion() != null) {
 				text = Lang.publicQuestionIntroText;
 				var amount:String = ChatManager.getCurrentChat().getQuestion().tipsAmount.toString();
-				var currency:String = ChatManager.getCurrentChat().getQuestion().tipsCurrency;
+				var currency:String = ChatManager.getCurrentChat().getQuestion().tipsCurrencyDisplay;
 				text = LangManager.replace(Lang.regExtValue, text, amount + " " + currency);
 			}
 			DialogManager.showQuestionRulesDialog(onQuestionRulesDialogCallback, Lang.information, text);

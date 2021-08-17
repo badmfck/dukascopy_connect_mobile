@@ -1073,7 +1073,7 @@ package com.dukascopy.connect.screens {
 					return;
 				}
 				if (itemHitZone == HitZoneType.TIPS) {
-					DialogManager.alert(Lang.information, qVO.tipsAmount + " " + qVO.tipsCurrency + Lang.textAdditionalTips);
+					DialogManager.alert(Lang.information, qVO.tipsAmount + " " + qVO.tipsCurrencyDisplay + Lang.textAdditionalTips);
 					echo("EmergencyScreen", "onItemTap", "DATA IS QUESTIONVO AND HITZONE IS TIPS");
 					return;
 				}

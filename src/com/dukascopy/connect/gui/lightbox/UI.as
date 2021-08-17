@@ -2813,7 +2813,7 @@ package com.dukascopy.connect.gui.lightbox {
 					return SWFInvestmentDCO;
 					break;
 				}
-				case "USDT":
+				case "UST":
 				{
 					return SWFInvestmentUSDT;
 					break;

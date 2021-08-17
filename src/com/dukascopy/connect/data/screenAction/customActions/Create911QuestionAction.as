@@ -30,7 +30,7 @@ package com.dukascopy.connect.data.screenAction.customActions {
 			}
 			MobileGui.changeMainScreen(QuestionCreateUpdateScreen, {
 					backScreen:RootScreen,
-					title:Lang.askQuestions, 
+					title:Lang.escrow_create_your_ad, 
 					backScreenData:null,
 					data:null
 				}, ScreenManager.DIRECTION_RIGHT_LEFT

@@ -3,6 +3,7 @@ package com.dukascopy.connect.gui.components.radio
 	import assets.RadioIcon;
 	import com.dukascopy.connect.Config;
 	import com.dukascopy.connect.data.SelectorItemData;
+	import com.dukascopy.connect.data.layout.LayoutType;
 	import com.dukascopy.connect.sys.applicationError.ApplicationErrors;
 	import flash.display.Sprite;
 	/**
@@ -13,12 +14,20 @@ package com.dukascopy.connect.gui.components.radio
 	{
 		private var items:Vector.<IRadioItem>;
 		private var onSelect:Function;
+		private var layout:LayoutType;
 		public var gap:int;
 		
-		public function RadioGroup(onSelect:Function) 
+		public function RadioGroup(onSelect:Function, layout:LayoutType = null) 
 		{
-			gap = Config.FINGER_SIZE * .13;
+			if (layout == null)
+			{
+				layout = LayoutType.vertical;
+			}
+			
+			this.layout = layout;
 			this.onSelect = onSelect;
+			
+			gap = Config.FINGER_SIZE * .13;
 		}
 		
 		public function draw(selectors:Vector.<SelectorItemData>, itemWidth:int, Renderer:Class):void 
@@ -105,6 +114,7 @@ package com.dukascopy.connect.gui.components.radio
 		
 		public function dispose():void
 		{
+			layout = null;
 			onSelect = null;
 			
 			if (items != null)

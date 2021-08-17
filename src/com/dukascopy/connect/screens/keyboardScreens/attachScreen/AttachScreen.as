@@ -140,10 +140,6 @@ package com.dukascopy.connect.screens.keyboardScreens.attachScreen {
 			var puzzle:IScreenAction = new CreatePuzzleAction();
 			puzzle.setData(Lang.textPuzzle);
 			
-			var tradeAction:IScreenAction = new CreateCoinTradeAction();
-			(tradeAction as CreateCoinTradeAction).chat = ChatManager.getCurrentChat();
-			tradeAction.setData(Lang.escrow);
-			
 			var sendGiftAction:IScreenAction = new OpenGiftsAction();
 			sendGiftAction.setData(Lang.sendGift);
 			
@@ -161,12 +157,33 @@ package com.dukascopy.connect.screens.keyboardScreens.attachScreen {
 				actions.push(puzzle);
 			}*/
 			
-			if (ChatManager.getCurrentChat() != null && 
-				ChatManager.getCurrentChat().type != ChatRoomType.COMPANY && 
-				ChatManager.getCurrentChat().type != ChatRoomType.CHANNEL && 
-				ChatManager.getCurrentChat().type != ChatRoomType.GROUP)
+			var showEscrowButton:Boolean = true;
+			if (ChatManager.getCurrentChat() != null)
 			{
-				actions.push(tradeAction);
+				if (ChatManager.getCurrentChat().queStatus)
+				{
+					showEscrowButton = false;
+				}
+				else if (ChatManager.getCurrentChat().getQuestion() != null)
+				{
+					if (ChatManager.getCurrentChat().getQuestion().status == "closed" || ChatManager.getCurrentChat().getQuestion().status == "resolved" || ChatManager.getCurrentChat().getQuestion().status == "archived")
+					{
+						showEscrowButton = false;
+					}
+				}
+			}
+			if (showEscrowButton)
+			{
+				var tradeAction:IScreenAction = new CreateCoinTradeAction();
+				(tradeAction as CreateCoinTradeAction).chat = ChatManager.getCurrentChat();
+				tradeAction.setData(Lang.escrow);
+				if (ChatManager.getCurrentChat() != null && 
+					ChatManager.getCurrentChat().type != ChatRoomType.COMPANY && 
+					ChatManager.getCurrentChat().type != ChatRoomType.CHANNEL && 
+					ChatManager.getCurrentChat().type != ChatRoomType.GROUP)
+				{
+					actions.push(tradeAction);
+				}
 			}
 			
 		//	actions.push(composeVoiceMessageAction);

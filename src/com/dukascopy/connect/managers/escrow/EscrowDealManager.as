@@ -3,6 +3,9 @@ package com.dukascopy.connect.managers.escrow{
     import com.dukascopy.connect.GD;
 	import com.dukascopy.connect.managers.escrow.vo.EscrowPrice;
     import com.dukascopy.connect.sys.Dispatcher;
+	import com.dukascopy.connect.sys.bankManager.BankManager;
+	import com.dukascopy.connect.sys.payments.PayManager;
+	import com.dukascopy.connect.sys.payments.PaymentsManager;
     import com.dukascopy.connect.vo.EscrowDealVO;
     import com.telefision.utils.maps.EscrowDealMap;
     import com.telefision.utils.SimpleLoader;
@@ -83,7 +86,7 @@ package com.dukascopy.connect.managers.escrow{
 
                 
                 GD.S_ESCROW_WALLETS_REQUEST.invoke(function(wallets:Object):void{
-                    
+                    //!TODO:;
                 })
 
                 // TODO: SEND TO SERVER, GET RESPONSE, REBUILD INSTRUMENTS
@@ -118,37 +121,67 @@ package com.dukascopy.connect.managers.escrow{
             var dis:Dispatcher=new Dispatcher(timer);
             dis.add(TimerEvent.TIMER_COMPLETE,function(e:TimerEvent):void{
                 dis.clear();
-
-                var duk_price_eur:Number=Math.random()*4;
-                var duk_price_usd:Number=duk_price_eur*1.17;
-
-                var eth_price_eur:Number=Math.random()*100;
-                var eth_price_usd:Number=eth_price_eur*1.17;
-
-                var btc_price_eur:Number=Math.random()*50000;
-                var btc_price_usd:Number=btc_price_eur*1.17;
-                
-                var usdt_price_eur:Number=Math.random()*3000;
-                var usdt_price_usd:Number=usdt_price_eur*1.17;
-                
-
-                parseInstruments([
-                    {code:"DUK+",precision:2,name:"Dukascoin",wallet:"3849tjknvdknjs094kvjknwv",price:{EUR:duk_price_eur,USD:duk_price_usd}},
-                    {code:"ETH",precision:4,name:"Etherium",wallet:"dsv324fqww232AAAvewevwknjs094kvjknwv",price:{EUR:eth_price_eur,USD:eth_price_usd}},
-                    {code:"BTC",precision:"6",name:"Bitcoin",wallet:"AcAdewf43tgsfwfwewvvjknwv",price:{EUR:btc_price_eur,USD:btc_price_usd}},
-                    {code:"USDT",precision:3,name:"Tether",wallet:null,price:{EUR:usdt_price_eur,USD:usdt_price_usd}},
-                ]);
-                isInstrumentLoading=false;
+				
+				if (PaymentsManager.activate() == false)
+				{
+					onWalletsLoaded();
+				}
+				else
+				{
+					PaymentsManager.S_ACCOUNT.add(onWalletsLoaded);
+					PaymentsManager.S_BACK.add(onWalletsLoadError);
+				}
+				
                 timeInstrumentRequest=new Date().getTime();
             })
             timer.start();
             // DUMMY <-
-
-
         }
-
-       
-
+		
+		private function onWalletsLoadError(code:String = null, message:String = null):void 
+		{
+			isInstrumentLoading = false;
+			
+			PaymentsManager.S_ACCOUNT.remove(onWalletsLoaded);
+			PaymentsManager.S_BACK.remove(onWalletsLoadError);
+			
+			GD.S_ESCROW_INSTRUMENTS.invoke(null);
+			
+			PaymentsManager.deactivate();
+		}
+		
+		private function onWalletsLoaded(data:Array = null, local:Boolean = false):void 
+		{
+			PaymentsManager.S_ACCOUNT.remove(onWalletsLoaded);
+			PaymentsManager.S_BACK.remove(onWalletsLoadError);
+			
+			var duk_price_eur:Number = Math.random() * 4;;
+            var duk_price_usd:Number = duk_price_eur * 1.17;
+			
+            var eth_price_eur:Number = Math.random() * 100;
+            var eth_price_usd:Number = eth_price_eur * 1.17;
+			
+            var btc_price_eur:Number = Math.random() * 50000;
+            var btc_price_usd:Number = btc_price_eur * 1.17;
+            
+            var usdt_price_eur:Number = Math.random() * 3000;
+            var usdt_price_usd:Number = usdt_price_eur * 1.17;
+			
+			var rawInstruments:Array = [
+				{code:"DCO",precision:2,name:"Dukascoin",wallet:null,price:{EUR:duk_price_eur,USD:duk_price_usd}},
+				{code:"ETH",precision:4,name:"Etherium",wallet:null,price:{EUR:eth_price_eur,USD:eth_price_usd}},
+				{code:"BTC",precision:"6",name:"Bitcoin",wallet:null,price:{EUR:btc_price_eur,USD:btc_price_usd}},
+				{code:"UST",precision:3,name:"Tether",wallet:null,price:{EUR:usdt_price_eur,USD:usdt_price_usd}},
+			]
+			for (var i:int = 0; i < rawInstruments.length; i++) 
+			{
+				rawInstruments[i].wallet = PayManager.getDCOWallet(rawInstruments[i].code)
+			}
+			parseInstruments(rawInstruments);
+            isInstrumentLoading = false;
+			PaymentsManager.deactivate();
+		}
+		
         /**
          * Parse response width avaialable instruments from server.
          * @param data - array of objects width name, wallet, price and code
