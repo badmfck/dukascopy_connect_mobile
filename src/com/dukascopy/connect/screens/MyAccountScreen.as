@@ -1083,7 +1083,7 @@ package com.dukascopy.connect.screens {
 					list.refresh(true);
 					return;
 				}
-				if ("openedCount" in data == true && data.openedCount != 0) {
+				if ("openedCount" in data == true && data.openedCount != 0 && "coinStatIndex" in data == false && openedItems != null && openedItems.indexOf(data) != 1) {
 					data.opened = true;
 					for (var j:int = 0; j < data.openedCount; j++) {
 						list.getStock()[n + j + 1].data.opened = false;
