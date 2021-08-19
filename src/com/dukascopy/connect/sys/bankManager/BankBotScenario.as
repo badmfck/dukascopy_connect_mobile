@@ -344,9 +344,8 @@ package com.dukascopy.connect.sys.bankManager {
 						action:"nav:transactionBankCardConfirm"
 					}, {
 						text:"lang.menuCardPin",
-						type:"cardPin",
 						value:"@@1",
-						action:"payments:cardPinRequest"
+						action:"nav:cardPin"
 					}, {
 						text:"lang.menuCardDisable",
 						action:"nav:blockCardConfirm"
@@ -371,6 +370,35 @@ package com.dukascopy.connect.sys.bankManager {
 					}
 				]
 			},
+			
+			cardPin: {
+				desc:"lang.cardPinRequestDesc",
+				menu:[
+					{
+						text:"lang.menuPinSMS",
+						type:"cardPin",
+						value:"@@1",
+						option:"sms",
+						action:"payments:cardPinRequest"
+					}, {
+						text:"lang.menuPinCallback",
+						type:"cardPin",
+						value:"@@1",
+						option:"ivr",
+						action:"payments:cardPinRequest"
+					}
+				],
+				buttons: [
+					{
+						text:"lang.buttonBack",
+						action:"cmd:back"
+					}, {
+						text:"lang.buttonCancel",
+						action:"system:cancel"
+					}
+				]
+			},
+			
 			cardLinkedOperationsActive: {
 				desc:"lang.cardOpsDesc",
 				item: {

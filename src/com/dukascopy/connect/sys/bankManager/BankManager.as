@@ -472,7 +472,7 @@ package com.dukascopy.connect.sys.bankManager {
 				if (data.type == "cardPin") {
 					data["tapped"] = true;
 					S_ADDITIONAL_DATA_ENTERED.invoke();
-					sendMessage(msg + ":" + data.value);
+					sendMessage(msg + ":" + data.option + "|!|" + data.value);
 					return;
 				}
 				if (data.type == "cryptoSB") {

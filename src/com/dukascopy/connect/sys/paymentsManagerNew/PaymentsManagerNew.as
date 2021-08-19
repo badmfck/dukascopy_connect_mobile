@@ -1669,14 +1669,15 @@ package com.dukascopy.connect.sys.paymentsManagerNew {
 			);
 		}
 		
-		static public function requestCardPin(callback:Function, cardID:String):void {
+		static public function requestCardPin(callback:Function, cardID:String, channel:String):void {
 			PayServer.call_sendPinForCard(
 				function(respond:PayRespond):void {
 					var res:Object = checkForError(respond);
 					if (callback != null)
 						callback(res);
 				},
-				cardID
+				cardID,
+				channel
 			);
 		}
 		

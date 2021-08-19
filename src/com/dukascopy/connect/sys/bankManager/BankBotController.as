@@ -297,6 +297,11 @@ package com.dukascopy.connect.sys.bankManager {
 					getLinkCardLink();
 					return;
 				}
+				if (tmp[1] == "cardPin") {
+					vals = steps[steps.length - 2].val.split("|!|");
+					sendBlock(tmp[1], vals[0]);
+					return;
+				}
 				if (tmp[1] == "cardOperationsActive" ||
 					tmp[1] == "cardLinkedOperationsActive" ||
 					tmp[1] == "cardOperationsSBlocked" ||
@@ -982,7 +987,8 @@ package com.dukascopy.connect.sys.bankManager {
 			var temp:Array;
 			if (command == "cardPinRequest") {
 				sendBlock("actionProgress");
-				PaymentsManagerNew.requestCardPin(onPinRequested, msg.substr(command.length + 1));
+				temp = msg.substr(command.length + 1).split("|!|");
+				PaymentsManagerNew.requestCardPin(onPinRequested, temp[1], temp[0]);
 				return;
 			}
 			if (command == "transactionCode") {

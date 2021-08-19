@@ -82,6 +82,7 @@ package com.dukascopy.connect.sys.bankManager {
 		static public var operationDetails:String = "Operation details.";
 		static public var operationTransactionsDesc:String = "Operation transactions.";
 		static public var invoicesDesc:String = "Invoices";
+		static public var cardPinRequestDesc:String = "Please select pin request method.";
 		static public var confirmRDCancelWithPenaltyDesc:String = "You are about to cancel your reward deposit before its maturity date. This will lead to no reward being paid for the cancelled deposit and to a penalty charge  applied to the allocated Dukascoins in the amount of @@1 Dukascoins.\\n\\nTotal amount to be returned: @@2 Dukascoins";
 		static public var confirmRDCancelWithoutPenaltyDesc:String = "You are about to cancel your reward deposit before its maturity date. This will lead to no reward being paid for the cancelled deposit.\\n\\nTotal amount to be returned: @@2 Dukascoins";
 		
@@ -294,6 +295,8 @@ package com.dukascopy.connect.sys.bankManager {
 		static public var menuCardNumberCopy:String = "Copy card number";
 		static public var menuIBANCopy:String = "Copy IBAN";
 		static public var menuShareIBAN:String = "Share IBAN";
+		static public var menuPinSMS:String = "SMS";
+		static public var menuPinCallback:String = "Call-back";
 		
 		static public var investmentIndex:String = "Index";
 		static public var investmentSilver:String = "Silver";

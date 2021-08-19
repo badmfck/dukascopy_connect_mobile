@@ -440,8 +440,8 @@ package com.dukascopy.connect.sys.payments {
 		 * This method performs sendPIN action on particular prepaid card. See description:
 		 * https://intranet.dukascopy.dom/wiki/pages/viewpage.action?pageId=76709915
 		 */
-		static public function call_sendPinForCard(_callback:Function, _cardDiggits:String, _callID:String = ""):void {
-			var php:PayLoader = call("account/cards/" + _cardDiggits, _callback, { action:"sendPIN" } );
+		static public function call_sendPinForCard(_callback:Function, _cardDiggits:String, channel:String = "", _callID:String = ""):void {
+			var php:PayLoader = call("account/cards/" + _cardDiggits, _callback, { action:"sendPIN", channnel:channel } );
 			if (php.savedRequestData != null)
 				php.savedRequestData.callID = _callID;
 		}
