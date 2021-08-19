@@ -769,10 +769,14 @@ package com.dukascopy.connect.screens {
 			super.dispose();
 		}
 		
-		private function onQuestionCreateError():void {
+		private function onQuestionCreateError(errorMessage:String = null):void {
 			hidePreloader();
 			busy = false;
-			ToastMessage.display(Lang.sendMessageFail);
+			if (errorMessage == null)
+			{
+				errorMessage = Lang.sendMessageFail;
+			}
+			ToastMessage.display(errorMessage);
 		}
 		
 		private function onTrashTap():void {

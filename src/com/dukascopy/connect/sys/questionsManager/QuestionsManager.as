@@ -977,23 +977,23 @@ package com.dukascopy.connect.sys.questionsManager {
 				return;
 			}
 			if (currentQuestion.subtype == null) {
-				S_QUESTION_CREATE_FAIL.invoke();
+				S_QUESTION_CREATE_FAIL.invoke(Lang.escrow_fill_application_form);
 				return;
 			}
 			if (currentQuestion.instrument == null) {
-				S_QUESTION_CREATE_FAIL.invoke();
+				S_QUESTION_CREATE_FAIL.invoke(Lang.escrow_fill_application_form);
 				return;
 			}
 			if (currentQuestion.cryptoAmount == null) {
-				S_QUESTION_CREATE_FAIL.invoke();
+				S_QUESTION_CREATE_FAIL.invoke(Lang.escrow_fill_application_form);
 				return;
 			}
 			if (currentQuestion.priceCurrency == null) {
-				S_QUESTION_CREATE_FAIL.invoke();
+				S_QUESTION_CREATE_FAIL.invoke(Lang.escrow_fill_application_form);
 				return;
 			}
 			if (currentQuestion.price == null) {
-				S_QUESTION_CREATE_FAIL.invoke();
+				S_QUESTION_CREATE_FAIL.invoke(Lang.escrow_fill_application_form);
 				return;
 			}
 			

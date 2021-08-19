@@ -2536,6 +2536,7 @@ package com.dukascopy.langs {
 		static public var escrow_amount_exceeds:String = "The amount of your offer exceeds the amount of the ad. Please note that it can be equal or less than the amount of the ad.";
 		static public var waiting_for_receipt_confirmation:String = "You have succesfully provided the transaction ID that now has to be checked and confirmed by your counterparty during 24 hours.";
 		static public var waiting_for_receipt_confirmation_status:String = "Waiting for receipt confirmation by the Buyer";
+		static public var escrow_fill_application_form:String = "Please fill in the application form";
 		
 		static public function updateKeys(keys:Object):void {
 			for (var n:String in keys) {

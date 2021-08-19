@@ -113,8 +113,8 @@ package com.dukascopy.connect.managers.escrow{
 		
 		private function clear():void 
 		{
-			instruments = null;
-			escrowDeals = null;
+			instruments = new Vector.<EscrowInstrument>();
+			escrowDeals = new EscrowDealMap();
 		}
 		
         private function loadInstruments():void{
