@@ -220,6 +220,7 @@ package com.dukascopy.connect.sys.style
 		static public const COLOR_SEEK_BACK:String = "colorSeekBack";
 		static public const COLOR_TEXT_RED_DARK:String = "colorTextRedDark";
 		static public const COLOR_RED_LIGHT:String = "colorRedLight";
+		static public const ICON_TRASH:String = "iconTrash";
 		
 		static private var preset:Preset;
 		

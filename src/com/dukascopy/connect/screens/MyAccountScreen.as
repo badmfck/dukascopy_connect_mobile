@@ -236,6 +236,10 @@ package com.dukascopy.connect.screens {
 		}
 		
 		private function showTutorial():void {
+			if (Config.isTest())
+			{
+				return;
+			}
 			Store.save(Store.BANK_TUTORIAL, (new Date()).getTime().toString());
 			ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, BankTutorialScreen);
 		}

@@ -10,6 +10,7 @@ package com.dukascopy.connect.sys.style.presets
 	import assets.AttachPayIcon;
 	import assets.BlockUserIcon;
 	import assets.CommunityIconGrey;
+	import assets.ContectDeleteIcon;
 	import assets.CreateDealIcon;
 	import assets.EditIcon;
 	import assets.FilterSmallIcon;
@@ -276,6 +277,7 @@ package com.dukascopy.connect.sys.style.presets
 			this[Style.COLOR_SEEK_BACK] = Color.GREY_SSL;
 			this[Style.COLOR_TEXT_RED_DARK] = Color.RED_DARK;
 			this[Style.COLOR_RED_LIGHT] = Color.RED_LIGHT;
+			this[Style.ICON_TRASH] = ContectDeleteIcon;
 		}
 	}
 }

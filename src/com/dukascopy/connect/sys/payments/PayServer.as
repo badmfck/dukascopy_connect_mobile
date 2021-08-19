@@ -118,6 +118,8 @@ package com.dukascopy.connect.sys.payments {
 		static public function call_getDeclareEthAddressLink(_callback:Function, type:String):void {
 			if (type == "DCO")
 				type = "ETH";
+			if (type == "UST")
+				type = "ETH";
 			call("coin/declare-wallet", _callback, { type:type } );
 		}
 		

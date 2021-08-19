@@ -32,6 +32,8 @@ package com.dukascopy.connect.gui.list.renderers {
 			
 			tfLabel.defaultTextFormat = formatWallet;
 			tfLabel.autoSize = TextFieldAutoSize.NONE;
+			tfLabel.multiline = true;
+			tfLabel.wordWrap = true;
 		}
 		
 		override public function dispose():void {
@@ -50,7 +52,13 @@ package com.dukascopy.connect.gui.list.renderers {
 		
 		override public function getView(li:ListItem, h:int, w:int, highlight:Boolean = false):IBitmapDrawable {
 			super.getView(li, h, w, highlight);
-			
+			setTexts(li, w);
+			updatePositions(h, w);
+			return this;
+		}
+		
+		private function setTexts(li:ListItem, w:int):void 
+		{
 			var data:EscrowInstrument = li.data as EscrowInstrument;
 			tfName.text = data.name;
 			
@@ -79,13 +87,18 @@ package com.dukascopy.connect.gui.list.renderers {
 				walletText = "";
 			}
 			tfLabel.width = w - tfLabel.x - Config.DIALOG_MARGIN;
+			tfName.width = w - tfName.x - Config.DIALOG_MARGIN;
+			
 			tfLabel.htmlText = walletText;
-			updatePositions(h, w);
-			return this;
+			tfLabel.height = tfLabel.textHeight + 6;
 		}
 		
-		override public function getHeight(data:ListItem, width:int):int {
-			return Config.FINGER_SIZE * 1.3;
+		override public function getHeight(data:ListItem, w:int):int {
+			
+			drawIcon(data, 0);
+			setTexts(data, w);
+			updatePositions(0, w);
+			return int(tfName.height + tfLabel.height - 8 + Config.FINGER_SIZE * .5);
 		}
 		
 		override protected function drawIcon(li:ListItem, h:int):void 
@@ -119,10 +132,8 @@ package com.dukascopy.connect.gui.list.renderers {
 		
 		override protected function updatePositions(h:int, w:int):void 
 		{
-			tfLabel.y = int(h * .5 + Config.FINGER_SIZE * .01);
-			tfLabel.width = w - tfLabel.x - padding;
-			
-			tfName.y = int(h * .5 - tfName.height);
+			tfName.y = int(Config.FINGER_SIZE * .2);
+			tfLabel.y = int(tfName.y + tfName.height - 8 + Config.FINGER_SIZE * .13);
 		}
 	}
 }

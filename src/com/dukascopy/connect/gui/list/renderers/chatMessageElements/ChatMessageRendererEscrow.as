@@ -20,6 +20,7 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 	import com.dukascopy.connect.sys.style.Style;
 	import com.dukascopy.connect.sys.style.presets.Color;
 	import com.dukascopy.connect.type.HitZoneType;
+	import com.dukascopy.connect.utils.NumberFormat;
 	import com.dukascopy.connect.vo.AnimatedZoneVO;
 	import com.dukascopy.connect.vo.ChatMessageVO;
 	import com.dukascopy.connect.vo.ChatSystemMsgVO;
@@ -291,31 +292,7 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 		
 		private function getAmountText(data:EscrowMessageData):String 
 		{
-			var currency:String = getInstrument(data);
-			
-			var decimals:int = 2;
-			if (PayManager.systemOptions != null && PayManager.systemOptions.currencyDecimalRules != null && !isNaN(PayManager.systemOptions.currencyDecimalRules[currency]))
-			{
-				decimals = PayManager.systemOptions.currencyDecimalRules[currency];
-			}
-			else
-			{
-				decimals = CurrencyHelpers.getMaxDecimalCount(currency)
-			}
-			
-			var result:String = Number(data.amount.toFixed(decimals)).toString();
-			
-			if (currency != null && currency != "")
-			{
-				result += " " + currency;
-			}
-			return result;
-		}
-		
-		private function getInstrument(data:EscrowMessageData):String 
-		{
-			//!TODO:;
-			return data.instrument;
+			return NumberFormat.formatAmount(data.amount, data.instrument);
 		}
 		
 		private function getCurrency(data:EscrowMessageData):String 

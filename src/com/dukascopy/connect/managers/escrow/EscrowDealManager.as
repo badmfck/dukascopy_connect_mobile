@@ -3,6 +3,7 @@ package com.dukascopy.connect.managers.escrow{
     import com.dukascopy.connect.GD;
 	import com.dukascopy.connect.managers.escrow.vo.EscrowPrice;
     import com.dukascopy.connect.sys.Dispatcher;
+	import com.dukascopy.connect.sys.auth.Auth;
 	import com.dukascopy.connect.sys.bankManager.BankManager;
 	import com.dukascopy.connect.sys.payments.PayManager;
 	import com.dukascopy.connect.sys.payments.PaymentsManager;
@@ -21,32 +22,33 @@ package com.dukascopy.connect.managers.escrow{
      */
 
     public class EscrowDealManager{
-
+	
         private var escrowDeals:EscrowDealMap=new EscrowDealMap();
         private var id:String="EscrowDealManager";
-
+		
         // Instruments
         private var instruments:Vector.<EscrowInstrument>=new Vector.<EscrowInstrument>();
         private var timeInstrumentRequest:Number=0;
         private var instrumentDataLifetime:Number=1000*60*5; // 5 min
         private var isInstrumentLoading:Boolean=false;
-
+		
         // Prices
         private var isPriceLoading:Boolean=false;
 		public static var instance:EscrowDealManager;
-
-
+		
         public function EscrowDealManager(){
             
+			Auth.S_NEED_AUTHORIZATION.add(clear);
+			
             SimpleLoader.URL_DEFAULT="https://loki.telefision.com/escrow/";
-
+			
             //loadDeals();
-
+			
             // Check if escrow manager is created
             GD.S_ESCROW_MANAGER_AVAILABLE.add(function(cb:Function):void{
                 cb();
             })
-
+			
             // CREATE ESCROW DEAL
             GD.S_ESCROW_DEAL_CREATE_REQUEST.add(function(req:EscrowDealCreateRequest):void{
                 var escrowRequest:Object=req.toObject();
@@ -59,11 +61,11 @@ package com.dukascopy.connect.managers.escrow{
                     }
                 );
             },this);
-
+			
             GD.S_ESCROW_DEALS_REQUEST.add(function():void{
                 loadDeals();
             })
-
+			
             // Escrow get instruments, 
             GD.S_ESCROW_INSTRUMENTS_REQUEST.add(function():void{
                 if(instruments.length==0 || new Date().getTime()-timeInstrumentRequest>instrumentDataLifetime){
@@ -72,7 +74,7 @@ package com.dukascopy.connect.managers.escrow{
                 }
                 GD.S_ESCROW_INSTRUMENTS.invoke(instruments);
             })
-
+			
             GD.S_ESCROW_PRICES_REQUEST.add(function(inst:Vector.<EscrowInstrument>=null):void{
                 if(isPriceLoading)
                     return;
@@ -83,13 +85,13 @@ package com.dukascopy.connect.managers.escrow{
                 var arr:Array=[];
                 for each(var i:EscrowInstrument in tmp)
                     arr.push(i.code);
-
-                
+				
+				
                 GD.S_ESCROW_WALLETS_REQUEST.invoke(function(wallets:Object):void{
                     //!TODO:;
                 })
-
-                // TODO: SEND TO SERVER, GET RESPONSE, REBUILD INSTRUMENTS
+				
+					// TODO: SEND TO SERVER, GET RESPONSE, REBUILD INSTRUMENTS
                 //FAKE
                 var timer:Timer=new Timer(1000,1);
                 var dis:Dispatcher=new Dispatcher(timer)
@@ -103,19 +105,23 @@ package com.dukascopy.connect.managers.escrow{
                 
                 timer.start();
             })
-
+			
             // Escrow get offer calculation
             // instrument, price, amount
 			instance = this;
         }
-
-
-
+		
+		private function clear():void 
+		{
+			instruments = null;
+			escrowDeals = null;
+		}
+		
         private function loadInstruments():void{
             if(isInstrumentLoading)
                 return;
             isInstrumentLoading=true;
-
+			
             //TODO: get from sever DUMMY ->
             var timer:Timer=new Timer(1000,1);
             var dis:Dispatcher=new Dispatcher(timer);

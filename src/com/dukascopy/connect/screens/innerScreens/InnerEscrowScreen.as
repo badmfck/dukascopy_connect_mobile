@@ -14,6 +14,7 @@ package com.dukascopy.connect.screens.innerScreens {
 	import com.dukascopy.connect.gui.list.renderers.ListLink;
 	import com.dukascopy.connect.gui.menuVideo.BitmapButton;
 	import com.dukascopy.connect.gui.tabs.FilterTabs;
+	import com.dukascopy.connect.gui.tools.HorizontalPreloader;
 	import com.dukascopy.connect.managers.escrow.vo.EscrowInstrument;
 	import com.dukascopy.connect.screens.QuestionCreateUpdateScreen;
 	import com.dukascopy.connect.screens.RootScreen;
@@ -38,6 +39,7 @@ package com.dukascopy.connect.screens.innerScreens {
 	import com.dukascopy.connect.vo.screen.ChatScreenData;
 	import com.dukascopy.connect.vo.users.adds.ChatUserVO;
 	import com.dukascopy.langs.Lang;
+	import com.greensock.TweenMax;
 	import flash.display.Bitmap;
 	import flash.display.Sprite;
 	import flash.display.StageQuality;
@@ -68,6 +70,7 @@ package com.dukascopy.connect.screens.innerScreens {
 		private var tweenObj:Object = {};
 		private var statusClip:StatusClip;
 		private var placeholder:Bitmap;
+		private var preloader:HorizontalPreloader;
 		
 		public function InnerEscrowScreen() { }
 		
@@ -94,6 +97,9 @@ package com.dukascopy.connect.screens.innerScreens {
 				storedTabListPosition[QuestionsManager.TAB_MINE] = {};
 				storedTabListPosition[QuestionsManager.TAB_RESOLVED] = {};
 			}
+			
+			preloader = new HorizontalPreloader(Style.color(Style.COLOR_ICON_LIGHT));
+			_view.addChild(preloader);
 		}
 		
 		private function createTabs():void{
@@ -144,6 +150,8 @@ package com.dukascopy.connect.screens.innerScreens {
 				destY += tabs.height;
 			}
 			
+			preloader.y = destY;
+			
 			if (list != null) {
 				list.view.y = destY;
 				list.setWidthAndHeight(_width, _height - list.view.y);
@@ -156,6 +164,8 @@ package com.dukascopy.connect.screens.innerScreens {
 			_params.doDisposeAfterClose = true;
 			
 			QuestionsManager.setInOut(true);
+			
+			preloader.setSize(_width, int(Config.FINGER_SIZE * .07));
 			
 			if (selectedFilter == null)
 				selectedFilter = QuestionsManager.TAB_OTHER; 
@@ -211,7 +221,28 @@ package com.dukascopy.connect.screens.innerScreens {
 			UsersManager.S_ONLINE_STATUS_LIST.add(onUserlistOnlineStatusChanged);
 			UsersManager.S_TOAD_UPDATED.add(refreshList);
 			
-			setListData();
+			setListData("");
+		}
+		
+		private function showPreloader():void 
+		{
+			TweenMax.killDelayedCallsTo(startPreloader);
+			TweenMax.delayedCall(0.2, startPreloader);
+		}
+		
+		private function startPreloader():void 
+		{
+			TweenMax.killDelayedCallsTo(startPreloader);
+			if (preloader != null)
+			{
+				preloader.start();
+			}
+		}
+		
+		private function hidePreloader():void 
+		{
+			TweenMax.killDelayedCallsTo(startPreloader);
+			preloader.stop();
 		}
 		
 		private function onUserBanChange(userUID:String = null):void {
@@ -272,6 +303,12 @@ package com.dukascopy.connect.screens.innerScreens {
 		override public function dispose():void {
 			super.dispose();
 			
+			if (preloader != null)
+			{
+				TweenMax.killDelayedCallsTo(startPreloader);
+				preloader.dispose();
+				preloader = null;
+			}
 			removePlaceholder();
 			GD.S_ESCROW_INSTRUMENTS.remove(onInstrumentsLoaded);
 			DialogManager.closeDialog();
@@ -570,6 +607,7 @@ package com.dukascopy.connect.screens.innerScreens {
 				return;
 			if (list == null)
 				return;
+			
 			var otherID:Boolean = id != "" && id != selectedFilter;
 			if (otherID == false && list.getScrolling() == true) {
 				needToRefreshAfterScrollStoped = true;
@@ -600,18 +638,31 @@ package com.dukascopy.connect.screens.innerScreens {
 			
 			var listItemClass:Class = ListEscrowRenderer;
 			var listData:Array;
+			var hideLoader:Boolean = true;
 			if (id == QuestionsManager.TAB_RESOLVED) {
 				listData = AnswersManager.getAllAnswers();
 				listItemClass = ListConversation;
 			} else {
 				if (id == QuestionsManager.TAB_OTHER)
+				{
 					listData = QuestionsManager.getNotResolved();
+					showPreloader();
+				}
 				else if (id == QuestionsManager.TAB_MINE)
+				{
 					listData = QuestionsManager.getMine();
+					showPreloader();
+				}
 				if (listData == null)
+				{
+					hideLoader = false;
 					listData = [];
+				}
 			}
-			
+			if (hideLoader)
+			{
+				hidePreloader();
+			}
 			list.setData(listData, listItemClass, ["avatarURL"]);
 			if (needToScrollTop == false)
 				if (storedTabListPosition[id] != null && "item" in storedTabListPosition[id] == true && storedTabListPosition[id].item != null)
@@ -620,7 +671,7 @@ package com.dukascopy.connect.screens.innerScreens {
 							list.setBoxY(storedTabListPosition[id].listBoxY);
 			list.setContextAvaliable(true);
 			
-			if (listData == null || listData.length == 0)
+			if (hideLoader == true && id != QuestionsManager.TAB_RESOLVED && (listData == null || listData.length == 0))
 			{
 				addPlaceholder(Lang.escrow_no_active_ads_placeholder);
 			}

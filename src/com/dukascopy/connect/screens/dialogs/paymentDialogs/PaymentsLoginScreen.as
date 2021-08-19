@@ -4,6 +4,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs {
 	import com.dukascopy.connect.Config;
 	import com.dukascopy.connect.GD;
 	import com.dukascopy.connect.MobileGui;
+	import com.dukascopy.connect.data.TestHelper;
 	import com.dukascopy.connect.data.TextFieldSettings;
 	import com.dukascopy.connect.gui.components.CirclePreloader;
 	import com.dukascopy.connect.gui.components.message.ToastMessage;
@@ -145,6 +146,11 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs {
 			input.stage = MobileGui.stage;
 			input.displayAsPassword = true;
 		//	input.text = "123456a";
+			if (Config.isTest())
+			{
+				input.text = TestHelper.getPass();
+			}
+			
 			
 			var hLineBitmapData:ImageBitmapData = UI.getHorizontalLine(3, Style.color(Style.COLOR_TEXT));
 			inputBottom = new Bitmap(hLineBitmapData);

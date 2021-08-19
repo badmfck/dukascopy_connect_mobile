@@ -31,6 +31,8 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 	import com.dukascopy.connect.sys.dialogManager.DialogManager;
 	import com.dukascopy.connect.sys.imageManager.ImageBitmapData;
 	import com.dukascopy.connect.sys.payments.PayManager;
+	import com.dukascopy.connect.sys.payments.PaymentsManager;
+	import com.dukascopy.connect.sys.paymentsManagerNew.PaymentsManagerNew;
 	import com.dukascopy.connect.sys.pointerManager.PointerManager;
 	import com.dukascopy.connect.sys.serviceScreenManager.ServiceScreenManager;
 	import com.dukascopy.connect.sys.softKeyboard.SoftKeyboard;
@@ -798,6 +800,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 				if (accounts.ready)
 				{
 					var wallets:Array = accounts.moneyAccounts;
+					wallets = PaymentsManagerNew.filterEmptyWallets(wallets);
 					if (wallets != null && wallets.length > 0)
 					{
 						DialogManager.showDialog(
@@ -1227,7 +1230,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			if (terms == null)
 			{
 				terms = new TermsChecker(onTermsChecker);
-				terms.draw(_width, Lang.escrow_terms_accept, Lang.escrow_terms_link);
+				terms.draw(_width - contentPadding * 2, Lang.escrow_terms_accept, Lang.escrow_terms_link);
 			}
 			addItem(terms);
 		}
@@ -1666,7 +1669,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		{
 			if (accounts == null)
 			{
-				accounts = new PaymentsAccountsProvider(onAccountsReady, false, onAccountsFail);
+				accounts = new PaymentsAccountsProvider(onAccountsReady, true, onAccountsFail);
 				if (accounts.ready)
 				{
 					onDataReady();

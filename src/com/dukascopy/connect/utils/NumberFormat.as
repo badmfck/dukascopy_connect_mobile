@@ -32,6 +32,7 @@ package com.dukascopy.connect.utils
 			}
 			
 			var result:String = amount.toFixed(decimals);
+			result = parseFloat(result).toString();
 			if (currency != null && !removeCurrency)
 			{
 				var resultCurrency:String = currency;

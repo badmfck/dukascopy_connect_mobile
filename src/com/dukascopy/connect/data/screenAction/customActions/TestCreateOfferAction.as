@@ -121,7 +121,7 @@ package com.dukascopy.connect.data.screenAction.customActions {
 		}
 		
 		private function getAccounts():void {
-			accounts = new PaymentsAccountsProvider(onAccountsReady, false, onAccountsFail);
+			accounts = new PaymentsAccountsProvider(onAccountsReady, true, onAccountsFail);
 			if (accounts.ready) {
 				onAccountsReady();
 			} else {

@@ -16,6 +16,7 @@ package com.dukascopy.connect.data.escrow
 	import com.dukascopy.connect.screens.dialogs.escrow.RegisterBlockchainScreen;
 	import com.dukascopy.connect.screens.dialogs.escrow.SendCryptoExpiredScreen;
 	import com.dukascopy.connect.screens.dialogs.escrow.SendCryptoScreen;
+	import com.dukascopy.connect.screens.dialogs.escrow.WaitConfirmScreen;
 	import com.dukascopy.connect.screens.dialogs.escrow.WaitCryptoScreen;
 	import com.dukascopy.connect.screens.dialogs.x.base.float.FloatAlert;
 	import com.dukascopy.connect.screens.payments.card.TypeCurrency;
@@ -217,7 +218,7 @@ package com.dukascopy.connect.data.escrow
 						{
 							if (escrow.userUID == Auth.uid)
 							{
-								//!TODO:
+								ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, WaitConfirmScreen, screenData);
 							}
 							else
 							{
@@ -229,7 +230,7 @@ package com.dukascopy.connect.data.escrow
 						{
 							if (escrow.userUID != Auth.uid)
 							{
-								//!TODO:
+								ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, WaitConfirmScreen, screenData);
 							}
 							else
 							{
@@ -655,6 +656,11 @@ package com.dukascopy.connect.data.escrow
 			{
 				//!TODO:;
 				return (((new Date()).time / 1000 - created) / 60) > EscrowSettings.dealMaxTime;
+			}
+			else if (escrow.status == EscrowStatus.paid_crypto)
+			{
+				//!TODO:;
+				return (((new Date()).time / 1000 - created) / 60) > EscrowSettings.receiptConfirmationTime;
 			}
 			return false;
 		}

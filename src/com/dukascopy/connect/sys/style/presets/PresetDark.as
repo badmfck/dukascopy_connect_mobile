@@ -9,6 +9,7 @@ package com.dukascopy.connect.sys.style.presets
 	import assets.AttachInvoiceIconDark;
 	import assets.AttachPayIcon;
 	import assets.AttachPayIconDark;
+	import assets.ContectDeleteIcon;
 	import assets.CreateDealIcon;
 	import assets.CreateDealIconDark;
 	import assets.FilterSmallIcon;
@@ -328,6 +329,7 @@ package com.dukascopy.connect.sys.style.presets
 			this[Style.COLOR_SEEK_BACK] = Color.GREY_DARK;
 			this[Style.COLOR_TEXT_RED_DARK] = Color.RED_DARK;
 			this[Style.COLOR_RED_LIGHT] = Color.RED_LIGHT;
+			this[Style.ICON_TRASH] = ContectDeleteIcon;
 		}
 	}
 }

@@ -1,7 +1,6 @@
 package com.dukascopy.connect.sys.contextActions {
 	
 	import assets.BlockUserIcon;
-	import assets.ContectDeleteIcon;
 	import assets.ContextCallIcon;
 	import assets.KickIcon;
 	import assets.ModeratorIcon;
@@ -56,12 +55,12 @@ package com.dukascopy.connect.sys.contextActions {
 							}
 							if (NetworkManager.isConnected == true)
 							{
-								actions.push(new ContextAction(HitZoneType.DELETE, Lang.textDelete.toUpperCase(), Style.color(Style.COLOR_SEPARATOR), ContectDeleteIcon ));
+								actions.push(new ContextAction(HitZoneType.DELETE, Lang.textDelete.toUpperCase(), Style.color(Style.COLOR_SEPARATOR), Style.icon(Style.ICON_TRASH) ));
 							}
 						} else if ((itemData as ChatVO).type == ChatRoomType.GROUP && NetworkManager.isConnected == true) {
-							actions.push(new ContextAction(HitZoneType.DELETE, Lang.textDelete.toUpperCase(), Style.color(Style.COLOR_SEPARATOR), ContectDeleteIcon ));
+							actions.push(new ContextAction(HitZoneType.DELETE, Lang.textDelete.toUpperCase(), Style.color(Style.COLOR_SEPARATOR), Style.icon(Style.ICON_TRASH) ));
 						} else if ((itemData as ChatVO).type == ChatRoomType.QUESTION && NetworkManager.isConnected == true) {
-							actions.push(new ContextAction(HitZoneType.DELETE, Lang.textDelete.toUpperCase(), Style.color(Style.COLOR_SEPARATOR), ContectDeleteIcon ));
+							actions.push(new ContextAction(HitZoneType.DELETE, Lang.textDelete.toUpperCase(), Style.color(Style.COLOR_SEPARATOR), Style.icon(Style.ICON_TRASH) ));
 						} else if ((itemData as ChatVO).type == ChatRoomType.COMPANY) {
 							
 						} else if ((itemData as ChatVO).type == ChatRoomType.CHANNEL) {
@@ -69,7 +68,7 @@ package com.dukascopy.connect.sys.contextActions {
 								actions.push(new ContextAction(HitZoneType.OPEN_PROFILE, Lang.textDelete.toUpperCase(), Style.color(Style.COLOR_SEPARATOR), IconContactsS ));
 								if (NetworkManager.isConnected == true)
 								{
-									actions.push(new ContextAction(HitZoneType.DELETE, Lang.textDelete.toUpperCase(), Style.color(Style.COLOR_SEPARATOR), ContectDeleteIcon ));
+									actions.push(new ContextAction(HitZoneType.DELETE, Lang.textDelete.toUpperCase(), Style.color(Style.COLOR_SEPARATOR), Style.icon(Style.ICON_TRASH) ));
 								}
 							}
 						}
@@ -86,13 +85,13 @@ package com.dukascopy.connect.sys.contextActions {
 							if (itemData.isRemoving == true)
 								break;
 							if (itemData.status == QuestionsManager.QUESTION_STATUS_CREATED || itemData.status == QuestionsManager.QUESTION_STATUS_EDITED)
-								actions.push(new ContextAction(HitZoneType.DELETE, Lang.textDelete.toUpperCase(), Style.color(Style.COLOR_SEPARATOR), ContectDeleteIcon));
+								actions.push(new ContextAction(HitZoneType.DELETE, Lang.textDelete.toUpperCase(), Style.color(Style.COLOR_SEPARATOR), Style.icon(Style.ICON_TRASH)));
 							else if (isNaN((itemData as QuestionVO).tipsAmount) == true && NetworkManager.isConnected == true)
-								actions.push(new ContextAction(HitZoneType.DELETE, Lang.textDelete.toUpperCase(), Style.color(Style.COLOR_SEPARATOR), ContectDeleteIcon));
+								actions.push(new ContextAction(HitZoneType.DELETE, Lang.textDelete.toUpperCase(), Style.color(Style.COLOR_SEPARATOR), Style.icon(Style.ICON_TRASH)));
 							else if (itemData.isPaid == true && NetworkManager.isConnected == true)
-								actions.push(new ContextAction(HitZoneType.DELETE, Lang.textDelete.toUpperCase(), Style.color(Style.COLOR_SEPARATOR), ContectDeleteIcon));
+								actions.push(new ContextAction(HitZoneType.DELETE, Lang.textDelete.toUpperCase(), Style.color(Style.COLOR_SEPARATOR), Style.icon(Style.ICON_TRASH)));
 						} else if (Config.isAdmin() == true && NetworkManager.isConnected == true)
-							actions.push(new ContextAction(HitZoneType.DELETE_ADMIN, Lang.textDelete.toUpperCase(), Style.color(Style.COLOR_SEPARATOR), ContectDeleteIcon));
+							actions.push(new ContextAction(HitZoneType.DELETE_ADMIN, Lang.textDelete.toUpperCase(), Style.color(Style.COLOR_SEPARATOR), Style.icon(Style.ICON_TRASH)));
 					}
 					break;
 				}
@@ -106,13 +105,13 @@ package com.dukascopy.connect.sys.contextActions {
 							if (itemData.isRemoving == true)
 								break;
 							if (itemData.status == QuestionsManager.QUESTION_STATUS_CREATED || itemData.status == QuestionsManager.QUESTION_STATUS_EDITED)
-								actions.push(new ContextAction(HitZoneType.DELETE, Lang.textDelete.toUpperCase(), Style.color(Style.COLOR_SEPARATOR), ContectDeleteIcon));
+								actions.push(new ContextAction(HitZoneType.DELETE, Lang.textDelete.toUpperCase(), Style.color(Style.COLOR_SEPARATOR), Style.icon(Style.ICON_TRASH)));
 							else if (NetworkManager.isConnected == true)
-								actions.push(new ContextAction(HitZoneType.DELETE, Lang.textDelete.toUpperCase(), Style.color(Style.COLOR_SEPARATOR), ContectDeleteIcon));
+								actions.push(new ContextAction(HitZoneType.DELETE, Lang.textDelete.toUpperCase(), Style.color(Style.COLOR_SEPARATOR), Style.icon(Style.ICON_TRASH)));
 							else if (itemData.isPaid == true && NetworkManager.isConnected == true)
-								actions.push(new ContextAction(HitZoneType.DELETE, Lang.textDelete.toUpperCase(), Style.color(Style.COLOR_SEPARATOR), ContectDeleteIcon));
+								actions.push(new ContextAction(HitZoneType.DELETE, Lang.textDelete.toUpperCase(), Style.color(Style.COLOR_SEPARATOR), Style.icon(Style.ICON_TRASH)));
 						} else if (Config.isAdmin() == true && NetworkManager.isConnected == true)
-							actions.push(new ContextAction(HitZoneType.DELETE_ADMIN, Lang.textDelete.toUpperCase(), Style.color(Style.COLOR_SEPARATOR), ContectDeleteIcon));
+							actions.push(new ContextAction(HitZoneType.DELETE_ADMIN, Lang.textDelete.toUpperCase(), Style.color(Style.COLOR_SEPARATOR), Style.icon(Style.ICON_TRASH)));
 					}
 					break;
 				}
@@ -122,14 +121,14 @@ package com.dukascopy.connect.sys.contextActions {
 					if (itemData is ChatUserlistModel) {
 						var chatModel:ChatVO = ChatManager.getChatByUID((itemData as ChatUserlistModel).chatUid);
 						if (chatModel != null && chatModel.isOwner(Auth.uid) && NetworkManager.isConnected == true)
-							actions.push(new ContextAction(HitZoneType.DELETE, Lang.removeUser.toUpperCase(), Style.color(Style.COLOR_SEPARATOR), ContectDeleteIcon ));
+							actions.push(new ContextAction(HitZoneType.DELETE, Lang.removeUser.toUpperCase(), Style.color(Style.COLOR_SEPARATOR), Style.icon(Style.ICON_TRASH) ));
 					}
 					break;
 				}
 				case TransactionTemplateRenderer: {
 					if (itemData == null)
 						break;
-					actions.push(new ContextAction(HitZoneType.DELETE, Lang.textDelete.toUpperCase(), Style.color(Style.COLOR_SEPARATOR), ContectDeleteIcon ));
+					actions.push(new ContextAction(HitZoneType.DELETE, Lang.textDelete.toUpperCase(), Style.color(Style.COLOR_SEPARATOR), Style.icon(Style.ICON_TRASH) ));
 					break;
 				}
 				case ChannelUserListRenderer: {
@@ -149,7 +148,7 @@ package com.dukascopy.connect.sys.contextActions {
 							} else {
 								if (!(itemData as ChatUserVO).banned) {
 									actions.push(new ContextAction(HitZoneType.MODERATOR, Lang.textModerator.toUpperCase(), Style.color(Style.COLOR_SEPARATOR), ModeratorIcon ));
-									actions.push(new ContextAction(HitZoneType.KICK, Lang.textKick.toUpperCase(), Style.color(Style.COLOR_SEPARATOR), ContectDeleteIcon ));
+									actions.push(new ContextAction(HitZoneType.KICK, Lang.textKick.toUpperCase(), Style.color(Style.COLOR_SEPARATOR), Style.icon(Style.ICON_TRASH) ));
 									actions.push(new ContextAction(HitZoneType.BAN, Lang.textBan.toUpperCase(), Style.color(Style.COLOR_SEPARATOR), KickIcon ));
 								}
 							}

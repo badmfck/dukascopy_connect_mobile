@@ -2375,8 +2375,8 @@ package com.dukascopy.langs {
 		static public var send_offer:String = "SEND OFFER";
 		static public var my_blockchain_address:String = "My blockchain address";
 		static public var escrow_terms_link:String = "http://google.com";
-		static public var escrow_terms_accept:String = "<font color='#CD3F43'>Terms & conditions</font> read and accepted <font color='#CD3F43'>🡭</font>";
-		static public var need_accept_terms:String = "Please apply terms";
+		static public var escrow_terms_accept:String = "I have read and accepted <font color='#CD3F43'>Terms&Conditions</font> <font color='#CD3F43'>🡭</font>";
+		static public var need_accept_terms:String = "Please accept Terms&Conditions";
 		static public var you_sent_buy_offer:String = "You sent a Buy offer!";
 		static public var you_sent_sell_offer:String = "Your sell offer has been sent!";
 		static public var sent_buy_offer_description:String = "Please note that %@1 were blocked  on your MCA account.<br/><br/>%@2 has %@3 minutes to accept your offer. If it is not accepted within %@4 minutes, the offer is canceled automatically and the fiat funds on your account get unblocked.<br/><br/>Until the offer is confirmed by the %@5, you can cancel it at any moment, without penalties.";
@@ -2534,6 +2534,8 @@ package com.dukascopy.langs {
 		static public var escrow_blockchain_address_needed:String = "In order to get access to external blockchain operations with %@ you need to register a blockchain address that will be used for withdrawal operations.";
 		static public var escrow_create_your_ad:String = "Create your ad";
 		static public var escrow_amount_exceeds:String = "The amount of your offer exceeds the amount of the ad. Please note that it can be equal or less than the amount of the ad.";
+		static public var waiting_for_receipt_confirmation:String = "You have succesfully provided the transaction ID that now has to be checked and confirmed by your counterparty during 24 hours.";
+		static public var waiting_for_receipt_confirmation_status:String = "Waiting for receipt confirmation by the Buyer";
 		
 		static public function updateKeys(keys:Object):void {
 			for (var n:String in keys) {

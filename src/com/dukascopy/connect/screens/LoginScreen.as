@@ -7,6 +7,7 @@ package com.dukascopy.connect.screens {
 	import com.dukascopy.connect.Config;
 	import com.dukascopy.connect.MobileGui;
 	import com.dukascopy.connect.data.CountriesData;
+	import com.dukascopy.connect.data.TestHelper;
 	import com.dukascopy.connect.data.TextFieldSettings;
 	import com.dukascopy.connect.data.screenAction.IScreenAction;
 	import com.dukascopy.connect.data.screenAction.IUpdatableAction;
@@ -19,6 +20,7 @@ package com.dukascopy.connect.screens {
 	import com.dukascopy.connect.gui.components.WhiteToast;
 	import com.dukascopy.connect.gui.lightbox.UI;
 	import com.dukascopy.connect.gui.list.renderers.ListCountry;
+	import com.dukascopy.connect.gui.list.renderers.ListQuestionType;
 	import com.dukascopy.connect.gui.menuVideo.BitmapButton;
 	import com.dukascopy.connect.screens.base.BaseScreen;
 	import com.dukascopy.connect.screens.dialogs.ScreenCountryPicker;
@@ -347,7 +349,46 @@ package com.dukascopy.connect.screens {
 		
 		private function showPrivacy(e:Event = null):void
 		{
+			if (Config.isTest())
+			{
+				var phones:Array = TestHelper.getPhones();
+				var items:Array = new Array();
+				for (var i:int = 0; i < phones.length; i++) 
+				{
+					items.push(phones[i].code + " " + phones[i].phone);
+				}
+				DialogManager.showDialog(
+                                ListSelectionPopup, 
+                                {
+                                    items:items,
+                                    title:Lang.selectPhone,
+                                    renderer:ListQuestionType,
+                                    callback:onPhoneSelected
+                                }, ServiceScreenManager.TYPE_SCREEN
+                            );
+				
+				return;
+			}
+			
 			navigateToURL(new URLRequest("https://www.dukascopy.com/media/pdf/911/terms_and_conditions.pdf"));
+		}
+		
+		private function onPhoneSelected(selectedPhone:String):void
+		{
+			if (selectedPhone != null)
+			{
+				var parts:Array = selectedPhone.split(" ");
+				if (parts.length == 2)
+				{
+					var country:Array = CountriesData.getCountryByPhoneNumber(parts[0] + parts[1]);
+					onCountrySelected(country);
+					
+					for (var i:int = 0; i < parts[1].length; i++) 
+					{
+						onKeyboard((parts[1] as String).charAt(i));
+					}
+				}
+			}
 		}
 		
 		private function nextClick():void {

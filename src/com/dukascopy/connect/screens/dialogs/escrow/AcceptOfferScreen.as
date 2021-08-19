@@ -20,6 +20,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 	import com.dukascopy.connect.sys.auth.Auth;
 	import com.dukascopy.connect.sys.dialogManager.DialogManager;
 	import com.dukascopy.connect.sys.imageManager.ImageBitmapData;
+	import com.dukascopy.connect.sys.paymentsManagerNew.PaymentsManagerNew;
 	import com.dukascopy.connect.sys.serviceScreenManager.ServiceScreenManager;
 	import com.dukascopy.connect.sys.softKeyboard.SoftKeyboard;
 	import com.dukascopy.connect.sys.style.FontSize;
@@ -124,6 +125,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			if (accounts != null)
 			{
 				var accountsArray:Array = accounts.moneyAccounts;
+				accountsArray = PaymentsManagerNew.filterEmptyWallets(accountsArray);
 				return accountsArray;
 			}
 			else
@@ -188,6 +190,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			if (accounts.ready)
 			{
 				var wallets:Array = accounts.moneyAccounts;
+				wallets = PaymentsManagerNew.filterEmptyWallets(wallets);
 				if (wallets != null && wallets.length > 0)
 				{
 					DialogManager.showDialog(
@@ -327,7 +330,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			showPreloader();
 			if (accounts == null)
 			{
-				accounts = new PaymentsAccountsProvider(onAccountsReady, false, onAccountsFail);
+				accounts = new PaymentsAccountsProvider(onAccountsReady, true, onAccountsFail);
 				if (accounts.ready)
 				{
 					onDataReady();
@@ -468,12 +471,12 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 						
 						values.push(NumberFormat.formatAmount(escrowOffer.amount * escrowOffer.price, escrowOffer.currency));
 						values.push(NumberFormat.formatAmount(escrowOffer.amount * escrowOffer.price * EscrowSettings.getCommission(escrowOffer.instrument), escrowOffer.currency));
-						values.push(NumberFormat.formatAmount(escrowOffer.amount * escrowOffer.price * EscrowSettings.refundableFee + escrowOffer.amount * escrowOffer.price, escrowOffer.currency));
+						values.push(NumberFormat.formatAmount(-escrowOffer.amount * escrowOffer.price * EscrowSettings.getCommission(escrowOffer.instrument) + escrowOffer.amount * escrowOffer.price, escrowOffer.currency));
 					}
 					else if (escrowOffer.direction == TradeDirection.sell)
 					{
 						texts.push(Lang.to_pay_for_crypto);
-						texts.push(Lang.refundable_fee.replace("%@", (EscrowSettings.refundableFee*100)));
+						texts.push(Lang.refundable_fee.replace("%@", (EscrowSettings.refundableFee * 100)));
 						texts.push(Lang.amount_to_be_debited);
 						
 						colors.push(Style.color(Style.COLOR_SUBTITLE));

@@ -34,6 +34,7 @@ package com.dukascopy.connect.screens {
 	import com.dukascopy.connect.sys.echo.echo;
 	import com.dukascopy.connect.sys.questionsManager.QuestionsManager;
 	import com.dukascopy.connect.sys.serviceScreenManager.ServiceScreenManager;
+	import com.dukascopy.connect.sys.style.Style;
 	import com.dukascopy.connect.sys.theme.AppTheme;
 	import com.dukascopy.connect.type.HitZoneType;
 	import com.dukascopy.connect.utils.NumberFormat;
@@ -64,7 +65,7 @@ package com.dukascopy.connect.screens {
 		private var currentQuestion:QuestionVO;
 		private var busy:Boolean = false;
 		
-		private var actionTrash:Object = { id:"refreshBtn", img:SWFTrashIconBold, imgColor:0xFFFFFF, callback:onTrashTap }
+		private var actionTrash:Object = { id:"refreshBtn", img:Style.icon(Style.ICON_TRASH), imgColor:Style.color(Style.COLOR_ICON_SETTINGS), callback:onTrashTap }
 		
 		private var trashAdded:Boolean = false;
 		
@@ -215,7 +216,7 @@ package com.dukascopy.connect.screens {
 			message = new ChatMessageVO(messageData);
 			_messages.push(message);
 			
-			messageData = {};
+			/*messageData = {};
 			messageData.id = 0;
 			messageData.user_avatar = LocalAvatars.QUESTIONS;
 			messageData.user_name = "911";
@@ -231,7 +232,7 @@ package com.dukascopy.connect.screens {
 			messageData.created = 0;
 			messageData.isEntryMessage = true;
 			message = new ChatMessageVO(messageData);
-			_messages.push(message);
+			_messages.push(message);*/
 			
 			messageData = {};
 			messageData.id = 0;
@@ -440,11 +441,12 @@ package com.dukascopy.connect.screens {
 			
 			var val:String = price.toString();
 			if (isPercent == false) {
-				QuestionsManager.getCurrentQuestion().priceCurrency = currency;
+				
 				list.updateItemByIndex(4);
 			} else {
 				val += "%";
 			}
+			QuestionsManager.getCurrentQuestion().priceCurrency = currency;
 			
 			QuestionsManager.getCurrentQuestion().price = val;
 			list.updateItemByIndex(5);

@@ -21,6 +21,7 @@ package com.dukascopy.connect.data.escrow
 		static public var confirmTransactionTime:Number = 1440;
 		static public var penalty:Number = 0.01;
 		static public var limitAmountKoef:Number = 0.9;
+		static public var receiptConfirmationTime:Number = 24*60;
 		
 		static public function getCommission(instrument:String):Number 
 		{
