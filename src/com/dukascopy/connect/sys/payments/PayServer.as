@@ -249,7 +249,8 @@ package com.dukascopy.connect.sys.payments {
 				from:_from,
 				type:_type,
 				currency:_currency,
-				shipment_type:_delivery
+				shipment_type:_delivery,
+				async:1
 			}
 			if (deliveryAddress != null)
 			{

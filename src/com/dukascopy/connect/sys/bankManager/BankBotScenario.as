@@ -1132,6 +1132,42 @@ package com.dukascopy.connect.sys.bankManager {
 				]
 			},
 			
+			walletOperationsOnly: {
+				desc:"lang.walletOpsDesc",
+				item: {
+					type:"showWallet",
+					selection:"@@1"
+				},
+				menuLayout:"vertical",
+				menu:[
+					{
+						text:"lang.menuHistory",
+						action:"app:historyWallet",
+						selection:"@@1"
+					}, {
+						text:"lang.menuAccountStatement",
+						type:"walletStatement",
+						action:"nav:walletStatementAsFileConfirmed",
+						value:"@@1"
+					}, {
+						text:"lang.menuIBANCopy",
+						action:"app:copyIBAN"
+					}, {
+						text:"lang.menuShareIBAN",
+						value:"WIRE",
+						val:"@@1",
+						type:"selectedAccCurrency",
+						action:"nav:paymentsDepositConfirm"
+					}
+				],
+				buttons: [
+					{
+						text:"lang.buttonCancel",
+						action:"system:cancel"
+					}
+				]
+			},
+			
 			walletConfirm: {
 				desc:"lang.confirmAccountOpen",
 				buttons: [

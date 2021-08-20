@@ -404,8 +404,18 @@ package com.dukascopy.connect.sys.bankManager {
 					}
 				}
 			} else if ("bankBot" in _initData == true && _initData.bankBot == true) {
-				msgDisplay = Lang.showMeMainMenu;
-				msg = "nav:main";
+				if ("accountType" in _initData == true) {
+					if (_initData.accountType == "SAVINGS") {
+						msg = "nav:walletOperationsOnly:" + _initData.acc;
+					} else if (_initData.accountType == "CRYPTO") {
+						msg = "nav:crypto";
+					} else if (_initData.accountType == "WALLET") {
+						msg = "nav:walletOperationsOnly:" + _initData.acc;
+					}
+				} else {
+					msgDisplay = Lang.showMeMainMenu;
+					msg = "nav:main";
+				}
 			} else if ("investmentDisclaimer" in _initData == true && _initData.investmentDisclaimer == true) {
 				msgDisplay = Lang.showMeInvestmentMenu;
 				msg = "nav:investments";

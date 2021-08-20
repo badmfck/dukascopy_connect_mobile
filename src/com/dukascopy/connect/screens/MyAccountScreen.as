@@ -911,7 +911,12 @@ package com.dukascopy.connect.screens {
 				}
 				if ("ACCOUNT_NUMBER" in data.accounts[lastHitzoneObject.param] == true && data.accounts[lastHitzoneObject.param].ACCOUNT_NUMBER != null) {
 					if (BankManager.getHistoryAccount() == data.accounts[lastHitzoneObject.param].ACCOUNT_NUMBER) {
-						BankManager.openChatBotScreen( { bankBot:true }, true);
+						var accountType:String = "WALLET";
+						if (list.getStock()[n].renderer is ListBankAccountCryptoWallets == true)
+							accountType = "CRYPTO";
+						else if (list.getStock()[n].renderer is ListBankAccountSaving == true)
+							accountType = "SAVINGS";
+						BankManager.openChatBotScreen( { bankBot:true, accountType:accountType, acc:data.accounts[lastHitzoneObject.param].ACCOUNT_NUMBER }, true);
 						return;
 					}
 					var currency:String;

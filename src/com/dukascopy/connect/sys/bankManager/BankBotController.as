@@ -349,6 +349,10 @@ package com.dukascopy.connect.sys.bankManager {
 					sendBlock(tmp[1], vals[0]);
 					return;
 				}
+				if (tmp[1] == "walletOperationsOnly") {
+					sendBlock(tmp[1], tmp[2]);
+					return;
+				}
 				if (tmp[1] == "cryptoRDActions") {
 					if (steps == null)
 						return;
@@ -1461,7 +1465,7 @@ package com.dukascopy.connect.sys.bankManager {
 					S_ANSWER.invoke("app:actionCompleted");
 				} else if ("isError" in data == true) {
 					
-				} else if (save == true/*steps.length == 0 || steps[steps.length - 1].nav != val*/) {
+				} else if (save == true) {
 					steps.push( { nav:val } );
 				}
 			}
