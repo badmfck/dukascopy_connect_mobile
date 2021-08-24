@@ -83,6 +83,7 @@ package com.dukascopy.connect.sys.bankManager {
 		static public var operationTransactionsDesc:String = "Operation transactions.";
 		static public var invoicesDesc:String = "Invoices";
 		static public var cardPinRequestDesc:String = "Please select pin request method.";
+		static public var zeroAccountDesc:String = "You have no funded accounts.";
 		static public var confirmRDCancelWithPenaltyDesc:String = "You are about to cancel your reward deposit before its maturity date. This will lead to no reward being paid for the cancelled deposit and to a penalty charge  applied to the allocated Dukascoins in the amount of @@1 Dukascoins.\\n\\nTotal amount to be returned: @@2 Dukascoins";
 		static public var confirmRDCancelWithoutPenaltyDesc:String = "You are about to cancel your reward deposit before its maturity date. This will lead to no reward being paid for the cancelled deposit.\\n\\nTotal amount to be returned: @@2 Dukascoins";
 		

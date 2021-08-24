@@ -1035,6 +1035,7 @@ package com.dukascopy.connect.sys.bankManager {
 				desc:"lang.accountsSelectDesc",
 				item: {
 					type:"walletSelectWithoutTotal",
+					textZeroAcc:"lang.zeroAccountDesc",
 					value:"@@1",
 					action:"nav:otherWithdrawalConfirm"
 				},

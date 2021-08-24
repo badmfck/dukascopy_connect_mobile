@@ -1416,7 +1416,10 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements {
 			}
 			if (bmVO.item.tapped == true)
 				tapped = true;
-			if (bmVO.item.type != "walletSelectWithoutTotal") {
+			if (bmVO.item.type == "walletSelectWithoutTotal") {
+				if (count == 0)
+					bmVO.text = bmVO.item.textZeroAcc;
+			} else {
 				if (bmVO.item.value == "MCA") {
 					if (BankManager.totalAccounts != null) {
 						walletSection = new BAWalletSection();
