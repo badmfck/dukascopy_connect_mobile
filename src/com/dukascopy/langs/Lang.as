@@ -2537,6 +2537,9 @@ package com.dukascopy.langs {
 		static public var waiting_for_receipt_confirmation:String = "You have succesfully provided the transaction ID that now has to be checked and confirmed by your counterparty during 24 hours.";
 		static public var waiting_for_receipt_confirmation_status:String = "Waiting for receipt confirmation by the Buyer";
 		static public var escrow_fill_application_form:String = "Please fill in the application form";
+		static public var escrow_debit_from_account:String = "Debit from account";
+		static public var escrow_offer_was_rejected:String = "Offer was rejected";
+		static public var escrow_offer_rejected:String = "Offer was rejected by the counterparty.\nThe funds were unblocked.";
 		
 		static public function updateKeys(keys:Object):void {
 			for (var n:String in keys) {

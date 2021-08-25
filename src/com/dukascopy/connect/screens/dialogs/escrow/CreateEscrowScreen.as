@@ -119,7 +119,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		
 		private function createAccountSelector():void 
 		{
-			selectorAccont = new DDAccountButton(openWalletSelector, Lang.TEXT_SELECT_ACCOUNT, true, -1);
+			selectorAccont = new DDAccountButton(openWalletSelector, Lang.TEXT_SELECT_ACCOUNT, true, -1, NaN, Lang.escrow_debit_from_account);
 			addItem(selectorAccont);
 		}
 		
@@ -1335,13 +1335,6 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 				inputAmount.y = position;
 				position += inputAmount.height + contentPaddingV;
 				
-				if (selectorAccont != null)
-				{
-					selectorAccont.x = contentPadding;
-					selectorAccont.y = position;
-					position += selectorAccont.height + contentPaddingV;
-				}
-				
 				radio.x = contentPadding;
 				radio.y = position;
 				position += radio.height + contentPaddingV;
@@ -1368,6 +1361,13 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 				else
 				{
 					position += priceSelector.height + contentPaddingV * 1.5;
+				}
+				
+				if (selectorAccont != null)
+				{
+					selectorAccont.x = contentPadding;
+					selectorAccont.y = position;
+					position += selectorAccont.height + contentPaddingV;
 				}
 				
 				if (terms != null)

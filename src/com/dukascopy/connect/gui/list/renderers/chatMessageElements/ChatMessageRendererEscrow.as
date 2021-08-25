@@ -261,7 +261,7 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 			{
 				case EscrowStatus.offer_created:
 				{
-					if (EscrowScreenNavigation.isExpired(messageData.systemMessageVO.escrow, messageData.created))
+					if (EscrowScreenNavigation.isExpired(messageData.systemMessageVO.escrow, messageData.created) && messageData.systemMessageVO.escrow.inactive == false)
 					{
 						result =  Style.color(Style.COLOR_SUBTITLE);
 					}
@@ -311,7 +311,7 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 			var direction:TradeDirection = data.direction;
 			
 			var result:String = "";
-			if (EscrowScreenNavigation.isExpired(messageData.systemMessageVO.escrow, messageData.created))
+			if (EscrowScreenNavigation.isExpired(messageData.systemMessageVO.escrow, messageData.created) && data.inactive == false)
 			{
 				if (messageData.systemMessageVO.escrow.status == EscrowStatus.deal_created)
 				{
@@ -499,7 +499,7 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 					time.visible = true;
 					
 					time.width = leftSideSize - Config.FINGER_SIZE * .1 * 2;
-					if (EscrowScreenNavigation.isExpired(messageData.systemMessageVO.escrow, messageData.created))
+					if (EscrowScreenNavigation.isExpired(messageData.systemMessageVO.escrow, messageData.created) && messageData.systemMessageVO.escrow.inactive == false)
 					{
 						iconFail.visible = true;
 						iconTime.visible = false;
@@ -523,7 +523,7 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 					iconTime.visible = false;
 					time.visible = false;
 					//!TODO: передать верное время
-					if (EscrowScreenNavigation.isExpired(messageData.systemMessageVO.escrow, messageData.created))
+					if (EscrowScreenNavigation.isExpired(messageData.systemMessageVO.escrow, messageData.created) && messageData.systemMessageVO.escrow.inactive == false)
 					{
 						iconFail.visible = true;
 						UI.colorize(iconSuccess, getIconColor(messageData.systemMessageVO.escrow.status, messageData.systemMessageVO.escrow.direction, messageData));
@@ -564,7 +564,7 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 				{
 					iconTime.visible = false;
 					time.visible = false;
-					if (EscrowScreenNavigation.isExpired(messageData.systemMessageVO.escrow, messageData.created))
+					if (EscrowScreenNavigation.isExpired(messageData.systemMessageVO.escrow, messageData.created) && messageData.systemMessageVO.escrow.inactive == false)
 					{
 						iconFail.visible = true;
 						UI.colorize(iconSuccess, getIconColor(messageData.systemMessageVO.escrow.status, messageData.systemMessageVO.escrow.direction, messageData));
@@ -622,7 +622,7 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 		
 		private function getIconColor(status:EscrowStatus, direction:TradeDirection, messageData:ChatMessageVO):Number 
 		{
-			if (EscrowScreenNavigation.isExpired(messageData.systemMessageVO.escrow, messageData.created))
+			if (EscrowScreenNavigation.isExpired(messageData.systemMessageVO.escrow, messageData.created) && messageData.systemMessageVO.escrow.inactive == false)
 			{
 				return Color.GREY_SUPER_LIGHT;
 			}
@@ -735,7 +735,7 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 		
 		private function getSideColor(status:EscrowStatus, direction:TradeDirection, messageData:ChatMessageVO):Number 
 		{
-			if (EscrowScreenNavigation.isExpired(messageData.systemMessageVO.escrow, messageData.created))
+			if (EscrowScreenNavigation.isExpired(messageData.systemMessageVO.escrow, messageData.created) && messageData.systemMessageVO.escrow.inactive == false)
 			{
 				return Color.GREY;
 			}

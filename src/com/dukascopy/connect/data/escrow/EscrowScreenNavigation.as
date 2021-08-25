@@ -14,6 +14,7 @@ package com.dukascopy.connect.data.escrow
 	import com.dukascopy.connect.screens.dialogs.escrow.EscrowReportScreen;
 	import com.dukascopy.connect.screens.dialogs.escrow.ReceiveCryptoScreen;
 	import com.dukascopy.connect.screens.dialogs.escrow.RegisterBlockchainScreen;
+	import com.dukascopy.connect.screens.dialogs.escrow.RejectOfferScreen;
 	import com.dukascopy.connect.screens.dialogs.escrow.SendCryptoExpiredScreen;
 	import com.dukascopy.connect.screens.dialogs.escrow.SendCryptoScreen;
 	import com.dukascopy.connect.screens.dialogs.escrow.WaitConfirmScreen;
@@ -151,7 +152,7 @@ package com.dukascopy.connect.data.escrow
 				}
 				else if (escrow.status == EscrowStatus.offer_rejected)
 				{
-					
+					ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, RejectOfferScreen, screenData);
 				}
 				else if (escrow.status == EscrowStatus.offer_accepted)
 				{
@@ -240,7 +241,10 @@ package com.dukascopy.connect.data.escrow
 						}
 					}
 				}
-				
+				else if (escrow.status == EscrowStatus.deal_completed)
+				{
+					showFinishScreen(escrow);
+				}
 			}
 			else
 			{
