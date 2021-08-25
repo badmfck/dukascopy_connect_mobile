@@ -80,6 +80,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs {
 		private var lockedValues:Boolean;
 		private var wallet:Bitmap;
 		private var walletDescription:Bitmap;
+		private var walletDescription2:Bitmap;
 		private var moreInfo:TextField;
 		private var walletBG:Sprite;
 		private var changeAddressButton:BitmapButton;
@@ -197,6 +198,9 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs {
 			walletDescription = new Bitmap();
 			scroll.addObject(walletDescription);
 			
+			walletDescription2 = new Bitmap();
+			scroll.addObject(walletDescription2);
+			
 			var icon:QrIcon = new QrIcon();
 			UI.scaleToFit(icon, Config.FINGER_SIZE * .6, Config.FINGER_SIZE * .6);
 		}
@@ -286,6 +290,11 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs {
 				walletDescription.bitmapData.dispose();
 				walletDescription.bitmapData = null;
 			}
+			if (walletDescription2.bitmapData != null)
+			{
+				walletDescription2.bitmapData.dispose();
+				walletDescription2.bitmapData = null;
+			}
 			walletBG.visible = false;
 			changeAddressButton.visible = false;
 			
@@ -303,6 +312,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs {
 			accountsPreloader.stop();
 			
 			drawWalletDescription(getDescription());
+			drawWalletDescription2();
 			if (BankManager.getDCOWallet(getCurrency()) != null)
 			{
 				drawChangeButton(Lang.changeWallet);
@@ -772,6 +782,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs {
 			acceptButton.alpha = 0.5;
 			
 			drawWalletDescription(getDescription());
+			drawWalletDescription2();
 			if (BankManager.getDCOWallet(getCurrency()) != null)
 			{
 				if (changeAddressButton != null )
@@ -859,6 +870,16 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs {
 			return value;
 		}
 		
+		private function getDescription2():String 
+		{
+			var value:String;
+			if (data != null && "description2" in data && data.description2 != null)
+			{
+				value = data.description2;
+			}
+			return value;
+		}
+		
 		private function drawWalletDescription(defaultValue:String):void 
 		{
 			var text:String;
@@ -893,6 +914,33 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs {
 															text, _width - Config.DIALOG_MARGIN * 3, 10, true, 
 															TextFormatAlign.LEFT, TextFieldAutoSize.LEFT, 
 															FontSize.SUBHEAD, true, Style.color(Style.COLOR_TEXT), Style.color(Style.COLOR_BACKGROUND), true);
+		}
+		
+		private function drawWalletDescription2():void 
+		{
+			var text:String;
+			if (BankManager.getDCOWallet(getCurrency()) != null)
+			{
+				if (data != null && "description2" in data && data.description2 != null && Lang[data.description2] != null)
+				{
+					text = Lang[data.description2];
+					
+					var itemWidth:int = _width - Config.DIALOG_MARGIN * 2;
+					
+					if (walletDescription2.bitmapData != null)
+					{
+						walletDescription2.bitmapData.dispose();
+						walletDescription2.bitmapData = null;
+					}
+					walletDescription2.bitmapData = TextUtils.createTextFieldData(
+																	text, _width - Config.DIALOG_MARGIN * 3, 10, true, 
+																	TextFormatAlign.LEFT, TextFieldAutoSize.LEFT, 
+																	FontSize.SUBHEAD, true, Style.color(Style.COLOR_TEXT), Style.color(Style.COLOR_BACKGROUND), true);
+				}
+			}
+			
+			
+			
 		}
 		
 		private function drawWalletAddress():void 
@@ -1230,6 +1278,14 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs {
 				walletBG.x = Config.DIALOG_MARGIN;
 				walletBG.y = wallet.y - Config.MARGIN;
 				
+				if (walletDescription2.height > 0)
+				{
+					contentPosition += verticalMargin;
+					walletDescription2.x = Config.DIALOG_MARGIN;
+					walletDescription2.y = contentPosition;
+					contentPosition += walletDescription2.height + verticalMargin * 2;
+				}
+				
 				if (changeAddressButton.parent != null)
 				{
 					changeAddressButton.x = int(_width * .5 - changeAddressButton.width * .5);
@@ -1478,6 +1534,9 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs {
 			if (walletDescription != null)
 				UI.destroy(walletDescription);
 			walletDescription = null;
+			if (walletDescription2 != null)
+				UI.destroy(walletDescription2);
+			walletDescription2 = null;
 			if (walletBG != null)
 				UI.destroy(walletBG);
 			walletBG = null;
