@@ -384,7 +384,7 @@ package com.dukascopy.connect.data.escrow
 			{
 				if (escrow != null)
 				{
-					PHP.escrow_addEvent(onEventCryptoSend, {event_type: EscrowEventType.PAID_CRYPTO, data: escrow.transactionId, deal_uid: escrow.deal_uid, notifyWS: true}, 
+					PHP.escrow_addEvent(onEventCryptoSend, {event_type: EscrowEventType.PAID_CRYPTO, data:escrow.transactionId, deal_uid: escrow.deal_uid, notifyWS: true}, 
 										{transaction:escrow.transactionId, chatVO:chatVO});
 				}
 				else
@@ -610,7 +610,7 @@ package com.dukascopy.connect.data.escrow
 			//!TODO:;
 			if (currenDealRawData != null)
 			{
-				PHP.escrow_addEvent(onEventHoldMca, {event_type: EscrowEventType.HOLD_MCA, data: transactionId, deal_uid: currenDealRawData.deal_uid, notifyWS: true});
+				PHP.escrow_addEvent(onEventHoldMca, {event_type: EscrowEventType.HOLD_MCA, data: {price:false, mca_trn_id: transactionId}, deal_uid: currenDealRawData.deal_uid, notifyWS: true});
 			}
 		}
 		
