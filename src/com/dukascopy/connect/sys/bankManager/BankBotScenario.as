@@ -9,8 +9,9 @@ package com.dukascopy.connect.sys.bankManager {
 		
 		public var scenario:Object = {
 			main: {
-				desc:"lang.mainDesc",
-				isMain:true,
+				desc: "lang.mainDesc",
+				isMain: true,
+				isBack: false,
 				menu: [
 					{
 						text:"lang.menuCardsOps",
@@ -35,8 +36,6 @@ package com.dukascopy.connect.sys.bankManager {
 						text:"lang.menuExchangeMoney",
 						keywords:"exchange,money",
 						textForUser:"lang.itemExchange",
-						/*type:"paymentsSendMy",
-						action:"nav:transferConfirm"*/
 						action:"nav:otherExchangeAcc"
 					}, {
 						text:"lang.menuInvestments",
@@ -48,31 +47,7 @@ package com.dukascopy.connect.sys.bankManager {
 						keywords:"crypto",
 						action:"nav:crypto",
 						action1:"nav:cryptoOpen"
-					}, 
-					/*
-						1. Нужен линкованный кошелёк.
-						2. для покупки нужен счёт с фиатом не меншье 1000 (евро?) либо коинов по курсу
-						Купить дукасноты
-							: Проверить наличие линкованного кошелька
-								: если нет, пиздуй открывать
-							: какую из валют? EUR+ CHF+ USD+  Минимальное кол-во 1000. Убедись в наличии нужной суммы на своём MCA счету для покупки. 
-								: Какое кол-во вы готовы приобрести? (сумму)
-								: В какой валюты ты готов платить? (показываем счета с достаточными суммами)
-								: отправляем всю собранную инфу в чат.
-						Продать дукасноты
-							: какую из валют? EUR+ CHF+ USD+
-								: выбираем валюту и сумму. сумма на продажу больше 1000. Убедится что есть "прилинкованный кошелёк. Blockchain wallet"
-									: если нет, пиздуй линковать.
-									: введи адрес кошелька, узнать есть ли нужное кол-во нот, запросить процедуру чистоты (Витя знает)
-								: отправляем всю собранную инфу в чат.
-						Генерируем запрос в чат со всеми собранными данными
-						API для проверки наличие бабла на кошельке
-					*/
-					/*{
-						text:"lang.cryptoNotes",
-						keywords:"notes,dukasnotes,dukascash",
-						action:"nav:cryptoNotesOpen"
-					},*/ {
+					}, {
 						text:"lang.menuOpenTradingAccount",
 						keywords:"open,account",
 						action:"nav:chooseAccountToOpen"
@@ -86,7 +61,6 @@ package com.dukascopy.connect.sys.bankManager {
 						action:"app:payments",
 						command:""
 					}
-
 				]
 			},
 			
@@ -96,6 +70,7 @@ package com.dukascopy.connect.sys.bankManager {
 			
 			cards: {
 				desc:"lang.cardsDesc",
+				isBack: false,
 				menuLayout:"vertical",
 				item: {
 					text:"lang.itemShowCardOps",
@@ -112,12 +87,6 @@ package com.dukascopy.connect.sys.bankManager {
 						text:"lang.menuLinkCard",
 						keywords:"cards,link",
 						action:"nav:linkCard"
-					}
-				],
-				buttons: [
-					{
-						text:"lang.buttonCancel",
-						action:"system:cancel"
 					}
 				]
 			},
@@ -138,15 +107,6 @@ package com.dukascopy.connect.sys.bankManager {
 						type:"paymentsDeposit",
 						action:"nav:paymentsDepositConfirm"
 					}
-				],
-				buttons: [
-					{
-						text:"lang.buttonBack",
-						action:"cmd:back"
-					}, {
-						text:"lang.buttonCancel",
-						action:"system:cancel"
-					}
 				]
 			},
 			
@@ -158,16 +118,7 @@ package com.dukascopy.connect.sys.bankManager {
 					type:"otherAccSelect",
 					typeNext:"depositesOther",
 					action:"nav:transactionOtherConfirm"
-				},
-				buttons: [
-					{
-						text:"lang.buttonBack",
-						action:"cmd:back"
-					}, {
-						text:"lang.buttonCancel",
-						action:"system:cancel"
-					}
-				]
+				}
 			},
 			
 			withdrawalOther: {
@@ -178,16 +129,7 @@ package com.dukascopy.connect.sys.bankManager {
 					type:"otherAccSelect",
 					typeNext:"withdrawalOther",
 					action:"nav:transactionOtherConfirm"
-				},
-				buttons: [
-					{
-						text:"lang.buttonBack",
-						action:"cmd:back"
-					}, {
-						text:"lang.buttonCancel",
-						action:"system:cancel"
-					}
-				]
+				}
 			},
 			
 			bankWithdrawal: {
@@ -228,15 +170,6 @@ package com.dukascopy.connect.sys.bankManager {
 						text:"lang.menuLinkCard",
 						action:"nav:linkCard"
 					}
-				],
-				buttons: [
-					{
-						text:"lang.buttonBack",
-						action:"cmd:back"
-					}, {
-						text:"lang.buttonCancel",
-						action:"system:cancel"
-					}
 				]
 			},
 			
@@ -252,15 +185,6 @@ package com.dukascopy.connect.sys.bankManager {
 						text:"lang.menuCardNumberCopy",
 						value:"@@1",
 						action:"app:copyValue"
-					}
-				],
-				buttons: [
-					{
-						text:"lang.buttonBack",
-						action:"cmd:back"
-					}, {
-						text:"lang.buttonCancel",
-						action:"system:cancel"
 					}
 				]
 			},
@@ -303,15 +227,6 @@ package com.dukascopy.connect.sys.bankManager {
 						type:"cardStatement",
 						action:"nav:cardStatementAsFileConfirmed",
 						value:"@@1"
-					}
-				],
-				buttons: [
-					{
-						text:"lang.buttonBack",
-						action:"cmd:back"
-					}, {
-						text:"lang.buttonCancel",
-						action:"system:cancel"
 					}
 				]
 			},
@@ -359,15 +274,6 @@ package com.dukascopy.connect.sys.bankManager {
 						action:"nav:cardStatementAsFileConfirmed",
 						value:"@@1"
 					}
-				],
-				buttons: [
-					{
-						text:"lang.buttonBack",
-						action:"cmd:back"
-					}, {
-						text:"lang.buttonCancel",
-						action:"system:cancel"
-					}
 				]
 			},
 			
@@ -386,15 +292,6 @@ package com.dukascopy.connect.sys.bankManager {
 						value:"@@1",
 						option:"ivr",
 						action:"payments:cardPinRequest"
-					}
-				],
-				buttons: [
-					{
-						text:"lang.buttonBack",
-						action:"cmd:back"
-					}, {
-						text:"lang.buttonCancel",
-						action:"system:cancel"
 					}
 				]
 			},
@@ -422,15 +319,6 @@ package com.dukascopy.connect.sys.bankManager {
 						text:"lang.menuCardRemove",
 						action:"nav:removeCardConfirm"
 					}
-				],
-				buttons: [
-					{
-						text:"lang.buttonBack",
-						action:"cmd:back"
-					}, {
-						text:"lang.buttonCancel",
-						action:"system:cancel"
-					}
 				]
 			},
 			
@@ -454,15 +342,6 @@ package com.dukascopy.connect.sys.bankManager {
 						type:"cardStatement",
 						action:"nav:cardStatementAsFileConfirmed",
 						value:"@@1"
-					}
-				],
-				buttons: [
-					{
-						text:"lang.buttonBack",
-						action:"cmd:back"
-					}, {
-						text:"lang.buttonCancel",
-						action:"system:cancel"
 					}
 				]
 			},
@@ -493,15 +372,6 @@ package com.dukascopy.connect.sys.bankManager {
 						action:"nav:cardStatementAsFileConfirmed",
 						value:"@@1"
 					}
-				],
-				buttons: [
-					{
-						text:"lang.buttonBack",
-						action:"cmd:back"
-					}, {
-						text:"lang.buttonCancel",
-						action:"system:cancel"
-					}
 				]
 			},
 			
@@ -523,15 +393,6 @@ package com.dukascopy.connect.sys.bankManager {
 						action:"nav:cardStatementAsFileConfirmed",
 						value:"@@1"
 					}
-				],
-				buttons: [
-					{
-						text:"lang.buttonBack",
-						action:"cmd:back"
-					}, {
-						text:"lang.buttonCancel",
-						action:"system:cancel"
-					}
 				]
 			},
 			
@@ -547,15 +408,6 @@ package com.dukascopy.connect.sys.bankManager {
 						text:"lang.menuHistory",
 						action:"app:historyCard",
 						selection:"@@1"
-					}
-				],
-				buttons: [
-					{
-						text:"lang.buttonBack",
-						action:"cmd:back"
-					}, {
-						text:"lang.buttonCancel",
-						action:"system:cancel"
 					}
 				]
 			},
@@ -578,15 +430,6 @@ package com.dukascopy.connect.sys.bankManager {
 						value:"@@1",
 						action:"nav:cardDetails"
 					}
-				],
-				buttons: [
-					{
-						text:"lang.buttonBack",
-						action:"cmd:back"
-					}, {
-						text:"lang.buttonCancel",
-						action:"system:cancel"
-					}
 				]
 			},
 			
@@ -606,15 +449,6 @@ package com.dukascopy.connect.sys.bankManager {
 					}, {
 						text:"lang.menuCardTracking",
 						type:"openTracking"
-					}
-				],
-				buttons: [
-					{
-						text:"lang.buttonBack",
-						action:"cmd:back"
-					}, {
-						text:"lang.buttonCancel",
-						action:"system:cancel"
 					}
 				]
 			},
@@ -636,15 +470,6 @@ package com.dukascopy.connect.sys.bankManager {
 						text:"lang.menuCardRemove",
 						action:"nav:removeCardConfirm"
 					}
-				],
-				buttons: [
-					{
-						text:"lang.buttonBack",
-						action:"cmd:back"
-					}, {
-						text:"lang.buttonCancel",
-						action:"system:cancel"
-					}
 				]
 			},
 			
@@ -659,15 +484,6 @@ package com.dukascopy.connect.sys.bankManager {
 					{
 						text:"lang.menuCardRemove",
 						action:"nav:removeCardConfirm"
-					}
-				],
-				buttons: [
-					{
-						text:"lang.buttonBack",
-						action:"cmd:back"
-					}, {
-						text:"lang.buttonCancel",
-						action:"system:cancel"
 					}
 				]
 			},
@@ -728,12 +544,6 @@ package com.dukascopy.connect.sys.bankManager {
 				desc:"lang.confirmCardEnable",
 				buttons: [
 					{
-						text:"lang.buttonBack",
-						action:"cmd:back"
-					}, {
-						text:"lang.buttonCancel",
-						action:"system:cancel"
-					}, {
 						text:"lang.buttonConfirm",
 						action:"nav:unblockCardConfirmed"
 					}
@@ -744,12 +554,6 @@ package com.dukascopy.connect.sys.bankManager {
 				desc:"lang.confirmCardDisable",
 				buttons: [
 					{
-						text:"lang.buttonBack",
-						action:"cmd:back"
-					}, {
-						text:"lang.buttonCancel",
-						action:"system:cancel"
-					}, {
 						text:"lang.buttonConfirm",
 						action:"nav:blockCardConfirmed"
 					}
@@ -760,12 +564,6 @@ package com.dukascopy.connect.sys.bankManager {
 				desc:"lang.confirmCardRemove",
 				buttons: [
 					{
-						text:"lang.buttonBack",
-						action:"cmd:back"
-					}, {
-						text:"lang.buttonCancel",
-						action:"system:cancel"
-					}, {
 						text:"lang.buttonConfirm",
 						action:"nav:removeCardConfirmed"
 					}
@@ -937,12 +735,6 @@ package com.dukascopy.connect.sys.bankManager {
 						text:"lang.menuOpenEBank",
 						action:"app:payments"
 					}
-				],
-				buttons: [
-					{
-						text:"lang.buttonCancel",
-						action:"system:cancel"
-					}
 				]
 			},
 			
@@ -960,15 +752,6 @@ package com.dukascopy.connect.sys.bankManager {
 						value:"SAVINGS",
 						type:"otherWithdrawalWire",
 						action:"nav:otherWithdrawalWallets"
-					}
-				],
-				buttons: [
-					{
-						text:"lang.buttonBack",
-						action:"cmd:back"
-					}, {
-						text:"lang.buttonCancel",
-						action:"system:cancel"
 					}
 				]
 			},
@@ -990,15 +773,6 @@ package com.dukascopy.connect.sys.bankManager {
 						textForUser:"lang.itemOpenAccount",
 						action:"nav:walletSavingsConfirm"
 					}
-				],
-				buttons: [
-					{
-						text:"lang.buttonBack",
-						action:"cmd:back"
-					}, {
-						text:"lang.buttonCancel",
-						action:"system:cancel"
-					}
 				]
 			},
 			
@@ -1019,15 +793,6 @@ package com.dukascopy.connect.sys.bankManager {
 						textForUser:"lang.itemExchange",
 						action:"nav:transferConfirm"
 					}
-				],
-				buttons: [
-					{
-						text:"lang.buttonBack",
-						action:"cmd:back"
-					}, {
-						text:"lang.buttonCancel",
-						action:"system:cancel"
-					}
 				]
 			},
 			
@@ -1038,16 +803,7 @@ package com.dukascopy.connect.sys.bankManager {
 					textZeroAcc:"lang.zeroAccountDesc",
 					value:"@@1",
 					action:"nav:otherWithdrawalConfirm"
-				},
-				buttons: [
-					{
-						text:"lang.buttonBack",
-						action:"cmd:back"
-					}, {
-						text:"lang.buttonCancel",
-						action:"system:cancel"
-					}
-				]
+				}
 			},
 			
 			paymentsWallets: {
@@ -1063,15 +819,6 @@ package com.dukascopy.connect.sys.bankManager {
 						text:"lang.menuAccountsAll",
 						action:"nav:paymentsWalletsAll"
 					}
-				],
-				buttons: [
-					{
-						text:"lang.buttonBack",
-						action:"cmd:back"
-					}, {
-						text:"lang.buttonCancel",
-						action:"system:cancel"
-					}
 				]
 			},
 			
@@ -1082,16 +829,7 @@ package com.dukascopy.connect.sys.bankManager {
 					type:"walletSelectAll",
 					value:"@@1",
 					action:"nav:walletOperations"
-				},
-				buttons: [
-					{
-						text:"lang.buttonBack",
-						action:"cmd:back"
-					}, {
-						text:"lang.buttonCancel",
-						action:"system:cancel"
-					}
-				]
+				}
 			},
 			
 			walletOperations: {
@@ -1121,51 +859,6 @@ package com.dukascopy.connect.sys.bankManager {
 						type:"selectedAccCurrency",
 						action:"nav:paymentsDepositConfirm"
 					}
-				],
-				buttons: [
-					{
-						text:"lang.buttonBack",
-						action:"cmd:back"
-					}, {
-						text:"lang.buttonCancel",
-						action:"system:cancel"
-					}
-				]
-			},
-			
-			walletOperationsOnly: {
-				desc:"lang.walletOpsDesc",
-				item: {
-					type:"showWallet",
-					selection:"@@1"
-				},
-				menuLayout:"vertical",
-				menu:[
-					{
-						text:"lang.menuHistory",
-						action:"app:historyWallet",
-						selection:"@@1"
-					}, {
-						text:"lang.menuAccountStatement",
-						type:"walletStatement",
-						action:"nav:walletStatementAsFileConfirmed",
-						value:"@@1"
-					}, {
-						text:"lang.menuIBANCopy",
-						action:"app:copyIBAN"
-					}, {
-						text:"lang.menuShareIBAN",
-						value:"WIRE",
-						val:"@@1",
-						type:"selectedAccCurrency",
-						action:"nav:paymentsDepositConfirm"
-					}
-				],
-				buttons: [
-					{
-						text:"lang.buttonCancel",
-						action:"system:cancel"
-					}
 				]
 			},
 			
@@ -1173,12 +866,6 @@ package com.dukascopy.connect.sys.bankManager {
 				desc:"lang.confirmAccountOpen",
 				buttons: [
 					{
-						text:"lang.buttonBack",
-						action:"cmd:back"
-					}, {
-						text:"lang.buttonCancel",
-						action:"system:cancel"
-					}, {
 						text:"lang.buttonConfirm",
 						action:"nav:walletConfirmed"
 					}
@@ -1189,12 +876,6 @@ package com.dukascopy.connect.sys.bankManager {
 				desc:"lang.confirmAccountOpen",
 				buttons: [
 					{
-						text:"lang.buttonBack",
-						action:"cmd:back"
-					}, {
-						text:"lang.buttonCancel",
-						action:"system:cancel"
-					}, {
 						text:"lang.buttonConfirm",
 						action:"nav:walletSavingsConfirmed"
 					}
@@ -1205,12 +886,6 @@ package com.dukascopy.connect.sys.bankManager {
 				desc:"lang.confirmChangeCurrency",
 				buttons: [
 					{
-						text:"lang.buttonBack",
-						action:"cmd:back"
-					}, {
-						text:"lang.buttonCancel",
-						action:"system:cancel"
-					}, {
 						text:"lang.buttonConfirm",
 						action:"nav:changeCurrencyConfirmed"
 					}
@@ -1254,15 +929,6 @@ package com.dukascopy.connect.sys.bankManager {
 						type:"sendMoneyOtherAcc",
 						value:"TRADING",
 						action:"nav:transferInternalConfirm"
-					}
-				],
-				buttons: [
-					{
-						text:"lang.buttonBack",
-						action:"cmd:back"
-					}, {
-						text:"lang.buttonCancel",
-						action:"system:cancel"
 					}
 				]
 			},
@@ -1313,16 +979,6 @@ package com.dukascopy.connect.sys.bankManager {
 						value:"ApplePAY",
 						action:"nav:paymentsDepositConfirm"
 					}
-				],
-				buttons: [
-					{
-						text:"lang.buttonBack",
-						action:"cmd:back"
-					},
-					{
-						text:"lang.buttonCancel",
-						action:"system:cancel"
-					}
 				]
 			},
 			
@@ -1338,20 +994,12 @@ package com.dukascopy.connect.sys.bankManager {
 						text:"lang.menuInvoiceToThirdParty",
 						type:"paymentsInvoiceThirdparty"
 					}
-				],
-				buttons: [
-					{
-						text:"lang.buttonBack",
-						action:"cmd:back"
-					}, {
-						text:"lang.buttonCancel",
-						action:"system:cancel"
-					}
 				]
 			},
 			
 			sendMoney: {
 				desc:"lang.sendMoneyDesc",
+				isBack: false,
 				menuLayout:"vertical",
 				menu:[
 					{
@@ -1397,65 +1045,6 @@ package com.dukascopy.connect.sys.bankManager {
 						value:"TRADING",
 						action:"nav:transferInternalConfirm"
 					}
-				],
-				buttons: [
-					{
-						text:"lang.buttonCancel",
-						action:"system:cancel"
-					}
-				]
-			},
-			
-			sendMoney1: {
-				desc:"lang.sendMoneyDesc",
-				menuLayout:"vertical",
-				menu:[
-					{
-						text:"lang.menuFromTransaction",
-						keywords:"money,send,transaction",
-						textForUser:"lang.itemClickOnTransaction",
-						action:"app:transaction"
-					}, {
-						text:"lang.menuFromTemplate",
-						disabled:true,
-						textForUser1:"lang.itemSendMoney",
-						textForUser2:"lang.itemSendMoneyPhone",
-						type:"paymentsSelectTemplate",
-						action:"nav:transactionConfirm"
-					}, {
-						text:"lang.menuToPhone",
-						keywords:"money,send,phones",
-						textForUser:"lang.itemSendMoneyPhone",
-						type:"moneySendPhone",
-						action:"nav:transactionConfirm"
-					}, {
-						text:"lang.menuToContact",
-						keywords:"money,send,contacts",
-						textForUser:"lang.itemSendMoney",
-						type:"paymentsSelectContact",
-						action:"nav:transactionConfirm"
-					}, {
-						text:"lang.menuToChatmate",
-						keywords:"money,send,chat",
-						type:"paymentsSelectChatmate",
-						action:"nav:transactionConfirm"
-					}, {
-						text:"lang.menuExternalRecipient",
-						action:"nav:withdrawals"
-					}, {
-						disabled: true,
-						text:"lang.menuToSavingAcc",
-						textForUser:"lang.itemSendToSaving",
-						type:"sendMoneyOtherAcc",
-						value:"SAVINGS",
-						action:"nav:transferInternalConfirm"
-					}
-				],
-				buttons: [
-					{
-						text:"lang.buttonCancel",
-						action:"system:cancel"
-					}
 				]
 			},
 			
@@ -1464,14 +1053,18 @@ package com.dukascopy.connect.sys.bankManager {
 				back: false,
 				buttons: [
 					{
-						text:"lang.buttonBack",
-						action:"cmd:back"
-					}, {
-						text:"lang.buttonCancel",
-						action:"system:cancel"
-					}, {
 						text:"lang.buttonConfirm",
 						action:"nav:transactionConfirmedAdd"
+					}
+				]
+			},
+			
+			transactionConfirmedAdd: {
+				desc:"lang.confirmedTransactionAdd",
+				buttons: [
+					{
+						text:"lang.buttonConfirm",
+						action:"nav:transactionConfirmed"
 					}
 				]
 			},
@@ -1496,25 +1089,13 @@ package com.dukascopy.connect.sys.bankManager {
 				]
 			},
 			
-			transactionConfirmedAdd: {
-				desc:"lang.confirmedTransactionAdd",
-				buttons: [
-					{
-						text:"lang.buttonConfirm",
-						action:"nav:transactionConfirmed"
-					}, {
-						text:"lang.buttonBack",
-						action:"cmd:back"
-					}
-				]
-			},
-			
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////
 	/// <- SEND || EXCHANGE -> //////////////////////////////////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////
 			
 			repeatInvestmentPurchase: {
 				desc:"lang.whatWant",
+				isBack:false,
 				menuLayout:"vertical",
 				menu: [
 					{
@@ -1536,17 +1117,12 @@ package com.dukascopy.connect.sys.bankManager {
 						text:"lang.menuInviteConsultant",
 						action:"app:support"
 					}
-				],
-				buttons: [
-					{
-						text:"lang.buttonCancel",
-						action:"system:cancel"
-					}
 				]
 			},
 			
 			repeatInvestmentSale: {
 				desc:"lang.whatWant",
+				isBack:false,
 				menuLayout:"vertical",
 				menu: [
 					{
@@ -1568,17 +1144,12 @@ package com.dukascopy.connect.sys.bankManager {
 						text:"lang.menuInviteConsultant",
 						action:"app:support"
 					}
-				],
-				buttons: [
-					{
-						text:"lang.buttonCancel",
-						action:"system:cancel"
-					}
 				]
 			},
 			
 			repeatExchange: {
 				desc:"lang.whatWant",
+				isBack:false,
 				menuLayout:"vertical",
 				menu: [
 					{
@@ -1596,17 +1167,12 @@ package com.dukascopy.connect.sys.bankManager {
 						text:"lang.menuInviteConsultant",
 						action:"app:support"
 					}
-				],
-				buttons: [
-					{
-						text:"lang.buttonCancel",
-						action:"system:cancel"
-					}
 				]
 			},
 			
 			repeatCardDeposit: {
 				desc:"lang.whatWant",
+				isBack:false,
 				menuLayout:"vertical",
 				menu: [
 					{
@@ -1624,17 +1190,12 @@ package com.dukascopy.connect.sys.bankManager {
 						text:"lang.menuInviteConsultant",
 						action:"app:support"
 					}
-				],
-				buttons: [
-					{
-						text:"lang.buttonCancel",
-						action:"system:cancel"
-					}
 				]
 			},
 			
 			repeatCardWithdrawal: {
 				desc:"lang.whatWant",
+				isBack:false,
 				menuLayout:"vertical",
 				menu: [
 					{
@@ -1651,17 +1212,12 @@ package com.dukascopy.connect.sys.bankManager {
 						text:"lang.menuInviteConsultant",
 						action:"app:support"
 					}
-				],
-				buttons: [
-					{
-						text:"lang.buttonCancel",
-						action:"system:cancel"
-					}
 				]
 			},
 			
 			repeatSendMoneyPhone: {
 				desc:"lang.whatWant",
+				isBack:false,
 				menuLayout:"vertical",
 				menu: [
 					{
@@ -1678,18 +1234,13 @@ package com.dukascopy.connect.sys.bankManager {
 					}, {
 						text:"lang.menuInviteConsultant",
 						action:"app:support"
-					}
-				],
-				buttons: [
-					{
-						text:"lang.buttonCancel",
-						action:"system:cancel"
 					}
 				]
 			},
 			
 			repeatSendMoneyPhoneCode: {
 				desc:"lang.whatWant",
+				isBack:false,
 				menuLayout:"vertical",
 				menu: [
 					{
@@ -1711,29 +1262,18 @@ package com.dukascopy.connect.sys.bankManager {
 						text:"lang.menuInviteConsultant",
 						action:"app:support"
 					}
-				],
-				buttons: [
-					{
-						text:"lang.buttonCancel",
-						action:"system:cancel"
-					}
 				]
 			},
 			
 			transactionCodeFailed: {
 				desc:"lang.transactionCodeFailed",
+				isBack:false,
 				menuLayout:"vertical",
 				menu: [
 					{
 						text:"lang.menuEnterTransactionCode",
 						type:"enterTransactionCode",
 						action:"nav:transactionCodeConfirm"
-					}
-				],
-				buttons: [
-					{
-						text:"lang.buttonCancel",
-						action:"system:cancel"
 					}
 				]
 			},
@@ -1756,9 +1296,6 @@ package com.dukascopy.connect.sys.bankManager {
 				desc:"lang.confirmExchange",
 				buttons: [
 					{
-						text:"lang.buttonCancel",
-						action:"system:cancel"
-					}, {
 						text:"lang.buttonConfirm",
 						action:"nav:transferConfirmed"
 					}
@@ -1769,9 +1306,6 @@ package com.dukascopy.connect.sys.bankManager {
 				desc:"lang.confirmInternalTransfer",
 				buttons: [
 					{
-						text:"lang.buttonCancel",
-						action:"system:cancel"
-					}, {
 						text:"lang.buttonConfirm",
 						action:"nav:transferInternalConfirmed"
 					}
@@ -1782,9 +1316,6 @@ package com.dukascopy.connect.sys.bankManager {
 				desc:"lang.confirmInternalTransferT",
 				buttons: [
 					{
-						text:"lang.buttonCancel",
-						action:"system:cancel"
-					}, {
 						text:"lang.buttonConfirm",
 						action:"nav:transferInternalConfirmed"
 					}
@@ -1823,9 +1354,6 @@ package com.dukascopy.connect.sys.bankManager {
 				desc:"lang.itemOpenAccountAuto lang.confirmExchange",
 				buttons: [
 					{
-						text:"lang.buttonCancel",
-						action:"system:cancel"
-					}, {
 						text:"lang.buttonConfirm",
 						action:"nav:transferToNotExistWalletConfirmed"
 					}
@@ -1852,6 +1380,8 @@ package com.dukascopy.connect.sys.bankManager {
 			
 			cryptoOpen: {
 				desc:"lang.cryptoOpenDesc",
+				isBack:false,
+				isCancel:false,
 				menuLayout:"vertical",
 				buttons: [
 					{
@@ -1866,6 +1396,7 @@ package com.dukascopy.connect.sys.bankManager {
 			
 			crypto: {
 				desc:"lang.cryptoDesc",
+				isBack:false,
 				menuLayout:"vertical",
 				item: {
 					type:"cryptoSelect"
@@ -1910,12 +1441,6 @@ package com.dukascopy.connect.sys.bankManager {
 						textColor:0x0000FF,
 						value:"https://dukascoin.com"
 					}
-				],
-				buttons: [
-					{
-						text:"lang.buttonCancel",
-						action:"system:cancel"
-					}
 				]
 			},
 			
@@ -1935,21 +1460,12 @@ package com.dukascopy.connect.sys.bankManager {
 						type:"fatCatzConditions",
 						value:"@@1"
 					}
-				],
-				buttons: [
-					{
-						text:"lang.buttonBack",
-						action:"cmd:back"
-					}, {
-						text:"lang.buttonCancel",
-						action:"system:cancel"
-					}
 				]
 			},
 			
 			repeatCrypto: {
 				desc:"lang.cryptoDesc",
-				isMain:true,
+				isBack:false,
 				saveItem:true,
 				menuLayout:"vertical",
 				menu:[
@@ -1976,12 +1492,6 @@ package com.dukascopy.connect.sys.bankManager {
 						text:"lang.menuInviteConsultant",
 						action:"app:support"
 					}
-				],
-				buttons: [
-					{
-						text:"lang.buttonCancel",
-						action:"system:cancel"
-					}
 				]
 			},
 			
@@ -1990,16 +1500,7 @@ package com.dukascopy.connect.sys.bankManager {
 				menuLayout:"vertical",
 				item: {
 					type:"operationTransactions"
-				},
-				buttons: [
-					{
-						text:"lang.buttonBack",
-						action:"cmd:back"
-					}, {
-						text:"lang.buttonCancel",
-						action:"system:cancel"
-					}
-				]
+				}
 			},
 			
 			cryptoDeposites: {
@@ -2036,15 +1537,6 @@ package com.dukascopy.connect.sys.bankManager {
 						value:"CLOSED",
 						action:"nav:cryptoDeposites"
 					}
-				],
-				buttons: [
-					{
-						text:"lang.buttonBack",
-						action:"cmd:back"
-					}, {
-						text:"lang.buttonCancel",
-						action:"system:cancel"
-					}
 				]
 			},
 			
@@ -2059,15 +1551,6 @@ package com.dukascopy.connect.sys.bankManager {
 						text:"lang.menuRDFiatConditions",
 						value:"https://www.dukascoin.com/?cat=wp&page=16",
 						type:"cryptoRDFiatTerms"
-					}
-				],
-				buttons: [
-					{
-						text:"lang.buttonBack",
-						action:"cmd:back"
-					}, {
-						text:"lang.buttonCancel",
-						action:"system:cancel"
 					}
 				]
 			},
@@ -2086,15 +1569,6 @@ package com.dukascopy.connect.sys.bankManager {
 					}, {
 						text:"lang.menuAccountHistory",
 						type:"cryptoHistory"
-					}
-				],
-				buttons: [
-					{
-						text:"lang.buttonBack",
-						action:"cmd:back"
-					}, {
-						text:"lang.buttonCancel",
-						action:"system:cancel"
 					}
 				]
 			},
@@ -2138,15 +1612,6 @@ package com.dukascopy.connect.sys.bankManager {
 						value:"PREVIOUS_DAY",
 						action:"nav:cryptoTradeStat"
 					}, 
-				],
-				buttons: [
-					{
-						text:"lang.buttonBack",
-						action:"cmd:back"
-					}, {
-						text:"lang.buttonCancel",
-						action:"system:cancel"
-					}
 				]
 			},
 			
@@ -2155,16 +1620,7 @@ package com.dukascopy.connect.sys.bankManager {
 				item: {
 					type:"showTradeStat",
 					value:"@@1"
-				},
-				buttons: [
-					{
-						text:"lang.buttonBack",
-						action:"cmd:back"
-					}, {
-						text:"lang.buttonCancel",
-						action:"system:cancel"
-					}
-				]
+				}
 			},
 			
 			cryptoRDActions: {
@@ -2178,15 +1634,6 @@ package com.dukascopy.connect.sys.bankManager {
 						text:"lang.menuCancelRDWithPenalty",
 						action:"nav:cryptoRDCancelConfirm"
 					}
-				],
-				buttons: [
-					{
-						text:"lang.buttonBack",
-						action:"cmd:back"
-					}, {
-						text:"lang.buttonCancel",
-						action:"system:cancel"
-					}
 				]
 			},
 			
@@ -2195,16 +1642,7 @@ package com.dukascopy.connect.sys.bankManager {
 				item: {
 					type:"showRD",
 					selection:"@@1"
-				},
-				buttons: [
-					{
-						text:"lang.buttonBack",
-						action:"cmd:back"
-					}, {
-						text:"lang.buttonCancel",
-						action:"system:cancel"
-					}
-				]
+				}
 			},
 			
 			cryptoRDActionsB: {
@@ -2221,15 +1659,6 @@ package com.dukascopy.connect.sys.bankManager {
 						text:"lang.menuCheckAddressETH",
 						type:"BCCheckETH"
 					}
-				],
-				buttons: [
-					{
-						text:"lang.buttonBack",
-						action:"cmd:back"
-					}, {
-						text:"lang.buttonCancel",
-						action:"system:cancel"
-					}
 				]
 			},
 			
@@ -2244,15 +1673,6 @@ package com.dukascopy.connect.sys.bankManager {
 						text:"lang.menuCheckAddressETH",
 						type:"BCCheckETH"
 					}
-				],
-				buttons: [
-					{
-						text:"lang.buttonBack",
-						action:"cmd:back"
-					}, {
-						text:"lang.buttonCancel",
-						action:"system:cancel"
-					}
 				]
 			},
 			
@@ -2260,12 +1680,6 @@ package com.dukascopy.connect.sys.bankManager {
 				desc:"lang.confirmRDCancelWithPenaltyDesc",
 				buttons: [
 					{
-						text:"lang.buttonBack",
-						action:"cmd:back"
-					}, {
-						text:"lang.buttonCancel",
-						action:"system:cancel"
-					}, {
 						text:"lang.buttonConfirm",
 						action:"nav:cancelRDConfirmed"
 					}
@@ -2276,12 +1690,6 @@ package com.dukascopy.connect.sys.bankManager {
 				desc:"lang.confirmRDCancelWithoutPenaltyDesc",
 				buttons: [
 					{
-						text:"lang.buttonBack",
-						action:"cmd:back"
-					}, {
-						text:"lang.buttonCancel",
-						action:"system:cancel"
-					}, {
 						text:"lang.buttonConfirm",
 						action:"nav:cancelRDConfirmed"
 					}
@@ -2319,15 +1727,6 @@ package com.dukascopy.connect.sys.bankManager {
 						value:"1",
 						action:"nav:cryptoRewardsDepositeConfirm"
 					}
-				],
-				buttons: [
-					{
-						text:"lang.buttonBack",
-						action:"cmd:back"
-					}, {
-						text:"lang.buttonCancel",
-						action:"system:cancel"
-					}
 				]
 			},
 			
@@ -2349,15 +1748,6 @@ package com.dukascopy.connect.sys.bankManager {
 						type:"cryptoSelectContact",
 						action:"nav:transactionConfirm"
 					}
-				],
-				buttons: [
-					{
-						text:"lang.buttonBack",
-						action:"cmd:back"
-					}, {
-						text:"lang.buttonCancel",
-						action:"system:cancel"
-					}
 				]
 			},
 			
@@ -2375,15 +1765,6 @@ package com.dukascopy.connect.sys.bankManager {
 						text:"lang.menuRDReadConditions",
 						type:"cryptoBCTerms"
 					}
-				],
-				buttons: [
-					{
-						text:"lang.buttonBack",
-						action:"cmd:back"
-					}, {
-						text:"lang.buttonCancel",
-						action:"system:cancel"
-					}
 				]
 			},
 			
@@ -2396,9 +1777,6 @@ package com.dukascopy.connect.sys.bankManager {
 						textForUser:"lang.itemBCDeposite",
 						type:"BCDepositeAddress",
 						action:"nav:bcDepositeConfirm"
-					}, {
-						text:"lang.buttonBack",
-						action:"cmd:back"
 					}
 				]
 			},
@@ -2412,9 +1790,6 @@ package com.dukascopy.connect.sys.bankManager {
 						textForUser:"lang.itemBCWithdrawal",
 						type:"BCWithdrawal",
 						action:"nav:bcWithdrawalConfirm"
-					}, {
-						text:"lang.buttonBack",
-						action:"cmd:back"
 					}
 				]
 			},
@@ -2423,12 +1798,6 @@ package com.dukascopy.connect.sys.bankManager {
 				desc:"lang.confirmBCDeposite",
 				buttons: [
 					{
-						text:"lang.buttonBack",
-						action:"cmd:back"
-					}, {
-						text:"lang.buttonCancel",
-						action:"system:cancel"
-					}, {
 						text:"lang.buttonConfirm",
 						action:"nav:bcDepositeAddressConfirmed"
 					}
@@ -2439,12 +1808,6 @@ package com.dukascopy.connect.sys.bankManager {
 				desc:"lang.confirmBCWithdrawal",
 				buttons: [
 					{
-						text:"lang.buttonBack",
-						action:"cmd:back"
-					}, {
-						text:"lang.buttonCancel",
-						action:"system:cancel"
-					}, {
 						text:"lang.buttonConfirm",
 						action:"nav:bcWithdrawalConfirmed"
 					}
@@ -2455,12 +1818,6 @@ package com.dukascopy.connect.sys.bankManager {
 				desc:"lang.confirmBCWithdrawal",
 				buttons: [
 					{
-						text:"lang.buttonBack",
-						action:"cmd:back"
-					}, {
-						text:"lang.buttonCancel",
-						action:"system:cancel"
-					}, {
 						text:"lang.buttonConfirm",
 						action:"nav:bcDeliveryConfirmed"
 					}
@@ -2469,6 +1826,8 @@ package com.dukascopy.connect.sys.bankManager {
 			
 			bcDepositeAddressConfirmed: {
 				desc:"lang.confirmedBCAddressDeposite",
+				isBack:false,
+				isCancel:false,
 				buttons: [
 					{
 						text:"lang.buttonCopyAddress",
@@ -2564,15 +1923,6 @@ package com.dukascopy.connect.sys.bankManager {
 						value:"@@3",
 						type:"marketPrice"
 					}
-				],
-				buttons: [
-					{
-						text:"lang.buttonBack",
-						action:"cmd:back"
-					}, {
-						text:"lang.buttonCancel",
-						action:"system:cancel"
-					}
 				]
 			},
 			
@@ -2589,15 +1939,6 @@ package com.dukascopy.connect.sys.bankManager {
 						type:"cryptoNotesBS",
 						val:"s"
 					}
-				],
-				buttons: [
-					{
-						text:"lang.buttonBack",
-						action:"cmd:back"
-					}, {
-						text:"lang.buttonCancel",
-						action:"system:cancel"
-					}
 				]
 			},
 			
@@ -2609,16 +1950,7 @@ package com.dukascopy.connect.sys.bankManager {
 					type:"cryptoOfferSelect",
 					value:"@@2",
 					action:"nav:offerOperations"
-				},
-				buttons: [
-					{
-						text:"lang.buttonBack",
-						action:"cmd:back"
-					}, {
-						text:"lang.buttonCancel",
-						action:"system:cancel"
-					}
-				]
+				}
 			},
 			
 			myAllCryptoOffers: {
@@ -2628,16 +1960,7 @@ package com.dukascopy.connect.sys.bankManager {
 					text:"lang.itemShowCryptoOfferOperations",
 					type:"cryptoOfferSelect",
 					action:"nav:offerOperations"
-				},
-				buttons: [
-					{
-						text:"lang.buttonBack",
-						action:"cmd:back"
-					}, {
-						text:"lang.buttonCancel",
-						action:"system:cancel"
-					}
-				]
+				}
 			},
 			
 			offerOperationsActive: {
@@ -2651,15 +1974,6 @@ package com.dukascopy.connect.sys.bankManager {
 					{
 						text:"lang.menuCryptoOfferRemove",
 						action:"nav:deleteOfferConfirm"
-					}
-				],
-				buttons: [
-					{
-						text:"lang.buttonBack",
-						action:"cmd:back"
-					}, {
-						text:"lang.buttonCancel",
-						action:"system:cancel"
 					}
 				]
 			},
@@ -2675,15 +1989,6 @@ package com.dukascopy.connect.sys.bankManager {
 						text:"lang.menuCryptoOfferRemove",
 						action:"nav:deleteOfferConfirm"
 					}
-				],
-				buttons: [
-					{
-						text:"lang.buttonBack",
-						action:"cmd:back"
-					}, {
-						text:"lang.buttonCancel",
-						action:"system:cancel"
-					}
 				]
 			},
 			
@@ -2691,12 +1996,6 @@ package com.dukascopy.connect.sys.bankManager {
 				desc:"lang.confirmBCRewardDeposite",
 				buttons: [
 					{
-						text:"lang.buttonBack",
-						action:"cmd:back"
-					}, {
-						text:"lang.buttonCancel",
-						action:"system:cancel"
-					}, {
 						text:"lang.buttonConfirm",
 						action:"nav:cryptoRewardDepositeConfirmed"
 					}
@@ -2707,12 +2006,6 @@ package com.dukascopy.connect.sys.bankManager {
 				desc:"lang.confirmBCRewardDepositeNonPen",
 				buttons: [
 					{
-						text:"lang.buttonBack",
-						action:"cmd:back"
-					}, {
-						text:"lang.buttonCancel",
-						action:"system:cancel"
-					}, {
 						text:"lang.buttonConfirm",
 						action:"nav:cryptoRewardDepositeConfirmed"
 					}
@@ -2723,12 +2016,6 @@ package com.dukascopy.connect.sys.bankManager {
 				desc:"lang.confirmCreateOffer",
 				buttons: [
 					{
-						text:"lang.buttonBack",
-						action:"cmd:back"
-					}, {
-						text:"lang.buttonCancel",
-						action:"system:cancel"
-					}, {
 						text:"lang.buttonConfirm",
 						action:"nav:createOfferConfirmed"
 					}
@@ -2751,6 +2038,7 @@ package com.dukascopy.connect.sys.bankManager {
 			
 			createOfferConfirmed: {
 				desc:"lang.confirmedCreateOffer lang.otherOperation",
+				isLast:true,
 				buttons: [
 					{
 						text:"lang.buttonYes",
@@ -2764,7 +2052,7 @@ package com.dukascopy.connect.sys.bankManager {
 			
 			activateOfferConfirm: {
 				desc:"lang.confirmOfferActivate",
-				back:false,
+				isBack:false,
 				buttons: [
 					{
 						text:"lang.buttonYes",
@@ -2778,6 +2066,7 @@ package com.dukascopy.connect.sys.bankManager {
 			
 			deleteOfferConfirm: {
 				desc:"lang.confirmOfferDelete",
+				isBack:false,
 				buttons: [
 					{
 						text:"lang.buttonYes",
@@ -2791,6 +2080,7 @@ package com.dukascopy.connect.sys.bankManager {
 			
 			deactivateOfferConfirm: {
 				desc:"lang.confirmOfferDeactivate",
+				isBack:false,
 				buttons: [
 					{
 						text:"lang.buttonYes",
@@ -2832,6 +2122,7 @@ package com.dukascopy.connect.sys.bankManager {
 			
 			deleteOfferConfirmed: {
 				desc:"lang.confirmedDeleteOffer lang.otherOperation",
+				isLast: true,
 				buttons: [
 					{
 						text:"lang.buttonYes",
@@ -2857,20 +2148,12 @@ package com.dukascopy.connect.sys.bankManager {
 						text:"lang.menuByFilter",
 						action:"nav:notReadyYet"
 					}
-				],
-				buttons: [
-					{
-						text:"lang.buttonBack",
-						action:"cmd:back"
-					}, {
-						text:"lang.buttonCancel",
-						action:"system:cancel"
-					}
 				]
 			},
 			
 			investments: {
 				desc:"lang.investmentsDesc",
+				isBack:false,
 				menuLayout:"vertical",
 				item: {
 					type:"investments"
@@ -2889,12 +2172,6 @@ package com.dukascopy.connect.sys.bankManager {
 						text:"lang.menuInvestmentCurrency",
 						action:"nav:investmentDisclaimer"
 					}
-				],
-				buttons: [
-					{
-						text:"lang.buttonCancel",
-						action:"system:cancel"
-					}
 				]
 			},
 			
@@ -2912,15 +2189,6 @@ package com.dukascopy.connect.sys.bankManager {
 						text:"lang.menuInvestmentPortfolio",
 						action:"nav:investmentsList"
 					}
-				],
-				buttons: [
-					{
-						text:"lang.buttonBack",
-						action:"cmd:back"
-					}, {
-						text:"lang.buttonCancel",
-						action:"system:cancel"
-					}
 				]
 			},
 			
@@ -2935,15 +2203,6 @@ package com.dukascopy.connect.sys.bankManager {
 						text:"lang.menuInvestmentPortfolioAll",
 						action:"nav:investmentsListAll"
 					}
-				],
-				buttons: [
-					{
-						text:"lang.buttonBack",
-						action:"cmd:back"
-					}, {
-						text:"lang.buttonCancel",
-						action:"system:cancel"
-					}
 				]
 			},
 			
@@ -2952,16 +2211,7 @@ package com.dukascopy.connect.sys.bankManager {
 				item: {
 					type:"investmentSelectAll",
 					action:"nav:investmentOperations"
-				},
-				buttons: [
-					{
-						text:"lang.buttonBack",
-						action:"cmd:back"
-					}, {
-						text:"lang.buttonCancel",
-						action:"system:cancel"
-					}
-				]
+				}
 			},
 			
 			investmentsListSell: {
@@ -2971,16 +2221,7 @@ package com.dukascopy.connect.sys.bankManager {
 					textForUser2:"lang.itemInvestmentSell2",
 					type:"paymentsInvestmentsSell",		
 					action:"nav:investmentSellConfirm"
-				},
-				buttons: [
-					{
-						text:"lang.buttonBack",
-						action:"cmd:back"
-					}, {
-						text:"lang.buttonCancel",
-						action:"system:cancel"
-					}
-				]
+				}
 			},
 			
 			investmentOperations: {
@@ -3029,63 +2270,6 @@ package com.dukascopy.connect.sys.bankManager {
 						selectionAcc:"@@1",
 						disabled:true
 					}
-				],
-				buttons: [
-					{
-						text:"lang.buttonBack",
-						action:"cmd:back"
-					}, {
-						text:"lang.buttonCancel",
-						action:"system:cancel"
-					}
-				]
-			},
-			
-			investmentOperationsAdd: {
-				desc:"lang.investmentDesc",
-				item: {
-					type:"showInvestment",
-					selection:"@@1"
-				},
-				menuLayout:"vertical",
-				menu:[
-					{
-						text:"lang.menuInvestmentDetails",
-						action:"nav:investmentDetails",
-						type:"investmentDetails",
-						selection:"@@1",
-						selection1:"@@2"
-					}, {
-						text:"lang.menuHistory",
-						action:"app:back"
-					}, {
-						text:"lang.menuInvestmentBuy",
-						type:"paymentsInvestments",
-						textForUser1:"lang.itemInvestmentBuy1",
-						textForUser2:"lang.itemInvestmentBuy2",
-						action:"nav:investmentConfirm",
-						value:"@@2"
-					}, {
-						text:"lang.menuInvestmentSellPartially",
-						action:"nav:investmentSellConfirm",
-						type:"paymentsInvestmentsSellPart",
-						textForUser1:"lang.itemInvestmentSell1",
-						selection:"@@2"
-					}, {
-						text:"lang.menuInvestmentSellAll",
-						action:"nav:investmentSellAllConfirm",
-						type:"paymentsInvestmentsSellAll",
-						textForUser1:"lang.itemInvestmentSell1",
-						selection:"@@1"
-					}, {
-						text:"lang.menuInvestmentDeliveryBC",
-						type:"BCWithdrawalInvestment",
-						action:"nav:bcDeliveryConfirm",
-						textForUser:"lang.itemInvestmentDeliveryBC",
-						selection:"@@2",
-						selectionAcc:"@@1",
-						disabled:true
-					}
 				]
 			},
 			
@@ -3094,16 +2278,7 @@ package com.dukascopy.connect.sys.bankManager {
 				item: {
 					type:"showInvestmentDetails",
 					selection:"@@1"
-				},
-				buttons: [
-					{
-						text:"lang.buttonBack",
-						action:"cmd:back"
-					}, {
-						text:"lang.buttonCancel",
-						action:"system:cancel"
-					}
-				]
+				}
 			},
 			
 			investMoney: {
@@ -3123,15 +2298,6 @@ package com.dukascopy.connect.sys.bankManager {
 					}, {
 						text:"lang.menuInvestmentCrypto",
 						action:"nav:selectCrypto"
-					}
-				],
-				buttons: [
-					{
-						text:"lang.buttonBack",
-						action:"cmd:back"
-					}, {
-						text:"lang.buttonCancel",
-						action:"system:cancel"
 					}
 				]
 			},
@@ -3183,15 +2349,6 @@ package com.dukascopy.connect.sys.bankManager {
 						textForUser2:"lang.itemInvestmentBuy2",
 						action:"nav:investmentConfirm"
 					}
-				],
-				buttons: [
-					{
-						text:"lang.buttonBack",
-						action:"cmd:back"
-					}, {
-						text:"lang.buttonCancel",
-						action:"system:cancel"
-					}
 				]
 			},
 			
@@ -3213,14 +2370,7 @@ package com.dukascopy.connect.sys.bankManager {
 						textForUser1:"lang.itemInvestmentBuy1",
 						textForUser2:"lang.itemInvestmentBuy2",
 						action:"nav:investmentConfirm"
-					},/* {
-						text:"Microsoft",
-						value:"MSF",
-						type:"paymentsInvestments",
-						textForUser1:"lang.itemInvestmentBuy1",
-						textForUser2:"lang.itemInvestmentBuy2",
-						action:"nav:investmentConfirm"
-					}, */{
+					}, {
 						text:"Alphabet (Class A)",
 						value:"GOO",
 						type:"paymentsInvestments",
@@ -3256,15 +2406,6 @@ package com.dukascopy.connect.sys.bankManager {
 						textForUser2:"lang.itemInvestmentBuy2",
 						action:"nav:investmentConfirm"
 					} 
-				],
-				buttons: [
-					{
-						text:"lang.buttonBack",
-						action:"cmd:back"
-					}, {
-						text:"lang.buttonCancel",
-						action:"system:cancel"
-					}
 				]
 			},
 			
@@ -3301,15 +2442,6 @@ package com.dukascopy.connect.sys.bankManager {
 						textForUser2:"lang.itemInvestmentBuy2",
 						action:"nav:investmentConfirm"
 					}
-				],
-				buttons: [
-					{
-						text:"lang.buttonBack",
-						action:"cmd:back"
-					}, {
-						text:"lang.buttonCancel",
-						action:"system:cancel"
-					}
 				]
 			},
 			
@@ -3331,22 +2463,6 @@ package com.dukascopy.connect.sys.bankManager {
 						textForUser1:"lang.itemInvestmentBuy1",
 						textForUser2:"lang.itemInvestmentBuy2",
 						action:"nav:investmentConfirm"
-					}/*, {
-						text:"Litecoin",
-						value:"LTC",
-						type:"paymentsInvestments",
-						textForUser1:"lang.itemInvestmentBuy1",
-						textForUser2:"lang.itemInvestmentBuy2",
-						action:"nav:investmentConfirm"
-					}*/
-				],
-				buttons: [
-					{
-						text:"lang.buttonBack",
-						action:"cmd:back"
-					}, {
-						text:"lang.buttonCancel",
-						action:"system:cancel"
 					}
 				]
 			},
@@ -3355,12 +2471,6 @@ package com.dukascopy.connect.sys.bankManager {
 				desc:"lang.confirmInvestment",
 				buttons: [
 					{
-						text:"lang.buttonBack",
-						action:"cmd:back"
-					}, {
-						text:"lang.buttonCancel",
-						action:"system:cancel"
-					}, {
 						text:"lang.buttonConfirm",
 						action:"nav:investmentConfirmed"
 					}
@@ -3371,12 +2481,6 @@ package com.dukascopy.connect.sys.bankManager {
 				desc:"lang.confirmInvestment",
 				buttons: [
 					{
-						text:"lang.buttonBack",
-						action:"cmd:back"
-					}, {
-						text:"lang.buttonCancel",
-						action:"system:cancel"
-					}, {
 						text:"lang.buttonConfirm",
 						action:"nav:investmentTransactionConfirmed"
 					}
@@ -3387,12 +2491,6 @@ package com.dukascopy.connect.sys.bankManager {
 				desc:"lang.confirmInvestmentSell",
 				buttons: [
 					{
-						text:"lang.buttonBack",
-						action:"cmd:back"
-					}, {
-						text:"lang.buttonCancel",
-						action:"system:cancel"
-					}, {
 						text:"lang.buttonConfirm",
 						action:"nav:investmentSellConfirmed"
 					}
@@ -3403,12 +2501,6 @@ package com.dukascopy.connect.sys.bankManager {
 				desc:"lang.confirmInvestmentSellAll",
 				buttons: [
 					{
-						text:"lang.buttonBack",
-						action:"cmd:back"
-					}, {
-						text:"lang.buttonCancel",
-						action:"system:cancel"
-					}, {
 						text:"lang.buttonConfirm",
 						action:"nav:investmentSellAllConfirmed"
 					}
@@ -3472,15 +2564,6 @@ package com.dukascopy.connect.sys.bankManager {
 						value:"1",
 						action:"nav:openTradingAccountConfirm"
 					}
-				],
-				buttons: [
-					{
-						text:"lang.buttonBack",
-						action:"cmd:back"
-					}, {
-						text:"lang.buttonCancel",
-						action:"system:cancel"
-					}
 				]
 			},
 			
@@ -3493,12 +2576,6 @@ package com.dukascopy.connect.sys.bankManager {
 						type:"selectCurrency",
 						action:"nav:investmentCurrencyConfirm",
 						textForUser:"lang.itemInvestmentCurrency"
-					}
-				],
-				buttons: [
-					{
-						text:"lang.buttonCancel",
-						action:"system:cancel"
 					}
 				]
 			},
@@ -3515,19 +2592,9 @@ package com.dukascopy.connect.sys.bankManager {
 					}, {
 						text:"lang.menuCardPlastic",
 						keywords:"order,card,plastics",
-						//keywords:"money,send,contacts",
 						action:"nav:orderCardP",
 						value:"p"
 					},
-				],
-				buttons: [
-					{
-						text:"lang.buttonBack",
-						action:"cmd:back"
-					}, {
-						text:"lang.buttonCancel",
-						action:"system:cancel"
-					}
 				]
 			},
 			
@@ -3555,12 +2622,6 @@ package com.dukascopy.connect.sys.bankManager {
 						text:"lang.menuInviteConsultant",
 						action:"app:support"
 					}
-				],
-				buttons: [
-					{
-						text:"lang.buttonCancel",
-						action:"system:cancel"
-					}
 				]
 			},
 			
@@ -3578,12 +2639,6 @@ package com.dukascopy.connect.sys.bankManager {
 						text:"lang.menuInviteConsultant",
 						action:"app:support"
 					}
-				],
-				buttons: [
-					{
-						text:"lang.buttonCancel",
-						action:"system:cancel"
-					}
 				]
 			},
 			
@@ -3599,12 +2654,6 @@ package com.dukascopy.connect.sys.bankManager {
 					}, {
 						text:"lang.menuInviteConsultant",
 						action:"app:support"
-					}
-				],
-				buttons: [
-					{
-						text:"lang.buttonCancel",
-						action:"system:cancel"
 					}
 				]
 			},
@@ -3634,12 +2683,6 @@ package com.dukascopy.connect.sys.bankManager {
 					}, {
 						text:"lang.menuUserTransactions",
 						action:"app:historyUser"
-					}
-				],
-				buttons: [
-					{
-						text:"lang.buttonCancel",
-						action:"system:cancel"
 					}
 				]
 			},
@@ -3801,12 +2844,6 @@ package com.dukascopy.connect.sys.bankManager {
 						text:"lang.menuIncreaseLimits",
 						action:"app:limits"
 					}
-				],
-				buttons: [
-					{
-						text:"lang.buttonCancel",
-						action:"system:cancel"
-					}
 				]
 			},
 			
@@ -3814,28 +2851,13 @@ package com.dukascopy.connect.sys.bankManager {
 				desc:"lang.operationDetails",
 				item: {
 					type:"operationDetails"
-				},
-				buttons: [
-					{
-						text:"lang.buttonBack",
-						action:"cmd:back"
-					}, {
-						text:"lang.buttonCancel",
-						action:"system:cancel"
-					}
-				]
+				}
 			},
 			
 			openTradingAccountConfirm: {
 				desc:"lang.confirmAccountOpening",
 				buttons: [
 					{
-						text:"lang.buttonBack",
-						action:"cmd:back"
-					}, {
-						text:"lang.buttonCancel",
-						action:"system:cancel"
-					}, {
 						text:"lang.buttonConfirm",
 						action:"nav:openTradingAccountConfirmed"
 					}
@@ -3846,12 +2868,6 @@ package com.dukascopy.connect.sys.bankManager {
 				desc:"lang.confirmInvoice",
 				buttons: [
 					{
-						text:"lang.buttonBack",
-						action:"cmd:back"
-					}, {
-						text:"lang.buttonCancel",
-						action:"system:cancel"
-					}, {
 						text:"lang.buttonConfirm",
 						action:"nav:invoiceConfirmed"
 					}
@@ -3860,7 +2876,9 @@ package com.dukascopy.connect.sys.bankManager {
 			
 			actionProgress: {
 				desc:"lang.actionInProgress",
-				back:false
+				back:false,
+				isBack:false,
+				isCancel:false
 			},
 			
 			obligatoryPass: {
@@ -3870,15 +2888,6 @@ package com.dukascopy.connect.sys.bankManager {
 					{
 						text:"lang.menuEnterPwd",
 						action:"nav:needPwdCheck"
-					}
-				],
-				buttons: [
-					{
-						text:"lang.buttonBack",
-						action:"cmd:last"
-					}, {
-						text:"lang.buttonCancel",
-						action:"system:cancel"
 					}
 				]
 			},
@@ -4023,19 +3032,6 @@ package com.dukascopy.connect.sys.bankManager {
 				]
 			},
 			
-			whatElse: {
-				desc:"lang.otherOperation",
-				buttons: [
-					{
-						text:"lang.buttonYes",
-						action:"nav:main"
-					}, {
-						text:"lang.buttonNo",
-						action:"app:back"
-					}
-				]
-			},
-			
 			payError: {
 				desc:"@@1",
 				isError: true,
@@ -4074,31 +3070,11 @@ package com.dukascopy.connect.sys.bankManager {
 			},
 			
 			notReadyYet: {
-				desc:"lang.notReadyYet",
-				buttons: [
-					{
-						text:"lang.buttonBack",
-						action:"cmd:back"
-					}, {
-						text:"lang.buttonCancel",
-						action:"system:cancel"
-					}
-				]
-			},
-			
-			cryptoNotAvailabe: {
-				desc:"lang.cyptoNotAvailableDesc",
-				buttons: [
-					{
-						text:"lang.buttonOk",
-						action:"nav:main"
-					}
-				]
+				desc:"lang.notReadyYet"
 			},
 			
 			search: {
 				desc:"lang.pleaseChoose",
-				back: false,
 				menu: "@@1",
 				buttons: [
 					{
@@ -4110,18 +3086,3 @@ package com.dukascopy.connect.sys.bankManager {
 		}
 	}
 }
-
-// to those whom you already pay and received
-/* Те, с кем были фин. отношения (платил или получал)
-		часто используемые / фавориты
-		редко используемые
-		Вашему chat mate
-		на карты (список транзакций на карты)
-		external recepiens
- * Tе, с кем не было фин. отношений (не платил, не получал)
-		конткаты
-		chat mate
-		by phone number
-		external transaction
-		на карту
- * */

@@ -18,6 +18,7 @@ package com.dukascopy.connect.vo {
 		private var _isItem:Boolean;
 		private var _menuLayout:String = "";
 		private var _addDesc:Array;
+		private var _isFirst:Boolean;
 		
 		public var additionalData:Object;
 		
@@ -45,6 +46,8 @@ package com.dukascopy.connect.vo {
 			}
 			if ("isMain" in obj == true)
 				_isMain = obj.isMain;
+			if ("isFirst" in obj == true)
+				_isFirst = obj.isFirst;
 			if ("saveItem" in obj == true)
 				_saveItem = obj.saveItem;
 			if ("addDesc" in obj == true)
@@ -98,6 +101,7 @@ package com.dukascopy.connect.vo {
 		public function get menuLayout():String{ return _menuLayout;}
 		public function get isItem():Boolean { return _isItem; }
 		public function get isMain():Boolean { return _isMain; }
+		public function get isFirst():Boolean { return _isFirst; }
 		public function get saveItem():Boolean { return _saveItem; }
 		public function get isLast():Boolean { return _isLast; }
 		public function get addDesc():Array { return _addDesc; }

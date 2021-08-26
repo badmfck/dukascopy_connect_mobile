@@ -869,7 +869,7 @@ package com.dukascopy.connect.screens {
                     return;
 				if ("number" in data.cards[lastHitzoneObject.param] == true && data.cards[lastHitzoneObject.param].number != null) {
 					if (BankManager.getHistoryAccount() == data.cards[lastHitzoneObject.param].number) {
-						BankManager.openChatBotScreen( { bankBot:true }, true);
+						BankManager.openChatBotScreen( { bankBot:true, startVal: { type:"cardSelect", action:"nav:cardOperations", param:data.cards[lastHitzoneObject.param] } }, true);
 						return;
 					}
 					BankManager.getCardHistory(data.cards[lastHitzoneObject.param].number, data.cards[lastHitzoneObject.param].masked);
@@ -911,12 +911,10 @@ package com.dukascopy.connect.screens {
 				}
 				if ("ACCOUNT_NUMBER" in data.accounts[lastHitzoneObject.param] == true && data.accounts[lastHitzoneObject.param].ACCOUNT_NUMBER != null) {
 					if (BankManager.getHistoryAccount() == data.accounts[lastHitzoneObject.param].ACCOUNT_NUMBER) {
-						var accountType:String = "WALLET";
 						if (list.getStock()[n].renderer is ListBankAccountCryptoWallets == true)
-							accountType = "CRYPTO";
-						else if (list.getStock()[n].renderer is ListBankAccountSaving == true)
-							accountType = "SAVINGS";
-						BankManager.openChatBotScreen( { bankBot:true, accountType:accountType, acc:data.accounts[lastHitzoneObject.param].ACCOUNT_NUMBER }, true);
+							BankManager.openChatBotScreen( { bankBot:true, accountType:"CRYPTO", acc:data.accounts[lastHitzoneObject.param].ACCOUNT_NUMBER }, true);
+						else
+							BankManager.openChatBotScreen( { bankBot:true, startVal: { type:"walletSelect", action:"nav:walletOperations", param:data.accounts[lastHitzoneObject.param] } }, true);
 						return;
 					}
 					var currency:String;
@@ -961,7 +959,7 @@ package com.dukascopy.connect.screens {
 				}
 				if ("ACCOUNT_NUMBER" in data.accounts[lastHitzoneObject.param] == true && data.accounts[lastHitzoneObject.param].ACCOUNT_NUMBER != null) {
 					if (BankManager.getHistoryAccount() == data.accounts[lastHitzoneObject.param].INSTRUMENT) {
-						BankManager.openChatBotScreen( { investmentOps: true, investmentAcc:data.accounts[lastHitzoneObject.param] }, true);
+						BankManager.openChatBotScreen( { bankBot:true, startVal: { type:"investmentSelect", action:"nav:investmentOperations", param:data.accounts[lastHitzoneObject.param] } }, true);
 						return;
 					}
 					if ("CONSOLIDATE_BALANCE" in data.accounts[lastHitzoneObject.param] == false) {

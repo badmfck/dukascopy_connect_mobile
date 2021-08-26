@@ -478,7 +478,6 @@ package com.dukascopy.connect.screens {
 			BankManager.S_PAYMENT_ERROR.remove(onError);
 			BankManager.S_ALL_DATA.remove(onAccountExists);
 			
-			
 			BankManager.checkForProgress(true);
 			
 			if (speech != null) {

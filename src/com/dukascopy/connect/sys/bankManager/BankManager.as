@@ -404,13 +404,15 @@ package com.dukascopy.connect.sys.bankManager {
 					}
 				}
 			} else if ("bankBot" in _initData == true && _initData.bankBot == true) {
+				if ("startVal" in _initData == true) {
+					if ("type" in _initData.startVal) {
+						preSendMessage(_initData.startVal, false);
+						return;
+					}
+				}
 				if ("accountType" in _initData == true) {
-					if (_initData.accountType == "SAVINGS") {
-						msg = "nav:walletOperationsOnly:" + _initData.acc;
-					} else if (_initData.accountType == "CRYPTO") {
+					if (_initData.accountType == "CRYPTO") {
 						msg = "nav:crypto";
-					} else if (_initData.accountType == "WALLET") {
-						msg = "nav:walletOperationsOnly:" + _initData.acc;
 					}
 				} else {
 					msgDisplay = Lang.showMeMainMenu;
@@ -419,8 +421,6 @@ package com.dukascopy.connect.sys.bankManager {
 			} else if ("investmentDisclaimer" in _initData == true && _initData.investmentDisclaimer == true) {
 				msgDisplay = Lang.showMeInvestmentMenu;
 				msg = "nav:investments";
-			} else if ("investmentOps" in _initData == true && _initData.investmentOps == true) {
-				sendMessage("nav:investmentOperationsAdd:" + _initData.investmentAcc.ACCOUNT_NUMBER + "|!|" + _initData.investmentAcc.INSTRUMENT);
 			}
 			if (msgDisplay != null) {
 				var baVO:BankMessageVO = new BankMessageVO(msgDisplay);
@@ -1061,9 +1061,6 @@ package com.dukascopy.connect.sys.bankManager {
 						return;
 					} else {
 						data.tapped = true;
-						baVO = new BankMessageVO(data.text);
-						baVO.setMine();
-						invokeAnswerSignal(baVO);
 						sendMessage(
 							"val:" + 
 								data.param.number + "|!|" + 
@@ -1075,9 +1072,6 @@ package com.dukascopy.connect.sys.bankManager {
 					}
 				} else if (data.type == "walletSelect" || data.type == "walletSelectAll") {
 					data.tapped = true;
-					baVO = new BankMessageVO(data.text);
-					baVO.setMine();
-					invokeAnswerSignal(baVO);
 					sendMessage("val:" + data.param.ACCOUNT_NUMBER);
 					sendMessage(msg);
 				} else if (data.type == "cryptoRewardsDeposites") {
@@ -1116,10 +1110,10 @@ package com.dukascopy.connect.sys.bankManager {
 					return;
 				} else if (data.type == "investmentSelect" || data.type == "investmentSelectAll") {
 					data.tapped = true;
-					baVO = new BankMessageVO(PayInvestmentsManager.getInvestmentNameByInstrument(data.param.INSTRUMENT));
+					/*baVO = new BankMessageVO(PayInvestmentsManager.getInvestmentNameByInstrument(data.param.INSTRUMENT));
 					baVO.setMine();
 					baVO.additionalData = data.param;
-					invokeAnswerSignal(baVO);
+					invokeAnswerSignal(baVO);*/
 					sendMessage("val:" + data.param.ACCOUNT_NUMBER + "|!|" + data.param.INSTRUMENT);
 					sendMessage(msg);
 				} else if (data.type == "investmentDetails") {
@@ -2125,8 +2119,6 @@ package com.dukascopy.connect.sys.bankManager {
 					accNumberIban1 = giftData.accountNumberIBAN;
 					accNumberIban2 = giftData.credit_account_numberIBAN;
 			}
-			/*if (accNumberIban2 == null)
-				accNumberIban2 = giftData.credit_account_currency;*/
 			sendMessage("val:" +
 				accNumberIban1 + "|!|" +
 				accNumberIban2 + "|!|" +
@@ -4156,7 +4148,8 @@ package com.dukascopy.connect.sys.bankManager {
 			if (bankMessages == null ||
 				bankMessages.length == 0 ||
 				bankMessages[bankMessages.length - 1].isMain == true ||
-				bankMessages[bankMessages.length - 1].isLast == true) {
+				bankMessages[bankMessages.length - 1].isLast == true ||
+				bankMessages[bankMessages.length - 1].isFirst == true) {
 					if (needToCloseSession == true)
 						closeBankChatBotSession();
 					else

@@ -65,7 +65,6 @@ package com.dukascopy.connect.sys.bankManager {
 		
 		static private var nonSessionCounter:int;
 		static private var save:Boolean = true;
-		static private var firstData:Object = null;
 		
 		static public var accountInfo:Object;
 		static public var cryptoAccounts:Object;
@@ -96,8 +95,12 @@ package com.dukascopy.connect.sys.bankManager {
 				return;
 			}
 			if (command == "val") {
-				if (steps != null && steps.length != 0)
+				if (steps != null && steps.length != 0) {
 					steps[steps.length - 1].val = msg.substr(command.length + 1);
+				} else {
+					steps ||= [];
+					steps.push( { val: msg.substr(command.length + 1) } );
+				}
 				return;
 			}
 			msg = msg.replace(/[^\w\:\,\|\!\.\s\+\-]/g, "");
@@ -118,7 +121,6 @@ package com.dukascopy.connect.sys.bankManager {
 					waitForPass = false;
 					steps = null;
 					stepsOld = null;
-					firstData = null;
 					S_ANSWER.invoke("app:actionCompleted");
 					sendBlock("main");
 					return;
@@ -143,19 +145,19 @@ package com.dukascopy.connect.sys.bankManager {
 						scenario.scenario.cryptoDeposites.menu[3].disabled = true;
 					else if (steps[steps.length - 1].val == "CLOSED")
 						scenario.scenario.cryptoDeposites.menu[4].disabled = true;
-					sendBlock(tmp[1], steps[steps.length - 1].val);
+					sendBlock(tmp[1], [steps[steps.length - 1].val]);
 					return;
 				}
 				if (tmp[1] == "otherWithdrawalAcc") {
-					sendBlock(tmp[1], fatCatzURL);
+					sendBlock(tmp[1], [fatCatzURL]);
 					return;
 				}
 				if (tmp[1] == "cryptoFatCatz") {
-					sendBlock(tmp[1], fatCatzURL);
+					sendBlock(tmp[1], [fatCatzURL]);
 					return;
 				}
 				if (tmp[1] == "cryptoTradeStat") {
-					sendBlock(tmp[1], steps[steps.length - 1].val);
+					sendBlock(tmp[1], [steps[steps.length - 1].val]);
 					return;
 				}
 				if (tmp[1] == "transactionCodeConfirm") {
@@ -168,15 +170,15 @@ package com.dukascopy.connect.sys.bankManager {
 				}
 				if (tmp[1] == "otherWithdrawalWallets") {
 					vals = steps[steps.length - 1].val.split("|!|");
-					sendBlock(tmp[1], vals[1]);
+					sendBlock(tmp[1], [vals[1]]);
 					return;
 				}
 				if (tmp[1] == "paymentsWallets") {
-					sendBlock(tmp[1], steps[steps.length - 1].val);
+					sendBlock(tmp[1], [steps[steps.length - 1].val]);
 					return;
 				}
 				if (tmp[1] == "paymentsWalletsAll") {
-					sendBlock(tmp[1], steps[steps.length - 2].val);
+					sendBlock(tmp[1], [steps[steps.length - 2].val]);
 					return;
 				}
 				if (tmp[1] == "paymentsDepositConfirm") {
@@ -203,19 +205,19 @@ package com.dukascopy.connect.sys.bankManager {
 							expires = "???";
 						}
 					}
-					sendBlock(tmp[1], vals[0], expires, vals[6] + " " + rdCurrency, vals[4] + " DUK+");
+					sendBlock(tmp[1], [vals[0], expires, vals[6] + " " + rdCurrency, vals[4] + " DUK+"]);
 					return;
 				}
 				if (tmp[1] == "createOfferConfirm") {
 					vals = steps[steps.length - 1].val.split("|!|");
-					sendBlock(tmp[1], getLangValue(vals[2].toLowerCase()), vals[4], vals[3]);
+					sendBlock(tmp[1], [getLangValue(vals[2].toLowerCase()), vals[4], vals[3]]);
 					return;
 				}
 				if (tmp[1] == "cryptoRDCancelConfirm") {
 					vals = steps[steps.length - 2].val.split("|!|");
 					if (Number(vals[2]) == 0)
 						tmp[1] = "cryptoRDCancelConfirmNonPen";
-					sendBlock(tmp[1], vals[2], Number(Number(vals[1]) - Number(vals[2])).toFixed(4));
+					sendBlock(tmp[1], [vals[2], Number(Number(vals[1]) - Number(vals[2])).toFixed(4)]);
 					return;
 				}
 				if (tmp[1] == "crypto") {
@@ -245,19 +247,19 @@ package com.dukascopy.connect.sys.bankManager {
 				if (tmp[1] == "myCryptoOffers") {
 					if (steps != null && steps[steps.length - 1].nav == "cryptoOperations") {
 						if (steps[steps.length - 2].val == "0")
-							sendBlock(tmp[1], getLangValue("buy1"), 0);
+							sendBlock(tmp[1], [getLangValue("buy1"), 0]);
 						else
-							sendBlock(tmp[1], getLangValue("sell1"), 1);
+							sendBlock(tmp[1], [getLangValue("sell1"), 1]);
 					} else
-						sendBlock(tmp[1], "", "", 2);
+						sendBlock(tmp[1], ["", "", 2]);
 					return;
 				}
 				if (tmp[1] == "cryptoOperations") {
 					if (steps != null) {
 						if (steps[steps.length - 1].val == "0")
-							sendBlock(tmp[1], getLangValue("buy"), getLangValue("buy1"), 1);
+							sendBlock(tmp[1], [getLangValue("buy"), getLangValue("buy1"), 1]);
 						else
-							sendBlock(tmp[1], getLangValue("sell"), getLangValue("sell1"), 0);
+							sendBlock(tmp[1], [getLangValue("sell"), getLangValue("sell1"), 0]);
 					}
 					return;
 				}
@@ -267,17 +269,17 @@ package com.dukascopy.connect.sys.bankManager {
 							if (steps[steps.length - 1].nav == "cryptoOperations" && steps[steps.length - 2].nav == "crypto") {
 								if ("val" in steps[steps.length - 2] == true) {
 									if (steps[steps.length - 2].val == 0) {
-										sendBlock(tmp[1], 1);
+										sendBlock(tmp[1], [1]);
 										return;
 									} else if (steps[steps.length - 2].val == 1) {
-										sendBlock(tmp[1], 2);
+										sendBlock(tmp[1], [2]);
 										return;
 									}
 								}
 							}
 						}
 					}
-					sendBlock(tmp[1], 0);
+					sendBlock(tmp[1], [0]);
 					return;
 				}
 				if (tmp[1] == "main") {
@@ -299,7 +301,7 @@ package com.dukascopy.connect.sys.bankManager {
 				}
 				if (tmp[1] == "cardPin") {
 					vals = steps[steps.length - 2].val.split("|!|");
-					sendBlock(tmp[1], vals[0]);
+					sendBlock(tmp[1], [vals[0]]);
 					return;
 				}
 				if (tmp[1] == "cardOperationsActive" ||
@@ -337,7 +339,7 @@ package com.dukascopy.connect.sys.bankManager {
 						tmp[1] = "cardOperationsExp";
 					else if (vals[1] == "SR")
 						tmp[1] = "cardOperationsSRBlocked";
-					sendBlock(tmp[1], vals[0]);
+					sendBlock(tmp[1], [vals[0]]);
 					return;
 				}
 				if (tmp[1] == "walletOperations") {
@@ -346,11 +348,11 @@ package com.dukascopy.connect.sys.bankManager {
 					vals = steps[steps.length - 1].val.split("|!|");
 					if (vals.length != 1)
 						return;
-					sendBlock(tmp[1], vals[0]);
+					sendBlock(tmp[1], [vals[0]]);
 					return;
 				}
 				if (tmp[1] == "walletOperationsOnly") {
-					sendBlock(tmp[1], tmp[2]);
+					sendBlock(tmp[1], [tmp[2]]);
 					return;
 				}
 				if (tmp[1] == "cryptoRDActions") {
@@ -360,20 +362,20 @@ package com.dukascopy.connect.sys.bankManager {
 					if (vals.length != 4)
 						return;
 					if (vals[3] == "E")
-						sendBlock("cryptoRDActionsNothing", vals[0]);
+						sendBlock("cryptoRDActionsNothing", [vals[0]]);
 					else if (vals[3] == "B")
-						sendBlock("cryptoRDActionsB", vals[0]);
+						sendBlock("cryptoRDActionsB", [vals[0]]);
 					else if (vals[3] == "BC")
-						sendBlock("cryptoRDActionsBC", vals[0]);
+						sendBlock("cryptoRDActionsBC", [vals[0]]);
 					else
-						sendBlock(tmp[1], vals[0]);
+						sendBlock(tmp[1], [vals[0]]);
 					return;
 				}
 				if (tmp[1] == "cryptoRDActionsB") {
 					if (steps == null)
 						return;
 					vals = steps[steps.length - 1].val.split("|!|");
-					sendBlock(tmp[1], vals[0]);
+					sendBlock(tmp[1], [vals[0]]);
 					return;
 				}
 				if (tmp[1] == "offerOperations") {
@@ -386,14 +388,14 @@ package com.dukascopy.connect.sys.bankManager {
 						tmp[1] = "offerOperationsActive";
 					else if (vals[1] == "0")
 						tmp[1] = "offerOperationsInactive";
-					sendBlock(tmp[1], vals[0]);
+					sendBlock(tmp[1], [vals[0]]);
 					return;
 				}
 				if (tmp[1] == "offerOperationsActive") {
 					if (steps == null)
 						return;
 					vals = steps[steps.length - 1].val.split("|!|");
-					sendBlock(tmp[1], vals[0]);
+					sendBlock(tmp[1], [vals[0]]);
 					return;
 				}
 				if (tmp[1] == "cardDetails") {
@@ -402,7 +404,7 @@ package com.dukascopy.connect.sys.bankManager {
 					vals = steps[steps.length - 2].val.split("|!|");
 					if (vals.length != 3)
 						return;
-					sendBlock(tmp[1], vals[0]);
+					sendBlock(tmp[1], [vals[0]]);
 					return;
 				}
 				if (tmp[1] == "investmentTransactionConfirmed") {
@@ -468,16 +470,7 @@ package com.dukascopy.connect.sys.bankManager {
 					if (steps == null)
 						return;
 					vals = steps[steps.length - 1].val.split("|!|");
-					sendBlock(tmp[1], vals[0], vals[1]);
-					return;
-				}
-				if (tmp[1] == "investmentOperationsAdd") {
-					if (tmp.length == 3)
-						vals = tmp[2].split("|!|");
-					else
-						return;
-					firstData = tmp[2];
-					sendBlock(tmp[1], vals[0], vals[1]);
+					sendBlock(tmp[1], [vals[0], vals[1]]);
 					return;
 				}
 				if (tmp[1] == "investmentsList" || tmp[1] == "investmentsListAll" || tmp[1] == "investmentsListSell") {
@@ -558,14 +551,14 @@ package com.dukascopy.connect.sys.bankManager {
 				if (tmp[1] == "transferConfirm") {
 					var temp:Array = steps[steps.length - 1].val.split("|!|");
 					if (temp[1].length == 3) {
-						sendBlock("notExistWalletConfirm", temp[1]);
+						sendBlock("notExistWalletConfirm", [temp[1]]);
 						return;
 					}
 				}
 				if (tmp[1] == "transferInternalConfirm") {
 					var temp1:Array = steps[steps.length - 1].val.split("|!|");
 					if (temp1[1].length == 3) {
-						sendBlock("notExistWalletConfirm", temp1[1]);
+						sendBlock("notExistWalletConfirm", [temp1[1]]);
 						return;
 					}
 				}
@@ -607,7 +600,7 @@ package com.dukascopy.connect.sys.bankManager {
 					return;
 				}
 				if (tmp[1] == "investmentCurrencyConfirm") {
-					sendBlock(tmp[1], steps[steps.length - 1].val);
+					sendBlock(tmp[1], [steps[steps.length - 1].val]);
 					return;
 				}
 				sendBlock(tmp[1]);
@@ -626,7 +619,7 @@ package com.dukascopy.connect.sys.bankManager {
 					if (waitForPass == true)
 						lastPaymentsRequests = null;
 					waitForPass = false;
-					if (steps == null || steps.length < 2) {
+					if (steps == null || steps.length == 0 || (steps.length == 1 && "nav" in steps[0] == false)) {
 						echo("BankBotController", "getAnswer", "BACK ERROR (NO STEPS)");
 						getAnswer("bot:bankbot nav:main");
 						return;
@@ -634,6 +627,8 @@ package com.dukascopy.connect.sys.bankManager {
 					if (tmp.length == 3) {
 						for (var j:int = steps.length; j > 0; j--) {
 							if (steps[j - 1].nav == tmp[2])
+								break;
+							if (j == 2 && ("nav" in steps[0] == false))
 								break;
 							steps.pop();
 						}
@@ -645,15 +640,14 @@ package com.dukascopy.connect.sys.bankManager {
 						return;
 					}
 					var obj:Object = steps.pop();
-					if ("nav" in obj == true) {
-						if (steps == null || steps.length == 0) {
-							getAnswer("bot:bankbot nav:" + obj.nav + ":" + firstData);
-							firstData = null;
-						} else {
-							getAnswer("bot:bankbot nav:" + obj.nav);
-						}
-					} else if ("cmd" in obj)
-						getAnswer("bot:bankbot cmd:" + obj.cmd + ":" + obj.value);
+					var commandString:String = "bot:bankbot ";
+					if ("nav" in obj == true)
+						commandString += "nav:" + obj.nav;
+					else if ("cmd" in obj)
+						commandString += "cmd:" + obj.cmd + ":" + obj.value;
+					getAnswer(commandString);
+					if ("val" in obj == true)
+						getAnswer("bot:bankbot val:" + obj.val);
 					return;
 				} else if (tmp[1] == "last") {
 					if (waitForPass == true)
@@ -672,10 +666,10 @@ package com.dukascopy.connect.sys.bankManager {
 					if (res == null)
 						return;
 					else if (res.length == 1 && "action" in res[0])
-						sendBlock("action", res[0]);
+						sendBlock("action", [res[0]]);
 					else {
 						steps.push( { cmd:"keyword", value:tmp[2] } );
-						sendBlock("search", res);
+						sendBlock("search", [res]);
 					}
 				}
 			}
@@ -1451,17 +1445,23 @@ package com.dukascopy.connect.sys.bankManager {
 			}
 		}
 		
-		static private function sendBlock(val:String, param:Object = null, param1:Object = null, param2:Object = null, param3:Object = null):void {
+		static private function sendBlock(val:String, params:Array = null):void {
 			if (val in scenario.scenario == false)
 				return;
 			if (val == "passwordEnter")
 				waitForPass = true;
-			steps ||= [];
 			var data:Object = scenario.scenario[val];
+			// Duplicate object --> //
+			var stringObject:String = JSON.stringify(data);
+			data = JSON.parse(stringObject);
+			data.isFirst = (steps == null || steps.length == 0 || (steps.length == 1 && "nav" in steps[0] == false));
+			stringObject = null;
+			// <-- //
+			addButtons(data);
+			steps ||= [];
 			if ("back" in data == false || data.back != false) {
 				if ("isLast" in data == true || data.isLast == true) {
 					steps = null;
-					firstData = null;
 					S_ANSWER.invoke("app:actionCompleted");
 				} else if ("isError" in data == true) {
 					
@@ -1471,42 +1471,42 @@ package com.dukascopy.connect.sys.bankManager {
 			}
 			var json:String = setLang(JSON.stringify(data));
 			var tmp:String;
-			if (param != null) {
-				tmp = JSON.stringify(param);
-				if (param is String == true) {
-					tmp = tmp.substr(1, tmp.length - 2);
-					json = json.replace(/@@1/gi, tmp);
-				} else
-					json = json.replace(/"@@1"/gi, setLang(tmp));
-			}
-			if (param1 != null) {
-				tmp = JSON.stringify(param1);
-				if (param1 is String == true) {
-					tmp = tmp.substr(1, tmp.length - 2);
-					json = json.replace(/@@2/gi, tmp);
-				} else {
-					json = json.replace(/"@@2"/gi, setLang(tmp));
-				}
-			}
-			if (param2 != null) {
-				tmp = JSON.stringify(param2);
-				if (param2 is String == true) {
-					tmp = tmp.substr(1, tmp.length - 2);
-					json = json.replace(/@@3/gi, tmp);
-				} else {
-					json = json.replace(/"@@3"/gi, setLang(tmp));
-				}
-			}
-			if (param3 != null) {
-				tmp = JSON.stringify(param3);
-				if (param3 is String == true) {
-					tmp = tmp.substr(1, tmp.length - 2);
-					json = json.replace(/@@4/gi, tmp);
-				} else {
-					json = json.replace(/"@@4"/gi, setLang(tmp));
+			var re:RegExp;
+			if (params != null && params.length != 0) {
+				for (var i:int = 0; i < params.length; i++) {
+					tmp = JSON.stringify(params[i]);
+					if (params[i] is String == true) {
+						tmp = tmp.substr(1, tmp.length - 2);
+						re = new RegExp("@@" + (i + 1), "gi");
+						json = json.replace(re, tmp);
+					} else {
+						re = new RegExp("\"@@\"" + (i + 1), "gi");
+						json = json.replace(re, setLang(tmp));
+					}
 				}
 			}
 			S_ANSWER.invoke(json);
+		}
+		
+		static private function addButtons(data:Object):void {
+			if ("isMain" in data == true && data.isMain == true)
+				return;
+			if ("isLast" in data == true && data.isLast == true)
+				return;
+			if (steps == null || steps.length == 0 || (steps.length == 1 && "nav" in steps[0] == false)) {
+				data.buttons ||= [];
+				data.buttons.push( { text:"lang.buttonCancel", action:"system:cancel" } );
+				return;
+			}
+			if ("isBack" in data == false) {
+				data.buttons ||= [];
+				data.buttons.push( { text:"lang.buttonBack", action:"cmd:back" } );
+			}
+			if ("isCancel" in data == false) {
+				data.buttons ||= [];
+				data.buttons.push( { text:"lang.buttonCancel", action:"system:cancel" } );
+			}
+			return;
 		}
 		
 		static private function setLang(val:String):String {
@@ -1579,7 +1579,6 @@ package com.dukascopy.connect.sys.bankManager {
 		static public function reset():void {
 			steps = null;
 			stepsOld = null;
-			firstData = null;
 			lastPaymentsRequests = null;
 		}
 		
@@ -1636,7 +1635,7 @@ package com.dukascopy.connect.sys.bankManager {
 				return;
 			sendBlock("clearCryptoAccount");
 			var wpID:String = respondData.message;
-			sendBlock("bcWithdrawalConfirmed", wpID);
+			sendBlock("bcWithdrawalConfirmed", [wpID]);
 		}
 		
 		static private function onInvestmentDelivered(respondData:Object, hash:String):void {
@@ -1656,7 +1655,7 @@ package com.dukascopy.connect.sys.bankManager {
 		static private function onCryptoDepositeAddress(respondData:Object, hash:String):void {
 			if (preCheckForErrors(respondData, hash, null, "paymentsErrorDataNull") == true)
 				return;
-			sendBlock("bcDepositeAddressConfirmed", respondData.address, steps[steps.length - 2].val.split("|!|")[0]);
+			sendBlock("bcDepositeAddressConfirmed", [respondData.address, steps[steps.length - 2].val.split("|!|")[0]]);
 		}
 		
 		static private function onCryptoTraded(respondData:Object, hash:String):void {
@@ -1702,7 +1701,7 @@ package com.dukascopy.connect.sys.bankManager {
 			if (preCheckForErrors(respondData, "linkCard", null, "paymentsErrorDataNull") == true)
 				return;
 			sendBlock("clearCards");
-			sendBlock("linkCard", respondData.url + "&sid=" + PayConfig.PAY_SESSION_ID + "&lang=" + LangManager.model.getCurrentLanguageID());
+			sendBlock("linkCard", [respondData.url + "&sid=" + PayConfig.PAY_SESSION_ID + "&lang=" + LangManager.model.getCurrentLanguageID()]);
 		}
 		
 		static private function onCardBlocked(respondData:Object, hash:String):void {
@@ -1751,7 +1750,7 @@ package com.dukascopy.connect.sys.bankManager {
 				investmentDetailsData[respondData.INSTRUMENT] = respondData;
 			}
 			S_ANSWER.invoke("requestRespond:investmentDetailsCompleted:" + JSON.stringify(respondData));
-			sendBlock("investmentDetails", respondData.INSTRUMENT);
+			sendBlock("investmentDetails", [respondData.INSTRUMENT]);
 		}
 		
 		static private function onInvestmentHistoryLoaded(respondData:Object, hash:String):void {
@@ -1879,7 +1878,7 @@ package com.dukascopy.connect.sys.bankManager {
 			if (respondData.success == true)
 				sendBlock("openTradingAccountConfirmed");
 			else
-				sendBlock("payError", Lang.tradingAccOpeningWait);
+				sendBlock("payError", [Lang.tradingAccOpeningWait]);
 		}
 		
 		static private function onInvestmentCurrencySetted(respondData:Object):void {
@@ -2013,7 +2012,7 @@ package com.dukascopy.connect.sys.bankManager {
 			isLoggining = false;
 			if (!isNaN(errorCode) && errorCode == PayRespond.ERROR_NOT_APPROVED_ACCOUNT)
 			{
-				sendBlock("payError", BankManager.ACCOUNT_NOT_APPROVED);
+				sendBlock("payError", [BankManager.ACCOUNT_NOT_APPROVED]);
 				return;
 			}
 			if (!isNaN(errorCode) && errorCode == -1)
@@ -2025,7 +2024,7 @@ package com.dukascopy.connect.sys.bankManager {
 			}
 			if (!isNaN(errorCode) && errorCode == 1)
 			{
-				sendBlock("payError", BankManager.PWP_NOT_ENTERED);
+				sendBlock("payError", [BankManager.PWP_NOT_ENTERED]);
 				return;
 			}
 			if (PayConfig.PAY_SESSION_ID == "") {
@@ -2036,7 +2035,7 @@ package com.dukascopy.connect.sys.bankManager {
 				}
 				else
 				{
-					sendBlock("payError", BankManager.PWP_NOT_ENTERED);
+					sendBlock("payError", [BankManager.PWP_NOT_ENTERED]);
 				}
 				
 				return;
@@ -2399,14 +2398,14 @@ package com.dukascopy.connect.sys.bankManager {
 			if (preCheckForErrors(respondData, hash, null, "paymentsErrorDataNull") == true)
 				return;
 			sendBlock("clearWallets");
-			sendBlock("otherWithdrawalConfirm", respondData.url);
+			sendBlock("otherWithdrawalConfirm", [respondData.url]);
 		}
 		
 		static private function onPaymentsDepositCompleted(respondData:Object, hash:String):void {
 			if (preCheckForErrors(respondData, hash, null, "paymentsErrorDataNull") == true)
 				return;
 			sendBlock("clearWallets");
-			sendBlock("paymentsDepositConfirm", respondData.url);
+			sendBlock("paymentsDepositConfirm", [respondData.url]);
 		}
 		
 		static private function onCardUnloadCompleted(respondData:Object, hash:String):void {
@@ -2421,7 +2420,7 @@ package com.dukascopy.connect.sys.bankManager {
 			sendBlock("clearCards");
 			sendBlock("clearWallets");
 			if ("url" in respondData == true) {
-				sendBlock("dukaCardDepositeTransactionConfirmedURL", respondData.url);
+				sendBlock("dukaCardDepositeTransactionConfirmedURL", [respondData.url]);
 			} else {
 				sendBlock("dukaCardDepositeTransactionConfirmed");
 			}
@@ -2456,7 +2455,7 @@ package com.dukascopy.connect.sys.bankManager {
 		static private function onRDCompleted(respondData:Object, hash:String):void {
 			if (preCheckForErrors(respondData, hash, null, "paymentsErrorDataNull", [5408]) == true) {
 				if (respondData.code == 5408)
-					sendBlock("rdErrorNotEnoughMoney", respondData.msg)
+					sendBlock("rdErrorNotEnoughMoney", [respondData.msg])
 				return;
 			}
 			sendBlock("clearCryptoAccount");
@@ -2505,7 +2504,7 @@ package com.dukascopy.connect.sys.bankManager {
 				return true;
 			if (errorRespond == 3) {
 				if (codePass == null || codePass.indexOf(respondData.code) == -1)
-					sendBlock("payError", respondData.msg, (hash != null && lastPaymentsRequestsID != null && "hash" in lastPaymentsRequestsID == true) ? lastPaymentsRequestsID[hash] : "");
+					sendBlock("payError", [respondData.msg, (hash != null && lastPaymentsRequestsID != null && "hash" in lastPaymentsRequestsID == true) ? lastPaymentsRequestsID[hash] : ""]);
 				removeByHash(hash);
 				return true;
 			}
