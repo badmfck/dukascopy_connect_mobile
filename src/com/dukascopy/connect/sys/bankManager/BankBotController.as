@@ -1821,7 +1821,10 @@ package com.dukascopy.connect.sys.bankManager {
 		static private function onPinRequested(respondData:Object):void {
 			if (preCheckForErrors(respondData, null, null, "paymentsErrorDataNull"))
 				return;
-			sendBlock("pinCodeCompleted");
+			if (respondData.channel == "ivr")
+				sendBlock("pinCodeCallbackCompleted");
+			else
+				sendBlock("pinCodeCompleted");
 		}
 		
 		static private function onTransactionCodeResponse(respondData:Object, hash:String):void {

@@ -150,6 +150,7 @@ package com.dukascopy.connect.sys.bankManager {
 		static public var transactionCodeFailed:String = "Wrong code. Please try one more time.";
 		static public var transactionCodeCompleted:String = "Code is correct. Transfer is finished.";
 		static public var confirmedPinRequest:String = "Pin code was successfully sent to your phone via sms.";
+		static public var confirmedPinCallbackRequest:String = "Automatic voice call with a pin code is being made on your mobile phone number. If you have not received it, please try one more time or let us know at support@dukascopy.bank or support chat.";
 		static public var confirmedChangeCurrency:String = "Main currency changed.";
 		static public var confirmedBCAddressDeposite:String = "The address for this Dukascoin deposit operation is:\\n@@1\\n\\nPlease transfer the exact amount of @@2 Dukascoin\/s to this address.\\n\\nCAUTION! Any discrepancy between the amount declared and the actual deposit performed, mismatch in token address will potentially cause the total loss of the transferred crypto-assets. Dukascopy Bank SA is not obliged to return any crypto tokens received in case of the erroneous or unidentified transactions.";
 		static public var confirmedTransactionAdd:String = "Please note that this payment method is intended for sending money <b>internally</b> between two Multi-Currency Account holders.\\n\\nThe Bank reserves the right to clarify the purpose of money transfer. To avoid delay in payment processing it is recommended to always fill in the <b>Message</b> field.";

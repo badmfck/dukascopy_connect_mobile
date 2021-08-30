@@ -699,6 +699,7 @@ package com.dukascopy.connect.sys.bankManager {
 			accountOperations: {
 				desc:"lang.accountsDesc",
 				menuLayout:"vertical",
+				isBack:false,
 				menu:[
 					{
 						text:"lang.menuShowAccounts",
@@ -2894,6 +2895,20 @@ package com.dukascopy.connect.sys.bankManager {
 			
 			pinCodeCompleted: {
 				desc:"lang.confirmedPinRequest lang.otherOperation",
+				isLast: true,
+				buttons: [
+					{
+						text:"lang.buttonYes",
+						action:"nav:main"
+					}, {
+						text:"lang.buttonNo",
+						action:"app:back"
+					}
+				]
+			},
+			
+			pinCodeCallbackCompleted: {
+				desc:"lang.confirmedPinCallbackRequest lang.otherOperation",
 				isLast: true,
 				buttons: [
 					{

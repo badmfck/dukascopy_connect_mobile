@@ -1673,6 +1673,7 @@ package com.dukascopy.connect.sys.paymentsManagerNew {
 			PayServer.call_sendPinForCard(
 				function(respond:PayRespond):void {
 					var res:Object = checkForError(respond);
+					res.channel = channel;
 					if (callback != null)
 						callback(res);
 				},
