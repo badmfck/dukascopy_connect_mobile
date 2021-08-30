@@ -1136,7 +1136,7 @@ package com.dukascopy.connect.screens {
 					if (BankManager.getIsCardHistory() == true)
 						topBar.updateTitle("VISA " + BankManager.getCardMasked());
 					else if (BankManager.getIsInvestmentHistory() == true)
-						topBar.updateTitle("Acc «" + currentAccount + "»");
+						topBar.updateTitle("Acc «" + Lang.investmentsTitles[currentAccount] + "»");
 					else
 						topBar.updateTitle("Acc «" + BankManager.getAccountCurrency() + "»");
 				}

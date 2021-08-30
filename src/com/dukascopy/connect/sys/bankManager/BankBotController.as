@@ -1750,7 +1750,7 @@ package com.dukascopy.connect.sys.bankManager {
 				investmentDetailsData[respondData.INSTRUMENT] = respondData;
 			}
 			S_ANSWER.invoke("requestRespond:investmentDetailsCompleted:" + JSON.stringify(respondData));
-			sendBlock("investmentDetails", [respondData.INSTRUMENT]);
+			sendBlock("investmentDetails", [Lang.investmentsTitles[respondData.INSTRUMENT], respondData.INSTRUMENT]);
 		}
 		
 		static private function onInvestmentHistoryLoaded(respondData:Object, hash:String):void {

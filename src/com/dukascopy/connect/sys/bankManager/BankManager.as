@@ -60,6 +60,7 @@ package com.dukascopy.connect.sys.bankManager {
 	import com.dukascopy.connect.sys.dialogManager.DialogManager;
 	import com.dukascopy.connect.sys.echo.echo;
 	import com.dukascopy.connect.sys.nativeExtensionController.NativeExtensionController;
+	import com.dukascopy.connect.sys.payments.CurrencyHelpers;
 	import com.dukascopy.connect.sys.payments.InvoiceManager;
 	import com.dukascopy.connect.sys.payments.PayAPIManager;
 	import com.dukascopy.connect.sys.payments.PayInvestmentsManager;
@@ -1526,14 +1527,14 @@ package com.dukascopy.connect.sys.bankManager {
 			var msg:String = "";
 			if (giftData.fixedCommodityValue == true) {
 				if ("textForUser1" in giftData.additionalData)
-					msg = giftData.additionalData.textForUser1.replace("@1", giftData.customValue + " " + giftData.credit_account_currency);
+					msg = giftData.additionalData.textForUser1.replace("@1", giftData.customValue + " " + CurrencyHelpers.getCurrencyByKey(giftData.credit_account_currency));
 				else
-					msg = "Purchase " + giftData.customValue + " " + giftData.credit_account_currency;
+					msg = "Purchase " + giftData.customValue + " " + CurrencyHelpers.getCurrencyByKey(giftData.credit_account_currency);
 			} else {
 				if ("textForUser2" in giftData.additionalData)
-					msg = giftData.additionalData.textForUser2.replace("@1", giftData.customValue + " " + giftData.currency).replace("@2", giftData.credit_account_currency);
+					msg = giftData.additionalData.textForUser2.replace("@1", giftData.customValue + " " + giftData.currency).replace("@2", Lang.investmentsTitles[giftData.credit_account_currency]);
 				else
-					msg = "Purchase " + giftData.customValue + " " + giftData.currency + " worth of " + giftData.credit_account_currency;
+					msg = "Purchase " + giftData.customValue + " " + giftData.currency + " worth of " + Lang.investmentsTitles[giftData.credit_account_currency];
 			}
 			var baVO:BankMessageVO = new BankMessageVO(msg);
 			baVO.setMine();
@@ -1555,14 +1556,14 @@ package com.dukascopy.connect.sys.bankManager {
 			var msg:String = "";
 			if (giftData.fixedCommodityValue == true) {
 				if ("textForUser1" in giftData.additionalData)
-					msg = giftData.additionalData.textForUser1.replace("@1", giftData.customValue + " " + giftData.credit_account_currency);
+					msg = giftData.additionalData.textForUser1.replace("@1", giftData.customValue + " " + CurrencyHelpers.getCurrencyByKey(giftData.credit_account_currency));
 				else
-					msg = "Sell " + giftData.customValue + " " + giftData.credit_account_currency;
+					msg = "Sell " + giftData.customValue + " " + CurrencyHelpers.getCurrencyByKey(giftData.credit_account_currency);
 			} else {
 				if ("textForUser2" in giftData.additionalData)
-					msg = giftData.additionalData.textForUser2.replace("@1", giftData.customValue + " " + giftData.currency).replace("@2", giftData.credit_account_currency);
+					msg = giftData.additionalData.textForUser2.replace("@1", giftData.customValue + " " + giftData.currency).replace("@2", Lang.investmentsTitles[giftData.credit_account_currency]);
 				else
-					msg = "Sell " + giftData.customValue + " " + giftData.currency + " worth of " + giftData.credit_account_currency;
+					msg = "Sell " + giftData.customValue + " " + giftData.currency + " worth of " + Lang.investmentsTitles[giftData.credit_account_currency];
 			}
 			var baVO:BankMessageVO = new BankMessageVO(msg);
 			baVO.setMine();

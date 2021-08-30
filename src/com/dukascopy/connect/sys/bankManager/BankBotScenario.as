@@ -2277,7 +2277,7 @@ package com.dukascopy.connect.sys.bankManager {
 				desc:"lang.itemInvestmentDetails",
 				item: {
 					type:"showInvestmentDetails",
-					selection:"@@1"
+					selection:"@@2"
 				}
 			},
 			
