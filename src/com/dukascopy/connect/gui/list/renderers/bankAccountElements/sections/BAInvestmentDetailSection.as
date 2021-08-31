@@ -68,26 +68,12 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements.sections {
 				tfNumber.width = w;
 			else
 				tfNumber.width = tfNumber.textWidth + 4;
-			var stringAmount:String = String(data.amount);
-			var dotIndex:int = stringAmount.indexOf(".");
-			var fullPart:String;
-			var decimalPart:String;
-			if (dotIndex == -1) {
-				fullPart = stringAmount + ".";
-				decimalPart = String(Math.pow(10, CurrencyHelpers.getMaxDecimalCount(data.currency))).substr(1);
-			} else {
-				fullPart = stringAmount.substr(0, dotIndex + 1);
-				decimalPart = stringAmount.substr(dotIndex + 1);
-			}
-			var firstPart:String =  UI.renderCurrency(
-				fullPart,
-				decimalPart,
-				CurrencyHelpers.getCurrencyByKey(data.currency),
+			tfAmount.htmlText = UI.renderCurrencyAdvanced(
+				data.amount,
+				data.currency,
 				Config.FINGER_SIZE * .25,
 				Config.FINGER_SIZE * .19
-			);		
-			var infoString:String = firstPart;
-			tfAmount.htmlText = infoString;
+			);
 			tfAmount.width = w - Config.MARGIN * 2;
 			trueWidth = w;
 			trueHeight = tfAmount.y + tfAmount.height + Config.MARGIN;
