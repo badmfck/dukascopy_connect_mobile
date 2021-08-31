@@ -2173,7 +2173,7 @@ package com.dukascopy.connect.sys.bankManager {
 					if ("command" in lastBankMessageVO.item == true) {
 						backScreenData["command"] = lastBankMessageVO.item.command;
 					}
-					NativeExtensionController.showWebView(lastBankMessageVO.item.value, Lang.TEXT_WITHDRAWAL, MobileGui.centerScreen.currentScreenClass, backScreenData);
+					NativeExtensionController.showWebView(lastBankMessageVO.item.value + "&lang=" + LangManager.model.getCurrentLanguageID(), Lang.TEXT_WITHDRAWAL, MobileGui.centerScreen.currentScreenClass, backScreenData);
 					startBankChat();
 					return;
 				}
