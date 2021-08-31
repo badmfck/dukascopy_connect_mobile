@@ -865,8 +865,10 @@ package com.dukascopy.connect.screens {
 						list.scrollBottom(true);
 					return;
 				}
-				if (data.cards[lastHitzoneObject.param].programme == "linked")
+				if (data.cards[lastHitzoneObject.param].programme == "linked") {
+					BankManager.openChatBotScreen( { bankBot:true, startVal: { type:"cardSelect", action:"nav:cardOperations", param:data.cards[lastHitzoneObject.param] } }, true);
                     return;
+				}
 				if ("number" in data.cards[lastHitzoneObject.param] == true && data.cards[lastHitzoneObject.param].number != null) {
 					if (BankManager.getHistoryAccount() == data.cards[lastHitzoneObject.param].number) {
 						BankManager.openChatBotScreen( { bankBot:true, startVal: { type:"cardSelect", action:"nav:cardOperations", param:data.cards[lastHitzoneObject.param] } }, true);
