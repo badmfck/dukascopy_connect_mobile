@@ -53,6 +53,7 @@ package com.dukascopy.connect.sys.calendar
 		{
 			var date:Date = new Date();
 			date.setFullYear(month.year);
+			date.setDate(1);
 			date.setMonth(month.monthIndex - 1);
 			var monthNext:Month = new Month(date);
 			return monthNext;
