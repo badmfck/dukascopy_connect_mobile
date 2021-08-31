@@ -411,7 +411,7 @@ package com.dukascopy.connect.gui.input {
 					line.bitmapData.dispose();
 					line.bitmapData = null;
 				}
-				line.bitmapData = UI.getHorizontalLine(3, 0x33CC00, _width);
+				line.bitmapData = UI.getHorizontalLine(0x33CC00, _width);
 				line.y = int(_height - line.height);
 			}
 			rightClicker.x = textField.x + textField.width;

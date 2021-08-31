@@ -1,6 +1,7 @@
 package com.dukascopy.connect.gui.button
 {
 	import com.dukascopy.connect.Config;
+	import com.dukascopy.connect.MobileGui;
 	import com.dukascopy.connect.gui.lightbox.UI;
 	import com.dukascopy.connect.gui.menuVideo.BitmapButton;
 	import com.dukascopy.connect.screens.payments.card.TypeCurrency;
@@ -206,7 +207,7 @@ package com.dukascopy.connect.gui.button
 			}
 			
 			var lineColor:Number;
-			var lineThickness:int = int(Math.max(1, Config.FINGER_SIZE * .03));
+			var lineThickness:int = Style.getLineThickness();
 			
 				box.graphics.clear();
 				box.graphics.beginFill(Style.color(Style.COLOR_BACKGROUND), 0);
@@ -493,7 +494,6 @@ package com.dukascopy.connect.gui.button
 			}
 			
 			//generatedBitmap.drawWithQuality(box, null, null, null, null, true, StageQuality.BEST);
-			
 			setBitmapData(generatedBitmap);
 		}
 		

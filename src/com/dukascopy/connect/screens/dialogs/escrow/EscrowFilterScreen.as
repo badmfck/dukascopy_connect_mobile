@@ -274,6 +274,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		
 		private function drawControls():void
 		{
+			//!TODO: padding;
 			tradingSideSelector.maxWidth = getWidth();
 			
 			radioSelection = new Vector.<SelectorItemData>();

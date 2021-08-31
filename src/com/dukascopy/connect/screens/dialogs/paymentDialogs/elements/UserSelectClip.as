@@ -44,7 +44,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs.elements
 		
 		public function draw(user:UserVO, itemWidth:int, itemHeight:int, avatarSize:int):void
 		{
-			line.bitmapData = UI.getHorizontalLine(3, 0x33CC00, itemWidth);
+			line.bitmapData = UI.getHorizontalLine(0x33CC00, itemWidth);
 			line.y = int(itemHeight - line.height);
 			
 			title.x = int(avatar.x + avatarSize * 2 + Config.MARGIN * 1.58);

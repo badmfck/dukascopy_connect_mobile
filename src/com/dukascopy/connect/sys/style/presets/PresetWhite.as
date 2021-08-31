@@ -291,7 +291,7 @@ package com.dukascopy.connect.sys.style.presets
 			this[Style.SIZE_BUTTON_CORNER] = Config.FINGER_SIZE * .3;
 			this[Style.SIZE_BUTTON_HEIGHT] = Config.FINGER_SIZE * .8;
 			this[Style.COLOR_TEXT_DISABLE] = Color.GREY_LIGHT;
-			this[Style.CONTROL_INACTIVE] = Color.GREY_LIGHT;
+			this[Style.CONTROL_INACTIVE] = Color.GREY_SSL;
 			this[Style.ERROR_COLOR] = Color.RED;
 			this[Style.PAYMENTS_LOGIN_IMAGE] = PaymentsImageWhite;
 			this[Style.PAYMENTS_LOGIN_BACK_COLOR] = 0xFFE6F5;

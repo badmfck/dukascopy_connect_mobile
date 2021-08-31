@@ -81,10 +81,10 @@ package com.dukascopy.connect.gui.button {
 			box = new Sprite();
 			tf = UIFactory.createTextField(fontSize);
 			tf.textColor = Style.color(Style.COLOR_TEXT);
-			if (showArrow == false)
+			/*if (showArrow == false)
 			{
 				tf.textColor = Style.color(Style.COLOR_SUBTITLE);
-			}
+			}*/
 			box.addChild(tf);
 			setOverlay(HitZoneType.MENU_MIDDLE_ELEMENT);
 			
@@ -168,7 +168,7 @@ package com.dukascopy.connect.gui.button {
 			this.w = w;
 			this.h = h;
 			
-			lineThickness = int(Math.max(1, Config.FINGER_SIZE * .03));
+			lineThickness = Style.getLineThickness();
 
 			if (generatedBitmap != null) {
 				if (generatedBitmap.height != h || generatedBitmap.width != w) {
@@ -192,8 +192,7 @@ package com.dukascopy.connect.gui.button {
 			if (titleClip.height > 0)
 			{
 				box.y = int(FontSize.SUBHEAD - Config.FINGER_SIZE * .1);
-				tf.y = Math.round((h - tf.height) * .5);
-
+				
 				resultheight = box.y + h - Config.FINGER_SIZE * .1 + lineThickness;
 				innerHeight = h - Config.FINGER_SIZE * .1;
 			}
@@ -201,15 +200,16 @@ package com.dukascopy.connect.gui.button {
 			{
 				resultheight = h;
 				innerHeight = h;
-				tf.y = (h - tf.height) * .5;
 			}
-
+			
+			tf.y = int(innerHeight - tf.height - Config.FINGER_SIZE * .090);
+			
 			box.graphics.clear();
 				box.graphics.beginFill(Style.color(Style.COLOR_BACKGROUND), 0);
 				box.graphics.drawRect(1, 1, w, h);
 				box.graphics.endFill();
 			//	box.graphics.lineStyle(lineThickness, underlineColor);
-
+				
 				box.graphics.beginFill(underlineColor);
 				box.graphics.drawRect(0, innerHeight - lineThickness, w, lineThickness);
 				box.graphics.endFill();
@@ -330,7 +330,7 @@ package com.dukascopy.connect.gui.button {
 		
 		public function linePosition():int 
 		{
-			return innerHeight - lineThickness;
+			return innerHeight - lineThickness + box.y;
 		}
 		
 		public function getFieldHeight():int 

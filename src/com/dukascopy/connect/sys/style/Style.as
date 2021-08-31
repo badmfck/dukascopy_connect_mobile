@@ -1,6 +1,7 @@
 package com.dukascopy.connect.sys.style 
 {
 	import assets.TransferIllustrationDark;
+	import com.dukascopy.connect.Config;
 	import com.dukascopy.connect.sys.style.presets.Preset;
 	import com.dukascopy.connect.sys.style.presets.PresetDark;
 	import com.dukascopy.connect.sys.style.presets.PresetDefault;
@@ -268,6 +269,11 @@ package com.dukascopy.connect.sys.style
 		static public function icon(type:String):Class
 		{
 			return preset[type];
+		}
+		
+		static public function getLineThickness():Number 
+		{
+			return (Math.max(1, Config.FINGER_SIZE * .03));
 		}
 	}
 }

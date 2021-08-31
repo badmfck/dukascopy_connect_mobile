@@ -2381,8 +2381,8 @@ package com.dukascopy.connect.gui.lightbox {
 			return str.slice(0, 1);
 		}
 		
-		static public function getHorizontalLine(lineThickness:int = 2, color:Number = AppTheme.GREY_MEDIUM, width:Number = 1):ImageBitmapData {
-			return new ImageBitmapData("UI.getHorizontalLine", width, (Config.FINGER_SIZE * 0.01 * lineThickness), false, color);
+		static public function getHorizontalLine(color:Number = AppTheme.GREY_MEDIUM, width:Number = 1):ImageBitmapData {
+			return new ImageBitmapData("UI.getHorizontalLine", width, Style.getLineThickness(), false, color);
 		}
 		
 		static public function getVerticalLine(lineThickness:int = 2, color:Number = AppTheme.GREY_MEDIUM):ImageBitmapData {
