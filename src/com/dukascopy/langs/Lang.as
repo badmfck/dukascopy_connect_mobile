@@ -2382,7 +2382,7 @@ package com.dukascopy.langs {
 		static public var sent_buy_offer_description:String = "Please note that %@1 were blocked  on your MCA account.<br/><br/>%@2 has %@3 minutes to accept your offer. If it is not accepted within %@4 minutes, the offer is canceled automatically and the fiat funds on your account get unblocked.<br/><br/>Until the offer is confirmed by the %@5, you can cancel it at any moment, without penalties.";
 		static public var sent_sell_offer_description:String = "%@1 has %@2 minutes to accept your offer. Once it is accepted you will have %@3 minutes to send the crypto. Please get prepared in advance.<br/><br/>If it is not accepted within %@4 minutes, the offer is canceled automatically.<br/><br/>Until the offer is confirmed by the %@5, you can cancel it at any moment, without penalties.";
 		static public var ok_understood:String = "OK, I UNDERSTOOD";
-		static public var escrow_offer_message:String = "Escrow offer";
+		static public var escrow_offer_message:String = "P2P offer";
 		static public var escrow_buy_offer:String = "BUY offer";
 		static public var escrow_sell_offer:String = "SELL offer";
 		static public var price_per_coin:String = "%@ per coin";
@@ -2463,7 +2463,7 @@ package com.dukascopy.langs {
 		static public var escrow_to_sell:String = "I SELL";
 		static public var escrow_to_buy:String = "I BUY";
 		static public var please_select_debit_account:String = "Please select account to be debited";
-		static public var escrow_deal_message:String = "Escrow deal";
+		static public var escrow_deal_message:String = "P2P deal";
 		static public var deal_expired:String = "Deal expired";
 		static public var escrow_enter_transaction_id:String = "Please enter transaction id";
 		static public var escrow_request_investigation:String = "Request investigation";
@@ -2489,7 +2489,7 @@ package com.dukascopy.langs {
 		static public var tenderInputPrice:String = "Input price";
 		static public var tenderSideBuy:String = "Buy";
 		static public var tenderSideSell:String = "Sell";
-		static public var escrow_hold:String = "ESCROW";
+		static public var escrow_hold:String = "P2P";
 		static public var tenderPricePercent:String = "from market price";
 		static public var history:String = "History";
 		static public var ads:String = "Ads";
@@ -2540,6 +2540,7 @@ package com.dukascopy.langs {
 		static public var escrow_debit_from_account:String = "Debit from account";
 		static public var escrow_offer_was_rejected:String = "Offer was rejected";
 		static public var escrow_offer_rejected:String = "Offer was rejected by the counterparty.\nThe funds were unblocked.";
+		static public var instrument:String = "Instrument";
 		
 		static public function updateKeys(keys:Object):void {
 			for (var n:String in keys) {

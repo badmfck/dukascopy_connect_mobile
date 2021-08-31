@@ -577,6 +577,10 @@ package com.dukascopy.connect.vo {
 							price = "@MKT";
 						}
 					}
+					else
+					{
+						price += " " + _qVO.priceCurrency;
+					}
 					
 					text = text.replace("%@3", price);
 					

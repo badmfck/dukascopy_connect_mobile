@@ -273,7 +273,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs.elements
 				underline.bitmapData.dispose();
 				underline.bitmapData = null;
 			}
-			underline.bitmapData = UI.getHorizontalLine(3, color);
+			underline.bitmapData = UI.getHorizontalLine(color);
 		}
 		
 		public function setPadding(value:int):void

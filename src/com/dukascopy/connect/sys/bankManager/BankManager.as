@@ -828,7 +828,7 @@ package com.dukascopy.connect.sys.bankManager {
 						giftData.currency = data.value;
 					giftData.callback = onInvestmentCallback;
 					ServiceScreenManager.showScreen(
-						ServiceScreenManager.TYPE_DIALOG,
+						ServiceScreenManager.TYPE_SCREEN,
 						BuyCommodityPopup,
 						{ 
 							giftData:giftData
@@ -901,7 +901,7 @@ package com.dukascopy.connect.sys.bankManager {
 						}
 					}
 					ServiceScreenManager.showScreen(
-						ServiceScreenManager.TYPE_DIALOG,
+						ServiceScreenManager.TYPE_SCREEN,
 						cls, { 
 							giftData:giftData
 						}
@@ -930,7 +930,7 @@ package com.dukascopy.connect.sys.bankManager {
 							giftData.currency = data.selection;
 					giftData.callback = onInvestmentSellCallback;
 					ServiceScreenManager.showScreen(
-						ServiceScreenManager.TYPE_DIALOG,
+						ServiceScreenManager.TYPE_SCREEN,
 						SellCommodityPopup, {
 							giftData:giftData
 						}

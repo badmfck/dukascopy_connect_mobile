@@ -27,6 +27,7 @@ package com.dukascopy.connect.data.escrow
 	import com.dukascopy.connect.sys.chatManager.ChatManager;
 	import com.dukascopy.connect.sys.dialogManager.DialogManager;
 	import com.dukascopy.connect.sys.errors.ErrorLocalizer;
+	import com.dukascopy.connect.sys.payments.PayConfig;
 	import com.dukascopy.connect.sys.payments.PayManager;
 	import com.dukascopy.connect.sys.payments.PaymentsManager;
 	import com.dukascopy.connect.sys.payments.advancedPayments.vo.PayTaskVO;
@@ -263,7 +264,7 @@ package com.dukascopy.connect.data.escrow
 		
 		static private function sendInvestigationRequest(label:String, dealId:String):void
 		{
-			PHP.escrow_requestInvestigation(onRequestInvestigation, {reason: label, supporterChatUID: Config.EP_911, deal_uid: dealId});
+			PHP.escrow_requestInvestigation(onRequestInvestigation, {reason: label, supporterChatUID: Config.EP_P2P_CLAIM, deal_uid: dealId});
 		}
 		
 		static private function onRequestInvestigation(respond:PHPRespond):void
@@ -433,6 +434,8 @@ package com.dukascopy.connect.data.escrow
 					var debitAccount:String;
 					var cryptoWallet:String;
 					
+					var paymentsSessionId:String;
+					
 					if (escrow.direction == TradeDirection.sell)
 					{
 						if (escrow.userUID != Auth.uid)
@@ -457,9 +460,19 @@ package com.dukascopy.connect.data.escrow
 						{
 							//!TODO:
 						}
+						
+						if (PayManager.hasSession)
+						{
+							paymentsSessionId = PayConfig.PAY_SESSION_ID;
+						}
+						else
+						{
+							//!TODO: login, get session, repeat;
+						}
 					}
 					
-					WSClient.call_accept_offer(message.id, debitAccount, cryptoWallet);
+				//	WSClient.call_accept_offer(message.id, debitAccount, cryptoWallet);
+					WSClient.call_create_offer(message.id, debitAccount, cryptoWallet, paymentsSessionId);
 				}
 				else
 				{

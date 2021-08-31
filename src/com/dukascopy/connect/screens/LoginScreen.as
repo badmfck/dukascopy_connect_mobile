@@ -388,6 +388,7 @@ package com.dukascopy.connect.screens {
 						onKeyboard((parts[1] as String).charAt(i));
 					}
 				}
+				nextClick();
 			}
 		}
 		
@@ -1315,6 +1316,11 @@ package com.dukascopy.connect.screens {
 			keyboard.activate();
 			nextButton.activate();
 			clearPhoneButton.activate();
+			
+			if (Config.isTest() && currentCode != null)
+			{
+				nextClick();
+			}
 		}
 		
 		private function activateStateStart():void 

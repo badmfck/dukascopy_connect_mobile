@@ -13,6 +13,7 @@ package com.dukascopy.connect.data
 			{code:"7", phone:"9999999955", pass:"Dukascopy123#"},
 			{code:"7", phone:"9996226225", pass:"Dukascopy123#"},
 			{code:"7", phone:"9998181810", pass:"Dukascopy123"},
+			{code:"7", phone:"9999638920", pass:"Dukascopy123#"},
 			{code:"380", phone:"631686555", pass:"Dukascopy123#"}
 		];
 		

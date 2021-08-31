@@ -132,7 +132,7 @@ package com.dukascopy.connect.screens.payments {
 			btnContinue.setDownScale(1);
 			btnContinue.setOverlay(HitZoneType.BUTTON);
 			btnContinue.tapCallback = onContinueClick;
-			btnContinue.x = Config.DOUBLE_MARGIN;
+			btnContinue.x = Config.DIALOG_MARGIN;
 			btnContinue.hide();
 			_view.addChild(btnContinue);
 			
@@ -168,7 +168,7 @@ package com.dukascopy.connect.screens.payments {
 				iAccounts.activate();
 			}
 			if (addressBox != null && addressBox.parent != null)
-				addressBox.draw(_width - Config.DOUBLE_MARGIN * 2);
+				addressBox.draw(_width - Config.DIALOG_MARGIN * 2);
 		}
 		
 		override public function setWidthAndHeight(width:int, height:int):void {
@@ -227,7 +227,7 @@ package com.dukascopy.connect.screens.payments {
 				1,
 				-1,
 				NaN,
-				(_width - Config.DOUBLE_MARGIN * 2),
+				(_width - Config.DIALOG_MARGIN * 2),
 				-1,
 				Style.size(Style.SIZE_BUTTON_CORNER)
 			);
@@ -287,7 +287,7 @@ package com.dukascopy.connect.screens.payments {
 			
 			btnContinue.y = _height - Config.FINGER_SIZE;
 			
-			scrollPanel.setWidthAndHeight(_width, _height - scrollPanel.view.y - Config.FINGER_SIZE - Config.MARGIN, false, true);
+			scrollPanel.setWidthAndHeight(_width, int(_height - scrollPanel.view.y - Config.FINGER_SIZE - Config.MARGIN * 1.5), false, true);
 			if (addressBox != null && addressBox.getSelectedInput() != null)
 			{
 				scrollPanel.scrollToPosition(addressBox.y + addressBox.getSelectedInput().y - Config.MARGIN * 2, false);

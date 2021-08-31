@@ -44,7 +44,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 			
 			var iconBD:ImageBitmapData = UI.getSnapshot(icon);
 			
-			var line:ImageBitmapData = UI.getHorizontalLine(3, 0x33CC00, bd.width + iconBD.width + Config.FINGER_SIZE * .2);
+			var line:ImageBitmapData = UI.getHorizontalLine(0x33CC00, bd.width + iconBD.width + Config.FINGER_SIZE * .2);
 			
 			var result:ImageBitmapData = new ImageBitmapData("", bd.width + iconBD.width + Config.FINGER_SIZE * .2, bd.height + Config.MARGIN + line.height, false, 0xFFFFFF);
 			

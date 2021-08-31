@@ -71,6 +71,7 @@ package com.dukascopy.connect {
 	import com.dukascopy.connect.sys.stat.StatManager;
 	import com.dukascopy.connect.sys.store.Store;
 	import com.dukascopy.connect.sys.style.Style;
+	import com.dukascopy.connect.sys.style.presets.Color;
 	import com.dukascopy.connect.sys.swiper.Swiper;
 	import com.dukascopy.connect.sys.touchID.TouchIDManager;
 	import com.dukascopy.connect.sys.usersManager.UsersManager;
@@ -314,7 +315,7 @@ package com.dukascopy.connect {
 			container.addChild(boxLightBox);
 			
 			boxBlack = new Sprite();
-			boxBlack.graphics.beginFill(0, 1);
+			boxBlack.graphics.beginFill(Color.BLACK, 1);
 			boxBlack.graphics.drawRect(0, 0, 1, 1);
 			boxBlack.graphics.endFill();
 			boxBlack.visible = false;
@@ -628,7 +629,7 @@ package com.dukascopy.connect {
 			mainSM.show(screen, data, direction, time, currentScreenEndAlpha);
 		}
 		
-		private function onDialogShow(dialog:Class, params:Object = null, transparency:Number = .5):void {
+		private function onDialogShow(dialog:Class, params:Object = null, transparency:Number = .75):void {
 			_dialogShowed = true;
 			if (LightBox.isShowing == true) {
 				LightBox.deactivate();
@@ -715,7 +716,7 @@ package com.dukascopy.connect {
 			onStageResize();
 		}
 		
-		private function onServiceScreenShow(dialog:Class, params:Object = null, transitionTime:Number = 0.5, transparency:Number = 0.5, direction:int = 0):void { 
+		private function onServiceScreenShow(dialog:Class, params:Object = null, transitionTime:Number = 0.5, transparency:Number = 0.75, direction:int = 0):void { 
 			_serviceShowed = true;
 			if (LightBox.isShowing == true) {
 				LightBox.deactivate();

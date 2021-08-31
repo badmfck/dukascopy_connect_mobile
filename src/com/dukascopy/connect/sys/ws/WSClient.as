@@ -964,6 +964,10 @@ import com.dukascopy.connect.MobileGui;
 			{
 				return;
 			}
+			if (pack.method == WSMethodType.ESCROW_OFFER_CREATE)
+			{
+				return;
+			}
 			if (pack.method == WSMethodType.ESCROW_OFFER_CANCEL)
 			{
 				/*data : Object {
@@ -1014,6 +1018,25 @@ import com.dukascopy.connect.MobileGui;
 				request.crypto_wallet = cryptoWallet;
 			}
 			send(WSMethodType.ESCROW_OFFER_ACCEPT, request);
+		}
+		
+		static public function call_create_offer(id:Number, debitAccount:String, cryptoWallet:String, sessionId:String = null):void 
+		{
+			var request:Object = new Object();
+			request.msg_id = id;
+			if (debitAccount != null)
+			{
+				request.debit_account = debitAccount;
+			}
+			if (cryptoWallet != null)
+			{
+				request.crypto_wallet = cryptoWallet;
+			}
+			if (cryptoWallet != null)
+			{
+				request.sessionID = sessionId;
+			}
+			send(WSMethodType.ESCROW_OFFER_CREATE, request);
 		}
 		
 		static public function call_cancel_offer(id:Number):void 

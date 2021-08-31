@@ -1,7 +1,6 @@
 package com.dukascopy.connect.sys.applicationShop 
 {
 	import com.dukascopy.connect.data.GiftData;
-	import com.dukascopy.connect.screens.dialogs.paymentDialogs.BuyCommodityPopup;
 	import com.dukascopy.connect.sys.applicationShop.commodity.Commodity;
 	import com.dukascopy.connect.sys.applicationShop.commodity.CommodityType;
 	import com.dukascopy.connect.sys.serviceScreenManager.ServiceScreenManager;
@@ -33,8 +32,7 @@ package com.dukascopy.connect.sys.applicationShop
 		
 		static public function buyCommodity(type:String):void 
 		{
-		//	var gd:GiftData = new GiftData();
-		//	ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_DIALOG, BuyCommodityPopup, { giftData:gd });
+			
 		}
 		
 		static private function loadCommodities():void 

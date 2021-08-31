@@ -537,11 +537,11 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 			drawResultTitle(Lang.transactionComplete);
 			
 			hLine1 = new Bitmap();
-			hLine1.bitmapData = UI.getHorizontalLine(2, 0xCCCCCC, componentsWidth);
+			hLine1.bitmapData = UI.getHorizontalLine(0xCCCCCC, componentsWidth);
 			scrollPanel.addObject(hLine1);
 			
 			hLine2 = new Bitmap();
-			hLine2.bitmapData = UI.getHorizontalLine(2, 0xCCCCCC, componentsWidth);
+			hLine2.bitmapData = UI.getHorizontalLine(0xCCCCCC, componentsWidth);
 			scrollPanel.addObject(hLine2);
 			
 			coinTitle = new Bitmap();

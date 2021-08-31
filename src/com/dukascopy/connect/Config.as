@@ -178,6 +178,7 @@ package com.dukascopy.connect {
         static public var START_URL:String = "https://www.dukascoin.com/";
         static public const CRYPTO_CHART_URL:String = "https://www.dukascoin.com/?cat=inf&page=chart";
 		static public const EP_COINS_SUPPORT:int = 142;
+		static public const EP_P2P_CLAIM:int = 133;
 		
         static public var FAST_TRACK_COST:Number = 100;
         static public var FAST_TRACK_PROPOSAL_DELAY:Number = 5;

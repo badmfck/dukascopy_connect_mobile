@@ -4,9 +4,11 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 	import com.dukascopy.connect.Config;
 	import com.dukascopy.connect.MobileGui;
 	import com.dukascopy.connect.data.GiftData;
+	import com.dukascopy.connect.data.SelectorItemData;
 	import com.dukascopy.connect.data.TextFieldSettings;
 	import com.dukascopy.connect.gui.button.DDAccountButton;
 	import com.dukascopy.connect.gui.button.DDFieldButton;
+	import com.dukascopy.connect.gui.components.PercentSeletor;
 	import com.dukascopy.connect.gui.components.message.ToastMessage;
 	import com.dukascopy.connect.gui.input.Input;
 	import com.dukascopy.connect.gui.lightbox.UI;
@@ -16,16 +18,16 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 	import com.dukascopy.connect.gui.menuVideo.BitmapButton;
 	import com.dukascopy.connect.gui.preloader.Preloader;
 	import com.dukascopy.connect.screens.base.BaseScreen;
-	import com.dukascopy.connect.screens.dialogs.ScreenLinksDialog;
-	import com.dukascopy.connect.screens.dialogs.ScreenPayDialog;
+	import com.dukascopy.connect.screens.dialogs.paymentDialogs.elements.InputField;
 	import com.dukascopy.connect.screens.dialogs.x.base.bottom.ListSelectionPopup;
+	import com.dukascopy.connect.screens.dialogs.x.base.float.FloatPopup;
 	import com.dukascopy.connect.screens.payments.card.TypeCurrency;
 	import com.dukascopy.connect.sys.applicationShop.commodity.Commodity;
 	import com.dukascopy.connect.sys.applicationShop.commodity.CommodityType;
-	import com.dukascopy.connect.sys.auth.Auth;
 	import com.dukascopy.connect.sys.bankManager.BankManager;
 	import com.dukascopy.connect.sys.dialogManager.DialogManager;
 	import com.dukascopy.connect.sys.imageManager.ImageBitmapData;
+	import com.dukascopy.connect.sys.payments.CurrencyHelpers;
 	import com.dukascopy.connect.sys.payments.PayAPIManager;
 	import com.dukascopy.connect.sys.payments.PayManager;
 	import com.dukascopy.connect.sys.payments.PayRespond;
@@ -36,6 +38,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 	import com.dukascopy.connect.sys.style.FontSize;
 	import com.dukascopy.connect.sys.style.Style;
 	import com.dukascopy.connect.sys.style.presets.Color;
+	import com.dukascopy.connect.utils.NumberFormat;
 	import com.dukascopy.connect.utils.TextUtils;
 	import com.dukascopy.langs.Lang;
 	import com.greensock.TweenMax;
@@ -45,9 +48,9 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 	import flash.display.Shape;
 	import flash.display.Sprite;
 	import flash.events.Event;
-	import flash.geom.ColorTransform;
 	import flash.geom.Rectangle;
 	import flash.text.TextFieldAutoSize;
+	import flash.text.TextFormat;
 	import flash.text.TextFormatAlign;
 	
 	/**
@@ -55,43 +58,32 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 	 * @author Sergey Dobarin. Telefision TEAM Kiev.
 	 */
 	
-	public class SellCommodityPopup extends BaseScreen {
+	public class SellCommodityPopup extends FloatPopup {
 		
-		protected var container:Sprite;
-		private var bg:Shape;
 		private var text:Bitmap;
 		private var acceptButton:BitmapButton;
-		private var accountText:Bitmap;
 		private var backButton:BitmapButton;
 		private var selectorDebitAccont:DDAccountButton;
 		private var preloader:Preloader;
-		private var _lastCommissionCallID:String;
 		private var screenLocked:Boolean;
-		private var finishImage:Bitmap;
-		private var finishImageMask:Sprite;
 		private var verticalMargin:Number;
 		private var walletSelected:Boolean;
-		private var iAmount:Input;
+		private var iAmount:InputField;
 		private var selectorCommodity:DDFieldButton;
 		private var selectedAccount:Object;
 		private var currentPayTask:PayTaskVO;
 		private var payId:String;
-		private var resultAccount:String;
-		private var newAmount:Number;
-		private var currentCommision:Number = 0;
 		private var preloaderShown:Boolean = false;
 		private var commodity:Commodity;
 		private var icon:Bitmap;
 		private var avatarSize:int;
 		private var neeedShowCommodityList:Boolean;
-		private var iAmountCurrency:com.dukascopy.connect.gui.input.Input;
+		private var iAmountCurrency:InputField;
 		private var selectorCurrency:com.dukascopy.connect.gui.button.DDFieldButton;
 		private var needShowCurrencies:Boolean;
 		private var title:flash.display.Bitmap;
 		private var payFrom:flash.display.Bitmap;
 		private var commodities:Vector.<Commodity>;
-		protected var componentsWidth:int;
-		private var maxInvestments:Bitmap;
 		
 		private var rateCallID:String;
 		private var latestCommissionData:Object;
@@ -100,16 +92,15 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 		static private var c:int = 0;
 		private var _isLoadingCommission:Boolean = false; // in process 
 		private var giftData:GiftData;
-		private var accountTitle:flash.display.Bitmap;
+		private var accountTitle:Bitmap;
 		private var timeout:Number = 30;
-		private var amountBack:Sprite;
-		private var useAllButton:BitmapButton;
 		private var currentBalance:Number;
 		private var costValue:Bitmap;
-		private var iconAttention:IconAttention2;
 		private var iconAttention2:IconAttention2;
 		private var attentionText:Bitmap;
 		private var workHoursText:Bitmap;
+		private var priceSelector:PercentSeletor;
+		private var needCallback:Boolean;
 		
 		public function SellCommodityPopup() {
 			
@@ -117,119 +108,287 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 		
 		override protected function createView():void {
 			super.createView();
-			container = new Sprite();
 			
-			avatarSize = Config.FINGER_SIZE * 2;
-			
-			bg = new Shape();
-			bg.graphics.beginFill(Style.color(Style.COLOR_BACKGROUND));
-			var round:int = Config.FINGER_SIZE * .3;
-			var round3:int = round * 3;
-			bg.graphics.drawRect(0, 0, round3, round3);
-			bg.scale9Grid = new Rectangle(round, round, round, round);
-			container.addChild(bg);
-			
-			accountText = new Bitmap();
-			container.addChild(accountText);
-			
-			amountBack = new Sprite();
-			container.addChild(amountBack);
+			verticalMargin = Config.FINGER_SIZE * .2;
+			contentPadding = Config.FINGER_SIZE * .3;
+			avatarSize = Config.FINGER_SIZE * 1.3;
 			
 			acceptButton = new BitmapButton();
 			acceptButton.setStandartButtonParams();
 			acceptButton.setDownScale(1);
 			acceptButton.setDownColor(0);
-			acceptButton.tapCallback = nextClick;
+			acceptButton.tapCallback = onNextClick;
 			acceptButton.disposeBitmapOnDestroy = true;
-			container.addChild(acceptButton);
+			addItem(acceptButton);
 			
 			backButton = new BitmapButton();
 			backButton.setStandartButtonParams();
 			backButton.setDownScale(1);
 			backButton.setDownColor(0);
-			backButton.tapCallback = backClick;
+			backButton.tapCallback = onBack;
 			backButton.disposeBitmapOnDestroy = true;
-			container.addChild(backButton);
-			
-			useAllButton = new BitmapButton();
-			useAllButton.setStandartButtonParams();
-			useAllButton.setDownScale(1);
-			useAllButton.setDownColor(0);
-			useAllButton.tapCallback = useAll;
-			useAllButton.disposeBitmapOnDestroy = true;
-			container.addChild(useAllButton);
+			addItem(backButton);
 			
 			icon = new Bitmap();
 			container.addChild(icon);
 			
-			selectorDebitAccont = new DDAccountButton(openWalletSelector, null, false);
-			container.addChild(selectorDebitAccont);
+			selectorDebitAccont = new DDAccountButton(openWalletSelector, null, false, -1, NaN, Lang.toAccount);
+			addItem(selectorDebitAccont);
 		//	selectorDebitAccont.ena
 			
-			_view.addChild(container);
+			iAmount = new InputField( -1, Input.MODE_DIGIT_DECIMAL);
+			iAmount.onChangedFunction = onChangeInputValue;
+			iAmount.setPadding(0);
+			addItem(iAmount);
+			var tf:TextFormat = new TextFormat();
+			tf.size = FontSize.AMOUNT;
+			tf.align = TextFormatAlign.LEFT;
+			tf.color = Style.color(Style.COLOR_TEXT);
+			tf.font = Config.defaultFontName;
+			iAmount.updateTextFormat(tf);
 			
-			iAmount = new Input(Input.MODE_DIGIT_DECIMAL);
-			iAmount.setParams(Lang.textAmount, Input.MODE_DIGIT_DECIMAL);
-			iAmount.S_CHANGED.add(onChangeInputValue);
-			iAmount.setRoundBG(false);
-			iAmount.getTextField().textColor = com.dukascopy.connect.sys.style.presets.Color.RED;
-			iAmount.setRoundRectangleRadius(0);
-			iAmount.inUse = true;
-			container.addChild(iAmount.view);
+			selectorCommodity = new DDFieldButton(selectCommodityTap, "", false, NaN, Lang.instrument);
+			addItem(selectorCommodity);
 			
-			selectorCommodity = new DDFieldButton(selectCommodityTap);
-			container.addChild(selectorCommodity);
-			
-			iAmountCurrency = new Input(Input.MODE_DIGIT_DECIMAL);
-			iAmountCurrency.setParams(Lang.textAmount, Input.MODE_DIGIT_DECIMAL);
-			iAmountCurrency.S_CHANGED.add(onChangeInputValueCurrency);
-			iAmountCurrency.setRoundBG(false);
-			iAmountCurrency.getTextField().textColor = com.dukascopy.connect.sys.style.presets.Color.GREEN;
-			iAmountCurrency.setRoundRectangleRadius(0);
-			iAmountCurrency.inUse = true;
-			container.addChild(iAmountCurrency.view);
+			iAmountCurrency = new InputField( -1, Input.MODE_DIGIT_DECIMAL);
+			iAmountCurrency.onChangedFunction = onChangeInputValueCurrency;
+			iAmountCurrency.setPadding(0);
+			addItem(iAmountCurrency);
+			var tfAmountCurrency:TextFormat = new TextFormat();
+			tfAmountCurrency.size = FontSize.AMOUNT;
+			tfAmountCurrency.align = TextFormatAlign.LEFT;
+			tfAmountCurrency.color = com.dukascopy.connect.sys.style.presets.Color.GREEN;
+			tfAmountCurrency.font = Config.defaultFontName;
+			iAmount.updateTextFormat(tfAmountCurrency);
+			iAmountCurrency.updateTextFormat(tf);
 			
 			selectorCurrency = new DDFieldButton(selectCurrencyTap, "", false);
-			container.addChild(selectorCurrency);
+			addItem(selectorCurrency);
 			
 			title = new Bitmap();
-			container.addChild(title);
-			
-			maxInvestments = new Bitmap();
-			container.addChild(maxInvestments);
+			addItem(title);
 			
 			payFrom = new Bitmap();
-			container.addChild(payFrom);
+			addItem(payFrom);
 			
 			accountTitle = new Bitmap();
-			container.addChild(accountTitle);
+			addItem(accountTitle);
 			
 			costValue = new Bitmap();
-			container.addChild(costValue);
-			
-			iconAttention = new IconAttention2();
-			container.addChild(iconAttention);
+			addItem(costValue);
 			
 			iconAttention2 = new IconAttention2();
-			container.addChild(iconAttention2);
+			addItem(iconAttention2);
 			
 			var iconSize:int = Config.FINGER_SIZE * .25;
-			UI.scaleToFit(iconAttention, iconSize, iconSize);
 			UI.scaleToFit(iconAttention2, iconSize, iconSize);
 			
-			iconAttention2.visible = false;
+			iconAttention2.alpha = 0;
 			
 			attentionText = new Bitmap();
-			container.addChild(attentionText);
+			addItem(attentionText);
+			
+			priceSelector = new PercentSeletor();
+			addItem(priceSelector)
 		}
 		
-		private function useAll():void 
+		override public function onBack(e:Event = null):void {
+			close();
+		}
+		
+		private function onNextClick():void 
 		{
-			if (!isNaN(currentBalance))
+			SoftKeyboard.closeKeyboard();
+			if (iAmount != null)
 			{
-				iAmount.value = currentBalance.toString();
-				loadRate();
+				iAmount.forceFocusOut();
 			}
+			if (targetInvestment)
+			{
+				giftData.customValue = Number(iAmount.value);
+			}
+			else{
+				giftData.customValue = Number(iAmountCurrency.value);
+			}
+			giftData.fixedCommodityValue = targetInvestment;
+			
+			giftData.accountNumber = selectedAccount.ACCOUNT_NUMBER;
+			giftData.currency = selectorCurrency.value;
+			giftData.credit_account_currency = commodity.type.value;
+			giftData.debit_account_currency = selectedAccount.CURRENCY;
+			
+			needCallback = true;
+			close();
+		}
+		
+		override public function initScreen(data:Object = null):void
+		{
+			if (data != null && "giftData" in data && data.giftData is GiftData) {
+				giftData = data.giftData as GiftData;
+				if (giftData.currency != null)
+				{
+					commodity = new Commodity(new CommodityType(giftData.currency));
+				}
+			}
+			
+			super.initScreen(data);
+			
+			PaymentsManager.activate();
+			PayManager.S_CANCEL_AUTH.add(cancelAuth);
+			
+			checkData();
+		}
+		
+		override protected function drawContent():void 
+		{
+			drawControls();
+			
+			updatePositions();
+		}
+		
+		override protected function getBottomPadding():int 
+		{
+			var result:int = 0;
+			if (acceptButton != null)
+			{
+				result = acceptButton.height + contentPadding * 2;
+			}
+			return result;
+		}
+		
+		override protected function updateContentPositions():void 
+		{
+			updatePositions();
+		}
+		
+		private function updatePositions():void 
+		{
+			icon.y = int(-avatarSize * .5);
+			
+			var position:int = verticalMargin * 2;
+			
+			title.y = position;
+			position += title.height + verticalMargin * 1;
+			
+			costValue.y = position;
+			position += costValue.height + verticalMargin * 1;
+			
+			attentionText.y = position;
+			position += attentionText.height + verticalMargin * 3;
+			
+			if (workHoursText != null)
+			{
+				position -= verticalMargin * 2;
+				workHoursText.y = position;
+				iconAttention2.y = int(workHoursText.y);
+				position += workHoursText.height + verticalMargin * 3;
+			}
+			attentionText.x = int((getWidth() - attentionText.width) * .5);
+			
+			title.x = int(getWidth() * .5 - title.width * .5);
+			
+			iAmount.x = contentPadding;
+			iAmount.y = position;
+			selectorCommodity.y = int(iAmount.y + iAmount.linePosition() - selectorCommodity.linePosition())
+			position += iAmount.height + verticalMargin * 1.5;
+			
+			priceSelector.x = contentPadding;
+			priceSelector.y = position;
+			position += priceSelector.height + verticalMargin * 2;
+			
+			payFrom.y = position;
+			payFrom.x = int(getWidth() * .5 - payFrom.width * .5);
+			position += payFrom.height + verticalMargin * 0;
+			
+			iAmountCurrency.x = contentPadding;
+			iAmountCurrency.y = position;
+			selectorCurrency.y = int(iAmountCurrency.y + iAmountCurrency.linePosition() - selectorCurrency.linePosition())
+			position += iAmountCurrency.height + verticalMargin * 2;
+			
+			selectorDebitAccont.x = contentPadding;
+			selectorDebitAccont.y = position;
+			position += selectorDebitAccont.height + verticalMargin * 2;
+			
+			acceptButton.x = int(getWidth() - acceptButton.width - contentPadding);
+			acceptButton.y = position;
+			
+			backButton.x = contentPadding;
+			backButton.y = position;
+		}
+		
+		private function drawPriceSelector():void 
+		{
+			priceSelector.draw(onPriceSelector, getPriceSelectorItems(), getWidth() - contentPadding * 2);
+		}
+		
+		private function onPriceSelector(percent:Number):void 
+		{
+			if (selectedAccount != null)
+			{
+				var balance:Number = currentBalance;
+				if (!isNaN(balance))
+				{
+					balance = parseFloat(NumberFormat.formatAmount(percent * balance / 100, commodity.type.value, true));
+					if (!isNaN(balance))
+					{
+						iAmount.value = balance;
+						updateOnCryptoChange();
+					}
+				}
+			}
+		}
+		
+		private function getPriceSelectorItems():Vector.<SelectorItemData> 
+		{
+			var result:Vector.<SelectorItemData> = new Vector.<SelectorItemData>();
+			result.push(new SelectorItemData("10%", 10));
+			result.push(new SelectorItemData("25%", 25));
+			result.push(new SelectorItemData("50%", 50));
+			result.push(new SelectorItemData("100%", 100));
+			return result;
+		}
+		
+		private function drawControls():void
+		{
+			drawTitle();
+			drawTitle2();
+			drawAtentionText();
+			
+			drawCommodityIcon();
+			drawAccountSelector();
+			drawAcceptButton(Lang.sell.toUpperCase());
+			acceptButton.deactivate();
+			acceptButton.alpha = 0.5;
+			drawCostValue();
+			drawPriceSelector();
+			
+			drawBackButton();
+			
+			iAmount.draw(getInputWidth(), Lang.amount, 1, null);
+			iAmountCurrency.draw(getInputWidth(), null, 0, null);
+			
+			if (!isNaN(currentBalance) && currentBalance < 1)
+			{
+				iAmount.value = currentBalance;
+			}
+			
+			var itemWidth:int =  getWidth() - contentPadding * 3 - getInputWidth();
+			
+			selectorCommodity.x = iAmount.x + iAmount.width + contentPadding;
+			selectorCommodity.setSize(itemWidth, Config.FINGER_SIZE * .8);
+			
+			selectorCurrency.x = iAmountCurrency.x + iAmountCurrency.width + contentPadding;
+			selectorCurrency.setSize(itemWidth, Config.FINGER_SIZE * .8);
+			
+			if (commodity)
+			{
+				selectorCommodity.setValue(commodity.getName());
+			}
+		}
+		
+		private function getInputWidth():int 
+		{
+			return ((getWidth() - contentPadding * 3) / 1.7);
 		}
 		
 		private function openWalletSelector(e:Event = null):void
@@ -267,23 +426,17 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 					callback:onWalletSelect
 				}, ServiceScreenManager.TYPE_SCREEN
 			);
-			
-		//	DialogManager.showDialog(ScreenPayDialog, {callback: onWalletSelect, data: PayManager.accountInfo.accounts, itemClass: ListPayWalletItem/*ListPayAccount*/, label: Lang.TEXT_SELECT_ACCOUNT});
 		}
 		
 		private function showPreloader():void
 		{
 			preloaderShown = true;
 			
-			var color:fl.motion.Color = new fl.motion.Color();
-			color.setTint(0xFFFFFF, 0.7);
-			container.transform.colorTransform = color;
-			
 			if (preloader == null)
 			{
 				preloader = new Preloader();
 			}
-			preloader.x = _width * .5;
+			preloader.x = getWidth() * .5;
 			preloader.y = _height * .5;
 			view.addChild(preloader);
 			preloader.show();
@@ -299,7 +452,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 			
 			if (iAmount != null)
 			{
-				if (iAmount.value != null && iAmount.value != "" && !isNaN(Number(iAmount.value)) && selectorCommodity != null && selectorCommodity.value != null)
+				if (!isNaN(iAmount.value) && selectorCommodity != null && selectorCommodity.value != null)
 				{
 					acceptButton.activate();
 					acceptButton.alpha = 1;
@@ -315,60 +468,28 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 			
 			if (targetInvestment)
 			{
-				iAmountCurrency.value = "";
+				iAmountCurrency.value = 0;
 			}
 			else{
-				iAmount.value = "";
+				iAmount.value = 0;
 			}
 			
 			startLoadRate();
-			
-			loadCommision();
 		}
 		
-		private function loadCommision():void
+		override protected function onRemove():void 
 		{
-			drawAccountText(Lang.commisionWillBe + "...");
-			
-			_lastCommissionCallID = new Date().getTime().toString() + "commodity";
-		}
-		
-		override public function onBack(e:Event = null):void {
-			if (screenLocked == false) {
-				ServiceScreenManager.closeView();
-			}
-		}
-		
-		private function backClick():void {
-			onBack();
-		}
-		
-		private function nextClick():void {
-			SoftKeyboard.closeKeyboard();
-			if (iAmount != null)
+			if (needCallback == true)
 			{
-				iAmount.forceFocusOut();
+				
+				if (giftData.callback != null)
+				{
+					giftData.callback(giftData);
+				}
+				giftData = null;
+				
+				needCallback = false;
 			}
-			if (targetInvestment)
-			{
-				giftData.customValue = Number(iAmount.value);
-			}
-			else{
-				giftData.customValue = Number(iAmountCurrency.value);
-			}
-			giftData.fixedCommodityValue = targetInvestment;
-			
-			
-			giftData.accountNumber = selectedAccount.ACCOUNT_NUMBER;
-			giftData.currency = selectorCurrency.value;
-			giftData.credit_account_currency = commodity.type.value;
-			giftData.debit_account_currency = selectedAccount.CURRENCY;
-			if (giftData.callback != null)
-			{
-				giftData.callback(giftData);
-			}
-			
-			ServiceScreenManager.closeView();
 		}
 		
 		private function activateButtons():void
@@ -417,69 +538,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 			{
 				icon.bitmapData = UI.renderAsset(flagAsset, avatarSize, avatarSize, false, "BuyCommodityPopup.flagIcon");
 			}
-			icon.x = int(_width * .5 - icon.width * .5);
-		}
-		
-		override public function initScreen(data:Object = null):void
-		{
-			super.initScreen(data);
-			
-			if (data != null && "giftData" in data && data.giftData is GiftData) {
-				giftData = data.giftData as GiftData;
-				if (giftData.currency != null)
-				{
-					commodity = new Commodity(new CommodityType(giftData.currency));
-				}
-			}
-			
-			componentsWidth = _width - Config.DIALOG_MARGIN * 2;
-			
-			drawUseAllButton();
-			drawTitle();
-			drawTitle2();
-			drawTitle3();
-			drawAtentionText();
-			
-			drawCommodityIcon();
-			drawMaxInvestments();
-			drawAccountSelector();
-		//	drawAccountText(Lang.chooseAccount);
-			drawAcceptButton(Lang.sell);
-			acceptButton.deactivate();
-			acceptButton.alpha = 0.5;
-			drawCostValue();
-			
-			drawBackButton();
-			
-			var itemWidth:int = (componentsWidth - Config.MARGIN) / 2;
-			
-			iAmount.width = itemWidth;
-			iAmount.view.x = Config.DIALOG_MARGIN;
-			
-			iAmount.value = "1";
-			if (!isNaN(currentBalance) && currentBalance < 1)
-			{
-				iAmount.value = currentBalance.toString();
-			}
-			
-			selectorCommodity.x = iAmount.view.x + itemWidth + Config.MARGIN;
-			selectorCommodity.setSize(itemWidth, Config.FINGER_SIZE * .8);
-			
-			iAmountCurrency.width = itemWidth;
-			iAmountCurrency.view.x = Config.DIALOG_MARGIN;
-			
-			selectorCurrency.x = iAmountCurrency.view.x + itemWidth + Config.MARGIN;
-			selectorCurrency.setSize(itemWidth, Config.FINGER_SIZE * .8);
-			
-			if (commodity)
-			{
-				selectorCommodity.setValue(commodity.getName());
-			}
-			
-			PaymentsManager.activate();
-			PayManager.S_CANCEL_AUTH.add(cancelAuth);
-			
-			checkData();
+			icon.x = int(getWidth() * .5 - icon.width * .5);
 		}
 		
 		private function cancelAuth():void 
@@ -494,11 +553,8 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 				attentionText.bitmapData.dispose();
 				attentionText.bitmapData = null;
 			}
-			attentionText.bitmapData = TextUtils.createTextFieldData(Lang.indicativeRates, componentsWidth - iconAttention.width - Config.MARGIN, 10, true, TextFormatAlign.LEFT, 
+			attentionText.bitmapData = TextUtils.createTextFieldData(Lang.indicativeRates, getWidth() - contentPadding * 2, 10, true, TextFormatAlign.LEFT, 
 																	TextFieldAutoSize.LEFT, FontSize.CAPTION_1, true, Style.color(Style.COLOR_SUBTITLE), Style.color(Style.COLOR_BACKGROUND), false, true);
-			
-			iconAttention.x = Config.DOUBLE_MARGIN;
-			attentionText.x = int(iconAttention.x + iconAttention.width + Config.MARGIN);
 		}
 		
 		private function drawCostValue(value:String = " "):void 
@@ -508,60 +564,9 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 				costValue.bitmapData.dispose();
 				costValue.bitmapData = null;
 			}
-			costValue.bitmapData = TextUtils.createTextFieldData(value, componentsWidth, 10, true, TextFormatAlign.CENTER, 
+			costValue.bitmapData = TextUtils.createTextFieldData(value, getWidth() - contentPadding * 2, 10, true, TextFormatAlign.CENTER, 
 																	TextFieldAutoSize.LEFT, Config.FINGER_SIZE * .24, true, Style.color(Style.COLOR_SUBTITLE), Style.color(Style.COLOR_BACKGROUND), false, true);
-			costValue.x = int(_width * .5 - costValue.width * .5);
-		}
-		
-		private function drawTitle3():void 
-		{
-			if (accountTitle.bitmapData)
-			{
-				accountTitle.bitmapData.dispose();
-				accountTitle.bitmapData = null;
-			}
-			accountTitle.bitmapData = TextUtils.createTextFieldData("<b>" + Lang.toAccount + "</b>", componentsWidth, 10, false, TextFormatAlign.LEFT, 
-																	TextFieldAutoSize.LEFT, Config.FINGER_SIZE * .3, false, 0x777E8A, 0xFFFFFF, false, true);
-		}
-		
-		private function drawMaxInvestments():void 
-		{
-			if (maxInvestments.bitmapData)
-			{
-				maxInvestments.bitmapData.dispose();
-				maxInvestments.bitmapData = null;
-			}
-			var investmentNum:String = "";
-			var investments:Array = BankManager.getInvestmentsArray();
-			if (investments != null && commodity != null)
-			{
-				var l:int = investments.length;
-				for (var i:int = 0; i < l; i++) 
-				{
-					if (investments[i]["INSTRUMENT"] == commodity.type.value)
-					{
-						investmentNum = investments[i]["BALANCE"];
-					}
-				}
-			}
-			currentBalance = Number(investmentNum);
-			
-			var value:String = "<font color='#2D4819' size='" + Config.FINGER_SIZE * .24 + "'>" + Lang.youHave + ": </font>" + 
-							   "<font color='#2D4819' size='" + Config.FINGER_SIZE * .32 + "'>" + investmentNum + "</font>";
-			
-			maxInvestments.bitmapData = TextUtils.createTextFieldData(value, componentsWidth - useAllButton.width - Config.MARGIN, 10, false, TextFormatAlign.LEFT, 
-																	TextFieldAutoSize.LEFT, Config.FINGER_SIZE * .3, false, 0x777E8A, 0xD7ECC8, false, true);
-			
-			amountBack.x = iAmount.view.x;
-			
-			amountBack.graphics.clear();
-			amountBack.graphics.beginFill(0xD7ECC8);
-			amountBack.graphics.drawRoundRect(0, 0, componentsWidth - Config.FINGER_SIZE * .5, useAllButton.height, useAllButton.height, useAllButton.height);
-			amountBack.graphics.endFill();
-			
-			amountBack.graphics.lineStyle(Config.FINGER_SIZE * .15, 0xFFFFFF);
-			amountBack.graphics.drawRoundRect(componentsWidth - useAllButton.width, 0, useAllButton.width, useAllButton.height, useAllButton.height, useAllButton.height);
-			amountBack.visible = false;
+			costValue.x = int(getWidth() * .5 - costValue.width * .5);
 		}
 		
 		// Rate Loaded 
@@ -676,9 +681,9 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 						commodity = commodities[0];
 						selectorCommodity.setValue(commodity.getName());
 						drawTitle();
-						drawMaxInvestments();
 						drawCommodityIcon();
 					}
+					drawMaxInvestments();
 				}
 			}
 			else{
@@ -691,13 +696,13 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 				if (selectedAccount != null && selectedAccount.CURRENCY == giftData.currency)
 				{
 					targetInvestment = false;
-					iAmountCurrency.value = giftData.customValue.toString();
+					iAmountCurrency.value = giftData.customValue;
 				}
 				else{
 					targetInvestment = true;
 					if (giftData.customValue != 0)
 					{
-						iAmount.value = giftData.customValue.toString();
+						iAmount.value = giftData.customValue;
 					}
 					
 					if (commodities != null)
@@ -746,12 +751,12 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 		{
 			if (targetInvestment)
 			{
-				iAmount.selectBorder();
-				iAmountCurrency.unselectBorder();
+			//	iAmount.selectBorder();
+			//	iAmountCurrency.unselectBorder();
 			}
 			else{
-				iAmountCurrency.selectBorder();
-				iAmount.unselectBorder();
+			//	iAmountCurrency.selectBorder();
+			//	iAmount.unselectBorder();
 			}
 			
 			TweenMax.killDelayedCallsTo(loadRate);
@@ -817,9 +822,6 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 			
 			if (_isLoadingCommission){
 				
-			//	addCommissionMeta(Lang.loadingCommission);
-			//	addAssetMeta(Lang.loading);
-			//	addAccountMeta(Lang.loading);
 			}else{		
 				
 				if (latestCommissionData != null){
@@ -829,6 +831,10 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 					{
 					//	additionalWarning = "<br/><br/><font color='#FF0000'>" + latestCommissionData.offmarket_warning + "</font>";
 						drawWarning(latestCommissionData.offmarket_warning);
+					}
+					else
+					{
+						removeWarning();
 					}
 					
 					hidePreloader();
@@ -848,29 +854,8 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 					drawView();
 					
 					TweenMax.delayedCall(timeout, startLoadRate);
-					
-					
-					//var commissionText:String = Lang.spotRate+ latestCommissionData.rate_spot +", markup "+ latestCommissionData.rate_markup +"\n\nShown rates are indicative only\n"
-					//var commissionText:String = Lang.commissionText;
-					/*var str:String = "";
-						str = LangManager.replace(Lang.regExtValue,Lang.commissionText, String(latestCommissionData.rate_spot));
-						str = LangManager.replace(Lang.regExtValue, str, String(latestCommissionData.rate_markup));					
-					addCommissionMeta(str);
-					
-					if (CURRENT_TAB_ID == TAB_ID_BUY){
-						addAccountMeta("-" + latestCommissionData.debit +" " + PayManager.accountInfo.investmentReferenceCurrency ); //!!!!
-						addAssetMeta("+"+latestCommissionData.credit + " "+CurrencyHelpers.getCurrencyByKey(fieldsData.instrument));
-					}else{
-						addAssetMeta("-"+latestCommissionData.debit+ " " + CurrencyHelpers.getCurrencyByKey(fieldsData.instrument));
-						addAccountMeta("+"+latestCommissionData.credit+" " + PayManager.accountInfo.investmentReferenceCurrency);
-					}*/
-					
 				}
-			
 			}
-			
-		//	updateComponentsActivity();
-			
 		}
 		
 		private function drawWarning(text:String):void 
@@ -878,15 +863,31 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 			if (workHoursText == null)
 			{
 				workHoursText = new Bitmap()
-				container.addChild(workHoursText);
+				addItem(workHoursText);
 				
-				workHoursText.bitmapData = TextUtils.createTextFieldData(text, componentsWidth, 10, true, TextFormatAlign.LEFT, 
+				workHoursText.bitmapData = TextUtils.createTextFieldData(text, getWidth() - contentPadding * 3 - iconAttention2.width, 10, true, TextFormatAlign.LEFT, 
 																	TextFieldAutoSize.LEFT, FontSize.CAPTION_1, true, Style.color(Style.COLOR_SUBTITLE), Style.color(Style.COLOR_BACKGROUND), false, true);
 				
-				iconAttention2.x = Config.DOUBLE_MARGIN;
-				iconAttention2.visible = true;
-				workHoursText.x = int(iconAttention2.x + iconAttention2.width + Config.MARGIN);
+				iconAttention2.x = contentPadding;
+				iconAttention2.alpha = 1;
+				workHoursText.x = int(iconAttention2.x + iconAttention2.width + contentPadding);
 			}
+			updatePositions();
+		}
+		
+		private function removeWarning():void 
+		{
+			if (workHoursText != null)
+			{
+				removeItem(workHoursText);
+				UI.destroy(workHoursText);
+				workHoursText = null;
+			}
+			if (iconAttention2 != null)
+			{
+				iconAttention2.alpha = 0;
+			}
+			updatePositions();
 		}
 		
 		private function setReferenceCurrency():void 
@@ -924,9 +925,9 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 				title.bitmapData.dispose();
 				title.bitmapData = null;
 			}
-			title.bitmapData = TextUtils.createTextFieldData("<b>" + Lang.sell + " " + commodity.getName() + "</b>", componentsWidth, 10, false, 
-															TextFormatAlign.LEFT, TextFieldAutoSize.LEFT, Config.FINGER_SIZE * .3, false, 0x777E8A, 0xFFFFFF, false, true);
-			title.x = int(_width * .5 - title.width * .5);
+			title.bitmapData = TextUtils.createTextFieldData(Lang.sell + " " + commodity.getName(), getWidth() - contentPadding * 2, 10, false, 
+															TextFormatAlign.LEFT, TextFieldAutoSize.LEFT, FontSize.TITLE_2, false, Style.color(Style.COLOR_TEXT), Style.color(Style.COLOR_BACKGROUND), false, true);
+			title.x = int(getWidth() * .5 - title.width * .5);
 			
 			drawView();
 		}
@@ -938,8 +939,8 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 				payFrom.bitmapData.dispose();
 				payFrom.bitmapData = null;
 			}
-			payFrom.bitmapData = TextUtils.createTextFieldData("<b>" + Lang.textGet + "</b>", componentsWidth, 10, false, TextFormatAlign.LEFT, TextFieldAutoSize.LEFT, 
-																Config.FINGER_SIZE * .3, false, 0x777E8A, 0xFFFFFF, false, true);
+			payFrom.bitmapData = TextUtils.createTextFieldData(Lang.textGet, getWidth() - contentPadding * 2, 10, false, TextFormatAlign.LEFT, TextFieldAutoSize.LEFT, 
+																FontSize.TITLE_2, false, Style.color(Style.COLOR_TEXT), Style.color(Style.COLOR_BACKGROUND), false, true);
 		}
 		
 		private function selectCurrencyTap():void {
@@ -998,20 +999,16 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 		
 		private function localSelectCurrency(currency:String):void {
 			selectorCurrency.setValue(currency);
-		//	selectorCurrency.activate();
 		}
 		
 		private function callBackSelectCurrency(currency:String):void {
 			if (selectorCurrency != null && currency != null) {
 				selectorCurrency.setValue(currency);
-				
-			//	selectAccount(currency);
-			//	checkCommision();
 			}
 			
 			selectAccount(currency);
 			
-			iAmountCurrency.value = "";
+			iAmountCurrency.value = 0;
 			targetInvestment = true;
 			startLoadRate();
 		}
@@ -1042,9 +1039,6 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 						callback:callBackSelectCommodity
 					}, ServiceScreenManager.TYPE_SCREEN
 				);
-				
-			//	DialogManager.showDialog(ScreenLinksDialog, { callback:callBackSelectCommodity, data:commodities, itemClass:ListLinkWithIcon, title:Lang.selectCommodity, multilineTitle:false } );
-			//	onChangeInputValue();
 			}
 			else{
 				neeedShowCommodityList = true;
@@ -1071,16 +1065,44 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 				if (selectorCommodity != null && commodity != null) {
 					this.commodity = commodity as Commodity;
 					selectorCommodity.setValue(this.commodity.getName());
-				//	checkCommision();
 				}
 			}
 			drawMaxInvestments();
 			drawCommodityIcon();
 			drawTitle();
 			
-			iAmountCurrency.value = "";
+			iAmountCurrency.value = 0;
 			targetInvestment = true;
 			startLoadRate();
+		}
+		
+		private function drawMaxInvestments():void 
+		{
+			var investmentNum:String = "";
+			var investments:Array = BankManager.getInvestmentsArray();
+			if (investments != null && commodity != null)
+			{
+				var l:int = investments.length;
+				for (var i:int = 0; i < l; i++) 
+				{
+					if (investments[i]["INSTRUMENT"] == commodity.type.value)
+					{
+						investmentNum = investments[i]["BALANCE"];
+					}
+				}
+			}
+			currentBalance = Number(investmentNum);
+			
+			if (!isNaN(currentBalance))
+			{
+				if (!isNaN(currentBalance) && currentBalance < 1)
+				{
+					iAmount.value = currentBalance;
+				}
+				var amountText:String = NumberFormat.formatAmount(Number(investmentNum), commodity.type.value, true);
+				amountText += " " + CurrencyHelpers.getCurrencyByKey(commodity.type.value);
+				iAmount.drawUnderlineValue(Lang.youHave + " " + amountText);
+			}
 		}
 		
 		private function showToastMessage():void {
@@ -1088,82 +1110,47 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 		}
 		
 		private function onChangeInputValue():void {
-			
-		//	checkCommision();
-			
-			if (iAmount != null && selectorCommodity != null && selectorCommodity.value != null && iAmount.value != null && iAmount.value != "" && !isNaN(Number(iAmount.value)) && Number(iAmount.value) > 0)
+			updateOnCryptoChange();
+			drawPriceSelector();
+		}
+		
+		private function updateOnCryptoChange():void 
+		{
+			if (iAmount != null && selectorCommodity != null && selectorCommodity.value != null && !isNaN(iAmount.value) && iAmount.value > 0)
 			{
 				if (acceptButton != null && walletSelected == true)	{
 					acceptButton.activate();
 					acceptButton.alpha = 1;
 				}
 			}
-			else {
-				if (acceptButton != null) {
-				//	acceptButton.deactivate();
-				}
-			}
-			iAmountCurrency.value = "";
+			
+			iAmountCurrency.value = 0;
 			targetInvestment = true;
 			startLoadRate();
 		}
 		
 		private function onChangeInputValueCurrency():void {
-			
-		//	checkCommision();
-			
-			if (iAmount != null && selectorCommodity != null && selectorCommodity.value != null && iAmount.value != null && iAmount.value != "" && !isNaN(Number(iAmount.value)) && Number(iAmount.value) > 0)
+			updateOnFiatChange();
+			drawPriceSelector();
+		}
+		
+		private function updateOnFiatChange():void 
+		{
+			if (iAmount != null && selectorCommodity != null && selectorCommodity.value != null && !isNaN(iAmount.value) && iAmount.value > 0)
 			{
 				if (acceptButton != null && walletSelected == true)	{
 					acceptButton.activate();
 					acceptButton.alpha = 1;
 				}
 			}
-			else {
-				if (acceptButton != null) {
-				//	acceptButton.deactivate();
-				}
-			}
-			iAmount.value = "";
+			iAmount.value = 0;
 			targetInvestment = false;
 			startLoadRate();
-		}
-		
-		private function checkCommision(immidiate:Boolean = false):void {
-			currentCommision = 0;
-			TweenMax.killDelayedCallsTo(checkCommision);
-			
-			var needUpdate:Boolean = true;
-			
-			if (iAmount != null && selectorCommodity != null && selectorCommodity.value != null && iAmount.value != null && iAmount.value != "" && !isNaN(Number(iAmount.value)) && Number(iAmount.value) > 0)
-			{
-				needUpdate = true;
-			}
-			
-			if (walletSelected == false)
-			{
-				needUpdate = false;
-			}
-			
-			if (needUpdate)
-			{
-				drawAccountText(Lang.commisionWillBe + "...");
-				
-				if (immidiate)
-				{
-					loadCommision();
-				}
-				else
-				{
-					TweenMax.delayedCall(1, checkCommision, [true]);
-				}
-			}
 		}
 		
 		private function hidePreloader():void
 		{
 			preloaderShown = false;
-			container.transform.colorTransform = new ColorTransform();
 			
 			if (preloader != null)
 			{
@@ -1201,41 +1188,29 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 		
 		private function drawAccountSelector():void
 		{
-			selectorDebitAccont.setSize(componentsWidth, Config.FINGER_SIZE * .8);
+			selectorDebitAccont.setSize(getWidth() - contentPadding * 2, Config.FINGER_SIZE * .8);
 			selectorDebitAccont.setValue(Lang.loading);
 			
-			selectorDebitAccont.x = Config.DIALOG_MARGIN;
-		}
-		
-		private function drawUseAllButton():void
-		{
-			var textSettings:TextFieldSettings = new TextFieldSettings(Lang.useAll, 0xFFFFFF, Config.FINGER_SIZE * .3, TextFormatAlign.CENTER);
-			var buttonBitmap:ImageBitmapData = TextUtils.createbutton(textSettings, 0x78C043, 1, Config.FINGER_SIZE * .6, NaN, -1, Config.FINGER_SIZE*.09);
-			useAllButton.setBitmapData(buttonBitmap, true);
-			useAllButton.x = int(_width - useAllButton.width - Config.DIALOG_MARGIN);
+			selectorDebitAccont.x = contentPadding;
 		}
 		
 		private function drawAcceptButton(text:String):void
 		{
-			var textSettings:TextFieldSettings = new TextFieldSettings(text, 0xFFFFFF, Config.FINGER_SIZE * .3, TextFormatAlign.CENTER);
-			var buttonBitmap:ImageBitmapData = TextUtils.createbutton(textSettings, 0x78C043, 1, Config.FINGER_SIZE * .8, NaN, (componentsWidth - Config.DIALOG_MARGIN) * .5);
+			var textSettings:TextFieldSettings = new TextFieldSettings(text, com.dukascopy.connect.sys.style.presets.Color.WHITE, FontSize.BODY, TextFormatAlign.CENTER);
+			var buttonBitmap:ImageBitmapData = TextUtils.createbutton(textSettings, com.dukascopy.connect.sys.style.presets.Color.RED, 1, -1, NaN, getButtonWidth(), Style.size(Style.BUTTON_PADDING), Style.size(Style.SIZE_BUTTON_CORNER));
 			acceptButton.setBitmapData(buttonBitmap, true);
-			acceptButton.x = int(acceptButton.width + Config.DIALOG_MARGIN * 2);
 		}
 		
 		private function drawBackButton():void
 		{
-			var textSettings:TextFieldSettings = new TextFieldSettings(Lang.textBack, 0, Config.FINGER_SIZE * .3, TextFormatAlign.CENTER);
-			var buttonBitmap:ImageBitmapData = TextUtils.createbutton(textSettings, 0x78C043, 0, Config.FINGER_SIZE * .8, NaN, (componentsWidth - Config.DIALOG_MARGIN) * .5);
-			backButton.setBitmapData(buttonBitmap);
-			backButton.x = Config.DIALOG_MARGIN;
+			var textSettings:TextFieldSettings = new TextFieldSettings(Lang.textBack.toUpperCase(), Style.color(Style.COLOR_TEXT), FontSize.BODY, TextFormatAlign.CENTER);
+			var buttonBitmap:ImageBitmapData = TextUtils.createbutton(textSettings, Style.color(Style.COLOR_BACKGROUND), 1, -1, Style.color(Style.COLOR_BUTTON_OUTLINE), getButtonWidth(), Style.size(Style.BUTTON_PADDING), Style.size(Style.SIZE_BUTTON_CORNER));
+			backButton.setBitmapData(buttonBitmap, true);
 		}
 		
-		private function drawAccountText(text:String):void
+		private function getButtonWidth():int 
 		{
-			accountText.bitmapData = TextUtils.createTextFieldData(text, componentsWidth, 10, true, TextFormatAlign.CENTER, TextFieldAutoSize.LEFT, Config.FINGER_SIZE * .3, true, 0xABB8C1, 0xffffff, false);
-			
-			accountText.x = int(_width * .5 - accountText.width * .5);
+			return (getWidth() - contentPadding * 3) * .5;
 		}
 		
 		override protected function drawView():void
@@ -1243,84 +1218,8 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 			if (_isDisposed == true)
 				return;
 			
-			bg.width = _width;
-			
-			verticalMargin = Config.MARGIN * 1.2;
-			
-			var position:int;
-			
-			position = verticalMargin + avatarSize;
-			
-			position += verticalMargin * 0.5;
-			
-			title.y = position;
-			position += title.height + verticalMargin * .6;
-			
-			costValue.y = position;
-			position += costValue.height + verticalMargin * 1.5;
-			
-			attentionText.y = position;
-			iconAttention.y = int(attentionText.y);
-			position += attentionText.height + verticalMargin;
-			
-			if (workHoursText != null)
-			{
-				workHoursText.y = position;
-				iconAttention2.y = int(workHoursText.y);
-				position += workHoursText.height + verticalMargin;
-				
-				iconAttention.x = Config.DOUBLE_MARGIN;
-				attentionText.x = int(iconAttention.x + iconAttention.width + Config.MARGIN);
-			}
-			else
-			{
-				iconAttention.x = int(_width * .5 - (iconAttention.width + attentionText.width + Config.MARGIN) * .5);
-				attentionText.x = int(iconAttention.x + iconAttention.width + Config.MARGIN);
-			}
-			
-			title.x = int(_width * .5 - title.width * .5);
-			
-			iAmount.view.y = position;
-			selectorCommodity.y = position;
-			position += iAmount.height + verticalMargin;
-			
-			
-			amountBack.y = position;
-			useAllButton.y = position;
-			maxInvestments.y = int(useAllButton.y + useAllButton.height * .5 - maxInvestments.height * .5);
-			
-			maxInvestments.x = Config.DIALOG_MARGIN;
-			
-			position += amountBack.height + verticalMargin * 2;
-			
-			payFrom.y = position;
-			payFrom.x = int(_width * .5 - payFrom.width * .5);
-			position += payFrom.height + verticalMargin * 1;
-			
-			iAmountCurrency.view.y = position;
-			selectorCurrency.y = position;
-			position += iAmountCurrency.height + verticalMargin * 2;
-			
-			accountTitle.y = position;
-			accountTitle.x = int(_width * .5 - accountTitle.width * .5);
-			position += accountTitle.height + verticalMargin * .6;
-			
-			selectorDebitAccont.y = position;
-			position += selectorDebitAccont.height + verticalMargin * 2;
-			
-			//	accountText.y = position;
-			//	position += accountText.height + verticalMargin * 1.8;
-			accountText.visible = false;
-			
-			acceptButton.y = position;
-			backButton.y = position;
-			position += acceptButton.height + verticalMargin * 1.8;
-			
-			bg.height = position - avatarSize/2;
-			
-			bg.y = avatarSize / 2;
-			
-			container.y = _height - position;
+			scrollBottom.y = scrollPanel.itemsHeight + Config.APPLE_BOTTOM_OFFSET + Config.FINGER_SIZE * .3;
+			super.drawView();
 		}
 		
 		override public function activateScreen():void
@@ -1332,7 +1231,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 			
 			if (walletSelected == true)
 			{
-				if (iAmount != null && iAmount.value != null && iAmount.value != "" && !isNaN(Number(iAmount.value)) && selectorCommodity != null && selectorCommodity.value != null)
+				if (iAmount != null && !isNaN(iAmount.value) && selectorCommodity != null && selectorCommodity.value != null)
 				{
 					acceptButton.activate();
 					acceptButton.alpha = 1;
@@ -1344,14 +1243,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 				backButton.activate();
 			}
 			
-			if (selectorDebitAccont.visible)
-			{
-			//	selectorDebitAccont.activate();
-			}
-			
-			useAllButton.activate();
-			
-			if (iAmount != null && iAmount.view.visible)
+			if (iAmount != null && iAmount.visible)
 			{
 				iAmount.activate();
 				iAmountCurrency.activate();
@@ -1359,9 +1251,9 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 			
 			if (selectorCommodity != null && selectorCommodity.visible)
 			{
-				selectorCommodity.activate();
-			//	selectorCurrency.activate();
+			//	selectorCommodity.activate();
 			}
+			priceSelector.activate();
 		}
 		
 		override public function deactivateScreen():void
@@ -1373,7 +1265,6 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 			
 			acceptButton.deactivate();
 			backButton.deactivate();
-			useAllButton.deactivate();
 			selectorDebitAccont.deactivate();
 			
 			if (iAmount != null)
@@ -1387,6 +1278,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 				selectorCommodity.deactivate();
 				selectorCurrency.deactivate();
 			}
+			priceSelector.deactivate();
 		}
 		
 		protected function onCloseTap():void
@@ -1408,7 +1300,6 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 			{
 				PayAPIManager.S_SWISS_API_CHECKED.remove(onSwissApiChecked);
 			}
-			
 			if (PayManager.S_ACCOUNT)
 			{
 				PayManager.S_ACCOUNT.remove(onAccountInfo);
@@ -1423,12 +1314,6 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 			}
 			if (PayManager.S_SYSTEM_OPTIONS_ERROR){
 				PayManager.S_SYSTEM_OPTIONS_ERROR.remove(onSystemOptions);
-			}
-			
-			if (iconAttention != null)
-			{
-				UI.destroy(iconAttention);
-				iconAttention = null;
 			}
 			if (workHoursText != null)
 			{
@@ -1450,16 +1335,6 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 				UI.destroy(title);
 				title = null;
 			}
-			if (maxInvestments != null)
-			{
-				UI.destroy(maxInvestments);
-				maxInvestments = null;
-			}
-			if (amountBack != null)
-			{
-				UI.destroy(amountBack);
-				amountBack = null;
-			}
 			if (payFrom != null)
 			{
 				UI.destroy(payFrom);
@@ -1480,11 +1355,6 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 				iAmountCurrency.dispose();
 				iAmountCurrency = null;
 			}
-			if (useAllButton != null)
-			{
-				useAllButton.dispose();
-				useAllButton = null;
-			}
 			if (text != null)
 			{
 				UI.destroy(text);
@@ -1500,13 +1370,11 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 				iAmount.dispose();
 				iAmount = null;
 			}
-		
 			if (selectorCommodity != null)
 			{
 				selectorCommodity.dispose();
 				selectorCommodity = null;
 			}
-			
 			if (preloader != null)
 			{
 				preloader.dispose();
@@ -1522,25 +1390,15 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 				backButton.dispose();
 				backButton = null;
 			}
-			if (accountText != null)
-			{
-				UI.destroy(accountText);
-				accountText = null;
-			}
 			if (acceptButton != null)
 			{
 				acceptButton.dispose();
 				acceptButton = null;
 			}
-			if (bg != null)
+			if (priceSelector != null)
 			{
-				UI.destroy(bg);
-				bg = null;
-			}
-			if (container != null)
-			{
-				UI.destroy(container);
-				container = null;
+				priceSelector.dispose();
+				priceSelector = null;
 			}
 			TweenMax.killDelayedCallsTo(startLoadRate);
 			TweenMax.killDelayedCallsTo(loadRate);
