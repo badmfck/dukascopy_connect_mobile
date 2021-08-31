@@ -240,16 +240,7 @@ package com.dukascopy.connect.sys.bankManager {
 					scenario.scenario["select" + label] = {
 						desc:"lang.investmentBuySelectDesc." + n.toLowerCase(),
 						menuLayout:"vertical",
-						menu:[],
-						buttons: [
-							{
-								text:"lang.buttonBack",
-								action:"cmd:back"
-							}, {
-								text:"lang.buttonCancel",
-								action:"system:cancel"
-							}
-						]
+						menu:[]
 					};
 				} else {
 					scenario.scenario["select" + label].desc = "lang.investmentBuySelectDesc." + n.toLowerCase();
