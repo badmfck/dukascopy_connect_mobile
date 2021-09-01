@@ -43,6 +43,7 @@ package com.dukascopy.connect.gui.list {
 		public var S_SHOW_UPPER_CONTENT:Signal = new Signal('List.S_SHOW_UPPER_CONTENT');
 		public var S_HIDE_UPPER_CONTENT:Signal = new Signal('List.S_HIDE_UPPER_CONTENT');
 		public var S_UP:Signal = new Signal('List.S_UP');
+		public var S_DOWN:Signal = new Signal('List.S_DOWN');
 		public var S_ITEM_SWIPE:Signal = new Signal('List.S_ITEM_SWIPE');
 		
 		protected var _innerHeight:int;
@@ -863,6 +864,7 @@ package com.dukascopy.connect.gui.list {
 		
 		private function onItemTouchStart(e:Event):void
 		{
+			S_DOWN.invoke();
 			_isDown = true;
 			TweenMax.killTweensOf(box);			
 			var item:ListItemView;

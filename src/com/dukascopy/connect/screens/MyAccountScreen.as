@@ -517,8 +517,10 @@ package com.dukascopy.connect.screens {
 		private function onHistoryMoreLoaded(history:Array, local:Boolean):void {
 			topBar.hideAnimation();
 			historyLoadingState = false;
-			if (history == null || history.length == 0)
-				callMore == false;
+			if (history == null || history.length == 0) {
+				callMore = false;
+				return;
+			}
 			var listData:Array = list.data as Array;
 			if (Number(listData[0].transactionID) <= Number(history[history.length - 1].transactionID)) {
 				for (var i:int = history.length; i > 0; i--) {
@@ -816,6 +818,7 @@ package com.dukascopy.connect.screens {
 				list.S_ITEM_HOLD.add(onItemHold);
 				list.S_MOVING.add(onListMove);
 				list.S_UP.add(onListTouchUp);
+				list.S_DOWN.add(onListTouchDown);
 			}
 			if (headerAlert != null) {
 				headerAlert.activate();
@@ -1166,6 +1169,7 @@ package com.dukascopy.connect.screens {
 				list.deactivate();
 				list.S_ITEM_TAP.remove(onItemTap);
 				list.S_ITEM_HOLD.remove(onItemHold);
+				list.S_DOWN.remove(onListTouchDown);
 				list.S_MOVING.remove(onListMove);
 				list.S_UP.remove(onListTouchUp);
 			}
@@ -1193,6 +1197,10 @@ package com.dukascopy.connect.screens {
 				loadHistoryOnMouseUp = false;
 				onRefresh1();
 			}
+		}
+		
+		private function onListTouchDown():void {
+			loadHistoryOnMouseUp = false;
 		}
 		
 		private function setListData(data:Array):void {
