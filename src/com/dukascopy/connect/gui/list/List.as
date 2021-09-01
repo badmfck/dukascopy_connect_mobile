@@ -1652,6 +1652,9 @@ package com.dukascopy.connect.gui.list {
 			if (S_UP != null)
 				S_UP.dispose();
 			S_UP = null;
+			if (S_DOWN != null)
+				S_DOWN.dispose();
+			S_DOWN = null;
 			if (S_ITEM_SWIPE != null)
 				S_ITEM_SWIPE.dispose();
 			S_ITEM_SWIPE = null;
