@@ -69,7 +69,7 @@ package com.dukascopy.connect.screens.payments.settings {
 
 //			passInput.deactivate();
 
-			var hLineBitmapData:ImageBitmapData = UI.getHorizontalLine(2, Style.color(Style.COLOR_SUBTITLE));
+			var hLineBitmapData:ImageBitmapData = UI.getHorizontalLine(Style.color(Style.COLOR_SUBTITLE));
 			var hLineBD:BitmapData = new BitmapData(1, Config.DOUBLE_MARGIN * 1.6, true, Style.color(Style.COLOR_BACKGROUND));
 			hLineBD.copyPixels(hLineBitmapData as BitmapData, new Rectangle(0, 0, hLineBitmapData.width, hLineBitmapData.height), new Point(0, 0));
 			hLineBitmapData.dispose();

@@ -77,7 +77,7 @@ package com.dukascopy.connect.screens.shop {
 			line = new Bitmap();
 			scroll.addObject(line);
 			
-			line.bitmapData = UI.getHorizontalLine(1, 0xDCE5EE);
+			line.bitmapData = UI.getHorizontalLine(0xDCE5EE);
 			
 			line.visible = false;
 		}

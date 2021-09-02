@@ -148,7 +148,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs {
 			if (Config.isTest())
 				input.text = TestHelper.getPass();
 			
-			var hLineBitmapData:ImageBitmapData = UI.getHorizontalLine(3, Style.color(Style.COLOR_TEXT));
+			var hLineBitmapData:ImageBitmapData = UI.getHorizontalLine(Style.color(Style.COLOR_TEXT));
 			inputBottom = new Bitmap(hLineBitmapData);
 			container.addChild(inputBottom);
 			

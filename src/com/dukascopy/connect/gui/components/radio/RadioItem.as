@@ -105,17 +105,13 @@ package com.dukascopy.connect.gui.components.radio
 			}
 		}
 		
-		public function draw(selectorItemData:SelectorItemData, itemWidth:int):void 
+		public function draw(selectorItemData:SelectorItemData, itemWidth:int, fullWidth:Boolean):void 
 		{
 			this.selectorItemData = selectorItemData;
 			this.itemWidth = itemWidth;
 			drawText();
 			
 			var padding:int = Config.FINGER_SIZE * .1;
-			graphics.clear();
-			graphics.beginFill(0, 0);
-			graphics.drawRect( -padding, -padding, itemWidth + padding * 2, height + padding * 2);
-			graphics.endFill();
 			
 			text.x = int(selectedState.x + selectedState.width + Config.FINGER_SIZE * .2);
 			baseState.y = selectedState.y = int(Math.max(text.y + text.height * .5 - selectedState.height * .5, 0));
@@ -124,6 +120,23 @@ package com.dukascopy.connect.gui.components.radio
 			{
 				text.y = int(Math.max(0, baseState.height * .5 - text.height * .5));
 			}
+			
+			graphics.clear();
+			graphics.beginFill(0, 0);
+			if (fullWidth)
+			{
+				graphics.drawRect( -padding, -padding, itemWidth + padding * 2, height + padding * 2);
+			}
+			else
+			{
+				graphics.drawRect( -padding, -padding, text.x + text.width + padding * 2, height + padding * 2);
+			}
+			graphics.endFill();
+		}
+		
+		override public function get width():Number
+		{
+			return text.x + text.width;
 		}
 		
 		public function select():void 
@@ -131,7 +144,7 @@ package com.dukascopy.connect.gui.components.radio
 			selectedState.visible = true;
 			baseState.visible = false;
 		}
-		
+		2
 		public function unselect():void 
 		{
 			selectedState.visible = false;

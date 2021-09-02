@@ -505,7 +505,7 @@ package com.dukascopy.connect.screens.promocodes
 			hLine3 = new Bitmap();
 			scrollPanel.addObject(hLine3);
 			
-			hLine1.bitmapData = hLine2.bitmapData = hLine3.bitmapData = UI.getHorizontalLine(2, 0xEEF1F4);
+			hLine1.bitmapData = hLine2.bitmapData = hLine3.bitmapData = UI.getHorizontalLine(0xEEF1F4);
 			
 			vLine1 = new Bitmap();
 			scrollPanel.addObject(vLine1);

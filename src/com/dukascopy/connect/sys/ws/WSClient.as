@@ -964,7 +964,7 @@ import com.dukascopy.connect.MobileGui;
 			{
 				return;
 			}
-			if (pack.method == WSMethodType.ESCROW_OFFER_CREATE)
+			if (pack.method == WSMethodType.ESCROW_OFFER_CREATE_SUCCESS)
 			{
 				return;
 			}

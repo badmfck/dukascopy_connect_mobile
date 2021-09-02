@@ -70,11 +70,11 @@ package com.dukascopy.connect.screens.dialogs.userPopup
 			container.addChild(reason);
 			
 			line1 = new Bitmap();
-			line1.bitmapData = UI.getHorizontalLine(2, AppTheme.GREY_LIGHT);
+			line1.bitmapData = UI.getHorizontalLine(AppTheme.GREY_LIGHT);
 			container.addChild(line1);
 			
 			line2 = new Bitmap();
-			line2.bitmapData = UI.getHorizontalLine(2, AppTheme.GREY_LIGHT);
+			line2.bitmapData = UI.getHorizontalLine(AppTheme.GREY_LIGHT);
 			container.addChild(line2);
 			
 			moderatorBlock = new Sprite();

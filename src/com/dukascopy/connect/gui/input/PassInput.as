@@ -58,11 +58,11 @@ package com.dukascopy.connect.gui.input
 			input.inUse = true;
 			addChild(input.view);
 			
-			var hLineBitmapData:ImageBitmapData = UI.getHorizontalLine(4, 0x707D8E);
+			var hLineBitmapData:ImageBitmapData = UI.getHorizontalLine(0x707D8E);
 			bottomLine = new Bitmap(hLineBitmapData);
 			addChild(bottomLine);
 			
-			var hLineSelectedBitmapData:ImageBitmapData = UI.getHorizontalLine(4, 0x00BEFF);
+			var hLineSelectedBitmapData:ImageBitmapData = UI.getHorizontalLine(0x00BEFF);
 			bottomLineSelected = new Bitmap(hLineSelectedBitmapData);
 			addChild(bottomLineSelected);
 			bottomLineSelected.alpha = 0;

@@ -43,7 +43,7 @@ package com.dukascopy.connect.screens.dialogs {
 			passInput.setRoundRectangleRadius(0);
 			passInput.inUse = true;
 			
-			var hLineBitmapData:ImageBitmapData = UI.getHorizontalLine(2, AppTheme.GREY_MEDIUM);
+			var hLineBitmapData:ImageBitmapData = UI.getHorizontalLine(AppTheme.GREY_MEDIUM);
 			inputBottom = new Bitmap(hLineBitmapData);
 		}
 			

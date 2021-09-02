@@ -3,7 +3,9 @@ package com.dukascopy.connect.gui.components.radio
 	import assets.RadioIcon;
 	import com.dukascopy.connect.Config;
 	import com.dukascopy.connect.data.SelectorItemData;
+	import com.dukascopy.connect.data.layout.LayoutExecutor;
 	import com.dukascopy.connect.data.layout.LayoutType;
+	import com.dukascopy.connect.gui.layout.Layout;
 	import com.dukascopy.connect.sys.applicationError.ApplicationErrors;
 	import flash.display.Sprite;
 	/**
@@ -37,11 +39,11 @@ package com.dukascopy.connect.gui.components.radio
 			for (var i:int = 0; i < selectors.length; i++) 
 			{
 				item = new Renderer(onItemSelected);
-				item.draw(selectors[i], itemWidth);
+				item.draw(selectors[i], itemWidth, layout == LayoutType.vertical);
 				items.push(item);
 				addChild(item as Sprite);
 			}
-			updatePositions();
+			updatePositions(itemWidth);
 		}
 		
 		private function onItemSelected(value:SelectorItemData):void 
@@ -80,14 +82,14 @@ package com.dukascopy.connect.gui.components.radio
 			}
 		}
 		
-		private function updatePositions():void 
+		private function updatePositions(componentWidth:int):void 
 		{
-			var position:int = 0;
-			for (var i:int = 0; i < items.length; i++) 
+			var clips:Vector.<Sprite> = new Vector.<Sprite>();
+			for (var n:int = 0; n < items.length; n++) 
 			{
-				items[i].y = position;
-				position += items[i].height + gap;
+				clips.push(items[n]);
 			}
+			LayoutExecutor.execute(clips, layout, componentWidth);
 		}
 		
 		public function activate():void

@@ -112,7 +112,7 @@ package com.dukascopy.connect.gui.components.radio
 			}
 		}
 		
-		public function draw(selectorItemData:SelectorItemData, itemWidth:int):void 
+		public function draw(selectorItemData:SelectorItemData, itemWidth:int, fullWidth:Boolean):void 
 		{
 			this.selectorItemData = selectorItemData;
 			this.itemWidth = itemWidth;

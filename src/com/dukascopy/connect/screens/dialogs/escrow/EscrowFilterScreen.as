@@ -219,8 +219,6 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			
 			var result:Vector.<SelectorItemData> = new Vector.<SelectorItemData>();
 			
-			
-			
 			result.push(new SelectorItemData(Lang.buy_ads, TradeDirection.buy));
 			result.push(new SelectorItemData(Lang.sell_ads, TradeDirection.sell));
 			return result;

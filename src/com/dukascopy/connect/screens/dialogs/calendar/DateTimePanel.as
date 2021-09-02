@@ -217,7 +217,7 @@ package com.dukascopy.connect.screens.dialogs.calendar
 				line.bitmapData = null;
 			}
 			
-			line.bitmapData = UI.getHorizontalLine(3, 0xDAE3EC);
+			line.bitmapData = UI.getHorizontalLine(0xDAE3EC);
 			line.width = elementWidth;
 		}
 		

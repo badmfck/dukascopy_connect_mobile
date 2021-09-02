@@ -344,11 +344,11 @@ package com.dukascopy.connect.screens.dialogs.userPopup
 			container.addChild(reason);
 			
 			line1 = new Bitmap();
-			line1.bitmapData = UI.getHorizontalLine(2, Style.color(Style.COLOR_SEPARATOR));
+			line1.bitmapData = UI.getHorizontalLine(Style.color(Style.COLOR_SEPARATOR));
 			container.addChild(line1);
 			
 			line2 = new Bitmap();
-			line2.bitmapData = UI.getHorizontalLine(2, Style.color(Style.COLOR_SEPARATOR));
+			line2.bitmapData = UI.getHorizontalLine(Style.color(Style.COLOR_SEPARATOR));
 			container.addChild(line2);
 			
 			moderatorBlock = new Sprite();

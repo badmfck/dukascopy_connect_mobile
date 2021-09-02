@@ -86,7 +86,7 @@ package com.dukascopy.connect.gui.textedit {
 				addChild(titleBitmap);
 			}
 			if (titleSeparator == null) {
-				var separatorBMD:ImageBitmapData = UI.getHorizontalLine(UI.getLineThickness(), Style.color(Style.COLOR_SUBTITLE));
+				var separatorBMD:ImageBitmapData = UI.getHorizontalLine(Style.color(Style.COLOR_SUBTITLE));
 				titleSeparator = new Bitmap(separatorBMD);
 				addChild(titleSeparator);
 			}

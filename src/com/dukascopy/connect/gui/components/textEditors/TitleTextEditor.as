@@ -169,7 +169,7 @@ package com.dukascopy.connect.gui.components.textEditors
 				acceptTitleButton.setOverflow(verticalOverflow, horizontalOverflow, horizontalOverflow, verticalOverflow);
 			}
 			
-			var hLineBitmapData:ImageBitmapData = UI.getHorizontalLine(2, AppTheme.GREY_MEDIUM);
+			var hLineBitmapData:ImageBitmapData = UI.getHorizontalLine(AppTheme.GREY_MEDIUM);
 			nameInputBottom = new Bitmap(hLineBitmapData);
 			addChild(nameInputBottom);
 		}

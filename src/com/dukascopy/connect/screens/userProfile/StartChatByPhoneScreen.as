@@ -409,7 +409,7 @@ package com.dukascopy.connect.screens.userProfile {
 			UI.scaleToFit(plusIcon, int(Config.FINGER_SIZE * .25), int(Config.FINGER_SIZE * .25));
 			scrollPanel.addObject(plusIcon);
 			
-			var hLineBitmapData:ImageBitmapData = UI.getHorizontalLine(2, AppTheme.GREY_DARK);
+			var hLineBitmapData:ImageBitmapData = UI.getHorizontalLine(AppTheme.GREY_DARK);
 			nameInputBottom = new Bitmap(hLineBitmapData);
 			phoneLineContainer = new Sprite();
 			phoneLineContainer.addChild(nameInputBottom);

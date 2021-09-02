@@ -304,7 +304,7 @@ package com.dukascopy.connect.screens.serviceScreen
 			
 			nameInput.view.visible = false;
 			
-			var hLineBitmapData:ImageBitmapData = UI.getHorizontalLine(3, 0x8195B8);
+			var hLineBitmapData:ImageBitmapData = UI.getHorizontalLine(0x8195B8);
 			nameLine = new Bitmap(hLineBitmapData);
 			view.addChild(nameLine);
 			nameLine.alpha = 0;

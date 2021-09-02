@@ -269,7 +269,7 @@ package com.dukascopy.connect.screens.dialogs
 		private function drawLine():void 
 		{
 			var lineImage:Bitmap = new Bitmap();
-			lineImage.bitmapData = UI.getHorizontalLine(2, 0xD9E5F0);
+			lineImage.bitmapData = UI.getHorizontalLine(0xD9E5F0);
 			lineImage.width = int(_width - Config.FINGER_SIZE * 1.4);	
 			lines.push(lineImage);
 			scrollPanel.addObject(lineImage);

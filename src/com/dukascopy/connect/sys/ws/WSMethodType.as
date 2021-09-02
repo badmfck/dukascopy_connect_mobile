@@ -56,6 +56,7 @@ package com.dukascopy.connect.sys.ws
 		static public const ESCROW_OFFER_CANCEL:String = "escrowOfferCancel";
 		static public const ESCROW_EVENT:String = "evEscrow";
 		static public const ESCROW_OFFER_CREATE:String = "escrowOfferAdd";
+		static public const ESCROW_OFFER_CREATE_SUCCESS:String = "escrowOfferAdded";
 		
 		public function WSMethodType() 
 		{

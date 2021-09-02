@@ -49,7 +49,7 @@ package com.dukascopy.connect.screens.dialogs.geolocation {
 			icon.y = int(input.view.y + input.height * .5 - icon.height * .5);
 			addChild(icon);
 			
-			var hLineBitmapData:ImageBitmapData = UI.getHorizontalLine(3, 0x79859A);
+			var hLineBitmapData:ImageBitmapData = UI.getHorizontalLine(0x79859A);
 			nameInputBottom = new Bitmap(hLineBitmapData);
 			addChild(nameInputBottom);
 			
