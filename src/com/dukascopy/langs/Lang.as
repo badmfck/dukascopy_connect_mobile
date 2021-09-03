@@ -2541,6 +2541,8 @@ package com.dukascopy.langs {
 		static public var escrow_offer_was_rejected:String = "Offer was rejected";
 		static public var escrow_offer_rejected:String = "Offer was rejected by the counterparty.\nThe funds were unblocked.";
 		static public var instrument:String = "Instrument";
+		static public var crypto_terms_link:String = "google.com";
+		static public var crypto_terms:String = "The use of the deposit function is possible only upon accepting the <font color='#CD3F43'>Crypto Terms & conditions</font>";
 		
 		static public function updateKeys(keys:Object):void {
 			for (var n:String in keys) {

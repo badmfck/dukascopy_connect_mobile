@@ -411,7 +411,10 @@ package com.dukascopy.connect.gui.button
 					}*/
 				}
 				
-				tf.text = formatedAccountNumber;
+				if (formatedAccountNumber != null)
+				{
+					tf.text = formatedAccountNumber;
+				}
 				
 				var color:String;
 				

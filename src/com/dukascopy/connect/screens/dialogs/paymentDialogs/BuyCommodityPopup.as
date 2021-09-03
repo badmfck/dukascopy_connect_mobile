@@ -153,8 +153,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 			tfAmountCurrency.align = TextFormatAlign.LEFT;
 			tfAmountCurrency.color = Style.color(Style.COLOR_TEXT);
 			tfAmountCurrency.font = Config.defaultFontName;
-			iAmount.updateTextFormat(tfAmountCurrency);
-			iAmountCurrency.updateTextFormat(tf);
+			iAmountCurrency.updateTextFormat(tfAmountCurrency);
 			
 			selectorCurrency = new DDFieldButton(selectCurrencyTap, "", false);
 			addItem(selectorCurrency);
