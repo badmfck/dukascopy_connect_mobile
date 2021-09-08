@@ -64,6 +64,7 @@ package com.dukascopy.connect.sys.paymentsManagerNew {
 		static private var callbacksCryptoWithdrawal:Object;
 		static private var callbacksDeliveryInvestment:Object;
 		static private var callbacksCryptoDepositeAddress:Object;
+		static private var callbacksCryptoDepositeAddressInvestment:Object;
 		static private var callbacksCryptoDeposite:Object;
 		static private var callbacksOfferDeactivate:Object;
 		static private var callbacksOfferDelete:Object;
@@ -1096,6 +1097,40 @@ package com.dukascopy.connect.sys.paymentsManagerNew {
 				hashCallbacks.shift()(res, respond.savedRequestData.callID);
 			hashCallbacks = null;
 			delete callbacksCryptoDepositeAddress[respond.savedRequestData.callID];
+		}
+		
+		static public function depositeAddressInvestmentCrypto(callback:Function, amount:Number, coin:String, address:String):String {
+			if (preCall() == false)
+				return null;
+			var hash:String = MD5.hash(amount + coin + address);
+			if (callbacksCryptoDepositeAddressInvestment == null || hash in callbacksCryptoDepositeAddressInvestment == false) {
+				callbacksCryptoDepositeAddressInvestment ||= {};
+				callbacksCryptoDepositeAddressInvestment[hash] = [callback];
+			} else {
+				if (callbacksCryptoDepositeAddressInvestment[hash].indexOf(callback) == -1)
+					callbacksCryptoDepositeAddressInvestment[hash].push(callback);
+				return hash;
+			}
+			PayServer.call_cryptoDepositAddressInvestment(onCryptoDepositeAddressInvestment, address, amount, coin, hash);
+			return hash;
+		}
+		
+		static private function onCryptoDepositeAddressInvestment(respond:PayRespond):void {
+			if (callbacksCryptoDepositeAddressInvestment == null)
+				return;
+			var hashCallbacks:Array;
+			if (respond.savedRequestData.callID in callbacksCryptoDepositeAddressInvestment == true)
+				hashCallbacks = callbacksCryptoDepositeAddressInvestment[respond.savedRequestData.callID];
+			if (hashCallbacks == null || hashCallbacks.length == 0) {
+				delete callbacksCryptoDepositeAddressInvestment[respond.savedRequestData.callID];
+				respond.dispose();
+				return;
+			}
+			var res:Object = checkForError(respond);
+			while (hashCallbacks.length != 0)
+				hashCallbacks.shift()(res, respond.savedRequestData.callID);
+			hashCallbacks = null;
+			delete callbacksCryptoDepositeAddressInvestment[respond.savedRequestData.callID];
 		}
 		
 		static public function activateCryptoOffer(callback:Function, offerID:String):void {

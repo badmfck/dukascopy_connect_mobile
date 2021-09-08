@@ -1782,6 +1782,19 @@ package com.dukascopy.connect.sys.bankManager {
 				]
 			},
 			
+			cryptoBCDeposite1: {
+				desc:"lang.bcDepositeDesc1",
+				menuLayout:"vertical",
+				buttons: [
+					{
+						text:"lang.buttonOk",
+						textForUser:"lang.itemBCIDeposite",
+						type:"BCDepositeAddress1",
+						action:"nav:bcDepositeInvestmentConfirm"
+					}
+				]
+			},
+			
 			cryptoBCWithdrawal: {
 				desc:"lang.bcWithdrawalDesc",
 				menuLayout:"vertical",
@@ -1801,6 +1814,16 @@ package com.dukascopy.connect.sys.bankManager {
 					{
 						text:"lang.buttonConfirm",
 						action:"nav:bcDepositeAddressConfirmed"
+					}
+				]
+			},
+			
+			bcDepositeInvestmentConfirm: {
+				desc:"lang.confirmBCDeposite",
+				buttons: [
+					{
+						text:"lang.buttonConfirm",
+						action:"nav:bcDepositeAddressInvestmentConfirmed"
 					}
 				]
 			},
@@ -1827,6 +1850,22 @@ package com.dukascopy.connect.sys.bankManager {
 			
 			bcDepositeAddressConfirmed: {
 				desc:"lang.confirmedBCAddressDeposite",
+				isBack:false,
+				isCancel:false,
+				buttons: [
+					{
+						text:"lang.buttonCopyAddress",
+						type:"BCDepositeCopyAddress",
+						value:"@@1"
+					}, {
+						text:"lang.buttonOk",
+						action:"system:cancel"
+					}
+				]
+			},
+			
+			bcDepositeAddressInvestmentConfirmed: {
+				desc:"lang.confirmedBCAddressDepositeInvestment",
 				isBack:false,
 				isCancel:false,
 				buttons: [
@@ -2163,6 +2202,9 @@ package com.dukascopy.connect.sys.bankManager {
 					{
 						text:"lang.menuInvestmentBuy",
 						action:"nav:investMoney"
+					}, {
+						text:"lang.menuInvestFromBC",
+						action:"nav:cryptoBCDeposite1"
 					}, {
 						text:"lang.menuInvestmentSell",
 						action:"nav:investmentsListSell"
