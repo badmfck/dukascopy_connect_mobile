@@ -202,7 +202,7 @@ package com.dukascopy.connect.gui.button {
 				innerHeight = h;
 			}
 			
-			tf.y = int(innerHeight - tf.height - Config.FINGER_SIZE * .090);
+			tf.y = int(innerHeight - tf.height - Config.FINGER_SIZE * .1);
 			
 			box.graphics.clear();
 				box.graphics.beginFill(Style.color(Style.COLOR_BACKGROUND), 0);

@@ -52,11 +52,12 @@ package com.dukascopy.connect.sys.ws
 		static public const MODERATOR_PAID_BAN_BANNED:String = "unban911";
 		static public const MAIN_BAN:String = "ban";
 		static public const GET_IDENTIFICATION_QUEUE_LENGTH:String = "getQueueTotal";
-		static public const ESCROW_OFFER_ACCEPT:String = "escrowOfferAccept";
-		static public const ESCROW_OFFER_CANCEL:String = "escrowOfferCancel";
-		static public const ESCROW_EVENT:String = "evEscrow";
-		static public const ESCROW_OFFER_CREATE:String = "escrowOfferAdd";
-		static public const ESCROW_OFFER_CREATE_SUCCESS:String = "escrowOfferAdded";
+		static public const ESCROW_OFFER_ACCEPT:String = "cp2pOfferAccept";
+		static public const ESCROW_OFFER_CANCEL:String = "cp2pOfferCancel";
+		static public const ESCROW_EVENT:String = "evCp2p";
+		static public const ESCROW_OFFER_CREATE:String = "cp2pOfferAdd";
+		static public const ESCROW_OFFER_CREATE_SUCCESS:String = "cp2pOfferAdded";
+		static public const ESCROW_OFFER_ERROR:String = "cp2pOfferError";
 		
 		public function WSMethodType() 
 		{

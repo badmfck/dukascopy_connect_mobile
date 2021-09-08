@@ -626,7 +626,7 @@ package com.dukascopy.connect.screens {
 			if (QuestionsManager.getCurrentQuestion() == null) {
 				showPreloader();
 			}
-			QuestionsManager.createUpdateQuestion("Escrow");
+			QuestionsManager.createUpdateQuestion("Crypto P2P ad");
 			return true;
 		}
 		

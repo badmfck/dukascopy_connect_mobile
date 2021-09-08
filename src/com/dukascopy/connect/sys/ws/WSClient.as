@@ -3,6 +3,7 @@ package com.dukascopy.connect.sys.ws{
 	import com.dukascopy.connect.Config;
 import com.dukascopy.connect.GD;
 import com.dukascopy.connect.MobileGui;
+	import com.dukascopy.connect.data.ErrorData;
 	import com.dukascopy.connect.data.MessageData;
 	import com.dukascopy.connect.data.UserBanData;
 	import com.dukascopy.connect.data.escrow.EscrowEventType;
@@ -117,6 +118,8 @@ import com.dukascopy.connect.MobileGui;
 		static public var S_LOYALTY_CHANGE:Signal = new Signal("WSClient.S_LOYALTY_CHANGE");
 		static public var S_ACTIVITY:Signal = new Signal("WSClient.S_ACTIVITY");
 		static public var S_ESCROW_DEAL_EVENT:Signal = new Signal("WSClient.S_ESCROW_DEAL_EVENT");
+		static public var S_OFFER_CREATE_FAIL:Signal = new Signal("WSClient.S_OFFER_CREATE_FAIL");
+		static public var S_OFFER_CREATED:Signal = new Signal("WSClient.S_OFFER_CREATED");
 		
 		static private var wasMessage:Boolean;
 
@@ -604,7 +607,46 @@ import com.dukascopy.connect.MobileGui;
 				S_OFFLINE_USER.invoke(pack.data.uid);
 				return;
 			}
-
+			if (pack.method == 'chatUserEnter')
+			{
+				if ("error" in pack.data)
+				{
+					if ("reason" in pack.data)
+					{
+						var errorText:String = pack.data.reason;
+						if (errorText == "User has been banned")
+						{
+							//узнать в каком чате забанен и обновить статус для чата в Auth;
+						}
+					}
+				}
+				else
+				{
+					S_CHAT_USER_ENTER.invoke(pack.data);
+				}
+				
+				return;
+			}
+			if (pack.method == 'userPhase') {
+				S_USER_PHASE_CHANGED.invoke( { phase: pack.data.phase, name: "ch_pp", steps:pack.data.steps } );
+				return;
+			}
+			
+			if (pack.method == 'userPhaseBank') {
+				S_USER_PHASE_CHANGED.invoke( { phase: pack.data.phase, name: "ch_bank", steps:pack.data.steps } );
+				return;
+			}
+			
+			if (pack.method == 'userPhaseEU') {
+				S_USER_PHASE_CHANGED.invoke( { phase: pack.data.phase, name: "eu_pp", steps:pack.data.steps } );
+				return;
+			}
+			
+			if (pack.method == 'userPhaseEU') {
+				S_USER_PHASE_CHANGED.invoke( { phase: pack.data.phase, name: "eu_pp", steps:pack.data.steps } );
+				return;
+			}
+			
 			if (pack.method == "userCreated") {
 				S_USER_CREATED.invoke(pack.data.phone, pack.data.name);
 				return;
@@ -662,25 +704,7 @@ import com.dukascopy.connect.MobileGui;
 				return;
 			}
 			
-			if (pack.method == 'userPhase') {
-				S_USER_PHASE_CHANGED.invoke( { phase: pack.data.phase, name: "ch_pp", steps:pack.data.steps } );
-				return;
-			}
 			
-			if (pack.method == 'userPhaseBank') {
-				S_USER_PHASE_CHANGED.invoke( { phase: pack.data.phase, name: "ch_bank", steps:pack.data.steps } );
-				return;
-			}
-			
-			if (pack.method == 'userPhaseEU') {
-				S_USER_PHASE_CHANGED.invoke( { phase: pack.data.phase, name: "eu_pp", steps:pack.data.steps } );
-				return;
-			}
-			
-			if (pack.method == 'userPhaseEU') {
-				S_USER_PHASE_CHANGED.invoke( { phase: pack.data.phase, name: "eu_pp", steps:pack.data.steps } );
-				return;
-			}
 			
 			if (pack.method == "changedLoyalty") {
 				if (!pack.data || !pack.data.loyalty){
@@ -869,26 +893,7 @@ import com.dukascopy.connect.MobileGui;
 				return;
 			}
 			
-			if (pack.method == 'chatUserEnter')
-			{
-				if ("error" in pack.data)
-				{
-					if ("reason" in pack.data)
-					{
-						var errorText:String = pack.data.reason;
-						if (errorText == "User has been banned")
-						{
-							//узнать в каком чате забанен и обновить статус для чата в Auth;
-						}
-					}
-				}
-				else
-				{
-					S_CHAT_USER_ENTER.invoke(pack.data);
-				}
-				
-				return;
-			}
+			
 			if (pack.method == 'chatUserExit')
 			{
 				S_CHAT_USER_EXIT.invoke(pack.data);
@@ -968,24 +973,81 @@ import com.dukascopy.connect.MobileGui;
 			{
 				return;
 			}
+			if (pack.method == WSMethodType.ESCROW_OFFER_CREATE)
+			{
+				S_OFFER_CREATED.invoke();
+				return;
+			}
+			if (pack.method == WSMethodType.ESCROW_OFFER_ERROR)
+			{
+				var errorObject:Object;
+				if ("data" in pack && pack.data != null &&
+					"error" in pack.data && pack.data.error != null)
+				{
+					errorObject = pack.data.error;
+				}
+				S_OFFER_CREATE_FAIL.invoke(new ErrorData(errorObject));
+				/*pack : Object {
+					data : Object {
+						error : Object {
+							code : "PAYAPI03" 
+							msg : "Payment API Error: Wrong response" 
+						}
+						offer : Object {
+							amount : 1 
+							chatUID : "WLDIDRWmDNW5WPWe" 
+							crypto_user_uid : "WLDNWrWbWoIxIbWI" 
+							debit_account : "314931366384" 
+							instrument : "DCO" 
+							mca_ccy : "EUR" 
+							mca_user_uid : "I6D5WsWZDLWj" 
+							offer_id : 1630916498828 [0x17bba32d58c] 
+							price : 1.15 
+							side : "buy" 
+							type : "typeCp2pOffer" 
+						}
+					}
+					method : "cp2pOfferError" 
+				}*/
+				
+				return;
+			}
 			if (pack.method == WSMethodType.ESCROW_OFFER_CANCEL)
 			{
-				/*data : Object {
-					error : Object {
-						code : "ESCROW16" 
-						msg : "Escrow deal offer error: Cannot decode message" 
+				/*pack : Object {
+					data : Object {
+						offer : Object {
+							amount : 1 
+							chatUID : "WLDIDRWmDNW5WPWe" 
+							crypto_user_uid : "I6D5WsWZDLWj" 
+							deal_uid : null 
+							debit_account : "380867781292" 
+							instrument : "DCO" 
+							mca_ccy : "EUR" 
+							mca_user_uid : "WLDNWrWbWoIxIbWI" 
+							msg_id : 35651395 [0x21fff43] 
+							offer_id : 1630928952116 [0x17bbaf0db34] 
+							price : 1.42 
+							side : "buy" 
+							status : "canceled" 
+							type : "typeCp2pOffer" 
+							userUID : null 
+						}
+						reason : "canceled" 
 					}
+					method : "cp2pOfferCancel" 
 				}*/
+				
 				
 				return;
 			}
 			if (pack.method == WSMethodType.ESCROW_EVENT)
 			{
-				if (pack.action == "escrow_deal_created" && pack.data != null && pack.data.event != null && pack.data.event.type == EscrowEventType.CREATED)
+				if (pack.action == "cp2p_deal_created" && pack.data != null && pack.data.event != null && pack.data.event.type == EscrowEventType.CREATED)
 				{
 					S_ESCROW_DEAL_EVENT.invoke(EscrowEventType.CREATED, pack.data.deal);
 				}
-				if (pack.action == "escrow_deal_created" && pack.data != null && pack.data.event != null && pack.data.event.type == EscrowEventType.HOLD_MCA)
+				if (pack.action == "cp2p_deal_created" && pack.data != null && pack.data.event != null && pack.data.event.type == EscrowEventType.HOLD_MCA)
 				{
 					S_ESCROW_DEAL_EVENT.invoke(EscrowEventType.HOLD_MCA, pack.data.deal);
 				}
@@ -1020,23 +1082,9 @@ import com.dukascopy.connect.MobileGui;
 			send(WSMethodType.ESCROW_OFFER_ACCEPT, request);
 		}
 		
-		static public function call_create_offer(id:Number, debitAccount:String, cryptoWallet:String, sessionId:String = null):void 
+		static public function call_create_offer(dataObject:Object):void 
 		{
-			var request:Object = new Object();
-			request.msg_id = id;
-			if (debitAccount != null)
-			{
-				request.debit_account = debitAccount;
-			}
-			if (cryptoWallet != null)
-			{
-				request.crypto_wallet = cryptoWallet;
-			}
-			if (cryptoWallet != null)
-			{
-				request.sessionID = sessionId;
-			}
-			send(WSMethodType.ESCROW_OFFER_CREATE, request);
+			send(WSMethodType.ESCROW_OFFER_CREATE, dataObject);
 		}
 		
 		static public function call_cancel_offer(id:Number):void 

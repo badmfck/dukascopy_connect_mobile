@@ -16,8 +16,8 @@ package com.dukascopy.connect.data.escrow
 		static private var commission_ETH:Number = 0.01;
 		static private var commission_UST:Number = 0.01;
 		
-		static public var offerMaxTime:Number = 50000;
-		static public var dealMaxTime:Number = 30000;
+		static public var offerMaxTime:Number = 50;
+		static public var dealMaxTime:Number = 300;
 		static public var confirmTransactionTime:Number = 1440;
 		static public var penalty:Number = 0.01;
 		static public var limitAmountKoef:Number = 0.9;

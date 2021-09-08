@@ -9,13 +9,15 @@ package com.dukascopy.connect.data {
 	public class TestHelper {
 		
 		public static const numbers:Array = [
-			{ code:"380", phone:"957999813", pass:"123456a"},
-			{ code:"7", phone:"9999999955", pass:"Dukascopy123#"},
-			{ code:"7", phone:"9996226225", pass:"Dukascopy123#"},
-			{ code:"380", phone:"631686555", pass:"Dukascopy123#"},
-			{ code: "7", phone: "9998181810", pass: "Dukascopy123" },
-			{ code: "7", phone: "9999638920", pass: "Dukascopy123#" },
-			{ code: "371", phone: "25914896", pass: "Dukascopy123" }
+			{ code:"380",  phone:"957999813",  pass:"123456a"},
+			{ code:"380",  phone:"631686555",  pass:"Dukascopy123#"},
+			{ code:"7",    phone:"9999999955", pass:"Dukascopy123#"},
+			{ code:"7",    phone:"9996226225", pass:"Dukascopy123#"},
+			{ code:"7",    phone:"9998181810", pass: "Dukascopy123" },
+			{ code:"7",    phone:"9999638920", pass: "Dukascopy123#" },
+			{ code:"7",    phone:"9999053294", pass: "Dukascopy123#" },
+			{ code:"7",    phone:"9993541149", pass: "Dukascopy123#" },
+			{ code:"371",  phone:"25914896",   pass: "Dukascopy123" }
 		];
 		
 		public function TestHelper() {

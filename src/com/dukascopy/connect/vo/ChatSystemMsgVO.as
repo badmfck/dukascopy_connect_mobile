@@ -116,8 +116,8 @@ package com.dukascopy.connect.vo {
 		static public const REPLAY_START_BOUND_FIXED:String = "<quote ";
 		static public const TYPE_REPLY:String = "typeReply";
 		static public const TYPE_LINK_PREVIEW:String = "typeLinkPreview";
-		static public const TYPE_ESCROW_OFFER:String = "typeEscrowOffer";
-		static public const TYPE_ESCROW_DEAL:String = "typeEscrowDeal";
+		static public const TYPE_ESCROW_OFFER:String = "typeCp2pOffer";
+		static public const TYPE_ESCROW_DEAL:String = "typeCp2pDeal";
 		static public const METHOD_LOCAL_CREATE:String = "methodLocalCreate";
 		
 		private var _type:String;

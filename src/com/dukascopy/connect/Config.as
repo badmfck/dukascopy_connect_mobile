@@ -160,7 +160,7 @@ package com.dukascopy.connect {
 		
         static public const BOUNDS:String = ".&70o}.?F";
         static public const BOUNDS_INVOICE:String = "#07INVOICE";
-		static public const BOUNDS_ESCROW:String = "#06ESCROW";
+		static public const BOUNDS_ESCROW:String = "#04CP2P";
 		
         static public const CHAT_AVATAR_SIZE_MAX:int = 200;
         static public const USER_AVATAR_SIZE_MAX:int = 1280;

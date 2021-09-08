@@ -80,6 +80,7 @@ package com.dukascopy.connect.data.escrow
 			else if (command == OfferCommand.confirm_crypto_recieve)
 			{
 				PHP.escrow_addEvent(onConfirmCryptoEvent, {event_type: EscrowEventType.CRYPTO_ACCEPTED, deal_uid: escrow.deal_uid, notifyWS: true});
+			//	PHP.escrow_addEvent(onConfirmCryptoEvent, {event_type: "cp2p_crypto_accepted", deal_uid: escrow.deal_uid, notifyWS: true});
 			}
 		}
 		
@@ -177,7 +178,7 @@ package com.dukascopy.connect.data.escrow
 					{
 						if (escrow.direction == TradeDirection.sell)
 						{
-							if (escrow.userUID == Auth.uid)
+							if (escrow.crypto_user_uid == Auth.uid)
 							{
 								//!TODO: check exist escrow.cryptoWallet;
 								screenData.callback = onSendTransactionCommand;
@@ -190,7 +191,7 @@ package com.dukascopy.connect.data.escrow
 						}
 						else
 						{
-							if (escrow.userUID != Auth.uid)
+							if (escrow.crypto_user_uid != Auth.uid)
 							{
 								//!TODO: check exist escrow.cryptoWallet;
 								screenData.callback = onSendTransactionCommand;
@@ -471,8 +472,8 @@ package com.dukascopy.connect.data.escrow
 						}
 					}
 					
-				//	WSClient.call_accept_offer(message.id, debitAccount, cryptoWallet);
-					WSClient.call_create_offer(message.id, debitAccount, cryptoWallet, paymentsSessionId);
+					WSClient.call_accept_offer(message.id, debitAccount, cryptoWallet);
+				//	WSClient.call_create_offer(message.id, debitAccount, cryptoWallet, paymentsSessionId);
 				}
 				else
 				{
@@ -558,14 +559,14 @@ package com.dukascopy.connect.data.escrow
 				{
 					if (dealRawData.mca_user_uid == Auth.uid)
 					{
-						makeHold(dealRawData);
+					//	makeHold(dealRawData);
 					}
 				}
 				else if (dealRawData.side == "BUY")
 				{
 					if (dealRawData.crypto_user_uid != Auth.uid)
 					{
-						makeHold(dealRawData);
+					//	makeHold(dealRawData);
 					}
 					
 					//!TODO: проверять если был оффлайн или по нотификации;

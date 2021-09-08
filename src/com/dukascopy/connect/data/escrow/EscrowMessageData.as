@@ -1,12 +1,15 @@
 package com.dukascopy.connect.data.escrow 
 {
 	import com.dukascopy.connect.sys.applicationError.ApplicationErrors;
+	import com.dukascopy.connect.sys.auth.Auth;
 	/**
 	 * ...
 	 * @author Sergey Dobarin
 	 */
 	public class EscrowMessageData 
 	{
+		public var mca_user_uid:String;
+		public var crypto_user_uid:String;
 		public var inactive:Boolean;
 		public var price:Number;
 		public var amount:Number;
@@ -94,6 +97,14 @@ package com.dukascopy.connect.data.escrow
 			{
 				cryptoWallet = data.crypto_wallet;
 			}
+			if ("mca_user_uid" in data)
+			{
+				mca_user_uid = data.mca_user_uid;
+			}
+			if ("crypto_user_uid" in data)
+			{
+				crypto_user_uid = data.crypto_user_uid;
+			}
 		}
 		
 		public function toJsonString():String 
@@ -131,6 +142,23 @@ package com.dukascopy.connect.data.escrow
 			result.instrument = instrument;
 			
 			return JSON.stringify(result);
+		}
+		
+		public function toServerObject(chatUID:String):Object 
+		{
+			var result:Object = new Object();
+			result.amount = amount;
+			result.mca_ccy = currency;
+			result.side = direction.type;
+			result.instrument = instrument;
+			result.price = price;
+			result.chatUID = chatUID;
+			if (debit_account != null)
+			{
+				result.debit_account = debit_account;
+			}
+			
+			return result;
 		}
 	}
 }

@@ -2,7 +2,9 @@ package com.dukascopy.connect.data.screenAction.customActions {
 	
 	import assets.StarIcon3;
 	import com.dukascopy.connect.Config;
+	import com.dukascopy.connect.GD;
 	import com.dukascopy.connect.data.AlertScreenData;
+	import com.dukascopy.connect.data.ErrorData;
 	import com.dukascopy.connect.data.escrow.EscrowDealData;
 	import com.dukascopy.connect.data.escrow.EscrowMessageData;
 	import com.dukascopy.connect.data.escrow.EscrowScreenNavigation;
@@ -13,6 +15,7 @@ package com.dukascopy.connect.data.screenAction.customActions {
 	import com.dukascopy.connect.data.screenAction.IScreenAction;
 	import com.dukascopy.connect.data.screenAction.ScreenAction;
 	import com.dukascopy.connect.gui.chatInput.ChatInputAndroid;
+	import com.dukascopy.connect.gui.components.message.ToastMessage;
 	import com.dukascopy.connect.screens.dialogs.escrow.CreateEscrowScreen;
 	import com.dukascopy.connect.screens.dialogs.x.base.float.FloatAlert;
 	import com.dukascopy.connect.screens.dialogs.escrow.RegisterEscrowScreen;
@@ -35,6 +38,7 @@ package com.dukascopy.connect.data.screenAction.customActions {
 	import com.dukascopy.connect.vo.QuestionVO;
 	import com.dukascopy.connect.vo.users.adds.ChatUserVO;
 	import com.dukascopy.langs.Lang;
+	import com.greensock.TweenMax;
 
 	/**
 	 * ...
@@ -43,6 +47,7 @@ package com.dukascopy.connect.data.screenAction.customActions {
 	
 	public class CreateCoinTradeAction extends ScreenAction implements IScreenAction {
 		
+		private var pendingOfferData:EscrowDealData;
 		public var chat:ChatVO;
 		public var direction:TradeDirection;
 		public var currency:String;
@@ -156,8 +161,6 @@ package com.dukascopy.connect.data.screenAction.customActions {
 			var tradeAction:CreateCoinTradeAction = new CreateCoinTradeAction();
 			tradeAction.chat = ChatManager.getCurrentChat();
 			
-			
-			
 			tradeAction.setData(Lang.escrow);
 			tradeAction.execute();
 		}
@@ -187,13 +190,17 @@ package com.dukascopy.connect.data.screenAction.customActions {
 					ApplicationErrors.add();
 					onFail();
 				}
-				
-				showCreateSuccessPopup(offer);
 			}
 		}
 		
 		private function showCreateSuccessPopup(offer:EscrowDealData):void 
 		{
+			if (offer == null)
+			{
+				ApplicationErrors.add();
+				return;
+			}
+			
 			var chatUser:ChatUserVO = UsersManager.getInterlocutor(chat);
 			var userName:String = Lang.user;
 			if (chatUser != null)
@@ -253,10 +260,14 @@ package com.dukascopy.connect.data.screenAction.customActions {
 		
 		private function onFail():void 
 		{
+			hidePreloader();
+			TweenMax.killDelayedCallsTo(hidePreloader);
 			if (S_ACTION_FAIL != null)
 			{
 				S_ACTION_FAIL.invoke();
 			}
+			
+			removeListeners();
 		}
 		
 		private function sendDeal(dealData:EscrowDealData):void 
@@ -281,13 +292,63 @@ package com.dukascopy.connect.data.screenAction.customActions {
 				messageData.debit_account = dealData.accountNumber;
 			}
 			
-			var text:String = Config.BOUNDS + messageData.toJsonString();
-			WSClient.call_sendTextMessage(chat.uid, Config.BOUNDS_ESCROW + ChatManager.cryptTXT(text));
+		//	var text:String = Config.BOUNDS + messageData.toJsonString();
+		//	WSClient.call_sendTextMessage(chat.uid, Config.BOUNDS_ESCROW + ChatManager.cryptTXT(text));
 			
+			pendingOfferData = dealData;
+			
+			WSClient.S_OFFER_CREATED.add(onOfferCreateSuccess);
+			WSClient.S_OFFER_CREATE_FAIL.add(onOfferCreateFail);
+			
+			showPreloader();
+			TweenMax.killDelayedCallsTo(hidePreloader);
+			TweenMax.delayedCall(10, hidePreloader);
+			WSClient.call_create_offer(messageData.toServerObject(chat.uid));
+		}
+		
+		private function showPreloader():void 
+		{
+			GD.S_START_LOAD.invoke();
+		}
+		
+		private function hidePreloader():void 
+		{
+			TweenMax.killDelayedCallsTo(hidePreloader);
+			
+			GD.S_STOP_LOAD.invoke();
+		}
+		
+		private function onOfferCreateFail(error:ErrorData):void 
+		{
+			if (error != null && error.message != null)
+			{
+				ToastMessage.display(error.message);
+			}
+			onFail();
+		}
+		
+		private function onOfferCreateSuccess():void 
+		{
+			showCreateSuccessPopup(pendingOfferData);
+			onSuccuss();
+		}
+		
+		private function onSuccuss():void 
+		{
+			hidePreloader();
+			TweenMax.killDelayedCallsTo(hidePreloader);
 			if (S_ACTION_SUCCESS != null)
 			{
 				S_ACTION_SUCCESS.invoke();
 			}
+			
+			removeListeners();
+		}
+		
+		private function removeListeners():void 
+		{
+			WSClient.S_OFFER_CREATED.remove(onOfferCreateSuccess);
+			WSClient.S_OFFER_CREATE_FAIL.remove(onOfferCreateFail);
 		}
 	}
 }
