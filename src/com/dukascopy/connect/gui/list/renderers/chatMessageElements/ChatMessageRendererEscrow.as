@@ -396,7 +396,7 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 					{
 						if (direction == TradeDirection.buy)
 						{
-							if (messageData.userUID != Auth.uid)
+							if (data.mca_user_uid == Auth.uid)
 							{
 								result = Lang.escrow_seller_sent_crypto_transaction;
 								if (data.transactionId != null)
@@ -411,7 +411,7 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 						}
 						else if(direction == TradeDirection.sell)
 						{
-							if (messageData.userUID != Auth.uid)
+							if (data.crypto_user_uid == Auth.uid)
 							{
 								result = Lang.escrow_waiting_receipt_confirm;
 							}

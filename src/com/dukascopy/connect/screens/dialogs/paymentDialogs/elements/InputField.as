@@ -342,13 +342,13 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs.elements
 			
 			var titleHeight:int = FontSize.SUBHEAD;
 			
-			input.view.y = int(title.y + titleHeight - Config.FINGER_SIZE * .1);
+			input.view.y = int(title.y + titleHeight - Config.FINGER_SIZE * .15);
 			input.width = itemWidth - valueField.width;
 			
 			valueContainer.x = int(input.view.x + itemWidth - valueField.width);
 			valueContainer.y = int(input.view.y + tf.y + line.ascent - valueField.height + 2);
 			underline.width = itemWidth;
-			underline.y = int(input.view.y + input.height - Config.FINGER_SIZE * .1) - underline.height;
+			underline.y = int(input.view.y + input.getTextField().height - 2 + Config.FINGER_SIZE * .273);
 			
 			if (align == ALIGN_LEFT)
 			{

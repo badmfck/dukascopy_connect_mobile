@@ -25,6 +25,10 @@ package com.dukascopy.connect.data.escrow
 		
 		static public function getDirection(value:String):TradeDirection 
 		{
+			if (value != null)
+			{
+				value = value.toLowerCase();
+			}
 			switch(value)
 			{
 				case BUY_TYPE:
