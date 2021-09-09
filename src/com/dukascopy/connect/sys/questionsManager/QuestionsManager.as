@@ -224,7 +224,9 @@ package com.dukascopy.connect.sys.questionsManager {
 			} else if (dealData.crypto_user_uid == Auth.uid) {
 				// ты продаёшь крипту;
 			}*/
-			acceptQuestionAnswer(ChatManager.getChatByUID(dealData.chatUID));
+			
+			
+			//acceptQuestionAnswer(ChatManager.getChatByUID(dealData.chatUID));
 		}
 		
 		static private function onImageUploadReady(success:Boolean, ibd:ImageBitmapData, title:String):void {
