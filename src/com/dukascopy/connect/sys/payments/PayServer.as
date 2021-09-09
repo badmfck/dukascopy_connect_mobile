@@ -408,6 +408,21 @@ package com.dukascopy.connect.sys.payments {
 		}
 		
 		/**
+		 * This request is used to get address for dukascoin deposit. See description:
+		 * https://intranet.dukascopy.dom/wiki/pages/viewpage.action?pageId=135430487
+		 */
+		static public function call_cryptoDepositAddressInvestment(_callback:Function, address:String, amount:Number, coin:String, _callID:String = ""):void {
+			var data:Object = {
+				address: address,
+				amount: amount,
+				instrument: coin
+			}
+			var php:PayLoader = call("account/investment/deposit/address", _callback, data, URLRequestMethod.GET);
+			if (php.savedRequestData != null)
+				php.savedRequestData.callID = _callID;
+		}
+		
+		/**
 		 * This method performs block action on particular prepaid card. See description:
 		 * https://intranet.dukascopy.dom/wiki/pages/viewpage.action?pageId=76709915
 		 */

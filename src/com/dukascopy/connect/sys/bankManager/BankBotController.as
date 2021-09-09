@@ -451,6 +451,10 @@ package com.dukascopy.connect.sys.bankManager {
 					onCryptoDepositeAddressConfirm();
 					return;
 				}
+				if (tmp[1] == "bcDepositeAddressInvestmentConfirmed") {
+					onCryptoDepositeAddressInvestmentConfirm();
+					return;
+				}
 				if (tmp[1] == "investments") {
 					if (accountInfo == null) {
 						lastWaitingWalletsAction = tempAction;
@@ -846,6 +850,11 @@ package com.dukascopy.connect.sys.bankManager {
 			callPaymentsMethod("cryptoDepositeAddress:" + steps[steps.length - 2].val);
 		}
 		
+		static private function onCryptoDepositeAddressInvestmentConfirm():void {
+			sendBlock("actionProgress");
+			callPaymentsMethod("cryptoDepositeAddressInvestment:" + steps[steps.length - 2].val);
+		}
+		
 		static private function onCardStatementAsFileConfirmed():void {
 			callPaymentsMethod("cardStatementAsFile:" + steps[steps.length - 1].val);
 		}
@@ -1115,6 +1124,13 @@ package com.dukascopy.connect.sys.bankManager {
 					return;
 				temp = msg.substr(command.length + 1).split("|!|");
 				lastPaymentsRequests[PaymentsManagerNew.depositeAddressCrypto(onCryptoDepositeAddress, temp[0], temp[1], temp[2])] = msg;
+				return;
+			}
+			if (command == "cryptoDepositeAddressInvestment") {
+				if (checkForPaymentsRequestExist(msg) == true)
+					return;
+				temp = msg.substr(command.length + 1).split("|!|");
+				lastPaymentsRequests[PaymentsManagerNew.depositeAddressInvestmentCrypto(onCryptoDepositeAddressInvestment, temp[0], temp[1], temp[2])] = msg;
 				return;
 			}
 			if (command == "tradeCoins") {
@@ -1656,6 +1672,13 @@ package com.dukascopy.connect.sys.bankManager {
 			if (preCheckForErrors(respondData, hash, null, "paymentsErrorDataNull") == true)
 				return;
 			sendBlock("bcDepositeAddressConfirmed", [respondData.address, steps[steps.length - 2].val.split("|!|")[0]]);
+		}
+		
+		static private function onCryptoDepositeAddressInvestment(respondData:Object, hash:String):void {
+			if (preCheckForErrors(respondData, hash, null, "paymentsErrorDataNull") == true)
+				return;
+			var temp:Array = steps[steps.length - 2].val.split("|!|");
+			sendBlock("bcDepositeAddressInvestmentConfirmed", [respondData.address, temp[0], temp[1]]);
 		}
 		
 		static private function onCryptoTraded(respondData:Object, hash:String):void {

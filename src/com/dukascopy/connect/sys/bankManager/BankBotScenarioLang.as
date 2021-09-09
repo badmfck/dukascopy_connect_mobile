@@ -90,6 +90,9 @@ package com.dukascopy.connect.sys.bankManager {
 		static public var bcDepositeDesc:String = "You will be required to declare the DUK+ amount you intend to deposit during your top-up. Note that the entered DUK+ deposit amount has to match exactly the sum of Dukascoins that Dukascopy will receive, otherwise your deposit is likely not to be accepted.\\n\\n"
 			+ "A unique deposit address will be generated for this deposit. It will be valid only for one deposit operation in the amount you declare in advance in the present form. Keep it strictly confidentially and do not disclose to third parties.";
 		
+		static public var bcDepositeDesc1:String = "Indicate the amount of ETH you intend to deposit from blockchain in order to turn them into an ETH investment position inside your MCA account. Note that the entered ETH deposit amount has to match exactly the sum of ETH that Dukascopy will receive, otherwise your deposit is likely not to be accepted.\\n\\n"
+			+ "A unique deposit address will be generated for your ETH deposit operation. The generated deposit address is valid only for one deposit operation in the amount you declare in advance in the present form. Keep it strictly confidentially and do not disclose it to third parties.";
+		
 		static public var bcWithdrawalDesc:String = "Please fill out the form to withdraw Dukascoins (DUK+) to your registered external blockchain wallet";// (ERC20 compatible).";
 		
 		// CONFIRM DESCRIPTIONS
@@ -153,10 +156,12 @@ package com.dukascopy.connect.sys.bankManager {
 		static public var confirmedPinCallbackRequest:String = "Automatic voice call with a pin code is being made on your mobile phone number. If you have not received it, please try one more time or let us know at support@dukascopy.bank or support chat.";
 		static public var confirmedChangeCurrency:String = "Main currency changed.";
 		static public var confirmedBCAddressDeposite:String = "The address for this Dukascoin deposit operation is:\\n@@1\\n\\nPlease transfer the exact amount of @@2 Dukascoin\/s to this address.\\n\\nCAUTION! Any discrepancy between the amount declared and the actual deposit performed, mismatch in token address will potentially cause the total loss of the transferred crypto-assets. Dukascopy Bank SA is not obliged to return any crypto tokens received in case of the erroneous or unidentified transactions.";
+		static public var confirmedBCAddressDepositeInvestment:String = "The address for this @@3 investment from blockchain operation is:\\n@@1\\n\\nPlease transfer the exact amount of @@2 @@3 to this address.\\n\\nCAUTION! Any discrepancy between the amount declared and the actual deposit performed, mismatch in token address will potentially cause the total loss of the transferred crypto-assets. Dukascopy Bank SA is not obliged to return any crypto tokens received in case of the erroneous or unidentified transactions.";
 		static public var confirmedTransactionAdd:String = "Please note that this payment method is intended for sending money <b>internally</b> between two Multi-Currency Account holders.\\n\\nThe Bank reserves the right to clarify the purpose of money transfer. To avoid delay in payment processing it is recommended to always fill in the <b>Message</b> field.";
 		
 		// MENU ITEMS
 		static public var menuInvestmentDeliveryBC:String = "Delivery to blockchain";
+		static public var menuInvestFromBC:String = "Invest from blockchain";
 		static public var menuCardsOps:String = "Cards operations";
 		static public var menuAccOps:String = "Account operations";
 		static public var menuSendMoney:String = "Send money";
@@ -333,6 +338,7 @@ package com.dukascopy.connect.sys.bankManager {
 		static public var itemRewardDepositOperations:String = "Show reward deposit operations";
 		static public var itemInvestmentDeliveryBC:String = "I want to deliver @1 of my investment to @2";
 		static public var itemSelectMainCurrency:String = "Selected currency is @1";
+		static public var itemBCIDeposite:String = "I want to invest from blockchain @1";
 		
 		static public var errorPwdManyTimes:String = "Password verification is blocked. Too many failed attempts during short period of time. Try again later.";
 		static public var errorAccountBlocked:String = "Account is blocked";

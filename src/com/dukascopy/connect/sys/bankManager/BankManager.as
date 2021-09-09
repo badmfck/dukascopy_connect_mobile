@@ -50,6 +50,7 @@ package com.dukascopy.connect.sys.bankManager {
 	import com.dukascopy.connect.screens.marketplace.MyOrdersScreen;
 	import com.dukascopy.connect.screens.payments.OrderCardScreen;
 	import com.dukascopy.connect.screens.WebViewScreen;
+	import com.dukascopy.connect.screens.payments.card.TypeCurrency;
 	import com.dukascopy.connect.screens.payments.settings.PaymentsSettingsVerificationLimitsScreen;
 	import com.dukascopy.connect.screens.serviceScreen.BottomTimeSelectionScreen;
 	import com.dukascopy.connect.screens.serviceScreen.SelectContactExtendedScreen;
@@ -540,7 +541,7 @@ package com.dukascopy.connect.sys.bankManager {
 					}
 					return;
 				}
-				if (data.type == "BCDeposite" || data.type == "BCWithdrawal" || data.type == "BCDepositeAddress" || data.type == "BCWithdrawalInvestment") {
+				if (data.type == "BCDeposite" || data.type == "BCWithdrawal" || data.type == "BCDepositeAddress1" || data.type == "BCDepositeAddress" || data.type == "BCWithdrawalInvestment") {
 					giftData = new GiftData();
 					giftData.additionalData = data;
 					if (_initData != null) {
@@ -551,6 +552,7 @@ package com.dukascopy.connect.sys.bankManager {
 					}
 					var title:String = "";
 					var desc:String = "";
+					var desc1:String = "";
 					var bcAddressReq:String = "";
 					if (data.type == "BCDepositeAddress") {
 						giftData.type = 0;
@@ -568,6 +570,12 @@ package com.dukascopy.connect.sys.bankManager {
 						title = "deliveryToBC";
 						desc = "deliveryToBCAddress";
 						bcAddressReq = "deliveryToBCAddressNeeded";
+					} else if (data.type == "BCDepositeAddress1") {
+						giftData.type = 4;
+						title = "investFromBC";
+						desc = "myBlockcheinAddress1";
+						desc1 = "myBlockcheinAddress2";
+						bcAddressReq = "blockchainAddressNeeded";
 					} else {
 						giftData.type = 1;
 						title = "coinsWithdrawal";
@@ -583,19 +591,25 @@ package com.dukascopy.connect.sys.bankManager {
 						giftData.wallets = [getInvestmentByAccount(data.selectionAcc)];
 						giftData.cards = accountInfo.accounts;
 						giftData.callback = onInvestmentsBCWCallback;
+					} else if (giftData.type == 4) {
+						giftData.wallets = [ { INSTRUMENT: TypeCurrency.ETH } ];
+						giftData.callback = onCryptoBCDICallback;
 					} else {
 						giftData.wallets = cryptoAccounts;
 						giftData.callback = onCryptoBCDWCallback;
 					}
+					var dta:Object = {
+						giftData: giftData,
+						title:title,
+						description:desc,
+						addrNeed:bcAddressReq
+					}
+					if (desc1 != null)
+						dta.description2 = desc1;
 					ServiceScreenManager.showScreen(
 						ServiceScreenManager.TYPE_DIALOG,
 						CoinsDepositPopup,
-						{
-							giftData: giftData,
-							title:title,
-							description:desc,
-							addrNeed:bcAddressReq
-						}
+						dta
 					);
 					return;
 				}
@@ -2021,6 +2035,27 @@ package com.dukascopy.connect.sys.bankManager {
 				msg = giftData.additionalData.textForUser.replace("@1", giftData.customValue + " " + giftData.currency).replace("@2", getDCOWallet(giftData.currency));
 			else
 				msg = "I want to deliver " + giftData.customValue + " " + giftData.currency.toUpperCase() + " of my investment to " + getDCOWallet(giftData.currency);
+			var baVO:BankMessageVO = new BankMessageVO(msg);
+			baVO.setMine();
+			invokeAnswerSignal(baVO);
+			var val:String = "val:" + 
+				giftData.customValue + "|!|" + 
+				giftData.currency + "|!|" + 
+				getDCOWallet(giftData.currency) + "|!|" +
+				giftData.credit_account_number;
+			sendMessage(val);
+			sendMessage(giftData.additionalData.action);
+			giftData.dispose();
+		}
+		
+		static private function onCryptoBCDICallback(giftData:GiftData):void {
+			giftData.additionalData["tapped"] = true;
+			S_ADDITIONAL_DATA_ENTERED.invoke();
+			var msg:String = "";
+			if ("textForUser" in giftData.additionalData == true && giftData.additionalData.textForUser != null)
+				msg = giftData.additionalData.textForUser.replace("@1", giftData.customValue + " " + giftData.currency);
+			else
+				msg = "I want to invest from blockchain " + giftData.customValue + " " + giftData.currency.toUpperCase();
 			var baVO:BankMessageVO = new BankMessageVO(msg);
 			baVO.setMine();
 			invokeAnswerSignal(baVO);

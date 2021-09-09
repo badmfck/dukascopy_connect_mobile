@@ -1795,6 +1795,7 @@ package com.dukascopy.langs {
 		static public var cost:String = "Cost";
 		static public var youReceived:String = "Received"; // You received
 		static public var coinsDeposit:String = "DUK+ deposit from blockchain";
+		static public var investFromBC:String = "Invest from blockchain";
 		static public var coinsWithdrawal:String = "DUK+ withdrawal to blockchain";
 		static public var deliveryToBC:String = "Delivery to blockchain";
 		static public var deliveryToBCAddress:String = "Blockchain address for delivery";
@@ -1956,6 +1957,8 @@ package com.dukascopy.langs {
 		static public var changeWallet:String = "Change";
 		static public var addAddress:String = "Register";
 		static public var myBlockcheinAddress:String = "My blockchain withdrawal address";
+		static public var myBlockcheinAddress1:String = "Reminder: the blockchain withdrawal address you previously registered is:";
+		static public var myBlockcheinAddress2:String = "This address will be used as a destination for all blockchain transfers of ETH made from your account with Dukascopy, including cases when an identified deposit has not been accepted and has to be returned.";
 		static public var pleaseChooseBetterPrice:String = "Please choose better price";
 		static public var suspiciousChat:String = "Suspicious chat";
 		static public var suspiciousChatDescription:String = "Suspicious chat ?";
