@@ -19,6 +19,7 @@ package com.dukascopy.connect.sys.bankManager {
 	import com.dukascopy.langs.Lang;
 	import com.dukascopy.langs.LangManager;
 	import com.telefision.sys.signals.Signal;
+	import flash.utils.ByteArray;
 	
 	/**
 	 * ...
@@ -2255,6 +2256,7 @@ package com.dukascopy.connect.sys.bankManager {
 								}
 							} else {
 								echo("BankBotController", "onHistoryLoaded", "FROM filed is null", true);
+								tempObject.bankBot = true;
 							}
 						}
 						if (history[i].CODE_SECURED == true && history[i].STATUS != "COMPLETED") {
