@@ -105,6 +105,10 @@ package com.dukascopy.connect.data.escrow
 			{
 				crypto_user_uid = data.crypto_user_uid;
 			}
+			if ("chat_uid" in data)
+			{
+				chatUID = data.chat_uid;
+			}
 		}
 		
 		public function toJsonString():String 

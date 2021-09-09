@@ -569,6 +569,7 @@ package com.dukascopy.connect.data.escrow
 		
 		static private function onDealCreated(dealRawData:Object):void 
 		{
+			GD.S_ESCROW_DEAL_CREATE_REQUEST
 			/*if (dealRawData != null && dealRawData.status == EscrowStatus.deal_created.value)
 			{
 				if (dealRawData.side == "SELL")

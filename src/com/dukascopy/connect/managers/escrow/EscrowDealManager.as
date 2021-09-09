@@ -1,12 +1,15 @@
 package com.dukascopy.connect.managers.escrow{
 
     import com.dukascopy.connect.GD;
+	import com.dukascopy.connect.data.escrow.EscrowEventType;
+	import com.dukascopy.connect.data.escrow.EscrowMessageData;
 	import com.dukascopy.connect.managers.escrow.vo.EscrowPrice;
     import com.dukascopy.connect.sys.Dispatcher;
 	import com.dukascopy.connect.sys.auth.Auth;
 	import com.dukascopy.connect.sys.bankManager.BankManager;
 	import com.dukascopy.connect.sys.payments.PayManager;
 	import com.dukascopy.connect.sys.payments.PaymentsManager;
+	import com.dukascopy.connect.sys.ws.WSClient;
     import com.dukascopy.connect.vo.EscrowDealVO;
     import com.telefision.utils.maps.EscrowDealMap;
     import com.telefision.utils.SimpleLoader;
@@ -43,6 +46,8 @@ package com.dukascopy.connect.managers.escrow{
             SimpleLoader.URL_DEFAULT="https://loki.telefision.com/escrow/";
 			
             //loadDeals();
+			
+			WSClient.S_ESCROW_DEAL_EVENT.add(onDealEvent);
 			
             // Check if escrow manager is created
             GD.S_ESCROW_MANAGER_AVAILABLE.add(function(cb:Function):void{
@@ -110,6 +115,24 @@ package com.dukascopy.connect.managers.escrow{
             // instrument, price, amount
 			instance = this;
         }
+		
+		static private function onDealEvent(escrowEventType:String, dealRawData:Object):void 
+		{
+			if (escrowEventType == EscrowEventType.CREATED)
+			{
+				onDealCreated(dealRawData);
+			}
+			else if (escrowEventType == EscrowEventType.HOLD_MCA)
+			{
+				
+			}
+		}
+		
+		static private function onDealCreated(dealRawData:Object):void 
+		{
+			var deal:EscrowMessageData = new EscrowMessageData(dealRawData);
+			GD.S_ESCROW_DEAL_CREATED.invoke(deal);
+		}
 		
 		private function clear():void 
 		{
