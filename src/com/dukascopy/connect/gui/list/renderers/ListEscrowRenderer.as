@@ -329,73 +329,6 @@ package com.dukascopy.connect.gui.list.renderers {
 			return int(textFieldStatus.y + textFieldStatus.height + Config.FINGER_SIZE * .2);
 		}
 		
-		/*private function hideExtensions():void 
-		{
-			if (extensions != null)
-			{
-				for each (var extensionClip:Sprite in extensions) 
-				{
-					extensionClip.visible = false;
-				}
-			}
-		}*/
-		
-		/*private function checkExtensions(userVO:UserVO):void 
-		{
-			if (userVO != null)
-			{
-				var l:int;
-				if (userVO != null && userVO.gifts != null && !userVO.gifts.empty())
-				{
-					if (extensions == null)
-					{
-						extensions = new Dictionary();
-					}
-					
-					l = userVO.gifts.length;
-					var item:Bitmap;
-					var sourceClass:Class;
-					var source:Sprite;
-					var itemSize:int = avatarSize * 1.5;
-				//	for (var i:int = 0; i < l; i++) 
-				//	{
-						sourceClass = userVO.gifts.items[l - 1].getSmallImage();
-							if (sourceClass != null)
-							{
-								if (extensions[sourceClass.toString()] == null)
-								{
-									source = new sourceClass() as Sprite;
-									UI.scaleToFit(source, itemSize*10, itemSize);
-									
-									addChild(source);
-									if(onlineMark != null)
-									{
-										try
-										{
-											setChildIndex(onlineMark, numChildren - 1);
-										}
-										catch (e:Error)
-										{
-											
-										}
-									}
-									source.x = avatar.x + avatarSize - source.width * .5;
-									source.y = avatar.y + avatarSize * 2 - source.height * .65;
-									
-									extensions[sourceClass.toString()] = source;
-								}
-								else
-								{
-									extensions[sourceClass.toString()].visible = true;
-								}
-							}
-						//!TODO:;
-				//		break;
-				//	}
-				}
-			}
-		}*/
-		
 		public function getView(item:ListItem, height:int, width:int, highlight:Boolean = false):IBitmapDrawable {
 			var itemData:QuestionVO = item.data as QuestionVO;
 			
@@ -494,31 +427,17 @@ package com.dukascopy.connect.gui.list.renderers {
 				bgInfo.visible = true;
 				bgInfo.y = height - bgInfo.height;
 			} else if (itemData.uid != null && itemData.uid != "") {
-				/*if (UsersManager.checkForToad(itemData.userUID) == true)
-					toadIcon.visible = true;
-				else if (itemData.user != null && itemData.user.missDC == true)
-					missDCIcon.visible = true;
-				typeIcon.visible = itemData.type == QuestionsManager.QUESTION_TYPE_PUBLIC;*/
-				
-				/*if (itemData.user != null && itemData.user.ban911VO != null && itemData.user.ban911VO.status != "buyout") {
-					jailIcon.visible = true;
-				}*/
 				var hitZones:Array;
 				
 				if (itemData && itemData.isMine() && itemData.unread > 0 && itemData.status != "resolved") {
 					newMessages.visible = true;
 					tfNewMessagesCnt.text = "!";
 				}
-				
-				/*if (itemData.user != null && "payRating" in itemData.user && itemData.user.payRating != 0) {
-					ratingIcon.visible = true;
-					ratingIcon.gotoAndStop(itemData.user.payRating);
-				}*/
-				
 				newMessages.y = int((height / 2 - newMessages.height / 2));
 				tfUsername.htmlText = itemData.title;
-				
-				
+				if (itemData.isMine() == true) {
+					tfUsername.htmlText = itemData.title + " (<font color='#0000FF'>" + Lang.mine + "</font>)";
+				}
 				
 				if (isNaN(itemData.tipsAmount) == false) {
 					
@@ -687,105 +606,6 @@ package com.dukascopy.connect.gui.list.renderers {
 			return result;
 		}
 		
-		/*private function checkForUserBan(itemData:Object):void 
-		{
-			if (itemData != null)
-			{
-				var needPermanentBanMark:Boolean = false;
-				var needBanMark:Boolean = false;
-				if (itemData is ContactVO && (itemData as ContactVO).userVO != null)
-				{
-					if ((itemData as ContactVO).userVO.sysBan == true)
-					{
-						needPermanentBanMark = true;
-					}
-					else if ((itemData as ContactVO).userVO.ban911 == true)
-					{
-						needBanMark = true;
-					}
-				}
-				else if (itemData is UserVO)
-				{
-					if ((itemData as UserVO).sysBan == true)
-					{
-						needPermanentBanMark = true;
-					}
-					else if ((itemData as UserVO).ban911 == true)
-					{
-						needBanMark = true;
-					}
-				}
-				else if (itemData is ChatUserVO && (itemData as ChatUserVO).userVO != null)
-				{
-					if ((itemData as ChatUserVO).userVO.sysBan == true)
-					{
-						needPermanentBanMark = true;
-					}
-					else if ((itemData as ChatUserVO).userVO.ban911 == true)
-					{
-						needBanMark = true;
-					}
-				}
-				
-				if (needPermanentBanMark == true)
-				{
-					if (permanentBanMark == null)
-					{
-						permanentBanMark = UI.createBannedMark(avatarSize, Lang.permanentBaned);
-						addChild(permanentBanMark);
-						permanentBanMark.x = (avatar.x + avatarSize - permanentBanMark.width * .5);
-						permanentBanMark.y = (avatar.y + avatarSize - permanentBanMark.height * .5);
-					}
-					permanentBanMark.visible = true;
-				}
-				else if (needBanMark == true)
-				{
-					if (banMark == null)
-					{
-						banMark = UI.createBannedMark(avatarSize, Lang.banned);
-						addChild(banMark);
-						banMark.x = (avatar.x + avatarSize - banMark.width * .5);
-						banMark.y = (avatar.y + avatarSize - banMark.height * .5);
-					}
-					banMark.visible = true;
-				}
-			}
-		}*/
-		
-		/*private function getFlagByqVO(qVO:QuestionVO, def:Boolean = false):void {
-			flag.visible = true;
-			var countryCode:String = "earth";
-			if (def == false &&
-				"country" in qVO.anonymData &&
-				qVO.anonymData.country != null &&
-				qVO.anonymData.country != "" &&
-				qVO.anonymData.country != "XX")
-					countryCode = qVO.anonymData.country.toLowerCase();
-			if (flags != null && countryCode in flags && flags[countryCode] != null) {
-				if (flag.getChildAt(0) == flags[countryCode])
-					return;
-				if (flag.numChildren == 1)
-					flag.removeChildAt(0);
-				flag.addChild(flags[countryCode]);
-				return;
-			}
-			if (flags == null)
-				flags = { };
-			try {
-				var cls:Class = getDefinitionByName("assets.LangFlag_" + countryCode) as Class;
-			} catch (err:Error) {
-				return getFlagByqVO(null , true);
-			}
-			if (cls == null)
-				return getFlagByqVO(null , true);
-			var countryFlag:Sprite = new cls(); 
-			UI.scaleToFit(countryFlag, tfUsername.height * 2, tfUsername.height - 4);
-			if (flag.numChildren == 1)
-				flag.removeChildAt(0);
-			flag.addChild(countryFlag);
-			flags[countryCode] = countryFlag;
-		}*/
-		
 		private function getStatusText(timestamp:Number):String {
 			var date:Date = new Date(Number(timestamp * 1000));
 			return "<font color=\u0022#" + AppTheme.GREY_MEDIUM.toString(16) + "\u0022>" + DateUtils.getComfortDateRepresentationWithMinutes(date) + "</font>";
@@ -799,7 +619,6 @@ package com.dukascopy.connect.gui.list.renderers {
 			if (listItem.data.uid == null || listItem.data.uid == "")
 			{
 				var result:HitZoneData = new HitZoneData();
-			//	result.touchPoint = itemTouchPoint;
 				result.type = HitZoneType.MENU_MIDDLE_ELEMENT;
 				result.x = 0;
 				result.y = 0;
