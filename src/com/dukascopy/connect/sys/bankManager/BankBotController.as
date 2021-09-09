@@ -2235,6 +2235,7 @@ package com.dukascopy.connect.sys.bankManager {
 							}
 						} else {
 							echo("BankBotController", "onHistoryLoaded", "FROM filed is null", true);
+							tempObject.bankBot = true;
 						}
 					}
 					tempObject.acc = history[i].CURRENCY;
