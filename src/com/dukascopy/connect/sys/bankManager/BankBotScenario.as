@@ -492,12 +492,6 @@ package com.dukascopy.connect.sys.bankManager {
 				desc:"lang.confirmCardWithdrawal",
 				buttons: [
 					{
-						text:"lang.buttonBack",
-						action:"cmd:back"
-					}, {
-						text:"lang.buttonCancel",
-						action:"system:cancel"
-					}, {
 						text:"lang.buttonConfirm",
 						action:"nav:cardWithdrawalConfirmed"
 					}
@@ -528,12 +522,6 @@ package com.dukascopy.connect.sys.bankManager {
 				desc:"lang.confirmCardDeposite",
 				buttons: [
 					{
-						text:"lang.buttonBack",
-						action:"cmd:back"
-					}, {
-						text:"lang.buttonCancel",
-						action:"system:cancel"
-					}, {
 						text:"lang.buttonConfirm",
 						action:"nav:dukaCardDepositeTransactionConfirmed"
 					}
