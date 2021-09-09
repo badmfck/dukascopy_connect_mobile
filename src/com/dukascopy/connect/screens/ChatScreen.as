@@ -509,6 +509,7 @@ package com.dukascopy.connect.screens {
 				return;
 			if (preloader != null)
 				preloader.hide();
+			answersButtonShowHide();
 		}
 		
 		private function onQuestion(qVO:QuestionVO):void {

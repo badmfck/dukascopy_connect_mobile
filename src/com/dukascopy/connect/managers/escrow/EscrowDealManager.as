@@ -9,6 +9,8 @@ package com.dukascopy.connect.managers.escrow{
 	import com.dukascopy.connect.sys.bankManager.BankManager;
 	import com.dukascopy.connect.sys.payments.PayManager;
 	import com.dukascopy.connect.sys.payments.PaymentsManager;
+	import com.dukascopy.connect.sys.php.PHP;
+	import com.dukascopy.connect.sys.php.PHPRespond;
 	import com.dukascopy.connect.sys.ws.WSClient;
     import com.dukascopy.connect.vo.EscrowDealVO;
     import com.telefision.utils.maps.EscrowDealMap;
@@ -145,6 +147,8 @@ package com.dukascopy.connect.managers.escrow{
                 return;
             isInstrumentLoading=true;
 			
+		//	PHP.p2p_getInstruments(onInstrumentsLoaded);
+			
             //TODO: get from sever DUMMY ->
             var timer:Timer=new Timer(1000,1);
             var dis:Dispatcher=new Dispatcher(timer);
@@ -166,6 +170,20 @@ package com.dukascopy.connect.managers.escrow{
             timer.start();
             // DUMMY <-
         }
+		
+		private function onInstrumentsLoaded(respond:PHPRespond):void 
+		{
+			if (respond.error == true)
+			{
+				//!TODO:;
+			}
+			else
+			{
+				
+			}
+			GD.S_ESCROW_INSTRUMENTS.invoke(instruments);
+			respond.dispose();
+		}
 		
 		private function onWalletsLoadError(code:String = null, message:String = null):void 
 		{
@@ -231,7 +249,7 @@ package com.dukascopy.connect.managers.escrow{
                 GD.S_ESCROW_INSTRUMENTS.invoke(instruments);
             }
         };
-
+		
         /**
          * Parse response with prices from server
          * @param data - key-value object where key is instrument code, value is price
@@ -247,10 +265,10 @@ package com.dukascopy.connect.managers.escrow{
                 ei.updatePrice(data[key])
                 GD.S_ESCROW_PRICE.invoke(ei);
             }
-
+			
             GD.S_ESCROW_INSTRUMENTS.invoke(instruments);
         }
-
+		
         private function getInstrumentByCode(code:String):EscrowInstrument{
             for each(var i:EscrowInstrument in instruments){
                 if(i.code==code)
@@ -258,9 +276,7 @@ package com.dukascopy.connect.managers.escrow{
             }
             return null;
         }
-
        
-
         /**
          * Load active deals
          */
@@ -273,15 +289,15 @@ package com.dukascopy.connect.managers.escrow{
                 trace(resp);
             })
         }
-
+		
         private function onDealsLoaded(data:Object):void{
             
             // DATA MUST BE ARRAY!
             if(data==null || !(data is Array))
                 return;
-
+			
             var l:int=(data as Array).length;
-
+			
             for(var i:int=0;i<l;i++){
                 var deal:Object=data[i];
                 if(!('uid' in deal) || deal.uid==null)
@@ -292,7 +308,7 @@ package com.dukascopy.connect.managers.escrow{
                 dealVO.update(deal);
                 escrowDeals.addDeal(deal.uid,dealVO);
             }
-
+			
             GD.S_ESCROW_DEALS_LOADED.invoke(escrowDeals);
         }
 		
