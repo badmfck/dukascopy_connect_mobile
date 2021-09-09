@@ -217,18 +217,14 @@ package com.dukascopy.connect.sys.questionsManager {
 			initPayingUIDS();
 		}
 		
-		static private function onDealCreated(dealData:EscrowMessageData):void 
-		{
-			dealData.chatUID;
-			
-			if (dealData.mca_user_uid == Auth.uid)
-			{
+		static private function onDealCreated(dealData:EscrowMessageData):void {
+			/*dealData.chatUID;
+			if (dealData.mca_user_uid == Auth.uid) {
 				// ты покупаешь крипту;
-			}
-			else if (dealData.crypto_user_uid == Auth.uid)
-			{
+			} else if (dealData.crypto_user_uid == Auth.uid) {
 				// ты продаёшь крипту;
-			}
+			}*/
+			acceptQuestionAnswer(ChatManager.getChatByUID(dealData.chatUID));
 		}
 		
 		static private function onImageUploadReady(success:Boolean, ibd:ImageBitmapData, title:String):void {
@@ -1191,7 +1187,7 @@ package com.dukascopy.connect.sys.questionsManager {
 			var incognito:Boolean = qVO.incognito;
 			qVO.setUpdatedAnswersCount(qVO.answersCount - 1);
 			qVO.busy = true;
-			var needPaidStatus:Boolean = !isNaN(qVO.tipsAmount) && qVO.needPayBeforeClose;
+			/*var needPaidStatus:Boolean = !isNaN(qVO.tipsAmount) && qVO.needPayBeforeClose;
 			var notPayable:String;
 			if (cVO.messages == null) {
 				notPayable = "Empty answer";
@@ -1228,8 +1224,8 @@ package com.dukascopy.connect.sys.questionsManager {
 					notPayable = "Sticker answer";
 				else if (symbolCount < 100)
 					notPayable = "Few characters answer";
-			}
-			PHP.question_closeAnswer(onAnswerClosedNew, STATUS_ACCEPTED, cuid, { notPayable:notPayable, quid:quid, cuid:cuid, csk:csk, ownerUID:ownerUID, incognito:incognito, status:STATUS_ACCEPTED, needPaidStatus:needPaidStatus } );
+			}*/
+			PHP.question_closeAnswer(onAnswerClosedNew, STATUS_ACCEPTED, cuid, { notPayable:null, quid:quid, cuid:cuid, csk:csk, ownerUID:ownerUID, incognito:incognito, status:STATUS_ACCEPTED, needPaidStatus:false } );
 		}
 		
 		static private function onAnswerClosedNew(phpRespond:PHPRespond):void {
@@ -1254,11 +1250,10 @@ package com.dukascopy.connect.sys.questionsManager {
 				phpRespond.dispose();
 				return;
 			}
-			if (phpRespond.additionalData.needPaidStatus == true)
-				PHP.question_isPaid(onPublicQuestionSetPaidResult, phpRespond.additionalData.quid);
+			/*if (phpRespond.additionalData.needPaidStatus == true)
+				PHP.question_isPaid(onPublicQuestionSetPaidResult, phpRespond.additionalData.quid);*/
 			proceedCloseAnswer(phpRespond, !phpRespond.data.isBankPayer, false, false);
-			saveIsPayingUID(phpRespond.additionalData.ownerUID);
-			
+			/*saveIsPayingUID(phpRespond.additionalData.ownerUID);*/
 			phpRespond.dispose();
 			return;
 		}
