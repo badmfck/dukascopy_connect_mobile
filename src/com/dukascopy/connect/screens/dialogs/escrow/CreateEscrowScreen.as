@@ -1581,6 +1581,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 					requestedPrice = requestedPrice.replace("%", "");
 					if (!isNaN(Number(requestedPrice)))
 					{
+						selectedPrice = NaN;
 						pricePercentStartValue = Number(requestedPrice);
 						radio.select(radioSelection[0]);
 						showDeviationControl();
