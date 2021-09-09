@@ -1,11 +1,13 @@
 package com.dukascopy.connect.sys.questionsManager {
 	
 	import com.dukascopy.connect.Config;
+	import com.dukascopy.connect.GD;
 	import com.dukascopy.connect.MobileGui;
 	import com.dukascopy.connect.data.AlertScreenData;
 	import com.dukascopy.connect.data.GiftData;
 	import com.dukascopy.connect.data.MediaFileData;
 	import com.dukascopy.connect.data.SelectorItemData;
+	import com.dukascopy.connect.data.escrow.EscrowMessageData;
 	import com.dukascopy.connect.data.escrow.EscrowSettings;
 	import com.dukascopy.connect.data.escrow.TradeDirection;
 	import com.dukascopy.connect.data.screenAction.customActions.TestCreateOfferAction;
@@ -210,7 +212,23 @@ package com.dukascopy.connect.sys.questionsManager {
 			VideoUploader.S_FILE_UPLOADED_FINISH.add(sendVideoMessageFinish);
 			VideoUploader.S_FILE_UPLOADED_PROGRESS.add(sendVideoMessageProgress);
 			
+			GD.S_ESCROW_DEAL_CREATED.add(onDealCreated);
+			
 			initPayingUIDS();
+		}
+		
+		static private function onDealCreated(dealData:EscrowMessageData):void 
+		{
+			dealData.chatUID;
+			
+			if (dealData.mca_user_uid == Auth.uid)
+			{
+				// ты покупаешь крипту;
+			}
+			else if (dealData.crypto_user_uid == Auth.uid)
+			{
+				// ты продаёшь крипту;
+			}
 		}
 		
 		static private function onImageUploadReady(success:Boolean, ibd:ImageBitmapData, title:String):void {
