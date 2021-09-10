@@ -531,6 +531,7 @@ package com.dukascopy.connect.sys.payments {
 		 * https://intranet.dukascopy.dom/wiki/pages/viewpage.action?pageId=100305381
 		 */
 		static public function call_putDepositThirdParty(_callback:Function, _data:Object, _callID:String = ""):void {
+			_data.referer = "https://www.dukascopy.bank";
 			var php:PayLoader = call("money/deposit-third-party", _callback, _data, URLRequestMethod.PUT);
 			if (php.savedRequestData != null)
 				php.savedRequestData.callID = _callID;
