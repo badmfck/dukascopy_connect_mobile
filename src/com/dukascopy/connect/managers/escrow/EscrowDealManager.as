@@ -4,7 +4,9 @@ package com.dukascopy.connect.managers.escrow{
 	import com.dukascopy.connect.data.escrow.EscrowEventType;
 	import com.dukascopy.connect.data.escrow.EscrowMessageData;
 	import com.dukascopy.connect.managers.escrow.vo.EscrowPrice;
+	import com.dukascopy.connect.managers.escrow.vo.InstrumentParser;
     import com.dukascopy.connect.sys.Dispatcher;
+	import com.dukascopy.connect.sys.applicationError.ApplicationErrors;
 	import com.dukascopy.connect.sys.auth.Auth;
 	import com.dukascopy.connect.sys.bankManager.BankManager;
 	import com.dukascopy.connect.sys.payments.PayManager;
@@ -147,10 +149,10 @@ package com.dukascopy.connect.managers.escrow{
                 return;
             isInstrumentLoading=true;
 			
-		//	PHP.p2p_getInstruments(onInstrumentsLoaded);
+			PHP.p2p_getRates(onInstrumentsLoaded);
 			
             //TODO: get from sever DUMMY ->
-            var timer:Timer=new Timer(1000,1);
+           /* var timer:Timer=new Timer(1000,1);
             var dis:Dispatcher=new Dispatcher(timer);
             dis.add(TimerEvent.TIMER_COMPLETE,function(e:TimerEvent):void{
                 dis.clear();
@@ -167,7 +169,7 @@ package com.dukascopy.connect.managers.escrow{
 				
                 timeInstrumentRequest=new Date().getTime();
             })
-            timer.start();
+            timer.start();*/
             // DUMMY <-
         }
 		
@@ -175,14 +177,29 @@ package com.dukascopy.connect.managers.escrow{
 		{
 			if (respond.error == true)
 			{
+				isInstrumentLoading = false;
 				//!TODO:;
 			}
 			else
 			{
-				
+				parseInstruments(respond.data);
+				loadWallets();
 			}
-			GD.S_ESCROW_INSTRUMENTS.invoke(instruments);
+			
 			respond.dispose();
+		}
+		
+		private function loadWallets():void 
+		{
+			if (PaymentsManager.activate() == false)
+			{
+				onWalletsLoaded();
+			}
+			else
+			{
+				PaymentsManager.S_ACCOUNT.add(onWalletsLoaded);
+				PaymentsManager.S_BACK.add(onWalletsLoadError);
+			}
 		}
 		
 		private function onWalletsLoadError(code:String = null, message:String = null):void 
@@ -192,6 +209,7 @@ package com.dukascopy.connect.managers.escrow{
 			PaymentsManager.S_ACCOUNT.remove(onWalletsLoaded);
 			PaymentsManager.S_BACK.remove(onWalletsLoadError);
 			
+			isInstrumentLoading = false;
 			GD.S_ESCROW_INSTRUMENTS.invoke(null);
 			
 			PaymentsManager.deactivate();
@@ -202,51 +220,40 @@ package com.dukascopy.connect.managers.escrow{
 			PaymentsManager.S_ACCOUNT.remove(onWalletsLoaded);
 			PaymentsManager.S_BACK.remove(onWalletsLoadError);
 			
-			var duk_price_eur:Number = Math.random() * 4;;
-            var duk_price_usd:Number = duk_price_eur * 1.17;
-			
-            var eth_price_eur:Number = Math.random() * 100;
-            var eth_price_usd:Number = eth_price_eur * 1.17;
-			
-            var btc_price_eur:Number = Math.random() * 50000;
-            var btc_price_usd:Number = btc_price_eur * 1.17;
-            
-            var usdt_price_eur:Number = Math.random() * 3000;
-            var usdt_price_usd:Number = usdt_price_eur * 1.17;
-			
-			var rawInstruments:Array = [
-				{code:"DCO",precision:2,name:"Dukascoin",wallet:null,price:{EUR:duk_price_eur,USD:duk_price_usd}},
-				{code:"ETH",precision:4,name:"Etherium",wallet:null,price:{EUR:eth_price_eur,USD:eth_price_usd}},
-				{code:"BTC",precision:"6",name:"Bitcoin",wallet:null,price:{EUR:btc_price_eur,USD:btc_price_usd}},
-				{code:"UST",precision:3,name:"Tether",wallet:null,price:{EUR:usdt_price_eur,USD:usdt_price_usd}},
-			]
-			for (var i:int = 0; i < rawInstruments.length; i++) 
+			for (var i:int = 0; i < instruments.length; i++) 
 			{
-				rawInstruments[i].wallet = PayManager.getDCOWallet(rawInstruments[i].code)
+				instruments[i].wallet = PayManager.getDCOWallet(instruments[i].code)
 			}
-			parseInstruments(rawInstruments);
+			
             isInstrumentLoading = false;
 			PaymentsManager.deactivate();
+			
+			GD.S_ESCROW_INSTRUMENTS.invoke(instruments);
 		}
 		
         /**
          * Parse response width avaialable instruments from server.
          * @param data - array of objects width name, wallet, price and code
          */
-        private function parseInstruments(data:Array):void{
-            var tmp:Vector.<EscrowInstrument>=new Vector.<EscrowInstrument>();
-            for each(var i:Object in data){
-                if("name" in i && "wallet" in i && "price" in i && "code" in i && "precision" in i){
-                    var ei:EscrowInstrument=new EscrowInstrument(i.name,i.wallet,i.precision,i.code,i.price) 
-                    tmp.push(ei);
-                    GD.S_ESCROW_PRICE.invoke(ei);
-                }else{
-                    trace("Error, wrong packet! no proper data in escrow instrument");
-                }
+        private function parseInstruments(instrumentsRaw:Object):void{
+            var tmp:Vector.<EscrowInstrument> = new Vector.<EscrowInstrument>();
+			var instrument:EscrowInstrument;
+			var parser:InstrumentParser = new InstrumentParser();
+            for each(var instrumentRawData:Object in instrumentsRaw){
+				instrument = parser.parse(instrumentRawData);
+				if (instrument != null)
+				{
+					tmp.push(instrument);
+					GD.S_ESCROW_PRICE.invoke(instrument);
+				}
+				else
+				{
+					ApplicationErrors.add();
+				}
             }
             if(tmp.length>0){
                 instruments=tmp;
-                GD.S_ESCROW_INSTRUMENTS.invoke(instruments);
+            //    GD.S_ESCROW_INSTRUMENTS.invoke(instruments);
             }
         };
 		

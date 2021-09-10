@@ -2372,7 +2372,7 @@ package com.dukascopy.langs {
 		static public var amount_to_be_debited:String = "Amount to be debited";
 		
 		static public var to_get_for_crypto:String = "To get for crypto";
-		static public var commission_crypto:String = "Сommission (%@)%";
+		static public var commission_crypto:String = "Your commission (%@)%";
 		static public var amount_to_be_credited:String = "Amount to be credited";
 		static public var current_price_of_instrument:String = "Current price of 1 %@";
 		static public var send_offer:String = "SEND OFFER";
@@ -2420,7 +2420,7 @@ package com.dukascopy.langs {
 		static public var offer_was_rejected:String = "Offer was rejected";
 		static public var you_accepted_sell_offer:String = "You accepted the SELL offer";
 		static public var send_crypto:String = "You now have %@1 minutes to send %@2 to the blockchain wallet of the buyer:";
-		static public var type_transaction_id:String = "Right after sending the funds type the resulting transaction ID below:";
+		static public var type_transaction_id:String = "Right after sending the funds type the resulting transaction ID below and then please press the \"I have sent crypto\" button";
 		static public var i_have_sent_ctypto:String = "I HAVE SENT THE CRYPTO";
 		static public var buyers_wallet:String = "Buyer's wallet";
 		static public var transaction_id:String = "Transaction ID";
@@ -2546,6 +2546,7 @@ package com.dukascopy.langs {
 		static public var instrument:String = "Instrument";
 		static public var crypto_terms_link:String = "google.com";
 		static public var crypto_terms:String = "The use of the deposit function is possible only upon accepting the <font color='#CD3F43'>Crypto Terms & conditions</font>";
+		static public var escrow_tap_deal_form:String = "Tap to see deal form";
 		
 		static public function updateKeys(keys:Object):void {
 			for (var n:String in keys) {

@@ -370,8 +370,11 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			{
 				return;
 			}
+			
 			selectInstrument(value);
-			priceSelector.draw(_width - contentPadding * 2, -5, 5, 0, selectedPrice, getCurrency());
+			currencySign = null;
+			selectCurrencyFromPrices();
+			
 			if (!selectedCrypto.isLinked && state != STATE_REGISTER)
 			{
 				toState(STATE_REGISTER);
@@ -382,6 +385,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			}
 			updatePrice();
 			updateBalance();
+			priceSelector.draw(_width - contentPadding * 2, -5, 5, 0, selectedPrice, getCurrency());
 		}
 		
 		private function getInstrument():String
@@ -1185,8 +1189,6 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		
 		override public function initScreen(data:Object = null):void {
 			super.initScreen(data);
-			
-			currencySign = TypeCurrency.USD;
 			
 			if (data != null && "selectedDirection" in data && data.selectedDirection != null)
 			{

@@ -117,6 +117,13 @@ package com.dukascopy.connect.screens.dialogs.escrow
 			drawPrice(selectedValue);
 			drawPercent(selectedValue);
 			
+			updatePriceBack();
+			
+			dispatchValue(selectedValue);
+		}
+		
+		private function updatePriceBack():void 
+		{
 			var color:Number;
 			if (selectedValue > currentValue)
 			{
@@ -130,6 +137,7 @@ package com.dukascopy.connect.screens.dialogs.escrow
 			{
 				color = Style.color(Style.COLOR_SUBTITLE);
 			}
+			
 			var radius:int = Config.FINGER_SIZE * .12;
 			priceBack.graphics.clear();
 			if (priceCurrent.width > 0)
@@ -140,8 +148,6 @@ package com.dukascopy.connect.screens.dialogs.escrow
 				priceBack.x = int(priceCurrent.x - Config.FINGER_SIZE*.05);
 				priceBack.y = int(priceCurrent.y - Config.FINGER_SIZE * .08);
 			}
-			
-			dispatchValue(selectedValue);
 		}
 		
 		private function dispatchValue(value:Number):void 
@@ -209,6 +215,7 @@ package com.dukascopy.connect.screens.dialogs.escrow
 			{
 				selectorCurrency.setValue(currencySign);
 			}
+			updatePriceBack();
 		}
 		
 		private function updatePositions():void 
@@ -237,7 +244,6 @@ package com.dukascopy.connect.screens.dialogs.escrow
 			currency.x = int(priceCurrent.x + priceCurrent.width + Config.FINGER_SIZE * .15);
 			
 			positionCurrencySelector();
-			
 		}
 		
 		private function positionCurrencySelector():void 

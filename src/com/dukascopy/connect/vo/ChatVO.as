@@ -558,6 +558,7 @@ package com.dukascopy.connect.vo {
 					if (isPercent)
 					{
 						text = text.replace("%@4", price);
+						text = text.replace("-", "");
 						
 						if (Number(realPrice) > 0)
 						{
