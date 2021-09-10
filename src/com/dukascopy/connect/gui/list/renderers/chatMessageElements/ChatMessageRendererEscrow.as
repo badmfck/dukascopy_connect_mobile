@@ -246,7 +246,7 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 			amount.y = int(title.y + title.height + paddingV * 0.4);
 			
 			price.width = maxTextWidth;
-			price.text = getPriceText(data);
+			price.htmlText = getPriceText(data);
 			price.textColor = getAmountColor(data.status, messageData);
 			price.width = price.textWidth + 5;
 			price.height = price.textHeight + 5;
@@ -287,6 +287,15 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 			//!TODO: per coin now добавить;
 			var result:String = Lang.price_per_coin;
 			result = result.replace(Lang.regExtValue, data.price + " " + getCurrency(data));
+			
+			if (data.status == EscrowStatus.deal_completed ||
+				data.status == EscrowStatus.deal_created ||
+				data.status == EscrowStatus.deal_mca_hold ||
+				data.status == EscrowStatus.paid_crypto)
+			{
+				result += "<br><br><font color='#24835C'>" + Lang.tapToUpenForm + "</font>";
+			}
+			
 			return result;
 		}
 		
