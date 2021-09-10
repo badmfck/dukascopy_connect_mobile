@@ -330,25 +330,25 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 					{
 						if (direction == TradeDirection.buy)
 						{
-							if (messageData.userUID == Auth.uid)
+							if (data.mca_user_uid == Auth.uid)
 							{
 								result = Lang.escrow_to_buy;
 							}
 							else
 							{
-								result = Lang.escrow_to_sell;
+								result = Lang.escrow_to_buy;
 							}
 							
 						}
 						else if(direction == TradeDirection.sell)
 						{
-							if (messageData.userUID == Auth.uid)
+							if (data.crypto_user_uid == Auth.uid)
 							{
 								result = Lang.escrow_to_sell;
 							}
 							else
 							{
-								result = Lang.escrow_to_buy;
+								result = Lang.escrow_to_sell;
 							}
 						}
 						
@@ -388,7 +388,14 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 					}
 					case EscrowStatus.deal_mca_hold:
 					{
-						result = Lang.waiting_for_crypto;
+						if (data.mca_user_uid == Auth.uid)
+						{
+							result = Lang.waiting_for_crypto;
+						}
+						else
+						{
+							result = Lang.escrow_tap_deal_form;
+						}
 						
 						break;
 					}
@@ -753,14 +760,16 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 							}
 							else
 							{
-								return Color.RED;
+								return Color.GREEN;
+							//	return Color.RED;
 							}
 						}
 						else if (direction == TradeDirection.sell)
 						{
 							if (messageData.userUID == Auth.uid)
 							{
-								return Color.RED;
+								return Color.GREEN;
+							//	return Color.RED;
 							}
 							else
 							{
