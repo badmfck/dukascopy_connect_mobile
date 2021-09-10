@@ -372,7 +372,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs {
 			if (giftData != null && giftData.type == 4)
 			{
 				if (isActivated && 
-					!isNaN(iAmountCurrency.value) &&
+					!isNaN(iAmountCurrency.value) && !isNaN(iAmountCurrency.value) && iAmountCurrency.value > 0 &&
 					BankManager.getDCOWallet(getCurrency()) != null && terms != null && terms.isSelected())
 				{
 					acceptButton.activate();
