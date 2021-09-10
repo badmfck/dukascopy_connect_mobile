@@ -313,7 +313,9 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 			var result:String = "";
 			if (EscrowScreenNavigation.isExpired(messageData.systemMessageVO.escrow, messageData.created) && data.inactive == false)
 			{
-				if (messageData.systemMessageVO.escrow.status == EscrowStatus.deal_created)
+				if (messageData.systemMessageVO.escrow.status == EscrowStatus.deal_created ||
+					messageData.systemMessageVO.escrow.status == EscrowStatus.deal_mca_hold ||
+					messageData.systemMessageVO.escrow.status == EscrowStatus.paid_crypto)
 				{
 					result = Lang.deal_expired;
 				}
@@ -515,7 +517,7 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 					}
 					else
 					{
-						time.text = gettimeDifference(EscrowSettings.offerMaxTime * 60 - ((new Date()).time / 1000 - messageData.created));
+						time.text = gettimeDifference(getMaxTime(messageData.systemMessageVO.escrow.status) * 60 - ((new Date()).time / 1000 - messageData.created));
 					}
 					
 					time.width = time.textWidth + 5;
@@ -542,7 +544,7 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 						
 						time.width = leftSideSize - Config.FINGER_SIZE * .1 * 2;
 						
-						time.text = gettimeDifference(EscrowSettings.dealMaxTime * 60 - ((new Date()).time / 1000 - messageData.created));
+						time.text = gettimeDifference(getMaxTime(messageData.systemMessageVO.escrow.status) - ((new Date()).time / 1000 - messageData.created));
 						
 						time.width = time.textWidth + 5;
 						time.height = time.textHeight + 5;
@@ -625,6 +627,28 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 					}
 				}
 			}
+		}
+		
+		private function getMaxTime(status:EscrowStatus):Number 
+		{
+			if (status == EscrowStatus.offer_created)
+			{
+				return EscrowSettings.offerMaxTime;
+			}
+			else if (status == EscrowStatus.deal_created)
+			{
+				return EscrowSettings.dealMaxTime;
+			}
+			else if (status == EscrowStatus.deal_mca_hold)
+			{
+				return EscrowSettings.dealMaxTime;
+			}
+			else if (status == EscrowStatus.paid_crypto)
+			{
+				return EscrowSettings.receiptConfirmationTime;
+			}
+			
+			return EscrowSettings.offerMaxTime;
 		}
 		
 		private function getIconColor(status:EscrowStatus, direction:TradeDirection, messageData:ChatMessageVO):Number 
