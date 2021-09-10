@@ -84,6 +84,7 @@ package com.dukascopy.connect.data.screenAction.customActions {
 				if (instrument != null && instrument.price != null) {
 					var priceForCurrentCurrency:Number;
 					var priceForUSDCurrency:Number;
+					
 					for (var i:int = 0; i < instrument.price.length; i++) {
 						if (instrument.price[i].name == currency) {
 							priceForCurrentCurrency = instrument.price[i].value;
@@ -91,6 +92,16 @@ package com.dukascopy.connect.data.screenAction.customActions {
 							priceForUSDCurrency = instrument.price[i].value;
 						}
 					}
+					
+					if (currency == TypeCurrency.EUR)
+					{
+						priceForUSDCurrency = priceForCurrentCurrency / 1.18;
+					}
+					else
+					{
+						//!TODO:;
+					}
+					
 					if (!isNaN(priceForCurrentCurrency) && !isNaN(priceForUSDCurrency)) {
 						var priceConvert:Number = priceForCurrentCurrency / priceForUSDCurrency;
 						var creditAmount:Number = fiatAmount / priceConvert;
