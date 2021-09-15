@@ -9,3 +9,5 @@
 *.as3proj
 bin/Dukascopy.swf
 bin/Desktop.xml
+node_modules
+calls/build

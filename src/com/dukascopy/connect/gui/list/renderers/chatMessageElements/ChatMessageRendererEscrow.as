@@ -293,7 +293,7 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 				data.status == EscrowStatus.deal_mca_hold ||
 				data.status == EscrowStatus.paid_crypto)
 			{
-				result += "<br><br><font color='#24835C'>" + Lang.tapToUpenForm + "</font>";
+				result += "<br><br><font color='#24835C'>\n\n" + Lang.tapToUpenForm + "</font>";
 			}
 			
 			return result;

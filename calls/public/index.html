@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no " />
+    <meta name="theme-color" content="#000000" />
+    <meta name="description" content="Calls" />
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    <title>Calls</title>
+    
+    <script>
+       // change console.log
+        if(window && window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.native){
+            console.log=(...data)=>{
+                let str="";
+                for(let i of data){
+                    if(i.length>0)
+                        i+=", ";
+                    str+=i
+                }
+                callMethod("log",str)
+            }   
+        }
+        
+        // CALL METHOD
+        function callMethod(name,data){
+          if(!(window && window.webkit && window.webkit.messageHandlers)){
+            console.log(name,data)
+            return;
+          }
+          window.webkit.messageHandlers.native.postMessage(JSON.stringify({
+            method:name,
+            data:data
+          }));
+        }
+
+        function appReady(){
+          callMethod("appReady",{});
+          console.log("App ready!");
+          GD.S_INVOKE_METHOD.add(req=>{
+            callMethod(req.name,req.data);
+          });
+        }
+
+
+        function callPlaced(data){
+          GD.S_CALL_PLACED.invoke(data);
+        }
+
+        function gotOffer(data){
+          GD.S_GOT_OFFER.invoke(data);
+        }
+
+        function gotAnswer(data){
+          GD.S_GOT_ANSWER.invoke(data);
+        }
+
+        function gotCandidate(data){
+          GD.S_GOT_CANDIDATE.invoke(data);
+        }
+
+          // ROUTER
+          var __self=this;
+          function __router(b64){ 
+              //b64
+              var packet=atob(b64);
+              let req=null;
+              try{
+                  req=JSON.parse(packet);
+              }catch(e){
+                  callMethod("log","Router json error: "+packet);
+                  var d=document.createElement("div");
+                  d.style.width="300px";
+                  d.style.backgroundColor="#FF0000";
+                  d.style.padding="10px";
+                  d.innerHTML=packet+"<br/>"+b64;
+                  document.body.appendChild(d);
+                  return;
+              }
+
+              if(req==null || req.func==null){
+                  callMethod("log","Router error: No func or no request at all");
+                  return;
+              }
+              
+              let args=null;
+              if(req.args && Array.isArray(req.args))
+                  args=req.args;
+              try{
+                  if(req.func in window)
+                      window[req.func].apply(__self,args);
+                  else if(req.func in document)
+                      document[req.func].apply(__self,args);
+                  else if(req.func in __self)
+                      __self[req.func].apply(__self,args);
+              }catch(e){
+                  callMethod("log","Router error: call '"+req.func+"' exception: "+e);
+                  return;
+              }
+            }
+        
+    </script>
+
+    <style>
+      head,body{
+        padding:0;
+        margin:0;
+      }
+      *{
+        outline: 1px solid #0000FF;
+      }
+    </style>
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+  </body>
+</html>
