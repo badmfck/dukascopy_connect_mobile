@@ -4,25 +4,45 @@ package com.forms
     import com.forms.components.FormButton;
     import com.forms.components.FormSpace;
     import flash.xml.XMLNode;
-    import flash.system.Capabilities;
     import com.forms.components.FormGraph;
     import com.forms.components.FormInput;
+    import com.forms.components.FormList;
+    import com.forms.components.FormListItem;
+    import com.forms.components.FormTopOffset;
+    import com.forms.components.FormBottomOffset;
     
     public class Form extends FormComponent{
         private var disposed:Boolean=false;
-        
+        static public var debug:Boolean=false;
         private var form:Form;
         private var registeredComponents:Object={};
         private var doRedraw:Boolean=false;
         private var _width:int=-1;
         private var _height:int=-1;
-        private var _avaiableComponentRenderers:Vector.<FormRegisteredComponent>=new Vector.<FormRegisteredComponent>();
+        private var _topOffset:int=0;
+        private var _bottomOffset:int=0;
+        static private var _avaiableComponentRenderers:Vector.<FormRegisteredComponent>=new Vector.<FormRegisteredComponent>();
         
-        public function Form(xml:*){
+        public function get topOffset():int{return _topOffset;}
+        public function get bottomOffset():int{ return _bottomOffset;}
+
+        public var formController:Object;
+
+        public function Form(xml:*,additionalComponents:Vector.<FormRegisteredComponent>=null){
             _avaiableComponentRenderers.push(new FormRegisteredComponent("button",FormButton));
             _avaiableComponentRenderers.push(new FormRegisteredComponent("space",FormSpace));
+            _avaiableComponentRenderers.push(new FormRegisteredComponent("top-offset",FormTopOffset));
+            _avaiableComponentRenderers.push(new FormRegisteredComponent("bottom-offset",FormBottomOffset));
             _avaiableComponentRenderers.push(new FormRegisteredComponent("graph",FormGraph));
             _avaiableComponentRenderers.push(new FormRegisteredComponent("input",FormInput));
+            _avaiableComponentRenderers.push(new FormRegisteredComponent("list",FormList));
+            _avaiableComponentRenderers.push(new FormRegisteredComponent("li",FormListItem));
+            if(additionalComponents){
+                for each(var c:FormRegisteredComponent in additionalComponents){
+                    _avaiableComponentRenderers.push(c);
+                }
+            }
+
             super(xml,this);
         }
 
@@ -32,17 +52,17 @@ package com.forms
             var h:int=_height;
             style=null;
             super.reload();
-            setSize(w,h)
+            setSize(w,h,_topOffset,_bottomOffset)
         }
-    
-        
-        public function setSize(width:int,height:int):void{
 
-            
-            
+        
+        public function setSize(width:int,height:int,topOffset:int=0,bottomOffset:int=0):void{
+
 
             _width=width;
             _height=height;
+            _topOffset=topOffset;
+            _bottomOffset=bottomOffset;
 
             if(style==null){
                 doRedraw=true;
@@ -53,6 +73,8 @@ package com.forms
             
             if(attributes!=null && "formSize" in attributes && attributes.formSize!=null)
                 formSize=parseInt(attributes.formSize);
+            else
+                formSize=_width
             
             var w:int=formSize;
             var h:int=Math.round((formSize*_height)/_width);
@@ -60,8 +82,7 @@ package com.forms
             style.height=h;
 
             var scaleFactor:Number=_width/w;
-            trace(scaleFactor);
-
+     
             //style.width=width/_scaleFactor;
             //style.height=height/_scaleFactor;
             _view.scaleX=scaleFactor;
@@ -101,6 +122,14 @@ package com.forms
 
         public function get avaiableComponentRenderes():Vector.<FormRegisteredComponent>{
             return _avaiableComponentRenderers;
+        }
+
+        public function onElementClick(c:FormComponent,clickHandler:String):void{
+            if(clickHandler!=null && formController!=null && clickHandler in formController){
+                if(formController[clickHandler] is Function && formController[clickHandler].length==1)
+                   formController[clickHandler](c);
+                   
+            }
         }
 
         override public function destroy():void{

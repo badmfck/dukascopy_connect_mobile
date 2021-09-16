@@ -54,6 +54,17 @@ package com.forms
 
         public function setBounds(bounds:FormBounds):void{
             this.bounds=bounds;
+
+            
+            if(movingPhase!="none")
+                return;
+                
+            TweenMax.killTweensOf(target);
+            TweenMax.to(target,.6,{y:mask.height-bounds.height,roundProps:["y"],ease:Power4.easeOut,onUpdate:function():void{
+                         if(onMoved!=null)
+                            onMoved();
+                    }});
+         
         }
 
         private function onMDown(e:MouseEvent):void{

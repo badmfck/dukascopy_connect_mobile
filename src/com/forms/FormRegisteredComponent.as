@@ -3,7 +3,12 @@ package com.forms
     public class FormRegisteredComponent{
         private var _name:String;
         private var cls:Class;
-        public function FormRegisteredComponent(name:String,_class:Class):void{
+        private var xml:XML;
+        public function FormRegisteredComponent(name:String,_class:Class,xml:XML=null):void{
+            if(xml){
+                this.xml=xml;
+                return;
+            }
             _name=name;
             cls=_class;
         }

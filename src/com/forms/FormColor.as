@@ -1,7 +1,6 @@
 package com.forms
 {
-    import com.dukascopy.connect.sys.calendar.BookedDays;
-
+ 
     public class FormColor{
         private var _isSet:Boolean;
         private var _value:uint;

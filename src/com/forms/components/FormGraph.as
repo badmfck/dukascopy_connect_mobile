@@ -29,7 +29,7 @@ package com.forms.components
             }
         }
 
-        override protected function redraw(percentOffsetW:int = -1, percentOffsetH:int = -1):void{
+        override protected function redraw(percentOffsetW:int = -1, percentOffsetH:int = -1,parentValues:Object=null):void{
             
             calculateBounds(percentOffsetW,percentOffsetH)
             
@@ -85,7 +85,7 @@ package com.forms.components
 
             //align
             for each(shape in shapes){
-                if(style.align.toString()==FormAlign.CENTER_CENTER){
+                if(style.align.toString()==FormAlign.CENTER){
                     shape.x=Math.round((bounds.display_width-shape.width)*.5)
                     shape.y=Math.round((bounds.display_height-shape.height)*.5)
                 }

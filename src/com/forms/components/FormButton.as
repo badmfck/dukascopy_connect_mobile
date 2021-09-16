@@ -11,7 +11,7 @@ package com.forms.components
         public function FormButton(xml:XMLNode,form:Form){
             super(xml,form,{
                 backgroundColor:"#FFCC00",
-                align:FormAlign.CENTER_CENTER,
+                align:FormAlign.CENTER,
                 padding:"10",
                 borderRadius:"10"
             });

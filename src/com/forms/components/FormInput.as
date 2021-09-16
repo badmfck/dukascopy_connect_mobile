@@ -38,10 +38,10 @@ package com.forms.components
             box.addChild(tf);
         }
 
-        override protected function redraw(percentOffsetW:int = -1, percentOffsetH:int = -1):void{
+        override protected function redraw(percentOffsetW:int = -1, percentOffsetH:int = -1,parentValues:Object=null):void{
             calculateBounds(percentOffsetW,percentOffsetH);
              // get size
-            var fs:FormTextSize=getFontSize();
+            var fs:FormTextSize=null;//getFontSize();
             var size:int=11;
             if(fs!=null){
                 size=fs.size;
