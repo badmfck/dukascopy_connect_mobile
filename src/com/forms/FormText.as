@@ -33,6 +33,9 @@ package com.forms
             return parsed;
         }
 
+        override public function set textContent(val:String):void{
+            text=val;
+        }
 
         override protected function redraw(percentOffsetW:int = -1, percentOffsetH:int = -1,parentValues:Object=null):void{
       

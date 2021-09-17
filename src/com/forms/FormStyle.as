@@ -48,8 +48,10 @@ package com.forms
             var key:String;
             var key2:String;
             var additionalObject:Array;
-            if(predefinedStyle!=null){
+            if(component.id=="buyerGetDeals")
+                trace("123");
 
+            if(predefinedStyle!=null){
                 for(key in predefinedStyle){
                     if(key.indexOf("__")==0){
                         if(    (key=="__first" && component.isFirst)
@@ -92,7 +94,7 @@ package com.forms
         }
 
         static private function isStyled(key:String,attribues:Object):Boolean{
-            return "styled" in attribues && key.substr(2) == attribues['styled'];
+            return attribues != null && "styled" in attribues && key.substr(2) == attribues['styled'];
         }
 
         public static function normalizeAttributes(val:Object):Object{

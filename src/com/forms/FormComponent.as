@@ -150,6 +150,10 @@ package com.forms{
 
             if(xml==null){
                 // NO XML
+                attributes={};
+                style=new FormStyle(null,predefinedStyle,this);
+                _nodeType=1;
+                _nodeName="__generated"
                 if(_onDocumentLoaded!=null && _onDocumentLoaded is Function && this is Form)
                     _onDocumentLoaded();
                 if(this is Form)
@@ -256,6 +260,34 @@ package com.forms{
             draw();
 
         }
+
+        public function set textContent(val:String):void{
+            
+            var txtNode:FormText;
+            if(val==null || val==""){
+                clearAll();
+                return;
+            }
+
+            var lines:Array=val.split("\n");
+
+            // TEXT NODE
+            if(_components.length == 1 && _components[0] is FormText && lines.length==1){
+                txtNode=_components[0] as FormText;
+                txtNode.textContent=val;
+                rebuild();
+                return;
+            }
+
+            clearAll(false);
+            for(var i:int=0;i<lines.length;i++){
+                var txt:FormText=new FormText(lines[i]);
+                _add(txt,-1,false);
+            }
+            rebuild();
+            
+        }
+
 
         private function setupDebugger(file:File):void{
             // DEBUG, RELOAD ON FILE CHANGE
@@ -417,9 +449,9 @@ package com.forms{
             }
 
             if(this is Form){
+                documentLoaded=true;
                 if(_onDocumentLoaded!=null && _onDocumentLoaded is Function)
                     _onDocumentLoaded();
-                documentLoaded=true;
             }
         }
 
@@ -533,16 +565,21 @@ package com.forms{
             return res;
         }
     
-        public function clearAll():void{
+        public function clearAll(doRebuild:Boolean=true):void{
             for each(var c:FormComponent in _components){
                 c.destroy();        
             }
             _components=new <FormComponent>[];
-            rebuild();
+            if(doRebuild)
+                rebuild();
         }
 
         public function add(component:FormComponent,index:int=-1):void{
-            _add(component,index,true);
+            if(this is Form && !documentLoaded){
+                trace("WARN: no form loaded yet");
+                return;
+            }else
+                _add(component,index,true);
         }
         private function _add(component:FormComponent,index:int,doRebuild:Boolean):void{
             if(box.parent==null){

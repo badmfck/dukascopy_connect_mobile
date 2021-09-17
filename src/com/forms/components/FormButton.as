@@ -16,6 +16,9 @@ package com.forms.components
                 borderRadius:"10",
                 __first:{
                     backgroundColor:"#00FFAA"
+                },
+                __last:{
+                    backgroundColor:"#AA00CC"
                 }
             });
             (_view as Sprite).buttonMode=true;

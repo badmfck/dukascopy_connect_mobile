@@ -100,11 +100,19 @@ package com.forms
         }
 
         public function createComponent(name:String,predefinedStyle:Object=null):FormComponent{
+            for each(var itm:FormRegisteredComponent in avaiableComponentRenderes){
+                if(itm.name==name)
+                    return new itm._class(null,this);
+            }
             return new FormComponent(null,this,predefinedStyle);
         }
 
-        public function createComponentFromXML(xml:XML):FormComponent{
-            return new FormComponent(new XMLDocument(xml).firstChild,this);
+        public function createComponentFromXML(xml:XML,predefinedStyle:Object=null):FormComponent{
+             for each(var itm:FormRegisteredComponent in avaiableComponentRenderes){
+                if(itm.name==name)
+                    return new itm._class(new XMLDocument(xml).firstChild);
+            }
+            return new FormComponent(new XMLDocument(xml).firstChild,this,predefinedStyle);
         }
 
         public function regID(id:String,component:FormComponent):void{

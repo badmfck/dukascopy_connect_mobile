@@ -9,6 +9,7 @@ package com.dukascopy.connect.managers.escrow.test{
     import flash.events.KeyboardEvent;
     import flash.system.Capabilities;
     import com.forms.IFormController;
+    import com.forms.FormComponent;
     
 
     public class EscrowTestForm extends Sprite implements IFormController{
@@ -35,6 +36,7 @@ package com.dukascopy.connect.managers.escrow.test{
 
 
         private function createForm():void{
+            Form.debug=true;
             form=new Form(File.applicationDirectory.resolvePath("forms"+File.separator+"escrowDebug.xml"));
 			addChild(form.view);
 			form.setSize(stage.stageWidth,stage.stageHeight);
@@ -43,7 +45,9 @@ package com.dukascopy.connect.managers.escrow.test{
         }
 
         private function formReady():void{
-            
+            var btn:FormComponent=form.createComponent("button");
+            btn.textContent="TEST";
+            form.add(btn);
         } 
 
         public function destroy():void{
