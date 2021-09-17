@@ -2,6 +2,7 @@ package com.forms
 {
     import flash.xml.XMLNode;
     import flash.text.engine.FontWeight;
+    import com.dukascopy.connect.sys.calendar.BookedDays;
     
     public class FormStyle{
        
@@ -46,26 +47,31 @@ package com.forms
 
             var key:String;
             var key2:String;
+            var additionalObject:Array;
             if(predefinedStyle!=null){
-                
 
                 for(key in predefinedStyle){
                     if(key.indexOf("__")==0){
-                        if(key=="__first" && component.isFirst){
-                            // setup for first
-                            for(key2 in predefinedStyle[key]){
-                                this.values[key2]=predefinedStyle[key][key2];
-                            }
-                        }
-                        if(key=="__last" && component.isLast){
-                            // setup for last
-                            for(key2 in predefinedStyle[key]){
-                                this.values[key2]=predefinedStyle[key][key2];
-                            }
+                        if(    (key=="__first" && component.isFirst)
+                            || (key=="__last" && component.isLast)
+                            || isStyled(key,attributes)
+                        ){
+                            if(additionalObject==null)
+                                additionalObject=[];
+                            additionalObject.push(key);
                         }
                         continue;
                     }
                     this.values[key]=predefinedStyle[key]
+                }
+
+                if(additionalObject!=null){
+                    for each(key in additionalObject){
+                        for(key2 in predefinedStyle[key]){
+                            this.values[key2]=predefinedStyle[key][key2]
+                        }
+                    }
+                    additionalObject=null;
                 }
 
                 if(attributes!=null){
@@ -77,20 +83,16 @@ package com.forms
             }else if(attributes!=null)
                 this.values=attributes;
 
-            // normalize attributes
-            /*for(key in this.values){
-                var index:int=key.indexOf("-");
-                if(index!=-1 && index<key.length-1){
-                    var camel:String=key.substr(0,index)+key.substr(index+1,1).toUpperCase()+key.substr(index+2,key.length);
-                    this.values[camel]=this.values[key];
-                }
-            }*/
             normalizeAttributes(this.values)
-            
+
             // setup layout
             setupStyles();
 
             //values=null;
+        }
+
+        static private function isStyled(key:String,attribues:Object):Boolean{
+            return "styled" in attribues && key.substr(2) == attribues['styled'];
         }
 
         public static function normalizeAttributes(val:Object):Object{

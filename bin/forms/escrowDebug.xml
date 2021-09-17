@@ -4,10 +4,13 @@
     <div layout="horizontal" height="100%">
 
         <div width="50%">
-            BUYER
+            <button id="tst">BTN4</button>
             <input id="buyerKey" prompt="Type buyer key"/>
-            <button id="buyerGetDeals">GET DEALSs</button>
             <button id="buyerCreateOffer">CREATE OFFER</button>
+            <button>BTN3</button>
+            
+            ILYA PRIVET
+            <button id="buyerGetDeals">GET DEALSs</button>
         </div>
         <space size="10"/>
         <div width="50%">

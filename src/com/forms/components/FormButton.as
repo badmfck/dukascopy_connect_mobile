@@ -13,7 +13,10 @@ package com.forms.components
                 backgroundColor:"#FFCC00",
                 align:FormAlign.CENTER,
                 padding:"10",
-                borderRadius:"10"
+                borderRadius:"10",
+                __first:{
+                    backgroundColor:"#00FFAA"
+                }
             });
             (_view as Sprite).buttonMode=true;
         }
