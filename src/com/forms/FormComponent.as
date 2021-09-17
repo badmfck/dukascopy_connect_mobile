@@ -84,6 +84,29 @@ package com.forms{
                 return bounds;
         }
 
+        public function get isFirst():Boolean{
+            var index:int=elementIndex;
+            if(index==-1)
+                return false;
+            return index==0;
+        }
+
+        public function get isLast():Boolean{
+            var index:int=elementIndex;
+            if("__children" in attributes){
+                return parseInt(attributes["__children"])==(index+1);
+            }
+            return false;
+        }
+
+        public function get elementIndex():int{
+            if(attributes && "__index" in attributes){
+                return parseInt(attributes["__index"]);
+            }
+            return -1;
+        }
+
+
         private var _onTap:Function=null;
         public function set onTap(val:Function):void{
             if(val==null)
@@ -304,7 +327,6 @@ package com.forms{
                     if(inner.firstChild.childNodes.length>0){
                         while(inner.firstChild.childNodes.length>0){
                             var fcld:XMLNode=inner.firstChild.firstChild;
-                            
                             if("id" in fcld.attributes){
                                 if(_id==null)
                                     _id="__temp_"+(nextTempID++);
@@ -373,16 +395,13 @@ package com.forms{
                     continue;
 
                 if("id" in ch.attributes){
-
-                    if(_id==null)
+                   if(_id==null)
                         _id="__temp_"+(nextTempID++);
                     ch.attributes["--parent-id"]=_id;
                     ch.attributes["--local-child-id"]=true;
                 }
-
                 markEmbededChilds(ch);
             }
-            
         }
 
         private function callDocumentLoaded():void{
@@ -435,8 +454,8 @@ package com.forms{
             distributeChildsCount=0
             var childs:Array=xml.childNodes;
 
-            
 
+            var index:int=0;
             for each(var node:XMLNode in childs){
                 var c:FormComponent=null;
                 if(node.nodeType==3){
@@ -444,6 +463,8 @@ package com.forms{
                     if(c==null)
                         continue;
                 }else{
+                    node.attributes['__index']=index++;
+                    node.attributes['__children']=childs.length;
                     var nName:String=node.nodeName.toLowerCase()
                     var avaiableComponents:Vector.<FormRegisteredComponent>=form.avaiableComponentRenderes;
                     for each(var ac:FormRegisteredComponent in avaiableComponents){
