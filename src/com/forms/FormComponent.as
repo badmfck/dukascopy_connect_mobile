@@ -374,7 +374,7 @@ package com.forms{
                 }
             }
 
-            style=new FormStyle(xml,predefinedStyle);
+            style=new FormStyle(xml,predefinedStyle,this);
             createView(xml);
         }
 

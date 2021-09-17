@@ -20,6 +20,7 @@ package com.forms
         public var textAlign:FormTextAlign;
         public var textTransform:FormTextTransform;
         public var borderRadius:FormBorderRadius;
+        public var borderColor:FormBorderColor;
         public var opacity:Number=1;
         public var xOffset:int=0;
         public var yOffset:int=0;
@@ -33,24 +34,46 @@ package com.forms
 
         private var values:Object;
         private var runtimeStyles:Object;
+        
 
 
-        public function FormStyle(xml:XMLNode=null,predefinedStyle:Object=null):void{
+        public function FormStyle(xml:XMLNode,predefinedStyle:Object,component:FormComponent):void{
 
             
             var attributes:Object=xml!=null?xml.attributes:null
             this.values={};
+            
 
             var key:String;
+            var key2:String;
             if(predefinedStyle!=null){
+                
+
                 for(key in predefinedStyle){
+                    if(key.indexOf("__")==0){
+                        if(key=="__first" && component.isFirst){
+                            // setup for first
+                            for(key2 in predefinedStyle[key]){
+                                this.values[key]=predefinedStyle[key][key2];
+                            }
+                        }
+                        if(key=="__last" && component.isLast){
+                            // setup for last
+                            for(key2 in predefinedStyle[key]){
+                                this.values[key]=predefinedStyle[key][key2];
+                            }
+                        }
+                        continue;
+                    }
                     this.values[key]=predefinedStyle[key]
                 }
+
                 if(attributes!=null){
                     for(key in attributes){
                         this.values[key]=attributes[key]
                     }
                 }
+                
             }else if(attributes!=null)
                 this.values=attributes;
 
