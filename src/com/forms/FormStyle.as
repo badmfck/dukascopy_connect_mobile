@@ -54,13 +54,13 @@ package com.forms
                         if(key=="__first" && component.isFirst){
                             // setup for first
                             for(key2 in predefinedStyle[key]){
-                                this.values[key]=predefinedStyle[key][key2];
+                                this.values[key2]=predefinedStyle[key][key2];
                             }
                         }
                         if(key=="__last" && component.isLast){
                             // setup for last
                             for(key2 in predefinedStyle[key]){
-                                this.values[key]=predefinedStyle[key][key2];
+                                this.values[key2]=predefinedStyle[key][key2];
                             }
                         }
                         continue;
