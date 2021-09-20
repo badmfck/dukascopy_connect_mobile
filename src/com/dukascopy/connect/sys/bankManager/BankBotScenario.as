@@ -2300,6 +2300,10 @@ package com.dukascopy.connect.sys.bankManager {
 						selection:"@@2",
 						selectionAcc:"@@1",
 						disabled:true
+					}, {
+						text:"lang.menuInvestmentPortfolio",
+						action:"nav:investmentsList",
+						disabled:"@@3"
 					}
 				]
 			},

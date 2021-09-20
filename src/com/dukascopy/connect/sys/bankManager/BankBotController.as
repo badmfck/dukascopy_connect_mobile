@@ -475,7 +475,7 @@ package com.dukascopy.connect.sys.bankManager {
 					if (steps == null)
 						return;
 					vals = steps[steps.length - 1].val.split("|!|");
-					sendBlock(tmp[1], [vals[0], vals[1]]);
+					sendBlock(tmp[1], [vals[0], vals[1], ((vals.length == 3) ? !vals[2] : true)]);
 					return;
 				}
 				if (tmp[1] == "investmentsList" || tmp[1] == "investmentsListAll" || tmp[1] == "investmentsListSell") {

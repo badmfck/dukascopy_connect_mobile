@@ -1116,11 +1116,10 @@ package com.dukascopy.connect.sys.bankManager {
 					return;
 				} else if (data.type == "investmentSelect" || data.type == "investmentSelectAll") {
 					data.tapped = true;
-					/*baVO = new BankMessageVO(PayInvestmentsManager.getInvestmentNameByInstrument(data.param.INSTRUMENT));
-					baVO.setMine();
-					baVO.additionalData = data.param;
-					invokeAnswerSignal(baVO);*/
-					sendMessage("val:" + data.param.ACCOUNT_NUMBER + "|!|" + data.param.INSTRUMENT);
+					var requesetString:String = "val:" + data.param.ACCOUNT_NUMBER + "|!|" + data.param.INSTRUMENT;
+					if ("portfolio" in data)
+						requesetString += "|!|" + data.portfolio;
+					sendMessage(requesetString);
 					sendMessage(msg);
 				} else if (data.type == "investmentDetails") {
 					data.tapped = true;
@@ -2351,9 +2350,9 @@ package com.dukascopy.connect.sys.bankManager {
 				}
 				if (lastBankMessageVO.item.type == "investments") {
 					if (investmentExist == false) {
-						lastBankMessageVO.menu[1].disabled = true;
+						lastBankMessageVO.menu[2].disabled = true;
 					} else {
-						lastBankMessageVO.menu[3].disabled = true;
+						lastBankMessageVO.menu[4].disabled = true;
 					}
 				}
 				if (lastBankMessageVO.item.type == "walletSelect" || lastBankMessageVO.item.type == "walletSelectAll" || lastBankMessageVO.item.type == "walletSelectWithoutTotal") {
