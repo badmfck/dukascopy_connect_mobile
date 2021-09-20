@@ -20,6 +20,7 @@ package com.forms
         public var fontWeight:FormFontWeight;
         public var textAlign:FormTextAlign;
         public var textTransform:FormTextTransform;
+        public var border:FormBorder;
         public var borderRadius:FormBorderRadius;
         public var borderColor:FormBorderColor;
         public var opacity:Number=1;
@@ -48,9 +49,7 @@ package com.forms
             var key:String;
             var key2:String;
             var additionalObject:Array;
-            if(component.id=="buyerGetDeals")
-                trace("123");
-
+  
             if(predefinedStyle!=null){
                 for(key in predefinedStyle){
                     if(key.indexOf("__")==0){
@@ -128,6 +127,8 @@ package com.forms
             setupAsBitmap()
             setupBoxShadow();
             setupTextTransform();
+            setupFormBorderColor();
+            setupFormBorder();
             parseSize();
         }
 
@@ -302,6 +303,38 @@ package com.forms
             }else{
                 var p:int=parseInt(val);
                 borderRadius=new FormBorderRadius(p,p,p,p);
+            }
+        }
+
+        private function setupFormBorderColor():void{
+            var val:String=values['borderColor'];
+            if(val==null){
+                borderColor=new FormBorderColor(-1,-1,-1,-1,false);
+                return;
+            }
+            var tmp:Array=val.split(" ");
+            if(tmp.length==4){
+                borderColor=new FormBorderColor(parseInt(tmp[0]),parseInt(tmp[1]),parseInt(tmp[2]),parseInt(tmp[3]))
+                return;
+            }else{
+                var p:int=parseInt(val);
+                borderColor=new FormBorderColor(p,p,p,p);
+            }
+        }
+
+        private function setupFormBorder():void{
+            var val:String=values['border'];
+            if(val==null){
+                border=new FormBorder(0,0,0,0);
+                return;
+            }
+            var tmp:Array=val.split(" ");
+            if(tmp.length==4){
+                border=new FormBorder(parseInt(tmp[0]),parseInt(tmp[1]),parseInt(tmp[2]),parseInt(tmp[3]))
+                return;
+            }else{
+                var p:int=parseInt(val);
+                border=new FormBorder(p,p,p,p);
             }
         }
 

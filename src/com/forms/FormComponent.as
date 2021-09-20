@@ -721,6 +721,25 @@ package com.forms{
             }
          
             if(parent!=null && parent.style!=null){
+                if(parent.style.layout.toString()==FormLayout.HORIZONTAL){
+                    bounds.display_height-=parent.style.padding.top+parent.style.padding.bottom
+                    bounds.display_height-=parent.style.border.top+parent.style.border.bottom
+                }
+
+                if(parent.style.layout.toString()==FormLayout.VERTICAL){
+                    bounds.display_width-=parent.style.padding.left+parent.style.padding.right
+                    bounds.display_width-=parent.style.border.left+parent.style.border.right
+                }
+
+
+
+            }
+
+
+            
+            //bounds.display_height-=(style.padding.top+style.padding.bottom);
+
+            /*if(parent!=null && parent.style!=null){
                 if(style.layout.toString()==FormLayout.VERTICAL){
                     if(bounds.display_width>0)
                         bounds.display_width-=parent.style.padding.left+parent.style.padding.right
@@ -730,7 +749,7 @@ package com.forms{
                     if(bounds.display_width>0)
                         bounds.display_width-=parent.style.padding.right+parent.style.padding.left
                 }
-            }
+            }*/
         }
 
         protected function redraw(percentOffsetW:int=-1,percentOffsetH:int=-1,parentValues:Object=null):void{
@@ -738,10 +757,16 @@ package com.forms{
             if(destroyed)
                 return;
 
-            if(parent!=null && percentOffsetH>-1 && parent.style.layout.toString()==FormLayout.HORIZONTAL)
-                percentOffsetH=-1;
-            if(parent!=null && percentOffsetW>-1 && parent.style.layout.toString()==FormLayout.VERTICAL)
-                percentOffsetW=-1;
+            if(id=="tst"){
+                trace("123");
+            }
+
+            
+
+            /*if(parent!=null && percentOffsetH>-1 && parent.style.layout.toString()==FormLayout.HORIZONTAL)
+                percentOffsetH=-1;*/
+            /*if(parent!=null && percentOffsetW>-1 && parent.style.layout.toString()==FormLayout.VERTICAL)
+                percentOffsetW=-1;*/
 
             var uv:Object=parentValues;
             if(userValues!=null)
@@ -749,20 +774,28 @@ package com.forms{
 
 
             // Padding correction
-            if(percentOffsetH>-1 && parent.style.padding && parent.style.layout.toString()==FormLayout.VERTICAL)
-                percentOffsetH-=(parent.style.padding.top+parent.style.padding.bottom)
-            if(percentOffsetW>-1 && parent.style.padding && parent.style.layout.toString()==FormLayout.HORIZONTAL)
-                percentOffsetW-=(parent.style.padding.left+parent.style.padding.right)
+            /*if(percentOffsetH>-1 && parent.style.layout.toString()==FormLayout.VERTICAL){
+                if(parent.style.padding!=null){
+                    percentOffsetH+=(parent.style.padding.top+parent.style.padding.bottom)
+                }
+            }
+            if(percentOffsetW>-1 && parent.style.layout.toString()==FormLayout.HORIZONTAL){
+                if(parent.style.padding!=null)
+                    percentOffsetW-=(parent.style.padding.left+parent.style.padding.right)
+            }*/
 
             
             calculateBounds(percentOffsetW,percentOffsetH);
-
             
 
             var percentagesChidldren:Array=[];
             
             // setup layout
             var nextPos:int=style.layout.toString()==FormLayout.VERTICAL?style.padding.top:style.padding.left;
+
+            // border
+            nextPos+=style.layout.toString()==FormLayout.VERTICAL?style.border.top:style.border.left;
+
             var maxSize:int=0;
             var lastSize:int=0;
             var offset:Object;
@@ -843,7 +876,11 @@ package com.forms{
                 
                 if(c.style==null || c.style.position==null || c.style.position!="absolute"){
                     c.view[style.layout.axis]=nextPos; // setup position
-                    c.view[style.layout.oppositeAxis]=style.layout.toString()==FormLayout.VERTICAL?style.padding.left:style.padding.top;
+
+                    var oppositePos:int=style.layout.toString()==FormLayout.VERTICAL?style.padding.left:style.padding.top;
+                    oppositePos+=style.layout.toString()==FormLayout.VERTICAL?style.border.left:style.border.top;
+
+                    c.view[style.layout.oppositeAxis]=oppositePos;
                     setupAlign(c);
                     nextPos+=c.bounds["display_"+style.layout.side]; // inc position
                     if(c.bounds[style.layout.oppositeSide]>maxSize)
@@ -859,6 +896,7 @@ package com.forms{
           
 
             nextPos+=style.layout.toString()==FormLayout.VERTICAL?style.padding.bottom:style.padding.right;
+            nextPos+=style.layout.toString()==FormLayout.VERTICAL?style.border.bottom:style.border.right;
             bounds[style.layout.side]=nextPos;
 
             if(percentagesChidldren.length==0){
@@ -874,10 +912,13 @@ package com.forms{
             // setup wrap content for display size
             if(percentagesChidldren.length==0){
                 if(bounds['display_'+style.layout.oppositeSide]<0){
-                    if(style.layout.toString()==FormLayout.VERTICAL)
+                    if(style.layout.toString()==FormLayout.VERTICAL){
                         maxSize+=style.padding.left+style.padding.right;
-                    else
+                        maxSize+=style.border.left+style.border.right;
+                    }else{
                         maxSize+=style.padding.top+style.padding.bottom;
+                        maxSize+=style.border.top+style.border.bottom;
+                    }
 
                     bounds['display_'+style.layout.oppositeSide]=maxSize;
                     bounds[style.layout.oppositeSide]=maxSize;
@@ -895,6 +936,7 @@ package com.forms{
             
             if(percentagesChidldren.length>0){
                 nextPos=style.layout.toString()==FormLayout.VERTICAL?style.padding.top:style.padding.left;
+                nextPos+=style.layout.toString()==FormLayout.VERTICAL?style.border.top:style.border.left;
                 for each(c in _components){
                     if(c.destroyed)
                         continue;
@@ -902,6 +944,10 @@ package com.forms{
                         if(pC.child==c){
                             var poffsetW:int=pC.width ==true && bounds.display_width !=bounds.width? bounds.width: -1;
                             var poffsetH:int=pC.height==true && bounds.display_height!=bounds.height?bounds.height:-1;
+                            if(style.layout.toString()==FormLayout.HORIZONTAL)
+                                poffsetH=-1;
+                            else
+                                poffsetW=-1;
                             c.redraw(poffsetW,poffsetH,uv);
                             break;
                         }
@@ -909,7 +955,10 @@ package com.forms{
                     
                     if(c.style==null || c.style.position==null || c.style.position!="absolute"){
                         c.view[style.layout.axis]=nextPos; // setup position
-                        c.view[style.layout.oppositeAxis]=style.layout.toString()==FormLayout.VERTICAL?style.padding.left:style.padding.top;
+                        
+                        oppositePos=style.layout.toString()==FormLayout.VERTICAL?style.padding.left:style.padding.top;
+                        oppositePos+=style.layout.toString()==FormLayout.VERTICAL?style.border.left:style.border.top;
+                        c.view[style.layout.oppositeAxis]=oppositePos;
                         setupAlign(c);
                         nextPos+=c.bounds["display_"+style.layout.side]; // inc position
                         if(c.bounds[style.layout.oppositeSide]>maxSize)
@@ -922,6 +971,7 @@ package com.forms{
                 }
             
                 nextPos+=style.layout.toString()==FormLayout.VERTICAL?style.padding.bottom:style.padding.right;
+                nextPos+=style.layout.toString()==FormLayout.VERTICAL?style.border.bottom:style.border.right;
                 bounds[style.layout.side]=nextPos;
                 if(bounds[style.layout.side]<bounds['display_'+style.layout.side])
                     bounds[style.layout.side]=bounds["display_"+style.layout.side]

@@ -1,24 +1,24 @@
-<body formSize="416" margin="40 10 30 10" padding="0 10 0 10" fontSize="15">
+<body formSize="416" fontSize="15" padding="10">
+
     <space size="100"/>
 
-    <div layout="horizontal" height="100%">
+    <div layout="horizontal" height="100%" padding="10" border="20" backgroundColor="#EEFFCC" id="tst">
 
-        <div width="50%">
-            <button id="tst">BTN4</button>
+        <div width="50%" height="100%" >
+            <button>BTN4</button>
             <input id="buyerKey" prompt="Type buyer key"/>
             <button id="buyerCreateOffer">CREATE OFFER</button>
             <button>BTN3</button>
-            
-            ILYA PRIVET
             <button id="buyerGetDeals">GET DEALSs</button>
         </div>
+
         <space size="10"/>
-        <div width="50%">
+
+        <div width="50%" height="100%">
             SELLER
             <input id="sellerKey" prompt="Type seller key" value="123"/>
-            
+            <div height="100%" backgroundColor="#11FF00">qwdqd</div>
         </div>
     </div>
-
     <space size="40"/>
 </body>
