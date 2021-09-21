@@ -137,6 +137,7 @@ package com.dukascopy.connect.sys.questionsManager {
 		];
 		
 		
+		
 		static public var answersDialogOpened:Boolean;
 		
 		static private var senderUID:Number;

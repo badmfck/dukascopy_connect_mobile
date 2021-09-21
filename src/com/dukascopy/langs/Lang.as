@@ -2551,6 +2551,8 @@ package com.dukascopy.langs {
 		static public var crypto_terms:String = "The use of the deposit function is possible only upon accepting the <font color='#CD3F43'>Crypto Terms & conditions</font>";
 		static public var escrow_tap_deal_form:String = "Tap to see deal form";
 		static public var tapToUpenForm:String = "Tap to open deal form";
+		static public var escrow_deals:String = "Deals";
+		static public var escrow_offers:String = "Offers";
 		
 		static public function updateKeys(keys:Object):void {
 			for (var n:String in keys) {
@@ -2601,4 +2603,4 @@ package com.dukascopy.langs {
 			return Lang["month_" + val];
 		}
 	}
-}
+}

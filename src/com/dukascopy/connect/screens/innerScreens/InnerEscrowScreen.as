@@ -4,6 +4,7 @@ package com.dukascopy.connect.screens.innerScreens {
 	import com.dukascopy.connect.GD;
 	import com.dukascopy.connect.MobileGui;
 	import com.dukascopy.connect.data.LabelItem;
+	import com.dukascopy.connect.data.escrow.filter.EscrowFilter;
 	import com.dukascopy.connect.gui.components.StatusClip;
 	import com.dukascopy.connect.gui.components.message.ToastMessage;
 	import com.dukascopy.connect.gui.lightbox.UI;
@@ -21,6 +22,8 @@ package com.dukascopy.connect.screens.innerScreens {
 	import com.dukascopy.connect.screens.base.BaseScreen;
 	import com.dukascopy.connect.screens.base.ScreenManager;
 	import com.dukascopy.connect.screens.dialogs.ScreenLinksDialog;
+	import com.dukascopy.connect.screens.escrow.FiltersPanel;
+	import com.dukascopy.connect.screens.payments.card.TypeCurrency;
 	import com.dukascopy.connect.sys.auth.Auth;
 	import com.dukascopy.connect.sys.chatManager.ChatManager;
 	import com.dukascopy.connect.sys.chatManager.typesManagers.AnswersManager;
@@ -71,6 +74,9 @@ package com.dukascopy.connect.screens.innerScreens {
 		private var statusClip:StatusClip;
 		private var placeholder:Bitmap;
 		private var preloader:HorizontalPreloader;
+		private var instrument:String;
+		private var filtersPanel:FiltersPanel;
+		private var currentFilters:Vector.<EscrowFilter>;
 		
 		public function InnerEscrowScreen() { }
 		
@@ -87,15 +93,19 @@ package com.dukascopy.connect.screens.innerScreens {
 			/*tabs.add(Lang.textAll, QuestionsManager.TAB_OTHER, true, "l");
 			tabs.add(Lang.textMine, QuestionsManager.TAB_MINE);
 			tabs.add(Lang.questionsResolved, QuestionsManager.TAB_RESOLVED,false,"r");*/
-
+			
+			filtersPanel = new FiltersPanel();
+			_view.addChild(filtersPanel);
+			
 			createTabs();
 			_view.addChild(tabs.view);
 			
 			if (storedTabListPositionCreated == false) {
 				storedTabListPositionCreated = true;
 				storedTabListPosition[QuestionsManager.TAB_OTHER] = {};
+				storedTabListPosition[QuestionsManager.TAB_OFFERS] = {};
 				storedTabListPosition[QuestionsManager.TAB_MINE] = {};
-				storedTabListPosition[QuestionsManager.TAB_RESOLVED] = {};
+				storedTabListPosition[QuestionsManager.TAB_DEALS] = {};
 			}
 			
 			preloader = new HorizontalPreloader(Style.color(Style.COLOR_ICON_LIGHT));
@@ -105,7 +115,8 @@ package com.dukascopy.connect.screens.innerScreens {
 		private function createTabs():void{
 			tabs.add(Lang.ads, QuestionsManager.TAB_OTHER, true, "l");
 			tabs.add(Lang.textMine, QuestionsManager.TAB_MINE);
-			tabs.add(Lang.history, QuestionsManager.TAB_RESOLVED, false, "r");
+			tabs.add(Lang.escrow_offers, QuestionsManager.TAB_OFFERS);
+			tabs.add(Lang.escrow_deals, QuestionsManager.TAB_DEALS, false, "r");
 		}
 		
 		override public function clearView():void {
@@ -144,6 +155,13 @@ package com.dukascopy.connect.screens.innerScreens {
 			
 			var destY:int;
 			
+			if (currentFilters != null && currentFilters.length > 0)
+			{
+				filtersPanel.y = destY;
+				filtersPanel.draw(currentFilters);
+				destY += filtersPanel.getHeight();
+			}
+			
 			if (tabs != null) {
 				tabs.setWidthAndHeight(_width, Config.TOP_BAR_HEIGHT);
 				tabs.view.y = destY;
@@ -160,10 +178,21 @@ package com.dukascopy.connect.screens.innerScreens {
 		
 		override public function initScreen(data:Object = null):void {
 			super.initScreen(data);
-			_params.title = '911 Screen';
 			_params.doDisposeAfterClose = true;
 			
 			QuestionsManager.setInOut(true);
+			
+			
+			if (data != null && "instrument" in data && data.instrument != null)
+			{
+				instrument = data.instrument;
+			}
+			else
+			{
+				instrument = TypeCurrency.DCO;
+			}
+			
+			
 			
 			preloader.setSize(_width, int(Config.FINGER_SIZE * .07));
 			
@@ -437,6 +466,8 @@ package com.dukascopy.connect.screens.innerScreens {
 		private function onAnswersLoaded():void {
 			if (_isDisposed == true)
 				return;
+			
+			//!TODO:;
 			if (selectedFilter != QuestionsManager.TAB_RESOLVED)
 				return;
 			setListData();
@@ -648,7 +679,12 @@ package com.dukascopy.connect.screens.innerScreens {
 					listData = QuestionsManager.getNotResolved();
 					showPreloader();
 				}
-				else if (id == QuestionsManager.TAB_MINE)
+				else if (id == QuestionsManager.TAB_OFFERS)
+				{
+					listData = QuestionsManager.getMine();
+					showPreloader();
+				}
+				else if (id == QuestionsManager.TAB_DEALS)
 				{
 					listData = QuestionsManager.getMine();
 					showPreloader();
@@ -671,7 +707,8 @@ package com.dukascopy.connect.screens.innerScreens {
 							list.setBoxY(storedTabListPosition[id].listBoxY);
 			list.setContextAvaliable(true);
 			
-			if (hideLoader == true && id != QuestionsManager.TAB_RESOLVED && (listData == null || listData.length == 0))
+			//!TODO:;
+			if (hideLoader == true && id != QuestionsManager.TAB_OFFERS && (listData == null || listData.length == 0))
 			{
 				addPlaceholder(Lang.escrow_no_active_ads_placeholder);
 			}
