@@ -479,10 +479,10 @@ package com.dukascopy.connect.sys.questionsManager {
 			questionsGetting = true;
 			S_QUESTIONS_START_LOADING.invoke();
 			
-			var filtersData:Array;
+			var filtersData:Object;
 			if (filters != null && filters.length > 0)
 			{
-				filtersData = new Array();
+				filtersData = new Object();
 				for (var i:int = 0; i < filters.length; i++) 
 				{
 					filtersData[filters[i].field] = filters[i].value;
