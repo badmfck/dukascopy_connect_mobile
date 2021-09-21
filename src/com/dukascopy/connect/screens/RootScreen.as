@@ -594,7 +594,7 @@ package com.dukascopy.connect.screens {
 		
 		private function onBottomTabsClick(tabId:String, back:Boolean = false, time:Number = 0.3):void {
 			echo("RootScreen", "onBottomTabsClick", tabId);
-			if (bottomTabs.busy)
+			if (bottomTabs != null && bottomTabs.busy)
 				return;
 			var tabIndex:int = getTabIndexById(tabId);
 			if (tabIndex == -1)
