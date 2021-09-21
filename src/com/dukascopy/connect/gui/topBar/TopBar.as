@@ -181,7 +181,7 @@ package com.dukascopy.connect.gui.topBar {
 				
 			if (backButton != null)
 			{
-				titleTextMaxWidth -= backButton.width + Config.FINGER_SIZE * .5;
+			//	titleTextMaxWidth -= backButton.width + Config.FINGER_SIZE * .5;
 			}
 			if(titleBitmap && titleBitmap.width == titleTextMaxWidth && !titleChanged)
 				return;
