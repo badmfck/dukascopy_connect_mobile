@@ -2818,6 +2818,11 @@ package com.dukascopy.connect.gui.lightbox {
 					return SWFInvestmentUSDT;
 					break;
 				}
+				case "USDT":
+				{
+					return SWFInvestmentUSDT;
+					break;
+				}
 			}
 			return null;
 		}

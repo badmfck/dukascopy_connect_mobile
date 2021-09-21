@@ -103,23 +103,10 @@ package com.dukascopy.connect.gui.list.renderers {
 			drawAmount(li.data);
 			
 			newMessages.visible = false;
-			var newCount:Boolean = true;
-			if (QuestionsManager.escrowStatOld != null) {
-				for (var i:int = 0; i < QuestionsManager.escrowStatOld.length; i++) {
-					if (QuestionsManager.escrowStatOld[i].instrument == data.instrument &&
-						QuestionsManager.escrowStatOld[i].maxId == data.maxId) {
-							newCount = false;
-							break;
-					}
-				}
-			}
-			if (newCount != 0) {
+			var newCount:Boolean = QuestionsManager.escrowStat == null || data.instrument in QuestionsManager.escrowStat == false || QuestionsManager.escrowStat[data.instrument] != data.maxId;
+			if (newCount) {
 				newMessages.x = w - NEW_COUNT_SIZE - Config.DOUBLE_MARGIN;
 				newMessages.visible = true;
-				/*if (newCount > 100)
-					tfNewMessagesCnt.text = "+99";
-				else
-					tfNewMessagesCnt.text = "+" + newCount + "";*/
 				tfNewMessagesCnt.text = "!";
 			}
 			return this;
