@@ -3,6 +3,7 @@ package com.dukascopy.connect.gui.list.renderers {
 	import com.dukascopy.connect.Config;
 	import com.dukascopy.connect.gui.lightbox.UI;
 	import com.dukascopy.connect.gui.list.ListItem;
+	import com.dukascopy.connect.sys.questionsManager.QuestionsManager;
 	import com.dukascopy.connect.sys.style.FontSize;
 	import com.dukascopy.connect.sys.style.Style;
 	import com.dukascopy.connect.type.MainColors;
@@ -102,16 +103,25 @@ package com.dukascopy.connect.gui.list.renderers {
 			drawAmount(li.data);
 			
 			newMessages.visible = false;
-			var newCount:int = int(Math.random() * 100);
+			var newCount:Boolean = true;
+			if (QuestionsManager.escrowStatOld != null) {
+				for (var i:int = 0; i < QuestionsManager.escrowStatOld.length; i++) {
+					if (QuestionsManager.escrowStatOld[i].instrument == data.instrument &&
+						QuestionsManager.escrowStatOld[i].maxId == data.maxId) {
+							newCount = false;
+							break;
+					}
+				}
+			}
 			if (newCount != 0) {
 				newMessages.x = w - NEW_COUNT_SIZE - Config.DOUBLE_MARGIN;
 				newMessages.visible = true;
-				if (newCount > 100)
+				/*if (newCount > 100)
 					tfNewMessagesCnt.text = "+99";
 				else
-					tfNewMessagesCnt.text = "+" + newCount + "";
+					tfNewMessagesCnt.text = "+" + newCount + "";*/
+				tfNewMessagesCnt.text = "!";
 			}
-			
 			return this;
 		}
 		

@@ -190,6 +190,9 @@ package com.dukascopy.connect.sys.questionsManager {
 		
 		static public var fakeTender:QuestionVO;
 		
+		static public var escrowStat:Array;
+		static public var escrowStatOld:Array;
+		
 		public function QuestionsManager() { }
 		
 		public static function init():void {
@@ -226,7 +229,10 @@ package com.dukascopy.connect.sys.questionsManager {
 		static private function onRatesReceived(phpRespond:PHPRespond):void {
 			if (phpRespond.error == true)
 				return;
-			GD.S_ESCROW_STAT.invoke(phpRespond.data);
+			if (escrowStat != null)
+				escrowStatOld = escrowStat;
+			escrowStat = phpRespond.data as Array;
+			GD.S_ESCROW_STAT.invoke(escrowStat);
 		}
 		
 		static private function onDealCreated(dealData:EscrowMessageData):void {
