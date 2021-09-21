@@ -327,11 +327,48 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			{
 				currencySign = data.currency as String;
 			}
+			selectCurrencyFromPrices();
 			
 			super.initScreen(data);
 			
 		//	updateScroll();
 		//	recreateLayout();
+		}
+		
+		private function selectCurrencyFromPrices():void 
+		{
+			if (selectedCrypto != null && selectedCrypto.price != null)
+			{
+				var preferredCurrency:String = TypeCurrency.USD;
+				var exist:Boolean;
+				for (var i:int = 0; i < selectedCrypto.price.length; i++) 
+				{
+					if (selectedCrypto.price[i].name == preferredCurrency)
+					{
+						exist = true;
+						break;
+					}
+				}
+				if (exist)
+				{
+					currencySign = preferredCurrency;
+				}
+				else
+				{
+					if (selectedCrypto.price.length > 0)
+					{
+						currencySign = selectedCrypto.price[0].name;
+					}
+					else
+					{
+						ApplicationErrors.add();
+					}
+				}
+			}
+			else
+			{
+				ApplicationErrors.add("selectedCrypto null");
+			}
 		}
 		
 		override protected function drawContent():void 
