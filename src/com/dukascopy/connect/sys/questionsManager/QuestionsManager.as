@@ -11,20 +11,17 @@ package com.dukascopy.connect.sys.questionsManager {
 	import com.dukascopy.connect.data.escrow.EscrowSettings;
 	import com.dukascopy.connect.data.escrow.TradeDirection;
 	import com.dukascopy.connect.data.screenAction.customActions.TestCreateOfferAction;
-	import com.dukascopy.connect.data.screenAction.customActions.TestCreateOfferAction;
 	import com.dukascopy.connect.gui.components.message.ToastMessage;
+	import com.dukascopy.connect.managers.escrow.vo.EscrowFilterVO;
 	import com.dukascopy.connect.managers.escrow.vo.EscrowInstrument;
 	import com.dukascopy.connect.screens.QuestionCreateUpdateScreen;
 	import com.dukascopy.connect.screens.dialogs.escrow.EscrowRulesPopup;
 	import com.dukascopy.connect.screens.dialogs.geolocation.CityGeoposition;
 	import com.dukascopy.connect.screens.dialogs.newDialogs.ExpiredQuestionPopup;
-	import com.dukascopy.connect.screens.dialogs.x.base.float.FloatAlert;
 	import com.dukascopy.connect.sys.Gifts;
 	import com.dukascopy.connect.sys.applicationError.ApplicationErrors;
 	import com.dukascopy.connect.sys.applicationShop.Shop;
-	import com.dukascopy.connect.sys.applicationShop.serverTask.AskPrivateQuestionWithTipsServerTask;
 	import com.dukascopy.connect.sys.auth.Auth;
-	import com.dukascopy.connect.sys.categories.CategoryManager;
 	import com.dukascopy.connect.sys.chatManager.ChatManager;
 	import com.dukascopy.connect.sys.chatManager.typesManagers.AnswersManager;
 	import com.dukascopy.connect.sys.chatManager.typesManagers.ChannelsManager;
@@ -39,7 +36,6 @@ package com.dukascopy.connect.sys.questionsManager {
 	import com.dukascopy.connect.sys.photoGaleryManager.PhotoGaleryManager;
 	import com.dukascopy.connect.sys.php.PHP;
 	import com.dukascopy.connect.sys.php.PHPRespond;
-	import com.dukascopy.connect.sys.promocodes.ReferralProgram;
 	import com.dukascopy.connect.sys.serviceScreenManager.ServiceScreenManager;
 	import com.dukascopy.connect.sys.store.Store;
 	import com.dukascopy.connect.sys.style.Style;
@@ -53,20 +49,16 @@ package com.dukascopy.connect.sys.questionsManager {
 	import com.dukascopy.connect.type.InvoiceStatus;
 	import com.dukascopy.connect.type.UserBlockStatusType;
 	import com.dukascopy.connect.utils.NumberFormat;
-	import com.dukascopy.connect.utils.TextUtils;
-	import com.dukascopy.connect.vo.ChatSystemMsgVO;
 	import com.dukascopy.connect.vo.ChatVO;
 	import com.dukascopy.connect.vo.QuestionVO;
 	import com.dukascopy.connect.vo.chat.ChatMessageInvoiceData;
 	import com.dukascopy.connect.vo.screen.ChatScreenData;
 	import com.dukascopy.connect.vo.users.adds.ChatUserVO;
 	import com.dukascopy.langs.Lang;
-	import com.dukascopy.langs.LangManager;
 	import com.greensock.TweenMax;
 	import com.telefision.sys.signals.Signal;
 	import flash.net.URLRequest;
 	import flash.net.navigateToURL;
-	import mx.utils.StringUtil;
 	
 	/**
 	 * ...
@@ -87,6 +79,8 @@ package com.dukascopy.connect.sys.questionsManager {
 		static public const TAB_RESOLVED:String = "resolved";
 		static public const TAB_JAIL:String = "tabJail";
 		static public const TAB_FLOWERS:String = "tabFlowers";
+		static public const TAB_OFFERS:String = "tabOffers";
+		static public const TAB_DEALS:String = "tabDeals";
 		
 		static public const STATUS_REJECTED:String = "rejected";
 		static public const STATUS_ACCEPTED:String = "accepted";
@@ -212,21 +206,19 @@ package com.dukascopy.connect.sys.questionsManager {
 			VideoUploader.S_FILE_UPLOADED_FINISH.add(sendVideoMessageFinish);
 			VideoUploader.S_FILE_UPLOADED_PROGRESS.add(sendVideoMessageProgress);
 			
+			GD.S_ESCROW_FILTER.add(onFilterAdded);
+			
 			GD.S_ESCROW_DEAL_CREATED.add(onDealCreated);
 			
 			initPayingUIDS();
 		}
 		
+		static private function onFilterAdded(escrowFilterVO:EscrowFilterVO):void {
+			getQuestions(escrowFilterVO);
+		}
+		
 		static private function onDealCreated(dealData:EscrowMessageData):void {
-			/*dealData.chatUID;
-			if (dealData.mca_user_uid == Auth.uid) {
-				// ты покупаешь крипту;
-			} else if (dealData.crypto_user_uid == Auth.uid) {
-				// ты продаёшь крипту;
-			}*/
 			
-			
-			//acceptQuestionAnswer(ChatManager.getChatByUID(dealData.chatUID));
 		}
 		
 		static private function onImageUploadReady(success:Boolean, ibd:ImageBitmapData, title:String):void {
@@ -235,7 +227,7 @@ package com.dukascopy.connect.sys.questionsManager {
 			}
 			if (success && ibd != null) {
 				if (ibd.width >  Config.MAX_UPLOAD_IMAGE_SIZE || ibd.height > Config.MAX_UPLOAD_IMAGE_SIZE)
-				ibd = ImageManager.resize(ibd, Config.MAX_UPLOAD_IMAGE_SIZE, Config.MAX_UPLOAD_IMAGE_SIZE, ImageManager.SCALE_INNER_PROP);
+					ibd = ImageManager.resize(ibd, Config.MAX_UPLOAD_IMAGE_SIZE, Config.MAX_UPLOAD_IMAGE_SIZE, ImageManager.SCALE_INNER_PROP);
 				ImageUploader.uploadChatImage(ibd, "que", title, MESSAGE_KEY);
 			}
 		}
@@ -470,7 +462,7 @@ package com.dukascopy.connect.sys.questionsManager {
 				getQuestions();
 		}
 		
-		static private function getQuestions():void {
+		static private function getQuestions(escrowFilterVO:EscrowFilterVO = null):void {
 			init();
 			TweenMax.killDelayedCallsTo(getQuestions);
 			if (!WS.connected) {
@@ -482,14 +474,12 @@ package com.dukascopy.connect.sys.questionsManager {
 			needToRefresh = false;
 			questionsGetting = true;
 			S_QUESTIONS_START_LOADING.invoke();
-			//trace("getQuestions");
 			PHP.question_get(onQuestionsLoaded, questionsHash, null, null, (questionsHash == null) ? 10 : 50);
 		}
 		
 		static public function getQuestionByUID(quid:String, needServerCall:Boolean = true):QuestionVO {
 			if (questions == null) {
 				if (needServerCall == true) {
-					//trace("getQuestionByUID -> QUESTIONS IS NULL AND NEED SERVER CALL");
 					getQuestion(quid);
 				}
 				return null;

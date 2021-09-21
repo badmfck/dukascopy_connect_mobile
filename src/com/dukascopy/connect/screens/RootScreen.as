@@ -21,9 +21,11 @@ package com.dukascopy.connect.screens {
 	import com.dukascopy.connect.gui.topBar.TopBar;
 	import com.dukascopy.connect.screens.base.BaseScreen;
 	import com.dukascopy.connect.screens.base.ScreenManager;
+	import com.dukascopy.connect.screens.escrow.EscrowMainScreen;
 	import com.dukascopy.connect.screens.innerScreens.InnerCallsScreen;
 	import com.dukascopy.connect.screens.innerScreens.InnerChatScreen;
 	import com.dukascopy.connect.screens.innerScreens.InnerContactScreen;
+	import com.dukascopy.connect.screens.innerScreens.InnerEscrowInstrumentScreen;
 	import com.dukascopy.connect.screens.innerScreens.InnerEscrowScreen;
 	import com.dukascopy.connect.screens.innerScreens.InnerQuestionsScreen;
 	import com.dukascopy.connect.screens.promoEvent.PromoEventsScreen;
@@ -65,7 +67,7 @@ package com.dukascopy.connect.screens {
 		private static var questionTabObject:Object = {
 			id: QUESTIONS_SCREEN_ID,
 			title: Lang.escrow_title,
-			screenClass: InnerEscrowScreen,
+			screenClass: InnerEscrowInstrumentScreen,
 			hasSearchBar: false
 		};
 		
@@ -622,7 +624,7 @@ package com.dukascopy.connect.screens {
 			
 			innerScreenManager.show(screenClass, screenData, dir, time);
 			
-			if (screenClass == InnerEscrowScreen) {
+			if (screenClass == InnerEscrowInstrumentScreen) {
 				bottomTabs.busy = false;
 				bottomTabs.selectTap(null);
 			}
