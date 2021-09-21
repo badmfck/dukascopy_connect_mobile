@@ -76,7 +76,7 @@ package com.dukascopy.connect.screens.innerScreens {
 		private var statusClip:StatusClip;
 		private var placeholder:Bitmap;
 		private var preloader:HorizontalPreloader;
-		private var instrument:EscrowInstrument;
+		private var instrument:String;
 		private var filtersPanel:FiltersPanel;
 		private var currentFilters:Vector.<EscrowFilter>;
 		
@@ -185,9 +185,9 @@ package com.dukascopy.connect.screens.innerScreens {
 			QuestionsManager.setInOut(true);
 			
 			
-			if (data != null && "additionalData" in data && data.additionalData != null && data.additionalData is EscrowInstrument)
+			if (data != null && "additionalData" in data && data.additionalData != null && data.additionalData is String)
 			{
-				instrument = data.additionalData as EscrowInstrument;
+				instrument = data.additionalData as String;
 			}
 			else
 			{
@@ -725,7 +725,7 @@ package com.dukascopy.connect.screens.innerScreens {
 			if (instrument != null)
 			{
 				result = new Vector.<EscrowFilter>();
-				result.push(new EscrowFilter(EscrowFilterType.INSTRUMENT, instrument.code));
+				result.push(new EscrowFilter(EscrowFilterType.INSTRUMENT, instrument));
 			}
 			
 			return result;

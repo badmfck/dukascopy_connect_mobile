@@ -165,7 +165,7 @@ package com.dukascopy.connect.screens {
 		private var firstTime:Boolean;
 		private var BLINK_CHECK_INTERVAL:int = 60 * 4;// sec
 		private var refreshLotteryDataAction:com.dukascopy.connect.data.screenAction.customActions.RefreshLotteryDataAction;
-		private var selectedinstrument:EscrowInstrument;
+		private var selectedinstrument:String;
 	//	private var actionPromoEvents:com.dukascopy.connect.data.screenAction.customActions.OpenPromoEventsInfoAction;
 		
 		/**
@@ -330,14 +330,22 @@ package com.dukascopy.connect.screens {
 			GD.S_ESCROW_INSTRUMENT_Q_SELECTED.add(onIstrumentSelected);
 		}
 		
-		private function onIstrumentSelected(instrument:EscrowInstrument = null):void 
+		private function onIstrumentSelected(instrument:Object = null):void 
 		{
-			selectedinstrument = instrument;
+			if (instrument != null)
+			{
+				selectedinstrument = instrument.instrument;
+			}
+			else
+			{
+				selectedinstrument = null;
+			}
+			
 			if (selectedinstrument != null)
 			{
 				if (instrumentTabObject != null)
 				{
-					instrumentTabObject.title = instrument.name;
+					instrumentTabObject.title = instrument.instrument;
 				}
 				else
 				{
