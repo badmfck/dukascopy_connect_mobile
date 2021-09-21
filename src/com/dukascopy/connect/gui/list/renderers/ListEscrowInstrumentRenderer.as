@@ -6,6 +6,7 @@ package com.dukascopy.connect.gui.list.renderers {
 	import com.dukascopy.connect.sys.style.FontSize;
 	import com.dukascopy.connect.sys.style.Style;
 	import com.dukascopy.connect.type.MainColors;
+	import com.dukascopy.langs.Lang;
 	import flash.display.Bitmap;
 	import flash.display.IBitmapDrawable;
 	import flash.display.Sprite;
@@ -115,10 +116,13 @@ package com.dukascopy.connect.gui.list.renderers {
 		}
 		
 		private function drawName(data:Object):void {
-			var code:String = data.code;
+			var code:String = data.instrument;
 			if (code == "DCO")
 				code = "DUK+";
-			var text:String = String(data.name + " (" + code + ")").toUpperCase();
+			var name:String = "";
+			if (data.instrument in Lang.cryptoTitles == true)
+				name = Lang.cryptoTitles[data.instrument];
+			var text:String = String(name + " (" + code + ")").toUpperCase();
 			if (text != null) {
 				tfLabel.text = text;
 			} else {
@@ -138,8 +142,8 @@ package com.dukascopy.connect.gui.list.renderers {
 			var captionSize:Number = FontSize.SUBHEAD;
 			var color:String = "#" + Style.color(Style.COLOR_TEXT).toString(16);
 			
-			result = "<font color='" + color + "' size='" + TEXT_SIZE_DESC + "'>ADS: </font><font color='#CD3F43' size='" + TEXT_SIZE_DESC_VALS + "'>751</font>";
-			result += "<font color='" + color + "' size='" + TEXT_SIZE_DESC + "'>, COINS: </font><font color='#CD3F43' size='" + TEXT_SIZE_DESC_VALS + "'>124 123</font>";
+			result = "<font color='" + color + "' size='" + TEXT_SIZE_DESC + "'>ADS: </font><font color='#CD3F43' size='" + TEXT_SIZE_DESC_VALS + "'>" + data.cnt + "</font>";
+			result += "<font color='" + color + "' size='" + TEXT_SIZE_DESC + "'>, COINS: </font><font color='#CD3F43' size='" + TEXT_SIZE_DESC_VALS + "'>" + Number(data.volume) + "</font>";
 			return result;
 		}
 		
@@ -153,7 +157,7 @@ package com.dukascopy.connect.gui.list.renderers {
 		}
 		
 		private function drawIcon(data:Object):void {
-			var iconClass:Class = UI.getCryptoIconClass(data.code);
+			var iconClass:Class = UI.getCryptoIconClass(data.instrument);
 			if (iconClass != null) {
 				if (icon.bitmapData != null) {
 					icon.bitmapData.dispose();

@@ -219,6 +219,16 @@ package com.dukascopy.connect.sys.questionsManager {
 			getQuestions(escrowFilterVO);
 		}*/
 		
+		static public function getEscrowStats():void {
+			PHP.escrow_getStat(onRatesReceived);
+		}
+		
+		static private function onRatesReceived(phpRespond:PHPRespond):void {
+			if (phpRespond.error == true)
+				return;
+			GD.S_ESCROW_STAT.invoke(phpRespond.data);
+		}
+		
 		static private function onDealCreated(dealData:EscrowMessageData):void {
 			
 		}
@@ -892,7 +902,6 @@ package com.dukascopy.connect.sys.questionsManager {
 			questionsFiltered.sort(questionsSort);
 			if (categoriesFilter == null || categoriesFilter.length == 0 || categoriesFilter[0] != Config.CAT_DATING)
 				showFirstTips();
-		//	questionsFiltered.unshift(emptyQM);
 			return questionsFiltered;
 		}
 		

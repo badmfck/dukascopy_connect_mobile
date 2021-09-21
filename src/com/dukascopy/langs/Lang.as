@@ -1322,6 +1322,14 @@ package com.dukascopy.langs {
 			"LTC": "Litecoin"
 		};
 		
+		static public var cryptoTitles:Object = {
+			"BTC": "Bitcoin",
+			"ETH": "Ethereum",
+			"LTC": "Litecoin",
+			"USDT": "Tether",
+			"DCO": "Dukascoin"
+		};
+		
 		static public var investmentsCurrency:Object = {
 			"coins": "coins",
 			"contracts": "contracts",

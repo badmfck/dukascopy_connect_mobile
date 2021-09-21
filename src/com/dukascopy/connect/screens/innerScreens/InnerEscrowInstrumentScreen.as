@@ -72,7 +72,7 @@ package com.dukascopy.connect.screens.innerScreens {
 		private var statusClip:StatusClip;
 		private var placeholder:Bitmap;
 		private var preloader:HorizontalPreloader;
-		private var escrowInstruments:Vector.<EscrowInstrument>;
+		private var escrowInstruments:Array;
 		
 		public function InnerEscrowInstrumentScreen() { }
 		
@@ -171,17 +171,19 @@ package com.dukascopy.connect.screens.innerScreens {
 				selectedFilter = QuestionsManager.TAB_OTHER; 
 			tabs.setSelection(selectedFilter);
 			
-			GD.S_ESCROW_INSTRUMENTS.add(onInstrumentsLoaded);
+			GD.S_ESCROW_STAT.add(onInstrumentsLoaded);
 			GD.S_ESCROW_INSTRUMENTS_REQUEST.invoke();
+			
+			QuestionsManager.getEscrowStats();
 		}
 		
-		private function onInstrumentsLoaded(instruments:Vector.<EscrowInstrument>):void {
+		private function onInstrumentsLoaded(stat:Array):void {
 			if (_isDisposed)
 				return;
 			if (selectedFilter != QuestionsManager.TAB_OTHER)
 				return;
 			hidePreloader();
-			escrowInstruments = instruments;
+			escrowInstruments = stat;
 			setListData(QuestionsManager.TAB_OTHER);
 			selectedFilter = QuestionsManager.TAB_OTHER;
 		}
