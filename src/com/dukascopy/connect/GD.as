@@ -46,6 +46,9 @@ package com.dukascopy.connect {
 		static public const S_ESCROW_INSTRUMENTS:S_EscrowInstruments=new S_EscrowInstruments();
 		static public const S_ESCROW_PRICE:S_EscrowPrice=new S_EscrowPrice();
 		static public const S_ESCROW_PRICES_REQUEST:S_EscrowPricesRequest = new S_EscrowPricesRequest();
+		
+		static public const S_ESCROW_FILTER:Signal = new Signal("GD.S_ESCROW_FILTER");
+		static public const S_ESCROW_INSTRUMENT_Q_SELECTED:Signal = new Signal("GD.S_ESCROW_INSTRUMENT_Q_SELECTED");
 
 		static public const S_IOS_LOCALIZATION_UPDATE:Signal=new Signal("S_IOS_LOCALIZATION_UPDATE");
 		

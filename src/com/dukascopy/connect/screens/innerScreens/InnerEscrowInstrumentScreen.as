@@ -178,9 +178,12 @@ package com.dukascopy.connect.screens.innerScreens {
 		private function onInstrumentsLoaded(instruments:Vector.<EscrowInstrument>):void {
 			if (_isDisposed)
 				return;
+			if (selectedFilter != QuestionsManager.TAB_OTHER)
+				return;
 			hidePreloader();
 			escrowInstruments = instruments;
 			setListData(QuestionsManager.TAB_OTHER);
+			selectedFilter = QuestionsManager.TAB_OTHER;
 		}
 		
 		public function onHide():void {
@@ -205,6 +208,7 @@ package com.dukascopy.connect.screens.innerScreens {
 				tabs.activate();
 			}
 			
+			QuestionsManager.S_QUESTIONS.add(updateData);
 			AnswersManager.S_ANSWERS.add(onAnswersLoaded);
 			
 			setListData("");
@@ -244,6 +248,7 @@ package com.dukascopy.connect.screens.innerScreens {
 				tabs.deactivate();
 			}
 			
+			QuestionsManager.S_QUESTIONS.remove(updateData);
 			AnswersManager.S_ANSWERS.remove(onAnswersLoaded);
 		}
 		
@@ -359,8 +364,8 @@ package com.dukascopy.connect.screens.innerScreens {
 					(data as LabelItem).action.execute();
 				}
 				return;
-			} else if (data is QuestionVO) {
-				
+			} else if ("code" in data) {
+				GD.S_ESCROW_INSTRUMENT_Q_SELECTED.invoke(data);
 			}
 		}
 		
@@ -433,25 +438,15 @@ package com.dukascopy.connect.screens.innerScreens {
 			var listItemClass:Class = ListEscrowInstrumentRenderer;
 			var listData:*;
 			var hideLoader:Boolean = true;
-			if (id == QuestionsManager.TAB_RESOLVED) {
-				listData = AnswersManager.getAllAnswers();
-				listItemClass = ListConversation;
-			} else {
-				if (id == QuestionsManager.TAB_OTHER)
-				{
-					listData = escrowInstruments;
-				}
-				else if (id == QuestionsManager.TAB_MINE)
-				{
-					listItemClass = ListEscrowRenderer;
-					listData = QuestionsManager.getMine();
-					showPreloader();
-				}
-				if (listData == null)
-				{
-					hideLoader = false;
-					listData = [];
-				}
+			if (id == QuestionsManager.TAB_OTHER) {
+				listData = escrowInstruments;
+			} else if (id == QuestionsManager.TAB_MINE) {
+				listItemClass = ListEscrowRenderer;
+				listData = QuestionsManager.getMine();
+				showPreloader();
+			} if (listData == null) {
+				hideLoader = false;
+				listData = [];
 			}
 			if (hideLoader)
 			{
