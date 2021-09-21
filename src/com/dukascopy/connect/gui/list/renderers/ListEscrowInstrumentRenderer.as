@@ -19,19 +19,21 @@ package com.dukascopy.connect.gui.list.renderers {
 	
 	public class ListEscrowInstrumentRenderer extends BaseRenderer implements IListRenderer{
 		
+		private static const TEXT_SIZE_LABEL:int = Config.FINGER_SIZE * .3;
+		private static const TEXT_SIZE_DESC:int = Config.FINGER_SIZE * .2;
+		private static const TEXT_SIZE_DESC_VALS:int = Config.FINGER_SIZE * .17;
+		
 		protected var walletName:TextField;
 		private var amount:TextField;
 		protected var padding:int = Config.FINGER_SIZE * .2;
-		protected var itemHeight:int = Config.FINGER_SIZE;
-		protected var ICON_SIZE:int = Config.FINGER_SIZE * .5;
-		protected var format:TextFormat=new TextFormat(Config.defaultFontName, FontSize.BODY, Style.color(Style.COLOR_TEXT));
+		protected var itemHeight:int;
+		protected var ICON_SIZE:int = Config.FINGER_SIZE * .7;
+		protected var format:TextFormat = new TextFormat(Config.defaultFontName, FontSize.BODY, Style.color(Style.COLOR_TEXT));
 		private var icon:Bitmap;
 		
 		public function ListEscrowInstrumentRenderer() {
 			
-			icon = new Bitmap();
-			
-			format.size = FontSize.SUBHEAD;
+			format.size = TEXT_SIZE_LABEL;
 			walletName = new TextField();
 			walletName.autoSize = TextFieldAutoSize.LEFT;
 			walletName.defaultTextFormat = format;
@@ -40,9 +42,9 @@ package com.dukascopy.connect.gui.list.renderers {
 			walletName.wordWrap = false;
 			walletName.x = ICON_SIZE + padding * 2;
 			walletName.textColor = Style.color(Style.COLOR_TEXT);
-			walletName.y = Math.round((itemHeight - walletName.textHeight) * .5);
+			walletName.y = Config.DOUBLE_MARGIN;
 			
-			format.size = FontSize.TITLE_2;
+			format.size = TEXT_SIZE_DESC;
 			format.bold = false;
 			amount = new TextField();
 			amount.autoSize = TextFieldAutoSize.LEFT;
@@ -50,8 +52,15 @@ package com.dukascopy.connect.gui.list.renderers {
 			amount.text = "Pp";
 			amount.multiline = false;
 			amount.wordWrap = false;
-			amount.y = Math.round((itemHeight - amount.textHeight) * .5);
-			amount.textColor = Style.color(Style.COLOR_TEXT)
+			amount.x = walletName.x;
+			amount.y = walletName.y + walletName.height;
+			amount.textColor = Style.color(Style.COLOR_TEXT);
+			
+			itemHeight = amount.y + amount.height + Config.DOUBLE_MARGIN;
+			
+			icon = new Bitmap();
+			icon.x = Config.DOUBLE_MARGIN;
+			icon.y = int((itemHeight - ICON_SIZE) * .5);
 			
 			addChild(icon);
 			addChild(amount);
@@ -71,23 +80,19 @@ package com.dukascopy.connect.gui.list.renderers {
 			drawName(li.data);
 			drawAmount(li.data);
 			
-			position(w);
-			
 			return this;
 		}
 		
 		private function drawName(data:Object):void {
-			var text:String = data.name;
+			var code:String = data.code;
+			if (code == "DCO")
+				code = "DUK+";
+			var text:String = String(data.name + " (" + code + ")").toUpperCase();
 			if (text != null) {
 				walletName.text = text;
 			} else {
 				walletName.text = "";
 			}
-		}
-		
-		private function position(w:int):void {
-			amount.x = int(amount.width - Config.FINGER_SIZE * .2);
-			walletName.y = Math.round(itemHeight * .5 - walletName.height - Config.FINGER_SIZE * .02);
 		}
 		
 		private function drawAmount(data:Object):void {
@@ -102,8 +107,8 @@ package com.dukascopy.connect.gui.list.renderers {
 			var captionSize:Number = FontSize.SUBHEAD;
 			var color:String = "#" + Style.color(Style.COLOR_TEXT).toString(16);
 			
-			result = "<font color='" + color + "' size='" + baseSize + "'>ADS:</font><font color='" + color + "' size='" + captionSize + "'>751</font>";
-			result += "<font color='" + color + "' size='" + baseSize + "'>, COINS:</font><font color='" + color + "' size='" + captionSize + "'>124 123</font>";
+			result = "<font color='" + color + "' size='" + TEXT_SIZE_DESC + "'>ADS: </font><font color='#CD3F43' size='" + TEXT_SIZE_DESC_VALS + "'>751</font>";
+			result += "<font color='" + color + "' size='" + TEXT_SIZE_DESC + "'>, COINS: </font><font color='#CD3F43' size='" + TEXT_SIZE_DESC_VALS + "'>124 123</font>";
 			return result;
 		}
 		

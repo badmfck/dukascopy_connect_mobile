@@ -2446,7 +2446,7 @@ package com.dukascopy.langs {
 		static public var escrow_report_4:String = "The amount of the transaction is wrong";
 		static public var escrow_report_5:String = "The transaction is correct, but is taking too long to be accepted by the blockchain and the Buyer anticipates that he/she will not be able to confirm crypto acceptance within the 24 hours limit, as required by the rules";
 		static public var escrow_report_6:String = "Other";
-		static public var escrow_text_instruments:String = "Instruments";
+		static public var escrow_text_instruments:String = "Crypto";
 		static public var escrow_text_offers:String = "Offers";
 		static public var escrow_text_deals:String = "Deals";
 		static public var please_select_reason:String = "todo";
@@ -2603,4 +2603,4 @@ package com.dukascopy.langs {
 			return Lang["month_" + val];
 		}
 	}
-}
+}
