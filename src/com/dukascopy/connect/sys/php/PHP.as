@@ -548,8 +548,14 @@ package com.dukascopy.connect.sys.php {
 			call("call.viewed", callBack, { } );
 		}
 		
-		static public function question_get(callBack:Function, hash:String = null, quid:String = null, categories:String = null, limit:int = 50):void {
-			call("question.get", callBack, { hash:hash, qUID:quid, categories:categories, ver:6, limit:limit }, null, false, "POST", true, false, { quid:quid, limit:limit } );
+		static public function question_get(callBack:Function, hash:String = null, quid:String = null, categories:String = null, limit:int = 50, filters:Array = null):void {
+			
+			var request:Object = { hash:hash, qUID:quid, categories:categories, ver:6, limit:limit };
+			if (filters != null)
+			{
+				request.filters = filters;
+			}
+			call("question.get", callBack, request, null, false, "POST", true, false, { quid:quid, limit:limit } );
 		}
 		
 		static public function question_getOne(callBack:Function, quid:String = null):void {

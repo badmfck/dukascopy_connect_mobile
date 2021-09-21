@@ -6,10 +6,13 @@ package com.dukascopy.connect.data.escrow.filter
 	 */
 	public class EscrowFilter 
 	{
+		public var field:String;
+		public var value:String;
 		
-		public function EscrowFilter() 
+		public function EscrowFilter(field:String, value:String) 
 		{
-			
+			this.field = field;
+			this.value = value;
 		}
 	}
 }

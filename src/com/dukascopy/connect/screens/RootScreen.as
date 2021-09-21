@@ -687,6 +687,10 @@ package com.dukascopy.connect.screens {
 			{
 				data.additionalData = null;
 			}
+			if (currentTabID == ESCROW_INSTRUMENT_SCREEN_ID)
+			{
+				screenData.additionalData = selectedinstrument;
+			}
 			
 			innerScreenManager.show(screenClass, screenData, dir, time);
 			

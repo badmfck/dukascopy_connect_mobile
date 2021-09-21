@@ -5,6 +5,7 @@ package com.dukascopy.connect.screens.innerScreens {
 	import com.dukascopy.connect.MobileGui;
 	import com.dukascopy.connect.data.LabelItem;
 	import com.dukascopy.connect.data.escrow.filter.EscrowFilter;
+	import com.dukascopy.connect.data.escrow.filter.EscrowFilterType;
 	import com.dukascopy.connect.gui.components.StatusClip;
 	import com.dukascopy.connect.gui.components.message.ToastMessage;
 	import com.dukascopy.connect.gui.lightbox.UI;
@@ -24,6 +25,7 @@ package com.dukascopy.connect.screens.innerScreens {
 	import com.dukascopy.connect.screens.dialogs.ScreenLinksDialog;
 	import com.dukascopy.connect.screens.escrow.FiltersPanel;
 	import com.dukascopy.connect.screens.payments.card.TypeCurrency;
+	import com.dukascopy.connect.sys.applicationError.ApplicationErrors;
 	import com.dukascopy.connect.sys.auth.Auth;
 	import com.dukascopy.connect.sys.chatManager.ChatManager;
 	import com.dukascopy.connect.sys.chatManager.typesManagers.AnswersManager;
@@ -74,7 +76,7 @@ package com.dukascopy.connect.screens.innerScreens {
 		private var statusClip:StatusClip;
 		private var placeholder:Bitmap;
 		private var preloader:HorizontalPreloader;
-		private var instrument:String;
+		private var instrument:EscrowInstrument;
 		private var filtersPanel:FiltersPanel;
 		private var currentFilters:Vector.<EscrowFilter>;
 		
@@ -183,16 +185,14 @@ package com.dukascopy.connect.screens.innerScreens {
 			QuestionsManager.setInOut(true);
 			
 			
-			if (data != null && "instrument" in data && data.instrument != null)
+			if (data != null && "additionalData" in data && data.additionalData != null && data.additionalData is EscrowInstrument)
 			{
-				instrument = data.instrument;
+				instrument = data.additionalData as EscrowInstrument;
 			}
 			else
 			{
-				instrument = TypeCurrency.DCO;
+				ApplicationErrors.add();
 			}
-			
-			
 			
 			preloader.setSize(_width, int(Config.FINGER_SIZE * .07));
 			
@@ -676,7 +676,7 @@ package com.dukascopy.connect.screens.innerScreens {
 			} else {
 				if (id == QuestionsManager.TAB_OTHER)
 				{
-					listData = QuestionsManager.getNotResolved();
+					listData = QuestionsManager.getNotResolved(getFilters());
 					showPreloader();
 				}
 				else if (id == QuestionsManager.TAB_OFFERS)
@@ -716,6 +716,19 @@ package com.dukascopy.connect.screens.innerScreens {
 			{
 				removePlaceholder();
 			}
+		}
+		
+		private function getFilters():Vector.<EscrowFilter> 
+		{
+			var result:Vector.<EscrowFilter>;
+			
+			if (instrument != null)
+			{
+				result = new Vector.<EscrowFilter>();
+				result.push(new EscrowFilter(EscrowFilterType.INSTRUMENT, instrument.code));
+			}
+			
+			return result;
 		}
 		
 		private function removePlaceholder():void 
