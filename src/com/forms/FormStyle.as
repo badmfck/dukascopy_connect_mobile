@@ -309,17 +309,20 @@ package com.forms
         private function setupFormBorderColor():void{
             var val:String=values['borderColor'];
             if(val==null){
-                borderColor=new FormBorderColor(-1,-1,-1,-1,false);
+                borderColor=new FormBorderColor(null,null,null,null);
                 return;
             }
             var tmp:Array=val.split(" ");
             if(tmp.length==4){
-                borderColor=new FormBorderColor(parseInt(tmp[0]),parseInt(tmp[1]),parseInt(tmp[2]),parseInt(tmp[3]))
+                borderColor=new FormBorderColor(tmp[0],tmp[1],tmp[2],tmp[3])
                 return;
             }else{
-                var p:int=parseInt(val);
-                borderColor=new FormBorderColor(p,p,p,p);
+             
+                borderColor=new FormBorderColor(val,val,val,val);
             }
+
+             
+
         }
 
         private function setupFormBorder():void{

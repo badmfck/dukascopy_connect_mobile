@@ -24,6 +24,7 @@ package com.forms{
     import flash.display.FocusDirection;
     import flash.filters.DropShadowFilter;
     import flash.text.FontStyle;
+    import flash.display.Shape;
 
     public class FormComponent{
 
@@ -41,6 +42,7 @@ package com.forms{
         public function get name():String{return _name}
         protected var _view:DisplayObject;
         protected var box:Sprite;
+        protected var border:Shape;
         private var bitmapView:Bitmap;
         private var bitmapViewData:BitmapData;
         public function get view():DisplayObject{return bitmapView?bitmapView:_view;}
@@ -60,6 +62,8 @@ package com.forms{
         private var localIDs:Object=null;
         private var documentLoaded:Boolean=false;
         private static var nextTempID:int=0;
+        private var predefinedStyle:Object;
+        private var originalXML:XMLNode;
 
         // variables
         protected var userValues:Object=null;
@@ -128,6 +132,11 @@ package com.forms{
             
             _view=new Sprite();
             box=new Sprite();
+            border=new Shape();
+            
+
+            this.predefinedStyle=predefinedStyle;
+            
             
             this.form=form;
             if(xml is XML){
@@ -461,12 +470,17 @@ package com.forms{
         }
 
         protected function createView(xml:XMLNode):void{
-
+            originalXML=xml;
             if(_components.length>0){
                 for each(var cc:FormComponent in _components)
                     cc.destroy();
                 _components=new Vector.<FormComponent>();
             }
+
+            if(box.parent==null)
+                (_view as DisplayObjectContainer).addChild(box);
+            if(border.parent==null)
+                (_view as DisplayObjectContainer).addChild(border);
 
             if(!enableChilds){
                 callDocumentLoaded();
@@ -582,9 +596,7 @@ package com.forms{
                 _add(component,index,true);
         }
         private function _add(component:FormComponent,index:int,doRebuild:Boolean):void{
-            if(box.parent==null){
-                (_view as DisplayObjectContainer).addChild(box);
-            }
+            
             var found:Boolean=false;
             var l:int=_components.length;
             for(var i:int=0;i<l;i++){
@@ -730,9 +742,6 @@ package com.forms{
                     bounds.display_width-=parent.style.padding.left+parent.style.padding.right
                     bounds.display_width-=parent.style.border.left+parent.style.border.right
                 }
-
-
-
             }
 
 
@@ -1169,6 +1178,98 @@ package com.forms{
                     style.borderRadius.left,
                     style.borderRadius.bottom
                 );
+                
+                spr.graphics.endFill();
+
+                if(style.border.isSet && style.borderColor.isSet){
+                    border.graphics.clear();
+                    border.graphics.beginFill(style.borderColor.top);
+                    border.graphics.drawRoundRectComplex(
+                        0,
+                        0,
+                        bounds.display_width,
+                        bounds.display_height,
+                        style.borderRadius.top,
+                        style.borderRadius.right,
+                        style.borderRadius.left,
+                        style.borderRadius.bottom
+                    );
+
+                    border.graphics.drawRoundRectComplex(
+                        style.border.top,
+                        style.border.left,
+                        bounds.display_width-style.border.left-style.border.right,
+                        bounds.display_height-style.border.top-style.border.bottom,
+                        style.borderRadius.top,
+                        style.borderRadius.right,
+                        style.borderRadius.left,
+                        style.borderRadius.bottom
+                    );
+
+                    /*var values:Array=[
+                        {
+                            color:style.borderColor.top,
+                            radius:style.borderRadius.top,
+                            size:style.border.top,
+                            side:"top",
+                            startJoin:style.border.left>0,
+                            endJoin:style.border.right>0,
+                            crds:[
+                                [0,0],
+                                [bounds.display_width,0],
+                                [bounds.display_width-style.border.right,style.border.top],
+                                [style.border.left,style.border.top]
+                            ]
+                        },
+                        {
+                            color:style.borderColor.right,
+                            radius:style.borderRadius.right,
+                            size:style.border.right,
+                            side:"right",
+                            startJoin:style.border.top>0,
+                            endJoin:style.border.bottom>0
+                        },
+                        {
+                            color:style.borderColor.bottom,
+                            radius:style.borderRadius.bottom,
+                            size:style.border.bottom,
+                            side:"bottom",
+                            startJoin:style.border.right>0,
+                            endJoin:style.border.left>0
+                        },
+                        {
+                            color:style.borderColor.left,
+                            radius:style.borderRadius.left,
+                            size:style.border.left,
+                            side:"left",
+                            startJoin:style.border.top>0,
+                            endJoin:style.border.bottom>0
+                        }
+                    ];
+
+                    var l:int=values.length;
+                    
+                    for(var i:int=0;i<l;i++){
+                        var b:Object=values[i];
+                        var crds:Array=b.crds;
+                        if(crds==null)
+                            return;
+                        border.graphics.beginFill(b.color,1);
+                        border.graphics.lineStyle(1);
+                        for (var j:int=0;j<crds.length;j++){
+                            if(j==0){
+                                border.graphics.moveTo(crds[0],crds[1]);
+                            }else{
+                                border.graphics.lineTo(crds[0],crds[1]);
+                            }
+                        }
+                        border.graphics.endFill();
+                    }
+                    */
+
+                  
+                }
+
                 needRedraw=false;
             }
 
@@ -1334,6 +1435,15 @@ package com.forms{
             }
 
             return s_name;
+        }
+
+        public function clone():FormComponent{
+            if(!originalXML){
+                trace("WARN: component not ready yet to clone");
+                return null;
+            }
+            var dolly:FormComponent=new FormComponent(originalXML,form,predefinedStyle);
+            return dolly;
         }
 
         public function destroy():void{

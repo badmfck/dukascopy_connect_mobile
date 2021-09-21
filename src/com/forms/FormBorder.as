@@ -14,5 +14,8 @@ package com.forms
         public function toString():String{
             return "FormBorder: top:"+top+", right:"+right+", "+", bottom:"+bottom+", left:"+left;
         }
+        public function get isSet():Boolean{
+            return top!=0 || left!=0 || bottom!=0 || right!=0
+        }
     }
 }
