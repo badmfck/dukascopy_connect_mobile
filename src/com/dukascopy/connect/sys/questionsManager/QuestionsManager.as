@@ -190,8 +190,7 @@ package com.dukascopy.connect.sys.questionsManager {
 		
 		static public var fakeTender:QuestionVO;
 		
-		static public var escrowStat:Array;
-		static public var escrowStatOld:Array;
+		static public var escrowStat:Object = {};
 		
 		public function QuestionsManager() { }
 		
@@ -218,21 +217,64 @@ package com.dukascopy.connect.sys.questionsManager {
 			initPayingUIDS();
 		}
 		
+		static private function saveMaxID(stat:Object):void {
+			escrowStat[stat.instrument] = stat.maxId;
+			Store.save("escrowMaxID", escrowStat);
+		}
+		
 		/*static private function onFilterAdded(escrowFilterVO:EscrowFilterVO):void {
 			getQuestions(escrowFilterVO);
 		}*/
 		
+		static private var maxIDWasLoaded:Boolean = false;
+		
 		static public function getEscrowStats():void {
+			GD.S_ESCROW_INSTRUMENT_Q_SELECTED.add(saveMaxID);
+			
+			if (maxIDWasLoaded == false) {
+				maxIDWasLoaded = true;
+				Store.load("escrowMaxID", onMaxIdLoaded);
+				return;
+			}
+			PHP.escrow_getStat(onRatesReceived);
+		}
+		
+		static private function onMaxIdLoaded(data:Object, err:Boolean):void {
+			if (err == false)
+				escrowStat = data;
 			PHP.escrow_getStat(onRatesReceived);
 		}
 		
 		static private function onRatesReceived(phpRespond:PHPRespond):void {
 			if (phpRespond.error == true)
 				return;
-			if (escrowStat != null)
-				escrowStatOld = escrowStat;
-			escrowStat = phpRespond.data as Array;
-			GD.S_ESCROW_STAT.invoke(escrowStat);
+			
+			var test:Array = [
+				{
+					"instrument": "BTC",
+					"mca_ccy": "All",
+					"side": "Both",
+					"maxId": "1819",
+					"cnt": "1",
+					"volume": "0.0000111100"
+				}, {
+					"instrument": "ETH",
+					"mca_ccy": "All",
+					"side": "Both",
+					"maxId": "1837",
+					"cnt": "2",
+					"volume": "29.0000000000"
+				}, {
+					"instrument": "USDT",
+					"mca_ccy": "All",
+					"side": "Both",
+					"maxId": "1848",
+					"cnt": "2",
+					"volume": "101.0000000000"
+				}
+			];
+			
+			GD.S_ESCROW_STAT.invoke(test);
 		}
 		
 		static private function onDealCreated(dealData:EscrowMessageData):void {
