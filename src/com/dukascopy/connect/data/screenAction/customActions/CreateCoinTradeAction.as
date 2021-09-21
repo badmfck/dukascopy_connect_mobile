@@ -327,7 +327,7 @@ package com.dukascopy.connect.data.screenAction.customActions {
 			onFail();
 		}
 		
-		private function onOfferCreateSuccess():void 
+		private function onOfferCreateSuccess(offerData:Object = null):void 
 		{
 			showCreateSuccessPopup(pendingOfferData);
 			onSuccuss();

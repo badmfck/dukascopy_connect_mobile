@@ -548,8 +548,14 @@ package com.dukascopy.connect.sys.php {
 			call("call.viewed", callBack, { } );
 		}
 		
-		static public function question_get(callBack:Function, hash:String = null, quid:String = null, categories:String = null, limit:int = 50):void {
-			call("question.get", callBack, { hash:hash, qUID:quid, categories:categories, ver:6, limit:limit }, null, false, "POST", true, false, { quid:quid, limit:limit } );
+		static public function question_get(callBack:Function, hash:String = null, quid:String = null, categories:String = null, limit:int = 50, filters:Object = null):void {
+			
+			var request:Object = { hash:hash, qUID:quid, categories:categories, ver:6, limit:limit };
+			if (filters != null)
+			{
+				request.filters = filters;
+			}
+			call("question.get", callBack, request, null, false, "POST", true, false, { quid:quid, limit:limit } );
 		}
 		
 		static public function question_getOne(callBack:Function, quid:String = null):void {
@@ -1229,6 +1235,10 @@ package com.dukascopy.connect.sys.php {
 			call('Cp2p.claim', callBack, data);
 		}
 		
+		static public function escrow_getStat(callBack:Function = null):void {
+			call('Cp2p.Stat.Get', callBack);
+		}
+		
 		static public function p2p_getInstruments(callBack:Function = null, data:Object = null):void 
 		{
 			call('Cp2p.getInstruments', callBack, data);
@@ -1242,6 +1252,11 @@ package com.dukascopy.connect.sys.php {
 		static public function escrow_addEvent(callBack:Function = null, data:Object = null, additionalData:Object = null):void 
 		{
 			call('Cp2p.addEvent', callBack, data, null, false, "POST", true, false, additionalData);
+		}
+		
+		static public function escrow_requestPrice(callBack:Function = null, data:Object = null, additionalData:Object = null):void 
+		{
+			call('Cp2p.ReservePriceID', callBack, data, null, false, "POST", true, false, additionalData);
 		}
 		
 		static private function call(method:String, callBack:Function = null, data:Object = null,  url:String = null, rawRespond:Boolean = false, requestMethod:String = 'POST', crypt:Boolean = true, noAuthKey:Boolean = false, additionalData:Object = null):void {

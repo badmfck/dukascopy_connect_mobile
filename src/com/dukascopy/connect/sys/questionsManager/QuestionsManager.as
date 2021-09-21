@@ -10,7 +10,7 @@ package com.dukascopy.connect.sys.questionsManager {
 	import com.dukascopy.connect.data.escrow.EscrowMessageData;
 	import com.dukascopy.connect.data.escrow.EscrowSettings;
 	import com.dukascopy.connect.data.escrow.TradeDirection;
-	import com.dukascopy.connect.data.screenAction.customActions.TestCreateOfferAction;
+	import com.dukascopy.connect.data.escrow.filter.EscrowFilter;
 	import com.dukascopy.connect.data.screenAction.customActions.TestCreateOfferAction;
 	import com.dukascopy.connect.gui.components.message.ToastMessage;
 	import com.dukascopy.connect.managers.escrow.vo.EscrowInstrument;
@@ -18,13 +18,10 @@ package com.dukascopy.connect.sys.questionsManager {
 	import com.dukascopy.connect.screens.dialogs.escrow.EscrowRulesPopup;
 	import com.dukascopy.connect.screens.dialogs.geolocation.CityGeoposition;
 	import com.dukascopy.connect.screens.dialogs.newDialogs.ExpiredQuestionPopup;
-	import com.dukascopy.connect.screens.dialogs.x.base.float.FloatAlert;
 	import com.dukascopy.connect.sys.Gifts;
 	import com.dukascopy.connect.sys.applicationError.ApplicationErrors;
 	import com.dukascopy.connect.sys.applicationShop.Shop;
-	import com.dukascopy.connect.sys.applicationShop.serverTask.AskPrivateQuestionWithTipsServerTask;
 	import com.dukascopy.connect.sys.auth.Auth;
-	import com.dukascopy.connect.sys.categories.CategoryManager;
 	import com.dukascopy.connect.sys.chatManager.ChatManager;
 	import com.dukascopy.connect.sys.chatManager.typesManagers.AnswersManager;
 	import com.dukascopy.connect.sys.chatManager.typesManagers.ChannelsManager;
@@ -39,7 +36,6 @@ package com.dukascopy.connect.sys.questionsManager {
 	import com.dukascopy.connect.sys.photoGaleryManager.PhotoGaleryManager;
 	import com.dukascopy.connect.sys.php.PHP;
 	import com.dukascopy.connect.sys.php.PHPRespond;
-	import com.dukascopy.connect.sys.promocodes.ReferralProgram;
 	import com.dukascopy.connect.sys.serviceScreenManager.ServiceScreenManager;
 	import com.dukascopy.connect.sys.store.Store;
 	import com.dukascopy.connect.sys.style.Style;
@@ -53,20 +49,16 @@ package com.dukascopy.connect.sys.questionsManager {
 	import com.dukascopy.connect.type.InvoiceStatus;
 	import com.dukascopy.connect.type.UserBlockStatusType;
 	import com.dukascopy.connect.utils.NumberFormat;
-	import com.dukascopy.connect.utils.TextUtils;
-	import com.dukascopy.connect.vo.ChatSystemMsgVO;
 	import com.dukascopy.connect.vo.ChatVO;
 	import com.dukascopy.connect.vo.QuestionVO;
 	import com.dukascopy.connect.vo.chat.ChatMessageInvoiceData;
 	import com.dukascopy.connect.vo.screen.ChatScreenData;
 	import com.dukascopy.connect.vo.users.adds.ChatUserVO;
 	import com.dukascopy.langs.Lang;
-	import com.dukascopy.langs.LangManager;
 	import com.greensock.TweenMax;
 	import com.telefision.sys.signals.Signal;
 	import flash.net.URLRequest;
 	import flash.net.navigateToURL;
-	import mx.utils.StringUtil;
 	
 	/**
 	 * ...
@@ -87,6 +79,8 @@ package com.dukascopy.connect.sys.questionsManager {
 		static public const TAB_RESOLVED:String = "resolved";
 		static public const TAB_JAIL:String = "tabJail";
 		static public const TAB_FLOWERS:String = "tabFlowers";
+		static public const TAB_OFFERS:String = "tabOffers";
+		static public const TAB_DEALS:String = "tabDeals";
 		
 		static public const STATUS_REJECTED:String = "rejected";
 		static public const STATUS_ACCEPTED:String = "accepted";
@@ -143,6 +137,7 @@ package com.dukascopy.connect.sys.questionsManager {
 		];
 		
 		
+		
 		static public var answersDialogOpened:Boolean;
 		
 		static private var senderUID:Number;
@@ -191,8 +186,11 @@ package com.dukascopy.connect.sys.questionsManager {
 		
 		static private var getQuestionsTS:Number;
 		static private var wallet:String;
+		static private var lastFilters:Vector.<EscrowFilter>;
 		
 		static public var fakeTender:QuestionVO;
+		
+		static public var escrowStat:Object = {};
 		
 		public function QuestionsManager() { }
 		
@@ -212,21 +210,75 @@ package com.dukascopy.connect.sys.questionsManager {
 			VideoUploader.S_FILE_UPLOADED_FINISH.add(sendVideoMessageFinish);
 			VideoUploader.S_FILE_UPLOADED_PROGRESS.add(sendVideoMessageProgress);
 			
+		//	GD.S_ESCROW_FILTER.add(onFilterAdded);
+			
 			GD.S_ESCROW_DEAL_CREATED.add(onDealCreated);
 			
 			initPayingUIDS();
 		}
 		
+		static private function saveMaxID(stat:Object):void {
+			escrowStat[stat.instrument] = stat.maxId;
+			Store.save("escrowMaxID", escrowStat);
+		}
+		
+		/*static private function onFilterAdded(escrowFilterVO:EscrowFilterVO):void {
+			getQuestions(escrowFilterVO);
+		}*/
+		
+		static private var maxIDWasLoaded:Boolean = false;
+		
+		static public function getEscrowStats():void {
+			GD.S_ESCROW_INSTRUMENT_Q_SELECTED.add(saveMaxID);
+			
+			if (maxIDWasLoaded == false) {
+				maxIDWasLoaded = true;
+				Store.load("escrowMaxID", onMaxIdLoaded);
+				return;
+			}
+			PHP.escrow_getStat(onRatesReceived);
+		}
+		
+		static private function onMaxIdLoaded(data:Object, err:Boolean):void {
+			if (err == false)
+				escrowStat = data;
+			PHP.escrow_getStat(onRatesReceived);
+		}
+		
+		static private function onRatesReceived(phpRespond:PHPRespond):void {
+			if (phpRespond.error == true)
+				return;
+			
+			var test:Array = [
+				{
+					"instrument": "BTC",
+					"mca_ccy": "All",
+					"side": "Both",
+					"maxId": "1819",
+					"cnt": "1",
+					"volume": "0.0000111100"
+				}, {
+					"instrument": "ETH",
+					"mca_ccy": "All",
+					"side": "Both",
+					"maxId": "1837",
+					"cnt": "2",
+					"volume": "29.0000000000"
+				}, {
+					"instrument": "USDT",
+					"mca_ccy": "All",
+					"side": "Both",
+					"maxId": "1848",
+					"cnt": "2",
+					"volume": "101.0000000000"
+				}
+			];
+			
+			GD.S_ESCROW_STAT.invoke(test);
+		}
+		
 		static private function onDealCreated(dealData:EscrowMessageData):void {
-			/*dealData.chatUID;
-			if (dealData.mca_user_uid == Auth.uid) {
-				// ты покупаешь крипту;
-			} else if (dealData.crypto_user_uid == Auth.uid) {
-				// ты продаёшь крипту;
-			}*/
 			
-			
-			//acceptQuestionAnswer(ChatManager.getChatByUID(dealData.chatUID));
 		}
 		
 		static private function onImageUploadReady(success:Boolean, ibd:ImageBitmapData, title:String):void {
@@ -235,7 +287,7 @@ package com.dukascopy.connect.sys.questionsManager {
 			}
 			if (success && ibd != null) {
 				if (ibd.width >  Config.MAX_UPLOAD_IMAGE_SIZE || ibd.height > Config.MAX_UPLOAD_IMAGE_SIZE)
-				ibd = ImageManager.resize(ibd, Config.MAX_UPLOAD_IMAGE_SIZE, Config.MAX_UPLOAD_IMAGE_SIZE, ImageManager.SCALE_INNER_PROP);
+					ibd = ImageManager.resize(ibd, Config.MAX_UPLOAD_IMAGE_SIZE, Config.MAX_UPLOAD_IMAGE_SIZE, ImageManager.SCALE_INNER_PROP);
 				ImageUploader.uploadChatImage(ibd, "que", title, MESSAGE_KEY);
 			}
 		}
@@ -467,10 +519,12 @@ package com.dukascopy.connect.sys.questionsManager {
 				return;
 			}
 			if (flagInOut == true)
-				getQuestions();
+				getQuestions(lastFilters);
 		}
 		
-		static private function getQuestions():void {
+		static private function getQuestions(filters:Vector.<EscrowFilter> = null):void {
+			//!TODO:;
+			lastFilters = filters;
 			init();
 			TweenMax.killDelayedCallsTo(getQuestions);
 			if (!WS.connected) {
@@ -482,14 +536,23 @@ package com.dukascopy.connect.sys.questionsManager {
 			needToRefresh = false;
 			questionsGetting = true;
 			S_QUESTIONS_START_LOADING.invoke();
-			//trace("getQuestions");
-			PHP.question_get(onQuestionsLoaded, questionsHash, null, null, (questionsHash == null) ? 10 : 50);
+			
+			var filtersData:Object;
+			if (filters != null && filters.length > 0)
+			{
+				filtersData = new Object();
+				for (var i:int = 0; i < filters.length; i++) 
+				{
+					filtersData[filters[i].field] = filters[i].value;
+				}
+			}
+			
+			PHP.question_get(onQuestionsLoaded, questionsHash, null, null, (questionsHash == null) ? 10 : 50, filtersData);
 		}
 		
 		static public function getQuestionByUID(quid:String, needServerCall:Boolean = true):QuestionVO {
 			if (questions == null) {
 				if (needServerCall == true) {
-					//trace("getQuestionByUID -> QUESTIONS IS NULL AND NEED SERVER CALL");
 					getQuestion(quid);
 				}
 				return null;
@@ -671,7 +734,7 @@ package com.dukascopy.connect.sys.questionsManager {
 			if (phpRespond.additionalData.limit == 10) {
 				questionsHash = "";
 				needProlong = false;
-				getQuestions();
+				getQuestions(lastFilters);
 			} else {
 				questionsHash = phpRespond.data.hash;
 			}
@@ -873,13 +936,13 @@ package com.dukascopy.connect.sys.questionsManager {
 			return false;
 		}
 		
-		static public function getNotResolved():Array/*QuestionVO*/ {
+		static public function getNotResolved(filters:Vector.<EscrowFilter> = null):Array/*QuestionVO*/ {
 			if (questionsHash == null) {
-				getQuestions();
+				getQuestions(filters);
 				return null;
 			}
 			if (needToRefresh == true)
-				getQuestions();
+				getQuestions(filters);
 			if (categoriesFilter == null || categoriesFilter.length == 0)
 				addArray(questionsOther, questionsMine, true);
 			else
@@ -887,7 +950,30 @@ package com.dukascopy.connect.sys.questionsManager {
 			questionsFiltered.sort(questionsSort);
 			if (categoriesFilter == null || categoriesFilter.length == 0 || categoriesFilter[0] != Config.CAT_DATING)
 				showFirstTips();
-		//	questionsFiltered.unshift(emptyQM);
+			
+			var temp:Array;
+			if (filters != null && filters.length > 0)
+			{
+				temp = new Array();
+				var question:QuestionVO;
+				//!TODO:;
+				var instrumentFilter:String = filters[0].value;
+				for (var i:int = 0; i < questionsFiltered.length; i++) 
+				{
+					question = questionsFiltered[i];
+					if (question.tipsCurrency == instrumentFilter)
+					{
+						temp.push(question);
+					}
+				}
+			}
+			else
+			{
+				temp = questionsFiltered.concat();
+			}
+			
+			questionsFiltered = temp;
+			
 			return questionsFiltered;
 		}
 		

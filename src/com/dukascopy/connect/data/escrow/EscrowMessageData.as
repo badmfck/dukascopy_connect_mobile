@@ -8,6 +8,7 @@ package com.dukascopy.connect.data.escrow
 	 */
 	public class EscrowMessageData 
 	{
+		private var raw:Object;
 		public var mca_user_uid:String;
 		public var crypto_user_uid:String;
 		public var inactive:Boolean;
@@ -38,6 +39,8 @@ package com.dukascopy.connect.data.escrow
 		
 		private function parse(data:Object):void 
 		{
+			raw = data;
+			
 			if ("crypto_trn_id" in data)
 			{
 				transactionId = data.crypto_trn_id;
@@ -157,6 +160,9 @@ package com.dukascopy.connect.data.escrow
 			result.instrument = instrument;
 			result.price = price;
 			result.chatUID = chatUID;
+			
+			result.priceID = 1;
+			
 			if (debit_account != null)
 			{
 				result.debit_account = debit_account;

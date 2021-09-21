@@ -21,6 +21,8 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 	import com.dukascopy.connect.sys.dialogManager.DialogManager;
 	import com.dukascopy.connect.sys.imageManager.ImageBitmapData;
 	import com.dukascopy.connect.sys.paymentsManagerNew.PaymentsManagerNew;
+	import com.dukascopy.connect.sys.php.PHP;
+	import com.dukascopy.connect.sys.php.PHPRespond;
 	import com.dukascopy.connect.sys.serviceScreenManager.ServiceScreenManager;
 	import com.dukascopy.connect.sys.softKeyboard.SoftKeyboard;
 	import com.dukascopy.connect.sys.style.FontSize;
@@ -323,6 +325,19 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 				onDataReady();
 				recreateLayout();
 			}
+			
+			requestPrice();
+		}
+		
+		private function requestPrice():void 
+		{
+		//	percent_price
+			PHP.escrow_requestPrice(onPriceReady, {ccy:TypeCurrency.EUR, crypto:TypeCurrency.DCO, price:1000, percent_price:5});
+		}
+		
+		private function onPriceReady(respond:PHPRespond):void 
+		{
+			respond.dispose();
 		}
 		
 		private function loadAccounts():void 

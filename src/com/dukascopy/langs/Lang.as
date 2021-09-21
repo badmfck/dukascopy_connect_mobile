@@ -1322,6 +1322,14 @@ package com.dukascopy.langs {
 			"LTC": "Litecoin"
 		};
 		
+		static public var cryptoTitles:Object = {
+			"BTC": "Bitcoin",
+			"ETH": "Ethereum",
+			"LTC": "Litecoin",
+			"USDT": "Tether",
+			"DCO": "Dukascoin"
+		};
+		
 		static public var investmentsCurrency:Object = {
 			"coins": "coins",
 			"contracts": "contracts",
@@ -2446,6 +2454,9 @@ package com.dukascopy.langs {
 		static public var escrow_report_4:String = "The amount of the transaction is wrong";
 		static public var escrow_report_5:String = "The transaction is correct, but is taking too long to be accepted by the blockchain and the Buyer anticipates that he/she will not be able to confirm crypto acceptance within the 24 hours limit, as required by the rules";
 		static public var escrow_report_6:String = "Other";
+		static public var escrow_text_instruments:String = "Crypto";
+		static public var escrow_text_offers:String = "Offers";
+		static public var escrow_text_deals:String = "Deals";
 		static public var please_select_reason:String = "todo";
 		static public var indicate_issue_type:String = "Indicate issue type";
 		static public var escrow_report:String = "REPORT";
@@ -2548,6 +2559,8 @@ package com.dukascopy.langs {
 		static public var crypto_terms:String = "The use of the deposit function is possible only upon accepting the <font color='#CD3F43'>Crypto Terms & conditions</font>";
 		static public var escrow_tap_deal_form:String = "Tap to see deal form";
 		static public var tapToUpenForm:String = "Tap to open deal form";
+		static public var escrow_deals:String = "Deals";
+		static public var escrow_offers:String = "Offers";
 		
 		static public function updateKeys(keys:Object):void {
 			for (var n:String in keys) {

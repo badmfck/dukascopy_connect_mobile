@@ -5,11 +5,13 @@ package com.dukascopy.connect.gui.topBar {
 	import com.dukascopy.connect.gui.button.ActionButton;
 	import com.dukascopy.connect.gui.input.SearchBar;
 	import com.dukascopy.connect.gui.lightbox.UI;
+	import com.dukascopy.connect.gui.menuVideo.BitmapButton;
 	import com.dukascopy.connect.sys.echo.echo;
 	import com.dukascopy.connect.sys.imageManager.ImageBitmapData;
 	import com.dukascopy.connect.sys.mobileClip.MobileClip;
 	import com.dukascopy.connect.sys.style.Style;
 	import com.dukascopy.connect.sys.theme.AppTheme;
+	import com.dukascopy.connect.type.HitZoneType;
 	import com.dukascopy.connect.type.MainColors;
 	import com.dukascopy.connect.utils.TextUtils;
 	import flash.display.Bitmap;
@@ -21,6 +23,7 @@ package com.dukascopy.connect.gui.topBar {
 	import flash.geom.Rectangle;
 	import flash.text.TextFieldAutoSize;
 	import flash.text.TextFormatAlign;
+	import white.Back;
 	
 	/**
 	 * Используется в RootScren
@@ -28,7 +31,6 @@ package com.dukascopy.connect.gui.topBar {
 	 */
 	
 	public class TopBar extends MobileClip {
-		
 		private var _viewWidth:int;
 		private var _viewHeight:int;
 		private var _y:int = 0;
@@ -47,6 +49,8 @@ package com.dukascopy.connect.gui.topBar {
 		private var titleToDraw:String;
 		private var titleChanged:Boolean;
 		private var underline:Sprite;
+		private var backButton:BitmapButton;
+		private var onBackCallback:Function;
 		
 		public function TopBar() {
 			super();
@@ -94,6 +98,11 @@ package com.dukascopy.connect.gui.topBar {
 			_isShown = true;
 		}
 		
+		public function set onBack(value:Function):void
+		{
+			onBackCallback = value;
+		}
+		
 		public function hide(time:Number = 0, delay:Number = 0):void
 		{
 			_isShown = false;
@@ -107,6 +116,10 @@ package com.dukascopy.connect.gui.topBar {
 				SearchBar.UPDATE_STATE.add(onSearchBarUpdate);
 				searchBar.activate();
 			}
+			if (backButton != null)
+			{
+				backButton.activate();
+			}
 		}
 		
 		public function deactivate():void {
@@ -116,6 +129,10 @@ package com.dukascopy.connect.gui.topBar {
 			{
 				SearchBar.UPDATE_STATE.remove(onSearchBarUpdate);
 				searchBar.deactivate();
+			}
+			if (backButton != null)
+			{
+				backButton.deactivate();
 			}
 		}
 		
@@ -161,6 +178,11 @@ package com.dukascopy.connect.gui.topBar {
 				titleTextMaxWidth = actionsBar.x - titleBitmap.x - Config.MARGIN;
 			else
 				titleTextMaxWidth = actionsBar.x - titleBitmap.x - Config.MARGIN;
+				
+			if (backButton != null)
+			{
+				titleTextMaxWidth -= backButton.width + Config.FINGER_SIZE * .5;
+			}
 			if(titleBitmap && titleBitmap.width == titleTextMaxWidth && !titleChanged)
 				return;
 			if (titleBitmap == null)
@@ -239,6 +261,8 @@ package com.dukascopy.connect.gui.topBar {
 		override public function dispose():void {
 			super.dispose();
 			
+			onBackCallback = null;
+			
 			if (bgBMD != null)
 				bgBMD.dispose();
 			bgBMD = null;
@@ -267,6 +291,8 @@ package com.dukascopy.connect.gui.topBar {
 				UI.destroy(underline);
 				underline = null;
 			}
+			
+			removeBackButton();
 			
 			logo = null;
 		}
@@ -329,6 +355,68 @@ package com.dukascopy.connect.gui.topBar {
 		public function updateUnderline(showUnderline:Boolean):void 
 		{
 			underline.visible = showUnderline;
+		}
+		
+		public function addBackButton():void 
+		{
+			if (backButton == null)
+			{
+				backButton = new BitmapButton();
+				backButton.setStandartButtonParams();
+				backButton.tapCallback = onBackClick;
+				backButton.disposeBitmapOnDestroy = true;
+				backButton.setDownScale(1);
+				backButton.setOverlay(HitZoneType.CIRCLE);
+				_view.addChild(backButton);
+				
+				var icon:Sprite = new Back();
+				UI.colorize(icon, Style.color(Style.COLOR_ICON_SETTINGS));
+				UI.scaleToFit(icon, int(Config.FINGER_SIZE * .4), int(Config.FINGER_SIZE * .4));
+				backButton.setBitmapData(UI.getSnapshot(icon), true);
+				backButton.setOverflow(Config.FINGER_SIZE*.3, Config.FINGER_SIZE*.3, Config.FINGER_SIZE*.3, Config.FINGER_SIZE*.3);
+				if (_isActivated)
+				{
+					backButton.activate();
+				}
+				backButton.x = int(Config.DOUBLE_MARGIN);
+				backButton.y = int(_viewHeight * .5 - backButton.height * .5);
+			}
+			updateLayout();
+		}
+		
+		private function onBackClick():void 
+		{
+			if (onBackCallback != null)
+			{
+				onBackCallback();
+			}
+			updateLayout();
+		}
+		
+		private function updateLayout():void 
+		{
+			if (backButton != null)
+			{
+				titleBitmap.x = backButton.x + backButton.width + Config.DOUBLE_MARGIN;
+			}
+			else
+			{
+				titleBitmap.x = Config.DOUBLE_MARGIN;
+			}
+			updateTitle();
+		}
+		
+		public function removeBackButton():void 
+		{
+			if (backButton != null)
+			{
+				if (_view != null && _view.contains(backButton))
+				{
+					_view.removeChild(backButton);
+				}
+				backButton.dispose();
+				backButton = null;
+			}
 		}
 		
 		private function clearActions():void {

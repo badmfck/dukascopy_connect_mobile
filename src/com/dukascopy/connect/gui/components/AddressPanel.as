@@ -11,6 +11,7 @@ package com.dukascopy.connect.gui.components
 	import com.dukascopy.connect.gui.button.DDFieldButton;
 	import com.dukascopy.connect.gui.input.Input;
 	import com.dukascopy.connect.gui.lightbox.UI;
+	import com.dukascopy.connect.gui.list.renderers.ListCountrySimple;
 	import com.dukascopy.connect.gui.list.renderers.ListLink;
 	import com.dukascopy.connect.gui.list.renderers.ListSimpleText;
 	import com.dukascopy.connect.gui.menuVideo.BitmapButton;
@@ -18,9 +19,11 @@ package com.dukascopy.connect.gui.components
 	import com.dukascopy.connect.screens.dialogs.ScreenPayDialog;
 	import com.dukascopy.connect.screens.dialogs.x.base.bottom.ListSelectionPopup;
 	import com.dukascopy.connect.screens.dialogs.paymentDialogs.elements.InputField;
+	import com.dukascopy.connect.screens.dialogs.x.base.bottom.SearchListSelectionPopup;
 	import com.dukascopy.connect.sys.dialogManager.DialogManager;
 	import com.dukascopy.connect.sys.imageManager.ImageBitmapData;
 	import com.dukascopy.connect.sys.payments.PayManager;
+	import com.dukascopy.connect.sys.serviceScreenManager.ServiceScreenManager;
 	import com.dukascopy.connect.sys.style.FontSize;
 	import com.dukascopy.connect.sys.style.Style;
 	import com.dukascopy.connect.sys.style.presets.Color;
@@ -75,6 +78,7 @@ package com.dukascopy.connect.gui.components
 		private var expandedDrawn:Boolean;
 		private var padding:int;
 		private var controlHeight:int;
+		private var lastSelectedCountry:Array;
 		public var addressData:CardDeliveryAddress;
 		public var addressUpdated:Boolean;
 		
@@ -240,7 +244,38 @@ package com.dukascopy.connect.gui.components
 		
 		private function onCountrySelect(e:Event = null):void
 		{
+			var oldDelimiter:String = "";
+			var newDelimiter:String = "";
+			var cData:Array = CountriesData.COUNTRIES;
+			var cDataNew:Array = [];
+			for (var i:int = 0; i < cData.length; i++) {
+				newDelimiter = String(cData[i][0]).substr(0, 1).toUpperCase();
+				if (newDelimiter != oldDelimiter) {
+					oldDelimiter = newDelimiter;
+					cDataNew.push([oldDelimiter.toLowerCase(), oldDelimiter]);
+				}
+				cDataNew.push(cData[i]);
+			}
+			
+			DialogManager.showDialog(
+					SearchListSelectionPopup,
+					{
+						items:cDataNew,
+						title:Lang.selectCountry,
+						renderer:ListCountrySimple,
+						callback:onCountryListSelected
+					}, ServiceScreenManager.TYPE_SCREEN
+				);
+		}
 		
+		private function onCountryListSelected(country:Array):void
+		{
+			if (country.length == 2)
+				return;
+			
+			lastSelectedCountry = country;
+			countrySelector.setValue(country[4]);
+		//	addSaveButtons();
 		}
 		
 		private function onReasonSelect(e:Event = null):void
@@ -370,7 +405,7 @@ package com.dukascopy.connect.gui.components
 			reasonSelector.setSize(itemWidth - padding * 2, controlHeight);
 			
 			countrySelector.setValue(getCountry(getCountryCode()));
-			countrySelector.alpha = 0.5;
+		//	countrySelector.alpha = 0.5;
 			
 			streetTitle.bitmapData = TextUtils.createTextFieldData(Lang.streetAddress, itemWidth - padding * 2, 10, true, TextFormatAlign.CENTER, TextFieldAutoSize.LEFT, FontSize.CAPTION_1, true, Style.color(Style.COLOR_SUBTITLE), Style.color(Style.COLOR_BACKGROUND));
 			cityTitle.bitmapData = TextUtils.createTextFieldData(Lang.city, itemWidth - padding * 2, 10, true, TextFormatAlign.CENTER, TextFieldAutoSize.LEFT, FontSize.CAPTION_1, true, Style.color(Style.COLOR_SUBTITLE), Style.color(Style.COLOR_BACKGROUND));
@@ -414,6 +449,11 @@ package com.dukascopy.connect.gui.components
 				if (PayManager.accountInfo != null)
 				{
 					addressData.country = getAccountCountry(); 
+				}
+				if (lastSelectedCountry != null)
+				{
+					addressData.country = lastSelectedCountry[2];
+					lastSelectedCountry = null;
 				}
 				addressData.address = streetInput.valueString;
 				addressData.city = cityInput.valueString;
@@ -805,7 +845,7 @@ package com.dukascopy.connect.gui.components
 			cityInput.activate();
 			codeInput.activate();
 			
-		//	countrySelector.activate();
+			countrySelector.activate();
 			reasonSelector.activate();
 		}
 		
@@ -819,7 +859,7 @@ package com.dukascopy.connect.gui.components
 			cityInput.deactivate();
 			codeInput.deactivate();
 			
-		//	countrySelector.deactivate();
+			countrySelector.deactivate();
 			reasonSelector.deactivate();
 		}
 		

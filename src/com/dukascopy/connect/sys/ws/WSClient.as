@@ -118,6 +118,7 @@ import com.dukascopy.connect.MobileGui;
 		static public var S_LOYALTY_CHANGE:Signal = new Signal("WSClient.S_LOYALTY_CHANGE");
 		static public var S_ACTIVITY:Signal = new Signal("WSClient.S_ACTIVITY");
 		static public var S_ESCROW_DEAL_EVENT:Signal = new Signal("WSClient.S_ESCROW_DEAL_EVENT");
+		static public var S_ESCROW_OFFER_EVENT:Signal = new Signal("WSClient.S_ESCROW_OFFER_EVENT");
 		static public var S_OFFER_CREATE_FAIL:Signal = new Signal("WSClient.S_OFFER_CREATE_FAIL");
 		static public var S_OFFER_CREATED:Signal = new Signal("WSClient.S_OFFER_CREATED");
 		
@@ -704,7 +705,11 @@ import com.dukascopy.connect.MobileGui;
 				return;
 			}
 			
-			
+			trace("");
+			trace("------------------------");
+			trace(pack.method);
+			traceObject(pack.data);
+			trace("------------------------");
 			
 			if (pack.method == "changedLoyalty") {
 				if (!pack.data || !pack.data.loyalty){
@@ -971,11 +976,13 @@ import com.dukascopy.connect.MobileGui;
 			}
 			if (pack.method == WSMethodType.ESCROW_OFFER_CREATE_SUCCESS)
 			{
+				// !TODO: нет такого сигнала?;
 				return;
 			}
 			if (pack.method == WSMethodType.ESCROW_OFFER_CREATE)
 			{
-				S_OFFER_CREATED.invoke();
+				S_OFFER_CREATED.invoke(pack.data.offer);
+				S_ESCROW_OFFER_EVENT.invoke(EscrowEventType.OFFER_CREATED, pack.data.offer);
 				return;
 			}
 			if (pack.method == WSMethodType.ESCROW_OFFER_ERROR)
@@ -987,6 +994,7 @@ import com.dukascopy.connect.MobileGui;
 					errorObject = pack.data.error;
 				}
 				S_OFFER_CREATE_FAIL.invoke(new ErrorData(errorObject));
+				
 				/*pack : Object {
 					data : Object {
 						error : Object {
@@ -1014,6 +1022,7 @@ import com.dukascopy.connect.MobileGui;
 			}
 			if (pack.method == WSMethodType.ESCROW_OFFER_CANCEL)
 			{
+				S_ESCROW_OFFER_EVENT.invoke(EscrowEventType.CANCEL, pack.data.offer);
 				/*pack : Object {
 					data : Object {
 						offer : Object {
@@ -1055,6 +1064,27 @@ import com.dukascopy.connect.MobileGui;
 			}
 		}
 		
+		static private function traceObject(raw:Object, keyRaw:String = " "):void 
+		{
+			if (raw != null)
+			{
+				if (raw is Object)
+				{
+					for (var key:String in raw) 
+					{
+						if (raw[key] is String || raw[key] is Number || raw[key] is int || raw[key] == null)
+						{
+							trace(keyRaw + " | " + key + " = " + raw[key]);
+						}
+						else
+						{
+							traceObject(raw[key], keyRaw + key + " ");
+						}
+					}
+				}
+			}
+		}
+		
 		static public function sendLocationUpdate(uid:String, location:Location):void 
 		{
 			call_chatSendAll(ChatManager.getCurrentChat().uid, {
@@ -1079,6 +1109,7 @@ import com.dukascopy.connect.MobileGui;
 			{
 				request.crypto_wallet = cryptoWallet;
 			}
+			request.price_id = "1";
 			send(WSMethodType.ESCROW_OFFER_ACCEPT, request);
 		}
 		
