@@ -956,7 +956,7 @@ package com.dukascopy.connect.sys.questionsManager {
 			{
 				temp = new Array();
 				var question:QuestionVO;
-				//!TODO:;
+				//!TODO: проверить что шлёт сервак;
 				var instrumentFilter:String = filters[0].value;
 				for (var i:int = 0; i < questionsFiltered.length; i++) 
 				{

@@ -198,7 +198,8 @@ package com.dukascopy.connect.gui.list.renderers {
 				textFieldAmount.wordWrap = false;
 				textFieldAmount.multiline = false;
 				textFieldAmount.x = textPosition;
-				textFieldAmount.y = int(Config.FINGER_SIZE * .2 + FontSize.SUBHEAD_14 + Config.FINGER_SIZE * .1);
+			//	textFieldAmount.y = int(Config.FINGER_SIZE * .2 + FontSize.SUBHEAD_14 + Config.FINGER_SIZE * .1);
+				textFieldAmount.y = int(Config.FINGER_SIZE * .2);
 				textFieldAmount.text = "Pp";
 				textFieldAmount.height = textFieldAmount.textHeight + 4;
 				textFieldAmount.text = "";;
@@ -213,7 +214,7 @@ package com.dukascopy.connect.gui.list.renderers {
 				tfUsername.text = "Pp";
 				tfUsername.height = tfUsername.textHeight + 4;
 				tfUsername.text = "";
-			addChild(tfUsername);
+		//	addChild(tfUsername);
 			
 			tfQuestionTime = new TextField();
 				tfQuestionTime.defaultTextFormat = format_time;
@@ -435,9 +436,7 @@ package com.dukascopy.connect.gui.list.renderers {
 				}
 				newMessages.y = int((height / 2 - newMessages.height / 2));
 				tfUsername.htmlText = itemData.title;
-				if (itemData.isMine() == true) {
-					tfUsername.htmlText = itemData.title + " (<font color='#0000FF'>" + Lang.mine + "</font>)";
-				}
+				
 				
 				if (isNaN(itemData.tipsAmount) == false) {
 					
@@ -466,13 +465,16 @@ package com.dukascopy.connect.gui.list.renderers {
 					}
 				}
 				
-				tfQuestionTime.htmlText = getStatusText(itemData.createdTime);
+				tfQuestionTime.htmlText = getStatusText(itemData, itemData.createdTime);
 				tfQuestionTime.x = int(width - tfQuestionTime.width - FilterTabs.MARGIN + 2);
 				
 				
 				textFieldPrice.visible = true;
 				textFieldPrice.text = getPrice(itemData);
 				textFieldAmount.htmlText = getAmount(itemData);
+				if (itemData.isMine() == true) {
+					textFieldAmount.htmlText = textFieldAmount.htmlText + " (" + Lang.mine.toUpperCase() + ")";
+				}
 				
 				var msgString:String  = itemData.text;
 				if (msgString != null && msgString.indexOf(Config.BOUNDS) == 0) {	
@@ -587,27 +589,47 @@ package com.dukascopy.connect.gui.list.renderers {
 			return result;
 		}
 		
+		private function getTime(itemData:QuestionVO, timeValue:String):String 
+		{
+			var result:String = "";
+			if (itemData.subtype == "buy")
+			{
+				result += "<font color=\u0022#" + Color.GREEN.toString(16) + "\u0022>" + timeValue + "</font>";
+			//	result += Lang.BUY.toUpperCase();
+			}
+			else
+			{
+				result += "<font color=\u0022#" + Color.RED.toString(16) + "\u0022>" + timeValue + "</font>";
+			//	result += Lang.sell.toUpperCase();
+			}
+			
+			return result;
+		}
+		
 		private function getAmount(itemData:QuestionVO):String 
 		{
 			var result:String = "";
 			if (itemData.subtype == "buy")
 			{
-				result += "<font color=\u0022#" + Color.GREEN.toString(16) + "\u0022>" + Lang.BUY.toUpperCase() + "</font>";
+				result += "<font color=\u0022#" + Color.GREEN.toString(16) + "\u0022>" + Lang.BUY.toUpperCase() + " " + itemData.cryptoAmount + " " + itemData.tipsCurrencyDisplay + "</font>";
+			//	result += Lang.BUY.toUpperCase();
 			}
 			else
 			{
-				result += "<font color=\u0022#" + Color.RED.toString(16) + "\u0022>" + Lang.sell.toUpperCase() + "</font>";
+				result += "<font color=\u0022#" + Color.RED.toString(16) + "\u0022>" + Lang.sell.toUpperCase() + " " + itemData.cryptoAmount + " " + itemData.tipsCurrencyDisplay + "</font>";
+			//	result += Lang.sell.toUpperCase();
 			}
-			result += " ";
-			result += itemData.cryptoAmount;
-			result += " ";
-			result += itemData.tipsCurrencyDisplay;
+		//	result += " ";
+		//	result += itemData.cryptoAmount;
+		//	result += " ";
+		//	result += itemData.tipsCurrencyDisplay;
 			
 			return result;
 		}
 		
-		private function getStatusText(timestamp:Number):String {
+		private function getStatusText(q:QuestionVO, timestamp:Number):String {
 			var date:Date = new Date(Number(timestamp * 1000));
+			return getTime(q, DateUtils.getComfortDateRepresentationWithMinutes(date));
 			return "<font color=\u0022#" + AppTheme.GREY_MEDIUM.toString(16) + "\u0022>" + DateUtils.getComfortDateRepresentationWithMinutes(date) + "</font>";
 		}
 		
