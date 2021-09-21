@@ -12,7 +12,6 @@ package com.dukascopy.connect.sys.questionsManager {
 	import com.dukascopy.connect.data.escrow.TradeDirection;
 	import com.dukascopy.connect.data.screenAction.customActions.TestCreateOfferAction;
 	import com.dukascopy.connect.gui.components.message.ToastMessage;
-	import com.dukascopy.connect.managers.escrow.vo.EscrowFilterVO;
 	import com.dukascopy.connect.managers.escrow.vo.EscrowInstrument;
 	import com.dukascopy.connect.screens.QuestionCreateUpdateScreen;
 	import com.dukascopy.connect.screens.dialogs.escrow.EscrowRulesPopup;
@@ -207,16 +206,16 @@ package com.dukascopy.connect.sys.questionsManager {
 			VideoUploader.S_FILE_UPLOADED_FINISH.add(sendVideoMessageFinish);
 			VideoUploader.S_FILE_UPLOADED_PROGRESS.add(sendVideoMessageProgress);
 			
-			GD.S_ESCROW_FILTER.add(onFilterAdded);
+		//	GD.S_ESCROW_FILTER.add(onFilterAdded);
 			
 			GD.S_ESCROW_DEAL_CREATED.add(onDealCreated);
 			
 			initPayingUIDS();
 		}
 		
-		static private function onFilterAdded(escrowFilterVO:EscrowFilterVO):void {
+		/*static private function onFilterAdded(escrowFilterVO:EscrowFilterVO):void {
 			getQuestions(escrowFilterVO);
-		}
+		}*/
 		
 		static private function onDealCreated(dealData:EscrowMessageData):void {
 			
@@ -463,7 +462,7 @@ package com.dukascopy.connect.sys.questionsManager {
 				getQuestions();
 		}
 		
-		static private function getQuestions(escrowFilterVO:EscrowFilterVO = null):void {
+		static private function getQuestions(escrowFilterVO:Object = null):void {
 			init();
 			TweenMax.killDelayedCallsTo(getQuestions);
 			if (!WS.connected) {

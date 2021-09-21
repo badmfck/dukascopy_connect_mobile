@@ -52,6 +52,7 @@ package com.dukascopy.connect.managers.escrow{
             //loadDeals();
 			
 			WSClient.S_ESCROW_DEAL_EVENT.add(onDealEvent);
+			WSClient.S_ESCROW_OFFER_EVENT.add(onOfferEvent);
 			
             // Check if escrow manager is created
             GD.S_ESCROW_MANAGER_AVAILABLE.add(function(cb:Function):void{
@@ -130,6 +131,28 @@ package com.dukascopy.connect.managers.escrow{
 			{
 				
 			}
+		}
+		
+		static private function onOfferEvent(escrowEventType:String, offerRawData:Object):void 
+		{
+			if (escrowEventType == EscrowEventType.CANCEL)
+			{
+				onOfferCanceled(offerRawData);
+			}
+			else if (escrowEventType == EscrowEventType.OFFER_CREATED)
+			{
+				onOfferCreated(offerRawData);
+			}
+		}
+		
+		static private function onOfferCreated(offerRawData:Object):void 
+		{
+			var offer:EscrowMessageData = new EscrowMessageData(offerRawData);
+		}
+		
+		static private function onOfferCanceled(offerRawData:Object):void 
+		{
+			var offer:EscrowMessageData = new EscrowMessageData(offerRawData);
 		}
 		
 		static private function onDealCreated(dealRawData:Object):void 

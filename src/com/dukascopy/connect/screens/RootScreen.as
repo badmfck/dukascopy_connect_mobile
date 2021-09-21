@@ -2,6 +2,7 @@ package com.dukascopy.connect.screens {
 	
 	import assets.Icon911;
 	import com.dukascopy.connect.Config;
+	import com.dukascopy.connect.GD;
 	import com.dukascopy.connect.MobileGui;
 	import com.dukascopy.connect.data.screenAction.IScreenAction;
 	import com.dukascopy.connect.data.screenAction.customActions.Create911QuestionAction;
@@ -19,9 +20,9 @@ package com.dukascopy.connect.screens {
 	import com.dukascopy.connect.gui.tabs.TabBar;
 	import com.dukascopy.connect.gui.tools.ImagePreviewCrop;
 	import com.dukascopy.connect.gui.topBar.TopBar;
+	import com.dukascopy.connect.managers.escrow.vo.EscrowInstrument;
 	import com.dukascopy.connect.screens.base.BaseScreen;
 	import com.dukascopy.connect.screens.base.ScreenManager;
-	import com.dukascopy.connect.screens.escrow.EscrowMainScreen;
 	import com.dukascopy.connect.screens.innerScreens.InnerCallsScreen;
 	import com.dukascopy.connect.screens.innerScreens.InnerChatScreen;
 	import com.dukascopy.connect.screens.innerScreens.InnerContactScreen;
@@ -29,6 +30,7 @@ package com.dukascopy.connect.screens {
 	import com.dukascopy.connect.screens.innerScreens.InnerEscrowScreen;
 	import com.dukascopy.connect.screens.innerScreens.InnerQuestionsScreen;
 	import com.dukascopy.connect.screens.promoEvent.PromoEventsScreen;
+	import com.dukascopy.connect.sys.applicationError.ApplicationErrors;
 	import com.dukascopy.connect.sys.auth.Auth;
 	import com.dukascopy.connect.sys.callManager.CallsHistoryManager;
 	import com.dukascopy.connect.sys.configManager.ConfigManager;
@@ -63,15 +65,23 @@ package com.dukascopy.connect.screens {
 		public static const SETTINGS_SCREEN_ID:String = "other";
 		public static const PROMO_SCREEN_ID:String = "promo";
 		public static const BOT_SCREEN_ID:String = "bot";
+		public static const ESCROW_INSTRUMENT_SCREEN_ID:String = "instrument";
 		
-		private static var questionTabObject:Object = {
+		private var questionTabObject:Object = {
 			id: QUESTIONS_SCREEN_ID,
 			title: Lang.escrow_title,
 			screenClass: InnerEscrowInstrumentScreen,
 			hasSearchBar: false
 		};
 		
-		private static var screensArray:Array = [
+		private var instrumentTabObject:Object = {
+			id: ESCROW_INSTRUMENT_SCREEN_ID,
+			title: Lang.escrow_title,
+			screenClass: InnerEscrowScreen,
+			hasSearchBar: false
+		};
+		
+		private var screensArray:Array = [
 			{
 				id: CHATS_SCREEN_ID,
 				title: Lang.textChats,
@@ -155,6 +165,7 @@ package com.dukascopy.connect.screens {
 		private var firstTime:Boolean;
 		private var BLINK_CHECK_INTERVAL:int = 60 * 4;// sec
 		private var refreshLotteryDataAction:com.dukascopy.connect.data.screenAction.customActions.RefreshLotteryDataAction;
+		private var selectedinstrument:EscrowInstrument;
 	//	private var actionPromoEvents:com.dukascopy.connect.data.screenAction.customActions.OpenPromoEventsInfoAction;
 		
 		/**
@@ -171,6 +182,7 @@ package com.dukascopy.connect.screens {
 			innerScreenManager.ingnoreBackSignal();
 			_view.addChild(innerScreenManager.view);
 			topBar = new TopBar();
+			topBar.onBack = onTopBarBack;
 			topBar.setSearchBarVisibility(false);
 			_view.addChild(topBar.view);
 			bottomTabs = new TabBar(Style.color(Style.BOTTOM_BAR_COLOR), Style.color(Style.BOTTOM_BAR_TEXT_COLOR), 1, Style.color(Style.BOTTOM_BAR_TEXT_SELECTED_COLOR), false, Style.boolean(Style.BOTTOM_BAR_LINE), Style.color(Style.BOTTOM_BAR_SELECTED_BACKGROUND));
@@ -202,6 +214,14 @@ package com.dukascopy.connect.screens {
 			
 			firstTime = true;			
 		//	InnerNotificationManager.S_NOTIFICATION_NEED.add(needNotification);				
+		}
+		
+		private function onTopBarBack():void 
+		{
+			if (currentTabID == ESCROW_INSTRUMENT_SCREEN_ID)
+			{
+				onIstrumentSelected();
+			}
 		}
 		
 		/*private function onConfigLoaded():void {
@@ -286,6 +306,7 @@ package com.dukascopy.connect.screens {
 					else
 						bottomTabs.selectTap(currentTabID);
 				}
+				//!TODO:;
 				QuestionsManager.setInOut(currentTabIndex == 10);
 				/*if (currentTabID == CHATS_SCREEN_ID)
 					if (bottomTabs != null)
@@ -305,6 +326,30 @@ package com.dukascopy.connect.screens {
 			Auth.S_PHAZE_CHANGE.add(blinkBankButton);
 			
 			NewMessageNotifier.S_UPDATE_EXIST.add(needNotification);
+			
+			GD.S_ESCROW_INSTRUMENT_Q_SELECTED.add(onIstrumentSelected);
+		}
+		
+		private function onIstrumentSelected(instrument:EscrowInstrument = null):void 
+		{
+			selectedinstrument = instrument;
+			if (selectedinstrument != null)
+			{
+				if (instrumentTabObject != null)
+				{
+					instrumentTabObject.title = instrument.name;
+				}
+				else
+				{
+					ApplicationErrors.add();
+				}
+				
+				onBottomTabsClick(RootScreen.ESCROW_INSTRUMENT_SCREEN_ID, false);
+			}
+			else
+			{
+				onBottomTabsClick(RootScreen.QUESTIONS_SCREEN_ID, true);
+			}
 		}
 		
 		override protected function drawView():void {
@@ -507,6 +552,8 @@ package com.dukascopy.connect.screens {
 				return;
 			if (currentTabIndex == 10)
 				return;
+			if (currentTabIndex == 11)
+				return;
 			if (bottomTabs != null) {
 				bottomTabs.busy = false;
 				bottomTabs.selectTap(screensArray[currentTabIndex].id);
@@ -545,6 +592,15 @@ package com.dukascopy.connect.screens {
 			if (tabIndex == -1)
 				return;
 			
+			if (tabId == ESCROW_INSTRUMENT_SCREEN_ID)
+			{
+				topBar.addBackButton();
+			}
+			else
+			{
+				topBar.removeBackButton();
+			}
+			
 			if (currentTabIndex == tabIndex)
 			{
 				if (data != null && "additionalData" in data && data.additionalData != null && tabId == CONTACTS_SCREEN_ID && innerScreenManager.currentScreen is InnerContactScreen)
@@ -582,10 +638,17 @@ package com.dukascopy.connect.screens {
 			if (tabIndex == 10) {
 				tabObject = questionTabObject;
 				QuestionsManager.setInOut(true);
-			} else {
+			}
+			else if (tabIndex == 11)
+			{
+				tabObject = instrumentTabObject;
+				QuestionsManager.setInOut(true);
+			}
+			else {
 				QuestionsManager.setInOut(false);
 				tabObject = screensArray[tabIndex];
 			}
+			
 			showInnerScreen(tabObject.screenClass, dir, time);
 			topBar.setSearchBarVisibility(tabObject.hasSearchBar);
 			topBar.setActions(getActions(tabObject.id), (currentTabID == QUESTIONS_SCREEN_ID) ? .7 : 1);
@@ -594,7 +657,10 @@ package com.dukascopy.connect.screens {
 				topBar.setTitleIcon(tabObject.titleIcon);
 			else
 				topBar.setTitle(tabObject.title);
-			Store.save(Store.VAR_ROOT_SCREEN_TAB, currentTabID);
+			if (tabIndex != 11)
+			{
+				Store.save(Store.VAR_ROOT_SCREEN_TAB, currentTabID);
+			}
 		}
 		
 		private function showInnerScreen(screenClass:Class, dir:int = 0, time:Number = 0.3):void {
@@ -628,21 +694,24 @@ package com.dukascopy.connect.screens {
 				bottomTabs.busy = false;
 				bottomTabs.selectTap(null);
 			}
+			
+			if (screenClass == InnerEscrowScreen) {
+				bottomTabs.busy = false;
+				bottomTabs.selectTap(null);
+			}
 		}
 		
 		private function getActions(id:String):Vector.<IScreenAction> {
 			var array:Vector.<IScreenAction> = new Vector.<IScreenAction>();
 			if (id == QUESTIONS_SCREEN_ID) {
-				/*if (Config.GEO_POSITION == true || Auth.companyID == "08A29C35B3") {
-					actionOpen911Geolocation ||= new Open911GeolocationAction();
-					array.push(actionOpen911Geolocation);
-				}*/
-				
-				filter911 ||= new ShowFilterEscrowAction();
-				array.push(filter911);
-				
 				actionOpen911Info ||= new Open911InfoAction();
 				array.push(actionOpen911Info);
+				
+				return array;
+			}
+			if (id == ESCROW_INSTRUMENT_SCREEN_ID) {
+				filter911 ||= new ShowFilterEscrowAction();
+				array.push(filter911);
 				
 				actionCreateQuestion ||= new Create911QuestionAction();
 				array.push(actionCreateQuestion);
@@ -676,6 +745,8 @@ package com.dukascopy.connect.screens {
 		private function getTabIndexById(id:String):int {
 			if (id == QUESTIONS_SCREEN_ID)
 				return 10;
+			if (id == ESCROW_INSTRUMENT_SCREEN_ID)
+				return 11;
 			for (var i:int = 0; i < screensArray.length; i++)
 				if (screensArray[i].id == id)
 					return i;
