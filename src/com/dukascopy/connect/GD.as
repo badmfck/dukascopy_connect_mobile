@@ -49,6 +49,7 @@ package com.dukascopy.connect {
 		
 		static public const S_ESCROW_FILTER:Signal = new Signal("GD.S_ESCROW_FILTER");
 		static public const S_ESCROW_INSTRUMENT_Q_SELECTED:Signal = new Signal("GD.S_ESCROW_INSTRUMENT_Q_SELECTED");
+		static public const S_ESCROW_STAT:Signal = new Signal("GD.S_ESCROW_STAT");
 
 		static public const S_IOS_LOCALIZATION_UPDATE:Signal=new Signal("S_IOS_LOCALIZATION_UPDATE");
 		

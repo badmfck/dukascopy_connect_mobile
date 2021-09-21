@@ -1235,6 +1235,10 @@ package com.dukascopy.connect.sys.php {
 			call('Cp2p.claim', callBack, data);
 		}
 		
+		static public function escrow_getStat(callBack:Function = null):void {
+			call('Cp2p.Stat.Get', callBack);
+		}
+		
 		static public function p2p_getInstruments(callBack:Function = null, data:Object = null):void 
 		{
 			call('Cp2p.getInstruments', callBack, data);
