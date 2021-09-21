@@ -366,7 +366,7 @@ package com.dukascopy.connect.screens.innerScreens {
 					(data as LabelItem).action.execute();
 				}
 				return;
-			} else if ("code" in data) {
+			} else if ("instrument" in data) {
 				GD.S_ESCROW_INSTRUMENT_Q_SELECTED.invoke(data);
 			}
 		}
