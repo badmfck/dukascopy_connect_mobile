@@ -908,6 +908,30 @@ package com.dukascopy.connect.sys.questionsManager {
 			questionsFiltered.sort(questionsSort);
 			if (categoriesFilter == null || categoriesFilter.length == 0 || categoriesFilter[0] != Config.CAT_DATING)
 				showFirstTips();
+			
+			var temp:Array;
+			if (filters != null && filters.length > 0)
+			{
+				temp = new Array();
+				var question:QuestionVO;
+				//!TODO:;
+				var instrumentFilter:String = filters[0].value;
+				for (var i:int = 0; i < questionsFiltered.length; i++) 
+				{
+					question = questionsFiltered[i];
+					if (question.tipsCurrency == instrumentFilter)
+					{
+						temp.push(question);
+					}
+				}
+			}
+			else
+			{
+				temp = questionsFiltered.concat();
+			}
+			
+			questionsFiltered = temp;
+			
 			return questionsFiltered;
 		}
 		

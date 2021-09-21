@@ -719,6 +719,9 @@ package com.dukascopy.connect.screens {
 				actionOpen911Info ||= new Open911InfoAction();
 				array.push(actionOpen911Info);
 				
+				actionCreateQuestion ||= new Create911QuestionAction();
+				array.push(actionCreateQuestion);
+				
 				return array;
 			}
 			if (id == ESCROW_INSTRUMENT_SCREEN_ID) {
