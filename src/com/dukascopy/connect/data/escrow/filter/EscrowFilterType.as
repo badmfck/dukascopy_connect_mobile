@@ -7,6 +7,7 @@ package com.dukascopy.connect.data.escrow.filter
 	public class EscrowFilterType 
 	{
 		static public const INSTRUMENT:String = "instrument";
+		static public const DIRECTION:String = "side";
 		
 		public function EscrowFilterType() 
 		{

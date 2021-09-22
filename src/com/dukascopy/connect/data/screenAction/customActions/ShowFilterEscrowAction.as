@@ -1,7 +1,9 @@
 package com.dukascopy.connect.data.screenAction.customActions {
 	
 	import assets.AddItemButton;
+	import com.dukascopy.connect.GD;
 	import com.dukascopy.connect.MobileGui;
+	import com.dukascopy.connect.data.escrow.filter.EscrowFilter;
 	import com.dukascopy.connect.data.screenAction.IScreenAction;
 	import com.dukascopy.connect.data.screenAction.ScreenAction;
 	import com.dukascopy.connect.screens.QuestionCreateUpdateScreen;
@@ -25,8 +27,13 @@ package com.dukascopy.connect.data.screenAction.customActions {
 		}
 		
 		public function execute():void {
-			DialogManager.showDialog(EscrowFilterScreen, {title:Lang.escrow_filter_title}, DialogManager.TYPE_SCREEN);
+			DialogManager.showDialog(EscrowFilterScreen, {title:Lang.escrow_filter_title, callback:onFilters}, DialogManager.TYPE_SCREEN);
 		//	dispose();
+		}
+		
+		private function onFilters(filters:Vector.<EscrowFilter>):void 
+		{
+			GD.S_ESCROW_FILTER.invoke(filters);
 		}
 		
 		override public function getIconScale():Number {

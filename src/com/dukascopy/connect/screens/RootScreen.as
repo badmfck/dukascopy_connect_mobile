@@ -609,13 +609,16 @@ package com.dukascopy.connect.screens {
 			if (tabIndex == -1)
 				return;
 			
-			if (tabId == ESCROW_INSTRUMENT_SCREEN_ID)
+			if(topBar != null)
 			{
-				topBar.addBackButton();
-			}
-			else
-			{
-				topBar.removeBackButton();
+				if (tabId == ESCROW_INSTRUMENT_SCREEN_ID)
+				{
+					topBar.addBackButton();
+				}
+				else
+				{
+					topBar.removeBackButton();
+				}
 			}
 			
 			if (currentTabIndex == tabIndex)

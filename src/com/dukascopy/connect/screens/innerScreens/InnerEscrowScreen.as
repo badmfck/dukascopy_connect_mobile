@@ -3,7 +3,9 @@ package com.dukascopy.connect.screens.innerScreens {
 	import com.dukascopy.connect.Config;
 	import com.dukascopy.connect.GD;
 	import com.dukascopy.connect.MobileGui;
+	import com.dukascopy.connect.data.IFilterData;
 	import com.dukascopy.connect.data.LabelItem;
+	import com.dukascopy.connect.data.escrow.TradeDirection;
 	import com.dukascopy.connect.data.escrow.filter.EscrowFilter;
 	import com.dukascopy.connect.data.escrow.filter.EscrowFilterType;
 	import com.dukascopy.connect.gui.components.StatusClip;
@@ -96,7 +98,7 @@ package com.dukascopy.connect.screens.innerScreens {
 			tabs.add(Lang.textMine, QuestionsManager.TAB_MINE);
 			tabs.add(Lang.questionsResolved, QuestionsManager.TAB_RESOLVED,false,"r");*/
 			
-			filtersPanel = new FiltersPanel();
+			filtersPanel = new FiltersPanel(onFilterRemove);
 			_view.addChild(filtersPanel);
 			
 			createTabs();
@@ -112,6 +114,22 @@ package com.dukascopy.connect.screens.innerScreens {
 			
 			preloader = new HorizontalPreloader(Style.color(Style.COLOR_ICON_LIGHT));
 			_view.addChild(preloader);
+		}
+		
+		private function onFilterRemove(filter:IFilterData):void 
+		{
+			if (filter != null && filter is EscrowFilter)
+			{
+				if (currentFilters != null)
+				{
+					currentFilters.removeAt(currentFilters.indexOf(filter as EscrowFilter));
+					onFilters(currentFilters);
+				}
+			}
+			else
+			{
+				ApplicationErrors.add();
+			}
 		}
 		
 		private function createTabs():void{
@@ -155,27 +173,7 @@ package com.dukascopy.connect.screens.innerScreens {
 			if (_isDisposed == true)
 				return;
 			
-			var destY:int;
-			
-			if (currentFilters != null && currentFilters.length > 0)
-			{
-				filtersPanel.y = destY;
-				filtersPanel.draw(currentFilters);
-				destY += filtersPanel.getHeight();
-			}
-			
-			if (tabs != null) {
-				tabs.setWidthAndHeight(_width, Config.TOP_BAR_HEIGHT);
-				tabs.view.y = destY;
-				destY += tabs.height;
-			}
-			
-			preloader.y = destY;
-			
-			if (list != null) {
-				list.view.y = destY;
-				list.setWidthAndHeight(_width, _height - list.view.y);
-			}
+			updatePositions();
 		}
 		
 		override public function initScreen(data:Object = null):void {
@@ -202,6 +200,50 @@ package com.dukascopy.connect.screens.innerScreens {
 			
 			GD.S_ESCROW_INSTRUMENTS.add(onInstrumentsLoaded);
 			GD.S_ESCROW_INSTRUMENTS_REQUEST.invoke();
+			GD.S_ESCROW_FILTER.add(onFilters);
+		}
+		
+		private function onFilters(filters:Vector.<EscrowFilter>):void 
+		{
+			currentFilters = filters;
+			if (selectedFilter == QuestionsManager.TAB_OTHER)
+			{
+				//!TODO:;
+				setListData();
+			}
+			updatePositions();
+		}
+		
+		private function updatePositions():void 
+		{
+			var destY:int;
+			
+			if (currentFilters != null && currentFilters.length > 0 && selectedFilter == QuestionsManager.TAB_OTHER)
+			{
+				destY += Config.FINGER_SIZE * .1;
+				filtersPanel.visible = true;
+				filtersPanel.y = destY
+				filtersPanel.draw(currentFilters, _width - Config.MARGIN * 4);
+				filtersPanel.x = Config.MARGIN * 2;
+				destY += filtersPanel.getHeight() + Config.FINGER_SIZE * .1;
+			}
+			else
+			{
+				filtersPanel.visible = false;
+			}
+			
+			if (tabs != null) {
+				tabs.setWidthAndHeight(_width, Config.TOP_BAR_HEIGHT);
+				tabs.view.y = destY;
+				destY += tabs.height;
+			}
+			
+			preloader.y = destY;
+			
+			if (list != null) {
+				list.view.y = destY;
+				list.setWidthAndHeight(_width, _height - list.view.y);
+			}
 		}
 		
 		private function onInstrumentsLoaded(instruments:Vector.<EscrowInstrument>):void 
@@ -237,6 +279,8 @@ package com.dukascopy.connect.screens.innerScreens {
 				tabs.S_ITEM_SELECTED.add(onTabItemSelected);
 				tabs.activate();
 			}
+			
+			filtersPanel.activate();
 			
 			QuestionsManager.S_QUESTIONS.add(updateData);
 			QuestionsManager.S_QUESTIONS_START_LOADING.add(showLoading);
@@ -628,6 +672,7 @@ package com.dukascopy.connect.screens.innerScreens {
 		private function onTabItemSelected(id:String):void {
 			if (_isDisposed == true)
 				return;
+			updatePositions();
 			setListData(id);
 			selectedFilter = id;
 			list.setBGColorOnly(Style.color(Style.COLOR_BACKGROUND));
@@ -677,6 +722,7 @@ package com.dukascopy.connect.screens.innerScreens {
 				if (id == QuestionsManager.TAB_OTHER)
 				{
 					listData = QuestionsManager.getNotResolved(getFilters());
+					listData = sortByFilters(listData);
 					showPreloader();
 				}
 				else if (id == QuestionsManager.TAB_OFFERS)
@@ -718,6 +764,66 @@ package com.dukascopy.connect.screens.innerScreens {
 			}
 		}
 		
+		private function sortByFilters(listData:Array):Array 
+		{
+			var needSort:Boolean = false;
+			if (currentFilters != null && currentFilters.length > 0)
+			{
+				for (var i:int = 0; i < currentFilters.length; i++) 
+				{
+					if (currentFilters[i].field == EscrowFilterType.DIRECTION)
+					{
+						if (currentFilters[i].value == TradeDirection.buy_sell.type)
+						{
+							needSort = true;
+							break;
+						}
+					}
+				}
+			}
+			if (needSort)
+			{
+				var sortFunction:Function = function(a:QuestionVO, b:QuestionVO):int{
+					if (a.subtype == "sell" && b.subtype == "sell")
+					{
+						if (a.price > b.price)
+						{
+							return 1;
+						}
+						else if (a.price < b.price)
+						{
+							return -1;
+						}
+					}
+					else if (a.subtype == "buy" && b.subtype == "buy")
+					{
+						if (a.price > b.price)
+						{
+							return 1;
+						}
+						else if (a.price < b.price)
+						{
+							return -1;
+						}
+					}
+					else if (a.subtype == "sell")
+					{
+						return -1;
+					}
+					else if (b.subtype == "sell")
+					{
+						return 1;
+					}
+				}
+				var result:Array = listData.sort(sortFunction);
+				return result;
+			}
+			else
+			{
+				return listData;
+			}
+		}
+		
 		private function getFilters():Vector.<EscrowFilter> 
 		{
 			var result:Vector.<EscrowFilter>;
@@ -726,6 +832,31 @@ package com.dukascopy.connect.screens.innerScreens {
 			{
 				result = new Vector.<EscrowFilter>();
 				result.push(new EscrowFilter(EscrowFilterType.INSTRUMENT, instrument));
+			}
+			if (currentFilters != null && currentFilters.length > 0)
+			{
+				if (result == null)
+				{
+					result = new Vector.<EscrowFilter>();
+				}
+				for (var i:int = 0; i < currentFilters.length; i++) 
+				{
+					if (currentFilters[i].field == EscrowFilterType.DIRECTION)
+					{
+						if (currentFilters[i].value == TradeDirection.buy.type)
+						{
+							result.push(new EscrowFilter(EscrowFilterType.DIRECTION, currentFilters[i].value.toUpperCase()));
+						}
+						else if (currentFilters[i].value == TradeDirection.sell.type)
+						{
+							result.push(new EscrowFilter(EscrowFilterType.DIRECTION, currentFilters[i].value.toUpperCase()));
+						}
+						else if (currentFilters[i].value == TradeDirection.buy_sell.type)
+						{
+							//sort locally all items;
+						}
+					}
+				}
 			}
 			
 			return result;
