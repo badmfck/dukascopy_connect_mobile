@@ -789,24 +789,32 @@ package com.dukascopy.connect.screens.innerScreens {
 				var sortFunction:Function = function(a:QuestionVO, b:QuestionVO):int{
 					if (a.subtype == "sell" && b.subtype == "sell")
 					{
-						if (a.price > b.price)
+						if (Number(a.price) > Number(b.price))
+						{
+							return -1;
+						}
+						else if (Number(a.price) < Number(b.price))
 						{
 							return 1;
 						}
-						else if (a.price < b.price)
+						else
 						{
-							return -1;
+							return 0;
 						}
 					}
 					else if (a.subtype == "buy" && b.subtype == "buy")
 					{
-						if (a.price > b.price)
+						if (Number(a.price) > Number(b.price))
+						{
+							return 1;
+						}
+						else if (Number(a.price) < Number(b.price))
 						{
 							return -1;
 						}
-						else if (a.price < b.price)
+						else
 						{
-							return 1;
+							return 0;
 						}
 					}
 					else if (a.subtype == "sell")
@@ -816,6 +824,10 @@ package com.dukascopy.connect.screens.innerScreens {
 					else if (b.subtype == "sell")
 					{
 						return 1;
+					}
+					else
+					{
+						return 0;
 					}
 				}
 				var result:Array = listData.sort(sortFunction);

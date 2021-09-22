@@ -50,6 +50,8 @@ package com.dukascopy.connect.screens.dialogs.x.base.float {
 		}
 		
 		override public function onBack(e:Event = null):void {
+			needCallback = false;
+			
 			close();
 		}
 		
@@ -66,6 +68,8 @@ package com.dukascopy.connect.screens.dialogs.x.base.float {
 		
 		protected function onNextClick():void 
 		{
+			needCallback = true;
+			
 			close();
 		}
 		
@@ -199,15 +203,18 @@ package com.dukascopy.connect.screens.dialogs.x.base.float {
 		
 		override protected function onRemove():void 
 		{
-			if (screenData.callback != null)
+			if (needCallback)
 			{
-				if (screenData.callback.length == 0)
+				if (screenData.callback != null)
 				{
-					screenData.callback();
-				}
-				else if (screenData.callback.length == 1)
-				{
-					screenData.callback(screenData.callbackData);
+					if (screenData.callback.length == 0)
+					{
+						screenData.callback();
+					}
+					else if (screenData.callback.length == 1)
+					{
+						screenData.callback(screenData.callbackData);
+					}
 				}
 			}
 		}
