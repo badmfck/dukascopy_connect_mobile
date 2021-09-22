@@ -332,6 +332,10 @@ package com.dukascopy.connect.screens {
 		
 		private function onIstrumentSelected(instrument:Object = null):void 
 		{
+			if (isDisposed)
+			{
+				return;
+			}
 			if (instrument != null)
 			{
 				selectedinstrument = instrument.instrument;
@@ -497,6 +501,7 @@ package com.dukascopy.connect.screens {
 			currentTabID = "";
 			currentScreen = null;
 			
+			GD.S_ESCROW_INSTRUMENT_Q_SELECTED.remove(onIstrumentSelected);
 			InnerNotificationManager.S_NOTIFICATION_NEED.remove(needNotification);
 			NewMessageNotifier.S_UPDATE_EXIST.remove(needNotification);
 		}

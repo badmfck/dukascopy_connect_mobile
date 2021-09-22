@@ -46,6 +46,7 @@ package com.dukascopy.connect.screens.dialogs.x.base.float
 		protected var mainPadding:Number;
 		private var topColorClip:Sprite;
 		private var preloader:CirclePreloader;
+		protected var needCallback:Boolean;
 		protected var colorDelimiterPosition:int = -1;
 		
 		protected var topColor:Number = Style.color(Style.COLOR_BACKGROUND);
@@ -371,6 +372,7 @@ package com.dukascopy.connect.screens.dialogs.x.base.float
 		
 		private function onButtonCloseClick():void
 		{
+			needCallback = false;
 			close();
 		}
 		

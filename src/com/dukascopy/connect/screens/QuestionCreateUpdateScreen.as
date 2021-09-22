@@ -142,6 +142,8 @@ package com.dukascopy.connect.screens {
 			GD.S_ESCROW_INSTRUMENTS.remove(onInstrumentsLoadedForCurrentSelection);
 			if (instruments == null)
 				return;
+			if (QuestionsManager.escrowInstrumentSelected == null)
+				return;
 			for (var i:int = 0; i < instruments.length; i++) {
 				if (instruments[i].code == QuestionsManager.escrowInstrumentSelected) {
 					callBackSelectInstrument(instruments[i]);
@@ -548,18 +550,16 @@ package com.dukascopy.connect.screens {
 		}
 		
 		private function callBackSelectInstrument(ei:EscrowInstrument):void {
-			
-			if (ei.isLinked)
-			{
+			if (ei == null)
+				return;
+			if (ei.isLinked) {
 				QuestionsManager.getCurrentQuestion().instrument = ei;
 				if (ei.price.length == 1)
 					QuestionsManager.getCurrentQuestion().priceCurrency = ei.price[0].name;
 				else
 					QuestionsManager.getCurrentQuestion().priceCurrency = null;
 				list.updateItemByIndex(2, true, true);
-			}
-			else
-			{
+			} else {
 				var screenData:AlertScreenData = new AlertScreenData();
 				screenData.text = Lang.escrow_blockchain_address_needed.replace(Lang.regExtValue, ei.name);
 				screenData.button = Lang.textRegister.toUpperCase();
