@@ -192,7 +192,7 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 			{
 				textColor = messageVO.renderInfo.color;
 			}
-			var res:int = megaText.setText(targetWidth, txt, textColor, textSize, "#" + getBackColor().toString(16), 1.5, messageVO.wasSmile);
+			var res:int = megaText.setText(targetWidth, txt, textColor, textSize, "#" + getBackColor().toString(16), 1.5, messageVO.wasSmile, messageVO.isEntryMessage);
 			messageVO.wasSmile = megaText.getWasSmile() ? 2 : 1;
 			return res;
 		}

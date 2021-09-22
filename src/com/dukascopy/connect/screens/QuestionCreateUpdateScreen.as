@@ -155,7 +155,7 @@ package com.dukascopy.connect.screens {
 			messageData.id = 0;
 			messageData.user_avatar = LocalAvatars.QUESTIONS;
 			messageData.user_name = "911";
-			messageData.text = Lang.tenderStartText;
+			messageData.text = Lang.tenderStartText1;
 			messageData.usePlainText = true;
 			messageData.created = (new Date()).getTime() / 1000;
 			messageData.isEntryMessage = true;
