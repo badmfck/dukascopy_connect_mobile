@@ -191,6 +191,7 @@ package com.dukascopy.connect.sys.questionsManager {
 		static public var fakeTender:QuestionVO;
 		
 		static public var escrowStat:Object = {};
+		static public var escrowInstrumentSelected:String;
 		
 		public function QuestionsManager() { }
 		
@@ -218,6 +219,7 @@ package com.dukascopy.connect.sys.questionsManager {
 		}
 		
 		static private function saveMaxID(stat:Object):void {
+			escrowInstrumentSelected = stat.instrument;
 			escrowStat[stat.instrument] = stat.maxId;
 			Store.save("escrowMaxID", escrowStat);
 		}
