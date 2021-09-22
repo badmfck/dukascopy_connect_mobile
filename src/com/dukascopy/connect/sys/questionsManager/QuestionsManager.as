@@ -191,6 +191,7 @@ package com.dukascopy.connect.sys.questionsManager {
 		static public var fakeTender:QuestionVO;
 		
 		static public var escrowStat:Object = {};
+		static public var escrowInstrumentSelected:String;
 		
 		public function QuestionsManager() { }
 		
@@ -218,6 +219,7 @@ package com.dukascopy.connect.sys.questionsManager {
 		}
 		
 		static private function saveMaxID(stat:Object):void {
+			escrowInstrumentSelected = stat.instrument;
 			escrowStat[stat.instrument] = stat.maxId;
 			Store.save("escrowMaxID", escrowStat);
 		}
@@ -248,33 +250,7 @@ package com.dukascopy.connect.sys.questionsManager {
 		static private function onRatesReceived(phpRespond:PHPRespond):void {
 			if (phpRespond.error == true)
 				return;
-			
-			var test:Array = [
-				{
-					"instrument": "BTC",
-					"mca_ccy": "All",
-					"side": "Both",
-					"maxId": "1819",
-					"cnt": "1",
-					"volume": "0.0000111100"
-				}, {
-					"instrument": "ETH",
-					"mca_ccy": "All",
-					"side": "Both",
-					"maxId": "1837",
-					"cnt": "2",
-					"volume": "29.0000000000"
-				}, {
-					"instrument": "USDT",
-					"mca_ccy": "All",
-					"side": "Both",
-					"maxId": "1848",
-					"cnt": "2",
-					"volume": "101.0000000000"
-				}
-			];
-			
-			GD.S_ESCROW_STAT.invoke(test);
+			GD.S_ESCROW_STAT.invoke(phpRespond.data);
 		}
 		
 		static private function onDealCreated(dealData:EscrowMessageData):void {

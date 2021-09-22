@@ -133,6 +133,20 @@ package com.dukascopy.connect.screens {
 			} else {
 				createChatButton.visible = false;
 			}
+			
+			GD.S_ESCROW_INSTRUMENTS.add(onInstrumentsLoadedForCurrentSelection);
+			GD.S_ESCROW_INSTRUMENTS_REQUEST.invoke();
+		}
+		
+		private function onInstrumentsLoadedForCurrentSelection(instruments:Vector.<EscrowInstrument>):void {
+			if (instruments == null)
+				return;
+			for (var i:int = 0; i < instruments.length; i++) {
+				if (instruments[i].code == QuestionsManager.escrowInstrumentSelected) {
+					callBackSelectInstrument(instruments[i]);
+					return;
+				}
+			}
 		}
 		
 		private function onSuccess():void 
