@@ -802,11 +802,11 @@ package com.dukascopy.connect.screens.innerScreens {
 					{
 						if (a.price > b.price)
 						{
-							return 1;
+							return -1;
 						}
 						else if (a.price < b.price)
 						{
-							return -1;
+							return 1;
 						}
 					}
 					else if (a.subtype == "sell")
