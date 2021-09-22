@@ -238,7 +238,10 @@ package com.dukascopy.connect.screens.innerScreens {
 				destY += tabs.height;
 			}
 			
-			preloader.y = destY;
+			if (preloader)
+			{
+				preloader.y = destY;
+			}
 			
 			if (list != null) {
 				list.view.y = destY;
