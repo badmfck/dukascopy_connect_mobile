@@ -139,6 +139,7 @@ package com.dukascopy.connect.screens {
 		}
 		
 		private function onInstrumentsLoadedForCurrentSelection(instruments:Vector.<EscrowInstrument>):void {
+			GD.S_ESCROW_INSTRUMENTS.remove(onInstrumentsLoadedForCurrentSelection);
 			if (instruments == null)
 				return;
 			for (var i:int = 0; i < instruments.length; i++) {
