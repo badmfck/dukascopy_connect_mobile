@@ -16,7 +16,6 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 	import com.dukascopy.connect.managers.escrow.vo.EscrowPrice;
 	import com.dukascopy.connect.screens.dialogs.paymentDialogs.elements.InputField;
 	import com.dukascopy.connect.screens.dialogs.x.base.bottom.ListSelectionPopup;
-	import com.dukascopy.connect.screens.dialogs.x.base.bottom.ScrollAnimatedTitlePopup;
 	import com.dukascopy.connect.screens.dialogs.x.base.float.FloatPopup;
 	import com.dukascopy.connect.screens.payments.card.TypeCurrency;
 	import com.dukascopy.connect.sys.applicationError.ApplicationErrors;

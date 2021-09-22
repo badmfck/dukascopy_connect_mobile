@@ -927,6 +927,19 @@ package com.dukascopy.connect.sys.questionsManager {
 				getQuestions(filters);
 				return null;
 			}
+			//!TODO:!!!;
+			//!TODO:!!!;
+			//!TODO:!!!;
+			//!TODO:!!!;
+			//!TODO:!!!;
+			//!TODO:!!!;
+			needToRefresh = true;
+			//!TODO:!!!;
+			//!TODO:!!!;
+			//!TODO:!!!;
+			//!TODO:!!!;
+			//!TODO:!!!;
+			//!TODO:!!!;
 			if (needToRefresh == true)
 				getQuestions(filters);
 			if (categoriesFilter == null || categoriesFilter.length == 0)

@@ -378,7 +378,7 @@ package com.dukascopy.connect.gui.topBar {
 				{
 					backButton.activate();
 				}
-				backButton.x = int(Config.DOUBLE_MARGIN);
+				backButton.x = int(Config.MARGIN * 2);
 				backButton.y = int(_viewHeight * .5 - backButton.height * .5);
 			}
 			updateLayout();

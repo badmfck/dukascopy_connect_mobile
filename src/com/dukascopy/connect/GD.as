@@ -1,6 +1,7 @@
 package com.dukascopy.connect {
 	
 	import com.dukascopy.connect.managers.escrow.signals.S_EscrowDealCreated;
+	import com.dukascopy.connect.managers.escrow.signals.S_EscrowFilters;
 	import com.telefision.sys.signals.Signal;
 	import com.dukascopy.connect.managers.escrow.S_EscrowDealCreateRequest;
 	import com.dukascopy.connect.managers.webview.S_WebViewRequest;
@@ -47,7 +48,7 @@ package com.dukascopy.connect {
 		static public const S_ESCROW_PRICE:S_EscrowPrice=new S_EscrowPrice();
 		static public const S_ESCROW_PRICES_REQUEST:S_EscrowPricesRequest = new S_EscrowPricesRequest();
 		
-		static public const S_ESCROW_FILTER:Signal = new Signal("GD.S_ESCROW_FILTER");
+		static public const S_ESCROW_FILTER:S_EscrowFilters = new S_EscrowFilters();
 		static public const S_ESCROW_INSTRUMENT_Q_SELECTED:Signal = new Signal("GD.S_ESCROW_INSTRUMENT_Q_SELECTED");
 		static public const S_ESCROW_STAT:Signal = new Signal("GD.S_ESCROW_STAT");
 

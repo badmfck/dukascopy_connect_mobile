@@ -2540,7 +2540,7 @@ package com.dukascopy.langs {
 		static public var date:String = "Date";
 		static public var filter_price:String = "Price";
 		static public var filter_amount:String = "Amount";
-		static public var escrow_filter_title:String = "I want to see";
+		static public var escrow_filter_title:String = "New filter";
 		static public var blackList:String = "Black list";
 		static public var buy_ads:String = "BUY ads";
 		static public var sell_ads:String = "SELL ads";
@@ -2561,6 +2561,7 @@ package com.dukascopy.langs {
 		static public var tapToUpenForm:String = "Tap to open deal form";
 		static public var escrow_deals:String = "Deals";
 		static public var escrow_offers:String = "Offers";
+		static public var buy_sell_ads:String = "BUY/SELL";
 		
 		static public function updateKeys(keys:Object):void {
 			for (var n:String in keys) {

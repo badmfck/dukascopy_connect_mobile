@@ -9,9 +9,11 @@ package com.dukascopy.connect.data.escrow
 		private var _type:String;
 		private static const BUY_TYPE:String = "buy";
 		private static const SELL_TYPE:String = "sell";
+		private static const BUY_SELL_TYPE:String = "buy/sell";
 		
 		public static const buy:TradeDirection = new TradeDirection(TradeDirection.BUY_TYPE);
 		public static const sell:TradeDirection = new TradeDirection(TradeDirection.SELL_TYPE);
+		public static const buy_sell:TradeDirection = new TradeDirection(TradeDirection.BUY_SELL_TYPE);
 		
 		public function get type():String 
 		{

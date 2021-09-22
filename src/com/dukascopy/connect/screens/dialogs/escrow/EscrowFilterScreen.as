@@ -6,6 +6,8 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 	import com.dukascopy.connect.data.TextFieldSettings;
 	import com.dukascopy.connect.data.escrow.EscrowSettings;
 	import com.dukascopy.connect.data.escrow.TradeDirection;
+	import com.dukascopy.connect.data.escrow.filter.EscrowFilter;
+	import com.dukascopy.connect.data.escrow.filter.EscrowFilterType;
 	import com.dukascopy.connect.data.layout.LayoutType;
 	import com.dukascopy.connect.gui.button.DDFieldButton;
 	import com.dukascopy.connect.gui.components.radio.RadioGroup;
@@ -19,6 +21,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 	import com.dukascopy.connect.managers.escrow.vo.EscrowInstrument;
 	import com.dukascopy.connect.managers.escrow.vo.EscrowPrice;
 	import com.dukascopy.connect.screens.dialogs.paymentDialogs.elements.InputField;
+	import com.dukascopy.connect.screens.dialogs.x.base.bottom.AnimatedTitlePopup;
 	import com.dukascopy.connect.screens.dialogs.x.base.bottom.ListSelectionPopup;
 	import com.dukascopy.connect.screens.dialogs.x.base.bottom.ScrollAnimatedTitlePopup;
 	import com.dukascopy.connect.screens.dialogs.x.base.float.FloatPopup;
@@ -30,6 +33,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 	import com.dukascopy.connect.sys.serviceScreenManager.ServiceScreenManager;
 	import com.dukascopy.connect.sys.style.FontSize;
 	import com.dukascopy.connect.sys.style.Style;
+	import com.dukascopy.connect.sys.style.presets.Color;
 	import com.dukascopy.connect.type.HitZoneType;
 	import com.dukascopy.connect.utils.TextUtils;
 	import com.dukascopy.langs.Lang;
@@ -45,7 +49,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 	 * @author Sergey Dobarin.
 	 */
 
-	public class EscrowFilterScreen extends FloatPopup {
+	public class EscrowFilterScreen extends ScrollAnimatedTitlePopup {
 		
 		private var nextButton:BitmapButton;
 		
@@ -53,13 +57,11 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		
 		private var radio:RadioGroup;
 		private var radioSelection:Vector.<SelectorItemData>;
-		private var titleText:Bitmap;
 		private var titleSort:Bitmap;
 		private var titleBlacklist:Bitmap;
 		private var headerHeight:Number;
 		private var tradingSideSelector:MultiSelector;
-		private var currencySelector:MultiSelector;
-		private var instruments:Vector.<EscrowInstrument>;
+		private var filters:Vector.<EscrowFilter>;
 		
 		public function EscrowFilterScreen() { }
 		
@@ -68,9 +70,6 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			
 			createNextButton();
 			createRadio();
-			
-			titleText = new Bitmap();
-			container.addChild(titleText);
 			
 			titleSort = new Bitmap();
 			addItem(titleSort);
@@ -83,20 +82,9 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			tradingSideSelector.gap = Config.FINGER_SIZE * .3;
 			tradingSideSelector.S_ON_SELECT.add(onSideSelected);
 			addItem(tradingSideSelector);
-			
-			currencySelector = new MultiSelector();
-			currencySelector.itemRenderer = ButtonSelectorItem;
-			currencySelector.gap = Config.FINGER_SIZE * .3;
-			currencySelector.S_ON_SELECT.add(onCurrencySelected);
-			addItem(currencySelector);
 		}
 		
 		private function onSideSelected(selectedItem:SelectorItemData):void 
-		{
-			
-		}
-		
-		private function onCurrencySelected(selectedItem:SelectorItemData):void 
 		{
 			
 		}
@@ -132,38 +120,35 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		
 		private function onNextClick():void 
 		{
+			collectFilters();
+			needCallback = true;
 			close();
+		}
+		
+		private function collectFilters():void 
+		{
+			var selectedDiretions:Vector.<SelectorItemData> = tradingSideSelector.getSelectedDataVector();
+			if (selectedDiretions != null && selectedDiretions.length > 0)
+			{
+				var direction:TradeDirection = selectedDiretions[0].data as TradeDirection;
+				var sideFilter:EscrowFilter = new EscrowFilter(EscrowFilterType.DIRECTION, direction.type);
+				
+				addFilter(sideFilter);
+			}
+		}
+		
+		private function addFilter(filter:EscrowFilter):void 
+		{
+			if (filters == null)
+			{
+				filters = new Vector.<EscrowFilter>();
+			}
+			filters.push(filter);
 		}
 		
 		override public function initScreen(data:Object = null):void {
 			
-			var titleWidth:int = (_width - contentPadding * 3 - mainPadding * 2 - closeButton.width);
-			if (data != null && "title" in data && data.title != null)
-			{
-				titleText.bitmapData = TextUtils.createTextFieldData(data.title, titleWidth, 10, true, 
-																	TextFormatAlign.CENTER, TextFieldAutoSize.LEFT, 
-																	FontSize.BODY, true, Style.color(Style.COLOR_TEXT),
-																	Style.color(Style.COLOR_BACKGROUND), false);
-			}
-			
-			getInstruments();
-			
 			super.initScreen(data);
-		}
-		
-		private function getInstruments():void 
-		{
-			GD.S_ESCROW_INSTRUMENTS.add(onInstrumentsReady);
-			GD.S_ESCROW_INSTRUMENTS_REQUEST.invoke();
-		}
-		
-		private function onInstrumentsReady(instruments:Vector.<EscrowInstrument>):void 
-		{
-			if (isDisposed)
-			{
-				return;
-			}
-			this.instruments = instruments;
 		}
 		
 		private function drawTitleBlacklist():void 
@@ -179,6 +164,11 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 																	Style.color(Style.COLOR_BACKGROUND), false);
 		}
 		
+		private function getWidth():int 
+		{
+			return _width - contentPadding * 2;
+		}
+		
 		private function drawTitleSort():void 
 		{
 			if (titleSort.bitmapData != null)
@@ -192,14 +182,13 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 																	Style.color(Style.COLOR_BACKGROUND), false);
 		}
 		
-		override protected function drawContent():void 
+		override protected function updateContentPositions():void 
 		{
 			drawControls();
 			drawTitleSort();
 			drawTitleBlacklist();
 			
 			tradingSideSelector.dataProvider = getTradingSideVariants();
-			currencySelector.dataProvider = getCurrencyVariants();
 			
 			updatePositions();
 		}
@@ -209,18 +198,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			var result:Vector.<SelectorItemData> = new Vector.<SelectorItemData>();
 			result.push(new SelectorItemData(Lang.buy_ads, TradeDirection.buy));
 			result.push(new SelectorItemData(Lang.sell_ads, TradeDirection.sell));
-			return result;
-		}
-		
-		private function getCurrencyVariants():Vector.<SelectorItemData> 
-		{
-			var currencies:Array = new Array();
-		//	currencies.push(Type);
-			
-			var result:Vector.<SelectorItemData> = new Vector.<SelectorItemData>();
-			
-			result.push(new SelectorItemData(Lang.buy_ads, TradeDirection.buy));
-			result.push(new SelectorItemData(Lang.sell_ads, TradeDirection.sell));
+			result.push(new SelectorItemData(Lang.buy_sell_ads, TradeDirection.buy_sell));
 			return result;
 		}
 		
@@ -236,14 +214,9 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		
 		private function updatePositions():void 
 		{
-			headerHeight = Math.max(titleText.height, closeButton.height) + contentPaddingV * 2;
-			
-			titleText.x = int(getWidth() * .5 - titleText.width * .5);
-			titleText.y = int(Math.max(contentPaddingV, headerHeight * .5 - titleText.height * .5));
-			
 			var position:int;
 			
-			position = Config.FINGER_SIZE * .3;
+			position = Config.FINGER_SIZE * .5;
 			
 			tradingSideSelector.y = position;
 			tradingSideSelector.x = contentPadding;
@@ -259,7 +232,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			
 			titleBlacklist.x = int(getWidth() * .5 - titleBlacklist.width * .5);
 			titleBlacklist.y = position;
-			position += titleBlacklist.height + Config.FINGER_SIZE * .2;
+			position += titleBlacklist.height + Config.FINGER_SIZE * .5;
 			
 			nextButton.x = contentPadding;
 			nextButton.y = position;
@@ -287,20 +260,15 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			var buttonBitmap:ImageBitmapData;
 			if (nextButton != null)
 			{
-				textSettings = new TextFieldSettings(Lang.textNext.toUpperCase(), Style.color(Style.COLOR_TEXT), FontSize.BODY, TextFormatAlign.CENTER);
-				buttonBitmap = TextUtils.createbutton(textSettings, Style.color(Style.COLOR_BACKGROUND), 1, -1, Style.color(Style.COLOR_BUTTON_OUTLINE), getButtonWidth(), Style.size(Style.BUTTON_PADDING), Style.size(Style.SIZE_BUTTON_CORNER));
+				textSettings = new TextFieldSettings(Lang.textAccept.toUpperCase(), Color.WHITE, FontSize.BODY, TextFormatAlign.CENTER);
+				buttonBitmap = TextUtils.createbutton(textSettings, Color.GREEN, 1, -1, NaN, getButtonWidth(), Style.size(Style.BUTTON_PADDING), Style.size(Style.SIZE_BUTTON_CORNER));
 				nextButton.setBitmapData(buttonBitmap, true);
 			}
 		}
 		
 		private function getButtonWidth():int 
 		{
-			return getWidth() - contentPadding * 2;
-		}
-		
-		override protected function updateContentPositions():void 
-		{
-			updatePositions();
+			return getWidth();
 		}
 		
 		override protected function drawView():void {
@@ -320,7 +288,6 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			radio.activate();
 			nextButton.activate();
 			tradingSideSelector.activate();
-			currencySelector.activate();
 		}
 		
 		override public function deactivateScreen():void {
@@ -332,7 +299,6 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			radio.deactivate();
 			nextButton.deactivate();
 			tradingSideSelector.deactivate();
-			currencySelector.deactivate();
 		}
 		
 		override protected function onRemove():void 
@@ -342,7 +308,8 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 				needCallback = false;
 				if (data != null && "callback" in data && data.callback != null && data.callback is Function && (data.callback as Function).length == 1)
 				{
-					(data.callback as Function)();
+					
+					(data.callback as Function)(filters);
 				}
 			}
 		}
@@ -350,22 +317,11 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		override public function dispose():void {
 			super.dispose();
 			
-			if (titleText != null)
-			{
-				UI.destroy(titleText);
-				titleText = null;
-			}
 			if (tradingSideSelector != null)
 			{
 				tradingSideSelector.S_ON_SELECT.remove(onSideSelected);
 				tradingSideSelector.dispose();
 				tradingSideSelector = null;
-			}
-			if (currencySelector != null)
-			{
-				currencySelector.S_ON_SELECT.remove(onCurrencySelected);
-				currencySelector.dispose();
-				currencySelector = null;
 			}
 			if (titleSort != null)
 			{
@@ -388,7 +344,6 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 				radio = null;
 			}
 			
-			instruments = null;
 			radioSelection = null;
 		}
 	}

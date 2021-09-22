@@ -305,7 +305,7 @@ package com.dukascopy.connect.sys.style.presets
 			this[Style.COLOR_KEYBOARD_TEXT] = Color.BLUE_DARK_2;
 			this[Style.COLOR_PHONE] = Color.BLUE_2;
 			this[Style.ICON_ATTACH_FILE] = AttachFileIcon;
-			this[Style.COLOR_POPUP_HEADER] = Color.GREY_SSL;
+			this[Style.COLOR_POPUP_HEADER] = Color.GREY_SUPER_LIGHT;
 			this[Style.COLOR_BUTTON_SECONDARY] = Color.GREY;
 			this[Style.COLOR_TOGGLER] = NaN;
 			this[Style.ROADMAP_ILLUSTRATION] = RoadmapImage;
