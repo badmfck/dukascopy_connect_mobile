@@ -16,7 +16,6 @@ package com.dukascopy.connect.screens.innerScreens {
 	import com.dukascopy.connect.gui.list.renderers.ListConversation;
 	import com.dukascopy.connect.gui.list.renderers.ListEscrowRenderer;
 	import com.dukascopy.connect.gui.list.renderers.ListLink;
-	import com.dukascopy.connect.gui.menuVideo.BitmapButton;
 	import com.dukascopy.connect.gui.tabs.FilterTabs;
 	import com.dukascopy.connect.gui.tools.HorizontalPreloader;
 	import com.dukascopy.connect.managers.escrow.vo.EscrowInstrument;
@@ -26,13 +25,11 @@ package com.dukascopy.connect.screens.innerScreens {
 	import com.dukascopy.connect.screens.base.ScreenManager;
 	import com.dukascopy.connect.screens.dialogs.ScreenLinksDialog;
 	import com.dukascopy.connect.screens.escrow.FiltersPanel;
-	import com.dukascopy.connect.screens.payments.card.TypeCurrency;
 	import com.dukascopy.connect.sys.applicationError.ApplicationErrors;
 	import com.dukascopy.connect.sys.auth.Auth;
 	import com.dukascopy.connect.sys.chatManager.ChatManager;
 	import com.dukascopy.connect.sys.chatManager.typesManagers.AnswersManager;
 	import com.dukascopy.connect.sys.dialogManager.DialogManager;
-	import com.dukascopy.connect.sys.imageManager.ImageBitmapData;
 	import com.dukascopy.connect.sys.questionsManager.QuestionsManager;
 	import com.dukascopy.connect.sys.style.FontSize;
 	import com.dukascopy.connect.sys.style.Style;
@@ -48,8 +45,6 @@ package com.dukascopy.connect.screens.innerScreens {
 	import com.dukascopy.langs.Lang;
 	import com.greensock.TweenMax;
 	import flash.display.Bitmap;
-	import flash.display.Sprite;
-	import flash.display.StageQuality;
 	import flash.events.Event;
 	import flash.text.TextFieldAutoSize;
 	import flash.text.TextFormatAlign;
@@ -88,6 +83,7 @@ package com.dukascopy.connect.screens.innerScreens {
 			super.createView();
 			
 			list = new List("QuestionsList");
+			list.setMask(true);
 			list.backgroundColor = Style.color(Style.COLOR_BACKGROUND);
 			list.background = true;
 			_view.addChild(list.view);
