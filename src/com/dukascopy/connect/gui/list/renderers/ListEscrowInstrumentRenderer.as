@@ -25,7 +25,7 @@ package com.dukascopy.connect.gui.list.renderers {
 		
 		private static const TEXT_SIZE_LABEL:int = Config.FINGER_SIZE * .3;
 		private static const TEXT_SIZE_DESC:int = Config.FINGER_SIZE * .2;
-		private static const TEXT_SIZE_DESC_VALS:int = Config.FINGER_SIZE * .17;
+		private static const TEXT_SIZE_DESC_VALS:int = Config.FINGER_SIZE * .2;
 		private static const ICON_SIZE:int = Config.FINGER_SIZE * .7;
 		private static const NEW_COUNT_SIZE:int = Config.FINGER_SIZE * .42;
 		private static const PADDING:int = Config.FINGER_SIZE * .2;

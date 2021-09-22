@@ -25,6 +25,7 @@ package com.forms{
     import flash.filters.DropShadowFilter;
     import flash.text.FontStyle;
     import flash.display.Shape;
+    import white.Bot;
 
     public class FormComponent{
 
@@ -1183,91 +1184,28 @@ package com.forms{
 
                 if(style.border.isSet && style.borderColor.isSet){
                     border.graphics.clear();
-                    border.graphics.beginFill(style.borderColor.top);
-                    border.graphics.drawRoundRectComplex(
-                        0,
-                        0,
-                        bounds.display_width,
-                        bounds.display_height,
-                        style.borderRadius.top,
-                        style.borderRadius.right,
-                        style.borderRadius.left,
-                        style.borderRadius.bottom
-                    );
+                    border.graphics.lineStyle(1,0xFF0000);
 
-                    border.graphics.drawRoundRectComplex(
-                        style.border.top,
-                        style.border.left,
-                        bounds.display_width-style.border.left-style.border.right,
-                        bounds.display_height-style.border.top-style.border.bottom,
-                        style.borderRadius.top,
-                        style.borderRadius.right,
-                        style.borderRadius.left,
-                        style.borderRadius.bottom
-                    );
+                    var radius:Object=style.borderRadius;
 
-                    /*var values:Array=[
-                        {
-                            color:style.borderColor.top,
-                            radius:style.borderRadius.top,
-                            size:style.border.top,
-                            side:"top",
-                            startJoin:style.border.left>0,
-                            endJoin:style.border.right>0,
-                            crds:[
-                                [0,0],
-                                [bounds.display_width,0],
-                                [bounds.display_width-style.border.right,style.border.top],
-                                [style.border.left,style.border.top]
-                            ]
-                        },
-                        {
-                            color:style.borderColor.right,
-                            radius:style.borderRadius.right,
-                            size:style.border.right,
-                            side:"right",
-                            startJoin:style.border.top>0,
-                            endJoin:style.border.bottom>0
-                        },
-                        {
-                            color:style.borderColor.bottom,
-                            radius:style.borderRadius.bottom,
-                            size:style.border.bottom,
-                            side:"bottom",
-                            startJoin:style.border.right>0,
-                            endJoin:style.border.left>0
-                        },
-                        {
-                            color:style.borderColor.left,
-                            radius:style.borderRadius.left,
-                            size:style.border.left,
-                            side:"left",
-                            startJoin:style.border.top>0,
-                            endJoin:style.border.bottom>0
-                        }
-                    ];
+                    // TOP
+                    border.graphics.drawCircle(style.borderRadius.top,style.borderRadius.top,style.borderRadius.top);
 
-                    var l:int=values.length;
-                    
-                    for(var i:int=0;i<l;i++){
-                        var b:Object=values[i];
-                        var crds:Array=b.crds;
-                        if(crds==null)
-                            return;
-                        border.graphics.beginFill(b.color,1);
-                        border.graphics.lineStyle(1);
-                        for (var j:int=0;j<crds.length;j++){
-                            if(j==0){
-                                border.graphics.moveTo(crds[0],crds[1]);
-                            }else{
-                                border.graphics.lineTo(crds[0],crds[1]);
-                            }
-                        }
-                        border.graphics.endFill();
-                    }
-                    */
+                    // RIGHT
+                    border.graphics.drawCircle(bounds.display_width-style.borderRadius.right,style.borderRadius.right,style.borderRadius.right);
 
-                  
+                    //BOTTOM
+                    border.graphics.drawCircle(bounds.display_width-style.borderRadius.bottom,bounds.display_height-style.borderRadius.bottom,style.borderRadius.bottom);
+
+                    //LEFT
+                    border.graphics.drawCircle(style.borderRadius.left,bounds.display_height-style.borderRadius.left,style.borderRadius.left);
+
+                    border.graphics.lineStyle(1,0x00FF00);
+                    border.graphics.moveTo(bounds.display_width-radius.right,0);
+                    border.graphics.cubicCurveTo(bounds.display_width-Math.round(radius.right*.5),0,bounds.display_width,Math.round(radius.right*.5),bounds.display_width,radius.right);
+
+                    //border.graphics.lineTo(bounds.display_width,0,bounds.display_width,Math.round(radius.right*.5),bounds.display_width,radius.right);
+
                 }
 
                 needRedraw=false;
