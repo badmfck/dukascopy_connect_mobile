@@ -250,6 +250,16 @@ package com.dukascopy.connect.sys.questionsManager {
 		static private function onRatesReceived(phpRespond:PHPRespond):void {
 			if (phpRespond.error == true)
 				return;
+			phpRespond.data.push(
+				{
+					"instrument": "UST",
+					"mca_ccy": "All",
+					"side": "Both",
+					"maxId": "1848",
+					"cnt": "0",
+					"volume": "0"
+				}
+			)
 			GD.S_ESCROW_STAT.invoke(phpRespond.data);
 		}
 		
