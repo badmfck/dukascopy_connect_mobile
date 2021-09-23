@@ -28,6 +28,7 @@ package com.dukascopy.connect.data.escrow
 		public var debit_account:String;
 		public var msg_id:String;
 		public var transactionConfirmShown:Boolean;
+		public var priceID:int;
 		
 		public function EscrowMessageData(data:Object = null) 
 		{
@@ -161,7 +162,7 @@ package com.dukascopy.connect.data.escrow
 			result.price = price;
 			result.chatUID = chatUID;
 			
-			result.priceID = 1;
+			result.priceID = priceID;
 			
 			if (debit_account != null)
 			{

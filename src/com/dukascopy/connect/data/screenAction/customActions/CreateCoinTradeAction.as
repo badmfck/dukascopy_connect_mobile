@@ -26,6 +26,8 @@ package com.dukascopy.connect.data.screenAction.customActions {
 	import com.dukascopy.connect.sys.chatManager.ChatManager;
 	import com.dukascopy.connect.sys.dialogManager.DialogManager;
 	import com.dukascopy.connect.sys.payments.PayManager;
+	import com.dukascopy.connect.sys.php.PHP;
+	import com.dukascopy.connect.sys.php.PHPRespond;
 	import com.dukascopy.connect.sys.serviceScreenManager.ServiceScreenManager;
 	import com.dukascopy.connect.sys.style.Style;
 	import com.dukascopy.connect.sys.usersManager.UsersManager;
@@ -177,7 +179,10 @@ package com.dukascopy.connect.data.screenAction.customActions {
 				{
 					if (offer != null)
 					{
-						sendDeal(offer);
+						reservePriceId(offer);
+						
+						
+					//	sendDeal(offer);
 					}
 					else
 					{
@@ -191,6 +196,46 @@ package com.dukascopy.connect.data.screenAction.customActions {
 					onFail();
 				}
 			}
+		}
+		
+		private function reservePriceId(offer:EscrowDealData):void 
+		{
+			var request:Object = new Object();
+			request.ccy = offer.currency;
+			request.crypto = offer.instrument;
+			if (offer.isPercent)
+			{
+				request.price = offer.price + "%";
+			//	request.percent_price = true;
+			}
+			else
+			{
+				request.price = offer.price;
+			}
+			PHP.escrow_requestPrice(onPriceReady, request, offer);
+		}
+		
+		private function onPriceReady(respond:PHPRespond):void 
+		{
+			trace("PRICE ID:", respond.data.id);
+			if (respond.error)
+			{
+				onFail();
+			}
+			else
+			{
+				if (respond.additionalData != null && respond.additionalData is EscrowDealData)
+				{
+					var offer:EscrowDealData = respond.additionalData as EscrowDealData;
+					sendDeal(offer, respond.data.id);
+				}
+				else
+				{
+					ApplicationErrors.add();
+					onFail();
+				}
+			}
+			respond.dispose();
 		}
 		
 		private function showCreateSuccessPopup(offer:EscrowDealData):void 
@@ -270,7 +315,7 @@ package com.dukascopy.connect.data.screenAction.customActions {
 			removeListeners();
 		}
 		
-		private function sendDeal(dealData:EscrowDealData):void 
+		private function sendDeal(dealData:EscrowDealData, priceID:int):void 
 		{
 			var chatUser:ChatUserVO = UsersManager.getInterlocutor(chat);
 			if (chatUser == null)
@@ -280,8 +325,9 @@ package com.dukascopy.connect.data.screenAction.customActions {
 			}
 			var messageData:EscrowMessageData = new EscrowMessageData();
 			messageData.type = ChatSystemMsgVO.TYPE_ESCROW_OFFER;
-			messageData.price = dealData.price;
+		//	messageData.price = dealData.price;
 			messageData.amount = dealData.amount;
+			messageData.priceID = priceID;
 			messageData.currency = dealData.currency;
 			messageData.instrument = dealData.instrument;
 			messageData.direction = dealData.direction;

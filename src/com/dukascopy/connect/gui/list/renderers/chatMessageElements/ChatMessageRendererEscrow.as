@@ -337,6 +337,12 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 			{
 				switch (status)
 				{
+					case EscrowStatus.offer_expired:
+					{
+						result = Lang.offer_expired;
+						
+						break;
+					}
 					case EscrowStatus.offer_created:
 					{
 						if (direction == TradeDirection.buy)
@@ -562,6 +568,12 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 						time.y = int(resultHeight * .5 + Config.FINGER_SIZE * .05);
 					}
 				}
+				else if (messageData.systemMessageVO.escrow.status == EscrowStatus.offer_expired)
+				{
+					iconFail.visible = true;
+					iconTime.visible = false;
+					time.visible = false;
+				}
 				else if (messageData.systemMessageVO.escrow.inactive == true)
 				{
 					iconTime.visible = false;
@@ -744,7 +756,7 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 			return Color.GREY_SUPER_LIGHT;
 		}
 		
-		private function gettimeDifference(seconds:Number):String 
+		private function gettimeDifference(seconds:int):String 
 		{
 			var result:String;
 			if (seconds < 60)
@@ -783,6 +795,11 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 			{
 				switch(status)
 				{
+					case EscrowStatus.offer_expired:
+					{
+						return Color.GREY;
+						break;
+					}
 					case EscrowStatus.offer_created:
 					{
 						if (direction == TradeDirection.buy)

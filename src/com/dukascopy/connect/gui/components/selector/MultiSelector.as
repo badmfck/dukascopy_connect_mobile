@@ -35,6 +35,7 @@ package com.dukascopy.connect.gui.components.selector {
 		
 		static public const LAYOUT_HORIZONTAL:String = "layoutHorizontal";
 		static public const LAYOUT_VERTICAL:String = "layoutVertical";
+		public var multiselection:Boolean;
 		
 		public function MultiSelector(layout:String = LAYOUT_HORIZONTAL, selectedItemIndex:int = -1) {
 			_gap = 0;
@@ -66,6 +67,14 @@ package com.dukascopy.connect.gui.components.selector {
 				_selectedIndexes.removeAt(indexInSelected);
 				deselect(value);
 			} else {
+				if (!multiselection)
+				{
+					for (var i:int = 0; i < _selectedIndexes.length; i++) 
+					{
+						deselect(_selectedIndexes[i]);
+					}
+					_selectedIndexes = new Vector.<int>();
+				}
 				_selectedIndexes.push(value);
 				select(value);
 			}

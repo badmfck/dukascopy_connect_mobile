@@ -923,13 +923,15 @@ package com.dukascopy.connect.sys.questionsManager {
 		}
 		
 		static public function getNotResolved(filters:Vector.<EscrowFilter> = null):Array/*QuestionVO*/ {
+			
+			
 			if (questionsHash == null) {
 				getQuestions(filters);
 				return null;
 			}
-			//!TODO:!!!;
-			//!TODO:!!!;
-			//!TODO:!!!;
+			
+			
+			
 			//!TODO:!!!;
 			//!TODO:!!!;
 			//!TODO:!!!;
@@ -937,9 +939,9 @@ package com.dukascopy.connect.sys.questionsManager {
 			//!TODO:!!!;
 			//!TODO:!!!;
 			//!TODO:!!!;
-			//!TODO:!!!;
-			//!TODO:!!!;
-			//!TODO:!!!;
+			
+			
+			
 			if (needToRefresh == true)
 				getQuestions(filters);
 			if (categoriesFilter == null || categoriesFilter.length == 0)

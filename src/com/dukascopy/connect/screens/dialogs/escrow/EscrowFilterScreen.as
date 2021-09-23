@@ -78,6 +78,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			addItem(titleBlacklist);
 			
 			tradingSideSelector = new MultiSelector();
+			tradingSideSelector.multiselection = false;
 			tradingSideSelector.itemRenderer = ButtonSelectorItem;
 			tradingSideSelector.gap = Config.FINGER_SIZE * .3;
 			tradingSideSelector.S_ON_SELECT.add(onSideSelected);
