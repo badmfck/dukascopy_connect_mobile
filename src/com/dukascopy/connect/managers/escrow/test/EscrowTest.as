@@ -10,10 +10,12 @@ package com.dukascopy.connect.managers.escrow.test
         
         public function EscrowTest(){
             var managers:int=0;
+            
             //1. check for escrow manager availability
             GD.S_ESCROW_MANAGER_AVAILABLE.invoke(function():void{
                 managers++;
             });
+
             var timer:Timer=new Timer(100,1);
             var disp:Dispatcher=new Dispatcher(timer);
             disp.add(TimerEvent.TIMER_COMPLETE,function(e:TimerEvent):void{

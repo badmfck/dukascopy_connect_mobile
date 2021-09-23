@@ -8,12 +8,13 @@ package com.forms.components{
 
     public class FormList extends FormComponent{
 
-        private var item:XMLNode;
+        private var itemXML:XMLNode;
         private var items:Vector.<FormComponent>;
         private var init:Boolean=false;
         private var lastUpdateTime:Number=0;
         private var lastUpdateData:Object;
         private var timeoutID:int;
+        private var data:Array;
 
         public function FormList(xml:XMLNode,form:Form){
             super(xml,form,{
@@ -22,15 +23,31 @@ package com.forms.components{
         }
 
         public function setData(data:Array):void{
+            this.data=data;
+            
+            // remove all items
+            // TODO: DO NOT REMOVE ALL ITEMS WHEN DATA POINTER IS THE SAME
+            if(_components.length>0)
+                clearAll(false);
 
-            // TODO - recalculate/reuse items
             if(data==null){
                 //TODO: CLEAR ALL ITEMS
-                if(_components.length>0)
-                    clearAll();
+                rebuild();
                 return;
             }
 
+            //1. create item from up to down
+            var li:FormListItem=new FormListItem(itemXML,form);
+            add(li);
+            var l:int=data.length;
+            for(var i:int=0;i<l;i++){
+                li.setupUserValues(data[i]);
+                redraw();
+                trace(li.getBounds().width,li.getBounds().height);
+            }
+
+
+            /*
             var time:Number=new Date().getTime();
             lastUpdateData=data;
 
@@ -106,7 +123,7 @@ package com.forms.components{
             if(itemsToAdd && itemsToAdd.length>0)
                 addAll(itemsToAdd);
             else if(needRebuild)
-                rebuild();
+                rebuild();*/
         }
 
         
@@ -130,7 +147,7 @@ package com.forms.components{
                         continue;
                     if(node.nodeName.toLowerCase()=="li"){
                         // found li
-                        item=node;
+                        itemXML=node;
                         return;
                     }
                 }
@@ -147,7 +164,7 @@ package com.forms.components{
             super.destroy();
             clearTimeout(timeoutID);
             items=null;
-            item=null;
+            itemXML=null;
             lastUpdateData=null;
         }
     }

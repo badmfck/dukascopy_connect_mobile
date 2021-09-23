@@ -10,6 +10,7 @@ package com.dukascopy.connect.managers.escrow.test{
     import flash.system.Capabilities;
     import com.forms.IFormController;
     import com.forms.FormComponent;
+    import com.forms.components.FormList;
     
 
     public class EscrowTestForm extends Sprite implements IFormController{
@@ -48,6 +49,13 @@ package com.dukascopy.connect.managers.escrow.test{
             var btn:FormComponent=form.createComponent("button");
             btn.textContent="TEST";
             form.add(btn);
+
+            var list:FormList=form.getComponentByID("sample") as FormList;
+            var dta:Array=[];
+            for(var i:int=0;i<1000;i++){
+                dta.push(Math.random());
+            }
+            list.setData(dta);
         } 
 
         public function destroy():void{

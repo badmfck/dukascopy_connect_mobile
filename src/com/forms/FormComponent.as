@@ -279,6 +279,8 @@ package com.forms{
                 return;
             }
 
+            //TODO: DO NOT CHANGE TEXT CONTENT IF IT THE SAME!!!
+
             var lines:Array=val.split("\n");
 
             // TEXT NODE
