@@ -374,6 +374,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			selectInstrument(value);
 			currencySign = null;
 			selectCurrencyFromPrices();
+			setCurrencyInControls();
 			
 			if (!selectedCrypto.isLinked && state != STATE_REGISTER)
 			{
@@ -717,7 +718,16 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 				if (terms.isSelected())
 				{
 					offerData = new EscrowDealData();
-					offerData.price = parseFloat(NumberFormat.formatAmount(selectedPrice, currencySign, true));
+					if (controlPriceSelected == priceSelector)
+					{
+						offerData.price = priceSelector.getValue();
+						offerData.isPercent = true;
+					}
+					else
+					{
+						offerData.price = parseFloat(NumberFormat.formatAmount(selectedPrice, currencySign, true));
+					}
+					
 					offerData.direction = selectedDirection;
 					offerData.amount = parseFloat(NumberFormat.formatAmount(inputAmount.value, selectedCrypto.code, true));
 					offerData.instrument = selectedCrypto.code;

@@ -15,11 +15,13 @@ package com.dukascopy.connect.data.escrow
 		private static const MCA_HOLD:String = "paid_mca";
 		private static const PAID_CRYPTO:String = "paid_crypto";
 		private static const DEAL_COMPLETED:String = "completed";
+		private static const OFFER_EXPIRED:String = "outdated";
 		
 		static public var offer_created:EscrowStatus = new EscrowStatus(EscrowStatus.OFFER_CREATED);
 		static public var offer_cancelled:EscrowStatus = new EscrowStatus(EscrowStatus.OFFER_CANCELLED);
 		static public var offer_rejected:EscrowStatus = new EscrowStatus(EscrowStatus.OFFER_REJECTED);
 		static public var offer_accepted:EscrowStatus = new EscrowStatus(EscrowStatus.OFFER_ACCEPTED);
+		static public var offer_expired:EscrowStatus = new EscrowStatus(EscrowStatus.OFFER_EXPIRED);
 		
 		static public var deal_created:EscrowStatus = new EscrowStatus(EscrowStatus.DEAL_CREATED);
 		static public var deal_mca_hold:EscrowStatus = new EscrowStatus(EscrowStatus.MCA_HOLD);
@@ -43,6 +45,11 @@ package com.dukascopy.connect.data.escrow
 				case OFFER_CREATED:
 				{
 					return offer_created;
+					break;
+				}
+				case OFFER_EXPIRED:
+				{
+					return offer_expired;
 					break;
 				}
 				case OFFER_CANCELLED:

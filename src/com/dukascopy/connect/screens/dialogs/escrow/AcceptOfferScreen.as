@@ -326,7 +326,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 				recreateLayout();
 			}
 			
-			requestPrice();
+		//	requestPrice();
 		}
 		
 		private function requestPrice():void 
