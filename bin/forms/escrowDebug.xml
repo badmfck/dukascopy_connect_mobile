@@ -2,7 +2,7 @@
 
     <space size="100"/>
 
-    <div layout="horizontal" height="100%" padding="10" border="5" border-radius="20" borderColor="#FFCCAA" backgroundColor="#EEFFCC" id="tst">
+    <div layout="horizontal" height="100%" padding="0" border="2" border-radius="0" borderColor="#0000FF" backgroundColor="#EEFFCC" id="tst">
 
         <div width="50%" height="100%" >
             <button>BTN4</button>

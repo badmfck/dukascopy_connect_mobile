@@ -1184,28 +1184,12 @@ package com.forms{
 
                 if(style.border.isSet && style.borderColor.isSet){
                     border.graphics.clear();
-                    border.graphics.lineStyle(1,0xFF0000);
-
+                    border.graphics.beginFill(style.borderColor.top);
                     var radius:Object=style.borderRadius;
-
-                    // TOP
-                    border.graphics.drawCircle(style.borderRadius.top,style.borderRadius.top,style.borderRadius.top);
-
-                    // RIGHT
-                    border.graphics.drawCircle(bounds.display_width-style.borderRadius.right,style.borderRadius.right,style.borderRadius.right);
-
-                    //BOTTOM
-                    border.graphics.drawCircle(bounds.display_width-style.borderRadius.bottom,bounds.display_height-style.borderRadius.bottom,style.borderRadius.bottom);
-
-                    //LEFT
-                    border.graphics.drawCircle(style.borderRadius.left,bounds.display_height-style.borderRadius.left,style.borderRadius.left);
-
-                    border.graphics.lineStyle(1,0x00FF00);
-                    border.graphics.moveTo(bounds.display_width-radius.right,0);
-                    border.graphics.cubicCurveTo(bounds.display_width-Math.round(radius.right*.5),0,bounds.display_width,Math.round(radius.right*.5),bounds.display_width,radius.right);
-
-                    //border.graphics.lineTo(bounds.display_width,0,bounds.display_width,Math.round(radius.right*.5),bounds.display_width,radius.right);
-
+                    var size:Object=style.border;
+                    var s:Object={top:0,right:0,bottom:0,left:0};
+                    drawBorder(s);
+                    drawBorder(size,true);
                 }
 
                 needRedraw=false;
@@ -1230,6 +1214,125 @@ package com.forms{
 
             // draw as bitmap
             redrawBitmap()
+        }
+
+        private function drawBorder(size:Object,second:Boolean=false):void{
+
+            var radius:Object={}
+            radius.top=style.borderRadius.top-size.top
+            if(radius.top<0)
+                radius.top=0;
+
+            radius.right=style.borderRadius.right-size.right
+            if(radius.right<0)
+                radius.right=0;
+
+            radius.bottom=style.borderRadius.bottom-size.bottom
+            if(radius.bottom<0)
+                radius.bottom=0;
+
+            radius.left=style.borderRadius.left-size.left
+            if(radius.left<0)
+                radius.left=0;
+
+
+            // TOP
+            /*border.graphics.drawCircle(style.borderRadius.top,style.borderRadius.top,radius.top);
+
+            // RIGHT
+            border.graphics.drawCircle(bounds.display_width-style.borderRadius.right,style.borderRadius.right,radius.right);
+
+            //BOTTOM
+            border.graphics.drawCircle(bounds.display_width-style.borderRadius.bottom,bounds.display_height-style.borderRadius.bottom,radius.bottom);
+
+            //LEFT
+            border.graphics.drawCircle(style.borderRadius.left,bounds.display_height-style.borderRadius.left,radius.left);*/
+            
+
+            // DRAW FIRST LINE
+                       
+
+            var rx:int=bounds.display_width-radius.right-size.right;
+            var ry:int=size.right;
+            var drawCurve:Boolean=true;
+           
+            border.graphics.moveTo(rx,ry);
+
+ 
+            border.graphics.cubicCurveTo(
+
+                bounds.display_width-Math.round((radius.right)*.5)-size.right,
+                size.right,
+
+                bounds.display_width-size.right,
+                Math.round((radius.right)*.5)+size.right,
+
+                bounds.display_width-size.right,
+                radius.right+size.right
+            );
+            
+            
+
+            border.graphics.lineTo(bounds.display_width-size.bottom,bounds.display_height-radius.bottom-size.bottom);
+
+            border.graphics.cubicCurveTo(
+                bounds.display_width-size.bottom,
+                bounds.display_height-Math.round(radius.bottom*.5)-size.bottom,
+
+                bounds.display_width-Math.round(radius.bottom*.5)-size.bottom,
+                bounds.display_height-size.bottom,
+
+                bounds.display_width-radius.bottom-size.bottom,
+                bounds.display_height-size.bottom
+            );
+
+            border.graphics.lineTo(radius.left+size.left,bounds.display_height-size.left);
+            
+            border.graphics.cubicCurveTo(
+                Math.round(radius.left*.5)+size.left,
+                bounds.display_height-size.left,
+
+                size.left,
+                bounds.display_height-Math.round(radius.left*.5)-size.left,
+
+                size.left,
+                bounds.display_height-radius.left-size.left
+            );
+
+
+            
+            // DRAW TOP
+ 
+            var tx:int=size.top;
+            var ty:int=radius.top+size.top;
+            
+
+            border.graphics.lineTo(tx,ty);
+
+            
+
+            border.graphics.cubicCurveTo(
+                size.top,
+                Math.round(radius.top*.5)+size.top,
+
+                Math.round(radius.top*.5)+size.top,
+                size.top, 
+
+                radius.top+size.top,
+                size.top 
+            );
+  
+
+            rx=bounds.display_width-radius.right-size.right
+            ry=size.right;
+         
+            border.graphics.lineTo(rx,ry);
+
+            // sell create
+            // price form rates + %
+            // reserved price ID
+            // send to socket price ID
+          
         }
 
         protected function redrawBitmap():void{

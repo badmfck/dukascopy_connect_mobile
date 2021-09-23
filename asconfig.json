@@ -26,6 +26,6 @@
 		]
 	},
 
-    "mainClass": "Main",
+    "mainClass": "MainEscrow",
     "application":"conf/desktop.xml"
 }
