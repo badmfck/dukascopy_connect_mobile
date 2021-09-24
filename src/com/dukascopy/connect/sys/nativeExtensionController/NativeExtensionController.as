@@ -1234,6 +1234,10 @@ package com.dukascopy.connect.sys.nativeExtensionController {
 			{
 				MobileGui.androidExtension.setStatusBarColor(color);
 			}
+			else if (Config.PLATFORM_APPLE)
+			{
+				//!TODO:;
+			}
 		}
 		
 		static public function isNotificationClicked():Boolean 
