@@ -53,11 +53,11 @@ package com.dukascopy.connect.gui.components.ratesPanel
 			GD.S_ESCROW_INSTRUMENTS_REQUEST.invoke();
 		}
 		
-		private function onInstruments(instruments:Vector.<EscrowInstrument>):void 
+		private function onInstruments(instrumentsData:Vector.<EscrowInstrument>):void 
 		{
-			if (this.instruments == null)
+			if (instruments == null && instrumentsData != null)
 			{
-				this.instruments = instruments.concat(instruments);
+				instruments = instrumentsData.concat(instrumentsData);
 				construct();
 			}
 		}

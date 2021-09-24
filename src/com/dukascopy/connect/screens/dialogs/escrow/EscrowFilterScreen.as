@@ -62,6 +62,8 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		private var headerHeight:Number;
 		private var tradingSideSelector:MultiSelector;
 		private var filters:Vector.<EscrowFilter>;
+		private var line:Bitmap;
+		private var line2:Bitmap;
 		
 		public function EscrowFilterScreen() { }
 		
@@ -83,6 +85,14 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			tradingSideSelector.gap = Config.FINGER_SIZE * .3;
 			tradingSideSelector.S_ON_SELECT.add(onSideSelected);
 			addItem(tradingSideSelector);
+			
+			line = new Bitmap();
+			line.bitmapData = UI.getHorizontalLine(Style.color(Style.COLOR_LINE_LIGHT));
+			addItem(line);
+			
+			line2 = new Bitmap();
+			line2.bitmapData = UI.getHorizontalLine(Style.color(Style.COLOR_LINE_LIGHT));
+			addItem(line2);
 		}
 		
 		private function onSideSelected(selectedItem:SelectorItemData):void 

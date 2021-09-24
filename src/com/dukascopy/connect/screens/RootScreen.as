@@ -21,6 +21,7 @@ package com.dukascopy.connect.screens {
 	import com.dukascopy.connect.gui.tabs.TabBar;
 	import com.dukascopy.connect.gui.tools.ImagePreviewCrop;
 	import com.dukascopy.connect.gui.topBar.TopBar;
+	import com.dukascopy.connect.managers.escrow.vo.EscrowAdsFilterVO;
 	import com.dukascopy.connect.managers.escrow.vo.EscrowInstrument;
 	import com.dukascopy.connect.screens.base.BaseScreen;
 	import com.dukascopy.connect.screens.base.ScreenManager;
@@ -331,10 +332,11 @@ package com.dukascopy.connect.screens {
 			
 			NewMessageNotifier.S_UPDATE_EXIST.add(needNotification);
 			
-			GD.S_ESCROW_INSTRUMENT_Q_SELECTED.add(onIstrumentSelected);
+			GD.S_SHOW_ESCROW_ADS.add(onIstrumentSelected);
+		//	GD.S_ESCROW_INSTRUMENT_Q_SELECTED.add(onIstrumentSelected);
 		}
 		
-		private function onIstrumentSelected(instrument:Object = null):void 
+		private function onIstrumentSelected(instrument:EscrowAdsFilterVO = null):void 
 		{
 			if (isDisposed)
 			{
@@ -342,7 +344,7 @@ package com.dukascopy.connect.screens {
 			}
 			if (instrument != null)
 			{
-				selectedinstrument = instrument.instrument;
+				selectedinstrument = instrument.instrument.code;
 			}
 			else
 			{
@@ -353,12 +355,12 @@ package com.dukascopy.connect.screens {
 			{
 				if (instrumentTabObject != null)
 				{
-					var code:String = instrument.instrument;
+					var code:String = instrument.instrument.code;
 					if (code == "DCO")
 						code = "DUK+";
 					var name:String = "";
-					if (instrument.instrument in Lang.cryptoTitles == true)
-						name = Lang.cryptoTitles[instrument.instrument];
+					if (instrument.instrument.code in Lang.cryptoTitles == true)
+						name = Lang.cryptoTitles[instrument.instrument.code];
 					var text:String = String(name + " (" + code + ")").toUpperCase();
 					instrumentTabObject.title = text;
 				}
@@ -515,7 +517,8 @@ package com.dukascopy.connect.screens {
 			currentTabID = "";
 			currentScreen = null;
 			
-			GD.S_ESCROW_INSTRUMENT_Q_SELECTED.remove(onIstrumentSelected);
+			GD.S_SHOW_ESCROW_ADS.remove(onIstrumentSelected);
+		//	GD.S_ESCROW_INSTRUMENT_Q_SELECTED.remove(onIstrumentSelected);
 			InnerNotificationManager.S_NOTIFICATION_NEED.remove(needNotification);
 			NewMessageNotifier.S_UPDATE_EXIST.remove(needNotification);
 		}
