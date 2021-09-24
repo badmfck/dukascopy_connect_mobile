@@ -28,6 +28,15 @@ package com.dukascopy.connect.managers.escrow {
 		public function EscrowAdsManager() {
 			GD.S_ESCROW_ADS_CRYPTOS_REQUEST.add(onEscrowAdsCryptosRequested);
 			GD.S_ESCROW_ADS_INSTRUMENT_SELECTED.add(saveEscrowAdsCryptoID);
+			GD.S_ESCROW_ADS_FILTER_REQUEST.add(onEscrowAdsFilterRequested);
+		}
+		
+		private function onEscrowAdsFilterRequested(callback:Function):void {
+			if (callback == null)
+				return;
+			if (callback.length != 1)
+				return;
+			callback(escrowAdsFilter);
 		}
 		
 // ESCROW ADVERTISING CRYPTO --> //
