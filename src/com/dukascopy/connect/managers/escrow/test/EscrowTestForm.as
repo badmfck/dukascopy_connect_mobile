@@ -46,10 +46,13 @@ package com.dukascopy.connect.managers.escrow.test{
         }
 
         private function formReady():void{
-            var btn:FormComponent=form.createComponent("button");
-            btn.textContent="TEST";
+            var btn:FormComponent=form.createComponent("button",null);
+            btn.setID("aaargh");
+            btn.textContent="TEST CONTENT";
             form.add(btn);
 
+
+            return;
             var list:FormList=form.getComponentByID("sample") as FormList;
             var dta:Array=[];
             for(var i:int=0;i<1000;i++){

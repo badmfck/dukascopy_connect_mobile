@@ -1,0 +1,31 @@
+{
+    "config": "airmobile",
+    "compilerOptions": {
+        "default-frame-rate": 60,
+        "use-gpu": true,
+        "advanced-telemetry": true,
+        "source-path": [
+            "src"
+        ],
+        "load-config": [
+            "conf/project.xml"
+        ],
+        "library-path": [
+            "src/swc/greensock.swc"
+        ],
+        "debug": true,
+        "output": "./bin/Dukascopy.swf"
+        
+    },
+
+    
+
+    "airOptions": {
+		"extdir": [
+			"lib/ane"
+		]
+	},
+
+    "mainClass": "MainEscrow",
+    "application":"conf/desktop.xml"
+}

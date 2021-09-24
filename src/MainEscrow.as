@@ -11,6 +11,7 @@ import flash.ui.MultitouchInputMode;
 import flash.system.Capabilities;
 import flash.events.UncaughtErrorEvent;
 import com.greensock.TweenMax;
+
 import com.dukascopy.connect.managers.escrow.EscrowDealManager;
 import com.dukascopy.connect.managers.webview.WebViewManager;
 import com.dukascopy.connect.managers.escrow.test.EscrowTest;

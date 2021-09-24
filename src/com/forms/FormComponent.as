@@ -297,7 +297,6 @@ package com.forms{
                 _add(txt,-1,false);
             }
             rebuild();
-            
         }
 
 
@@ -347,6 +346,19 @@ package com.forms{
             return userValues;
         }
 
+        public function setID(newID:String):void{
+            if(form==null)
+                return;
+
+            if(newID==id)
+                return;
+
+            if(id!=null)
+                form.unregID(id)
+
+            form.regID(newID,this);
+            _id=newID;
+        }
 
         private function onXMLReady(xml:XMLNode,predefinedStyle:Object,additionalChilds:XML):void{
             _nodeName=xml.nodeName;
@@ -480,9 +492,10 @@ package com.forms{
                 _components=new Vector.<FormComponent>();
             }
 
-            if(box.parent==null)
+            //if(box.parent==null)
                 (_view as DisplayObjectContainer).addChild(box);
-            if(border.parent==null)
+           
+            //if(border.parent==null)
                 (_view as DisplayObjectContainer).addChild(border);
 
             if(!enableChilds){
@@ -592,6 +605,7 @@ package com.forms{
         }
 
         public function add(component:FormComponent,index:int=-1):void{
+            //TODO: store objects to add
             if(this is Form && !documentLoaded){
                 trace("WARN: no form loaded yet");
                 return;
@@ -769,11 +783,9 @@ package com.forms{
             if(destroyed)
                 return;
 
-            if(id=="tst"){
-                trace("123");
-            }
 
-            
+            if(id=="aaargh")                  
+                trace("123");
 
             /*if(parent!=null && percentOffsetH>-1 && parent.style.layout.toString()==FormLayout.HORIZONTAL)
                 percentOffsetH=-1;*/
@@ -1126,6 +1138,7 @@ package com.forms{
             
             var x:int=0;
             var y:int=0;
+            
             if(style.align.value==FormAlign.CENTER){
                 if(style.layout.toString()==FormLayout.VERTICAL){
                     //vertical align:
@@ -1462,8 +1475,8 @@ package com.forms{
                     cnt=cnt.substr(0,45)+"... (total "+cnt.length+")"
                 cnt=" content: "+cnt+" ";
             }
-            var s_name:String="node:"+nodeName+(cnt)+", nodeType:"+nodeType+((id)?", id: "+id:"")+((name)?", name: "+name:"")+"\n";
-            
+            var s_name:String="node:"+nodeName+(cnt)+", nodeType:"+nodeType+((id)?", id: "+id:"")+((name)?", name: "+name:", onStage:"+(view.stage!=null)+", visible:"+view.visible);
+            s_name+=", bounds:"+bounds.toString()+", x:"+view.x+", y:"+view.y+"\n";
             var tab:String="|";
             var tabChar:String="__"
             for(var i:int=0;i<lvl;i++)

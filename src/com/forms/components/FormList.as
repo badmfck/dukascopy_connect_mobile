@@ -40,11 +40,16 @@ package com.forms.components{
             var li:FormListItem=new FormListItem(itemXML,form);
             add(li);
             var l:int=data.length;
+            var tme:Number=new Date().getTime();
             for(var i:int=0;i<l;i++){
+                // TODO: set data
                 li.setupUserValues(data[i]);
                 redraw();
-                trace(li.getBounds().width,li.getBounds().height);
+                //trace(li.getBounds().width,li.getBounds().height);
             }
+            trace(">>"+(new Date().getTime()-tme)+"<<");
+
+            trace(this);
 
 
             /*

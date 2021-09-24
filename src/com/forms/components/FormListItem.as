@@ -16,16 +16,18 @@ package com.forms.components{
         }
 
         override public function setupUserValues(data:Object):void{
-            super.setupUserValues(data);
             if(data==null){
                 userDataHash=null;
+                super.setupUserValues(data);
                 return;
             }
+
             try{
-                userDataHash=JSON.stringify(data);
+               userDataHash=JSON.stringify(data);
             }catch(e:Error){
-                userDataHash=null;
+               userDataHash=null;
             }
+            super.setupUserValues(data);
         }
 
         public function compareUserValues(data:Object):Boolean{

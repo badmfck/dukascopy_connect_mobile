@@ -17,9 +17,9 @@
         <div width="50%" height="100%">
             SELLER
             <input id="sellerKey" prompt="Type seller key" value="123"/>
-            <div backgroundColor="#11FF00">qwdqd</div>
-            <list id="sample" backgroundColor="#00ACEF" height="100%">
-                <li>${value}</li>
+            <div backgroundColor="#11FF00">some test div</div>
+            <list id="sample" width="100%" backgroundColor="#00ACEF" height="100%">
+                <li background-color="#001122" width="100%">${value}</li>
             </list>
         </div>
     </div>
