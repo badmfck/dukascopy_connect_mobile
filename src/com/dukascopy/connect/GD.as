@@ -51,6 +51,11 @@ package com.dukascopy.connect {
 		static public const S_ESCROW_FILTER:S_EscrowFilters = new S_EscrowFilters();
 		static public const S_ESCROW_INSTRUMENT_Q_SELECTED:Signal = new Signal("GD.S_ESCROW_INSTRUMENT_Q_SELECTED");
 		static public const S_ESCROW_STAT:Signal = new Signal("GD.S_ESCROW_STAT");
+		
+		static public const S_ESCROW_ADS_CRYPTOS_REQUEST:Signal = new Signal("GD.S_ESCROW_ADS_CRYPTOS_REQUEST");
+		static public const S_ESCROW_ADS_INSTRUMENT_SELECTED:Signal = new Signal("GD.S_ESCROW_ADS_INSTRUMENT_SELECTED");
+		static public const S_SHOW_ESCROW_ADS:Signal = new Signal("GD.S_SHOW_ESCROW_ADS");
+		static public const S_ESCROW_ADS_CRYPTOS:Signal = new Signal("GD.S_ESCROW_ADS_CRYPTOS");
 
 		static public const S_IOS_LOCALIZATION_UPDATE:Signal=new Signal("S_IOS_LOCALIZATION_UPDATE");
 		

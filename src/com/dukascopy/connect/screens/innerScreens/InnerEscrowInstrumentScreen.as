@@ -9,11 +9,9 @@ package com.dukascopy.connect.screens.innerScreens {
 	import com.dukascopy.connect.gui.lightbox.UI;
 	import com.dukascopy.connect.gui.list.List;
 	import com.dukascopy.connect.gui.list.ListItem;
-	import com.dukascopy.connect.gui.list.renderers.ListConversation;
 	import com.dukascopy.connect.gui.list.renderers.ListEscrowInstrumentRenderer;
 	import com.dukascopy.connect.gui.list.renderers.ListEscrowRenderer;
 	import com.dukascopy.connect.gui.list.renderers.ListLink;
-	import com.dukascopy.connect.gui.menuVideo.BitmapButton;
 	import com.dukascopy.connect.gui.tabs.FilterTabs;
 	import com.dukascopy.connect.gui.tools.HorizontalPreloader;
 	import com.dukascopy.connect.managers.escrow.vo.EscrowInstrument;
@@ -22,29 +20,21 @@ package com.dukascopy.connect.screens.innerScreens {
 	import com.dukascopy.connect.screens.base.BaseScreen;
 	import com.dukascopy.connect.screens.base.ScreenManager;
 	import com.dukascopy.connect.screens.dialogs.ScreenLinksDialog;
-	import com.dukascopy.connect.sys.auth.Auth;
 	import com.dukascopy.connect.sys.chatManager.ChatManager;
 	import com.dukascopy.connect.sys.chatManager.typesManagers.AnswersManager;
 	import com.dukascopy.connect.sys.dialogManager.DialogManager;
-	import com.dukascopy.connect.sys.imageManager.ImageBitmapData;
 	import com.dukascopy.connect.sys.questionsManager.QuestionsManager;
 	import com.dukascopy.connect.sys.style.FontSize;
 	import com.dukascopy.connect.sys.style.Style;
-	import com.dukascopy.connect.sys.usersManager.OnlineStatus;
-	import com.dukascopy.connect.sys.usersManager.UsersManager;
 	import com.dukascopy.connect.type.ChatInitType;
 	import com.dukascopy.connect.type.HitZoneType;
 	import com.dukascopy.connect.utils.TextUtils;
 	import com.dukascopy.connect.vo.ChatVO;
 	import com.dukascopy.connect.vo.QuestionVO;
 	import com.dukascopy.connect.vo.screen.ChatScreenData;
-	import com.dukascopy.connect.vo.users.adds.ChatUserVO;
 	import com.dukascopy.langs.Lang;
 	import com.greensock.TweenMax;
 	import flash.display.Bitmap;
-	import flash.display.Sprite;
-	import flash.display.StageQuality;
-	import flash.events.Event;
 	import flash.text.TextFieldAutoSize;
 	import flash.text.TextFormatAlign;
 	
@@ -85,7 +75,6 @@ package com.dukascopy.connect.screens.innerScreens {
 			_view.addChild(list.view);
 			
 			tabs = new FilterTabs();
-			
 			createTabs();
 			_view.addChild(tabs.view);
 			
@@ -171,10 +160,8 @@ package com.dukascopy.connect.screens.innerScreens {
 				selectedFilter = QuestionsManager.TAB_OTHER; 
 			tabs.setSelection(selectedFilter);
 			
-			GD.S_ESCROW_STAT.add(onInstrumentsLoaded);
-			GD.S_ESCROW_INSTRUMENTS_REQUEST.invoke();
-			
-			QuestionsManager.getEscrowStats();
+			GD.S_ESCROW_ADS_CRYPTOS.add(onInstrumentsLoaded);
+			GD.S_ESCROW_ADS_CRYPTOS_REQUEST.invoke();
 		}
 		
 		private function onInstrumentsLoaded(stat:Array):void {
@@ -278,7 +265,7 @@ package com.dukascopy.connect.screens.innerScreens {
 				preloader = null;
 			}
 			removePlaceholder();
-			GD.S_ESCROW_INSTRUMENTS.remove(onInstrumentsLoaded);
+			GD.S_ESCROW_ADS_CRYPTOS.remove(onInstrumentsLoaded);
 			DialogManager.closeDialog();
 		}
 		
@@ -366,8 +353,35 @@ package com.dukascopy.connect.screens.innerScreens {
 					(data as LabelItem).action.execute();
 				}
 				return;
-			} else if ("instrument" in data) {
-				GD.S_ESCROW_INSTRUMENT_Q_SELECTED.invoke(data);
+			} else if (data is EscrowInstrument) {
+				GD.S_ESCROW_ADS_INSTRUMENT_SELECTED.invoke(data);
+			}else if (data is QuestionVO) {
+				var qVO:QuestionVO = data as QuestionVO;
+				if (qVO.isRemoving == true)
+					return;
+				if (itemHitZone) {
+					if (itemHitZone == HitZoneType.DELETE || itemHitZone == HitZoneType.DELETE_ADMIN) {
+						DialogManager.alert(Lang.confirm, Lang.alertConfirmDeleteQuestion, function(val:int):void {
+							if (val != 1)
+								return;
+							QuestionsManager.close(qVO.uid, itemHitZone == HitZoneType.DELETE_ADMIN);
+							list.updateItemByIndex(n);
+						}, Lang.textDelete.toUpperCase(), Lang.textCancel.toUpperCase());
+						return;
+					}
+				}
+				if (qVO.answersCount > 0) {
+					AnswersManager.getAnswersByQuestionUID(qVO.uid);
+					return;
+				}
+				MobileGui.changeMainScreen(
+					QuestionCreateUpdateScreen, {
+						backScreen:MobileGui.centerScreen.currentScreenClass,
+						title:Lang.editEscrowAd,
+						data:qVO
+					},
+					ScreenManager.DIRECTION_RIGHT_LEFT
+				);
 			}
 		}
 		
@@ -398,9 +412,14 @@ package com.dukascopy.connect.screens.innerScreens {
 		private function onTabItemSelected(id:String):void {
 			if (_isDisposed == true)
 				return;
+			list.setBGColorOnly(Style.color(Style.COLOR_BACKGROUND));
+			if (id == QuestionsManager.TAB_OTHER) {
+				selectedFilter = id;
+				GD.S_ESCROW_ADS_CRYPTOS_REQUEST.invoke();
+				return;
+			}
 			setListData(id);
 			selectedFilter = id;
-			list.setBGColorOnly(Style.color(Style.COLOR_BACKGROUND));
 		}
 		
 		private function setListData(id:String = ""):void {

@@ -113,12 +113,12 @@ package com.dukascopy.connect.gui.list.renderers {
 		}
 		
 		private function drawName(data:Object):void {
-			var code:String = data.instrument;
+			var code:String = data.instrument.code;
+			var name:String = "";
+			if (code in Lang.cryptoTitles == true)
+				name = Lang.cryptoTitles[code];
 			if (code == "DCO")
 				code = "DUK+";
-			var name:String = "";
-			if (data.instrument in Lang.cryptoTitles == true)
-				name = Lang.cryptoTitles[data.instrument];
 			var text:String = String(name + " (" + code + ")").toUpperCase();
 			if (text != null) {
 				tfLabel.text = text;
@@ -139,8 +139,8 @@ package com.dukascopy.connect.gui.list.renderers {
 			var captionSize:Number = FontSize.SUBHEAD;
 			var color:String = "#" + Style.color(Style.COLOR_TEXT).toString(16);
 			
-			result = "<font color='" + color + "' size='" + TEXT_SIZE_DESC + "'>ADS: </font><font color='#CD3F43' size='" + TEXT_SIZE_DESC_VALS + "'>" + data.cnt + "</font>";
-			result += "<font color='" + color + "' size='" + TEXT_SIZE_DESC + "'>, COINS: </font><font color='#CD3F43' size='" + TEXT_SIZE_DESC_VALS + "'>" + Number(data.volume) + "</font>";
+			result = "<font color='" + color + "' size='" + TEXT_SIZE_DESC + "'>ADS: </font><font color='#CD3F43' size='" + TEXT_SIZE_DESC_VALS + "'>" + data.count + "</font>";
+			result += "<font color='" + color + "' size='" + TEXT_SIZE_DESC + "'>, COINS: </font><font color='#CD3F43' size='" + TEXT_SIZE_DESC_VALS + "'>" + data.volume + "</font>";
 			return result;
 		}
 		
@@ -154,7 +154,7 @@ package com.dukascopy.connect.gui.list.renderers {
 		}
 		
 		private function drawIcon(data:Object):void {
-			var iconClass:Class = UI.getCryptoIconClass(data.instrument);
+			var iconClass:Class = UI.getCryptoIconClass(data.instrument.code);
 			if (iconClass != null) {
 				if (icon.bitmapData != null) {
 					icon.bitmapData.dispose();

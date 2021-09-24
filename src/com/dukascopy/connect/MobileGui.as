@@ -14,6 +14,7 @@ package com.dukascopy.connect {
 	import com.dukascopy.connect.gui.networkIndicator.NetworkIndicator;
 	import com.dukascopy.connect.gui.puzzle.Puzzle;
 	import com.dukascopy.connect.gui.tools.ImagePreviewCrop;
+	import com.dukascopy.connect.managers.escrow.EscrowAdsManager;
 	import com.dukascopy.connect.managers.escrow.EscrowDealManager;
 	import com.dukascopy.connect.screens.ChatScreen;
 	import com.dukascopy.connect.screens.LoginScreen;
@@ -282,6 +283,7 @@ package com.dukascopy.connect {
 			EscrowScreenNavigation.init();
 			
 			new EscrowDealManager();
+			new EscrowAdsManager();
 			BankCacheManager.init();
 			
 			create();
