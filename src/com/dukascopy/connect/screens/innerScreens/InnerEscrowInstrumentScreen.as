@@ -14,6 +14,7 @@ package com.dukascopy.connect.screens.innerScreens {
 	import com.dukascopy.connect.gui.list.renderers.ListLink;
 	import com.dukascopy.connect.gui.tabs.FilterTabs;
 	import com.dukascopy.connect.gui.tools.HorizontalPreloader;
+	import com.dukascopy.connect.managers.escrow.vo.EscrowAdsCryptoVO;
 	import com.dukascopy.connect.managers.escrow.vo.EscrowInstrument;
 	import com.dukascopy.connect.screens.QuestionCreateUpdateScreen;
 	import com.dukascopy.connect.screens.RootScreen;
@@ -353,7 +354,7 @@ package com.dukascopy.connect.screens.innerScreens {
 					(data as LabelItem).action.execute();
 				}
 				return;
-			} else if (data is EscrowInstrument) {
+			} else if (data is EscrowAdsCryptoVO) {
 				GD.S_ESCROW_ADS_INSTRUMENT_SELECTED.invoke(data);
 			}else if (data is QuestionVO) {
 				var qVO:QuestionVO = data as QuestionVO;
