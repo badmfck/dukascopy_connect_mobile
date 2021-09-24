@@ -45,6 +45,7 @@ package com.dukascopy.connect.managers.escrow {
 			var crypto:String = escrowAdsCrypto.instrument.code;
 			if (crypto == "DUK+")
 				crypto = "DCO";
+			escrowAdsCryptosIds ||= {};
 			escrowAdsCryptosIds[crypto] = escrowAdsCrypto.maxID;
 			escrowAdsFilter.instrument = escrowAdsCrypto.instrument;
 			Store.save("escrowAdsCryptoIds", escrowAdsCryptosIds);
