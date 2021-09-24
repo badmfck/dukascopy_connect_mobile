@@ -2562,6 +2562,8 @@ package com.dukascopy.langs {
 		static public var escrow_deals:String = "Deals";
 		static public var escrow_offers:String = "Offers";
 		static public var buy_sell_ads:String = "BUY/SELL";
+		static public var escrow_hide_blocked:String = "Hide blocked users";
+		static public var escrow_hide_noobs:String = "Hide noobs";
 		
 		static public function updateKeys(keys:Object):void {
 			for (var n:String in keys) {
