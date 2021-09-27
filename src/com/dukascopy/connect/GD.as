@@ -58,6 +58,8 @@ package com.dukascopy.connect {
 		static public const S_ESCROW_ADS_CRYPTOS:Signal = new Signal("GD.S_ESCROW_ADS_CRYPTOS");
 		static public const S_ESCROW_ADS_FILTER_REQUEST:Signal = new Signal("GD.S_ESCROW_ADS_FILTER_REQUEST");
 		static public const S_ESCROW_ADS_FILTER_SETTED:Signal = new Signal("GD.S_ESCROW_ADS_FILTER_SETTED");
+		static public const S_ESCROW_ADS_REQUEST:Signal = new Signal("GD.S_ESCROW_ADS_REQUEST");
+		static public const S_ESCROW_ADS:Signal = new Signal("GD.S_ESCROW_ADS");
 
 		static public const S_IOS_LOCALIZATION_UPDATE:Signal=new Signal("S_IOS_LOCALIZATION_UPDATE");
 		

@@ -163,14 +163,17 @@ package com.dukascopy.connect.screens.innerScreens {
 			
 			GD.S_ESCROW_ADS_CRYPTOS.add(onInstrumentsLoaded);
 			GD.S_ESCROW_ADS_CRYPTOS_REQUEST.invoke();
+			
+			preloader.start();
 		}
 		
-		private function onInstrumentsLoaded(stat:Array):void {
+		private function onInstrumentsLoaded(stat:Array, preloaderHide:Boolean = false):void {
 			if (_isDisposed)
 				return;
 			if (selectedFilter != QuestionsManager.TAB_OTHER)
 				return;
-			hidePreloader();
+			if (preloaderHide == true)
+				hidePreloader();
 			escrowInstruments = stat;
 			setListData(QuestionsManager.TAB_OTHER);
 			selectedFilter = QuestionsManager.TAB_OTHER;
@@ -459,7 +462,6 @@ package com.dukascopy.connect.screens.innerScreens {
 			
 			var listItemClass:Class = ListEscrowInstrumentRenderer;
 			var listData:*;
-			var hideLoader:Boolean = true;
 			if (id == QuestionsManager.TAB_OTHER) {
 				listData = escrowInstruments;
 			} else if (id == QuestionsManager.TAB_MINE) {
@@ -467,12 +469,7 @@ package com.dukascopy.connect.screens.innerScreens {
 				listData = QuestionsManager.getMine();
 				showPreloader();
 			} if (listData == null) {
-				hideLoader = false;
 				listData = [];
-			}
-			if (hideLoader)
-			{
-				hidePreloader();
 			}
 			list.setData(listData, listItemClass, ["avatarURL"]);
 			if (needToScrollTop == false)
@@ -482,7 +479,7 @@ package com.dukascopy.connect.screens.innerScreens {
 							list.setBoxY(storedTabListPosition[id].listBoxY);
 			list.setContextAvaliable(true);
 			
-			if (hideLoader == true && id != QuestionsManager.TAB_RESOLVED && (listData == null || listData.length == 0)) {
+			if (id == QuestionsManager.TAB_MINE && (listData == null || listData.length == 0)) {
 				addPlaceholder(Lang.escrow_no_active_ads_placeholder);
 			} else {
 				removePlaceholder();

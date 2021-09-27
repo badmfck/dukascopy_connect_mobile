@@ -97,7 +97,6 @@ package com.dukascopy.connect.screens {
 			createChatButton.tapCallback = onChatSend;
 			addQuestionIcon ||= new SWFAddQuestionButton();
 			createChatButton.setDesign(addQuestionIcon);
-		//	_view.addChild(createChatButton);
 		}
 		
 		private function showPreloader():void {

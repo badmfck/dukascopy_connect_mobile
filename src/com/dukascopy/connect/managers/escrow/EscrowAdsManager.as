@@ -5,10 +5,13 @@ package com.dukascopy.connect.managers.escrow {
 	import com.dukascopy.connect.managers.escrow.vo.EscrowAdsCryptoVO;
 	import com.dukascopy.connect.managers.escrow.vo.EscrowAdsFilterVO;
 	import com.dukascopy.connect.managers.escrow.vo.EscrowInstrument;
+	import com.dukascopy.connect.sys.connectionManager.NetworkManager;
+	import com.dukascopy.connect.sys.dialogManager.DialogManager;
 	import com.dukascopy.connect.sys.php.PHP;
 	import com.dukascopy.connect.sys.php.PHPRespond;
 	import com.dukascopy.connect.sys.store.Store;
 	import com.dukascopy.langs.Lang;
+	import com.greensock.TweenMax;
 	
 	/**
 	 * ...
@@ -24,11 +27,21 @@ package com.dukascopy.connect.managers.escrow {
 		private var escrowInstruments:Vector.<EscrowInstrument>;
 		private var escrowInstrumentsHash:String = "";
 		private var escrowAdsFilter:EscrowAdsFilterVO = new EscrowAdsFilterVO();
+		private var escrowAdsFilterSetted:Boolean = false;
+		private var escrowAdsPHPRequestID:String;
+		private var escrowAdsHash:String;
+		private var escrowAds:Array;
 		
 		public function EscrowAdsManager() {
 			GD.S_ESCROW_ADS_CRYPTOS_REQUEST.add(onEscrowAdsCryptosRequested);
 			GD.S_ESCROW_ADS_INSTRUMENT_SELECTED.add(saveEscrowAdsCryptoID);
 			GD.S_ESCROW_ADS_FILTER_REQUEST.add(onEscrowAdsFilterRequested);
+			GD.S_ESCROW_ADS_FILTER_SETTED.add(onEscrowFilterSetted);
+			GD.S_ESCROW_ADS_REQUEST.add(onEscrowAdsRequested);
+		}
+		
+		private function onEscrowFilterSetted():void {
+			escrowAdsFilterSetted = true;
 		}
 		
 		private function onEscrowAdsFilterRequested(callback:Function):void {
@@ -48,6 +61,7 @@ package com.dukascopy.connect.managers.escrow {
 			escrowAdsCryptosIds ||= {};
 			escrowAdsCryptosIds[crypto] = escrowAdsCrypto.maxID;
 			escrowAdsFilter.instrument = escrowAdsCrypto.instrument;
+			onEscrowFilterSetted();
 			Store.save("escrowAdsCryptoIds", escrowAdsCryptosIds);
 			GD.S_ESCROW_INSTRUMENTS.remove(onEscrowInstrumentsReceived);
 			GD.S_SHOW_ESCROW_ADS.invoke(escrowAdsFilter);
@@ -56,7 +70,8 @@ package com.dukascopy.connect.managers.escrow {
 		private function onEscrowAdsCryptosRequested():void {
 			GD.S_ESCROW_INSTRUMENTS.add(onEscrowInstrumentsReceived);
 			if (escrowAdsCryptosIdsLoadedFromStore == true) {
-				PHP.escrow_getStat(onEscrowAdsCryptosReceived);
+				GD.S_ESCROW_ADS_CRYPTOS.invoke(escrowAdsCryptos);
+				GD.S_ESCROW_INSTRUMENTS_REQUEST.invoke();
 				return;
 			}
 			escrowAdsCryptosIdsLoadedFromStore = true;
@@ -72,7 +87,7 @@ package com.dukascopy.connect.managers.escrow {
 		
 		private function onEscrowInstrumentsReceived(instruments:Vector.<EscrowInstrument>):void {
 			if (instruments == null || instruments.length == 0) {
-				GD.S_ESCROW_ADS_CRYPTOS.invoke(null);
+				GD.S_ESCROW_ADS_CRYPTOS.invoke(null, true);
 				return;
 			}
 			var escrowInstrumentsHashNew:String = "";
@@ -84,7 +99,7 @@ package com.dukascopy.connect.managers.escrow {
 					if (escrowInstrumentsHash == "")
 						needToLoad = true;
 					index = escrowInstrumentsHash.indexOf(instruments[i].code);
-					if (index == -1)
+					if (index == -1) 
 						needToLoad = true;
 					if (needToLoad == false)
 						escrowInstrumentsHash = escrowInstrumentsHash.replace(instruments[i].code, "");
@@ -103,7 +118,7 @@ package com.dukascopy.connect.managers.escrow {
 				ToastMessage.display(Lang.somethingWentWrong);
 			}
 			if (phpRespond.data == null || phpRespond.data.length == 0) {
-				GD.S_ESCROW_ADS_CRYPTOS.invoke(null);
+				GD.S_ESCROW_ADS_CRYPTOS.invoke(null, true);
 				return;
 			}
 			escrowAdsCryptos = [];
@@ -126,7 +141,7 @@ package com.dukascopy.connect.managers.escrow {
 					} ));
 				}
 			}
-			GD.S_ESCROW_ADS_CRYPTOS.invoke(escrowAdsCryptos);
+			GD.S_ESCROW_ADS_CRYPTOS.invoke(escrowAdsCryptos, true);
 		}
 		
 		private function clearEscrowAdsCryptos():void {
@@ -138,7 +153,39 @@ package com.dukascopy.connect.managers.escrow {
 			escrowAdsCryptos = null;
 		}
 		
-// <-- ESCROW ADVERTISING CRYPTO //
+// <-- ESCROW ADVERTISING CRYPTO || ESCROW ADVERTISING --> //
+
+		private function onEscrowAdsRequested(afterError:Boolean = false):void {
+			if (afterError == false && escrowAdsFilterSetted == false) {
+				GD.S_ESCROW_ADS.invoke(escrowAds);
+				return;
+			}
+			escrowAdsFilterSetted = false;
+			escrowAdsPHPRequestID = new Date().getTime() + "";
+			PHP.getEscrowAds(onEscrowAdsLoaded, escrowAdsFilter.filter, escrowAdsHash, escrowAdsPHPRequestID);
+		}
 		
+		private function onEscrowAdsLoaded(phpRespond:PHPRespond):void {
+			if (phpRespond.additionalData.callID != escrowAdsPHPRequestID)
+				return;
+			escrowAdsPHPRequestID = null;
+			if (phpRespond.error == true) {
+				if (phpRespond.errorMsg == "io" && NetworkManager.isConnected == true && escrowAdsFilterSetted == false)
+					TweenMax.delayedCall(5, onEscrowAdsRequested, [ true ]);
+				phpRespond.dispose();
+				return;
+			}
+			if (phpRespond.data == null) {
+				DialogManager.alert(Lang.textWarning, Lang.serverError + " " + Lang.emptyData);
+				phpRespond.dispose();
+				GD.S_ESCROW_ADS.invoke(null, true, true);
+				return;
+			}
+			if (phpRespond.data.hash == escrowAdsHash) {
+				GD.S_ESCROW_ADS.invoke(escrowAds, true);
+				return;
+			}
+			escrowAdsHash = phpRespond.data.hash;
+		}
 	}
 }

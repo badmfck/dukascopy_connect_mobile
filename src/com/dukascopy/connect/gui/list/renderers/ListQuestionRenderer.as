@@ -130,7 +130,6 @@ package com.dukascopy.connect.gui.list.renderers {
 				bgHighlight.graphics.drawRect(0, 0, 10, 10);
 				bgHighlight.graphics.endFill();
 				bgHighlight.visible = false;
-		//	addChild(bgHighlight);
 			bottomLine = new Shape();
 				bottomLine.graphics.beginFill(Style.color(Style.COLOR_LINE_SSL));
 				bottomLine.graphics.drawRect(0, 0, 1, 1);
@@ -288,8 +287,6 @@ package com.dukascopy.connect.gui.list.renderers {
 			
 			avatar911PosY = (trueHeight - bgInfoHeight * .5) * .5 - avatarSize;
 		}
-		
-		//6n5dpefg4fv7ebev
 		
 		private function initTextFormats():void {
 			format1.font = Config.defaultFontName;

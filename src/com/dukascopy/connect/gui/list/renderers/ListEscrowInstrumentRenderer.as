@@ -97,7 +97,6 @@ package com.dukascopy.connect.gui.list.renderers {
 		public function getView(li:ListItem, h:int, w:int, highlight:Boolean = false):IBitmapDrawable {
 			var data:Object = li.data;
 			
-			drawBack(highlight, h, w);
 			drawIcon(li.data);
 			drawName(li.data);
 			drawAmount(li.data);
@@ -142,15 +141,6 @@ package com.dukascopy.connect.gui.list.renderers {
 			result = "<font color='" + color + "' size='" + TEXT_SIZE_DESC + "'>ADS: </font><font color='#CD3F43' size='" + TEXT_SIZE_DESC_VALS + "'>" + data.count + "</font>";
 			result += "<font color='" + color + "' size='" + TEXT_SIZE_DESC + "'>, COINS: </font><font color='#CD3F43' size='" + TEXT_SIZE_DESC_VALS + "'>" + data.volume + "</font>";
 			return result;
-		}
-		
-		private function drawBack(highlight:Boolean, h:int, w:int):void {
-			graphics.clear();
-			if (highlight) {
-				graphics.beginFill(Style.color(Style.FILTER_TABS_COLOR_TAB_BG_SELECTED));
-				graphics.drawRect(0, 0, w, h);
-				graphics.endFill();
-			}
 		}
 		
 		private function drawIcon(data:Object):void {

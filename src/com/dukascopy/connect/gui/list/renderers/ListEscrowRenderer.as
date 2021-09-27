@@ -393,14 +393,6 @@ package com.dukascopy.connect.gui.list.renderers {
 			bgHighlight.height = height;
 			bgHighlight.visible = highlight;
 			
-			/*var lastTipsQUIDsExists:Boolean = (QuestionsManager.getLastTipsQUIDs() != null && QuestionsManager.getLastTipsQUIDs() != "");
-			if (lastTipsQUIDsExists == true && (QuestionsManager.getShowTipsOnly() == true || QuestionsManager.getLastTipsQUIDs().indexOf(itemData.uid) != -1)) {
-				bgGray.y = 0;
-				bgGray.width = width;
-				bgGray.height = height;
-				bgGray.visible = true;
-			}*/
-			
 			var newWidth:int = width - textFieldAmount.x - Config.MARGIN;
 			
 			var maxTextWidth:int = width - textFieldAmount.x - Config.FINGER_SIZE * .2;
