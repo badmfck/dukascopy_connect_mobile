@@ -388,7 +388,6 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		
 		private function drawControls():void
 		{
-			//!TODO: padding;
 			tradingSideSelector.maxWidth = getWidth();
 			
 			radioSelection = new Vector.<SelectorItemData>();
@@ -460,8 +459,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 				needCallback = false;
 				if (data != null && "callback" in data && data.callback != null && data.callback is Function && (data.callback as Function).length == 1)
 				{
-					//!TODO:;
-				//	(data.callback as Function)(filter);
+					(data.callback as Function)(filter);
 				}
 			}
 		}
