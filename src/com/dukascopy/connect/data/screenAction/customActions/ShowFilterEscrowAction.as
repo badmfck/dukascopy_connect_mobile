@@ -1,17 +1,11 @@
 package com.dukascopy.connect.data.screenAction.customActions {
 	
-	import assets.AddItemButton;
 	import com.dukascopy.connect.GD;
-	import com.dukascopy.connect.MobileGui;
-	import com.dukascopy.connect.data.escrow.filter.EscrowFilter;
 	import com.dukascopy.connect.data.screenAction.IScreenAction;
 	import com.dukascopy.connect.data.screenAction.ScreenAction;
-	import com.dukascopy.connect.screens.QuestionCreateUpdateScreen;
-	import com.dukascopy.connect.screens.RootScreen;
-	import com.dukascopy.connect.screens.base.ScreenManager;
+	import com.dukascopy.connect.managers.escrow.vo.EscrowAdsFilterVO;
 	import com.dukascopy.connect.screens.dialogs.escrow.EscrowFilterScreen;
-	import com.dukascopy.connect.sys.dialogManager.DialogManager;
-	import com.dukascopy.connect.sys.questionsManager.QuestionsManager;
+	import com.dukascopy.connect.sys.serviceScreenManager.ServiceScreenManager;
 	import com.dukascopy.connect.sys.style.Style;
 	import com.dukascopy.langs.Lang;
 	
@@ -27,13 +21,27 @@ package com.dukascopy.connect.data.screenAction.customActions {
 		}
 		
 		public function execute():void {
-			DialogManager.showDialog(EscrowFilterScreen, {title:Lang.escrow_filter_title, callback:onFilters}, DialogManager.TYPE_SCREEN);
+			getCurrentFilter();
+			
 		//	dispose();
 		}
 		
-		private function onFilters(filters:Vector.<EscrowFilter>):void 
+		private function getCurrentFilter():void 
 		{
-			GD.S_ESCROW_FILTER.invoke(filters);
+			GD.S_ESCROW_ADS_FILTER_REQUEST.invoke(onFilter);
+		}
+		
+		private function onFilter(filter:EscrowAdsFilterVO):void 
+		{
+			if (!disposed)
+			{
+				ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, EscrowFilterScreen, {title:Lang.escrow_filter_title, callback:onFilters, filter:filter});
+			}
+		}
+		
+		private function onFilters(filter:EscrowAdsFilterVO):void 
+		{
+			GD.S_ESCROW_ADS_FILTER_SETTED.invoke();
 		}
 		
 		override public function getIconScale():Number {

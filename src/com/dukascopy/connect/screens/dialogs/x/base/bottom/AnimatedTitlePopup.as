@@ -33,9 +33,6 @@ package com.dukascopy.connect.screens.dialogs.x.base.bottom
 		override public function initScreen(data:Object = null):void {
 			super.initScreen(data);
 			
-			contentPadding = Config.FINGER_SIZE * .3;
-			contentPaddingV = Config.FINGER_SIZE * .3;
-			
 			var titleWidth:int = (_width - contentPadding * 3 - closeButton.width);
 			
 			if (data != null && "title" in data && data.title != null)
@@ -79,6 +76,9 @@ package com.dukascopy.connect.screens.dialogs.x.base.bottom
 		
 		override protected function createView():void {
 			super.createView();
+			
+			contentPadding = Config.FINGER_SIZE * .3;
+			contentPaddingV = Config.FINGER_SIZE * .3;
 			
 			titleText = new Bitmap();
 			container.addChild(titleText);

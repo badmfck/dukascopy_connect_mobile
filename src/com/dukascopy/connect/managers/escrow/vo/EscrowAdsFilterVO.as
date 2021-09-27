@@ -13,7 +13,13 @@ package com.dukascopy.connect.managers.escrow.vo {
 		public var currency:String;
 		public var sort:String;
 		public var hideBlocked:Boolean;
+		public var hideNoobs:Boolean;
 		public var countries:Array;
+		
+		static public const SORT_DATE:String = "sortDate";
+		static public const SORT_PRICE:String = "sortPrice";
+		static public const SORT_AMOUNT:String = "sortAmount";
+		
 		
 		public function EscrowAdsFilterVO() { }
 		

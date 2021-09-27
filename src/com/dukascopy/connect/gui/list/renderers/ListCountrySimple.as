@@ -17,12 +17,12 @@ package com.dukascopy.connect.gui.list.renderers{
 	 */
 	public class ListCountrySimple extends BaseRenderer implements IListRenderer{
 		
-		private var tfCountry:TextField;
+		protected var tfCountry:TextField;
 		
-		private var padding:int = Config.FINGER_SIZE * .3;
+		protected var padding:int = Config.FINGER_SIZE * .3;
 		
-		private var itemHeight:int = Config.FINGER_SIZE;
-		private var format:TextFormat = new TextFormat(Config.defaultFontName, FontSize.BODY, Style.color(Style.COLOR_TEXT));
+		protected var itemHeight:int = Config.FINGER_SIZE;
+		protected var format:TextFormat = new TextFormat(Config.defaultFontName, FontSize.BODY, Style.color(Style.COLOR_TEXT));
 		
 		public function ListCountrySimple() {
 			tfCountry = new TextField();

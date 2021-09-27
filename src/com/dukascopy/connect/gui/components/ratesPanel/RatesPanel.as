@@ -6,6 +6,7 @@ package com.dukascopy.connect.gui.components.ratesPanel
 	import com.dukascopy.connect.managers.escrow.vo.EscrowInstrument;
 	import com.dukascopy.connect.sys.pointerManager.PointerManager;
 	import com.dukascopy.connect.sys.style.Style;
+	import com.greensock.TweenMax;
 	import flash.display.Bitmap;
 	import flash.display.Sprite;
 	import flash.events.Event;
@@ -26,6 +27,7 @@ package com.dukascopy.connect.gui.components.ratesPanel
 		private var inAnimation:Boolean;
 		private var lastFrameTime:int;
 		private var renderer:RatePanelItem;
+		private var container:Sprite;
 		
 		public function RatesPanel(itemWidth:int) 
 		{
@@ -37,13 +39,17 @@ package com.dukascopy.connect.gui.components.ratesPanel
 			items = new Vector.<Bitmap>();
 			drawBack();
 			
+			container = new Sprite();
+			addChild(container);
+			container.y = Config.APPLE_TOP_OFFSET;
+			
 			getInstruments();
 		}
 		
 		private function drawBack():void 
 		{
 			graphics.beginFill(Style.color(Style.COLOR_ACCENT_PANEL));
-			graphics.drawRect(0, 0, itemWidth, itemHeight);
+			graphics.drawRect(0, 0, itemWidth, itemHeight + Config.APPLE_TOP_OFFSET);
 			graphics.endFill();
 		}
 		
@@ -59,6 +65,9 @@ package com.dukascopy.connect.gui.components.ratesPanel
 			{
 				instruments = instrumentsData.concat(instrumentsData);
 				construct();
+				TweenMax.killTweensOf(container);
+				container.alpha = 0;
+				TweenMax.to(container, 0.5, {alpha:1});
 			}
 		}
 		
@@ -73,7 +82,7 @@ package com.dukascopy.connect.gui.components.ratesPanel
 					item = renderer.draw(instruments[i], itemHeight);
 					item.x = lastItemPosition + gap;
 					items.push(item);
-					addChild(item);
+					container.addChild(item);
 					lastItemPosition = item.x + item.width;
 					lastItemIndex = i;
 				}
@@ -120,7 +129,7 @@ package com.dukascopy.connect.gui.components.ratesPanel
 				var item:Bitmap = renderer.draw(instruments[lastItemIndex], itemHeight);
 				item.x = lastItemPosition + gap;
 				items.push(item);
-				addChild(item);
+				container.addChild(item);
 				lastItemPosition = item.x + item.width;
 			}
 			if (items.length > 0)
@@ -128,9 +137,9 @@ package com.dukascopy.connect.gui.components.ratesPanel
 				if (items[0].x + items[0].width < 0)
 				{
 					UI.destroy(items[0]);
-					if (contains(items[0]))
+					if (container != null && container.contains(items[0]))
 					{
-						removeChild(items[0]);
+						container.removeChild(items[0]);
 					}
 					items.removeAt(0);
 				}
@@ -156,6 +165,12 @@ package com.dukascopy.connect.gui.components.ratesPanel
 			{
 				UI.destroy(renderer);
 				renderer = null;
+			}
+			if (container != null)
+			{
+				TweenMax.killTweensOf(container);
+				UI.destroy(container);
+				container = null;
 			}
 		}
 		

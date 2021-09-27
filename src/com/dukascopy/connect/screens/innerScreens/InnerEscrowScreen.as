@@ -5,6 +5,7 @@ package com.dukascopy.connect.screens.innerScreens {
 	import com.dukascopy.connect.MobileGui;
 	import com.dukascopy.connect.data.IFilterData;
 	import com.dukascopy.connect.data.LabelItem;
+	import com.dukascopy.connect.data.SelectorItemData;
 	import com.dukascopy.connect.data.escrow.TradeDirection;
 	import com.dukascopy.connect.data.escrow.filter.EscrowFilter;
 	import com.dukascopy.connect.data.escrow.filter.EscrowFilterType;
@@ -112,13 +113,13 @@ package com.dukascopy.connect.screens.innerScreens {
 			_view.addChild(preloader);
 		}
 		
-		private function onFilterRemove(filter:IFilterData):void 
+		private function onFilterRemove(filter:SelectorItemData):void 
 		{
-			if (filter != null && filter is EscrowFilter)
+			if (filter != null && filter.data is EscrowFilter)
 			{
 				if (currentFilters != null)
 				{
-					currentFilters.removeAt(currentFilters.indexOf(filter as EscrowFilter));
+					currentFilters.removeAt(currentFilters.indexOf(filter.data as EscrowFilter));
 					onFilters(currentFilters);
 				}
 			}
@@ -219,7 +220,15 @@ package com.dukascopy.connect.screens.innerScreens {
 				destY += Config.FINGER_SIZE * .1;
 				filtersPanel.visible = true;
 				filtersPanel.y = destY
-				filtersPanel.draw(currentFilters, _width - Config.MARGIN * 4);
+				
+				
+				var panelData:Vector.<SelectorItemData> = new Vector.<SelectorItemData>();
+				for (var i:int = 0; i < currentFilters.length; i++) 
+				{
+					panelData.push(new SelectorItemData(currentFilters[i].getLabel(), currentFilters[i]));
+				}
+				
+				filtersPanel.draw(panelData, _width - Config.MARGIN * 4);
 				filtersPanel.x = Config.MARGIN * 2;
 				destY += filtersPanel.getHeight() + Config.FINGER_SIZE * .1;
 			}

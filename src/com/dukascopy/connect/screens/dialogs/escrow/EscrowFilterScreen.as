@@ -2,6 +2,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 	
 	import com.dukascopy.connect.Config;
 	import com.dukascopy.connect.GD;
+	import com.dukascopy.connect.data.CountriesData;
 	import com.dukascopy.connect.data.SelectorItemData;
 	import com.dukascopy.connect.data.TextFieldSettings;
 	import com.dukascopy.connect.data.escrow.EscrowSettings;
@@ -11,20 +12,26 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 	import com.dukascopy.connect.data.layout.LayoutType;
 	import com.dukascopy.connect.gui.button.Checkbox;
 	import com.dukascopy.connect.gui.button.DDFieldButton;
+	import com.dukascopy.connect.gui.components.FiltersSelectList;
 	import com.dukascopy.connect.gui.components.radio.RadioGroup;
 	import com.dukascopy.connect.gui.components.radio.RadioItem;
 	import com.dukascopy.connect.gui.components.selector.ButtonSelectorItem;
 	import com.dukascopy.connect.gui.components.selector.MultiSelector;
 	import com.dukascopy.connect.gui.input.Input;
 	import com.dukascopy.connect.gui.lightbox.UI;
+	import com.dukascopy.connect.gui.list.renderers.ListCountryExclude;
+	import com.dukascopy.connect.gui.list.renderers.ListCountrySimple;
 	import com.dukascopy.connect.gui.list.renderers.ListPayCurrency;
 	import com.dukascopy.connect.gui.menuVideo.BitmapButton;
+	import com.dukascopy.connect.managers.escrow.vo.EscrowAdsFilterVO;
 	import com.dukascopy.connect.managers.escrow.vo.EscrowInstrument;
 	import com.dukascopy.connect.managers.escrow.vo.EscrowPrice;
 	import com.dukascopy.connect.screens.dialogs.paymentDialogs.elements.InputField;
 	import com.dukascopy.connect.screens.dialogs.x.base.bottom.AnimatedTitlePopup;
 	import com.dukascopy.connect.screens.dialogs.x.base.bottom.ListSelectionPopup;
+	import com.dukascopy.connect.screens.dialogs.x.base.bottom.MultipleSelectionPopup;
 	import com.dukascopy.connect.screens.dialogs.x.base.bottom.ScrollAnimatedTitlePopup;
+	import com.dukascopy.connect.screens.dialogs.x.base.bottom.SearchListSelectionPopup;
 	import com.dukascopy.connect.screens.dialogs.x.base.float.FloatPopup;
 	import com.dukascopy.connect.screens.payments.card.TypeCurrency;
 	import com.dukascopy.connect.sys.applicationError.ApplicationErrors;
@@ -62,11 +69,12 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		private var titleBlacklist:Bitmap;
 		private var headerHeight:Number;
 		private var tradingSideSelector:MultiSelector;
-		private var filters:Vector.<EscrowFilter>;
 		private var line:Bitmap;
 		private var line2:Bitmap;
 		private var hideBlocked:Checkbox;
 		private var hideNoobs:Checkbox;
+		private var countryExclude:FiltersSelectList;
+		private var filter:EscrowAdsFilterVO;
 		
 		public function EscrowFilterScreen() { }
 		
@@ -101,6 +109,52 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			addItem(hideBlocked);
 			hideNoobs = new Checkbox(Lang.escrow_hide_noobs);
 			addItem(hideNoobs);
+			
+			countryExclude = new FiltersSelectList(Lang.excrow_exclude_country, Lang.escrow_excluded_countries, selectCountryExclude, oncountryListResize);
+			addItem(countryExclude);
+		}
+		
+		private function oncountryListResize():void 
+		{
+			updatePositions();
+		}
+		
+		private function selectCountryExclude():void 
+		{
+			var oldDelimiter:String = "";
+			var newDelimiter:String = "";
+			var cData:Array = CountriesData.COUNTRIES;
+			var cDataNew:Array = [];
+			for (var i:int = 0; i < cData.length; i++) {
+				newDelimiter = String(cData[i][0]).substr(0, 1).toUpperCase();
+				if (newDelimiter != oldDelimiter) {
+					oldDelimiter = newDelimiter;
+					cDataNew.push([oldDelimiter.toLowerCase(), oldDelimiter]);
+				}
+				cDataNew.push(cData[i]);
+			}
+			
+			var items:Vector.<SelectorItemData> = new Vector.<SelectorItemData>();
+		//	var selectedItems:
+			for (var j:int = 0; j < cDataNew.length; j++) 
+			{
+				items.push(new SelectorItemData(cDataNew[j][4], cDataNew[j]));
+			}
+			DialogManager.showDialog(
+					MultipleSelectionPopup,
+					{
+						items:items,
+						title:Lang.selectCountry,
+						renderer:ListCountryExclude,
+						callback:onCountryListSelected
+					}, ServiceScreenManager.TYPE_SCREEN
+				);
+		}
+		
+		private function onCountryListSelected(selectedCountries:Vector.<SelectorItemData>):void
+		{
+			countryExclude.draw(selectedCountries, _width - contentPadding * 2);
+			updatePositions();
 		}
 		
 		private function onSideSelected(selectedItem:SelectorItemData):void 
@@ -134,7 +188,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			nextButton.disposeBitmapOnDestroy = true;
 			nextButton.setDownScale(1);
 			nextButton.setOverlay(HitZoneType.BUTTON);
-			addItem(nextButton);
+			container.addChild(nextButton);
 		}
 		
 		private function onNextClick():void 
@@ -146,28 +200,78 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		
 		private function collectFilters():void 
 		{
-			var selectedDiretions:Vector.<SelectorItemData> = tradingSideSelector.getSelectedDataVector();
-			if (selectedDiretions != null && selectedDiretions.length > 0)
+			if (filter != null)
 			{
-				var direction:TradeDirection = selectedDiretions[0].data as TradeDirection;
-				var sideFilter:EscrowFilter = new EscrowFilter(EscrowFilterType.DIRECTION, direction.type);
+				var selectedDiretions:Vector.<SelectorItemData> = tradingSideSelector.getSelectedDataVector();
+				if (selectedDiretions != null && selectedDiretions.length > 0)
+				{
+					var direction:TradeDirection = selectedDiretions[0].data as TradeDirection;
+					filter.side = direction.type;
+				}
+				else
+				{
+					filter.side = null;
+				}
 				
-				addFilter(sideFilter);
+				if (radio.getSelection() != null && radio.getSelection().data != null && radio.getSelection().data is String)
+				{
+					filter.sort = radio.getSelection().data as String;
+				}
+				else
+				{
+					filter.sort = null;
+				}
+				
+				var countriesSelected:Vector.<SelectorItemData> = countryExclude.getSelection();
+				if (countriesSelected != null && countriesSelected.length > 0)
+				{
+					var countries:Array = new Array();
+					for (var i:int = 0; i < countriesSelected.length; i++) 
+					{
+						countries.push(countriesSelected[i].data[2]);
+					}
+					
+					filter.countries = countries;
+				}
+				else
+				{
+					filter.countries = null;
+				}
+				
+				if (hideNoobs != null && hideNoobs.isSelected())
+				{
+					filter.hideNoobs = true;
+				}
+				else
+				{
+					filter.hideNoobs = false;
+				}
+				
+				if (hideBlocked != null && hideBlocked.isSelected())
+				{
+					filter.hideBlocked = true;
+				}
+				else
+				{
+					filter.hideBlocked = false;
+				}
 			}
-		}
-		
-		private function addFilter(filter:EscrowFilter):void 
-		{
-			if (filters == null)
+			else
 			{
-				filters = new Vector.<EscrowFilter>();
+				ApplicationErrors.add();
 			}
-			filters.push(filter);
 		}
 		
 		override public function initScreen(data:Object = null):void {
 			
+			if (data != null && "filter" in data && data.filter != null && data.filter is EscrowAdsFilterVO)
+			{
+				filter = data.filter as EscrowAdsFilterVO;
+			}
+			
 			super.initScreen(data);
+			
+			countryExclude.draw(null, _width - contentPadding * 2);
 		}
 		
 		private function drawTitleBlacklist():void 
@@ -263,14 +367,18 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			
 			hideBlocked.x = contentPadding;
 			hideBlocked.y = position;
-			position += hideBlocked.height + Config.FINGER_SIZE * .2;
+			position += hideBlocked.height + Config.FINGER_SIZE * .1;
 			
 			hideNoobs.x = contentPadding;
 			hideNoobs.y = position;
-			position += hideNoobs.height + Config.FINGER_SIZE * .5;
+			position += hideNoobs.height + Config.FINGER_SIZE * .3;
+			
+			countryExclude.x = contentPadding;
+			countryExclude.y = position;
+			position += countryExclude.height + Config.FINGER_SIZE * .5;
 			
 			nextButton.x = contentPadding;
-			nextButton.y = position;
+			nextButton.y = getHeight() - nextButton.height - contentPadding;
 			
 			if (nextButton.y + nextButton.height + contentPadding + scrollPanel.view.y < backgroundContent.height && backgroundContent.height > 0)
 			{
@@ -284,9 +392,9 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			tradingSideSelector.maxWidth = getWidth();
 			
 			radioSelection = new Vector.<SelectorItemData>();
-			radioSelection.push(new SelectorItemData(Lang.filter_date, null));
-			radioSelection.push(new SelectorItemData(Lang.filter_price, null));
-			radioSelection.push(new SelectorItemData(Lang.filter_amount, null));
+			radioSelection.push(new SelectorItemData(Lang.filter_date, EscrowAdsFilterVO.SORT_DATE));
+			radioSelection.push(new SelectorItemData(Lang.filter_price, EscrowAdsFilterVO.SORT_PRICE));
+			radioSelection.push(new SelectorItemData(Lang.filter_amount, EscrowAdsFilterVO.SORT_AMOUNT));
 			
 			radio.draw(radioSelection, getWidth() - contentPadding * 2, RadioItem);
 			radio.select(radioSelection[0]);
@@ -328,6 +436,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			tradingSideSelector.activate();
 			hideBlocked.activate();
 			hideNoobs.activate();
+			countryExclude.activate();
 		}
 		
 		override public function deactivateScreen():void {
@@ -341,6 +450,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			tradingSideSelector.deactivate();
 			hideBlocked.deactivate();
 			hideNoobs.deactivate();
+			countryExclude.deactivate();
 		}
 		
 		override protected function onRemove():void 
@@ -350,8 +460,8 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 				needCallback = false;
 				if (data != null && "callback" in data && data.callback != null && data.callback is Function && (data.callback as Function).length == 1)
 				{
-					
-					(data.callback as Function)(filters);
+					//!TODO:;
+				//	(data.callback as Function)(filter);
 				}
 			}
 		}
@@ -384,6 +494,11 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			{
 				radio.dispose();
 				radio = null;
+			}
+			if (countryExclude != null)
+			{
+				countryExclude.dispose();
+				countryExclude = null;
 			}
 			
 			radioSelection = null;
