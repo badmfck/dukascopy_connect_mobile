@@ -9,6 +9,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 	import com.dukascopy.connect.data.escrow.filter.EscrowFilter;
 	import com.dukascopy.connect.data.escrow.filter.EscrowFilterType;
 	import com.dukascopy.connect.data.layout.LayoutType;
+	import com.dukascopy.connect.gui.button.Checkbox;
 	import com.dukascopy.connect.gui.button.DDFieldButton;
 	import com.dukascopy.connect.gui.components.radio.RadioGroup;
 	import com.dukascopy.connect.gui.components.radio.RadioItem;
@@ -62,6 +63,10 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		private var headerHeight:Number;
 		private var tradingSideSelector:MultiSelector;
 		private var filters:Vector.<EscrowFilter>;
+		private var line:Bitmap;
+		private var line2:Bitmap;
+		private var hideBlocked:Checkbox;
+		private var hideNoobs:Checkbox;
 		
 		public function EscrowFilterScreen() { }
 		
@@ -83,6 +88,19 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			tradingSideSelector.gap = Config.FINGER_SIZE * .3;
 			tradingSideSelector.S_ON_SELECT.add(onSideSelected);
 			addItem(tradingSideSelector);
+			
+			line = new Bitmap();
+			line.bitmapData = UI.getHorizontalLine(Style.color(Style.COLOR_SEPARATOR));
+			addItem(line);
+			
+			line2 = new Bitmap();
+			line2.bitmapData = UI.getHorizontalLine(Style.color(Style.COLOR_SEPARATOR));
+			addItem(line2);
+			
+			hideBlocked = new Checkbox(Lang.escrow_hide_blocked);
+			addItem(hideBlocked);
+			hideNoobs = new Checkbox(Lang.escrow_hide_noobs);
+			addItem(hideNoobs);
 		}
 		
 		private function onSideSelected(selectedItem:SelectorItemData):void 
@@ -217,23 +235,39 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		{
 			var position:int;
 			
-			position = Config.FINGER_SIZE * .5;
+			position = Config.FINGER_SIZE * .6;
 			
 			tradingSideSelector.y = position;
 			tradingSideSelector.x = contentPadding;
-			position += tradingSideSelector.height + Config.FINGER_SIZE * .3;
+			position += tradingSideSelector.height + Config.FINGER_SIZE * .6;
 			
-			titleSort.x = int(getWidth() * .5 - titleSort.width * .5);
+			line.width = _width;
+			line.y = position;
+			position += Config.FINGER_SIZE * .6;
+			
+			titleSort.x = contentPadding + int(getWidth() * .5 - titleSort.width * .5);
 			titleSort.y = position;
-			position += titleSort.height + Config.FINGER_SIZE * .2;
+			position += titleSort.height + Config.FINGER_SIZE * .3;
 			
 			radio.x = contentPadding;
 			radio.y = position;
-			position += radio.height + contentPaddingV;
+			position += radio.height + Config.FINGER_SIZE * .3;
 			
-			titleBlacklist.x = int(getWidth() * .5 - titleBlacklist.width * .5);
+			line2.width = _width;
+			line2.y = position;
+			position += Config.FINGER_SIZE * .3;
+			
+			titleBlacklist.x = contentPadding + int(getWidth() * .5 - titleBlacklist.width * .5);
 			titleBlacklist.y = position;
 			position += titleBlacklist.height + Config.FINGER_SIZE * .5;
+			
+			hideBlocked.x = contentPadding;
+			hideBlocked.y = position;
+			position += hideBlocked.height + Config.FINGER_SIZE * .2;
+			
+			hideNoobs.x = contentPadding;
+			hideNoobs.y = position;
+			position += hideNoobs.height + Config.FINGER_SIZE * .5;
 			
 			nextButton.x = contentPadding;
 			nextButton.y = position;
@@ -265,6 +299,9 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 				buttonBitmap = TextUtils.createbutton(textSettings, Color.GREEN, 1, -1, NaN, getButtonWidth(), Style.size(Style.BUTTON_PADDING), Style.size(Style.SIZE_BUTTON_CORNER));
 				nextButton.setBitmapData(buttonBitmap, true);
 			}
+			
+			hideBlocked.draw(getWidth());
+			hideNoobs.draw(getWidth());
 		}
 		
 		private function getButtonWidth():int 
@@ -289,6 +326,8 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			radio.activate();
 			nextButton.activate();
 			tradingSideSelector.activate();
+			hideBlocked.activate();
+			hideNoobs.activate();
 		}
 		
 		override public function deactivateScreen():void {
@@ -300,6 +339,8 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			radio.deactivate();
 			nextButton.deactivate();
 			tradingSideSelector.deactivate();
+			hideBlocked.deactivate();
+			hideNoobs.deactivate();
 		}
 		
 		override protected function onRemove():void 

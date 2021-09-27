@@ -15,11 +15,13 @@ package com.dukascopy.connect.screens {
 	import com.dukascopy.connect.data.screenAction.customActions.OpenPromoEventsInfoAction;
 	import com.dukascopy.connect.data.screenAction.customActions.RefreshLotteryDataAction;
 	import com.dukascopy.connect.data.screenAction.customActions.ShowFilterEscrowAction;
+	import com.dukascopy.connect.gui.components.ratesPanel.RatesPanel;
 	import com.dukascopy.connect.gui.lightbox.LightBox;
 	import com.dukascopy.connect.gui.lightbox.UI;
 	import com.dukascopy.connect.gui.tabs.TabBar;
 	import com.dukascopy.connect.gui.tools.ImagePreviewCrop;
 	import com.dukascopy.connect.gui.topBar.TopBar;
+	import com.dukascopy.connect.managers.escrow.vo.EscrowAdsFilterVO;
 	import com.dukascopy.connect.managers.escrow.vo.EscrowInstrument;
 	import com.dukascopy.connect.screens.base.BaseScreen;
 	import com.dukascopy.connect.screens.base.ScreenManager;
@@ -36,6 +38,7 @@ package com.dukascopy.connect.screens {
 	import com.dukascopy.connect.sys.configManager.ConfigManager;
 	import com.dukascopy.connect.sys.dialogManager.DialogManager;
 	import com.dukascopy.connect.sys.echo.echo;
+	import com.dukascopy.connect.sys.nativeExtensionController.NativeExtensionController;
 	import com.dukascopy.connect.sys.notificationManager.InnerNotificationManager;
 	import com.dukascopy.connect.sys.notifier.NewMessageNotifier;
 	import com.dukascopy.connect.sys.questionsManager.QuestionsManager;
@@ -43,6 +46,7 @@ package com.dukascopy.connect.screens {
 	import com.dukascopy.connect.sys.store.Store;
 	import com.dukascopy.connect.sys.style.Style;
 	import com.dukascopy.connect.sys.swiper.Swiper;
+	import com.dukascopy.connect.type.BankPhaze;
 	import com.dukascopy.connect.vo.screen.ScreenData;
 	import com.dukascopy.langs.Lang;
 	import com.greensock.TweenMax;
@@ -166,6 +170,7 @@ package com.dukascopy.connect.screens {
 		private var BLINK_CHECK_INTERVAL:int = 60 * 4;// sec
 		private var refreshLotteryDataAction:com.dukascopy.connect.data.screenAction.customActions.RefreshLotteryDataAction;
 		private var selectedinstrument:String;
+		private var ratesPanel:RatesPanel;
 	//	private var actionPromoEvents:com.dukascopy.connect.data.screenAction.customActions.OpenPromoEventsInfoAction;
 		
 		/**
@@ -262,23 +267,23 @@ package com.dukascopy.connect.screens {
 				return;
 			}
 			
-			if (Auth.bank_phase != 'ACC_APPROVED') {
+			if (Auth.bank_phase != BankPhaze.ACC_APPROVED) {
 				if (bottomTabs != null)
 					bottomTabs.selectBlink(PAYMENTS_SCREEN_ID);			
 				TweenMax.delayedCall(BLINK_CHECK_INTERVAL, blinkBankButton);
 			} else {
 				if (bottomTabs != null)
-					bottomTabs.selectBlink(PAYMENTS_SCREEN_ID,false);	
+					bottomTabs.selectBlink(PAYMENTS_SCREEN_ID, false);	
 			}
 		}
 		
-		private function onTabsOffsetChange(offsetValue:Number):void {
+		/*private function onTabsOffsetChange(offsetValue:Number):void {
 			if (_isDisposed == true)
 				return;
 			if (innerScreenManager == null)
 				return;
 			innerScreenManager.setSize(_width, _height - topBar.height - bottomTabs.height + offsetValue);
-		}
+		}*/
 		
 		/**
 		 * Init Screen
@@ -327,10 +332,11 @@ package com.dukascopy.connect.screens {
 			
 			NewMessageNotifier.S_UPDATE_EXIST.add(needNotification);
 			
-			GD.S_ESCROW_INSTRUMENT_Q_SELECTED.add(onIstrumentSelected);
+			GD.S_SHOW_ESCROW_ADS.add(onIstrumentSelected);
+		//	GD.S_ESCROW_INSTRUMENT_Q_SELECTED.add(onIstrumentSelected);
 		}
 		
-		private function onIstrumentSelected(instrument:Object = null):void 
+		private function onIstrumentSelected(instrument:EscrowAdsFilterVO = null):void 
 		{
 			if (isDisposed)
 			{
@@ -338,7 +344,7 @@ package com.dukascopy.connect.screens {
 			}
 			if (instrument != null)
 			{
-				selectedinstrument = instrument.instrument;
+				selectedinstrument = instrument.instrument.code;
 			}
 			else
 			{
@@ -349,14 +355,12 @@ package com.dukascopy.connect.screens {
 			{
 				if (instrumentTabObject != null)
 				{
-					
-					
-					var code:String = instrument.instrument;
+					var code:String = instrument.instrument.code;
 					if (code == "DCO")
 						code = "DUK+";
 					var name:String = "";
-					if (instrument.instrument in Lang.cryptoTitles == true)
-						name = Lang.cryptoTitles[instrument.instrument];
+					if (instrument.instrument.code in Lang.cryptoTitles == true)
+						name = Lang.cryptoTitles[instrument.instrument.code];
 					var text:String = String(name + " (" + code + ")").toUpperCase();
 					instrumentTabObject.title = text;
 				}
@@ -379,17 +383,27 @@ package com.dukascopy.connect.screens {
 				return;
 			if (drawViewWidth == _width && drawViewHeight == _height)
 				return;
+			
+			if (ratesPanel != null)
+			{
+				topBar.view.y = ratesPanel.getHeight();
+			}
+			else
+			{
+				topBar.view.y = 0;
+			}
+			
 			topBar.setSize(_width, Config.APPLE_TOP_OFFSET + Config.TOP_BAR_HEIGHT);
 			topBar.show();
 			bottomTabs.setWidthAndHeight(_width, Config.TOP_BAR_HEIGHT * 1.1, Config.APPLE_BOTTOM_OFFSET);
 			if (false/*Config.PLATFORM_ANDROID*/) {
-				bottomTabs.view.y = topBar.height;
+				bottomTabs.view.y = topBar.view.y + topBar.view.height;
 				innerScreenManager.view.y = bottomTabs.view.y + bottomTabs.height;
 			} else {
 				bottomTabs.view.y = _height - bottomTabs.height;
-				innerScreenManager.view.y = topBar.height;
+				innerScreenManager.view.y = topBar.view.y + topBar.height;
 			}
-			innerScreenManager.setSize(_width, _height - topBar.height - bottomTabs.height + bottomTabs.getCurrentOffset());
+			innerScreenManager.setSize(_width, _height - topBar.view.y - topBar.height - bottomTabs.height + bottomTabs.getCurrentOffset());
 			swiper.setBounds(_width, innerScreenManager.view.height, innerScreenManager.view, 0, innerScreenManager.view.y);
 		}
 		
@@ -487,6 +501,8 @@ package com.dukascopy.connect.screens {
 			if (innerScreenManager != null)
 				innerScreenManager.dispose();
 			innerScreenManager = null;
+			
+			removeRatesPanel();
 		}
 		
 		override public function dispose():void {
@@ -501,7 +517,8 @@ package com.dukascopy.connect.screens {
 			currentTabID = "";
 			currentScreen = null;
 			
-			GD.S_ESCROW_INSTRUMENT_Q_SELECTED.remove(onIstrumentSelected);
+			GD.S_SHOW_ESCROW_ADS.remove(onIstrumentSelected);
+		//	GD.S_ESCROW_INSTRUMENT_Q_SELECTED.remove(onIstrumentSelected);
 			InnerNotificationManager.S_NOTIFICATION_NEED.remove(needNotification);
 			NewMessageNotifier.S_UPDATE_EXIST.remove(needNotification);
 		}
@@ -526,6 +543,11 @@ package com.dukascopy.connect.screens {
 				topBar.activate();
 			updateMissedCallsNum(CallsHistoryManager.getMissedNum());
 			CallsHistoryManager.S_MISSED_NUM.add(updateMissedCallsNum);
+			
+			if (ratesPanel != null)
+			{
+				ratesPanel.activate();
+			}
 		}
 		
 		private function updateMissedCallsNum(missedNum:int):void {
@@ -566,6 +588,11 @@ package com.dukascopy.connect.screens {
 				swiper.S_ON_SWIPE.remove(onSwipe);
 			}
 			CallsHistoryManager.S_MISSED_NUM.remove(updateMissedCallsNum);
+			
+			if (ratesPanel != null)
+			{
+				ratesPanel.activate();
+			}
 		}
 
 		private function onInnerScreenShowComplete(clc:Class):void {
@@ -722,12 +749,41 @@ package com.dukascopy.connect.screens {
 			if (screenClass == InnerEscrowInstrumentScreen) {
 				bottomTabs.busy = false;
 				bottomTabs.selectTap(null);
-			}
-			
-			if (screenClass == InnerEscrowScreen) {
+				addRatesPanel();
+			} else if (screenClass == InnerEscrowScreen) {
 				bottomTabs.busy = false;
 				bottomTabs.selectTap(null);
+				addRatesPanel();
+			} else 
+			{
+				removeRatesPanel();
 			}
+		}
+		
+		private function removeRatesPanel():void 
+		{
+			NativeExtensionController.setStatusBarColor(Style.color(Style.COLOR_BACKGROUND));
+			if (ratesPanel != null)
+			{
+				ratesPanel.dispose();
+				if (view != null && ratesPanel != null)
+				{
+					view.removeChild(ratesPanel);
+				}
+				ratesPanel = null;
+			}
+			drawView();
+		}
+		
+		private function addRatesPanel():void 
+		{
+			NativeExtensionController.setStatusBarColor(Style.color(Style.COLOR_ACCENT_PANEL));
+			if (ratesPanel == null)
+			{
+				ratesPanel = new RatesPanel(_width);
+				view.addChild(ratesPanel);
+			}
+			drawView();
 		}
 		
 		private function getActions(id:String):Vector.<IScreenAction> {

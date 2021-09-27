@@ -549,13 +549,20 @@ package com.dukascopy.connect.sys.php {
 		}
 		
 		static public function question_get(callBack:Function, hash:String = null, quid:String = null, categories:String = null, limit:int = 50, filters:Object = null):void {
-			
 			var request:Object = { hash:hash, qUID:quid, categories:categories, ver:6, limit:limit };
 			if (filters != null)
 			{
 				request.filters = filters;
 			}
 			call("question.get", callBack, request, null, false, "POST", true, false, { quid:quid, limit:limit } );
+		}
+		
+		static public function getEscrowAds(callBack:Function, filters:Object, hash:String, callID:String):void {
+			var request:Object = { hash:hash, ver:6, limit:50 };
+			if (filters != null) {
+				request.filters = filters;
+			}
+			call("question.get", callBack, request, null, false, "POST", true, false, { callID: callID } );
 		}
 		
 		static public function question_getOne(callBack:Function, quid:String = null):void {

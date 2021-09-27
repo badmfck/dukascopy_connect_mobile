@@ -219,8 +219,11 @@ package com.dukascopy.connect.sys.questionsManager {
 		}
 		
 		static private function saveMaxID(stat:Object):void {
-			escrowInstrumentSelected = stat.instrument;
-			escrowStat[stat.instrument] = stat.maxId;
+			var crypto:String = stat.instrument;
+			if (crypto == "DUK+")
+				crypto = "DCO";
+			escrowInstrumentSelected = crypto;
+			escrowStat[crypto] = stat.maxId;
 			Store.save("escrowMaxID", escrowStat);
 		}
 		
@@ -1538,12 +1541,16 @@ package com.dukascopy.connect.sys.questionsManager {
 			WSClient.call_addAnswerInvoice(ChatManager.getCurrentChat().uid, invoiceString);
 		}
 		
-		static public function close(quid:String):void {
+		static public function close(quid:String, byAdmin:Boolean = false):void {
 			var qVO:QuestionVO = getQuestionByUID(quid);
 			if (qVO != null) {
 				if (qVO.isRemoving == true)
 					return;
 				qVO.isRemoving = true;
+			}
+			if (byAdmin == true) {
+				PHP.question_closeByAdmin(onQuestionRemoved, quid);
+				return;
 			}
 			PHP.question_close(onQuestionRemoved, quid);
 		}
