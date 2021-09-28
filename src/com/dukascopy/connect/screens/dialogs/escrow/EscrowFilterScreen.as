@@ -202,18 +202,27 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		{
 			if (filter != null)
 			{
+				var sortTypeExist:Boolean;
 				var selectedDiretions:Vector.<SelectorItemData> = tradingSideSelector.getSelectedDataVector();
 				if (selectedDiretions != null && selectedDiretions.length > 0)
 				{
 					var direction:TradeDirection = selectedDiretions[0].data as TradeDirection;
-					filter.side = direction.type;
+					if (direction == TradeDirection.buy_sell)
+					{
+						filter.sort = EscrowAdsFilterVO.SORT_BUY_SELL;
+						sortTypeExist = true;
+					}
+					else
+					{
+						filter.side = direction.type;
+					}
 				}
 				else
 				{
 					filter.side = null;
 				}
 				
-				if (radio.getSelection() != null && radio.getSelection().data != null && radio.getSelection().data is String)
+				if (radio.getSelection() != null && radio.getSelection().data != null && radio.getSelection().data is String && !sortTypeExist)
 				{
 					filter.sort = radio.getSelection().data as String;
 				}

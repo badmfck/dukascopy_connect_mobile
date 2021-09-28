@@ -105,7 +105,7 @@ package com.dukascopy.connect.data.escrow
 				screenData.escrowOffer = escrow;
 				screenData.created = message.created;
 				screenData.chat = chatVO;
-				screenData.message = message;
+				screenData.message = message.getClone();
 				
 				
 				/*showFinishScreen(escrow);

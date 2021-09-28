@@ -57,7 +57,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		private function createRadio():void 
 		{
 			radio = new RadioGroup(onRadioSelection);
-			radio.gap = Config.FINGER_SIZE * .23;
+			radio.gap = Config.FINGER_SIZE * .2;
 			addItem(radio);
 		}
 		

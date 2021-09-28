@@ -19,6 +19,7 @@ package com.dukascopy.connect.managers.escrow.vo {
 		static public const SORT_DATE:String = "sortDate";
 		static public const SORT_PRICE:String = "sortPrice";
 		static public const SORT_AMOUNT:String = "sortAmount";
+		static public const SORT_BUY_SELL:String = "sortBuySell";
 		
 		
 		public function EscrowAdsFilterVO() { }

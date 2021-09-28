@@ -91,7 +91,7 @@ package com.dukascopy.connect.gui.components.radio
 			{
 				clips.push(items[n]);
 			}
-			LayoutExecutor.execute(clips, layout, componentWidth);
+			LayoutExecutor.execute(clips, layout, componentWidth, gap);
 		}
 		
 		public function activate():void

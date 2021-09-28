@@ -15,8 +15,13 @@ package com.dukascopy.connect.data.layout
 			
 		}
 		
-		public static function execute(items:Vector.<Sprite>, layout:LayoutType, layoutWidth:int):void
+		public static function execute(items:Vector.<Sprite>, layout:LayoutType, layoutWidth:int, gapValue:int = -1):void
 		{
+			var gap:int = Config.FINGER_SIZE * .2;
+			if (gapValue != -1)
+			{
+				gap = gapValue;
+			}
 			var position:int = 0;
 			
 			if (layout == LayoutType.vertical)
@@ -29,8 +34,6 @@ package com.dukascopy.connect.data.layout
 			}
 			else if (layout == LayoutType.horizontal)
 			{
-				var gap:int = Config.FINGER_SIZE * .2;
-				
 				var lineIndex:int = 0;
 				var linePosition:int = 0;
 				
