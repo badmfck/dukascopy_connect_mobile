@@ -35,13 +35,13 @@ package com.dukascopy.connect.data.screenAction.customActions {
 		{
 			if (!disposed)
 			{
-				ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, EscrowFilterScreen, {title:Lang.escrow_filter_title, callback:onFilters, filter:filter.clone()});
+				ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, EscrowFilterScreen, {title:Lang.escrow_filter_title, callback:onFilters, filter:filter});
 			}
 		}
 		
 		private function onFilters(filter:EscrowAdsFilterVO):void 
 		{
-			GD.S_ESCROW_ADS_FILTER_SETTED.invoke(filter);
+			GD.S_ESCROW_ADS_FILTER_SETTED.invoke();
 		}
 		
 		override public function getIconScale():Number {

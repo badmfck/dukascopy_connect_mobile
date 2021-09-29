@@ -119,37 +119,35 @@ package com.dukascopy.connect.screens.innerScreens {
 			{
 				if (currentFilter != null)
 				{
-					var newFilter:EscrowAdsFilterVO = currentFilter.clone();
 					switch(filter.data)
 					{
 						case EscrowFilterType.COUNTRIES:
 						{
-							newFilter.countries = null;
+							currentFilter.countries = null;
 							break;
 						}
 						case EscrowFilterType.DIRECTION:
 						{
-							newFilter.side = null;
+							currentFilter.side = null;
 							break;
 						}
 						case EscrowFilterType.HIDE_BLOCKED:
 						{
-							newFilter.hideBlocked = false;
+							currentFilter.hideBlocked = false;
 							break;
 						}
 						case EscrowFilterType.HIDE_NOOBS:
 						{
-							newFilter.hideNoobs = false;
+							currentFilter.hideNoobs = false;
 							break;
 						}
 						case EscrowFilterType.SORT:
 						{
-							newFilter.sort = EscrowAdsFilterVO.SORT_DATE;
+							currentFilter.sort = EscrowAdsFilterVO.SORT_DATE;
 							break;
 						}
 					}
-					GD.S_ESCROW_ADS_FILTER_SETTED.invoke(newFilter);
-					currentFilter = newFilter;
+					GD.S_ESCROW_ADS_FILTER_SETTED.invoke();
 				}
 				else
 				{
@@ -235,9 +233,15 @@ package com.dukascopy.connect.screens.innerScreens {
 			GD.S_ESCROW_ADS_FILTER_SETTED.add(onFilterChanged);
 		}
 		
-		private function onFilterChanged(filter:EscrowAdsFilterVO):void 
+		private function onFilterChanged():void 
 		{
-			onFilter(filter);
+			GD.S_ESCROW_ADS_FILTER_REQUEST.invoke(onFilter);
+			TweenMax.delayedCall(1, updateAdsList, null, true);
+		}
+		
+		private function updateAdsList():void 
+		{
+			
 		}
 		
 		private function onFilter(filter:EscrowAdsFilterVO):void 

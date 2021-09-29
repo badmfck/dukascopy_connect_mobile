@@ -209,6 +209,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 					if (direction == TradeDirection.buy_sell)
 					{
 						filter.sort = EscrowAdsFilterVO.SORT_BUY_SELL;
+						filter.side = null;
 						sortTypeExist = true;
 					}
 					else

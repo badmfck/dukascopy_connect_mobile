@@ -8,13 +8,15 @@ package com.dukascopy.connect.managers.escrow.vo {
 	
 	public class EscrowAdsFilterVO {
 		
-		public var side:String;
-		public var instrument:EscrowInstrument;
-		public var currency:String;
-		public var sort:String;
-		public var hideBlocked:Boolean;
-		public var hideNoobs:Boolean;
-		public var countries:Array;
+		private var _side:String;
+		private var _instrument:EscrowInstrument;
+		private var _currency:String;
+		private var _sort:String;
+		private var _hideBlocked:Boolean;
+		private var _hideNoobs:Boolean;
+		private var _countries:Array;
+		
+		public var changed:Boolean;
 		
 		static public const SORT_DATE:String = "sortDate";
 		static public const SORT_PRICE:String = "sortPrice";
@@ -23,27 +25,6 @@ package com.dukascopy.connect.managers.escrow.vo {
 		
 		
 		public function EscrowAdsFilterVO() { }
-		
-		public function clone():EscrowAdsFilterVO 
-		{
-			var result:EscrowAdsFilterVO = new EscrowAdsFilterVO();
-			result.side = side;
-			result.instrument = instrument;
-			result.currency = currency;
-			result.sort = sort;
-			result.hideBlocked = hideBlocked;
-			result.hideNoobs = hideNoobs;
-			if (countries != null)
-			{
-				result.countries = new Array();
-				var l:int = countries.length;	
-				for (var i:int = 0; i < l; i++) 
-				{
-					result.countries.push(countries[i]);
-				}
-			}
-			return result;
-		}
 		
 		public function get filter():Object {
 			var res:Object = {};
@@ -60,6 +41,86 @@ package com.dukascopy.connect.managers.escrow.vo {
 					res.usersExclude = Auth.blocked;
 			}
 			return res;
+		}
+		
+		public function get side():String 
+		{
+			return _side;
+		}
+		
+		public function set side(value:String):void 
+		{
+			changed = true;
+			
+			_side = value;
+		}
+		
+		public function get instrument():EscrowInstrument 
+		{
+			return _instrument;
+		}
+		
+		public function set instrument(value:EscrowInstrument):void 
+		{
+			changed = true;
+			
+			_instrument = value;
+		}
+		
+		public function get currency():String 
+		{
+			return _currency;
+		}
+		
+		public function set currency(value:String):void 
+		{
+			_currency = value;
+		}
+		
+		public function get sort():String 
+		{
+			return _sort;
+		}
+		
+		public function set sort(value:String):void 
+		{
+			_sort = value;
+		}
+		
+		public function get hideBlocked():Boolean 
+		{
+			return _hideBlocked;
+		}
+		
+		public function set hideBlocked(value:Boolean):void 
+		{
+			changed = true;
+			
+			_hideBlocked = value;
+		}
+		
+		public function get hideNoobs():Boolean 
+		{
+			return _hideNoobs;
+		}
+		
+		public function set hideNoobs(value:Boolean):void 
+		{
+			changed = true;
+			
+			_hideNoobs = value;
+		}
+		
+		public function get countries():Array 
+		{
+			return _countries;
+		}
+		
+		public function set countries(value:Array):void 
+		{
+			changed = true;
+			
+			_countries = value;
 		}
 	}
 }
