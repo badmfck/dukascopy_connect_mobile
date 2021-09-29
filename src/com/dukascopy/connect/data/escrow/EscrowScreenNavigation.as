@@ -260,13 +260,13 @@ package com.dukascopy.connect.data.escrow
 			if (escrow != null && reason != null)
 			{
 				GD.S_START_LOAD.invoke();
-				sendInvestigationRequest(reason.label, escrow.deal_uid);
+				sendInvestigationRequest(String(reason.data), escrow.deal_uid);
 			}
 		}
 		
 		static private function sendInvestigationRequest(label:String, dealId:String):void
 		{
-			PHP.escrow_requestInvestigation(onRequestInvestigation, {reason: label, supporterChatUID: Config.EP_P2P_CLAIM, deal_uid: dealId});
+			PHP.escrow_requestInvestigation(onRequestInvestigation, {reason: label, deal_uid: dealId});
 		}
 		
 		static private function onRequestInvestigation(respond:PHPRespond):void

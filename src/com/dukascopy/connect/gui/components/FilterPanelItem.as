@@ -4,7 +4,6 @@ package com.dukascopy.connect.gui.components
 	import com.dukascopy.connect.Config;
 	import com.dukascopy.connect.data.IFilterData;
 	import com.dukascopy.connect.data.SelectorItemData;
-	import com.dukascopy.connect.data.escrow.filter.EscrowFilter;
 	import com.dukascopy.connect.gui.lightbox.UI;
 	import com.dukascopy.connect.gui.menuVideo.BitmapButton;
 	import com.dukascopy.connect.sys.style.FontSize;

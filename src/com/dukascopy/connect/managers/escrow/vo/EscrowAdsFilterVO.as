@@ -24,6 +24,27 @@ package com.dukascopy.connect.managers.escrow.vo {
 		
 		public function EscrowAdsFilterVO() { }
 		
+		public function clone():EscrowAdsFilterVO 
+		{
+			var result:EscrowAdsFilterVO = new EscrowAdsFilterVO();
+			result.side = side;
+			result.instrument = instrument;
+			result.currency = currency;
+			result.sort = sort;
+			result.hideBlocked = hideBlocked;
+			result.hideNoobs = hideNoobs;
+			if (countries != null)
+			{
+				result.countries = new Array();
+				var l:int = countries.length;	
+				for (var i:int = 0; i < l; i++) 
+				{
+					result.countries.push(countries[i]);
+				}
+			}
+			return result;
+		}
+		
 		public function get filter():Object {
 			var res:Object = {};
 			if (side != null && side != "")

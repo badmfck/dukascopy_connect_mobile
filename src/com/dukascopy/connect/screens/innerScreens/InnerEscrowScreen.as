@@ -7,7 +7,6 @@ package com.dukascopy.connect.screens.innerScreens {
 	import com.dukascopy.connect.data.LabelItem;
 	import com.dukascopy.connect.data.SelectorItemData;
 	import com.dukascopy.connect.data.escrow.TradeDirection;
-	import com.dukascopy.connect.data.escrow.filter.EscrowFilter;
 	import com.dukascopy.connect.data.escrow.filter.EscrowFilterType;
 	import com.dukascopy.connect.gui.components.StatusClip;
 	import com.dukascopy.connect.gui.components.message.ToastMessage;
@@ -19,6 +18,7 @@ package com.dukascopy.connect.screens.innerScreens {
 	import com.dukascopy.connect.gui.list.renderers.ListLink;
 	import com.dukascopy.connect.gui.tabs.FilterTabs;
 	import com.dukascopy.connect.gui.tools.HorizontalPreloader;
+	import com.dukascopy.connect.managers.escrow.vo.EscrowAdsFilterVO;
 	import com.dukascopy.connect.managers.escrow.vo.EscrowInstrument;
 	import com.dukascopy.connect.screens.QuestionCreateUpdateScreen;
 	import com.dukascopy.connect.screens.RootScreen;
@@ -76,14 +76,14 @@ package com.dukascopy.connect.screens.innerScreens {
 		private var preloader:HorizontalPreloader;
 		private var instrument:String;
 		private var filtersPanel:FiltersPanel;
-		private var currentFilters:Vector.<EscrowFilter>;
+		private var currentFilter:EscrowAdsFilterVO;
 		
 		public function InnerEscrowScreen() { }
 		
 		override protected function createView():void {
 			super.createView();
 			
-			list = new List("QuestionsList");
+			list = new List("EscrowAdsList");
 			list.setMask(true);
 			list.backgroundColor = Style.color(Style.COLOR_BACKGROUND);
 			list.background = true;
@@ -115,12 +115,45 @@ package com.dukascopy.connect.screens.innerScreens {
 		
 		private function onFilterRemove(filter:SelectorItemData):void 
 		{
-			if (filter != null && filter.data is EscrowFilter)
+			if (filter != null)
 			{
-				if (currentFilters != null)
+				if (currentFilter != null)
 				{
-					currentFilters.removeAt(currentFilters.indexOf(filter.data as EscrowFilter));
-					onFilters(currentFilters);
+					var newFilter:EscrowAdsFilterVO = currentFilter.clone();
+					switch(filter.data)
+					{
+						case EscrowFilterType.COUNTRIES:
+						{
+							newFilter.countries = null;
+							break;
+						}
+						case EscrowFilterType.DIRECTION:
+						{
+							newFilter.side = null;
+							break;
+						}
+						case EscrowFilterType.HIDE_BLOCKED:
+						{
+							newFilter.hideBlocked = false;
+							break;
+						}
+						case EscrowFilterType.HIDE_NOOBS:
+						{
+							newFilter.hideNoobs = false;
+							break;
+						}
+						case EscrowFilterType.SORT:
+						{
+							newFilter.sort = EscrowAdsFilterVO.SORT_DATE;
+							break;
+						}
+					}
+					GD.S_ESCROW_ADS_FILTER_SETTED.invoke(newFilter);
+					currentFilter = newFilter;
+				}
+				else
+				{
+					ApplicationErrors.add();
 				}
 			}
 			else
@@ -197,12 +230,24 @@ package com.dukascopy.connect.screens.innerScreens {
 			
 			GD.S_ESCROW_INSTRUMENTS.add(onInstrumentsLoaded);
 			GD.S_ESCROW_INSTRUMENTS_REQUEST.invoke();
-			GD.S_ESCROW_FILTER.add(onFilters);
+		//	GD.S_ESCROW_FILTER.add(onFilters);
+			GD.S_ESCROW_ADS_FILTER_REQUEST.invoke(onFilter);
+			GD.S_ESCROW_ADS_FILTER_SETTED.add(onFilterChanged);
 		}
 		
-		private function onFilters(filters:Vector.<EscrowFilter>):void 
+		private function onFilterChanged(filter:EscrowAdsFilterVO):void 
 		{
-			currentFilters = filters;
+			onFilter(filter);
+		}
+		
+		private function onFilter(filter:EscrowAdsFilterVO):void 
+		{
+			if (isDisposed)
+			{
+				ApplicationErrors.add();
+				return;
+			}
+			currentFilter = filter;
 			if (selectedFilter == QuestionsManager.TAB_OTHER)
 			{
 				//!TODO:;
@@ -215,20 +260,52 @@ package com.dukascopy.connect.screens.innerScreens {
 		{
 			var destY:int;
 			
-			if (currentFilters != null && currentFilters.length > 0 && selectedFilter == QuestionsManager.TAB_OTHER)
+			var filtersPanelData:Vector.<SelectorItemData> = new Vector.<SelectorItemData>();
+			if (currentFilter != null && selectedFilter == QuestionsManager.TAB_OTHER)
 			{
 				destY += Config.FINGER_SIZE * .1;
 				filtersPanel.visible = true;
 				filtersPanel.y = destY
 				
-				
-				var panelData:Vector.<SelectorItemData> = new Vector.<SelectorItemData>();
-				for (var i:int = 0; i < currentFilters.length; i++) 
+				if (currentFilter.hideBlocked)
 				{
-					panelData.push(new SelectorItemData(currentFilters[i].getLabel(), currentFilters[i]));
+					filtersPanelData.push(new SelectorItemData(Lang.escrow_hide_blocked, EscrowFilterType.HIDE_BLOCKED));
 				}
-				
-				filtersPanel.draw(panelData, _width - Config.MARGIN * 4);
+				if (currentFilter.hideNoobs)
+				{
+					filtersPanelData.push(new SelectorItemData(Lang.escrow_hide_noobs, EscrowFilterType.HIDE_NOOBS));
+				}
+				if (currentFilter.countries != null && currentFilter.countries.length > 0)
+				{
+					filtersPanelData.push(new SelectorItemData(Lang.escrow_countries_excluded, EscrowFilterType.COUNTRIES));
+				}
+				if (currentFilter.countries != null && currentFilter.countries.length > 0)
+				{
+					filtersPanelData.push(new SelectorItemData(Lang.escrow_countries_excluded, EscrowFilterType.COUNTRIES));
+				}
+				if (currentFilter.side != null)
+				{
+					if (currentFilter.side == "sell")
+					{
+						filtersPanelData.push(new SelectorItemData(Lang.sell_ads, EscrowFilterType.DIRECTION));
+					}
+					else if (currentFilter.side == "buy")
+					{
+						filtersPanelData.push(new SelectorItemData(Lang.buy_ads, EscrowFilterType.DIRECTION));
+					}
+				}
+				if (currentFilter.sort != null)
+				{
+					if (currentFilter.sort == EscrowAdsFilterVO.SORT_BUY_SELL)
+					{
+						filtersPanelData.push(new SelectorItemData(Lang.buy_sell_ads, EscrowFilterType.SORT));
+					}
+				}
+			}
+			
+			if (filtersPanelData != null && filtersPanelData.length > 0)
+			{
+				filtersPanel.draw(filtersPanelData, _width - Config.MARGIN * 4);
 				filtersPanel.x = Config.MARGIN * 2;
 				destY += filtersPanel.getHeight() + Config.FINGER_SIZE * .1;
 			}
@@ -383,6 +460,9 @@ package com.dukascopy.connect.screens.innerScreens {
 		
 		override public function dispose():void {
 			super.dispose();
+			
+			GD.S_ESCROW_INSTRUMENTS.remove(onInstrumentsLoaded);
+			GD.S_ESCROW_ADS_FILTER_SETTED.remove(onFilterChanged);
 			
 			if (preloader != null)
 			{
@@ -729,8 +809,7 @@ package com.dukascopy.connect.screens.innerScreens {
 			} else {
 				if (id == QuestionsManager.TAB_OTHER)
 				{
-					listData = QuestionsManager.getNotResolved(getFilters());
-					listData = sortByFilters(listData);
+					listData = QuestionsManager.getNotResolved();
 					showPreloader();
 				}
 				else if (id == QuestionsManager.TAB_OFFERS)
@@ -770,116 +849,6 @@ package com.dukascopy.connect.screens.innerScreens {
 			{
 				removePlaceholder();
 			}
-		}
-		
-		private function sortByFilters(listData:Array):Array 
-		{
-			var needSort:Boolean = false;
-			if (currentFilters != null && currentFilters.length > 0)
-			{
-				for (var i:int = 0; i < currentFilters.length; i++) 
-				{
-					if (currentFilters[i].field == EscrowFilterType.DIRECTION)
-					{
-						if (currentFilters[i].value == TradeDirection.buy_sell.type)
-						{
-							needSort = true;
-							break;
-						}
-					}
-				}
-			}
-			if (needSort)
-			{
-				var sortFunction:Function = function(a:QuestionVO, b:QuestionVO):int{
-					if (a.subtype == "sell" && b.subtype == "sell")
-					{
-						if (Number(a.price) > Number(b.price))
-						{
-							return -1;
-						}
-						else if (Number(a.price) < Number(b.price))
-						{
-							return 1;
-						}
-						else
-						{
-							return 0;
-						}
-					}
-					else if (a.subtype == "buy" && b.subtype == "buy")
-					{
-						if (Number(a.price) > Number(b.price))
-						{
-							return 1;
-						}
-						else if (Number(a.price) < Number(b.price))
-						{
-							return -1;
-						}
-						else
-						{
-							return 0;
-						}
-					}
-					else if (a.subtype == "sell")
-					{
-						return -1;
-					}
-					else if (b.subtype == "sell")
-					{
-						return 1;
-					}
-					else
-					{
-						return 0;
-					}
-				}
-				var result:Array = listData.sort(sortFunction);
-				return result;
-			}
-			else
-			{
-				return listData;
-			}
-		}
-		
-		private function getFilters():Vector.<EscrowFilter> 
-		{
-			var result:Vector.<EscrowFilter>;
-			
-			if (instrument != null)
-			{
-				result = new Vector.<EscrowFilter>();
-				result.push(new EscrowFilter(EscrowFilterType.INSTRUMENT, instrument));
-			}
-			if (currentFilters != null && currentFilters.length > 0)
-			{
-				if (result == null)
-				{
-					result = new Vector.<EscrowFilter>();
-				}
-				for (var i:int = 0; i < currentFilters.length; i++) 
-				{
-					if (currentFilters[i].field == EscrowFilterType.DIRECTION)
-					{
-						if (currentFilters[i].value == TradeDirection.buy.type)
-						{
-							result.push(new EscrowFilter(EscrowFilterType.DIRECTION, currentFilters[i].value.toUpperCase()));
-						}
-						else if (currentFilters[i].value == TradeDirection.sell.type)
-						{
-							result.push(new EscrowFilter(EscrowFilterType.DIRECTION, currentFilters[i].value.toUpperCase()));
-						}
-						else if (currentFilters[i].value == TradeDirection.buy_sell.type)
-						{
-							//sort locally all items;
-						}
-					}
-				}
-			}
-			
-			return result;
 		}
 		
 		private function removePlaceholder():void 

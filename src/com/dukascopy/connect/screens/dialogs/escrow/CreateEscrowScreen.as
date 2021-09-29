@@ -12,6 +12,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 	import com.dukascopy.connect.data.screenAction.customActions.TestCreateOfferAction;
 	import com.dukascopy.connect.gui.button.DDAccountButton;
 	import com.dukascopy.connect.gui.button.DDFieldButton;
+	import com.dukascopy.connect.gui.button.WalletButton;
 	import com.dukascopy.connect.gui.components.message.ToastMessage;
 	import com.dukascopy.connect.gui.components.radio.RadioGroup;
 	import com.dukascopy.connect.gui.components.radio.RadioItem;
@@ -30,8 +31,6 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 	import com.dukascopy.connect.sys.applicationError.ApplicationErrors;
 	import com.dukascopy.connect.sys.dialogManager.DialogManager;
 	import com.dukascopy.connect.sys.imageManager.ImageBitmapData;
-	import com.dukascopy.connect.sys.payments.PayManager;
-	import com.dukascopy.connect.sys.payments.PaymentsManager;
 	import com.dukascopy.connect.sys.paymentsManagerNew.PaymentsManagerNew;
 	import com.dukascopy.connect.sys.pointerManager.PointerManager;
 	import com.dukascopy.connect.sys.serviceScreenManager.ServiceScreenManager;
@@ -104,6 +103,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		private var lockInstrumentSelector:Boolean;
 		private var checkPaymentsAction:TestCreateOfferAction;
 		private var command:OfferCommand;
+		private var selectorWallet:DDFieldButton;
 		
 		public function CreateEscrowScreen() { }
 		
@@ -376,14 +376,14 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			selectCurrencyFromPrices();
 			setCurrencyInControls();
 			
-			if (!selectedCrypto.isLinked && state != STATE_REGISTER)
+			/*if (!selectedCrypto.isLinked && state != STATE_REGISTER)
 			{
 				toState(STATE_REGISTER);
 			}
 			else if (selectedCrypto.isLinked && state != STATE_START)
 			{
 				toState(STATE_START);
-			}
+			}*/
 			updatePrice();
 			updateBalance();
 			priceSelector.draw(_width - contentPadding * 2, -5, 5, 0, selectedPrice, getCurrency());
@@ -511,31 +511,45 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 																	Style.color(Style.COLOR_SEPARATOR));
 			addItem(blockchainTitle);
 			
-			if (blockchainBack == null)
+			if (selectedCrypto.isLinked)
 			{
-				blockchainBack = new Sprite();
+				if (blockchainBack == null)
+				{
+					blockchainBack = new Sprite();
+				}
+				addItem(blockchainBack);
+				
+				if (blockchainAddress == null)
+				{
+					blockchainAddress = new Bitmap();
+				}
+				if (blockchainAddress.bitmapData != null)
+				{
+					blockchainAddress.bitmapData.dispose();
+					blockchainAddress.bitmapData = null;
+				}
+				blockchainAddress.bitmapData = TextUtils.createTextFieldData(selectedCrypto.wallet, _width - contentPadding * 4, 10, true,
+																		TextFormatAlign.LEFT, TextFieldAutoSize.LEFT, 
+																		FontSize.TITLE_2, true, Style.color(Style.COLOR_SUBTITLE),
+																		Style.color(Style.COLOR_SEPARATOR));
+				addItem(blockchainAddress);
+				
+				blockchainBack.graphics.clear();
+				blockchainBack.graphics.beginFill(Style.color(Style.COLOR_SEPARATOR));
+				blockchainBack.graphics.drawRect(0, 0, _width - contentPadding * 2, blockchainAddress.height + contentPadding * 2);
+				blockchainBack.graphics.endFill();
 			}
-			addItem(blockchainBack);
-			
-			if (blockchainAddress == null)
+			else
 			{
-				blockchainAddress = new Bitmap();
+				if (selectorWallet == null)
+				{
+					/*if ()
+					{
+						
+					}
+					selectorWallet = new WalletButton(selectWallet, null, true, Lang.escrow_*/
+				}
 			}
-			if (blockchainAddress.bitmapData != null)
-			{
-				blockchainAddress.bitmapData.dispose();
-				blockchainAddress.bitmapData = null;
-			}
-			blockchainAddress.bitmapData = TextUtils.createTextFieldData(selectedCrypto.wallet, _width - contentPadding * 4, 10, true,
-																	TextFormatAlign.LEFT, TextFieldAutoSize.LEFT, 
-																	FontSize.TITLE_2, true, Style.color(Style.COLOR_SUBTITLE),
-																	Style.color(Style.COLOR_SEPARATOR));
-			addItem(blockchainAddress);
-			
-			blockchainBack.graphics.clear();
-			blockchainBack.graphics.beginFill(Style.color(Style.COLOR_SEPARATOR));
-			blockchainBack.graphics.drawRect(0, 0, _width - contentPadding * 2, blockchainAddress.height + contentPadding * 2);
-			blockchainBack.graphics.endFill();
 			
 			creeateTerms();
 		}

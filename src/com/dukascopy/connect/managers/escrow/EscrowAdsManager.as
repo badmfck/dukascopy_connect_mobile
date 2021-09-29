@@ -40,7 +40,7 @@ package com.dukascopy.connect.managers.escrow {
 			GD.S_ESCROW_ADS_REQUEST.add(onEscrowAdsRequested);
 		}
 		
-		private function onEscrowFilterSetted():void {
+		private function onEscrowFilterSetted(newFilter:EscrowAdsFilterVO):void {
 			escrowAdsFilterSetted = true;
 		}
 		
@@ -61,7 +61,8 @@ package com.dukascopy.connect.managers.escrow {
 			escrowAdsCryptosIds ||= {};
 			escrowAdsCryptosIds[crypto] = escrowAdsCrypto.maxID;
 			escrowAdsFilter.instrument = escrowAdsCrypto.instrument;
-			onEscrowFilterSetted();
+			//!TODO:;
+			onEscrowFilterSetted(escrowAdsFilter);
 			Store.save("escrowAdsCryptoIds", escrowAdsCryptosIds);
 			GD.S_ESCROW_INSTRUMENTS.remove(onEscrowInstrumentsReceived);
 			GD.S_SHOW_ESCROW_ADS.invoke(escrowAdsFilter);

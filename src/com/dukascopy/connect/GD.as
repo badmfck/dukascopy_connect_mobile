@@ -1,7 +1,7 @@
 package com.dukascopy.connect {
 	
+	import com.dukascopy.connect.managers.escrow.signals.S_CryptoWallets;
 	import com.dukascopy.connect.managers.escrow.signals.S_EscrowDealCreated;
-	import com.dukascopy.connect.managers.escrow.signals.S_EscrowFilters;
 	import com.telefision.sys.signals.Signal;
 	import com.dukascopy.connect.managers.escrow.S_EscrowDealCreateRequest;
 	import com.dukascopy.connect.managers.webview.S_WebViewRequest;
@@ -48,7 +48,6 @@ package com.dukascopy.connect {
 		static public const S_ESCROW_PRICE:S_EscrowPrice=new S_EscrowPrice();
 		static public const S_ESCROW_PRICES_REQUEST:S_EscrowPricesRequest = new S_EscrowPricesRequest();
 		
-		static public const S_ESCROW_FILTER:S_EscrowFilters = new S_EscrowFilters();
 		static public const S_ESCROW_INSTRUMENT_Q_SELECTED:Signal = new Signal("GD.S_ESCROW_INSTRUMENT_Q_SELECTED");
 		static public const S_ESCROW_STAT:Signal = new Signal("GD.S_ESCROW_STAT");
 		
@@ -70,5 +69,8 @@ package com.dukascopy.connect {
 		static public const S_BANK_CACHE_CONFIG_REQUEST:Signal = new Signal("GD.S_CONFIG_CACHE_REQUEST");
 		static public const S_BANK_CACHE_ACCOUNT_INFO_REQUEST:Signal = new Signal("GD.S_BANK_CACHE_ACCOUNT_INFO_REQUEST");
 		static public const S_BANK_CACHE_ACCOUNT_INFO_SAVE:Signal = new Signal("GD.S_BANK_CACHE_ACCOUNT_INFO_SAVE");
+		
+		static public const S_CRYPTO_WALLET_REQUEST:Signal = new Signal("GD.S_CRYPTO_WALLET_REQUEST");
+		static public const S_CRYPTO_WALLETS:S_CryptoWallets = new S_CryptoWallets();
     }
 }
