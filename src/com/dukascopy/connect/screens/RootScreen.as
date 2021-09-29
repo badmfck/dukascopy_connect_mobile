@@ -386,23 +386,20 @@ package com.dukascopy.connect.screens {
 			
 			if (ratesPanel != null)
 			{
-				topBar.view.y = ratesPanel.getHeight();
+				topBar.topPadding = ratesPanel.getHeight();
 			}
 			else
 			{
-				topBar.view.y = 0;
+				topBar.topPadding = 0;
 			}
 			
-			topBar.setSize(_width, Config.APPLE_TOP_OFFSET + Config.TOP_BAR_HEIGHT);
+			topBar.setSize(_width, Config.TOP_BAR_HEIGHT);
 			topBar.show();
 			bottomTabs.setWidthAndHeight(_width, Config.TOP_BAR_HEIGHT * 1.1, Config.APPLE_BOTTOM_OFFSET);
-			if (false/*Config.PLATFORM_ANDROID*/) {
-				bottomTabs.view.y = topBar.view.y + topBar.view.height;
-				innerScreenManager.view.y = bottomTabs.view.y + bottomTabs.height;
-			} else {
-				bottomTabs.view.y = _height - bottomTabs.height;
-				innerScreenManager.view.y = topBar.view.y + topBar.height;
-			}
+			
+			bottomTabs.view.y = _height - bottomTabs.height;
+			innerScreenManager.view.y = topBar.view.y + topBar.height;
+			
 			innerScreenManager.setSize(_width, _height - topBar.view.y - topBar.height - bottomTabs.height + bottomTabs.getCurrentOffset());
 			swiper.setBounds(_width, innerScreenManager.view.height, innerScreenManager.view, 0, innerScreenManager.view.y);
 		}

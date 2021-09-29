@@ -17,6 +17,7 @@ package com.dukascopy.connect.gui.components.radio
 		private var items:Vector.<IRadioItem>;
 		private var onSelect:Function;
 		private var layout:LayoutType;
+		private var lastSelectedValue:SelectorItemData;
 		public var gap:int;
 		
 		public function RadioGroup(onSelect:Function, layout:LayoutType = null) 
@@ -48,6 +49,7 @@ package com.dukascopy.connect.gui.components.radio
 		
 		private function onItemSelected(value:SelectorItemData):void 
 		{
+			lastSelectedValue = value;
 			updateSelection(value);
 			
 			if (onSelect != null)
@@ -89,7 +91,7 @@ package com.dukascopy.connect.gui.components.radio
 			{
 				clips.push(items[n]);
 			}
-			LayoutExecutor.execute(clips, layout, componentWidth);
+			LayoutExecutor.execute(clips, layout, componentWidth, gap);
 		}
 		
 		public function activate():void
@@ -116,6 +118,7 @@ package com.dukascopy.connect.gui.components.radio
 		
 		public function dispose():void
 		{
+			lastSelectedValue = null;
 			layout = null;
 			onSelect = null;
 			
@@ -132,6 +135,11 @@ package com.dukascopy.connect.gui.components.radio
 		public function select(selectorItemData:SelectorItemData):void 
 		{
 			updateSelection(selectorItemData);
+		}
+		
+		public function getSelection():SelectorItemData 
+		{
+			return lastSelectedValue;
 		}
 	}
 }

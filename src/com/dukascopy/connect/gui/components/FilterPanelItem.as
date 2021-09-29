@@ -3,7 +3,7 @@ package com.dukascopy.connect.gui.components
 	import assets.NewCloseIcon;
 	import com.dukascopy.connect.Config;
 	import com.dukascopy.connect.data.IFilterData;
-	import com.dukascopy.connect.data.escrow.filter.EscrowFilter;
+	import com.dukascopy.connect.data.SelectorItemData;
 	import com.dukascopy.connect.gui.lightbox.UI;
 	import com.dukascopy.connect.gui.menuVideo.BitmapButton;
 	import com.dukascopy.connect.sys.style.FontSize;
@@ -20,7 +20,7 @@ package com.dukascopy.connect.gui.components
 	 */
 	public class FilterPanelItem extends Sprite
 	{
-		private var filter:IFilterData;
+		private var itemData:SelectorItemData;
 		private var onRemoveCallback:Function;
 		private var text:Bitmap;
 		private var closeButton:BitmapButton;
@@ -31,9 +31,9 @@ package com.dukascopy.connect.gui.components
 		private var backColor:Number;
 		private var buttonHeight:int;
 		
-		public function FilterPanelItem(escrowFilter:IFilterData, object, maxWidth:int, buttonHeight:int, onRemoveCallback:Function) 
+		public function FilterPanelItem(itemData:SelectorItemData, object, maxWidth:int, buttonHeight:int, onRemoveCallback:Function) 
 		{
-			this.filter = escrowFilter;
+			this.itemData = itemData;
 			this.maxWidth = maxWidth;
 			this.onRemoveCallback = onRemoveCallback;
 			this.buttonHeight = buttonHeight;
@@ -51,7 +51,7 @@ package com.dukascopy.connect.gui.components
 			text = new Bitmap();
 			addChild(text);
 			
-			text.bitmapData = TextUtils.createTextFieldData(filter.getLabel().toUpperCase(), maxWidth - hPadding * 3 - buttonSize, 10, false, TextFormatAlign.LEFT, TextFieldAutoSize.LEFT, FontSize.CAPTION_1, false, Style.color(Style.COLOR_TEXT), backColor);
+			text.bitmapData = TextUtils.createTextFieldData(itemData.label.toUpperCase(), maxWidth - hPadding * 3 - buttonSize, 10, false, TextFormatAlign.LEFT, TextFieldAutoSize.LEFT, FontSize.CAPTION_1, false, Style.color(Style.COLOR_TEXT), backColor);
 			
 			closeButton = new BitmapButton();
 			closeButton.setStandartButtonParams();
@@ -103,9 +103,9 @@ package com.dukascopy.connect.gui.components
 			//!TODO:;
 		}
 		
-		public function getData():IFilterData 
+		public function getData():SelectorItemData 
 		{
-			return filter;
+			return itemData;
 		}
 	}
 }

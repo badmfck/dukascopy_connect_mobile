@@ -104,7 +104,8 @@ package com.dukascopy.connect.sys.store{
 		static public const GUEST_NAME:String = "guestName";
 		static public const GUEST_MAIL:String = "guestMail";
 		static public const DRAFT_MESSAGES:String = "draftMessages";
-
+		static public const CRYPTO_WALLETS:String = "cryptoWallets";
+		
 		static private const TYPE_SAVE:int = 0;
 		static private const TYPE_LOAD:int = 1;
 		static private const TYPE_REMOVE:int = 2;

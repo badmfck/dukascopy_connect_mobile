@@ -14,9 +14,9 @@ package com.dukascopy.connect.screens.dialogs.x.base.bottom
 	public class ListSelectionPopup extends ResizeAnimatedTitlePopup
 	{
 		protected var list:List;
-		private var needCallback:Boolean;
-		private var selectedItem:Object;
-		private var selectedNum:int;
+		protected var needCallback:Boolean;
+		protected var selectedItem:Object;
+		protected var selectedNum:int;
 		
 		public function ListSelectionPopup() 
 		{
@@ -145,7 +145,7 @@ package com.dukascopy.connect.screens.dialogs.x.base.bottom
 		
 		override protected function onRemove():void{
 			if (needCallback == true){
-
+				
 				needCallback = false;
 				if (data != null && "callback" in data && data.callback != null && data.callback is Function)
 				{
@@ -173,7 +173,7 @@ package com.dukascopy.connect.screens.dialogs.x.base.bottom
 				selectedItem = null;
 			}
 		}
-
+		
 		protected function getSelectedData(item:Object):Object{
 			return item;
 		}

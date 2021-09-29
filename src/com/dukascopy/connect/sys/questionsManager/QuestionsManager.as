@@ -10,7 +10,6 @@ package com.dukascopy.connect.sys.questionsManager {
 	import com.dukascopy.connect.data.escrow.EscrowMessageData;
 	import com.dukascopy.connect.data.escrow.EscrowSettings;
 	import com.dukascopy.connect.data.escrow.TradeDirection;
-	import com.dukascopy.connect.data.escrow.filter.EscrowFilter;
 	import com.dukascopy.connect.data.screenAction.customActions.TestCreateOfferAction;
 	import com.dukascopy.connect.gui.components.message.ToastMessage;
 	import com.dukascopy.connect.managers.escrow.vo.EscrowInstrument;
@@ -185,8 +184,8 @@ package com.dukascopy.connect.sys.questionsManager {
 		static private var firstQuestionCreated:Boolean=false;
 		
 		static private var getQuestionsTS:Number;
+
 		static private var wallet:String;
-		static private var lastFilters:Vector.<EscrowFilter>;
 		
 		static public var fakeTender:QuestionVO;
 		
@@ -508,12 +507,10 @@ package com.dukascopy.connect.sys.questionsManager {
 				return;
 			}
 			if (flagInOut == true)
-				getQuestions(lastFilters);
+				getQuestions();
 		}
 		
-		static private function getQuestions(filters:Vector.<EscrowFilter> = null):void {
-			//!TODO:;
-			lastFilters = filters;
+		static private function getQuestions():void {
 			init();
 			TweenMax.killDelayedCallsTo(getQuestions);
 			if (!WS.connected) {
@@ -526,17 +523,7 @@ package com.dukascopy.connect.sys.questionsManager {
 			questionsGetting = true;
 			S_QUESTIONS_START_LOADING.invoke();
 			
-			var filtersData:Object;
-			if (filters != null && filters.length > 0)
-			{
-				filtersData = new Object();
-				for (var i:int = 0; i < filters.length; i++) 
-				{
-					filtersData[filters[i].field] = filters[i].value;
-				}
-			}
-			
-			PHP.question_get(onQuestionsLoaded, questionsHash, null, null, (questionsHash == null) ? 10 : 50, filtersData);
+			PHP.question_get(onQuestionsLoaded, questionsHash, null, null, (questionsHash == null) ? 10 : 50);
 		}
 		
 		static public function getQuestionByUID(quid:String, needServerCall:Boolean = true):QuestionVO {
@@ -723,7 +710,7 @@ package com.dukascopy.connect.sys.questionsManager {
 			if (phpRespond.additionalData.limit == 10) {
 				questionsHash = "";
 				needProlong = false;
-				getQuestions(lastFilters);
+				getQuestions();
 			} else {
 				questionsHash = phpRespond.data.hash;
 			}
@@ -925,11 +912,11 @@ package com.dukascopy.connect.sys.questionsManager {
 			return false;
 		}
 		
-		static public function getNotResolved(filters:Vector.<EscrowFilter> = null):Array/*QuestionVO*/ {
+		static public function getNotResolved():Array/*QuestionVO*/ {
 			
 			
 			if (questionsHash == null) {
-				getQuestions(filters);
+				getQuestions();
 				return null;
 			}
 			
@@ -946,7 +933,7 @@ package com.dukascopy.connect.sys.questionsManager {
 			
 			
 			if (needToRefresh == true)
-				getQuestions(filters);
+				getQuestions();
 			if (categoriesFilter == null || categoriesFilter.length == 0)
 				addArray(questionsOther, questionsMine, true);
 			else
@@ -956,27 +943,6 @@ package com.dukascopy.connect.sys.questionsManager {
 				showFirstTips();
 			
 			var temp:Array;
-			if (filters != null && filters.length > 0)
-			{
-				temp = new Array();
-				var question:QuestionVO;
-				//!TODO: проверить что шлёт сервак;
-				var instrumentFilter:String = filters[0].value;
-				for (var i:int = 0; i < questionsFiltered.length; i++) 
-				{
-					question = questionsFiltered[i];
-					if (question.tipsCurrency == instrumentFilter)
-					{
-						temp.push(question);
-					}
-				}
-			}
-			else
-			{
-				temp = questionsFiltered.concat();
-			}
-			
-			questionsFiltered = temp;
 			
 			return questionsFiltered;
 		}

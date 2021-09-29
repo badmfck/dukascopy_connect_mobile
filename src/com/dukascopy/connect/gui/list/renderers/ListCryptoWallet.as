@@ -80,7 +80,8 @@ package com.dukascopy.connect.gui.list.renderers {
 			}
 			else if (!data.isLinked)
 			{
-				walletText = "<font color='#CD3F43'>" + Lang.linkage_required + "</font>";
+				walletText = "";
+			//	walletText = "<font color='#CD3F43'>" + Lang.linkage_required + "</font>";
 			}
 			else
 			{

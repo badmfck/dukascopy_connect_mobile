@@ -1,7 +1,7 @@
 package com.dukascopy.connect.screens.escrow 
 {
 	import com.dukascopy.connect.Config;
-	import com.dukascopy.connect.data.escrow.filter.EscrowFilter;
+	import com.dukascopy.connect.data.SelectorItemData;
 	import com.dukascopy.connect.gui.components.FilterPanelItem;
 	import flash.display.Sprite;
 	/**
@@ -10,7 +10,7 @@ package com.dukascopy.connect.screens.escrow
 	 */
 	public class FiltersPanel extends Sprite
 	{
-		private var filters:Vector.<EscrowFilter>;
+		private var items:Vector.<SelectorItemData>;
 		private var buttons:Vector.<FilterPanelItem>;
 		
 		private var hPadding:int;
@@ -27,9 +27,9 @@ package com.dukascopy.connect.screens.escrow
 			vPadding = Config.FINGER_SIZE * .1;
 		}
 		
-		public function draw(filters:Vector.<EscrowFilter>, maxWidth:int):void 
+		public function draw(data:Vector.<SelectorItemData>, maxWidth:int):void 
 		{
-			this.filters = filters;
+			this.items = data;
 			this.maxWidth = maxWidth;
 			buttonHeight = Config.FINGER_SIZE * .45;
 			
@@ -42,9 +42,9 @@ package com.dukascopy.connect.screens.escrow
 			buttons = new Vector.<FilterPanelItem>();
 			
 			var button:FilterPanelItem;
-			for (var i:int = 0; i < filters.length; i++) 
+			for (var i:int = 0; i < items.length; i++) 
 			{
-				button = new FilterPanelItem(filters[i], onFilterRemove, maxWidth, buttonHeight, onFilterRemove);
+				button = new FilterPanelItem(items[i], onFilterRemove, maxWidth, buttonHeight, onFilterRemove);
 				buttons.push(button);
 				addChild(button);
 			}
@@ -64,6 +64,7 @@ package com.dukascopy.connect.screens.escrow
 					if (lineWidth + buttons[i].width + hPadding > maxWidth)
 					{
 						lineWidth = 0;
+						linePosition = 0;
 						position += buttonHeight + vPadding;
 					}
 					buttons[i].x = linePosition;
@@ -126,6 +127,11 @@ package com.dukascopy.connect.screens.escrow
 		{
 			clear();
 			onRemove = null;
+		}
+		
+		public function getSelection():Vector.<SelectorItemData> 
+		{
+			return items;
 		}
 	}
 }
