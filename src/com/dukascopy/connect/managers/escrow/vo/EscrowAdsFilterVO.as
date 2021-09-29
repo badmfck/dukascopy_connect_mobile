@@ -50,7 +50,8 @@ package com.dukascopy.connect.managers.escrow.vo {
 		
 		public function set side(value:String):void 
 		{
-			changed = true;
+			if (_side != value)
+				changed = true;
 			
 			_side = value;
 		}
@@ -62,7 +63,8 @@ package com.dukascopy.connect.managers.escrow.vo {
 		
 		public function set instrument(value:EscrowInstrument):void 
 		{
-			changed = true;
+			if (_instrument != value)
+				changed = true;
 			
 			_instrument = value;
 		}
@@ -94,7 +96,8 @@ package com.dukascopy.connect.managers.escrow.vo {
 		
 		public function set hideBlocked(value:Boolean):void 
 		{
-			changed = true;
+			if (_hideBlocked != value)
+				changed = true;
 			
 			_hideBlocked = value;
 		}
@@ -106,7 +109,8 @@ package com.dukascopy.connect.managers.escrow.vo {
 		
 		public function set hideNoobs(value:Boolean):void 
 		{
-			changed = true;
+			if (_hideNoobs != value)
+				changed = true;
 			
 			_hideNoobs = value;
 		}
@@ -118,7 +122,8 @@ package com.dukascopy.connect.managers.escrow.vo {
 		
 		public function set countries(value:Array):void 
 		{
-			changed = true;
+			if (_countries != value)
+				changed = true;
 			
 			_countries = value;
 		}
