@@ -210,9 +210,9 @@ package com.dukascopy.connect.managers.escrow {
 				l1 = phpRespond.data.others.length;
 			var l2:int = 0;
 			var escrowAdsVO:EscrowAdsVO;
-			if (escrowAds != null)
-				l2 = escrowAds.length;
 			for (var i:int = 0; i < l1; i++) {
+				if (escrowAds != null)
+					l2 = escrowAds.length;
 				for (var j:int = l2; j > 0; j--) {
 					if (escrowAds[j - 1].uid != phpRespond.data.others[i].uid)
 						continue;
