@@ -12,11 +12,17 @@ import flash.system.Capabilities;
 import flash.events.UncaughtErrorEvent;
 import com.greensock.TweenMax;
 
-import com.dukascopy.connect.managers.escrow.EscrowDealManager;
+/*import com.dukascopy.connect.managers.escrow.EscrowDealManager;
 import com.dukascopy.connect.managers.webview.WebViewManager;
 import com.dukascopy.connect.managers.escrow.test.EscrowTest;
-import com.dukascopy.connect.managers.escrow.test.EscrowTestForm;
+import com.dukascopy.connect.managers.escrow.test.EscrowTestForm;*/
 import com.dukascopy.connect.managers.escrow.EscrowOfferManager;
+import com.dukascopy.connect.GD;
+import com.forms.Form;
+import flash.filesystem.File;
+import com.dukascopy.connect.managers.escrow.vo.EscrowOfferVO;
+import com.forms.components.FormList;
+
 
 
 [SWF(backgroundColor="#ffffff")]
@@ -33,25 +39,30 @@ public class MainEscrow extends Sprite {
 			if (Capabilities.isDebugger == false)
 				this.loaderInfo.uncaughtErrorEvents.addEventListener(UncaughtErrorEvent.UNCAUGHT_ERROR, onGlobalError);
 
-			TweenMax.delayedCall(2, start, null, true);
+			TweenMax.delayedCall(3, start, null, true);
 
 		}
 		
 		private function start():void{
+			Form.debug=true;
+            var form:Form=new Form(File.applicationDirectory.resolvePath("forms"+File.separator+"escrowMain.xml"));
+			var list:FormList;
+			addChild(form.view);
+			form.setSize(stage.stageWidth,stage.stageHeight);
+			form.onDocumentLoaded=function():void{
+				list=form.getComponentByID("offers") as FormList;
+				GD.S_ESCROW_OFFERS_REQUEST.invoke();
+			};
 
-            new EscrowDealManager();
+			GD.S_ESCROW_OFFERS_READY.add(function(offers:Vector.<EscrowOfferVO>):void{
+				list.setData(offers);
+			})
+
 			new EscrowOfferManager();
-			new EscrowTest();
-			new WebViewManager();
-
-			TweenMax.delayedCall(2,function():void{
-				setEscrowForm();
-			},null,true);
+			
 		}
 		
-		private function setEscrowForm():void{
-			addChild(new EscrowTestForm());
-		}
+		
 		
 
 		public static function onGlobalError(e:UncaughtErrorEvent = null):void {

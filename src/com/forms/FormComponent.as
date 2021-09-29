@@ -17,15 +17,13 @@ package com.forms{
     import flash.events.TimerEvent;
     import flash.display.LineScaleMode;
     import flash.events.MouseEvent;
-    import flash.printing.PrintJob;
     import flash.display.Bitmap;
     import flash.display.BitmapData;
     import flash.display.StageQuality;
-    import flash.display.FocusDirection;
     import flash.filters.DropShadowFilter;
-    import flash.text.FontStyle;
     import flash.display.Shape;
-    import white.Bot;
+    import com.forms.components.FormListItem;
+    
 
     public class FormComponent{
 
@@ -131,9 +129,16 @@ package com.forms{
         
         public function FormComponent(xml:*,form:Form,predefinedStyle:Object=null,additionalChilds:XML=null){
             
+            if(xml==null)
+                trace('CREATE COMPONENT!',xml);
+
             _view=new Sprite();
-            box=new Sprite();
-            border=new Shape();
+            if(!(this is FormText)){
+                box=new Sprite();
+                border=new Shape();
+                (_view as DisplayObjectContainer).addChild(box);
+                (_view as DisplayObjectContainer).addChild(border);
+            }
             
 
             this.predefinedStyle=predefinedStyle;
@@ -158,7 +163,7 @@ package com.forms{
                 return;
             }
 
-            if(xml==null){
+            if(xml==null && !(this is FormText)){
                 // NO XML
                 attributes={};
                 style=new FormStyle(null,predefinedStyle,this);
@@ -293,7 +298,7 @@ package com.forms{
 
             clearAll(false);
             for(var i:int=0;i<lines.length;i++){
-                var txt:FormText=new FormText(lines[i]);
+                var txt:FormText=createTextNode(lines[i]);
                 _add(txt,-1,false);
             }
             rebuild();
@@ -357,6 +362,8 @@ package com.forms{
                 form.unregID(id)
 
             form.regID(newID,this);
+            if(box!=null)
+                box.name="box_"+nodeName+"_"+newID;
             _id=newID;
         }
 
@@ -402,8 +409,11 @@ package com.forms{
             
           
             if(_id){
-                if(this.form!=null && attributes["--local-child-id"]!=true)
+                if(this.form!=null && attributes["--local-child-id"]!=true){
                     this.form.regID(_id,this);
+                    if(box!=null)
+                        box.name="box_"+nodeName+"_"+_id;
+                }
                 else if(this.form!=null && attributes["--local-child-id"]==true){
                     var parent:FormComponent=form.getComponentByID(attributes['--parent-id']);
                     parent.regLocalID(attributes["id"],this);
@@ -492,11 +502,7 @@ package com.forms{
                 _components=new Vector.<FormComponent>();
             }
 
-            //if(box.parent==null)
-                (_view as DisplayObjectContainer).addChild(box);
-           
-            //if(border.parent==null)
-                (_view as DisplayObjectContainer).addChild(border);
+            
 
             if(!enableChilds){
                 callDocumentLoaded();
@@ -1059,7 +1065,7 @@ package com.forms{
                 
                 (view as DisplayObjectContainer).addChild(mask)
             }
-            mask.graphics.beginFill(0xFF0000,.8);
+            mask.graphics.beginFill(0xFF0000,.2);
             mask.graphics.drawRect(0,0,bounds.display_width,bounds.display_height);
             if(style.overflow=="hidden"){
                 if(scroller){
@@ -1090,18 +1096,24 @@ package com.forms{
                 if(cy+c.getBounds().display_height<0){
                     if(c.view.visible){
                         c.view.visible=false;
+                        if(c is FormListItem)
+                            (c as FormListItem).deactivated()
                         if(c.style.asBitmap)
                             c.clearBitmap()
                     }
                 }else if(cy>mask.height){
                     if(c.view.visible){
                         c.view.visible=false;
+                        if(c is FormListItem)
+                            (c as FormListItem).deactivated()
                         if(c.style.asBitmap)
                             c.clearBitmap()
                     }
                 }else
                     if(!c.view.visible){
                         c.view.visible=true;
+                        if(c is FormListItem)
+                            (c as FormListItem).activated()
                         if(c.style.asBitmap)
                             c.redrawBitmap();
                     }
@@ -1197,7 +1209,7 @@ package com.forms{
                 
                 spr.graphics.endFill();
 
-                if(style.border.isSet && style.borderColor.isSet){
+                if(true==false && style.border.isSet && style.borderColor.isSet){
                     border.graphics.clear();
                     border.graphics.beginFill(style.borderColor.top);
                     var radius:Object=style.borderRadius;
@@ -1541,6 +1553,8 @@ package com.forms{
             }
             localIDs=null;
             form=null;
+            if(box!=null)
+                box.name+="_destroyed"
         }
     }
 }

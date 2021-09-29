@@ -1,0 +1,14 @@
+<body>
+
+<list id="offers" style="${status}">
+    <li padding="10">
+        ${status}
+        ${data.price}
+        ${data.mca_ccy}
+        ${data.amount}
+        ${data.instrument}
+        ${data.side}
+    </li>
+</list>
+
+</body>

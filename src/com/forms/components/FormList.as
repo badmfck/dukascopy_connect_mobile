@@ -3,8 +3,9 @@ package com.forms.components{
     import flash.xml.XMLNode;
     import com.forms.FormComponent;
     import com.forms.Form;
-    import flash.utils.setTimeout;
     import flash.utils.clearTimeout;
+    import flash.display.Sprite;
+
 
     public class FormList extends FormComponent{
 
@@ -14,15 +15,28 @@ package com.forms.components{
         private var lastUpdateTime:Number=0;
         private var lastUpdateData:Object;
         private var timeoutID:int;
-        private var data:Array;
+        private var data:Object;
+
+        private var top:Sprite=new Sprite();
+        private var bottom:Sprite=new Sprite();
+        private var listBox:Sprite=new Sprite();
+            
 
         public function FormList(xml:XMLNode,form:Form){
             super(xml,form,{
                 overflow:"scroll"
             });
+
+            bottom.graphics.beginFill(0xFF0000);
+            bottom.graphics.drawRect(0,0,10,10)
+            box.addChild(bottom);
+
+            top.graphics.beginFill(0xFF0000);
+            top.graphics.drawRect(0,0,10,10)
+            box.addChild(top);
         }
 
-        public function setData(data:Array):void{
+        public function setData(data:Object):void{
             this.data=data;
             
             // remove all items
@@ -36,99 +50,25 @@ package com.forms.components{
                 return;
             }
 
-            //1. create item from up to down
-            var li:FormListItem=new FormListItem(itemXML,form);
-            add(li);
+            var nextY:int=0;
             var l:int=data.length;
-            var tme:Number=new Date().getTime();
-            for(var i:int=0;i<l;i++){
-                // TODO: set data
-                li.setupUserValues(data[i]);
-                redraw();
-                //trace(li.getBounds().width,li.getBounds().height);
-            }
-            trace(">>"+(new Date().getTime()-tme)+"<<");
-
-            trace(this);
-
-
-            /*
-            var time:Number=new Date().getTime();
-            lastUpdateData=data;
-
-            if(time-lastUpdateTime<500){
-                clearTimeout(timeoutID)
-                trace("SETTING DATA TO LIST IS TO FAST")
-                timeoutID=setTimeout(function():void{
-                    if(lastUpdateData && !destroyed)
-                        setData(lastUpdateData as Array);
-                    trace("SET LAST DATA");
-                },200)
-                return
-            }
-
-            if(timeoutID>0)
-                clearTimeout(timeoutID);
-            timeoutID=-1;
-            lastUpdateTime=time;
-            lastUpdateData=null;
-
-            if(items==null)
-                items=new <FormComponent>[];
-            
-            var l:int=data.length;
-            var itemsToAdd:Vector.<FormComponent>;
-            var itemsToRemve:Vector.<FormComponent>;
-
-            // TAKE EACH ITEM, CHECK REDRAW
-            var needRebuild:Boolean=false;
-            for(var n:int=0;n<l;n++){
-                
-                if(data[n]==null)
-                    continue;
-
-                var presentItem:FormListItem=null;
-                
-                
-                if(n<_components.length)
-                    presentItem=_components[n] as FormListItem;
-
-
-                // GOT ITEM
-                if(presentItem!=null){
-                    // check data 
-                    var sameHash:Boolean=presentItem.compareUserValues(data[n]);
-                    if(sameHash)
-                        continue; // same data object
-                    presentItem.setupUserValues(data[n]);
-                    needRebuild=true;
-                    continue;
+            var renders:Vector.<FormComponent>=new <FormComponent>[];
+            var li:FormListItem;
+            if(data is Array || data is Vector){
+                for(var i:int=0;i<l;i++){
+                    li=new FormListItem(itemXML,form);
+                    li.setupUserValues(data[i]);
+                    renders.push(li)
                 }
-
-                // create new item
-                presentItem=new FormListItem(item,form);
-                presentItem.setupUserValues(data[n]);
-                if(itemsToAdd==null)
-                    itemsToAdd=new <FormComponent>[];
-                itemsToAdd.push(presentItem);
-            }
-
-            
-            if(data.length<_components.length){
-                for(var i:int=data.length;i<_components.length;i++){
-                    if(itemsToRemve==null)
-                        itemsToRemve=new <FormComponent>[];
-                    itemsToRemve.push(_components[i]);
+            }else{
+                for(var j:String in data){
+                    li=new FormListItem(itemXML,form);
+                    li.setupUserValues(data[j]);
+                    renders.push(li)
                 }
             }
-
-            if(itemsToRemve && itemsToRemve.length>0)
-                _removeAll(itemsToRemve,false);
-
-            if(itemsToAdd && itemsToAdd.length>0)
-                addAll(itemsToAdd);
-            else if(needRebuild)
-                rebuild();*/
+            addAll(renders);
+            
         }
 
         

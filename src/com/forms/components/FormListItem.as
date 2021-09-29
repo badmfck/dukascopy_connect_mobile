@@ -30,6 +30,10 @@ package com.forms.components{
             super.setupUserValues(data);
         }
 
+        public function activated():void{ }
+
+        public function deactivated():void{}
+
         public function compareUserValues(data:Object):Boolean{
             if(data==null && userValues==null)
                 return true;

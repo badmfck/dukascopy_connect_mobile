@@ -27,6 +27,15 @@ package com.forms
         public function get bottomOffset():int{ return _bottomOffset;}
 
         public var formController:Object;
+        private var _onFormCreated:Function;
+        private var doCallFormCreated:Boolean=false;
+        public function set onFormCreated(val:Function):void{
+            _onFormCreated=val;
+            if(doCallFormCreated){
+                _onFormCreated();
+                doCallFormCreated=false;
+            }
+        };
 
         public function Form(xml:*,additionalComponents:Vector.<FormRegisteredComponent>=null){
             _avaiableComponentRenderers.push(new FormRegisteredComponent("button",FormButton));
@@ -97,6 +106,13 @@ package com.forms
                 doRedraw=false;
             }
 
+            if(_onFormCreated && _onFormCreated is Function)
+                _onFormCreated();
+            doCallFormCreated=true;
+        }
+
+        public function refresh():void{
+            rebuild();
         }
 
         public function createComponent(name:String,predefinedStyle:Object=null):FormComponent{

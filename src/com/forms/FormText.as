@@ -80,7 +80,7 @@ package com.forms
                 var vals:Object=parentValues;
                 if(parentValues is String || parentValues is Number || parentValues is Boolean)
                     vals={value:parentValues};
-                textToSet=textToSet.replace(/\$\{[a-zA-Z0-9_]+\}/gi,
+                textToSet=textToSet.replace(/\$\{[a-zA-Z0-9_\.]+\}/gi,
                     function(found:String,index:int,fulltext:String):String{
                         found=found.substr(2,found.length-3);
                         var tmp:Array=found.split(".");

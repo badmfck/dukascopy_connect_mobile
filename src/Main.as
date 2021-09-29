@@ -53,13 +53,11 @@ public class Main extends Sprite {
 			
 			if (Capabilities.isDebugger == false)
 				this.loaderInfo.uncaughtErrorEvents.addEventListener(UncaughtErrorEvent.UNCAUGHT_ERROR, onGlobalError);
-			
+
 			TweenMax.delayedCall(2, start, null, true);
-			
 		}
 		
-		private function start():void 
-		{
+		private function start():void{
 			new MobileGui(this, stage); 
 			//onGlobalError();
 		}

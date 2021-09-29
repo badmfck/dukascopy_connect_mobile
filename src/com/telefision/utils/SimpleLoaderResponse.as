@@ -32,8 +32,24 @@ package com.telefision.utils
                 }
             }
         }
+        public function get data():Object{
+            return _data;
+        }
+        public function get error():String{
+            return _error;
+        }
+        public function get raw():String{
+            return _raw;
+        }
+
         public function toString():String{
-            return 'error: '+((_error!=null)?_error:"no error")+"\ndata:"+JSON.stringify(_data,null,"\t\n")+"\nraw:"+_raw
+            var dta:String="";
+            try{
+                dta=JSON.stringify(_data,null,"\t\n");
+            }catch(e:Error){
+                dta="Can't parse JSON: "+e.message;
+            }
+            return 'error: '+((_error!=null)?_error:"no error")+"\ndata:"+dta+"\nraw:"+_raw
         }
     }
 }

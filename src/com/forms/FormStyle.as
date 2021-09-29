@@ -1,8 +1,6 @@
 package com.forms
 {
     import flash.xml.XMLNode;
-    import flash.text.engine.FontWeight;
-    import com.dukascopy.connect.sys.calendar.BookedDays;
     
     public class FormStyle{
        
@@ -145,8 +143,6 @@ package com.forms
         private function setupPosition():void{
             position=values.position?values.position:"block";
         }
-
-        
 
         private function setupDistributeChilds():void{
             distributeChilds=new FormDistributeChilds(values.distributeChilds);
