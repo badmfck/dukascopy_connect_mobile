@@ -279,10 +279,6 @@ package com.dukascopy.connect.screens.innerScreens {
 				{
 					filtersPanelData.push(new SelectorItemData(Lang.escrow_countries_excluded, EscrowFilterType.COUNTRIES));
 				}
-				if (currentFilter.countries != null && currentFilter.countries.length > 0)
-				{
-					filtersPanelData.push(new SelectorItemData(Lang.escrow_countries_excluded, EscrowFilterType.COUNTRIES));
-				}
 				if (currentFilter.side != null)
 				{
 					if (currentFilter.side == "sell")
