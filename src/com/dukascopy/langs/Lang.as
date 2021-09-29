@@ -2567,6 +2567,7 @@ package com.dukascopy.langs {
 		static public var excrow_exclude_country:String = "Exclude Country";
 		static public var escrow_excluded_countries:String = "Excluded countries";
 		static public var escrow_countries_excluded:String = "Countries excluded";
+		static public var escrow_provide_crypto_wallet:String = "Please provide crypto address";
 		
 		static public function updateKeys(keys:Object):void {
 			for (var n:String in keys) {

@@ -13,6 +13,7 @@ package com.dukascopy.connect.data.escrow
 		public var instrument:String;
 		public var accountNumber:String;
 		public var isPercent:Boolean;
+		public var cryptoWallet:String;
 		
 		public function EscrowDealData() 
 		{

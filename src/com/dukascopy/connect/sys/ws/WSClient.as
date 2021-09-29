@@ -1109,12 +1109,15 @@ import com.dukascopy.connect.MobileGui;
 			{
 				request.crypto_wallet = cryptoWallet;
 			}
-			request.price_id = "1";
 			send(WSMethodType.ESCROW_OFFER_ACCEPT, request);
 		}
 		
-		static public function call_create_offer(dataObject:Object):void 
+		static public function call_create_offer(dataObject:Object, cryptoWallet:String):void 
 		{
+			if (cryptoWallet != null)
+			{
+				dataObject.crypto_wallet = cryptoWallet;
+			}
 			send(WSMethodType.ESCROW_OFFER_CREATE, dataObject);
 		}
 		

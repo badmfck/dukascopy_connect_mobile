@@ -1,5 +1,7 @@
-package com.dukascopy.connect {
+package com.dukascopy.connect
+{
 	
+	import com.dukascopy.connect.managers.escrow.signals.S_CryptoWalletAdd;
 	import com.dukascopy.connect.managers.escrow.signals.S_CryptoWallets;
 	import com.dukascopy.connect.managers.escrow.signals.S_EscrowDealCreated;
 	import com.telefision.sys.signals.Signal;
@@ -16,14 +18,15 @@ package com.dukascopy.connect {
 	import com.dukascopy.connect.managers.escrow.signals.S_EscrowWalletsRequest;
 	import com.dukascopy.connect.managers.escrow.signals.S_EscrowOfferCreateRequest;
 	
-	public class GD {
+	public class GD
+	{
 		
 		static public const S_TIMEZONE_REQUEST:Signal = new Signal("S_TIMEZONE_REQUEST");
 		
 		static public const S_CONFIG_UPDATED:Signal = new Signal("GD.S_CONFIG_UPDATED");
 		
-        static public const S_PAYPASS_BACK_CLICK:Signal=new Signal();
-        static public const S_SHOW_SYSTEM_TRACE:Signal = new Signal();
+		static public const S_PAYPASS_BACK_CLICK:Signal = new Signal();
+		static public const S_SHOW_SYSTEM_TRACE:Signal = new Signal();
 		static public const S_REQUEST_SHARE_TEXT:Signal = new Signal();
 		static public const S_DEBUG_WS:Signal = new Signal();
 		static public const S_LOG_WS:Signal = new Signal();
@@ -33,12 +36,12 @@ package com.dukascopy.connect {
 		static public const S_STOP_LOAD:Signal = new Signal();
 		
 		// ESCROW
-		static public const S_ESCROW_MANAGER_AVAILABLE:S_EscrowManagerAvailable=new S_EscrowManagerAvailable(); // EscrowDealMap
-		static public const S_ESCROW_DEALS_LOADED:Signal=new Signal(); 
-		static public const S_ESCROW_DEAL_CREATE_REQUEST:S_EscrowDealCreateRequest=new S_EscrowDealCreateRequest();
-		static public const S_ESCROW_DEALS_REQUEST:S_EscrowDealsRequest=new S_EscrowDealsRequest();
-		static public const S_ESCROW_DEAL_FORM_REQUEST:SuperSignal=new SuperSignal();
-		static public const S_ESCROW_MONEY_HOLD_REQUEST:S_EscrowMoneyHoldRequest=new S_EscrowMoneyHoldRequest();
+		static public const S_ESCROW_MANAGER_AVAILABLE:S_EscrowManagerAvailable = new S_EscrowManagerAvailable(); // EscrowDealMap
+		static public const S_ESCROW_DEALS_LOADED:Signal = new Signal();
+		static public const S_ESCROW_DEAL_CREATE_REQUEST:S_EscrowDealCreateRequest = new S_EscrowDealCreateRequest();
+		static public const S_ESCROW_DEALS_REQUEST:S_EscrowDealsRequest = new S_EscrowDealsRequest();
+		static public const S_ESCROW_DEAL_FORM_REQUEST:SuperSignal = new SuperSignal();
+		static public const S_ESCROW_MONEY_HOLD_REQUEST:S_EscrowMoneyHoldRequest = new S_EscrowMoneyHoldRequest();
 		static public const S_ESCROW_WALLETS_REQUEST:S_EscrowWalletsRequest = new S_EscrowWalletsRequest();
 		static public const S_ESCROW_OFFER_CREATE_REQUEST:S_EscrowOfferCreateRequest = new S_EscrowOfferCreateRequest();
 		static public const S_ESCROW_DEAL_CREATED:S_EscrowDealCreated = new S_EscrowDealCreated();
@@ -46,9 +49,9 @@ package com.dukascopy.connect {
 		static public const S_ESCROW_OFFERS_REQUEST:Signal = new Signal("S_ESCROW_OFFERS_REQUEST");
 		static public const S_ESCROW_OFFERS_READY:Signal = new Signal("S_ESCROW_OFFERS_READY");
 		
-		static public const S_ESCROW_INSTRUMENTS_REQUEST:S_EscrowRequestInstruments=new S_EscrowRequestInstruments();
-		static public const S_ESCROW_INSTRUMENTS:S_EscrowInstruments=new S_EscrowInstruments();
-		static public const S_ESCROW_PRICE:S_EscrowPrice=new S_EscrowPrice();
+		static public const S_ESCROW_INSTRUMENTS_REQUEST:S_EscrowRequestInstruments = new S_EscrowRequestInstruments();
+		static public const S_ESCROW_INSTRUMENTS:S_EscrowInstruments = new S_EscrowInstruments();
+		static public const S_ESCROW_PRICE:S_EscrowPrice = new S_EscrowPrice();
 		static public const S_ESCROW_PRICES_REQUEST:S_EscrowPricesRequest = new S_EscrowPricesRequest();
 		
 		static public const S_ESCROW_INSTRUMENT_Q_SELECTED:Signal = new Signal("GD.S_ESCROW_INSTRUMENT_Q_SELECTED");
@@ -62,8 +65,8 @@ package com.dukascopy.connect {
 		static public const S_ESCROW_ADS_FILTER_SETTED:Signal = new Signal("GD.S_ESCROW_ADS_FILTER_SETTED");
 		static public const S_ESCROW_ADS_REQUEST:Signal = new Signal("GD.S_ESCROW_ADS_REQUEST");
 		static public const S_ESCROW_ADS:Signal = new Signal("GD.S_ESCROW_ADS");
-
-		static public const S_IOS_LOCALIZATION_UPDATE:Signal=new Signal("S_IOS_LOCALIZATION_UPDATE");
+		
+		static public const S_IOS_LOCALIZATION_UPDATE:Signal = new Signal("S_IOS_LOCALIZATION_UPDATE");
 		
 		// Web view
 		static public const S_WEBVIEW_REQUEST:S_WebViewRequest = new S_WebViewRequest();
@@ -75,5 +78,6 @@ package com.dukascopy.connect {
 		
 		static public const S_CRYPTO_WALLET_REQUEST:Signal = new Signal("GD.S_CRYPTO_WALLET_REQUEST");
 		static public const S_CRYPTO_WALLETS:S_CryptoWallets = new S_CryptoWallets();
-    }
+		static public const S_CRYPTO_WALLET_ADD:S_CryptoWalletAdd = new S_CryptoWalletAdd();
+	}
 }

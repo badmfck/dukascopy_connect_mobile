@@ -22,6 +22,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 	import com.dukascopy.connect.gui.list.renderers.ListPayCurrency;
 	import com.dukascopy.connect.gui.list.renderers.ListPayWalletItem;
 	import com.dukascopy.connect.gui.menuVideo.BitmapButton;
+	import com.dukascopy.connect.managers.escrow.vo.CryptoWallet;
 	import com.dukascopy.connect.managers.escrow.vo.EscrowInstrument;
 	import com.dukascopy.connect.managers.escrow.vo.EscrowPrice;
 	import com.dukascopy.connect.screens.dialogs.paymentDialogs.elements.InputField;
@@ -104,6 +105,9 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		private var checkPaymentsAction:TestCreateOfferAction;
 		private var command:OfferCommand;
 		private var selectorWallet:DDFieldButton;
+		private var cryptoWallets:Vector.<CryptoWallet>;
+		private var currentCryptoWallet:String;
+		private var cryptoWalletInput:InputField;
 		
 		public function CreateEscrowScreen() { }
 		
@@ -371,6 +375,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 				return;
 			}
 			
+			currentCryptoWallet = null;
 			selectInstrument(value);
 			currencySign = null;
 			selectCurrencyFromPrices();
@@ -427,7 +432,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 				}
 				else if (state == STATE_START)
 				{
-					if (terms != null)
+					if (selectedDirection == TradeDirection.sell)
 					{
 						addItem(terms);
 					}
@@ -475,6 +480,10 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			sendButton.activate();
 			backButton.activate();
 			terms.activate();
+			if (cryptoWalletInput != null)
+			{
+				cryptoWalletInput.activate();
+			}
 		}
 		
 		private function createFinishState():void 
@@ -511,7 +520,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 																	Style.color(Style.COLOR_SEPARATOR));
 			addItem(blockchainTitle);
 			
-			if (selectedCrypto.isLinked)
+			if (selectedCrypto.isLinked || localWalletExist())
 			{
 				if (blockchainBack == null)
 				{
@@ -528,7 +537,18 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 					blockchainAddress.bitmapData.dispose();
 					blockchainAddress.bitmapData = null;
 				}
-				blockchainAddress.bitmapData = TextUtils.createTextFieldData(selectedCrypto.wallet, _width - contentPadding * 4, 10, true,
+				var cryptoWallet:String;
+				if (selectedCrypto.isLinked)
+				{
+					cryptoWallet = selectedCrypto.wallet;
+				}
+				else
+				{
+					cryptoWallet = getLocalCryptoWallet();
+					currentCryptoWallet = cryptoWallet;
+				}
+				
+				blockchainAddress.bitmapData = TextUtils.createTextFieldData(cryptoWallet, _width - contentPadding * 4, 10, true,
 																		TextFormatAlign.LEFT, TextFieldAutoSize.LEFT, 
 																		FontSize.TITLE_2, true, Style.color(Style.COLOR_SUBTITLE),
 																		Style.color(Style.COLOR_SEPARATOR));
@@ -541,6 +561,24 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			}
 			else
 			{
+				if (cryptoWalletInput == null)
+				{
+					var tf:TextFormat = new TextFormat();
+					tf.size = FontSize.BODY;
+					tf.color = Style.color(Style.COLOR_TEXT);
+					tf.font = Config.defaultFontName;
+					
+					cryptoWalletInput = new InputField( -1, Input.MODE_INPUT);
+					cryptoWalletInput.onSelectedFunction = onInputSelected;
+					cryptoWalletInput.onChangedFunction = onInputChange;
+					cryptoWalletInput.setMaxChars(300);
+					cryptoWalletInput.setPadding(0);
+					cryptoWalletInput.updateTextFormat(tf);
+				}
+				addItem(cryptoWalletInput);
+				
+				cryptoWalletInput.drawString(_width - contentPadding * 2, null, "");
+				
 				if (selectorWallet == null)
 				{
 					/*if ()
@@ -552,6 +590,73 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			}
 			
 			creeateTerms();
+		}
+		
+		private function onInputSelected():void 
+		{
+			cryptoWalletInput.valid();
+		}
+		
+		private function onInputChange(e:Event = null):void
+		{
+			if (cryptoWalletInput != null)
+			{
+				if (cryptoWalletInput.valueString == null || cryptoWalletInput.valueString == "")
+				{
+					cryptoWalletInput.invalid();
+				}
+				else
+				{
+					cryptoWalletInput.valid();
+					cryptoWalletInput.updatePositions();
+				}
+			}
+		}
+		
+		private function getLocalCryptoWallet():String 
+		{
+			if (selectedCrypto != null)
+			{
+				if (cryptoWallets != null)
+				{
+					for (var i:int = 0; i < cryptoWallets.length; i++) 
+					{
+						if (cryptoWallets[i].crypto == selectedCrypto.code)
+						{
+							return cryptoWallets[i].wallet;
+						}
+					}
+				}
+			}
+			else
+			{
+				ApplicationErrors.add();
+			}
+			
+			return "";
+		}
+		
+		private function localWalletExist():Boolean 
+		{
+			if (selectedCrypto != null)
+			{
+				if (cryptoWallets != null)
+				{
+					for (var i:int = 0; i < cryptoWallets.length; i++) 
+					{
+						if (cryptoWallets[i].crypto == selectedCrypto.code)
+						{
+							return true;
+						}
+					}
+				}
+			}
+			else
+			{
+				ApplicationErrors.add();
+			}
+			
+			return false;
 		}
 		
 		private function createBackButton():void 
@@ -697,10 +802,11 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		
 		private function onSendClick():void 
 		{
+			var dataValid:Boolean = true;
+			offerData = new EscrowDealData();
+			
 			if (state == STATE_START)
 			{
-				var dataValid:Boolean = true;
-				
 				if (isNaN(selectedPrice) || selectedPrice == 0)
 				{
 					if (controlPriceSelected == inputPrice)
@@ -721,6 +827,47 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 				}
 			}
 			
+			if (selectedDirection == TradeDirection.buy)
+			{
+				var selectedCryptoWallet:String;
+				if (state == STATE_FINISH)
+				{
+					if (selectedCrypto.isLinked)
+					{
+						selectedCryptoWallet = selectedCrypto.wallet;
+					}
+					else
+					{
+						if (currentCryptoWallet != null)
+						{
+							selectedCryptoWallet = currentCryptoWallet;
+						}
+						else if (cryptoWalletInput != null)
+						{
+							if (cryptoWalletInput.valueString != null && cryptoWalletInput.valueString != "")
+							{
+								selectedCryptoWallet = cryptoWalletInput.valueString;
+								GD.S_CRYPTO_WALLET_ADD.invoke(selectedCrypto.code, selectedCryptoWallet);
+							}
+							else
+							{
+								cryptoWalletInput.invalid();
+							}
+						}
+						//!TODO:;
+					}
+				}
+				if (selectedCryptoWallet != null)
+				{
+					offerData.cryptoWallet = selectedCryptoWallet;
+				}
+				else
+				{
+					ToastMessage.display(Lang.escrow_provide_crypto_wallet);
+					return;
+				}
+			}
+			
 			if (terms != null)
 			{
 				if (initialAmountExist() && getInitialAmount() < inputAmount.value)
@@ -731,7 +878,6 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 				
 				if (terms.isSelected())
 				{
-					offerData = new EscrowDealData();
 					if (controlPriceSelected == priceSelector)
 					{
 						offerData.price = priceSelector.getValue();
@@ -750,6 +896,10 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 					{
 						offerData.accountNumber = selectedFiatAccount.ACCOUNT_NUMBER;
 					}
+					/*if ()
+					{
+						
+					}*/
 					
 					checkPaymentsSell();
 				}
@@ -979,6 +1129,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 				removeItem(selectorAccont);
 				removeItem(selectorCurrency);
 				removeItem(terms);
+				
 				deactivateStartState();
 			}
 			else if (state == STATE_REGISTER)
@@ -1018,6 +1169,11 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 				removeItem(blockchainBack);
 				removeItem(blockchainTitle);
 				removeItem(terms);
+				if (terms != null)
+				{
+					terms.unselect();
+				}
+				removeItem(cryptoWalletInput);
 				removeItem(priceSummary);
 				removeItem(alert);
 			}
@@ -1231,6 +1387,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			{
 				createNextButton();
 				createAccountSelector();
+				loadWalletsData();
 			}
 			else if (selectedDirection == TradeDirection.sell)
 			{
@@ -1249,6 +1406,22 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			updateScroll();
 			
 			loadInstruments();
+		}
+		
+		private function loadWalletsData():void 
+		{
+			GD.S_CRYPTO_WALLETS.add(onCryptoWallets);
+			GD.S_CRYPTO_WALLET_REQUEST.invoke();
+		}
+		
+		private function onCryptoWallets(cryptoWallets:Vector.<CryptoWallet>):void 
+		{
+			if (_isDisposed)
+			{
+				ApplicationErrors.add();
+				return;
+			}
+			this.cryptoWallets = cryptoWallets;
 		}
 		
 		private function creeateTerms():void 
@@ -1396,7 +1569,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 					position += selectorAccont.height + contentPaddingV;
 				}
 				
-				if (terms != null)
+				if (terms != null && terms.parent != null)
 				{
 					terms.x = contentPadding;
 					terms.y = position;
@@ -1449,11 +1622,20 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 				blockchainTitle.y = position;
 				position += blockchainTitle.height + contentPaddingV * .3;
 				
-				blockchainBack.x = contentPadding;
-				blockchainBack.y = position;
-				blockchainAddress.x = contentPadding * 2;
-				blockchainAddress.y = position + contentPadding;
-				position += blockchainBack.height + contentPaddingV * 2;
+				if (blockchainBack != null)
+				{
+					blockchainBack.x = contentPadding;
+					blockchainBack.y = position;
+					blockchainAddress.x = contentPadding * 2;
+					blockchainAddress.y = position + contentPadding;
+					position += blockchainBack.height + contentPaddingV * 2;
+				}
+				if(cryptoWalletInput != null)
+				{
+					cryptoWalletInput.x = contentPadding;
+					cryptoWalletInput.y = position;
+					position += cryptoWalletInput.getFullHeight() + contentPaddingV * 2;
+				}
 				
 				if (alert != null)
 				{
@@ -1915,6 +2097,10 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			{
 				terms.deactivate();
 			}
+			if (cryptoWalletInput != null)
+			{
+				cryptoWalletInput.deactivate();
+			}
 		}
 		
 		override protected function onRemove():void 
@@ -1934,6 +2120,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		override public function dispose():void {
 			super.dispose();
 			
+			GD.S_CRYPTO_WALLETS.remove(onCryptoWallets);
 			GD.S_ESCROW_INSTRUMENTS.remove(instrumentsLoaded);
 			
 			removeCheckPaymentsAction();
@@ -2057,6 +2244,11 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			{
 				alert.dispose();
 				alert = null;
+			}
+			if (cryptoWalletInput != null)
+			{
+				cryptoWalletInput.dispose();
+				cryptoWalletInput = null;
 			}
 			
 			selectedFiatAccount = null;

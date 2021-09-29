@@ -130,5 +130,13 @@ package com.dukascopy.connect.screens.dialogs.escrow
 			}
 			return false;
 		}
+		
+		public function unselect():void 
+		{
+			if (control != null)
+			{
+				return control.unselect();
+			}
+		}
 	}
 }

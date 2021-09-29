@@ -92,5 +92,13 @@ package com.dukascopy.connect.screens.dialogs.escrow
 			}
 			return 0;
 		}
+		
+		public function unselect():void 
+		{
+			if (isSelected)
+			{
+				toggler.unselect();
+			}
+		}
 	}
 }
