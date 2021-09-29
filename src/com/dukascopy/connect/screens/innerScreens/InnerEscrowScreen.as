@@ -267,9 +267,7 @@ package com.dukascopy.connect.screens.innerScreens {
 			var filtersPanelData:Vector.<SelectorItemData> = new Vector.<SelectorItemData>();
 			if (currentFilter != null && selectedFilter == QuestionsManager.TAB_OTHER)
 			{
-				destY += Config.FINGER_SIZE * .1;
-				filtersPanel.visible = true;
-				filtersPanel.y = destY
+				
 				
 				if (currentFilter.hideBlocked)
 				{
@@ -305,6 +303,10 @@ package com.dukascopy.connect.screens.innerScreens {
 			
 			if (filtersPanelData != null && filtersPanelData.length > 0)
 			{
+				destY += Config.FINGER_SIZE * .1;
+				filtersPanel.visible = true;
+				filtersPanel.y = destY;
+				
 				filtersPanel.draw(filtersPanelData, _width - Config.MARGIN * 4);
 				filtersPanel.x = Config.MARGIN * 2;
 				destY += filtersPanel.getHeight() + Config.FINGER_SIZE * .1;

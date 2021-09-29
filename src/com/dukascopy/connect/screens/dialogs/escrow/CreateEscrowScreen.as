@@ -350,6 +350,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		
 		private function selectInstrumentTap():void 
 		{
+			selectorInstrument.valid();
 			if (!lockInstrumentSelector)
 			{
 				if (instruments != null && instruments.length > 0)
@@ -364,6 +365,10 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 						},
 						DialogManager.TYPE_SCREEN
 					);
+				}
+				else
+				{
+					loadInstruments();
 				}
 			}
 		}
@@ -866,6 +871,12 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 					ToastMessage.display(Lang.escrow_provide_crypto_wallet);
 					return;
 				}
+			}
+			
+			if (selectedCrypto == null)
+			{
+				selectorInstrument.invalid();
+				return;
 			}
 			
 			if (terms != null)
@@ -1449,11 +1460,12 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		
 		private function instrumentsLoaded(instruments:Vector.<EscrowInstrument>):void 
 		{
+			GD.S_ESCROW_INSTRUMENTS.remove(instrumentsLoaded);
 			if (isDisposed)
 			{
 				return;
 			}
-			GD.S_ESCROW_INSTRUMENTS.remove(instrumentsLoaded);
+			
 			if (this.instruments == null)
 			{
 				this.instruments = instruments;
