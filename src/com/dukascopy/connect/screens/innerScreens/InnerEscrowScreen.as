@@ -809,6 +809,7 @@ package com.dukascopy.connect.screens.innerScreens {
 			} else {
 				if (id == QuestionsManager.TAB_OTHER)
 				{
+					GD.S_ESCROW_ADS_REQUEST.invoke();
 					listData = QuestionsManager.getNotResolved();
 					showPreloader();
 				}
