@@ -230,7 +230,7 @@ package com.dukascopy.connect.gui.list.renderers {
 			var res:String = "";
 			var percent:String = itemData.percent;
 			if (percent != null)
-				res = percent;
+				res = "MKT " + percent + " ";
 			res += "  @" + itemData.price + " " + itemData.currency;
 			return res;
 		}
