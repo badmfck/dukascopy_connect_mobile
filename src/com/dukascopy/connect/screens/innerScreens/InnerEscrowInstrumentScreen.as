@@ -2,32 +2,22 @@ package com.dukascopy.connect.screens.innerScreens {
 	
 	import com.dukascopy.connect.Config;
 	import com.dukascopy.connect.GD;
-	import com.dukascopy.connect.MobileGui;
-	import com.dukascopy.connect.data.LabelItem;
-	import com.dukascopy.connect.gui.components.StatusClip;
 	import com.dukascopy.connect.gui.lightbox.UI;
 	import com.dukascopy.connect.gui.list.List;
 	import com.dukascopy.connect.gui.list.ListItem;
 	import com.dukascopy.connect.gui.list.renderers.BaseRenderer;
 	import com.dukascopy.connect.gui.list.renderers.ListEscrowAdsRenderer;
 	import com.dukascopy.connect.gui.list.renderers.ListEscrowInstrumentRenderer;
-	import com.dukascopy.connect.gui.list.renderers.ListLink;
 	import com.dukascopy.connect.gui.tabs.FilterTabs;
 	import com.dukascopy.connect.gui.tools.HorizontalPreloader;
 	import com.dukascopy.connect.managers.escrow.vo.EscrowAdsCryptoVO;
 	import com.dukascopy.connect.managers.escrow.vo.EscrowAdsVO;
-	import com.dukascopy.connect.screens.RootScreen;
 	import com.dukascopy.connect.screens.base.BaseScreen;
-	import com.dukascopy.connect.screens.dialogs.ScreenLinksDialog;
-	import com.dukascopy.connect.sys.chatManager.ChatManager;
 	import com.dukascopy.connect.sys.dialogManager.DialogManager;
 	import com.dukascopy.connect.sys.style.FontSize;
 	import com.dukascopy.connect.sys.style.Style;
-	import com.dukascopy.connect.type.ChatInitType;
 	import com.dukascopy.connect.type.HitZoneType;
 	import com.dukascopy.connect.utils.TextUtils;
-	import com.dukascopy.connect.vo.ChatVO;
-	import com.dukascopy.connect.vo.screen.ChatScreenData;
 	import com.dukascopy.langs.Lang;
 	import com.greensock.TweenMax;
 	import flash.display.Bitmap;
@@ -55,7 +45,6 @@ package com.dukascopy.connect.screens.innerScreens {
 		
 		static private var storedTabListPosition:Object = {};
 		
-		private var statusClip:StatusClip;
 		private var placeholder:Bitmap;
 		private var preloader:HorizontalPreloader;
 		
@@ -110,7 +99,7 @@ package com.dukascopy.connect.screens.innerScreens {
 					storedTabListPosition[selectedTabID].listBoxY = list.getBoxY();
 					var fli:ListItem = list.getFirstVisibleItem();
 					if (fli != null) {
-						storedTabListPosition[selectedTabID].item = list.getFirstVisibleItem().data;
+						storedTabListPosition[selectedTabID].item = fli.data;
 						storedTabListPosition[selectedTabID].offset = fli.y + storedTabListPosition[selectedTabID].listBoxY;
 					}
 					list.dispose();
@@ -122,10 +111,6 @@ package com.dukascopy.connect.screens.innerScreens {
 			}
 			
 			list = null;
-			
-			if (statusClip != null)
-				statusClip.destroy();
-			statusClip = null;
 		}
 		
 		override protected function drawView():void {
@@ -151,7 +136,6 @@ package com.dukascopy.connect.screens.innerScreens {
 			if (list != null && list.isDisposed == false) {
 				list.activate();
 				list.S_ITEM_TAP.add(onItemTap);
-				list.S_ITEM_HOLD.add(onItemHold);
 			}
 			if (tabs != null && tabs.isDisposed == false) {
 				tabs.S_ITEM_SELECTED.add(onTabItemSelected);
@@ -170,74 +154,39 @@ package com.dukascopy.connect.screens.innerScreens {
 			super.deactivateScreen();
 			if (_isDisposed == true)
 				return;
-			
 			if (list != null && list.isDisposed == false) {
 				list.deactivate();
 				list.S_ITEM_TAP.remove(onItemTap);
-				list.S_ITEM_HOLD.remove(onItemHold);
 			}
-			
 			if (tabs != null && tabs.isDisposed == false) {
 				tabs.S_ITEM_SELECTED.remove(onTabItemSelected);
 				tabs.deactivate();
 			}
 		}
 		
-		private function showPreloader():void {
-			TweenMax.killDelayedCallsTo(startPreloader);
-			TweenMax.delayedCall(0.2, startPreloader);
-		}
-		
-		private function startPreloader():void {
-			TweenMax.killDelayedCallsTo(startPreloader);
-			if (preloader != null)
-				preloader.start();
-		}
-		
-		private function hidePreloader():void {
-			TweenMax.killDelayedCallsTo(startPreloader);
-			preloader.stop();
-		}
-		
-		private function showLoading():void {
-			if (statusClip == null) {
-				statusClip = new StatusClip();
-				view.addChild(statusClip);
-				statusClip.setSize(_width, Config.FINGER_SIZE * .6);
-				statusClip.y = _height;
-			}
-			statusClip.show(Lang.updatingQuestions);
-		}
-		
-		override public function drawViewLang():void {
-			if (tabs != null)
-				tabs.updateLabels( [ Lang.textAll, Lang.textMine, Lang.questionsResolved ] );
-			super.drawViewLang();
-		}
-		
 		override public function dispose():void {
 			super.dispose();
+			if (list != null)
+				list.dispose();
+			list = null;
+			if (tabs != null)
+				tabs.dispose();
+			tabs = null;
 			if (preloader != null) {
 				TweenMax.killDelayedCallsTo(startPreloader);
 				preloader.dispose();
-				preloader = null;
 			}
+			preloader = null;
 			removePlaceholder();
 			GD.S_ESCROW_ADS_CRYPTOS.remove(onEscrowAdsCryptoLoaded);
 			GD.S_ESCROW_ADS_MINE.remove(onEscrowAdsCryptoLoaded);
 			DialogManager.closeDialog();
 		}
 		
-		private function hideStatusClip():void {
-			if (statusClip)
-				statusClip.hide();
-		}
-		
-		private function refreshList():void {
-			if (_isDisposed == true)
-				return;
-			if (list != null)
-				list.refresh();
+		override public function drawViewLang():void {
+			if (tabs != null)
+				tabs.updateLabels( [ Lang.escrow_text_instruments, Lang.textMine, Lang.escrow_text_offers, Lang.escrow_text_deals ] );
+			super.drawViewLang();
 		}
 		
 		private function onItemTap(data:Object, n:int):void {
@@ -247,80 +196,29 @@ package com.dukascopy.connect.screens.innerScreens {
 			var itemHitZone:String;
 			if (item != null)
 				itemHitZone = item.getLastHitZone();
-			if (data is ChatVO) {
-				if (itemHitZone && itemHitZone == HitZoneType.DELETE) {
-					DialogManager.alert(Lang.textConfirm, Lang.alertConfirmLeaveConversation, function(val:int):void {
-						if (val != 1)
-							return;
-						ChatManager.removeUser((data as ChatVO).uid);
-					}, Lang.textDelete.toUpperCase(), Lang.textCancel.toUpperCase());
-					return;
-				}
-				var chatScreenData:ChatScreenData = new ChatScreenData();
-				chatScreenData.chatVO = data as ChatVO;
-				chatScreenData.type = ChatInitType.CHAT;
-				chatScreenData.backScreen = RootScreen;
-				MobileGui.showChatScreen(chatScreenData);
-				return;
-			} else if (data is LabelItem) {
-				if (itemHitZone && itemHitZone == HitZoneType.SIMPLE_ACTION && (data as LabelItem).action != null) {
-					(data as LabelItem).action.execute();
-				}
-				return;
-			} else if (data is EscrowAdsCryptoVO) {
+			if (data is EscrowAdsCryptoVO) {
 				GD.S_ESCROW_ADS_INSTRUMENT_SELECTED.invoke(data);
-			}else if (data is EscrowAdsVO) {
+				return;
+			}
+			if (data is EscrowAdsVO) {
 				var escrowAdsVO:EscrowAdsVO = data as EscrowAdsVO;
 				if (escrowAdsVO.isRemoving == true)
 					return;
-				if (itemHitZone) {
-					if (itemHitZone == HitZoneType.DELETE || itemHitZone == HitZoneType.DELETE_ADMIN) {
-						DialogManager.alert(Lang.confirm, Lang.alertConfirmDeleteQuestion, function(val:int):void {
-							if (val != 1)
-								return;
-							GD.S_ESCROW_ADS_REMOVE.invoke(escrowAdsVO.uid);
-							list.updateItemByIndex(n, false);
-						}, Lang.textDelete.toUpperCase(), Lang.textCancel.toUpperCase());
-						return;
-					}
+				if (itemHitZone == HitZoneType.DELETE) {
+					DialogManager.alert(Lang.confirm, Lang.alertConfirmDeleteQuestion, function(val:int):void {
+						if (val != 1)
+							return;
+						GD.S_ESCROW_ADS_REMOVE.invoke(escrowAdsVO.uid);
+						list.updateItemByIndex(n, false);
+					}, Lang.textDelete.toUpperCase(), Lang.textCancel.toUpperCase());
+					return;
 				}
 				if (escrowAdsVO.answersCount > 0) {
 					GD.S_ESCROW_ADS_ANSWERS.invoke(escrowAdsVO.uid);
 					return;
 				}
-				/*MobileGui.changeMainScreen(
-					QuestionCreateUpdateScreen, {
-						backScreen:MobileGui.centerScreen.currentScreenClass,
-						title:Lang.editEscrowAd,
-						data:qVO
-					},
-					ScreenManager.DIRECTION_RIGHT_LEFT
-				);*/
+				return;
 			}
-		}
-		
-		private function onItemHold(data:Object, n:int):void {
-			if (_isDisposed == true)
-				return;
-			if (data is ChatVO == false)
-				return;
-			var menuItems:Array = [];
-			var chatVO:ChatVO = data as ChatVO;
-			
-			menuItems.push( { fullLink:Lang.deleteChat, id:0 } );
-			
-			if (menuItems.length == 0)
-				return;
-			DialogManager.showDialog(ScreenLinksDialog, { callback:function(data:Object):void {
-				if (data.id == 0) {
-					DialogManager.alert(Lang.textConfirm, Lang.alertConfirmLeaveConversation, function(val:int):void {
-						if (val != 1)
-							return;
-						ChatManager.removeUser(chatVO.uid);
-					}, Lang.textDelete.toUpperCase(), Lang.textCancel.toUpperCase());
-					return;
-				}
-			}, data:menuItems, itemClass:ListLink, title:chatVO.title, multilineTitle:false } );
 		}
 		
 		private function onTabItemSelected(id:String):void {
@@ -344,6 +242,22 @@ package com.dukascopy.connect.screens.innerScreens {
 			setListData(null);
 		}
 		
+		private function saveListPosition():void {
+			var listBoxY:int = list.getBoxY();
+			if (listBoxY < 0) {
+				storedTabListPosition[selectedTabID].listBoxY = list.getBoxY();
+				var fli:ListItem = list.getFirstVisibleItem();
+				if (fli != null) {
+					storedTabListPosition[selectedTabID].item = list.getFirstVisibleItem().data;
+					storedTabListPosition[selectedTabID].offset = fli.y + storedTabListPosition[selectedTabID].listBoxY;
+				}
+			} else if ("item" in storedTabListPosition[selectedTabID] == true) {
+				delete storedTabListPosition[selectedTabID].item;
+				delete storedTabListPosition[selectedTabID].offset;
+				delete storedTabListPosition[selectedTabID].listBoxY;
+			}
+		}
+		
 		private function onEscrowAdsCryptoLoaded(data:Array, preloaderHide:Boolean = false):void {
 			if (_isDisposed)
 				return;
@@ -362,22 +276,10 @@ package com.dukascopy.connect.screens.innerScreens {
 			if (preloaderHide == true)
 				hidePreloader();
 			setListData(data);
-		}
-		
-		private function saveListPosition():void {
-			var listBoxY:int = list.getBoxY();
-			if (listBoxY < 0) {
-				storedTabListPosition[selectedTabID].listBoxY = list.getBoxY();
-				var fli:ListItem = list.getFirstVisibleItem();
-				if (fli != null) {
-					storedTabListPosition[selectedTabID].item = list.getFirstVisibleItem().data;
-					storedTabListPosition[selectedTabID].offset = fli.y + storedTabListPosition[selectedTabID].listBoxY;
-				}
-			} else if ("item" in storedTabListPosition[selectedTabID] == true) {
-				delete storedTabListPosition[selectedTabID].item;
-				delete storedTabListPosition[selectedTabID].offset;
-				delete storedTabListPosition[selectedTabID].listBoxY;
-			}
+			if (data == null || data.length == 0)
+				addPlaceholder(Lang.escrow_no_active_ads_placeholder);
+			else
+				removePlaceholder();
 		}
 		
 		private function setListData(data:Array):void {
@@ -394,24 +296,11 @@ package com.dukascopy.connect.screens.innerScreens {
 			if (listData == null)
 				listData = [];
 			list.setData(listData, listItemClass);
-			
 			if (storedTabListPosition[selectedTabID] != null && "item" in storedTabListPosition[selectedTabID] == true && storedTabListPosition[selectedTabID].item != null)
 				if (list.scrollToItem(null, storedTabListPosition[selectedTabID].item, storedTabListPosition[selectedTabID].offset) == false)
 					if ("listBoxY" in storedTabListPosition[selectedTabID] == true)
 						list.setBoxY(storedTabListPosition[selectedTabID].listBoxY);
 			list.setContextAvaliable(true);
-			if (selectedTabID == TAB_ID_MINE && (listData == null || listData.length == 0)) {
-				addPlaceholder(Lang.escrow_no_active_ads_placeholder);
-			} else {
-				removePlaceholder();
-			}
-		}
-		
-		private function removePlaceholder():void {
-			if (placeholder != null) {
-				UI.destroy(placeholder);
-				placeholder = null;
-			}
 		}
 		
 		private function addPlaceholder(text:String):void {
@@ -438,6 +327,29 @@ package com.dukascopy.connect.screens.innerScreens {
 			);
 			placeholder.y = list.view.y + Config.FINGER_SIZE;
 			placeholder.x = int(_width * .5 - placeholder.width * .5);
+		}
+		
+		private function removePlaceholder():void {
+			if (placeholder != null) {
+				UI.destroy(placeholder);
+				placeholder = null;
+			}
+		}
+		
+		private function showPreloader():void {
+			TweenMax.killDelayedCallsTo(startPreloader);
+			TweenMax.delayedCall(0.2, startPreloader);
+		}
+		
+		private function startPreloader():void {
+			TweenMax.killDelayedCallsTo(startPreloader);
+			if (preloader != null)
+				preloader.start();
+		}
+		
+		private function hidePreloader():void {
+			TweenMax.killDelayedCallsTo(startPreloader);
+			preloader.stop();
 		}
 	}
 }

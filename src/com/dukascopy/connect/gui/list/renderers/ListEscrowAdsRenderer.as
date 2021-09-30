@@ -4,14 +4,12 @@ package com.dukascopy.connect.gui.list.renderers {
 	import com.dukascopy.connect.data.HitZoneData;
 	import com.dukascopy.connect.gui.lightbox.UI;
 	import com.dukascopy.connect.gui.list.ListItem;
-	import com.dukascopy.connect.gui.tabs.FilterTabs;
 	import com.dukascopy.connect.managers.escrow.vo.EscrowAdsVO;
 	import com.dukascopy.connect.sys.imageManager.ImageBitmapData;
 	import com.dukascopy.connect.sys.imageManager.ImageManager;
 	import com.dukascopy.connect.sys.style.FontSize;
 	import com.dukascopy.connect.sys.style.Style;
 	import com.dukascopy.connect.sys.style.presets.Color;
-	import com.dukascopy.connect.sys.theme.AppTheme;
 	import com.dukascopy.connect.type.HitZoneType;
 	import com.dukascopy.connect.utils.DateUtils;
 	import com.dukascopy.langs.Lang;
@@ -28,7 +26,7 @@ package com.dukascopy.connect.gui.list.renderers {
 	
 	/**
 	 * ...
-	 * @author Sergey Dobarin
+	 * @author Ilya Shcherbakov. Telefision TEAM Riga.
 	 */
 	
 	public class ListEscrowAdsRenderer extends BaseRenderer implements IListRenderer {
@@ -43,7 +41,6 @@ package com.dukascopy.connect.gui.list.renderers {
 		protected var format_price:TextFormat = new TextFormat();
 		protected var format_status:TextFormat = new TextFormat();
 		protected var format_time:TextFormat = new TextFormat();
-		
 		protected var format6:TextFormat = new TextFormat();
 		
 		protected var bg:Shape;
@@ -76,8 +73,6 @@ package com.dukascopy.connect.gui.list.renderers {
 				avatar.x = avatarPosX;
 				avatar.y = avatarPosY;
 			addChild(avatar);
-			
-			var scale:Number = avatarSize * 2 / 100;
 			
 			var textPosition:int = int(avatar.x + avatarSize * 2 + Config.FINGER_SIZE * .28);
 			
@@ -126,8 +121,6 @@ package com.dukascopy.connect.gui.list.renderers {
 				textFieldStatus.y = int(textFieldPrice.y + FontSize.BODY + Config.FINGER_SIZE * .1);
 			addChild(textFieldStatus);
 		}
-		
-		//6n5dpefg4fv7ebev
 		
 		private function initTextFormats():void {
 			format_amount.font = Config.defaultFontName;
@@ -281,8 +274,6 @@ package com.dukascopy.connect.gui.list.renderers {
 			format6 = null;
 			format_price = null;
 			
-			graphics.clear();
-			
 			if (textFieldAmount != null)
 				UI.destroy(textFieldAmount);
 			textFieldAmount = null;
@@ -302,12 +293,14 @@ package com.dukascopy.connect.gui.list.renderers {
 			UI.destroy(avatar);
 			avatar = null;
 			
+			icon911BMD.dispose();
+			icon911BMD = null;
+			
+			graphics.clear();
+			
 			if (parent) {
 				parent.removeChild(this);
 			}
-			
-			icon911BMD.dispose();
-			icon911BMD = null;
 		}
 		
 		/* INTERFACE com.dukascopy.connect.gui.list.renderers.IListRenderer */
