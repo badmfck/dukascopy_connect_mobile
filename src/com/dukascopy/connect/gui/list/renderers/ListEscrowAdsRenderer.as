@@ -227,40 +227,12 @@ package com.dukascopy.connect.gui.list.renderers {
 		}
 		
 		private function getPrice(itemData:EscrowAdsVO):String {
-			return "@" + itemData.price + " " + itemData.currency;
-			/*var result:String = "";
-			if (itemData.price != null) {
-				if (itemData.price.indexOf("%") != -1) {
-					var realPrice:Number = parseFloat(itemData.price.replace("%", ""));
-					if (!isNaN(EscrowDealManager.getPrice(itemData.tipsCurrency, itemData.priceCurrency))) {
-						result += "@" + EscrowDealManager.getPrice(itemData.tipsCurrency, itemData.priceCurrency);
-						if (itemData.priceCurrency != null) {
-							result += " " + itemData.priceCurrency;
-						}
-						result += " ";
-						if (realPrice != 0) {
-							if (realPrice > 0) {
-								result += "+";
-							}
-							result += itemData.price;
-						}
-					} else {
-						result += "@MKT" + " ";
-						if (realPrice != 0) {
-							if (realPrice > 0) {
-								result += "+";
-							}
-							result += itemData.price;
-						}
-					}
-				} else {
-					result = "@" + itemData.price;
-					if (itemData.priceCurrency != null) {
-						result += " " + itemData.priceCurrency;
-					}
-				}
-			}
-			return result;*/
+			var res:String = "";
+			var percent:String = itemData.percent;
+			if (percent != null)
+				res = percent;
+			res += "  @" + itemData.price + " " + itemData.currency;
+			return res;
 		}
 		
 		private function getTime(itemData:EscrowAdsVO, timeValue:String):String {

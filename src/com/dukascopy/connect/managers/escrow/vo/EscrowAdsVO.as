@@ -81,6 +81,12 @@ package com.dukascopy.connect.managers.escrow.vo {
 			_status = val;
 		}
 		
+		public function get percent():String {
+			if (_price.indexOf("%") == -1)
+				return null;
+			return _price;
+		}
+		
 		public function get currency():String { return _currency; }
 		public function get side():String { return _side; }
 		public function get uid():String { return _uid; }
