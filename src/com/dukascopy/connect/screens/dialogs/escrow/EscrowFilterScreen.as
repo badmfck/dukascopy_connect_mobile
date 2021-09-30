@@ -277,6 +277,10 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			{
 				filter = data.filter as EscrowAdsFilterVO;
 			}
+			else
+			{
+				ApplicationErrors.add();
+			}
 			
 			super.initScreen(data);
 			
