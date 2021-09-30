@@ -15,6 +15,7 @@ package com.dukascopy.connect {
 	import com.dukascopy.connect.managers.escrow.signals.S_EscrowMoneyHoldRequest;
 	import com.dukascopy.connect.managers.escrow.signals.S_EscrowWalletsRequest;
 	import com.dukascopy.connect.managers.escrow.signals.S_EscrowOfferCreateRequest;
+	import com.dukascopy.connect.managers.escrow.signals.S_EscrowOffersRequest;
 	
 	public class GD {
 		
@@ -43,7 +44,7 @@ package com.dukascopy.connect {
 		static public const S_ESCROW_OFFER_CREATE_REQUEST:S_EscrowOfferCreateRequest = new S_EscrowOfferCreateRequest();
 		static public const S_ESCROW_DEAL_CREATED:S_EscrowDealCreated = new S_EscrowDealCreated();
 
-		static public const S_ESCROW_OFFERS_REQUEST:Signal = new Signal("S_ESCROW_OFFERS_REQUEST");
+		static public const S_ESCROW_OFFERS_REQUEST:S_EscrowOffersRequest = new S_EscrowOffersRequest();
 		static public const S_ESCROW_OFFERS_READY:Signal = new Signal("S_ESCROW_OFFERS_READY");
 		
 		static public const S_ESCROW_INSTRUMENTS_REQUEST:S_EscrowRequestInstruments=new S_EscrowRequestInstruments();

@@ -1,0 +1,9 @@
+// TODO: ADD CALLBACK ON PRICEID ERROR
+
+// BUG
+(node:5767) UnhandledPromiseRejectionWarning: ReferenceError: user is not defined
+    at Function.close (/opt/wss-outdated/app/classes/Cp2p/Cp2pOffer.js:375:24)
+    at processTicksAndRejections (internal/process/task_queues.js:97:5)
+    at async Function.cancel (/opt/wss-outdated/app/classes/Cp2p/Cp2pOffer.js:317:12)
+    at async AsyncFunction.<anonymous> (/opt/wss-outdated/app/classes/Cp2pHandler.js:83:22)
+(node:5767) UnhandledPromiseRejectionWarning: Unhandled promise rejection. This error originated either by throwing inside of an async function without a catch block, or by rejecting a promise which was not handled with .catch(). To terminate the node process on unhandled promise rejection, use the CLI flag `--unhandled-rejections=strict` (see https://nodejs.org/api/cli.html#cli_unhandled_rejections_mode). (rejection id: 13)

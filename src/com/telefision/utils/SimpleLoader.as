@@ -115,6 +115,7 @@ package com.telefision.utils
         public function SimpleLoader(data:Object,callback:Function,url:String=null,method:String=URLRequestMethod.POST,cdata:Boolean=true,headers:Vector.<URLRequestHeader>=null){
             
             URLRequestDefaults.userAgent="DukascopyConnect";
+            var ts:Number=new Date().getTime();
             if(url==null)
                 url=URL_DEFAULT;
             loader=new URLLoader()
@@ -131,12 +132,16 @@ package com.telefision.utils
             }
             ur.method=method;
 
+            trace("HTTP CALL "+id);
+            
 
 
             // get key            
             debug="------------------\nHTTP "+method.toUpperCase()+" REQUEST "+id+"\nURL: "+url+"\n";
             for(var dbg:String in data){
                 var val:String=data[dbg];
+                if(val==null)
+                    continue;
                 if(dbg.toLowerCase().indexOf("pass")==0)
                     val="*****";
                 if(val.length>60)
@@ -165,7 +170,9 @@ package com.telefision.utils
             for each (var hh:URLRequestHeader in uh){
                 debug+="\n\t"+hh.name+": "+hh.value;
             }
-
+            debug+="\n------------------";
+            debug+="\nREQUEST TIME:"
+            debug+="\n\tms: "+((new Date().getTime()-ts));
             debug+="\n------------------";
 
             loader.addEventListener(Event.COMPLETE, onComplete);

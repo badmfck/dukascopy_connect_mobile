@@ -790,31 +790,16 @@ package com.forms{
                 return;
 
 
-            if(id=="aaargh")                  
+            if(id=="avatest")                  
                 trace("123");
 
-            /*if(parent!=null && percentOffsetH>-1 && parent.style.layout.toString()==FormLayout.HORIZONTAL)
-                percentOffsetH=-1;*/
-            /*if(parent!=null && percentOffsetW>-1 && parent.style.layout.toString()==FormLayout.VERTICAL)
-                percentOffsetW=-1;*/
-
+     
             var uv:Object=parentValues;
             if(userValues!=null)
                 uv=userValues;
 
 
-            // Padding correction
-            /*if(percentOffsetH>-1 && parent.style.layout.toString()==FormLayout.VERTICAL){
-                if(parent.style.padding!=null){
-                    percentOffsetH+=(parent.style.padding.top+parent.style.padding.bottom)
-                }
-            }
-            if(percentOffsetW>-1 && parent.style.layout.toString()==FormLayout.HORIZONTAL){
-                if(parent.style.padding!=null)
-                    percentOffsetW-=(parent.style.padding.left+parent.style.padding.right)
-            }*/
-
-            
+                     
             calculateBounds(percentOffsetW,percentOffsetH);
             
 
@@ -1194,7 +1179,16 @@ package com.forms{
 
                 if(Form.debug){
                     spr.graphics.lineStyle(1,Math.round(Math.random()*0xFFFFFF),1,true,LineScaleMode.NONE)
+                    //spr.graphics.beginFill(0x0,.1);
                 }
+
+                /*if(Form.debug && style.padding.isSet){
+                    spr.graphics.drawRect(
+                    style.padding.left,
+                    style.padding.top,
+                    bounds.display_width-style.padding.left-style.padding.right,
+                    bounds.display_height-style.padding.top-style.padding.bottom);
+                }*/
 
                 spr.graphics.drawRoundRectComplex(
                     0,
@@ -1207,7 +1201,10 @@ package com.forms{
                     style.borderRadius.bottom
                 );
                 
+                
+
                 spr.graphics.endFill();
+
 
                 if(true==false && style.border.isSet && style.borderColor.isSet){
                     border.graphics.clear();

@@ -11,5 +11,8 @@ package com.forms
             bottom=b;
             left=l;
         }
+        public function get isSet():Boolean{
+            return top>0 || right>0 || bottom>0 || left > 0
+        }
     }
 }

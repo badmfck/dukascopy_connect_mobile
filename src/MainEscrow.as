@@ -22,6 +22,8 @@ import com.forms.Form;
 import flash.filesystem.File;
 import com.dukascopy.connect.managers.escrow.vo.EscrowOfferVO;
 import com.forms.components.FormList;
+import com.telefision.utils.SimpleLoaderResponse;
+import com.telefision.utils.SimpleLoader;
 
 
 
@@ -45,7 +47,7 @@ public class MainEscrow extends Sprite {
 		
 		private function start():void{
 			Form.debug=true;
-            var form:Form=new Form(File.applicationDirectory.resolvePath("forms"+File.separator+"escrowMain.xml"));
+            var form:Form=new Form(File.applicationDirectory.resolvePath("forms"+File.separator+"escrowDealCreate.xml"));
 			var list:FormList;
 			addChild(form.view);
 			form.setSize(stage.stageWidth,stage.stageHeight);
@@ -55,8 +57,20 @@ public class MainEscrow extends Sprite {
 			};
 
 			GD.S_ESCROW_OFFERS_READY.add(function(offers:Vector.<EscrowOfferVO>):void{
-				list.setData(offers);
+				if(list!=null)
+					list.setData(offers);
 			})
+
+
+			/*var url:String="https://loki.telefision.com/master/";
+            var loader:SimpleLoader=new SimpleLoader({
+                method:"Cp2p.GetPriceByID",
+                key:"cc661021e5b5948a0634417dace5378760513a9b",
+                hash:"58644ff421b7e4ed7840f4edc191616b",
+                id:108
+            },function(resp:SimpleLoaderResponse):void{
+                trace(resp);
+            },url);*/
 
 			new EscrowOfferManager();
 			

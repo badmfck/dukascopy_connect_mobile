@@ -4,28 +4,50 @@ package com.dukascopy.connect.managers.escrow
     import com.telefision.utils.SimpleLoader;
     import com.telefision.utils.SimpleLoaderResponse;
     import com.dukascopy.connect.managers.escrow.vo.EscrowOfferVO;
+    import com.dukascopy.connect.managers.escrow.vo.EscrowOffersRequestVO;
 
     public class EscrowOfferManager{
 
         private var offers:Vector.<EscrowOfferVO>;
         private var loading:Boolean=false;
         private var needReload:Boolean=true;
+        private var lastLoadTime:Number=0;
 
         public function EscrowOfferManager(){
+
+            
+
+
             //GD.S_ESCROW_OFFER_CREATE_REQUEST.add(onEscrowOfferCreateRequest,this);
 
-            GD.S_ESCROW_OFFERS_REQUEST.add(function(cb:Function=null):void{
+            /**
+             * req
+             * callback:Function(offers)
+             * force:boolean // do reload
+             */
+            GD.S_ESCROW_OFFERS_REQUEST.add(function(req:EscrowOffersRequestVO=null):void{
                 
                 if(loading)
                     return;
 
+                // 1 min
+                if(lastLoadTime-new Date().getTime()>1000*60*1){
+                    trace("Data too old")
+                    needReload=true;
+                }
+
+                if(req!=null && req.force)
+                    needReload=true;
+
                 if(needReload){
+                    trace("Do reload")
                     loadOffers()
                     return;
                 }
 
-                if(cb && cb is Function && cb.length==1)
-                    cb(offers);
+
+                if(req!=null && req.callback && req.callback is Function && req.callback.length==1)
+                    req.callback(offers);
 
                 GD.S_ESCROW_OFFERS_READY.invoke(offers);
             })
@@ -40,7 +62,7 @@ ccy 'both', 'crypto', 'mca' +null*/
 state
 'awaiting','check_mca','invalid','confirmed'*/
 
-        private function loadOffers():void{
+        private function loadOffers(status:String=null,side:String=null):void{
             loading=true;
             needReload=false;
             var url:String="https://loki.telefision.com/master/";
@@ -48,14 +70,17 @@ state
             //0f211baf3e629a41afbe39d3a275890772f3ab45 // ilya
             var loader:SimpleLoader=new SimpleLoader({
                 method:"Cp2p.Offer.Get",
-                key:"0f211baf3e629a41afbe39d3a275890772f3ab45"
-
+                key:"0f211baf3e629a41afbe39d3a275890772f3ab45",
+                status:status,
+                side:side
             },function(resp:SimpleLoaderResponse):void{
+                
                 if(resp.error){
                     trace(resp.error);
                     needReload=true;
                     return;
                 }
+
                 if(resp.data==null || !(resp.data is Array)){
                     trace("NO DATA ESCROW OFFER DATA!")
                     needReload=true;
@@ -69,6 +94,7 @@ state
                     offers.push(eovo);
                 }
                 loading=false;
+                lastLoadTime=new Date().getTime();
                 GD.S_ESCROW_OFFERS_READY.invoke(offers);
             },url);
             

@@ -1,0 +1,85 @@
+<body formSize="416" fontSize="16">
+    <div height="34"></div>
+    <div height="68" layout="horizontal" align="center">
+        <space size="10"/>
+        <div>BCK</div>
+        <space size="15"/>
+        <div width="100%" font-size="22">Create your ad</div>
+        <space size="10"/>
+        <div>i</div>
+        <space size="10"/>
+    </div>
+
+    <div width="100%" height="100%" background-color="#CEEBAA" overflow="scroll">
+
+        <space size="30"/>
+    
+        <div layout="horizontal" width="85%">
+            <space size="10"/>
+            <div width="40" height="100%" id="avatest">avatar</div>
+            <div></div>
+            <div width="100%" background-color="#FFFFFF" border-radius="15" padding="15">
+                WARNING: An illegal reflective access operation has occurred
+                WARNING: Illegal reflective access by com.google.common.base.internal.Finalizer (file:/Users/bloom/Work/Tools/AIRSDK_H_33.1.1.476/lib/guava-r08.jar) to field java.lang.Thread.inheritableThreadLocals
+                WARNING: Please consider reporting this to the maintainers of com.google.common.base.internal.Finalizer
+                WARNING: Use --illegal-access=warn to enable warnings of further illegal reflective access operations
+                WARNING: Please consider reporting this to the maintainers of com.google.common.base.internal.Finalizer
+                WARNING: Use --illegal-access=warn to enable warnings of further illegal reflective access operationsWARNING: Please consider reporting this to the maintainers of com.google.common.base.internal.Finalizer
+                WARNING: Use --illegal-access=warn to enable warnings of further illegal reflective access operationsWARNING: Please consider reporting this to the maintainers of com.google.common.base.internal.Finalizer
+                WARNING: Use --illegal-access=warn to enable warnings of further illegal reflective access operations
+                <space size="10" />
+                <div color="#FE0010">${termsAndConditions}</div>
+            </div>
+        </div>
+        
+        <space size="30"/>
+
+           
+        <div layout="horizontal" width="85%">
+            <space size="10"/>
+             <div width="40" height="40" opacity="0">avatar</div>
+
+                <div width="100%" background-color="#FFFFFF" border-radius="15" padding="15">
+            
+                <div font-size="14">I would like to</div>
+                
+                <div layout="horizontal">
+                    <div width="100%" font-size="18" color="#B0B0B0">Choose operation type</div>
+                    <div>V</div>
+                </div>
+
+                <space size="10"/>
+
+                <div font-size="14">Crypto</div>
+                    <div>
+                        <div layout="horizontal">
+                        <div width="100%" font-size="18" color="#B0B0B0">Select crypto</div>
+                        <div>V</div>
+                    </div>
+                </div>
+
+                <space size="10"/>
+                
+                <div font-size="14">Amount of crypto</div>
+                <div font-size="18" color="#B0B0B0">Amount</div>
+
+                <space size="10"/>
+
+                <div font-size="14">Price per coin</div>
+                <div font-size="18" color="#B0B0B0">Input price</div>
+                <space size="10"/>
+                
+                <div align="center" text-align="center" padding="15" border-radius="8" background-color="#00FF00" color="#FFFFFF" font-size="18">
+                    CREATE
+                </div>
+
+            </div>            
+
+        </div>
+
+        <space size="30"/>
+
+    </div>
+    
+
+</body>

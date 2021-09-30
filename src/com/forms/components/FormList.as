@@ -17,8 +17,7 @@ package com.forms.components{
         private var timeoutID:int;
         private var data:Object;
 
-        private var top:Sprite=new Sprite();
-        private var bottom:Sprite=new Sprite();
+      
         private var listBox:Sprite=new Sprite();
             
 
@@ -26,14 +25,6 @@ package com.forms.components{
             super(xml,form,{
                 overflow:"scroll"
             });
-
-            bottom.graphics.beginFill(0xFF0000);
-            bottom.graphics.drawRect(0,0,10,10)
-            box.addChild(bottom);
-
-            top.graphics.beginFill(0xFF0000);
-            top.graphics.drawRect(0,0,10,10)
-            box.addChild(top);
         }
 
         public function setData(data:Object):void{
