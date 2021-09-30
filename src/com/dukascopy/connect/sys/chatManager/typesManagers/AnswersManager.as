@@ -1,5 +1,6 @@
 package com.dukascopy.connect.sys.chatManager.typesManagers {
 	
+	import com.dukascopy.connect.GD;
 	import com.dukascopy.connect.MobileGui;
 	import com.dukascopy.connect.gui.components.message.ToastMessage;
 	import com.dukascopy.connect.screens.dialogs.ScreenQuestionsDialog;
@@ -48,6 +49,7 @@ package com.dukascopy.connect.sys.chatManager.typesManagers {
 		static public function init():void {
 			WS.S_CONNECTED.add(updateData);
 			Auth.S_NEED_AUTHORIZATION.add(clearAllAnswers);
+			GD.S_ESCROW_ADS_ANSWERS.add(getAnswersByQuestionUID);
 		}
 		
 		static private function updateData():void {

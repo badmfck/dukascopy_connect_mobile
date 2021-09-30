@@ -12,9 +12,11 @@ package com.dukascopy.connect.sys.contextActions {
 	import com.dukascopy.connect.gui.list.renderers.ListChatItem;
 	import com.dukascopy.connect.gui.list.renderers.ListChatUsers;
 	import com.dukascopy.connect.gui.list.renderers.ListConversation;
+	import com.dukascopy.connect.gui.list.renderers.ListEscrowAdsRenderer;
 	import com.dukascopy.connect.gui.list.renderers.ListEscrowRenderer;
 	import com.dukascopy.connect.gui.list.renderers.ListQuestionRenderer;
 	import com.dukascopy.connect.gui.list.renderers.TransactionTemplateRenderer;
+	import com.dukascopy.connect.managers.escrow.vo.EscrowAdsVO;
 	import com.dukascopy.connect.sys.auth.Auth;
 	import com.dukascopy.connect.sys.chatManager.ChatManager;
 	import com.dukascopy.connect.sys.connectionManager.NetworkManager;
@@ -112,6 +114,25 @@ package com.dukascopy.connect.sys.contextActions {
 								actions.push(new ContextAction(HitZoneType.DELETE, Lang.textDelete.toUpperCase(), Style.color(Style.COLOR_SEPARATOR), Style.icon(Style.ICON_TRASH)));
 						} else if (Config.isAdmin() == true && NetworkManager.isConnected == true)
 							actions.push(new ContextAction(HitZoneType.DELETE_ADMIN, Lang.textDelete.toUpperCase(), Style.color(Style.COLOR_SEPARATOR), Style.icon(Style.ICON_TRASH)));
+					}
+					break;
+				}
+				case ListEscrowAdsRenderer: {
+					if (itemData == null)
+						break;
+					if (itemData is EscrowAdsVO) {
+						if ((itemData as EscrowAdsVO).uid == null)
+							break;
+						if ((itemData as EscrowAdsVO).mine) {
+							if (itemData.isRemoving == true)
+								break;
+							if (itemData.status == EscrowAdsVO.STATUS_CREATED || itemData.status == EscrowAdsVO.STATUS_EDITED)
+								actions.push(new ContextAction(HitZoneType.DELETE, Lang.textDelete.toUpperCase(), Style.color(Style.COLOR_SEPARATOR), Style.icon(Style.ICON_TRASH)));
+							else if (NetworkManager.isConnected == true)
+								actions.push(new ContextAction(HitZoneType.DELETE, Lang.textDelete.toUpperCase(), Style.color(Style.COLOR_SEPARATOR), Style.icon(Style.ICON_TRASH)));
+							else if (itemData.isPaid == true && NetworkManager.isConnected == true)
+								actions.push(new ContextAction(HitZoneType.DELETE, Lang.textDelete.toUpperCase(), Style.color(Style.COLOR_SEPARATOR), Style.icon(Style.ICON_TRASH)));
+						}
 					}
 					break;
 				}

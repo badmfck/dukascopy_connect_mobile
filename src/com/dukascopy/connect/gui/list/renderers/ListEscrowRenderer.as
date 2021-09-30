@@ -383,7 +383,7 @@ package com.dukascopy.connect.gui.list.renderers {
 				}
 			}
 			
-			newMessages.x = int(width - newMessages.width - FilterTabs.MARGIN);
+			newMessages.x = int(width - newMessages.width - Config.FINGER_SIZE_DOT_25);
 			
 			bg.width = width;
 			bg.height = height;
@@ -458,7 +458,7 @@ package com.dukascopy.connect.gui.list.renderers {
 				}
 				
 				tfQuestionTime.htmlText = getStatusText(itemData, itemData.createdTime);
-				tfQuestionTime.x = int(width - tfQuestionTime.width - FilterTabs.MARGIN + 2);
+				tfQuestionTime.x = int(width - tfQuestionTime.width - Config.FINGER_SIZE_DOT_25 + 2);
 				
 				
 				textFieldPrice.visible = true;

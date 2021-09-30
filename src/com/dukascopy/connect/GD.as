@@ -23,6 +23,9 @@ package com.dukascopy.connect
 		
 		static public const S_TIMEZONE_REQUEST:Signal = new Signal("S_TIMEZONE_REQUEST");
 		
+		static public const S_AUTHORIZED:Signal = new Signal("S_AUTHORIZED");
+		static public const S_UNAUTHORIZED:Signal = new Signal("S_UNAUTHORIZED");
+		
 		static public const S_CONFIG_UPDATED:Signal = new Signal("GD.S_CONFIG_UPDATED");
 		
 		static public const S_PAYPASS_BACK_CLICK:Signal = new Signal();
@@ -64,9 +67,13 @@ package com.dukascopy.connect
 		static public const S_ESCROW_ADS_FILTER_REQUEST:Signal = new Signal("GD.S_ESCROW_ADS_FILTER_REQUEST");
 		static public const S_ESCROW_ADS_FILTER_SETTED:Signal = new Signal("GD.S_ESCROW_ADS_FILTER_SETTED");
 		static public const S_ESCROW_ADS_REQUEST:Signal = new Signal("GD.S_ESCROW_ADS_REQUEST");
+		static public const S_ESCROW_ADS_MINE_REQUEST:Signal = new Signal("GD.S_ESCROW_ADS_MINE_REQUEST");
 		static public const S_ESCROW_ADS:Signal = new Signal("GD.S_ESCROW_ADS");
-		
-		static public const S_IOS_LOCALIZATION_UPDATE:Signal = new Signal("S_IOS_LOCALIZATION_UPDATE");
+		static public const S_ESCROW_ADS_MINE:Signal = new Signal("GD.S_ESCROW_ADS_MINE");
+		static public const S_ESCROW_ADS_REMOVE:Signal = new Signal("GD.S_ESCROW_ADS_REMOVE");
+		static public const S_ESCROW_ADS_ANSWERS:Signal = new Signal("GD.S_ESCROW_ADS_ANSWERS");
+
+		static public const S_IOS_LOCALIZATION_UPDATE:Signal=new Signal("S_IOS_LOCALIZATION_UPDATE");
 		
 		// Web view
 		static public const S_WEBVIEW_REQUEST:S_WebViewRequest = new S_WebViewRequest();

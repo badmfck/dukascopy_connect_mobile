@@ -18,7 +18,6 @@ package com.dukascopy.connect.gui.tabs {
 		public static var LEFT:String = "l";
 		public static var RIGHT:String = "r";
 		
-		public static const MARGIN:uint = Config.FINGER_SIZE * .25;
 		public static const COLOR_TAB_TEXT:uint = 0x6e92af;// 0x788B9A;
 		public static const COLOR_TAB_BG:uint = 0xFFFFFF;
 		public static const COLOR_TAB_BG_BORDER:uint = 0x6e92af;// 0xADB8C1;
@@ -214,17 +213,17 @@ package com.dukascopy.connect.gui.tabs {
 
 		private function updateView():void {
 			var l:int = stock.length;
-			tabW = (_width - MARGIN * 2) / l;
+			tabW = (_width - Config.FINGER_SIZE_DOT_25 * 2) / l;
 			tabH = _height * .66;
 			var tabY:int = (_height - tabH) * .5;
-			var x:int = MARGIN;
+			var x:int = Config.FINGER_SIZE_DOT_25;
 			for (var i:int = 0; i < l; i++) {
 				stock[i].rebuild(getColors(), tabW, tabH, tabsWidthByText);
 				stock[i].getView().x = x;
 				stock[i].getView().y = tabY;
 				x += stock[i].getView().width;
 			}
-			trueWidth = x + MARGIN;
+			trueWidth = x + Config.FINGER_SIZE_DOT_25;
 		}
 		
 		public function getCurrentItem():TabsItemRounded {
