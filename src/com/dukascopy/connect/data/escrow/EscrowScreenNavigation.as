@@ -138,7 +138,7 @@ package com.dukascopy.connect.data.escrow
 							
 							lastRequestData = new Request();
 							lastRequestData.escrow = escrow;
-							lastRequestData.message = message;
+							lastRequestData.message = message.getClone();
 							lastRequestData.userVO = userVO;
 							lastRequestData.chatVO = chatVO;
 							GD.S_START_LOAD.invoke();
@@ -343,8 +343,7 @@ package com.dukascopy.connect.data.escrow
 				{
 					for (var i:int = 0; i < instruments.length; i++)
 					{
-						//!TODO:?
-						if (instruments[i].code == lastRequestData.escrow.instrument && instruments[i].isLinked)
+						if (instruments[i].code == lastRequestData.escrow.instrument)
 						{
 							selectedInstrument = instruments[i];
 							break;
@@ -353,9 +352,10 @@ package com.dukascopy.connect.data.escrow
 				}
 				
 				var screenData:Object = new Object();
-				if (selectedInstrument != null && selectedInstrument.isLinked)
+			//	if (selectedInstrument != null && selectedInstrument.isLinked)
+				if (selectedInstrument != null)
 				{
-					lastRequestData.escrow.cryptoWallet = selectedInstrument.wallet;
+				//	lastRequestData.escrow.cryptoWallet = selectedInstrument.wallet;
 					screenData.escrowOffer = lastRequestData.escrow;
 					if (lastRequestData.message != null)
 					{
@@ -379,6 +379,7 @@ package com.dukascopy.connect.data.escrow
 					}
 					
 					screenData.callback = onOfferCommand;
+					screenData.instrument = selectedInstrument;
 					ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, AcceptOfferScreen, screenData);
 				}
 				else
@@ -455,7 +456,7 @@ package com.dukascopy.connect.data.escrow
 					
 					if (escrow.direction == TradeDirection.sell)
 					{
-						if (escrow.userUID != Auth.uid)
+						if (escrow.mca_user_uid == Auth.uid)
 						{
 							cryptoWallet = escrow.cryptoWallet;
 							debitAccount = escrow.debit_account;
@@ -463,33 +464,10 @@ package com.dukascopy.connect.data.escrow
 						else
 						{
 							//!TODO:
-						}
-					}
-					
-					else if (escrow.direction == TradeDirection.buy)
-					{
-						if (escrow.userUID != Auth.uid)
-						{
-							debitAccount = escrow.debit_account;
-							cryptoWallet = escrow.cryptoWallet;
-						}
-						else
-						{
-							//!TODO:
-						}
-						
-						if (PayManager.hasSession)
-						{
-							paymentsSessionId = PayConfig.PAY_SESSION_ID;
-						}
-						else
-						{
-							//!TODO: login, get session, repeat;
 						}
 					}
 					
 					WSClient.call_accept_offer(message.id, debitAccount, cryptoWallet);
-				//	WSClient.call_create_offer(message.id, debitAccount, cryptoWallet, paymentsSessionId);
 				}
 				else
 				{

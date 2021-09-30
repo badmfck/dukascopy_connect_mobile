@@ -1,7 +1,9 @@
 package com.dukascopy.connect.sys.chatManager.typesManagers {
 	
+	import com.dukascopy.connect.GD;
 	import com.dukascopy.connect.MobileGui;
 	import com.dukascopy.connect.gui.components.message.ToastMessage;
+	import com.dukascopy.connect.managers.escrow.vo.EscrowAdsVO;
 	import com.dukascopy.connect.screens.dialogs.ScreenQuestionsDialog;
 	import com.dukascopy.connect.sys.auth.Auth;
 	import com.dukascopy.connect.sys.chatManager.ChatManager;
@@ -48,6 +50,29 @@ package com.dukascopy.connect.sys.chatManager.typesManagers {
 		static public function init():void {
 			WS.S_CONNECTED.add(updateData);
 			Auth.S_NEED_AUTHORIZATION.add(clearAllAnswers);
+			GD.S_ESCROW_ADS_ANSWERS.add(getAnswersByQuestionUID);
+			GD.S_ESCROW_ADS_ANSWER.add(callAnswer);
+		}
+		
+		static private function callAnswer(escrowAdsVO:EscrowAdsVO):void 
+		{
+			var chatScreenData:ChatScreenData = new ChatScreenData();
+			var cVO:ChatVO = getChatByQuestionUID(escrowAdsVO.uid);
+			if (cVO == null || cVO.users == null || cVO.users.length == 0) {
+			//	chatScreenData.question = qVO;
+				chatScreenData.escrow_ad_uid = escrowAdsVO.uid;
+				chatScreenData.type = ChatInitType.QUESTION;
+				chatScreenData.backScreen = MobileGui.centerScreen.currentScreenClass;
+				chatScreenData.backScreenData = MobileGui.centerScreen.currentScreen.data;
+				MobileGui.showChatScreen(chatScreenData);
+				echo("QuestionsManager", "answer", "CHAT NOT EXISTS");
+				return;
+			}
+			chatScreenData.chatVO = cVO;
+			chatScreenData.type = ChatInitType.CHAT;
+			chatScreenData.backScreen = MobileGui.centerScreen.currentScreenClass;
+			chatScreenData.backScreenData = MobileGui.centerScreen.currentScreen.data;
+			MobileGui.showChatScreen(chatScreenData);
 		}
 		
 		static private function updateData():void {

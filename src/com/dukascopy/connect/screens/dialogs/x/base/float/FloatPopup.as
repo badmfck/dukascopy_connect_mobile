@@ -59,9 +59,6 @@ package com.dukascopy.connect.screens.dialogs.x.base.float
 			
 			_params.doDisposeAfterClose = true;
 			
-			contentPadding = Config.FINGER_SIZE * .3;
-			contentPaddingV = Config.FINGER_SIZE * .26;
-			
 			background.graphics.beginFill(0x000000, 0.45);
 			background.graphics.drawRect(0, 0, _width, _height);
 			background.alpha = 0;
@@ -106,6 +103,9 @@ package com.dukascopy.connect.screens.dialogs.x.base.float
 		
 		override protected function createView():void {
 			super.createView();
+			
+			contentPadding = Config.FINGER_SIZE * .3;
+			contentPaddingV = Config.FINGER_SIZE * .26;
 			
 			mainPadding = Config.FINGER_SIZE * .17;
 			

@@ -3,50 +3,38 @@ package com.dukascopy.connect.screens.innerScreens {
 	import com.dukascopy.connect.Config;
 	import com.dukascopy.connect.GD;
 	import com.dukascopy.connect.MobileGui;
-	import com.dukascopy.connect.data.IFilterData;
 	import com.dukascopy.connect.data.LabelItem;
 	import com.dukascopy.connect.data.SelectorItemData;
-	import com.dukascopy.connect.data.escrow.TradeDirection;
 	import com.dukascopy.connect.data.escrow.filter.EscrowFilterType;
 	import com.dukascopy.connect.gui.components.StatusClip;
-	import com.dukascopy.connect.gui.components.message.ToastMessage;
 	import com.dukascopy.connect.gui.lightbox.UI;
 	import com.dukascopy.connect.gui.list.List;
 	import com.dukascopy.connect.gui.list.ListItem;
-	import com.dukascopy.connect.gui.list.renderers.ListConversation;
-	import com.dukascopy.connect.gui.list.renderers.ListEscrowRenderer;
+	import com.dukascopy.connect.gui.list.renderers.BaseRenderer;
+	import com.dukascopy.connect.gui.list.renderers.ListEscrowAdsRenderer;
 	import com.dukascopy.connect.gui.list.renderers.ListLink;
 	import com.dukascopy.connect.gui.tabs.FilterTabs;
 	import com.dukascopy.connect.gui.tools.HorizontalPreloader;
 	import com.dukascopy.connect.managers.escrow.vo.EscrowAdsFilterVO;
-	import com.dukascopy.connect.managers.escrow.vo.EscrowInstrument;
-	import com.dukascopy.connect.screens.QuestionCreateUpdateScreen;
+	import com.dukascopy.connect.managers.escrow.vo.EscrowAdsVO;
 	import com.dukascopy.connect.screens.RootScreen;
 	import com.dukascopy.connect.screens.base.BaseScreen;
-	import com.dukascopy.connect.screens.base.ScreenManager;
 	import com.dukascopy.connect.screens.dialogs.ScreenLinksDialog;
 	import com.dukascopy.connect.screens.escrow.FiltersPanel;
 	import com.dukascopy.connect.sys.applicationError.ApplicationErrors;
 	import com.dukascopy.connect.sys.auth.Auth;
 	import com.dukascopy.connect.sys.chatManager.ChatManager;
-	import com.dukascopy.connect.sys.chatManager.typesManagers.AnswersManager;
 	import com.dukascopy.connect.sys.dialogManager.DialogManager;
-	import com.dukascopy.connect.sys.questionsManager.QuestionsManager;
 	import com.dukascopy.connect.sys.style.FontSize;
 	import com.dukascopy.connect.sys.style.Style;
-	import com.dukascopy.connect.sys.usersManager.OnlineStatus;
-	import com.dukascopy.connect.sys.usersManager.UsersManager;
 	import com.dukascopy.connect.type.ChatInitType;
 	import com.dukascopy.connect.type.HitZoneType;
 	import com.dukascopy.connect.utils.TextUtils;
 	import com.dukascopy.connect.vo.ChatVO;
-	import com.dukascopy.connect.vo.QuestionVO;
 	import com.dukascopy.connect.vo.screen.ChatScreenData;
-	import com.dukascopy.connect.vo.users.adds.ChatUserVO;
 	import com.dukascopy.langs.Lang;
 	import com.greensock.TweenMax;
 	import flash.display.Bitmap;
-	import flash.events.Event;
 	import flash.text.TextFieldAutoSize;
 	import flash.text.TextFormatAlign;
 	
@@ -57,7 +45,12 @@ package com.dukascopy.connect.screens.innerScreens {
 	
 	public class InnerEscrowScreen extends BaseScreen {
 		
-		private static var selectedFilter:String;
+		private const TAB_OTHER:String = "crypto";
+		private const TAB_MINE:String = "mine";
+		private const TAB_OFFERS:String = "offers";
+		private const TAB_DEALS:String = "deals";
+		
+		private static var selectedTabID:String;
 		
 		private var list:List;
 		private var tabs:FilterTabs;
@@ -67,9 +60,6 @@ package com.dukascopy.connect.screens.innerScreens {
 		static private var storedTabListPosition:Object = {};
 		static private var storedTabListPositionCreated:Boolean;
 		
-		private var wasFilter:Boolean = false;
-		private var followItem:ListItem;
-		
 		private var tweenObj:Object = {};
 		private var statusClip:StatusClip;
 		private var placeholder:Bitmap;
@@ -77,6 +67,7 @@ package com.dukascopy.connect.screens.innerScreens {
 		private var instrument:String;
 		private var filtersPanel:FiltersPanel;
 		private var currentFilter:EscrowAdsFilterVO;
+		private var isFirstActivation:Boolean = true;
 		
 		public function InnerEscrowScreen() { }
 		
@@ -90,23 +81,18 @@ package com.dukascopy.connect.screens.innerScreens {
 			_view.addChild(list.view);
 			
 			tabs = new FilterTabs();
-
-			/*tabs.add(Lang.textAll, QuestionsManager.TAB_OTHER, true, "l");
-			tabs.add(Lang.textMine, QuestionsManager.TAB_MINE);
-			tabs.add(Lang.questionsResolved, QuestionsManager.TAB_RESOLVED,false,"r");*/
+			createTabs();
+			_view.addChild(tabs.view);
 			
 			filtersPanel = new FiltersPanel(onFilterRemove);
 			_view.addChild(filtersPanel);
 			
-			createTabs();
-			_view.addChild(tabs.view);
-			
 			if (storedTabListPositionCreated == false) {
 				storedTabListPositionCreated = true;
-				storedTabListPosition[QuestionsManager.TAB_OTHER] = {};
-				storedTabListPosition[QuestionsManager.TAB_OFFERS] = {};
-				storedTabListPosition[QuestionsManager.TAB_MINE] = {};
-				storedTabListPosition[QuestionsManager.TAB_DEALS] = {};
+				storedTabListPosition[TAB_OTHER] = {};
+				storedTabListPosition[TAB_OFFERS] = {};
+				storedTabListPosition[TAB_MINE] = {};
+				storedTabListPosition[TAB_DEALS] = {};
 			}
 			
 			preloader = new HorizontalPreloader(Style.color(Style.COLOR_ICON_LIGHT));
@@ -161,10 +147,10 @@ package com.dukascopy.connect.screens.innerScreens {
 		}
 		
 		private function createTabs():void{
-			tabs.add(Lang.ads, QuestionsManager.TAB_OTHER, true, "l");
-			tabs.add(Lang.textMine, QuestionsManager.TAB_MINE);
-			tabs.add(Lang.escrow_offers, QuestionsManager.TAB_OFFERS);
-			tabs.add(Lang.escrow_deals, QuestionsManager.TAB_DEALS, false, "r");
+			tabs.add(Lang.ads, TAB_OTHER, false, "l");
+			tabs.add(Lang.textMine, TAB_MINE);
+			tabs.add(Lang.escrow_offers, TAB_OFFERS);
+			tabs.add(Lang.escrow_deals, TAB_DEALS, false, "r");
 		}
 		
 		override public function clearView():void {
@@ -176,17 +162,17 @@ package com.dukascopy.connect.screens.innerScreens {
 			
 			if (list != null) {
 				if (list.getBoxY() < 0) {
-					storedTabListPosition[selectedFilter].listBoxY = list.getBoxY();
+					storedTabListPosition[selectedTabID].listBoxY = list.getBoxY();
 					var fli:ListItem = list.getFirstVisibleItem();
 					if (fli != null) {
-						storedTabListPosition[selectedFilter].item = list.getFirstVisibleItem().data;
-						storedTabListPosition[selectedFilter].offset = fli.y + storedTabListPosition[selectedFilter].listBoxY;
+						storedTabListPosition[selectedTabID].item = list.getFirstVisibleItem().data;
+						storedTabListPosition[selectedTabID].offset = fli.y + storedTabListPosition[selectedTabID].listBoxY;
 					}
 					list.dispose();
-				} else if ("item" in storedTabListPosition[selectedFilter] == true) {
-					delete storedTabListPosition[selectedFilter].item;
-					delete storedTabListPosition[selectedFilter].offset;
-					delete storedTabListPosition[selectedFilter].listBoxY;
+				} else if ("item" in storedTabListPosition[selectedTabID] == true) {
+					delete storedTabListPosition[selectedTabID].item;
+					delete storedTabListPosition[selectedTabID].offset;
+					delete storedTabListPosition[selectedTabID].listBoxY;
 				}
 			}
 			
@@ -208,9 +194,6 @@ package com.dukascopy.connect.screens.innerScreens {
 			super.initScreen(data);
 			_params.doDisposeAfterClose = true;
 			
-			QuestionsManager.setInOut(true);
-			
-			
 			if (data != null && "additionalData" in data && data.additionalData != null && data.additionalData is String)
 			{
 				instrument = data.additionalData as String;
@@ -222,15 +205,7 @@ package com.dukascopy.connect.screens.innerScreens {
 			
 			preloader.setSize(_width, int(Config.FINGER_SIZE * .07));
 			
-			if (selectedFilter == null)
-				selectedFilter = QuestionsManager.TAB_OTHER; 
-			tabs.setSelection(selectedFilter);
-			
-			GD.S_ESCROW_INSTRUMENTS.add(onInstrumentsLoaded);
-			GD.S_ESCROW_INSTRUMENTS_REQUEST.invoke();
-		//	GD.S_ESCROW_FILTER.add(onFilters);
-			GD.S_ESCROW_ADS_FILTER_REQUEST.invoke(onFilter);
-			GD.S_ESCROW_ADS_FILTER_SETTED.add(onFilterChanged);
+			GD.S_ESCROW_ADS_FILTER_SETTED.remove(onFilterChanged);
 		}
 		
 		private function onFilterChanged():void 
@@ -252,10 +227,9 @@ package com.dukascopy.connect.screens.innerScreens {
 				return;
 			}
 			currentFilter = filter;
-			if (selectedFilter == QuestionsManager.TAB_OTHER)
+			if (selectedTabID == TAB_OTHER)
 			{
-				//!TODO:;
-				setListData();
+				onTabItemSelected(selectedTabID);
 			}
 			updatePositions();
 		}
@@ -265,12 +239,8 @@ package com.dukascopy.connect.screens.innerScreens {
 			var destY:int;
 			
 			var filtersPanelData:Vector.<SelectorItemData> = new Vector.<SelectorItemData>();
-			if (currentFilter != null && selectedFilter == QuestionsManager.TAB_OTHER)
+			if (currentFilter != null && selectedTabID == TAB_OTHER)
 			{
-				destY += Config.FINGER_SIZE * .1;
-				filtersPanel.visible = true;
-				filtersPanel.y = destY
-				
 				if (currentFilter.hideBlocked)
 				{
 					filtersPanelData.push(new SelectorItemData(Lang.escrow_hide_blocked, EscrowFilterType.HIDE_BLOCKED));
@@ -305,6 +275,10 @@ package com.dukascopy.connect.screens.innerScreens {
 			
 			if (filtersPanelData != null && filtersPanelData.length > 0)
 			{
+				destY += Config.FINGER_SIZE * .1;
+				filtersPanel.visible = true;
+				filtersPanel.y = destY;
+				
 				filtersPanel.draw(filtersPanelData, _width - Config.MARGIN * 4);
 				filtersPanel.x = Config.MARGIN * 2;
 				destY += filtersPanel.getHeight() + Config.FINGER_SIZE * .1;
@@ -331,18 +305,6 @@ package com.dukascopy.connect.screens.innerScreens {
 			}
 		}
 		
-		private function onInstrumentsLoaded(instruments:Vector.<EscrowInstrument>):void 
-		{
-			if (_isDisposed)
-			{
-				return;
-			}
-			if (isActivated)
-			{
-				list.refresh();
-			}
-		}
-		
 		public function onHide():void {
 			//TweenMax.killDelayedCallsTo(QuestionsManager.askFirstQuestion);
 		}
@@ -356,8 +318,6 @@ package com.dukascopy.connect.screens.innerScreens {
 				list.activate();
 				list.S_ITEM_TAP.add(onItemTap);
 				list.S_ITEM_HOLD.add(onItemHold);
-				list.S_STOPED.add(onScrollStopped);
-				list.S_MOVING.add(onListMoved);
 			}
 			
 			if (tabs != null && tabs.isDisposed == false) {
@@ -365,21 +325,17 @@ package com.dukascopy.connect.screens.innerScreens {
 				tabs.activate();
 			}
 			
-			filtersPanel.activate();
-			
-			QuestionsManager.S_QUESTIONS.add(updateData);
-			QuestionsManager.S_QUESTIONS_START_LOADING.add(showLoading);
-			QuestionsManager.S_QUESTIONS_FILTERED.add(updateData);
-			QuestionsManager.S_FILTER_CLEARED.add(updateData);
-			QuestionsManager.S_QUESTION.add(updateQuestion);
-			AnswersManager.S_QUESTION_ANSWERS.add(updateQuestion);
-			AnswersManager.S_ANSWERS.add(onAnswersLoaded);
-			UsersManager.S_ONLINE_CHANGED.add(onUserOnlineStatusChanged);
-			UsersManager.S_OFFLINE_ALL.add(onAllUsersOffline);
-			UsersManager.S_ONLINE_STATUS_LIST.add(onUserlistOnlineStatusChanged);
-			UsersManager.S_TOAD_UPDATED.add(refreshList);
-			
-			setListData("");
+			if (isFirstActivation == true) {
+				isFirstActivation = false;
+				if (selectedTabID == null)
+					tabs.setSelection(TAB_OTHER, true);
+				else
+					tabs.setSelection(selectedTabID, true);
+			}
+			if (filtersPanel != null)
+			{
+				filtersPanel.activate();
+			}
 		}
 		
 		private function showPreloader():void 
@@ -416,28 +372,16 @@ package com.dukascopy.connect.screens.innerScreens {
 				list.deactivate();
 				list.S_ITEM_TAP.remove(onItemTap);
 				list.S_ITEM_HOLD.remove(onItemHold);
-				list.S_STOPED.remove(onScrollStopped);
-				list.S_MOVING.remove(onListMoved);
 			}
 			
 			if (tabs != null && tabs.isDisposed == false) {
 				tabs.S_ITEM_SELECTED.remove(onTabItemSelected);
 				tabs.deactivate();
 			}
-			
-			QuestionsManager.S_QUESTIONS.remove(updateData);
-			QuestionsManager.S_QUESTIONS_START_LOADING.remove(showLoading);
-			QuestionsManager.S_QUESTIONS_FILTERED.remove(updateData);
-			QuestionsManager.S_FILTER_CLEARED.remove(updateData);
-			QuestionsManager.S_QUESTION.remove(updateQuestion);
-			AnswersManager.S_QUESTION_ANSWERS.remove(updateQuestion);
-			AnswersManager.S_ANSWERS.remove(onAnswersLoaded);
-			UsersManager.S_ONLINE_CHANGED.remove(onUserOnlineStatusChanged);
-			UsersManager.S_OFFLINE_ALL.remove(onAllUsersOffline);
-			UsersManager.S_ONLINE_STATUS_LIST.remove(onUserlistOnlineStatusChanged);
-			UsersManager.S_TOAD_UPDATED.remove(refreshList);
-			
-			UsersManager.S_USERS_FULL_DATA.remove(onUserBanChange);
+			if (filtersPanel != null)
+			{
+				filtersPanel.deactivate();
+			}
 		}
 		
 		private function showLoading():void {
@@ -453,7 +397,7 @@ package com.dukascopy.connect.screens.innerScreens {
 		override public function drawViewLang():void {
 			if (tabs != null)
 			{
-				tabs.updateLabels( [ Lang.textAll, Lang.textMine, Lang.questionsResolved ] );
+				tabs.updateLabels( [ Lang.ads, Lang.textMine, Lang.escrow_offers, Lang.escrow_deals ] );
 			}
 			super.drawViewLang();
 		}
@@ -461,7 +405,8 @@ package com.dukascopy.connect.screens.innerScreens {
 		override public function dispose():void {
 			super.dispose();
 			
-			GD.S_ESCROW_INSTRUMENTS.remove(onInstrumentsLoaded);
+			GD.S_ESCROW_ADS.remove(onEscrowAdsLoaded);
+			GD.S_ESCROW_ADS_MINE.remove(onEscrowAdsMineLoaded);
 			GD.S_ESCROW_ADS_FILTER_SETTED.remove(onFilterChanged);
 			
 			if (preloader != null)
@@ -471,11 +416,10 @@ package com.dukascopy.connect.screens.innerScreens {
 				preloader = null;
 			}
 			removePlaceholder();
-			GD.S_ESCROW_INSTRUMENTS.remove(onInstrumentsLoaded);
 			DialogManager.closeDialog();
 		}
 		
-		public function openQuestionCreateUpdateScreen(e:Event = null):void {
+		/*public function openQuestionCreateUpdateScreen(e:Event = null):void {
 			if (QuestionsManager.checkForUnsatisfiedQuestions() == true) {
 				DialogManager.alert(Lang.information, Lang.limitQuestionExists);
 				return;
@@ -489,76 +433,11 @@ package com.dukascopy.connect.screens.innerScreens {
 				},
 				ScreenManager.DIRECTION_RIGHT_LEFT
 			);
-		}
-		
-		private function updateData():void {
-			if (_isDisposed == true)
-				return;
-			if (_isActivated == false)
-				return;
-			
-			hideStatusClip();
-			setListData();
-		}
+		}*/
 		
 		private function hideStatusClip():void {
 			if (statusClip)
 				statusClip.hide();
-		}
-		
-		private function onUserOnlineStatusChanged(status:OnlineStatus, method:String):void {
-			if (_isDisposed == true)
-				return;
-			if (list == null)
-				return;
-			if (method != UsersManager.METHOD_OFFLINE_STATUS && method != UsersManager.METHOD_ONLINE_STATUS)
-				return;
-			var user:ChatUserVO;
-			var item:ListItem;
-			var qVO:QuestionVO;
-			var l:int = list.getStock().length;
-			for (var j:int = list.getFirstVisibleItemIndex(); j < l; j++) {
-				item = list.getItemByNum(j);
-				if (item != null && item.liView != null && item.liView.visible == true) {
-					if (item.data is QuestionVO == true) {
-						qVO = item.data as QuestionVO;
-						if (qVO.isMine() == false && qVO.userUID == status.uid) {
-							if (list.getScrolling() == true) {
-								list.refresh();
-								break;
-							} else
-								item.draw(list.width);
-						}
-					} else if (item.data is ChatVO == true) {
-						user = UsersManager.getInterlocutor(item.data as ChatVO);
-						if (user && user.uid == status.uid) {
-							if (list.getScrolling()) {
-								list.refresh();
-								break;
-							} else
-								item.draw(list.width);
-						}
-					}
-				} else
-					break;
-			}
-			user = null;
-			qVO = null;
-			item = null;
-		}
-		
-		private function onUserlistOnlineStatusChanged():void {
-			if (_isDisposed == true)
-				return;
-			if (list != null)
-				list.refresh();
-		}
-		
-		private function onAllUsersOffline():void {
-			if (_isDisposed == true)
-				return;
-			if (list != null)
-				list.refresh();
 		}
 		
 		private function refreshList():void {
@@ -566,59 +445,6 @@ package com.dukascopy.connect.screens.innerScreens {
 				return;
 			if (list != null)
 				list.refresh();
-		}
-		
-		private function onListMoved(...rest):void {
-			if (_isDisposed == true)
-				return;
-			if (selectedFilter != QuestionsManager.TAB_OTHER)
-				return;
-			if (list == null || followItem == null)
-				return;
-			if (QuestionsManager.getShowTipsOnly() == true) {
-				if (list.getBoxY() > 0)
-					list.setBGColorOnly(Style.color(Style.COLOR_BACKGROUND));
-				else
-					list.setBGColorOnly(Style.color(Style.COLOR_TIPS_911_BACKGROUND));
-				return;
-			}
-		}
-		
-		private function onScrollStopped(val:Number):void {
-			if (_isDisposed == true)
-				return;
-			if (_isActivated == false)
-				return;
-			if (needToRefreshAfterScrollStoped == false)
-				return;
-			needToRefreshAfterScrollStoped = false;
-			setListData();
-		}
-		
-		private function onAnswersLoaded():void {
-			if (_isDisposed == true)
-				return;
-			
-			//!TODO:;
-			if (selectedFilter != QuestionsManager.TAB_RESOLVED)
-				return;
-			setListData();
-		}
-		
-		private function updateQuestion(qVO:QuestionVO):void {
-			if (_isDisposed == true)
-				return;
-			if (_isActivated == false)
-				return;
-			if (list == null)
-				return;
-			if (list.data == null)
-				return;
-			if (list.getScrolling() == true) {
-				needToRefreshAfterScrollStoped = true;
-				return;
-			}
-			list.updateItem(qVO);
 		}
 		
 		private function onItemTap(data:Object, n:int):void {
@@ -650,7 +476,35 @@ package com.dukascopy.connect.screens.innerScreens {
 				}
 				return;
 			}
-			else if (data is QuestionVO) {
+			
+			if (data is EscrowAdsVO) {
+				
+				var escrowAdsVO:EscrowAdsVO = data as EscrowAdsVO;
+				
+				if (escrowAdsVO.userUid != Auth.uid) {
+					GD.S_ESCROW_ADS_ANSWER.invoke(escrowAdsVO);
+					return;
+				}
+				
+				if (escrowAdsVO.isRemoving == true)
+					return;
+				if (itemHitZone == HitZoneType.DELETE) {
+					DialogManager.alert(Lang.confirm, Lang.alertConfirmDeleteQuestion, function(val:int):void {
+						if (val != 1)
+							return;
+						GD.S_ESCROW_ADS_REMOVE.invoke(escrowAdsVO.uid);
+						list.updateItemByIndex(n, false);
+					}, Lang.textDelete.toUpperCase(), Lang.textCancel.toUpperCase());
+					return;
+				}
+				if (escrowAdsVO.answersCount > 0) {
+					GD.S_ESCROW_ADS_ANSWERS.invoke(escrowAdsVO.uid);
+					return;
+				}
+				return;
+			}
+			
+			/*else if (data is QuestionVO) {
 				var qVO:QuestionVO = data as QuestionVO;
 				if (qVO.uid == null || qVO.uid == "") {
 					if (itemHitZone == HitZoneType.QUESTION_INFO) {
@@ -730,7 +584,7 @@ package com.dukascopy.connect.screens.innerScreens {
 					},
 					ScreenManager.DIRECTION_RIGHT_LEFT
 				);
-			}
+			}*/
 		}
 		
 		private function onItemHold(data:Object, n:int):void {
@@ -757,97 +611,89 @@ package com.dukascopy.connect.screens.innerScreens {
 			}, data:menuItems, itemClass:ListLink, title:chatVO.title, multilineTitle:false } );
 		}
 		
+		private function saveListPosition():void {
+			var listBoxY:int = list.getBoxY();
+			if (listBoxY < 0) {
+				storedTabListPosition[selectedTabID].listBoxY = list.getBoxY();
+				var fli:ListItem = list.getFirstVisibleItem();
+				if (fli != null) {
+					storedTabListPosition[selectedTabID].item = list.getFirstVisibleItem().data;
+					storedTabListPosition[selectedTabID].offset = fli.y + storedTabListPosition[selectedTabID].listBoxY;
+				}
+			} else if ("item" in storedTabListPosition[selectedTabID] == true) {
+				delete storedTabListPosition[selectedTabID].item;
+				delete storedTabListPosition[selectedTabID].offset;
+				delete storedTabListPosition[selectedTabID].listBoxY;
+			}
+		}
+		
 		private function onTabItemSelected(id:String):void {
 			if (_isDisposed == true)
 				return;
+			selectedTabID = id;
 			updatePositions();
-			setListData(id);
-			selectedFilter = id;
-			list.setBGColorOnly(Style.color(Style.COLOR_BACKGROUND));
+			saveListPosition();
+			showPreloader();
+			
+			GD.S_ESCROW_ADS.remove(onEscrowAdsLoaded);
+			GD.S_ESCROW_ADS_MINE.remove(onEscrowAdsMineLoaded);
+			
+			if (id == TAB_OTHER) {
+				GD.S_ESCROW_ADS.add(onEscrowAdsLoaded);
+				GD.S_ESCROW_ADS_REQUEST.invoke();
+				return;
+			}
+			if (id == TAB_MINE) {
+				GD.S_ESCROW_ADS_MINE.add(onEscrowAdsMineLoaded);
+				GD.S_ESCROW_ADS_MINE_REQUEST.invoke();
+				return;
+			}
+			setListData(null);
 		}
 		
-		private function setListData(id:String = ""):void {
+		private function onEscrowAdsLoaded(data:Array, preloaderHide:Boolean = false):void {
+			if (_isDisposed)
+				return;
+			if (selectedTabID != TAB_OTHER)
+				return;
+			if (preloaderHide == true)
+				hidePreloader();
+			setListData(data);
+		}
+		
+		private function onEscrowAdsMineLoaded(data:Array, preloaderHide:Boolean = false):void {
+			if (_isDisposed)
+				return;
+			if (selectedTabID != TAB_MINE)
+				return;
+			if (preloaderHide == true)
+				hidePreloader();
+			setListData(data);
+		}
+		
+		private function setListData(data:Array):void {
 			if (_isDisposed == true)
 				return;
 			if (list == null)
 				return;
+			var listItemClass:Class = BaseRenderer;
+			if (selectedTabID == TAB_OTHER)
+				listItemClass = ListEscrowAdsRenderer;
+			else if (selectedTabID == TAB_MINE)
+				listItemClass = ListEscrowAdsRenderer;
+			var listData:Array = data;
+			if (listData == null)
+				listData = [];
+			list.setData(listData, listItemClass);
 			
-			var otherID:Boolean = id != "" && id != selectedFilter;
-			if (otherID == false && list.getScrolling() == true) {
-				needToRefreshAfterScrollStoped = true;
-				return;
-			}
-			
-			var listBoxY:int = list.getBoxY();
-			
-			if (listBoxY < 0) {
-				storedTabListPosition[selectedFilter].listBoxY = list.getBoxY();
-				var fli:ListItem = list.getFirstVisibleItem();
-				if (fli != null) {
-					storedTabListPosition[selectedFilter].item = list.getFirstVisibleItem().data;
-					storedTabListPosition[selectedFilter].offset = fli.y + storedTabListPosition[selectedFilter].listBoxY;
-				}
-			} else if ("item" in storedTabListPosition[selectedFilter] == true) {
-				delete storedTabListPosition[selectedFilter].item;
-				delete storedTabListPosition[selectedFilter].offset;
-				delete storedTabListPosition[selectedFilter].listBoxY;
-			}
-			
-			var needToScrollTop:Boolean = !otherID && listBoxY > 0;
-			
-			if (id == "")
-				id = selectedFilter;
-			
-			drawView();
-			
-			var listItemClass:Class = ListEscrowRenderer;
-			var listData:Array;
-			var hideLoader:Boolean = true;
-			if (id == QuestionsManager.TAB_RESOLVED) {
-				listData = AnswersManager.getAllAnswers();
-				listItemClass = ListConversation;
-			} else {
-				if (id == QuestionsManager.TAB_OTHER)
-				{
-					GD.S_ESCROW_ADS_REQUEST.invoke();
-					listData = QuestionsManager.getNotResolved();
-					showPreloader();
-				}
-				else if (id == QuestionsManager.TAB_OFFERS)
-				{
-					listData = QuestionsManager.getMine();
-					showPreloader();
-				}
-				else if (id == QuestionsManager.TAB_DEALS)
-				{
-					listData = QuestionsManager.getMine();
-					showPreloader();
-				}
-				if (listData == null)
-				{
-					hideLoader = false;
-					listData = [];
-				}
-			}
-			if (hideLoader)
-			{
-				hidePreloader();
-			}
-			list.setData(listData, listItemClass, ["avatarURL"]);
-			if (needToScrollTop == false)
-				if (storedTabListPosition[id] != null && "item" in storedTabListPosition[id] == true && storedTabListPosition[id].item != null)
-					if (list.scrollToItem(null, storedTabListPosition[id].item, storedTabListPosition[id].offset) == false)
-						if ("listBoxY" in storedTabListPosition[id] == true)
-							list.setBoxY(storedTabListPosition[id].listBoxY);
+			if (storedTabListPosition[selectedTabID] != null && "item" in storedTabListPosition[selectedTabID] == true && storedTabListPosition[selectedTabID].item != null)
+				if (list.scrollToItem(null, storedTabListPosition[selectedTabID].item, storedTabListPosition[selectedTabID].offset) == false)
+					if ("listBoxY" in storedTabListPosition[selectedTabID] == true)
+						list.setBoxY(storedTabListPosition[selectedTabID].listBoxY);
 			list.setContextAvaliable(true);
-			
-			//!TODO:;
-			if (hideLoader == true && id != QuestionsManager.TAB_OFFERS && (listData == null || listData.length == 0))
-			{
+			if (selectedTabID == TAB_MINE && (listData == null || listData.length == 0)) {
 				addPlaceholder(Lang.escrow_no_active_ads_placeholder);
-			}
-			else
-			{
+			} else {
 				removePlaceholder();
 			}
 		}

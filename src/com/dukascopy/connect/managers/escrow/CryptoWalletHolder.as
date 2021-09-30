@@ -1,7 +1,6 @@
 package com.dukascopy.connect.managers.escrow 
 {
 	import com.dukascopy.connect.GD;
-	import com.dukascopy.connect.gui.list.renderers.ListCryptoWallet;
 	import com.dukascopy.connect.managers.escrow.vo.CryptoWallet;
 	import com.dukascopy.connect.sys.applicationError.ApplicationErrors;
 	import com.dukascopy.connect.sys.auth.Auth;
@@ -12,7 +11,7 @@ package com.dukascopy.connect.managers.escrow
 	 */
 	public class CryptoWalletHolder 
 	{
-		private var wallets:Vector.<ListCryptoWallet>;
+		private var wallets:Vector.<CryptoWallet>;
 		private var dataLoaded:Boolean;
 		
 		public function CryptoWalletHolder() 
@@ -33,7 +32,7 @@ package com.dukascopy.connect.managers.escrow
 			wallets = null;
 		}
 		
-		private function addCryptoWallet(crypto:String, wallet:String):void 
+		private function addCryptoWallet(crypto:String, walletAddress:String):void 
 		{
 			var exist:Boolean;
 			if (wallets != null)
@@ -41,7 +40,7 @@ package com.dukascopy.connect.managers.escrow
 				var l:int = wallets.length;
 				for (var i:int = 0; i < l; i++) 
 				{
-					if (wallets[i].wallet == wallet && wallets[i].crypto == crypto)
+					if (wallets[i].wallet == walletAddress && wallets[i].crypto == crypto)
 					{
 						exist = true;
 						break;
@@ -50,10 +49,10 @@ package com.dukascopy.connect.managers.escrow
 			}
 			if (!exist)
 			{
-				var wallet:CryptoWallet = new CryptoWallet(crypto, wallet);
+				var wallet:CryptoWallet = new CryptoWallet(crypto, walletAddress);
 				if (wallets == null)
 				{
-					wallets = new Vector.<ListCryptoWallet>();
+					wallets = new Vector.<CryptoWallet>();
 				}
 				wallets.push(wallet);
 				
@@ -111,7 +110,11 @@ package com.dukascopy.connect.managers.escrow
 		{
 			if (value != null)
 			{
-				
+				wallets = new Vector.<CryptoWallet>();
+				for each (var item:Object in value) 
+				{
+					wallets.push(new CryptoWallet(item.crypto, item.wallet));
+				}
 			}
 		}
 		
@@ -119,7 +122,5 @@ package com.dukascopy.connect.managers.escrow
 		{
 			GD.S_CRYPTO_WALLETS.invoke(wallets);
 		}
-		
-		
 	}
 }

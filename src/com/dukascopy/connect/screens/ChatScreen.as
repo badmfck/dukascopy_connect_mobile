@@ -1531,6 +1531,8 @@ package com.dukascopy.connect.screens {
 				else if(chatData.type == ChatInitType.QUESTION) {
 					if (chatData.question != null)
 						ChatManager.openChatByQuestionUID(chatData.question.uid);
+					else if (chatData.escrow_ad_uid != null)
+						ChatManager.openChatByQuestionUID(chatData.escrow_ad_uid);
 					else
 						ChatManager.openChatByUID(chatData.chatUID);
 				}

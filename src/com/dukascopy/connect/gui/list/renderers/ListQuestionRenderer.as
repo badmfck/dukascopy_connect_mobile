@@ -472,7 +472,7 @@ package com.dukascopy.connect.gui.list.renderers {
 				}
 			}
 			
-			newMessages.x = int(width - newMessages.width - FilterTabs.MARGIN);
+			newMessages.x = int(width - newMessages.width - Config.FINGER_SIZE_DOT_25);
 			
 			bg.width = width;
 			bg.height = height;
@@ -597,7 +597,7 @@ package com.dukascopy.connect.gui.list.renderers {
 					tfTips.text = "+" + itemData.tipsAmount + " " + itemData.tipsCurrencyDisplay;
 					tfTips.visible = true;
 					tfTips.y = int(newMessages.y + (newMessages.height -tfTips.height) * .5);
-					tfTips.x = (newMessages.visible == true) ? int(newMessages.x - tfTips.width - Config.MARGIN) : int(width - tfTips.width - FilterTabs.MARGIN + 2);
+					tfTips.x = (newMessages.visible == true) ? int(newMessages.x - tfTips.width - Config.MARGIN) : int(width - tfTips.width - Config.FINGER_SIZE_DOT_25 + 2);
 					hitZones = [ { type:HitZoneType.TIPS, x:tfTips.x, y:tfTips.y, width:tfTips.width, height:tfTips.height } ];
 					if (itemData.isMine() == true && itemData.isPaid == true) {
 						paidIcon.visible = true;
@@ -633,7 +633,7 @@ package com.dukascopy.connect.gui.list.renderers {
 				tfAnswersNum.background = false;
 				
 				tfQuestionTime.htmlText = getStatusText(itemData.createdTime);
-				tfQuestionTime.x = int(width - tfQuestionTime.width - FilterTabs.MARGIN + 2);
+				tfQuestionTime.x = int(width - tfQuestionTime.width - Config.FINGER_SIZE_DOT_25 + 2);
 				
 				if (tfTips.visible == true)
 					newWidth = tfTips.x - tfTitle.x - Config.MARGIN;

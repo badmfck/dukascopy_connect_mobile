@@ -667,6 +667,10 @@ package com.dukascopy.connect.sys.php {
 			call("question.close", callBack, { qUID:uid }, null, false, "POST", true, false, { qUID:uid } );
 		}
 		
+		static public function postEscrowAdsClose(callBack:Function, uid:String):void {
+			call("question.close", callBack, { qUID:uid }, null, false, "POST", true, false, { qUID:uid } );
+		}
+		
 		static public function question_closeByAdmin(callBack:Function, uid:String):void {
 			call("admin911.removeQuestion", callBack, { qUID:uid }, null, false, "POST", true, false, { qUID:uid } );
 		}

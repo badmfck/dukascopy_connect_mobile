@@ -182,9 +182,9 @@ package com.dukascopy.connect.gui.menuVideo {
 			if (abs(horizontalMovement)< DIRECTION_SENSITIVITY) return;
 				wasToggleMovedWhileDown = true;
 			if (horizontalMovement<0)
-				setSelectionState(false,true);				
+				setSelectionState(false,true);
 			else
-				setSelectionState(true,true);				
+				setSelectionState(true,true);
 		}
 		
 		public function setSelectionState(value:Boolean, useAnimation:Boolean = false):void	{
@@ -442,6 +442,11 @@ package com.dukascopy.connect.gui.menuVideo {
 		
 		public function setAlphaBlink(val:Number):void {
 			COLOR_ALPHA_BLINK = val;
+		}
+		
+		public function unselect():void 
+		{
+			setSelectionState(false, false);
 		}
 		
 		private static function buttonHitTest(obj:DisplayObject, stage:Stage, x:Number = 0, y:Number = 0):Boolean {

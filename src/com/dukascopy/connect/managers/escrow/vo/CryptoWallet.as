@@ -6,10 +6,13 @@ package com.dukascopy.connect.managers.escrow.vo
 	 */
 	public class CryptoWallet 
 	{
+		public var wallet:String;
+		public var crypto:String;
 		
-		public function CryptoWallet() 
+		public function CryptoWallet(crypto:String, wallet:String) 
 		{
-			
+			this.crypto = crypto;
+			this.wallet = wallet;
 		}
 	}
 }

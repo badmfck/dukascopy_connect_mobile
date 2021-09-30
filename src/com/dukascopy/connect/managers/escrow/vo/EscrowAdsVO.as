@@ -7,6 +7,15 @@ package com.dukascopy.connect.managers.escrow.vo {
 	
 	public class EscrowAdsVO {
 		
+		static public const SIDE_BUY:String = "buy";
+		static public const SIDE_SELL:String = "sell";
+		
+		static public const STATUS_CLOSED:String = "closed";
+		static public const STATUS_CREATED:String = "created";
+		static public const STATUS_PROCESSED:String = "processed";
+		static public const STATUS_RESOLVED:String = "resolved";
+		static public const STATUS_EDITED:String = "edited";
+		
 		private var _uid:String;
 		private var _crypto:String;
 		private var _amount:Number;
@@ -18,6 +27,9 @@ package com.dukascopy.connect.managers.escrow.vo {
 		private var _created:Number;
 		private var _answersCount:int;
 		private var _answersMax:int;
+		private var _mine:Boolean;
+		private var _status:String;
+		private var _isRemoving:Boolean;
 		
 		public function EscrowAdsVO(data:Object) {
 			if ("uid" in data == true && data.uid != null && data.uid is String)
@@ -38,7 +50,7 @@ package com.dukascopy.connect.managers.escrow.vo {
 				_price = data.price + "";
 			if ("categories" in data && data.categories != null) {
 				var categories:Array = [];
-				for (var key:Object in data.categories) 
+				for (var key:Object in data.categories)
 					categories.push(data.categories[key]);
 				if (categories.length != 0)
 					_currency = categories[0];
@@ -54,6 +66,27 @@ package com.dukascopy.connect.managers.escrow.vo {
 			_instrument = escrowInstrument;
 		}
 		
+		public function get mine():Boolean { return _mine; }
+		public function set mine(val:Boolean):void {
+			_mine = val;
+		}
+		
+		public function get isRemoving():Boolean { return _isRemoving; }
+		public function set isRemoving(val:Boolean):void {
+			_isRemoving = val;
+		}
+		
+		public function get status():String { return _status; }
+		public function set status(val:String):void {
+			_status = val;
+		}
+		
+		public function get percent():String {
+			if (_price.indexOf("%") == -1)
+				return null;
+			return _price;
+		}
+		
 		public function get currency():String { return _currency; }
 		public function get side():String { return _side; }
 		public function get uid():String { return _uid; }
@@ -63,6 +96,7 @@ package com.dukascopy.connect.managers.escrow.vo {
 		public function get answersCount():int { return _answersCount; }
 		public function get created():Number { return _created; }
 		public function get userUid():String { return _userUid; }
+		
 		public function get isDisposed():Boolean { return _uid == null; }
 		
 		public function get price():Number {

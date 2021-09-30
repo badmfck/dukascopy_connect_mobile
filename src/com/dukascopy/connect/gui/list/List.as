@@ -998,7 +998,7 @@ package com.dukascopy.connect.gui.list {
 			var oldH:int = stock[n].height;
 			stock[n].recalculateHeight();
 			stock[n].wasLoading = false;
-			stock[n].addImageFieldForLoading("imageThumbURLWithKey", true);
+			stock[n].addImageFieldForLoading("imageThumbURLWithKey", false);
 			stock[n].scrollStoppedShow();
 			if (inMovementPhase == false)
 				onMoved(true, false, false, false);

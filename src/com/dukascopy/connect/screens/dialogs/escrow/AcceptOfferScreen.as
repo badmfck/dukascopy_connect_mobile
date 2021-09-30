@@ -1,6 +1,7 @@
 package com.dukascopy.connect.screens.dialogs.escrow {
 	
 	import com.dukascopy.connect.Config;
+	import com.dukascopy.connect.GD;
 	import com.dukascopy.connect.data.TextFieldSettings;
 	import com.dukascopy.connect.data.coinMarketplace.PaymentsAccountsProvider;
 	import com.dukascopy.connect.data.escrow.EscrowMessageData;
@@ -11,9 +12,13 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 	import com.dukascopy.connect.data.escrow.TradeDirection;
 	import com.dukascopy.connect.gui.button.DDAccountButton;
 	import com.dukascopy.connect.gui.components.message.ToastMessage;
+	import com.dukascopy.connect.gui.input.Input;
 	import com.dukascopy.connect.gui.lightbox.UI;
 	import com.dukascopy.connect.gui.list.renderers.ListPayWalletItem;
 	import com.dukascopy.connect.gui.menuVideo.BitmapButton;
+	import com.dukascopy.connect.managers.escrow.vo.CryptoWallet;
+	import com.dukascopy.connect.managers.escrow.vo.EscrowInstrument;
+	import com.dukascopy.connect.screens.dialogs.paymentDialogs.elements.InputField;
 	import com.dukascopy.connect.screens.dialogs.x.base.bottom.ListSelectionPopup;
 	import com.dukascopy.connect.screens.payments.card.TypeCurrency;
 	import com.dukascopy.connect.sys.applicationError.ApplicationErrors;
@@ -38,6 +43,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.text.TextFieldAutoSize;
+	import flash.text.TextFormat;
 	import flash.text.TextFormatAlign;
 	
 	/**
@@ -67,6 +73,13 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		private var command:OfferCommand;
 		private var message:ChatMessageVO;
 		private var chat:ChatVO;
+		private var cryptoWallets:Vector.<CryptoWallet>;
+		private var cryptoWalletInput:InputField;
+		private var blockchainTitle:Bitmap;
+		private var blockchainAddress:Bitmap;
+		private var blockchainBack:Sprite;
+		private var currentCryptoWallet:String;
+		private var instrument:EscrowInstrument;
 		
 		public function AcceptOfferScreen() { }
 		
@@ -216,6 +229,46 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		
 		private function onAcceptClick():void 
 		{
+			if (escrowOffer.direction == TradeDirection.sell)
+			{
+				var selectedCryptoWallet:String;
+				
+				if (instrument.isLinked)
+				{
+					selectedCryptoWallet = instrument.wallet;
+				}
+				else
+				{
+					if (currentCryptoWallet != null)
+					{
+						selectedCryptoWallet = currentCryptoWallet;
+					}
+					else if (cryptoWalletInput != null)
+					{
+						if (cryptoWalletInput.valueString != null && cryptoWalletInput.valueString != "")
+						{
+							selectedCryptoWallet = cryptoWalletInput.valueString;
+							GD.S_CRYPTO_WALLET_ADD.invoke(instrument.code, selectedCryptoWallet);
+						}
+						else
+						{
+							cryptoWalletInput.invalid();
+						}
+					}
+					//!TODO:;
+				}
+				
+				if (selectedCryptoWallet != null)
+				{
+					escrowOffer.cryptoWallet = selectedCryptoWallet;
+				}
+				else
+				{
+					ToastMessage.display(Lang.escrow_provide_crypto_wallet);
+					return;
+				}
+			}
+			
 			if (terms != null)
 			{
 				if (terms.isSelected())
@@ -297,6 +350,14 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			{
 				message = data.message as ChatMessageVO;
 			}
+			if ("instrument" in data && data.instrument != null)
+			{
+				instrument = data.instrument as EscrowInstrument;
+			}
+			else
+			{
+				ApplicationErrors.add();
+			}
 			
 			if (escrowOffer != null)
 			{
@@ -329,6 +390,158 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		//	requestPrice();
 		}
 		
+		private function getLocalCryptoWallet():String 
+		{
+			if (escrowOffer.instrument != null)
+			{
+				if (cryptoWallets != null)
+				{
+					for (var i:int = 0; i < cryptoWallets.length; i++) 
+					{
+						if (cryptoWallets[i].crypto == escrowOffer.instrument)
+						{
+							return cryptoWallets[i].wallet;
+						}
+					}
+				}
+			}
+			else
+			{
+				ApplicationErrors.add();
+			}
+			
+			return "";
+		}
+		
+		private function localWalletExist():Boolean 
+		{
+			if (escrowOffer.instrument != null)
+			{
+				if (cryptoWallets != null)
+				{
+					for (var i:int = 0; i < cryptoWallets.length; i++) 
+					{
+						if (cryptoWallets[i].crypto == escrowOffer.instrument)
+						{
+							return true;
+						}
+					}
+				}
+			}
+			else
+			{
+				ApplicationErrors.add();
+			}
+			
+			return false;
+		}
+		
+		private function createWalletInput():void 
+		{
+			if (escrowOffer != null && escrowOffer.direction == TradeDirection.sell)
+			{
+				if (blockchainTitle == null)
+				{
+					blockchainTitle = new Bitmap();
+				}
+				if (blockchainTitle.bitmapData != null)
+				{
+					blockchainTitle.bitmapData.dispose();
+					blockchainTitle.bitmapData = null;
+				}
+				blockchainTitle.bitmapData = TextUtils.createTextFieldData(Lang.my_blockchain_address, _width - contentPadding * 2, 10, true,
+																		TextFormatAlign.LEFT, TextFieldAutoSize.LEFT, 
+																		FontSize.SUBHEAD, true, Style.color(Style.COLOR_SUBTITLE),
+																		Style.color(Style.COLOR_SEPARATOR));
+				addItem(blockchainTitle);
+				
+				if (instrument.isLinked || localWalletExist())
+				{
+					if (blockchainBack == null)
+					{
+						blockchainBack = new Sprite();
+					}
+					addItem(blockchainBack);
+					
+					if (blockchainAddress == null)
+					{
+						blockchainAddress = new Bitmap();
+					}
+					if (blockchainAddress.bitmapData != null)
+					{
+						blockchainAddress.bitmapData.dispose();
+						blockchainAddress.bitmapData = null;
+					}
+					var cryptoWallet:String;
+					if (instrument.isLinked)
+					{
+						cryptoWallet = instrument.wallet;
+					}
+					else
+					{
+						cryptoWallet = getLocalCryptoWallet();
+						currentCryptoWallet = cryptoWallet;
+					}
+					
+					blockchainAddress.bitmapData = TextUtils.createTextFieldData(cryptoWallet, getWidth() - contentPadding * 4, 10, true,
+																			TextFormatAlign.LEFT, TextFieldAutoSize.LEFT, 
+																			FontSize.TITLE_2, true, Style.color(Style.COLOR_SUBTITLE),
+																			Style.color(Style.COLOR_SEPARATOR));
+					addItem(blockchainAddress);
+					
+					blockchainBack.graphics.clear();
+					blockchainBack.graphics.beginFill(Style.color(Style.COLOR_SEPARATOR));
+					blockchainBack.graphics.drawRect(0, 0, getWidth() - contentPadding * 2, blockchainAddress.height + contentPadding * 2);
+					blockchainBack.graphics.endFill();
+				}
+				else
+				{
+					if (cryptoWalletInput == null)
+					{
+						var tf:TextFormat = new TextFormat();
+						tf.size = FontSize.BODY;
+						tf.color = Style.color(Style.COLOR_TEXT);
+						tf.font = Config.defaultFontName;
+						
+						cryptoWalletInput = new InputField( -1, Input.MODE_INPUT);
+						cryptoWalletInput.onSelectedFunction = onInputSelected;
+						cryptoWalletInput.onChangedFunction = onInputChange;
+						cryptoWalletInput.setMaxChars(300);
+						cryptoWalletInput.setPadding(0);
+						cryptoWalletInput.updateTextFormat(tf);
+					}
+					addItem(cryptoWalletInput);
+					if (isActivated)
+					{
+						cryptoWalletInput.activate();
+					}
+					
+					cryptoWalletInput.drawString(getWidth() - contentPadding * 2, null, "");
+				}
+			}
+		}
+		
+		private function onInputSelected():void 
+		{
+			cryptoWalletInput.valid();
+		}
+		
+		private function onInputChange(e:Event = null):void
+		{
+			if (cryptoWalletInput != null)
+			{
+				if (cryptoWalletInput.valueString == null || cryptoWalletInput.valueString == "")
+				{
+					cryptoWalletInput.invalid();
+				}
+				else
+				{
+					cryptoWalletInput.valid();
+					cryptoWalletInput.updatePositions();
+				}
+			}
+		}
+		
 		private function requestPrice():void 
 		{
 		//	percent_price
@@ -348,7 +561,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 				accounts = new PaymentsAccountsProvider(onAccountsReady, true, onAccountsFail);
 				if (accounts.ready)
 				{
-					onDataReady();
+					onAccountsReady();
 				}
 				else
 				{
@@ -374,6 +587,21 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 				return;
 			}
 			hidePreloader();
+			
+			GD.S_CRYPTO_WALLETS.add(onCryptoWallets);
+			GD.S_CRYPTO_WALLET_REQUEST.invoke();
+		}
+		
+		private function onCryptoWallets(cryptoWallets:Vector.<CryptoWallet>):void 
+		{
+			if (_isDisposed)
+			{
+				ApplicationErrors.add();
+				return;
+			}
+			this.cryptoWallets = cryptoWallets;
+			createWalletInput();
+			updateContentPositions();
 			onDataReady();
 		}
 		
@@ -718,6 +946,28 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 						position += selectorAccont.height + contentPaddingV * 1;
 					}
 					
+					if (blockchainTitle != null)
+					{
+						blockchainTitle.x = contentPadding;
+						blockchainTitle.y = position;
+						position += blockchainTitle.height + contentPaddingV * .3;
+					}
+					
+					if (blockchainBack != null)
+					{
+						blockchainBack.x = contentPadding;
+						blockchainBack.y = position;
+						blockchainAddress.x = contentPadding * 2;
+						blockchainAddress.y = position + contentPadding;
+						position += blockchainBack.height + contentPaddingV * 2;
+					}
+					if(cryptoWalletInput != null)
+					{
+						cryptoWalletInput.x = contentPadding;
+						cryptoWalletInput.y = position;
+						position += cryptoWalletInput.getFullHeight() + contentPaddingV * 2;
+					}
+					
 					if (terms != null && terms.parent != null)
 					{
 						terms.x = contentPadding;
@@ -754,11 +1004,6 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			{
 				ApplicationErrors.add();
 			}
-			
-			
-			
-			
-			
 			
 			if (escrowOffer != null && !EscrowScreenNavigation.isExpired(escrowOffer, offerCreatedTime))
 			{
@@ -831,7 +1076,10 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			rejectButton.activate();
 			terms.activate();
 			alertText.activate();
-			
+			if (cryptoWalletInput != null)
+			{
+				cryptoWalletInput.activate();
+			}
 		}
 		
 		override public function deactivateScreen():void {
@@ -845,6 +1093,10 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			rejectButton.deactivate();
 			terms.deactivate();
 			alertText.deactivate();
+			if (cryptoWalletInput != null)
+			{
+				cryptoWalletInput.deactivate();
+			}
 		}
 		
 		override protected function onRemove():void 
@@ -866,6 +1118,8 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		
 		override public function dispose():void {
 			super.dispose();
+			
+			GD.S_CRYPTO_WALLETS.remove(onCryptoWallets);
 			
 			if (accounts != null)
 			{
@@ -931,6 +1185,26 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			{
 				selectorAccont.dispose();
 				selectorAccont = null;
+			}
+			if (blockchainTitle != null)
+			{
+				UI.destroy(blockchainTitle);
+				blockchainTitle = null;
+			}
+			if (blockchainBack != null)
+			{
+				UI.destroy(blockchainBack);
+				blockchainBack = null;
+			}
+			if (blockchainAddress != null)
+			{
+				UI.destroy(blockchainAddress);
+				blockchainAddress = null;
+			}
+			if (cryptoWalletInput != null)
+			{
+				cryptoWalletInput.dispose();
+				cryptoWalletInput = null;
 			}
 		}
 	}

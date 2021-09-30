@@ -25,6 +25,7 @@ package com.dukascopy.connect.vo.screen {
 		public var pendingInvoice:ChatMessageInvoiceData;
 		public var byPhone:Boolean;
 		public var payCard:Boolean = false;
+		public var escrow_ad_uid:String;
 		
 		public function dispose():void {
 			chatVO = null;

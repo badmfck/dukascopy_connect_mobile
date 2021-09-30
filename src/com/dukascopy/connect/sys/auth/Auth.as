@@ -3,6 +3,7 @@ package com.dukascopy.connect.sys.auth {
 	import com.adobe.crypto.MD5;
 	import com.adobe.crypto.SHA1;
 	import com.dukascopy.connect.Config;
+	import com.dukascopy.connect.GD;
 	import com.dukascopy.connect.data.CountriesData;
 	import com.dukascopy.connect.data.UserBanData;
 	import com.dukascopy.connect.screens.serviceScreen.AppIntroScreen;
@@ -163,6 +164,7 @@ package com.dukascopy.connect.sys.auth {
 			WSClient.S_USER_PHASE_CHANGED.add(onUserPhaseChanged);
 			UsersManager.USER_BLOCK_CHANGED.add(onUserBlockStatusChanged);
 			S_AUTHORIZED.invoke();
+			GD.S_AUTHORIZED.invoke(myProfile);
 		}
 		
 		static private function onUserPhaseChanged(data:Object):void{
@@ -300,6 +302,8 @@ package com.dukascopy.connect.sys.auth {
 			UsersManager.USER_BLOCK_CHANGED.remove(onUserBlockStatusChanged);
 			
 			NativeExtensionController.setAuthKey(null);
+			
+			GD.S_UNAUTHORIZED.invoke();
 		}
 		
 		public static function getItem(name:String):String {
