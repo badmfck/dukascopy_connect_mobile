@@ -48,7 +48,6 @@ package com.dukascopy.connect.managers.escrow.vo {
 				_side = data.subtype;
 			if ("price" in data && data.price != null)
 				_price = data.price + "";
-			_price = "-0.1%";
 			if ("categories" in data && data.categories != null) {
 				var categories:Array = [];
 				for (var key:Object in data.categories)

@@ -192,7 +192,7 @@ package com.dukascopy.connect.gui.list.renderers {
 				tfQuestionTime.x = int(width - tfQuestionTime.width - Config.FINGER_SIZE_DOT_25 + 2);
 				
 				textFieldPrice.visible = true;
-				textFieldPrice.text = getPrice(itemData);
+				textFieldPrice.htmlText = getPrice(itemData);
 				textFieldAmount.htmlText = getAmount(itemData);
 				if (itemData.mine == true) {
 					textFieldAmount.htmlText = textFieldAmount.htmlText + " (" + Lang.mine.toUpperCase() + ")";
@@ -227,20 +227,19 @@ package com.dukascopy.connect.gui.list.renderers {
 		}
 		
 		private function getPrice(itemData:EscrowAdsVO):String {
-			var res:String = "";
+			var res:String = "@" + itemData.price + " " + itemData.currency;
 			var percent:String = itemData.percent;
 			if (percent != null)
-				res = "MKT " + percent + " ";
-			res += "  @" + itemData.price + " " + itemData.currency;
+				res += ", <font color='#BEBEBE'>MKT " + percent + "</font>";
 			return res;
 		}
 		
 		private function getTime(itemData:EscrowAdsVO, timeValue:String):String {
 			var result:String = "";
 			if (itemData.side == "buy") {
-				result += "<font color=\u0022#" + Color.GREEN.toString(16) + "\u0022>" + timeValue + "</font>";
+				result += "<font color='#" + Color.GREEN.toString(16) + "'>" + timeValue + "</font>";
 			} else {
-				result += "<font color=\u0022#" + Color.RED.toString(16) + "\u0022>" + timeValue + "</font>";
+				result += "<font color='#" + Color.RED.toString(16) + "'>" + timeValue + "</font>";
 			}
 			return result;
 		}
@@ -248,9 +247,9 @@ package com.dukascopy.connect.gui.list.renderers {
 		private function getAmount(itemData:EscrowAdsVO):String {
 			var result:String = "";
 			if (itemData.side == "buy") {
-				result += "<font color=\u0022#" + Color.GREEN.toString(16) + "\u0022>" + Lang.BUY.toUpperCase() + " " + itemData.amount + " " + itemData.crypto + "</font>";
+				result += "<font color='#" + Color.GREEN.toString(16) + "'>" + Lang.BUY.toUpperCase() + " " + itemData.amount + " " + itemData.crypto + "</font>";
 			} else {
-				result += "<font color=\u0022#" + Color.RED.toString(16) + "\u0022>" + Lang.sell.toUpperCase() + " " + itemData.amount + " " + itemData.crypto + "</font>";
+				result += "<font color='#" + Color.RED.toString(16) + "'>" + Lang.sell.toUpperCase() + " " + itemData.amount + " " + itemData.crypto + "</font>";
 			}
 			return result;
 		}
@@ -258,7 +257,6 @@ package com.dukascopy.connect.gui.list.renderers {
 		private function getStatusText(itemData:EscrowAdsVO, timestamp:Number):String {
 			var date:Date = new Date(Number(timestamp * 1000));
 			return getTime(itemData, DateUtils.getComfortDateRepresentationWithMinutes(date));
-			return "<font color=\u0022#" + AppTheme.GREY_MEDIUM.toString(16) + "\u0022>" + DateUtils.getComfortDateRepresentationWithMinutes(date) + "</font>";
 		}
 		
 		override public function getSelectedHitzone(itemTouchPoint:Point, listItem:ListItem):HitZoneData {
