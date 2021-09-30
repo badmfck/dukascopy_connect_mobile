@@ -190,7 +190,7 @@ package com.dukascopy.connect.managers.escrow {
 		private function onEscrowAdsRequested(afterError:Boolean = false):void {
 			if (afterError == false && escrowAdsFilterSetted == false) {
 				escrowAdsSort();
-				GD.S_ESCROW_ADS.invoke(escrowAds);
+				GD.S_ESCROW_ADS.invoke(escrowAds, true);
 				return;
 			}
 			if (afterError == true) {

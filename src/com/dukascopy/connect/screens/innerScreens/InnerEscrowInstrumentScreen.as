@@ -227,7 +227,7 @@ package com.dukascopy.connect.screens.innerScreens {
 			selectedTabID = id;
 			saveListPosition();
 			GD.S_ESCROW_ADS_CRYPTOS.remove(onEscrowAdsCryptoLoaded);
-			GD.S_ESCROW_ADS_MINE.remove(onEscrowAdsCryptoLoaded);
+			GD.S_ESCROW_ADS_MINE.remove(onEscrowAdsMineLoaded);
 			showPreloader();
 			if (id == TAB_ID_CRYPTO) {
 				GD.S_ESCROW_ADS_CRYPTOS.add(onEscrowAdsCryptoLoaded);
@@ -258,7 +258,7 @@ package com.dukascopy.connect.screens.innerScreens {
 			}
 		}
 		
-		private function onEscrowAdsCryptoLoaded(data:Array, preloaderHide:Boolean = false):void {
+		private function onEscrowAdsCryptoLoaded(data:Array, preloaderHide:Boolean = false, error:Boolean = false):void {
 			if (_isDisposed)
 				return;
 			if (selectedTabID != TAB_ID_CRYPTO)
@@ -268,7 +268,7 @@ package com.dukascopy.connect.screens.innerScreens {
 			setListData(data);
 		}
 		
-		private function onEscrowAdsMineLoaded(data:Array, preloaderHide:Boolean = false):void {
+		private function onEscrowAdsMineLoaded(data:Array, preloaderHide:Boolean = false, error:Boolean = false):void {
 			if (_isDisposed)
 				return;
 			if (selectedTabID != TAB_ID_MINE)
