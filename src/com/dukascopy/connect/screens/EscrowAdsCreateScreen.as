@@ -359,12 +359,12 @@ package com.dukascopy.connect.screens {
 				if (val.charAt(val.length - 1) == ".") {
 					val = val.substr(0, val.length -1);
 					amountString = val;
-					escrowAdsVO.amount = Number(val);
 					msgAmount.params = { val:val }
 					list.getItemByNum(3).data.updateText(Config.BOUNDS + JSON.stringify(msgAmount));
 					list.updateItemByIndex(3);
 				}
 			}
+			escrowAdsVO.amount = Number(val);
 			removeKeyboardAction();
 		}
 		
@@ -508,7 +508,6 @@ package com.dukascopy.connect.screens {
 			GD.S_ESCROW_ADS_CREATE.invoke(escrowAdsVO);
 			GD.S_ESCROW_ADS_CREATED.add(onEscrowAdsCreatedSuccess);
 			GD.S_ESCROW_ADS_CREATE_FAIL.add(onEscrowAdsCreatedFail);
-			QuestionsManager.createUpdateQuestion("Crypto P2P ad");
 			return true;
 		}
 		
