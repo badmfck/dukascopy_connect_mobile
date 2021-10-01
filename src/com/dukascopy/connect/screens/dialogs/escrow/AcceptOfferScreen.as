@@ -2,6 +2,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 	
 	import com.dukascopy.connect.Config;
 	import com.dukascopy.connect.GD;
+	import com.dukascopy.connect.data.EscrowScreenData;
 	import com.dukascopy.connect.data.TextFieldSettings;
 	import com.dukascopy.connect.data.coinMarketplace.PaymentsAccountsProvider;
 	import com.dukascopy.connect.data.escrow.EscrowMessageData;
@@ -36,7 +37,6 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 	import com.dukascopy.connect.type.HitZoneType;
 	import com.dukascopy.connect.utils.NumberFormat;
 	import com.dukascopy.connect.utils.TextUtils;
-	import com.dukascopy.connect.vo.ChatMessageVO;
 	import com.dukascopy.connect.vo.ChatVO;
 	import com.dukascopy.langs.Lang;
 	import flash.display.Bitmap;
@@ -71,7 +71,6 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		private var accounts:PaymentsAccountsProvider;
 		private var selectedFiatAccount:Object;
 		private var command:OfferCommand;
-		private var message:ChatMessageVO;
 		private var chat:ChatVO;
 		private var cryptoWallets:Vector.<CryptoWallet>;
 		private var cryptoWalletInput:InputField;
@@ -80,6 +79,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		private var blockchainBack:Sprite;
 		private var currentCryptoWallet:String;
 		private var instrument:EscrowInstrument;
+		private var messageId:Number;
 		
 		public function AcceptOfferScreen() { }
 		
@@ -334,30 +334,12 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		
 		override public function initScreen(data:Object = null):void {
 			
-			if ("created" in data)
-			{
-				offerCreatedTime = data.created as Number;
-			}
-			if ("escrowOffer" in data && data.escrowOffer != null)
-			{
-				escrowOffer = data.escrowOffer as EscrowMessageData;
-			}
-			if ("chat" in data && data.chat != null)
-			{
-				chat = data.chat as ChatVO;
-			}
-			if ("message" in data && data.message != null)
-			{
-				message = data.message as ChatMessageVO;
-			}
-			if ("instrument" in data && data.instrument != null)
-			{
-				instrument = data.instrument as EscrowInstrument;
-			}
-			else
-			{
-				ApplicationErrors.add();
-			}
+			var screenData:EscrowScreenData = data as EscrowScreenData;
+			offerCreatedTime = screenData.created;
+			escrowOffer = screenData.escrowOffer;
+			chat = screenData.chat;
+			messageId = screenData.messageId;
+			instrument = screenData.instrument;
 			
 			if (escrowOffer != null)
 			{
@@ -1108,10 +1090,9 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 					escrowOffer.debit_account = selectedFiatAccount.ACCOUNT_NUMBER;
 				}
 				
-				(data.callback as Function)(escrowOffer, message, chat, command);
+				(data.callback as Function)(escrowOffer, messageId, chat, command);
 				command = null;
 				chat = null;
-				message = null;
 				escrowOffer = null;
 			}
 		}

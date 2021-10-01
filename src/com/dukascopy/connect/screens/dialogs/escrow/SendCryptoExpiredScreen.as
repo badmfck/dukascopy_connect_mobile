@@ -1,6 +1,7 @@
 package com.dukascopy.connect.screens.dialogs.escrow {
 	
 	import com.dukascopy.connect.Config;
+	import com.dukascopy.connect.data.EscrowScreenData;
 	import com.dukascopy.connect.data.TextFieldSettings;
 	import com.dukascopy.connect.data.coinMarketplace.PaymentsAccountsProvider;
 	import com.dukascopy.connect.data.escrow.EscrowMessageData;
@@ -53,6 +54,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		private var message:ChatMessageVO;
 		private var chat:ChatVO;
 		private var command:OfferCommand;
+		private var messageId:Number;
 		
 		public function SendCryptoExpiredScreen() { }
 		
@@ -114,22 +116,11 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		
 		override public function initScreen(data:Object = null):void {
 			
-			if ("created" in data)
-			{
-				offerCreatedTime = data.created as Number;
-			}
-			if ("escrowOffer" in data && data.escrowOffer != null)
-			{
-				escrowOffer = data.escrowOffer as EscrowMessageData;
-			}
-			if ("chat" in data && data.chat != null)
-			{
-				chat = data.chat as ChatVO;
-			}
-			if ("message" in data && data.message != null)
-			{
-				message = data.message as ChatMessageVO;
-			}
+			var screenData:EscrowScreenData = data as EscrowScreenData;
+			offerCreatedTime = screenData.created as Number;
+			escrowOffer = screenData.escrowOffer;
+			chat = screenData.chat;
+			messageId = screenData.messageId;
 			
 			super.initScreen(data);
 		}
@@ -367,7 +358,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		{
 			if (command != null && "callback" in data && data.callback != null && data.callback is Function && (data.callback as Function).length == 4)
 			{
-				(data.callback as Function)(escrowOffer, message, chat, command);
+				(data.callback as Function)(escrowOffer, messageId, chat, command);
 				command = null;
 				chat = null;
 				message = null;

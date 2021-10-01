@@ -1,21 +1,14 @@
 package com.dukascopy.connect.screens.dialogs.escrow {
 	
 	import com.dukascopy.connect.Config;
+	import com.dukascopy.connect.data.EscrowScreenData;
 	import com.dukascopy.connect.data.TextFieldSettings;
-	import com.dukascopy.connect.data.coinMarketplace.PaymentsAccountsProvider;
 	import com.dukascopy.connect.data.escrow.EscrowMessageData;
 	import com.dukascopy.connect.data.escrow.EscrowScreenNavigation;
 	import com.dukascopy.connect.data.escrow.EscrowSettings;
-	import com.dukascopy.connect.data.escrow.EscrowStatus;
 	import com.dukascopy.connect.data.escrow.OfferCommand;
-	import com.dukascopy.connect.data.escrow.TradeDirection;
-	import com.dukascopy.connect.gui.button.DDAccountButton;
-	import com.dukascopy.connect.gui.input.Input;
 	import com.dukascopy.connect.gui.lightbox.UI;
 	import com.dukascopy.connect.gui.menuVideo.BitmapButton;
-	import com.dukascopy.connect.screens.dialogs.paymentDialogs.elements.InputField;
-	import com.dukascopy.connect.sys.applicationError.ApplicationErrors;
-	import com.dukascopy.connect.sys.auth.Auth;
 	import com.dukascopy.connect.sys.imageManager.ImageBitmapData;
 	import com.dukascopy.connect.sys.style.FontSize;
 	import com.dukascopy.connect.sys.style.Style;
@@ -23,14 +16,12 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 	import com.dukascopy.connect.type.HitZoneType;
 	import com.dukascopy.connect.utils.NumberFormat;
 	import com.dukascopy.connect.utils.TextUtils;
-	import com.dukascopy.connect.vo.ChatMessageVO;
 	import com.dukascopy.connect.vo.ChatVO;
 	import com.dukascopy.langs.Lang;
 	import flash.display.Bitmap;
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.text.TextFieldAutoSize;
-	import flash.text.TextFormat;
 	import flash.text.TextFormatAlign;
 	
 	/**
@@ -51,9 +42,9 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		
 		private var escrowOffer:EscrowMessageData;
 		private var offerCreatedTime:Number;
-		private var message:ChatMessageVO;
 		private var chat:ChatVO;
 		private var command:OfferCommand;
+		private var messageId:Number;
 		
 		public function WaitCryptoScreen() { }
 		
@@ -118,22 +109,11 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		
 		override public function initScreen(data:Object = null):void {
 			
-			if ("created" in data)
-			{
-				offerCreatedTime = data.created as Number;
-			}
-			if ("escrowOffer" in data && data.escrowOffer != null)
-			{
-				escrowOffer = data.escrowOffer as EscrowMessageData;
-			}
-			if ("chat" in data && data.chat != null)
-			{
-				chat = data.chat as ChatVO;
-			}
-			if ("message" in data && data.message != null)
-			{
-				message = data.message as ChatMessageVO;
-			}
+			var screenData:EscrowScreenData = data as EscrowScreenData;
+			offerCreatedTime = screenData.created;
+			escrowOffer = screenData.escrowOffer;
+			chat = screenData.chat as ChatVO;
+			messageId = screenData.messageId;
 			
 			super.initScreen(data);
 		}
@@ -362,10 +342,9 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		{
 			if (command != null && "callback" in data && data.callback != null && data.callback is Function && (data.callback as Function).length == 4)
 			{
-				(data.callback as Function)(escrowOffer, message, chat, command);
+				(data.callback as Function)(escrowOffer, messageId, chat, command);
 				command = null;
 				chat = null;
-				message = null;
 				escrowOffer = null;
 			}
 		}

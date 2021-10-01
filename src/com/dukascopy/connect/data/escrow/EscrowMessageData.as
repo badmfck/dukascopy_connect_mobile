@@ -85,7 +85,7 @@ package com.dukascopy.connect.data.escrow
 			}
 			if ("status" in data)
 			{
-				setStatus(data.statu);
+				setStatus(data.status);
 			}
 			if ("userUID" in data)
 			{

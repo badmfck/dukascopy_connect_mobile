@@ -228,7 +228,10 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 				}
 				else
 				{
-					filter.sort = null;
+					if (!sortTypeExist)
+					{
+						filter.sort = null;
+					}
 				}
 				
 				var countriesSelected:Vector.<SelectorItemData> = countryExclude.getSelection();

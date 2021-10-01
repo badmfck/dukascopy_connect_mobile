@@ -1,11 +1,11 @@
 package com.dukascopy.connect.screens.dialogs.escrow {
 	
 	import com.dukascopy.connect.Config;
+	import com.dukascopy.connect.data.EscrowScreenData;
 	import com.dukascopy.connect.data.TextFieldSettings;
 	import com.dukascopy.connect.data.escrow.EscrowMessageData;
 	import com.dukascopy.connect.data.escrow.EscrowScreenNavigation;
 	import com.dukascopy.connect.data.escrow.EscrowSettings;
-	import com.dukascopy.connect.data.escrow.EscrowStatus;
 	import com.dukascopy.connect.data.escrow.OfferCommand;
 	import com.dukascopy.connect.gui.components.message.ToastMessage;
 	import com.dukascopy.connect.gui.input.Input;
@@ -20,7 +20,6 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 	import com.dukascopy.connect.type.HitZoneType;
 	import com.dukascopy.connect.utils.NumberFormat;
 	import com.dukascopy.connect.utils.TextUtils;
-	import com.dukascopy.connect.vo.ChatMessageVO;
 	import com.dukascopy.connect.vo.ChatVO;
 	import com.dukascopy.langs.Lang;
 	import flash.display.Bitmap;
@@ -51,11 +50,11 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		private var alertText:AlertTextArea;
 		private var offerCreatedTime:Number;
 		private var command:OfferCommand;
-		private var message:ChatMessageVO;
 		private var chat:ChatVO;
 		private var transaction:InputField;
 		private var transactionClip:TransactionClip;
 		private var transactionId:String;
+		private var messageId:Number;
 		
 		public function SendCryptoScreen() { }
 		
@@ -175,22 +174,12 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		
 		override public function initScreen(data:Object = null):void {
 			
-			if ("created" in data)
-			{
-				offerCreatedTime = data.created as Number;
-			}
-			if ("escrowOffer" in data && data.escrowOffer != null)
-			{
-				escrowOffer = data.escrowOffer as EscrowMessageData;
-			}
-			if ("chat" in data && data.chat != null)
-			{
-				chat = data.chat as ChatVO;
-			}
-			if ("message" in data && data.message != null)
-			{
-				message = data.message as ChatMessageVO;
-			}
+			var screenData:EscrowScreenData = data as EscrowScreenData;
+			
+			offerCreatedTime = screenData.created;
+			escrowOffer = screenData.escrowOffer;
+			chat = screenData.chat;
+			messageId = screenData.messageId;
 			
 			super.initScreen(data);
 		}
@@ -516,10 +505,9 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			if (command != null && "callback" in data && data.callback != null && data.callback is Function && (data.callback as Function).length == 4)
 			{
 				escrowOffer.transactionId = transactionId;
-				(data.callback as Function)(escrowOffer, message, chat, command);
+				(data.callback as Function)(escrowOffer, messageId, chat, command);
 				command = null;
 				chat = null;
-				message = null;
 				escrowOffer = null;
 			}
 		}

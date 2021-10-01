@@ -2,6 +2,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 	
 	import com.dukascopy.connect.Config;
 	import com.dukascopy.connect.data.AlertScreenData;
+	import com.dukascopy.connect.data.EscrowScreenData;
 	import com.dukascopy.connect.data.TextFieldSettings;
 	import com.dukascopy.connect.data.coinMarketplace.PaymentsAccountsProvider;
 	import com.dukascopy.connect.data.escrow.EscrowMessageData;
@@ -58,9 +59,9 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		private var alertText:AlertTextArea;
 		private var offerCreatedTime:Number;
 		private var command:OfferCommand;
-		private var message:ChatMessageVO;
 		private var chat:ChatVO;
 		private var transactionClip:TransactionClip;
+		private var messageId:Number;
 		
 		public function ReceiveCryptoScreen() { }
 		
@@ -120,7 +121,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		
 		private function onAcceptClick():void 
 		{
-			if (((new Date()).time/1000 - message.created) < 60 && escrowOffer.transactionConfirmShown == false)
+			if (((new Date()).time/1000 - offerCreatedTime) < 60 && escrowOffer.transactionConfirmShown == false)
 			{
 				escrowOffer.transactionConfirmShown = true;
 				
@@ -174,22 +175,11 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		
 		override public function initScreen(data:Object = null):void {
 			
-			if ("created" in data)
-			{
-				offerCreatedTime = data.created as Number;
-			}
-			if ("escrowOffer" in data && data.escrowOffer != null)
-			{
-				escrowOffer = data.escrowOffer as EscrowMessageData;
-			}
-			if ("chat" in data && data.chat != null)
-			{
-				chat = data.chat as ChatVO;
-			}
-			if ("message" in data && data.message != null)
-			{
-				message = data.message as ChatMessageVO;
-			}
+			var screenData:EscrowScreenData = data as EscrowScreenData;
+			offerCreatedTime = screenData.created;
+			escrowOffer = screenData.escrowOffer;
+			chat = screenData.chat;
+			messageId = screenData.messageId;
 			
 			super.initScreen(data);
 		}
@@ -517,10 +507,9 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		{
 			if (command != null && "callback" in data && data.callback != null && data.callback is Function && (data.callback as Function).length == 4)
 			{
-				(data.callback as Function)(escrowOffer, message, chat, command);
+				(data.callback as Function)(escrowOffer, messageId, chat, offerCreatedTime, command);
 				command = null;
 				chat = null;
-				message = null;
 				escrowOffer = null;
 			}
 		}

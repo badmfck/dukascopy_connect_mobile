@@ -1,6 +1,7 @@
 package com.dukascopy.connect.screens.dialogs.escrow {
 	
 	import com.dukascopy.connect.Config;
+	import com.dukascopy.connect.data.EscrowScreenData;
 	import com.dukascopy.connect.data.SelectorItemData;
 	import com.dukascopy.connect.data.TextFieldSettings;
 	import com.dukascopy.connect.data.escrow.EscrowDealData;
@@ -104,10 +105,8 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			updatePositions();
 			updateScroll();
 			
-			if (data != null && "escrowOffer" in data && data.escrowOffer != null && data.escrowOffer is EscrowMessageData)
-			{
-				escrowOffer = data.escrowOffer as EscrowMessageData;
-			}
+			var screenData:EscrowScreenData = data as EscrowScreenData;
+			escrowOffer = screenData.escrowOffer;
 		}
 		
 		override protected function getBottomPadding():int 

@@ -500,6 +500,14 @@ package com.dukascopy.connect.screens.innerScreens {
 				}
 				return;
 			}
+			if (data is EscrowOfferVO) {
+				var chatScreenData:ChatScreenData = new ChatScreenData();
+				chatScreenData.type = ChatInitType.CHAT;
+				chatScreenData.chatUID = (data as EscrowOfferVO).chat_uid;
+				chatScreenData.backScreen = RootScreen;
+				MobileGui.showChatScreen(chatScreenData);
+				return;
+			}
 			
 			/*else if (data is QuestionVO) {
 				var qVO:QuestionVO = data as QuestionVO;
