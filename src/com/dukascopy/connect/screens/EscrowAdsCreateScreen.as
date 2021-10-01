@@ -505,10 +505,11 @@ package com.dukascopy.connect.screens {
 			if (busy == true)
 				return false;
 			busy = true;
-			GD.S_ESCROW_ADS_CREATE.invoke(escrowAdsVO);
+			
 			GD.S_ESCROW_ADS_CREATED.add(onEscrowAdsCreatedSuccess);
 			GD.S_ESCROW_ADS_CREATE_FAIL.add(onEscrowAdsCreatedFail);
-			QuestionsManager.createUpdateQuestion("Crypto P2P ad");
+			GD.S_ESCROW_ADS_CREATE.invoke(escrowAdsVO);
+		//	QuestionsManager.createUpdateQuestion("Crypto P2P ad");
 			return true;
 		}
 		
@@ -520,7 +521,7 @@ package com.dukascopy.connect.screens {
 			topBar.setActions( [ actionTrash ] );
 		}
 		
-		private function onEscrowAdsCreatedFail():void {
+		private function onEscrowAdsCreatedFail(message:String = null):void {
 			GD.S_ESCROW_ADS_CREATED.remove(onEscrowAdsCreatedSuccess);
 			GD.S_ESCROW_ADS_CREATE_FAIL.remove(onEscrowAdsCreatedFail);
 		}

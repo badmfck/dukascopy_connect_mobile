@@ -2569,6 +2569,11 @@ package com.dukascopy.langs {
 		static public var escrow_countries_excluded:String = "Countries excluded";
 		static public var escrow_provide_crypto_wallet:String = "Please provide crypto address";
 		static public var escrow_price_zero_error:String = "price should be non zero";
+		static public var escrow_offer_status_created:String = "created";
+		static public var escrow_offer_status_accepted:String = "accepted";
+		static public var escrow_offer_status_cancelled:String = "cancelled";
+		static public var escrow_offer_status_expired:String = "expired";
+		static public var escrow_offer_status_rejected:String = "rejected";
 		
 		static public function updateKeys(keys:Object):void {
 			for (var n:String in keys) {
