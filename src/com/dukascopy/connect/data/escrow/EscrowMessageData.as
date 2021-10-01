@@ -85,13 +85,7 @@ package com.dukascopy.connect.data.escrow
 			}
 			if ("status" in data)
 			{
-				if (data.status != null && (data.status as String).indexOf("_inactive") != -1)
-				{
-					inactive = true;
-					data.status = (data.status as String).substring(0, (data.status as String).length - "_inactive".length);
-				}
-				
-				status = EscrowStatus.getStatus(data.status);
+				setStatus(data.statu);
 			}
 			if ("userUID" in data)
 			{
@@ -140,7 +134,6 @@ package com.dukascopy.connect.data.escrow
 				ApplicationErrors.add("status");
 			}
 			
-			
 			if (debit_account != null)
 			{
 				result.debit_account = debit_account;
@@ -170,6 +163,16 @@ package com.dukascopy.connect.data.escrow
 			}
 			
 			return result;
+		}
+		
+		public function setStatus(value:String):void 
+		{
+			if (value != null && (value as String).indexOf("_inactive") != -1)
+			{
+				inactive = true;
+				value = (value as String).substring(0, (value as String).length - "_inactive".length);
+			}
+			status = EscrowStatus.getStatus(value);
 		}
 	}
 }

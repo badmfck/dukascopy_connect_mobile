@@ -65,12 +65,13 @@ package com.dukascopy.connect.gui.list.renderers {
 		
 		override protected function getPrice(listData:Object):String {
 			var itemData:EscrowOfferVO = listData as EscrowOfferVO;
-			if (itemData.data != null)
+			var res:String = "";
+			if (itemData != null && itemData.data != null)
 			{
-				return itemData.data.price.toString();
+				res = "@" + itemData.data.price + " " + itemData.data.currency;
 			}
 			
-			return "";
+			return res;
 		}
 		
 		override protected function isValidData(listData:Object):Boolean 
@@ -86,12 +87,23 @@ package com.dukascopy.connect.gui.list.renderers {
 		override protected function getAmount(listData:Object):String {
 			var itemData:EscrowOfferVO = listData as EscrowOfferVO;
 			
-			if (itemData.data != null)
+			if (itemData != null && itemData.data != null)
 			{
-				return itemData.data.amount.toString();
+				var result:String = "";
+				
+				var instrument:String = itemData.data.instrument;
+				if (Lang[instrument] != null)
+				{
+					instrument = Lang[instrument];
+				}
+				if (itemData.data.direction == TradeDirection.buy) {
+					result += "<font color='#" + Color.GREEN.toString(16) + "'>" + Lang.BUY.toUpperCase() + " " + itemData.data.amount + " " + instrument + "</font>";
+				} else {
+					result += "<font color='#" + Color.RED.toString(16) + "'>" + Lang.sell.toUpperCase() + " " + itemData.data.amount + " " + instrument + "</font>";
+				}
 			}
 			
-			return "";
+			return result;
 		}
 		
 		override protected function getTimeText(listData:Object):String {

@@ -29,6 +29,7 @@ package com.dukascopy.connect.managers.escrow.vo
 			if (messageRaw != null)
 			{
 				data = new EscrowMessageData(messageRaw);
+				data.setStatus(status);
 			}
         }
         
