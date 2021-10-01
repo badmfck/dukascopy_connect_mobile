@@ -18,6 +18,7 @@ package com.dukascopy.connect
 	import com.dukascopy.connect.managers.escrow.signals.S_EscrowWalletsRequest;
 	import com.dukascopy.connect.managers.escrow.signals.S_EscrowOfferCreateRequest;
 	import com.dukascopy.connect.managers.escrow.signals.S_EscrowOffersRequest;
+	import com.dukascopy.connect.managers.escrow.signals.S_CryptoWalletAdd;
 	
 	public class GD
 	{

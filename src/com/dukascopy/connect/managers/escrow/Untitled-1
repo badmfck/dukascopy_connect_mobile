@@ -7,3 +7,41 @@
     at async Function.cancel (/opt/wss-outdated/app/classes/Cp2p/Cp2pOffer.js:317:12)
     at async AsyncFunction.<anonymous> (/opt/wss-outdated/app/classes/Cp2pHandler.js:83:22)
 (node:5767) UnhandledPromiseRejectionWarning: Unhandled promise rejection. This error originated either by throwing inside of an async function without a catch block, or by rejecting a promise which was not handled with .catch(). To terminate the node process on unhandled promise rejection, use the CLI flag `--unhandled-rejections=strict` (see https://nodejs.org/api/cli.html#cli_unhandled_rejections_mode). (rejection id: 13)
+
+
+
+DEBUG:: cp2pErrorLog VALUES >>  [
+  'event',
+  null,
+  null,
+  'CP2P:26',
+  'Cp2p deal offer error: Bad sender',
+  '{"priceID":112,"instrument":"ETH","mca_ccy":"USD","crypto_wallet":"0x0c2c303d3a3F9eFBF71B189d54303E2A0d9A50f1","chatUID":"WLDIDRWmDNW5WPWe","amount":1,"price":1,"debit_account":"314931366384","side":"buy","offer_id":"FxPyBkbTS","type":"typeCp2pOffer","crypto_user_uid":"WLDNWrWbWoIxIbWI","mca_user_uid":"I6D5WsWZDLWj","payment":{"account_from":{"id":4867,"phone":"380957999813","wallet":null,"iban":null,"payScore":null,"payScoreDetails":null},"account_id_from":null,"account_id_to":null,"account_to":{"id":1487,"phone":"79998181810","wallet":null,"iban":null,"payScore":null,"payScoreDetails":null},"operation_uid":"Zpqqs4xB","origin_id":"FxPyBkbTS","penalty_amount":-0.01,"penalty_currency":"USD","price":1,"primary_amount":1,"primary_currency":"ETH","refundable_fee_amount":-0.03,"refundable_fee_currency":"USD","secondary_amount":1,"secondary_currency":"USD","status":"PENDING","transfer_fee_amount":-0.01,"transfer_fee_currency":"USD"}}'
+]
+(node:5767) UnhandledPromiseRejectionWarning: TypeError: Cannot read property 'uid' of null
+    at AsyncFunction.<anonymous> (/opt/wss-outdated/app/classes/Cp2pHandler.js:110:53)
+    at Signal.invoke (/opt/wss-outdated/app/classes/sys/Signal.js:117:16)
+    at Function.addBuyOffer (/opt/wss-outdated/app/classes/Cp2p/Cp2pOffer.js:585:29)
+    at processTicksAndRejections (internal/process/task_queues.js:97:5)
+    at async Function.add (/opt/wss-outdated/app/classes/Cp2p/Cp2pOffer.js:500:14)
+    at async AsyncFunction.<anonymous> (/opt/wss-outdated/app/classes/Cp2pHandler.js:57:22)
+(node:5767) UnhandledPromiseRejectionWarning: Unhandled promise rejection. This error originated either by throwing inside of an async function without a catch block, or by rejecting a promise which was not handled with .catch(). To terminate the node process on unhandled promise rejection, use the CLI flag `--unhandled-rejections=strict` (see https://nodejs.org/api/cli.html#cli_unhandled_rejections_mode). (rejection id: 18)
+
+
+
+
+
+debug [01/10/21 09:04:28]  DCC API: call(): options:  method=Cp2p.GetPriceByID&hash=58644ff421b7e4ed7840f4edc191616b&key=cc661021e5b5948a0634417dace5378760513a9b&id=116
+
+cData >>  {
+  code: 504,
+  data: {
+    status: { error: true, errorMsg: 'DCC API: #5: DCC server error' },
+    data: null
+  }
+}
+
+DEBUG:: GET-PRICE::#1 Get price on DCC API : response >>  {
+  data: { id: 116, price: 1.5, ccy: 'USD', crypto: 'ETH' },
+  status: { error: false, errorMsg: '', respondTime: '31.25' }
+}

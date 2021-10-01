@@ -64,6 +64,9 @@ package com.forms
             setSize(w,h,_topOffset,_bottomOffset)
         }
 
+        public function showDeviceFrame(frame:String):void{
+            
+        }
         
         public function setSize(width:int,height:int,topOffset:int=0,bottomOffset:int=0):void{
 

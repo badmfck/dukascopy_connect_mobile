@@ -48,6 +48,7 @@ public class MainEscrow extends Sprite {
 		private function start():void{
 			Form.debug=true;
             var form:Form=new Form(File.applicationDirectory.resolvePath("forms"+File.separator+"escrowDealCreate.xml"));
+			form.showDeviceFrame("iosx");
 			var list:FormList;
 			addChild(form.view);
 			form.setSize(stage.stageWidth,stage.stageHeight);

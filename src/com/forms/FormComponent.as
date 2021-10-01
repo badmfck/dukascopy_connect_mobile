@@ -23,6 +23,8 @@ package com.forms{
     import flash.filters.DropShadowFilter;
     import flash.display.Shape;
     import com.forms.components.FormListItem;
+    import flash.events.KeyboardEvent;
+    import flash.ui.Keyboard;
     
 
     public class FormComponent{
@@ -309,6 +311,18 @@ package com.forms{
             // DEBUG, RELOAD ON FILE CHANGE
             if(filePath!=null || !(this is Form) || !Capabilities.isDebugger || !(Capabilities.os.toLowerCase().indexOf("mac")!=-1 || Capabilities.os.toLowerCase().indexOf("win")!=-1))
                 return;
+
+            if(view && view.stage){
+                view.stage.addEventListener(KeyboardEvent.KEY_DOWN,function(e:KeyboardEvent):void{
+                    if(e.altKey || e.commandKey || e.ctrlKey){
+                        if(e.keyCode==Keyboard.D){
+                            Form.debug=!Form.debug
+                            needRedraw=true;
+                            rebuild();
+                        }
+                    }
+                })
+            }
 
             
             var timer:Timer=new Timer(2000);

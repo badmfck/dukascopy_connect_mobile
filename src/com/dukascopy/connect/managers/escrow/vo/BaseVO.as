@@ -56,6 +56,13 @@ package com.dukascopy.connect.managers.escrow.vo
             return false;
         }
 
+        public function getString(name:String):String{
+            var val:Object=getObject(name);
+            if(val is String)
+                return val as String;
+            return val+"";
+        }
+
         public function getArray(name:String):Array{
             var val:Object=getObject(name);
             if(val!=null && val is Array)
@@ -80,6 +87,11 @@ package com.dukascopy.connect.managers.escrow.vo
 
         public function dispose():void{
             _raw=null;
+        }
+        public function toString():String{
+            if(_raw)
+                return JSON.stringify(_raw);
+            return "no raw data";
         }
     }
 }
