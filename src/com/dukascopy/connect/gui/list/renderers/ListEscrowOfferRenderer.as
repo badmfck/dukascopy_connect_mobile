@@ -73,6 +73,16 @@ package com.dukascopy.connect.gui.list.renderers {
 			return "";
 		}
 		
+		override protected function isValidData(listData:Object):Boolean 
+		{
+			var itemData:EscrowOfferVO = listData as EscrowOfferVO;
+			if (itemData != null && listData.id != 0)
+			{
+				return true;
+			}
+			return false;
+		}
+		
 		override protected function getAmount(listData:Object):String {
 			var itemData:EscrowOfferVO = listData as EscrowOfferVO;
 			

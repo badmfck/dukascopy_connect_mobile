@@ -178,7 +178,7 @@ package com.dukascopy.connect.gui.list.renderers {
 			tfQuestionTime.visible = true;
 			textFieldPrice.visible = false;
 			
-			if (item.data != null && "uid" in item.data && item.data.uid != null && item.data.uid != "") {
+			if (isValidData(item.data)) {
 				var hitZones:Array;
 				
 				tfQuestionTime.htmlText = getTimeText(item.data);
@@ -196,6 +196,15 @@ package com.dukascopy.connect.gui.list.renderers {
 			updateItemAlpha(item.data);
 			
 			return this;
+		}
+		
+		protected function isValidData(listData:Object):Boolean 
+		{
+			if (listData != null && "uid" in listData && listData.uid != null && listData.uid != "")
+			{
+				return true;
+			}
+			return false;
 		}
 		
 		private function updateItemAlpha(listData:Object):void 

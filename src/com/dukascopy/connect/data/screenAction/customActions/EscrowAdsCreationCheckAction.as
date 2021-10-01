@@ -36,7 +36,7 @@ package com.dukascopy.connect.data.screenAction.customActions {
 			//TODO: side;
 			var selectedDirection:TradeDirection = (escrowAdsVO.side == "buy") ? TradeDirection.buy : TradeDirection.sell;
 			var price:Number = 0;
-			if (escrowAdsVO.percent != null && escrowAdsVO.percent.indexOf("%") == -1) {
+			if (escrowAdsVO.percent == null || escrowAdsVO.percent.indexOf("%") == -1) {
 				price = escrowAdsVO.price;
 			} else {
 				for (var i:int = 0; i < escrowAdsVO.instrument.price.length; i++) {
