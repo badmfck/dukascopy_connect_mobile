@@ -662,8 +662,6 @@ package com.dukascopy.connect.screens {
 		
 		private function onTrashTap():void {
 			GD.S_ESCROW_ADS_REMOVE.invoke(escrowAdsVO.uid);
-			GD.S_ESCROW_ADS_CREATED.remove(onEscrowAdsCreatedSuccess);
-			GD.S_ESCROW_ADS_CREATE_FAIL.remove(onEscrowAdsCreatedFail);
 			onBack();
 		}
 	}

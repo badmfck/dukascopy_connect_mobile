@@ -16,7 +16,7 @@ package com.dukascopy.connect.managers.escrow.vo {
 		private var _side:String;
 		private var _instrument:EscrowInstrument;
 		private var _currency:String;
-		private var _sort:String;
+		private var _sort:String = SORT_DATE;
 		private var _hideBlocked:Boolean;
 		private var _hideNoobs:Boolean;
 		private var _countries:Array;

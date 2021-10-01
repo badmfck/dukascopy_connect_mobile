@@ -224,6 +224,7 @@ package com.dukascopy.connect.screens.innerScreens {
 		private function onTabItemSelected(id:String):void {
 			if (_isDisposed == true)
 				return;
+			removePlaceholder();
 			selectedTabID = id;
 			saveListPosition();
 			GD.S_ESCROW_ADS_CRYPTOS.remove(onEscrowAdsCryptoLoaded);
