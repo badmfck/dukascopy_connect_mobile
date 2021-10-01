@@ -36,6 +36,8 @@ package com.dukascopy.connect.sys.ws
 		static public const QUESTION_UPDATED:String = "questionUpdated";
 		static public const QUESTION_CLOSED:String = "questionClosed";
 		
+		static public const ESCROW_ADS_CREATED:String = "escrowAdsCreated";
+		
 		static public const CHAT_USER_WRITING:String = "userWriting";
 		
 		static public const PUZZLE_PAID:String = "puzzlePaid";

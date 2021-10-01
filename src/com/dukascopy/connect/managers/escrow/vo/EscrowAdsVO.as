@@ -94,10 +94,22 @@ package com.dukascopy.connect.managers.escrow.vo {
 		}
 		
 		public function get currency():String { return _currency; }
+		public function set currency(val:String):void {
+			_currency = val;
+		}
+		
 		public function get side():String { return _side; }
+		public function set side(val:String):void {
+			_side = val;
+		}
+		
+		public function get amount():Number { return _amount; }
+		public function set amount(val:Number):void {
+			_amount = val;
+		}
+		
 		public function get uid():String { return _uid; }
 		public function get crypto():String { return _crypto; }
-		public function get amount():Number { return _amount; }
 		public function get answersMax():int { return _answersMax; }
 		public function get answersCount():int { return _answersCount; }
 		public function get created():Number { return _created; }
@@ -116,6 +128,11 @@ package com.dukascopy.connect.managers.escrow.vo {
 					return _instrument.price[i].value * (1 + Number(_price.substr(0, _price.length - 1)));
 			}
 			return 0;
+		}
+		
+		public function get priceValue():String { return _price; }
+		public function set priceValue(val:String):void {
+			_price = val
 		}
 		
 		public function dispose():void {

@@ -1,15 +1,20 @@
 package com.dukascopy.connect.managers.escrow {
 	
 	import com.dukascopy.connect.GD;
+	import com.dukascopy.connect.data.escrow.TradeDirection;
+	import com.dukascopy.connect.data.screenAction.customActions.EscrowAdsCreationCheckAction;
 	import com.dukascopy.connect.managers.escrow.vo.EscrowAdsCryptoVO;
 	import com.dukascopy.connect.managers.escrow.vo.EscrowAdsFilterVO;
 	import com.dukascopy.connect.managers.escrow.vo.EscrowAdsVO;
 	import com.dukascopy.connect.managers.escrow.vo.EscrowInstrument;
 	import com.dukascopy.connect.sys.connectionManager.NetworkManager;
+	import com.dukascopy.connect.sys.crypter.Crypter;
 	import com.dukascopy.connect.sys.dialogManager.DialogManager;
 	import com.dukascopy.connect.sys.php.PHP;
 	import com.dukascopy.connect.sys.php.PHPRespond;
 	import com.dukascopy.connect.sys.store.Store;
+	import com.dukascopy.connect.sys.ws.WSClient;
+	import com.dukascopy.connect.sys.ws.WSMethodType;
 	import com.dukascopy.connect.vo.users.UserVO;
 	import com.dukascopy.langs.Lang;
 	import com.greensock.TweenMax;
@@ -20,6 +25,8 @@ package com.dukascopy.connect.managers.escrow {
 	 */
 	
 	public class EscrowAdsManager {
+		
+		static public const MESSAGE_KEY:String = "123456789qwerty";
 		
 		private var profile:UserVO;
 		
@@ -49,6 +56,7 @@ package com.dukascopy.connect.managers.escrow {
 			GD.S_ESCROW_ADS_REQUEST.add(onEscrowAdsRequested);
 			GD.S_ESCROW_ADS_MINE_REQUEST.add(onEscrowAdsMineRequested);
 			GD.S_ESCROW_ADS_REMOVE.add(close);
+			GD.S_ESCROW_ADS_CREATE.add(createEscrowAds);
 			
 			GD.S_AUTHORIZED.add(onAuthorized);
 			GD.S_UNAUTHORIZED.add(onUnuthorized);
@@ -477,6 +485,101 @@ package com.dukascopy.connect.managers.escrow {
 				}
 			}
 			return null;
+		}
+		
+		private function createEscrowAds(escrowAdsVO:EscrowAdsVO):void {
+			if (currentQuestion.subtype == null) {
+				GD.S_ESCROW_ADS_CREATE_FAIL.invoke(Lang.escrow_fill_application_form);
+				return;
+			}
+			if (currentQuestion.instrument == null) {
+				GD.S_ESCROW_ADS_CREATE_FAIL.invoke(Lang.escrow_fill_application_form);
+				return;
+			}
+			if (currentQuestion.cryptoAmount == null) {
+				GD.S_ESCROW_ADS_CREATE_FAIL.invoke(Lang.escrow_fill_application_form);
+				return;
+			}
+			if (currentQuestion.priceCurrency == null) {
+				GD.S_ESCROW_ADS_CREATE_FAIL.invoke(Lang.escrow_fill_application_form);
+				return;
+			}
+			if (currentQuestion.price == null) {
+				GD.S_ESCROW_ADS_CREATE_FAIL.invoke(Lang.escrow_fill_application_form);
+				return;
+			}
+			var escrowAdsCreationCheckAction:EscrowAdsCreationCheckAction = new EscrowAdsCreationCheckAction(escrowAdsVO);
+			escrowAdsCreationCheckAction.disposeOnResult = true;
+			escrowAdsCreationCheckAction.getSuccessSignal().add(onEscrowAdsCreationCheckSuccess);
+			escrowAdsCreationCheckAction.getFailSignal().add(onEscrowAdsCreationCheckFail);
+			escrowAdsCreationCheckAction.execute();
+		}
+		
+		private function onPaymentsBuyCheckSuccess(escrowAdsVO:EscrowAdsVO):void {
+			PHP.question_create(
+				onQuestionCreated,
+				Crypter.crypt("Escrow", MESSAGE_KEY),
+				escrowAdsVO.amount,
+				escrowAdsVO.instrument.code,
+				escrowAdsVO.currency,
+				false,
+				escrowAdsVO.side,
+				NaN,
+				NaN,
+				null,
+				escrowAdsVO.priceValue
+			);
+		}
+		
+		private function onEscrowAdsCreationCheckFail(errorMessage:String):void {
+			GD.S_ESCROW_ADS_CREATE_FAIL.invoke();
+			GD.S_TOAST.invoke(errorMessage);
+		}
+		
+		public function onQuestionCreated(phpRespond:PHPRespond):void {
+			if (phpRespond.error == true) {
+				var errorMsg:String = phpRespond.errorMsg;
+				if (errorMsg.substr(0, 7) == "que..08")
+					DialogManager.alert(Lang.textAlert, phpRespond.errorMsg.substr(8));
+				if (errorMsg.substr(0, 7) == "que..17")
+					DialogManager.alert(Lang.textAttention, Lang.questionOneByOne);
+				if (errorMsg.substr(0, 7) == "que..16")
+					DialogManager.alert(Lang.textAttention, Lang.questionYouAreBanned);
+				if (errorMsg.substr(0, 7) == "que..23")
+					DialogManager.alert(Lang.textAttention, Lang.questionHasUnpaid);
+				if (errorMsg.substr(0, 7) == "que..04")
+					DialogManager.alert(Lang.textAttention, Lang.noRights);
+				if (errorMsg.substr(0, 7) == "que..24")
+					DialogManager.alert(Lang.textAttention, Lang.questionNotEnoughMoney);
+				if (errorMsg.substr(0, 7) == "que..28") {
+					var errorText:String = Lang.questionWrongTipAmount;
+					if (errorText.indexOf("3") != -1 && errorMsg != null && errorMsg.indexOf(",") != -1 && errorMsg.split(",") != null && errorMsg.split(",").length > 0) {
+						errorText = errorText.replace("3", errorMsg.split(",")[1]);
+					}
+					DialogManager.alert(Lang.textAttention, errorText);
+				}
+				GD.S_ESCROW_ADS_CREATE_FAIL.invoke();
+				phpRespond.dispose();
+				errorMsg = "";
+				return;
+			}
+			if (phpRespond.data == null) {
+				DialogManager.alert(Lang.textWarning, Lang.serverError + " " + Lang.emptyData);
+				phpRespond.dispose();
+				return;
+			}
+			if (phpRespond.data == false) {
+				phpRespond.dispose();
+				return;
+			}
+			onCreateQuestionSuccess(phpRespond.data);
+			phpRespond.dispose();
+		}
+		
+		static private function onCreateQuestionSuccess(data:Object):void {
+			var escrowAdsVO:EscrowAdsVO = new EscrowAdsVO(data);
+			GD.S_ESCROW_ADS_CREATED.invoke(escrowAdsVO);
+			WSClient.call_blackHoleToGroup("que", "send", "mobile", WSMethodType.ESCROW_ADS_CREATED, { quid:questionsMine[0].uid, senderUID:senderUID } );
 		}
 	}
 }

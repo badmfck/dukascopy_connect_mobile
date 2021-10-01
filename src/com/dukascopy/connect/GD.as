@@ -76,6 +76,9 @@ package com.dukascopy.connect
 		static public const S_ESCROW_ADS_REMOVE:Signal = new Signal("GD.S_ESCROW_ADS_REMOVE");
 		static public const S_ESCROW_ADS_ANSWERS:Signal = new Signal("GD.S_ESCROW_ADS_ANSWERS");
 		static public const S_ESCROW_ADS_ANSWER:Signal = new Signal("GD.S_ESCROW_ADS_ANSWER");
+		static public const S_ESCROW_ADS_CREATE:Signal = new Signal("GD.S_ESCROW_ADS_CREATE");
+		static public const S_ESCROW_ADS_CREATED:Signal = new Signal("GD.S_ESCROW_ADS_CREATED");
+		static public const S_ESCROW_ADS_CREATE_FAIL:Signal = new Signal("GD.S_ESCROW_ADS_FAIL");
 
 		static public const S_IOS_LOCALIZATION_UPDATE:Signal=new Signal("S_IOS_LOCALIZATION_UPDATE");
 		

@@ -6,6 +6,7 @@ package com.dukascopy.connect.screens {
 	import com.dukascopy.connect.data.AlertScreenData;
 	import com.dukascopy.connect.data.LocalAvatars;
 	import com.dukascopy.connect.data.escrow.EscrowScreenNavigation;
+	import com.dukascopy.connect.data.escrow.EscrowSide;
 	import com.dukascopy.connect.data.escrow.TradeDirection;
 	import com.dukascopy.connect.data.screenAction.IScreenAction;
 	import com.dukascopy.connect.data.screenAction.customActions.GetNumericKeyboardAction;
@@ -16,8 +17,8 @@ package com.dukascopy.connect.screens {
 	import com.dukascopy.connect.gui.list.List;
 	import com.dukascopy.connect.gui.list.renderers.ListChatItem;
 	import com.dukascopy.connect.gui.list.renderers.ListCryptoWallet;
+	import com.dukascopy.connect.gui.list.renderers.ListEscrowSide;
 	import com.dukascopy.connect.gui.list.renderers.ListPayCurrency;
-	import com.dukascopy.connect.gui.list.renderers.ListQuestionType;
 	import com.dukascopy.connect.gui.menuVideo.HidableButton;
 	import com.dukascopy.connect.gui.preloader.Preloader;
 	import com.dukascopy.connect.gui.topBar.TopBarScreen;
@@ -72,6 +73,8 @@ package com.dukascopy.connect.screens {
 		private var addQuestionIcon:SWFAddQuestionButton;
 		private var getKeyboardAction:GetNumericKeyboardAction;
 		
+		private var amountString:String;
+		
 		private var escrowAdsVO:EscrowAdsVO = new EscrowAdsVO(null);
 		
 		private var msgSide:Object = {
@@ -124,10 +127,10 @@ package com.dukascopy.connect.screens {
 			super.initScreen(data);
 			if (data != null)
 				topBar.setData(data.title, true, null);
-			if (data != null)
+			/*if (data != null)
 				escrowAdsVO = data.data;
 			if (escrowAdsVO != null)
-				topBar.setActions( [ actionTrash ] );
+				topBar.setActions( [ actionTrash ] );*/
 			fillList();
 			GD.S_ESCROW_ADS_FILTER_REQUEST.invoke(onFilter);
 		}
@@ -191,7 +194,7 @@ package com.dukascopy.connect.screens {
 			message = new ChatMessageVO(messageData);
 			_messages.push(message);
 			
-			if (escrowAdsVO == null) {
+			if (escrowAdsVO.uid != null) {
 				messageData = {};
 				messageData.id = 0;
 				messageData.user_avatar = LocalAvatars.QUESTIONS;
@@ -272,68 +275,41 @@ package com.dukascopy.connect.screens {
 				if (cmsgVO.isEntryMessage == true) {
 					if (cmsgVO.systemMessageVO != null) {
 						if (cmsgVO.systemMessageVO.method == ChatSystemMsgVO.METHOD_LOCAL_SIDE) {
-							if (QuestionsManager.getCurrentQuestion() != QuestionsManager.fakeTender)
-								return;
 							DialogManager.showDialog(
                                 ListSelectionPopup, 
                                 {
-                                    items:QuestionsManager.questionsSides,
+                                    items:EscrowSide.COLLECTION,
                                     title:Lang.textSelectSide,
-                                    renderer:ListQuestionType,
+                                    renderer:ListEscrowSide,
                                     callback:onSideChanged
                                 }, ServiceScreenManager.TYPE_SCREEN
                             );
 							return;
 						}
 						if (cmsgVO.systemMessageVO.method == ChatSystemMsgVO.METHOD_LOCAL_CRYPTO) {
-							if (QuestionsManager.getCurrentQuestion() != QuestionsManager.fakeTender)
-								return;
 							GD.S_ESCROW_INSTRUMENTS.add(onResult);
 							GD.S_ESCROW_INSTRUMENTS_REQUEST.invoke();
 							return;
 						}
 						if (cmsgVO.systemMessageVO.method == ChatSystemMsgVO.METHOD_LOCAL_CRYPTO_AMOUNT) {
-							if (QuestionsManager.getCurrentQuestion() != QuestionsManager.fakeTender)
-								return;
 							callKeyboard();
 							return;
 						}
-						if (cmsgVO.systemMessageVO.method == ChatSystemMsgVO.METHOD_LOCAL_CURRENCY) {
-							if (QuestionsManager.getCurrentQuestion() != QuestionsManager.fakeTender)
-								return;
-							if (QuestionsManager.getCurrentQuestion().instrument == null || QuestionsManager.getCurrentQuestion().instrument.price.length < 2)
-								return;
-                            var currencies:Array = new Array();
-                            for (var i:int = 0; i < QuestionsManager.getCurrentQuestion().instrument.price.length; i++)
-                                currencies.push(QuestionsManager.getCurrentQuestion().instrument.price[i].name);
-                            DialogManager.showDialog(
-                                ListSelectionPopup, 
-                                {
-                                    items:currencies,
-                                    title:Lang.selectCurrency,
-                                    renderer:ListPayCurrency,
-                                    callback:callBackSelectCurrency
-                                }, ServiceScreenManager.TYPE_SCREEN
-                            );
-							return;
-						}
 						if (cmsgVO.systemMessageVO.method == ChatSystemMsgVO.METHOD_LOCAL_PRICE) {
-							if (QuestionsManager.getCurrentQuestion() != QuestionsManager.fakeTender)
+							if (escrowAdsVO.instrument == null)
 								return;
-							if (QuestionsManager.getCurrentQuestion().instrument == null)
-								return;
-							if (QuestionsManager.getCurrentQuestion().subtype == null)
+							if (escrowAdsVO.side == null)
 								return;
 							var direction:TradeDirection;
-							if (QuestionsManager.getCurrentQuestion().subtype == "buy")
+							if (escrowAdsVO.side == EscrowSide.BUY.value)
 								direction = TradeDirection.buy;
-							else if (QuestionsManager.getCurrentQuestion().subtype == "sell")
+							else if (escrowAdsVO.side == EscrowSide.SELL.value)
 								direction = TradeDirection.sell;
 							else
 								ApplicationErrors.add();
 							var screenData:Object = new Object();
 							screenData.callback = onPriceChange;
-							screenData.instrument = QuestionsManager.getCurrentQuestion().instrument;
+							screenData.instrument = escrowAdsVO.instrument;
 							screenData.currency = TypeCurrency.EUR;
 							screenData.direction = direction;
 							screenData.title = Lang.escrow_target_price_per_coin;
@@ -352,21 +328,16 @@ package com.dukascopy.connect.screens {
 		private function onPriceChange(price:Number, isPercent:Boolean, currency:String):void {
 			if (isDisposed)
 				return;
-			
 			if (isPercent == false)
 				price = parseFloat(NumberFormat.formatAmount(price, currency, true));
-			
 			var val:String = price.toString();
-			if (isPercent == false) {
-				
-				list.updateItemByIndex(4);
-			} else {
+			if (isPercent == true)
 				val += "%";
-			}
-			QuestionsManager.getCurrentQuestion().priceCurrency = currency;
-			
-			QuestionsManager.getCurrentQuestion().price = val;
-			list.updateItemByIndex(5);
+			escrowAdsVO.currency = currency;
+			escrowAdsVO.priceValue = val;
+			msgPrice.params = { price:val, currency:currency }
+			list.getItemByNum(4).data.updateText(Config.BOUNDS + JSON.stringify(msgPrice));
+			list.updateItemByIndex(4);
 		}
 		
 		private var testCounter:int;
@@ -381,11 +352,16 @@ package com.dukascopy.connect.screens {
 		private function onKeyboardClose():void {
 			if (isDisposed)
 				return;
-			var val:String = QuestionsManager.getCurrentQuestion().cryptoAmount;
+			var val:String = amountString;
+			if (isNaN(escrowAdsVO.amount) == false)
+				val = escrowAdsVO.amount + "";
 			if (val != null && val.length > 0) {
 				if (val.charAt(val.length - 1) == ".") {
 					val = val.substr(0, val.length -1);
-					QuestionsManager.getCurrentQuestion().cryptoAmount = val;
+					amountString = val;
+					escrowAdsVO.amount = Number(val);
+					msgAmount.params = { val:val }
+					list.getItemByNum(3).data.updateText(Config.BOUNDS + JSON.stringify(msgAmount));
 					list.updateItemByIndex(3);
 				}
 			}
@@ -404,7 +380,7 @@ package com.dukascopy.connect.screens {
 		private function onAmountChange(key:Object):void {
 			if (isDisposed)
 				return;
-			var val:String = QuestionsManager.getCurrentQuestion().cryptoAmount;
+			var val:String = amountString;
 			if (val == null)
 				val = "";
 			if (key == 1002) {
@@ -418,24 +394,24 @@ package com.dukascopy.connect.screens {
 				return;
 			if (val == "")
 				val = null;
-			QuestionsManager.getCurrentQuestion().cryptoAmount = val;
+			amountString = val;
+			msgAmount.params = { val:val }
+			list.getItemByNum(3).data.updateText(Config.BOUNDS + JSON.stringify(msgAmount));
 			list.updateItemByIndex(3);
 		}
 		
-		private function onSideChanged(selectedType:Object):void {
-			if (selectedType == null)
+		private function onSideChanged(val:EscrowSide):void {
+			if (val == null)
 				return;
-			if (QuestionsManager.getCurrentQuestion() != QuestionsManager.fakeTender)
-				return;
-			QuestionsManager.getCurrentQuestion().subtype = selectedType.type;
+			escrowAdsVO.side = val.value;
+			msgSide.params = { val:val.value, name:val.lang }
+			list.getItemByNum(1).data.updateText(Config.BOUNDS + JSON.stringify(msgSide));
 			list.updateItemByIndex(1);
 		}
 		
 		private function onResult(instruments:Vector.<EscrowInstrument>):void {
 			if (isDisposed)
-			{
 				return;
-			}
 			GD.S_ESCROW_INSTRUMENTS.remove(onResult);
 			DialogManager.showDialog(
 				ListSelectionPopup,
@@ -456,12 +432,6 @@ package com.dukascopy.connect.screens {
 				return;
 			if (ei.isLinked) {
 				escrowAdsVO.instrument = ei;
-				
-				/*QuestionsManager.getCurrentQuestion().instrument = ei;
-				if (ei.price.length == 1)
-					QuestionsManager.getCurrentQuestion().priceCurrency = ei.price[0].name;
-				else
-					QuestionsManager.getCurrentQuestion().priceCurrency = null;*/
 				msgCrypto.params = { code:ei.code, name:ei.name }
 				list.getItemByNum(2).data.updateText(Config.BOUNDS + JSON.stringify(msgCrypto));
 				list.updateItemByIndex(2, true, true);
@@ -475,14 +445,8 @@ package com.dukascopy.connect.screens {
 			}
 		}
 		
-		private function registerBlockchain(instrumentCode:String):void 
-		{
+		private function registerBlockchain(instrumentCode:String):void {
 			EscrowScreenNavigation.registerBlockchain(instrumentCode);
-		}
-		
-		private function callBackSelectCurrency(currency:String):void {
-			QuestionsManager.getCurrentQuestion().priceCurrency = currency;
-			list.updateItemByIndex(4);
 		}
 		
 		override public function deactivateScreen():void {
@@ -541,11 +505,24 @@ package com.dukascopy.connect.screens {
 			if (busy == true)
 				return false;
 			busy = true;
-			if (QuestionsManager.getCurrentQuestion() == null) {
-				showPreloader();
-			}
+			GD.S_ESCROW_ADS_CREATE.invoke(escrowAdsVO);
+			GD.S_ESCROW_ADS_CREATED.add(onEscrowAdsCreatedSuccess);
+			GD.S_ESCROW_ADS_CREATE_FAIL.add(onEscrowAdsCreatedFail);
 			QuestionsManager.createUpdateQuestion("Crypto P2P ad");
 			return true;
+		}
+		
+		private function onEscrowAdsCreatedSuccess(escrowAdsVONew:EscrowAdsVO):void {
+			escrowAdsVO = escrowAdsVONew;
+			GD.S_ESCROW_ADS_CREATED.remove(onEscrowAdsCreatedSuccess);
+			GD.S_ESCROW_ADS_CREATE_FAIL.remove(onEscrowAdsCreatedFail);
+			fillList();
+			topBar.setActions( [ actionTrash ] );
+		}
+		
+		private function onEscrowAdsCreatedFail():void {
+			GD.S_ESCROW_ADS_CREATED.remove(onEscrowAdsCreatedSuccess);
+			GD.S_ESCROW_ADS_CREATE_FAIL.remove(onEscrowAdsCreatedFail);
 		}
 		
 		private function showPreloader():void {
@@ -680,12 +657,13 @@ package com.dukascopy.connect.screens {
 			removeKeyboardAction();
 			
 			_data = null;
-			escrowAdsVO = null;
 			super.dispose();
 		}
 		
 		private function onTrashTap():void {
 			GD.S_ESCROW_ADS_REMOVE.invoke(escrowAdsVO.uid);
+			GD.S_ESCROW_ADS_CREATED.remove(onEscrowAdsCreatedSuccess);
+			GD.S_ESCROW_ADS_CREATE_FAIL.remove(onEscrowAdsCreatedFail);
 			onBack();
 		}
 	}
