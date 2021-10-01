@@ -1,6 +1,10 @@
 package com.dukascopy.connect.gui.list.renderers {
 	
+	import com.dukascopy.connect.data.escrow.EscrowStatus;
+	import com.dukascopy.connect.data.escrow.TradeDirection;
 	import com.dukascopy.connect.managers.escrow.vo.EscrowOfferVO;
+	import com.dukascopy.connect.sys.style.presets.Color;
+	import com.dukascopy.connect.utils.DateUtils;
 	import com.dukascopy.langs.Lang;
 	import flash.text.TextFormat;
 	
@@ -20,8 +24,35 @@ package com.dukascopy.connect.gui.list.renderers {
 		{
 			var itemData:EscrowOfferVO = listData as EscrowOfferVO;
 			var result:String = "";
-			if (itemData.status) {
-				result = Lang.escrow_offer_closed;
+			if (itemData.data != null) {
+				switch(itemData.data.status)
+				{
+					case EscrowStatus.offer_created:
+					{
+						result = Lang.escrow_offer_status_created;
+						break;
+					}
+					case EscrowStatus.offer_accepted:
+					{
+						result = Lang.escrow_offer_status_accepted;
+						break;
+					}
+					case EscrowStatus.offer_cancelled:
+					{
+						result = Lang.escrow_offer_status_cancelled;
+						break;
+					}
+					case EscrowStatus.offer_expired:
+					{
+						result = Lang.escrow_offer_status_expired;
+						break;
+					}
+					case EscrowStatus.offer_rejected:
+					{
+						result = Lang.escrow_offer_status_rejected;
+						break;
+					}
+				}
 			}
 			return result;
 		}
@@ -29,27 +60,15 @@ package com.dukascopy.connect.gui.list.renderers {
 		override protected function getStatusFormat(listData:Object):TextFormat 
 		{
 			var itemData:EscrowOfferVO = listData as EscrowOfferVO;
-			
-			/*if (itemData.mine && itemData.answersCount > 0)
-				return format6;
-			else
-				return format_status;
-			
-			if (itemData.status == EscrowAdsVO.STATUS_RESOLVED || itemData.status == EscrowAdsVO.STATUS_CLOSED) {
-				return format_status;
-			}*/
-			
-			return null;
+			return format_status;
 		}
 		
 		override protected function getPrice(listData:Object):String {
 			var itemData:EscrowOfferVO = listData as EscrowOfferVO;
-			
-			/*var res:String = "@" + itemData.price + " " + itemData.currency;
-			var percent:String = itemData.percent;
-			if (percent != null)
-				res += ", <font color='#BEBEBE'>MKT " + percent + "</font>";
-			return res;*/
+			if (itemData.data != null)
+			{
+				return itemData.data.price.toString();
+			}
 			
 			return "";
 		}
@@ -57,36 +76,32 @@ package com.dukascopy.connect.gui.list.renderers {
 		override protected function getAmount(listData:Object):String {
 			var itemData:EscrowOfferVO = listData as EscrowOfferVO;
 			
-			/*var result:String = "";
-			if (itemData.side == "buy") {
-				result += "<font color='#" + Color.GREEN.toString(16) + "'>" + Lang.BUY.toUpperCase() + " " + itemData.amount + " " + itemData.crypto + "</font>";
-			} else {
-				result += "<font color='#" + Color.RED.toString(16) + "'>" + Lang.sell.toUpperCase() + " " + itemData.amount + " " + itemData.crypto + "</font>";
+			if (itemData.data != null)
+			{
+				return itemData.data.amount.toString();
 			}
-			if (itemData.mine == true) {
-				textFieldAmount.htmlText = textFieldAmount.htmlText + " (" + Lang.mine.toUpperCase() + ")";
-			}
-			return result;*/
 			
 			return "";
 		}
 		
 		override protected function getTimeText(listData:Object):String {
 			var itemData:EscrowOfferVO = listData as EscrowOfferVO;
-			
-			/*var date:Date = new Date(Number(itemData.created * 1000));
-			
-			var timeValue:String = DateUtils.getComfortDateRepresentationWithMinutes(date);
 			var result:String = "";
-			if (itemData.side == "buy") {
-				result += "<font color='#" + Color.GREEN.toString(16) + "'>" + timeValue + "</font>";
-			} else {
-				result += "<font color='#" + Color.RED.toString(16) + "'>" + timeValue + "</font>";
+			if (itemData != null)
+			{
+				var timeValue:String = DateUtils.getComfortDateRepresentationWithMinutes(itemData.created);
+				
+				if (itemData.data != null)
+				{
+					if (itemData.data.direction == TradeDirection.buy) {
+						result += "<font color='#" + Color.GREEN.toString(16) + "'>" + timeValue + "</font>";
+					} else {
+						result += "<font color='#" + Color.RED.toString(16) + "'>" + timeValue + "</font>";
+					}
+				}
 			}
 			
-			return result;*/
-			
-			return "";
+			return result;
 		}
 		
 		override protected function isClickable(listData:Object):Boolean 

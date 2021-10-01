@@ -741,7 +741,7 @@ package com.dukascopy.connect.gui.list {
 			
 			// CALCULATE HEIGHT AND BUILD
 			if (currentRenderer != null) {
-				if (itemRendererClass == null || !(currentRenderer is itemRendererClass)) {
+				if (itemRendererClass == null || !(currentRenderer is itemRendererClass) || currentRenderer != itemRendererClass) {
 					currentRenderer.dispose();
 					currentRenderer = null;
 				}

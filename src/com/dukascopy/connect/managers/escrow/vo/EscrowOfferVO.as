@@ -1,5 +1,6 @@
 package com.dukascopy.connect.managers.escrow.vo
 {
+	import com.dukascopy.connect.data.escrow.EscrowMessageData;
     public class EscrowOfferVO extends BaseVO{
 
         public function get chat_uid():String{ return getString("chat_uid")};
@@ -13,18 +14,22 @@ package com.dukascopy.connect.managers.escrow.vo
         public function get msg_id():int{ return getInt("msg_id")};
         public function get offer_id():int{ return getInt("offer_id")};
         
-        public var data:Object; // Should be escrowOffer form messages
+        public var data:EscrowMessageData; // Should be escrowOffer form messages
         
         
         public function EscrowOfferVO(raw:Object){
             super(raw);
             
+			var messageRaw:Object;
             if(raw.data is String){
                 try{
-                    data=JSON.parse(raw.data as String);
-                    //TODO: parse to OfferVO
+                    messageRaw = JSON.parse(raw.data as String);
                 }catch(e:Error){}
             }
+			if (messageRaw != null)
+			{
+				data = new EscrowMessageData(messageRaw);
+			}
         }
         
     }
