@@ -56,6 +56,24 @@ package com.dukascopy.connect.managers.escrow.vo
             return false;
         }
 
+        public function getDate(name:String):Date{
+            var val:Object=getObject(name);
+            var date:Date;
+            if(val is Number){
+                var tms:Number=val as Number;
+                if((val+"").length<11){
+                    if(tms<0)
+                        tms*=-1;
+                    tms*=1000;
+                    date=new Date();
+                    date.setTime(val);
+                    return date;
+                }
+            }
+
+            return date;
+        }
+
         public function getString(name:String):String{
             var val:Object=getObject(name);
             if(val is String)

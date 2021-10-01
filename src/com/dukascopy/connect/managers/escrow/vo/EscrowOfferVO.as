@@ -4,7 +4,7 @@ package com.dukascopy.connect.managers.escrow.vo
 
         public function get chat_uid():String{ return getString("chat_uid")};
         public function get crypto_user_uid():String{ return getString("crypto_user_uid")};
-        public function get created():String{ return getString("created")};
+        public function get created():Date{ return getDate("created")};
         public function get status():String{ return getString("status")};
         public function get lifeTime():String{ return getString("lifeTime")};
         public function get mca_user_uid():String{ return getString("mca_user_uid")};
@@ -19,9 +19,9 @@ package com.dukascopy.connect.managers.escrow.vo
         public function EscrowOfferVO(raw:Object){
             super(raw);
             
-            if(data is String){
+            if(raw.data is String){
                 try{
-                    data=JSON.parse(data as String);
+                    data=JSON.parse(raw.data as String);
                     //TODO: parse to OfferVO
                 }catch(e:Error){}
             }
