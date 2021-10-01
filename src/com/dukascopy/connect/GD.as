@@ -23,6 +23,9 @@ package com.dukascopy.connect
 	public class GD
 	{
 		
+		static public const S_STAGE_SIZE_CHANGED:Signal = new Signal("S_STAGE_SIZE_CHANGED");
+		static public const S_TOAST:Signal = new Signal("S_TOAST");
+		
 		static public const S_TIMEZONE_REQUEST:Signal = new Signal("S_TIMEZONE_REQUEST");
 		
 		static public const S_AUTHORIZED:Signal = new Signal("S_AUTHORIZED");
@@ -75,6 +78,9 @@ package com.dukascopy.connect
 		static public const S_ESCROW_ADS_REMOVE:Signal = new Signal("GD.S_ESCROW_ADS_REMOVE");
 		static public const S_ESCROW_ADS_ANSWERS:Signal = new Signal("GD.S_ESCROW_ADS_ANSWERS");
 		static public const S_ESCROW_ADS_ANSWER:Signal = new Signal("GD.S_ESCROW_ADS_ANSWER");
+		static public const S_ESCROW_ADS_CREATE:Signal = new Signal("GD.S_ESCROW_ADS_CREATE");
+		static public const S_ESCROW_ADS_CREATED:Signal = new Signal("GD.S_ESCROW_ADS_CREATED");
+		static public const S_ESCROW_ADS_CREATE_FAIL:Signal = new Signal("GD.S_ESCROW_ADS_FAIL");
 
 		static public const S_IOS_LOCALIZATION_UPDATE:Signal=new Signal("S_IOS_LOCALIZATION_UPDATE");
 		

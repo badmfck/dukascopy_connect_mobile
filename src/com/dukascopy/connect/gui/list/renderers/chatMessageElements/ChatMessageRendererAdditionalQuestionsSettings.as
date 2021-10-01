@@ -73,71 +73,39 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 		
 		private function getBodyText(itemData:ChatMessageVO):String {
 			var res:String = itemData.systemMessageVO.text;
-			switch(itemData.systemMessageVO.method)
-			{
-				case ChatSystemMsgVO.METHOD_LOCAL_SIDE:
-				{
-					if (QuestionsManager.getCurrentQuestion() != null && QuestionsManager.getCurrentQuestion().subtype != null)
-					{
-						var side:Object = QuestionsManager.getSide(QuestionsManager.getCurrentQuestion().subtype);
-						if (side != null)
-						{
-							res = side.label;
-						}
-					}
+			switch(itemData.systemMessageVO.method) {
+				case ChatSystemMsgVO.METHOD_LOCAL_SIDE: {
+					if (itemData.systemMessageVO.additionalData != null && "val" in itemData.systemMessageVO.additionalData)
+						res = Lang[itemData.systemMessageVO.additionalData.name];
 					break;
 				}
-				
-				case ChatSystemMsgVO.METHOD_LOCAL_CRYPTO:
-				{
-					if (QuestionsManager.getCurrentQuestion() != null && QuestionsManager.getCurrentQuestion().instrument != null)
-					{
-						res = QuestionsManager.getCurrentQuestion().instrument.name + " (" + QuestionsManager.getCurrentQuestion().instrument.code + ")";
-					}
+				case ChatSystemMsgVO.METHOD_LOCAL_CRYPTO: {
+					if (itemData.systemMessageVO.additionalData != null &&
+						"name" in itemData.systemMessageVO.additionalData &&
+						"code" in itemData.systemMessageVO.additionalData)
+							res = itemData.systemMessageVO.additionalData.name + " (" + itemData.systemMessageVO.additionalData.code + ")";
 					break;
 				}
-				
-				case ChatSystemMsgVO.METHOD_LOCAL_CRYPTO_AMOUNT:
-				{
-					if (QuestionsManager.getCurrentQuestion() != null && QuestionsManager.getCurrentQuestion().cryptoAmount != null)
-					{
-						res = QuestionsManager.getCurrentQuestion().cryptoAmount;
-					}
+				case ChatSystemMsgVO.METHOD_LOCAL_CRYPTO_AMOUNT: {
+					if (itemData.systemMessageVO.additionalData != null && "val" in itemData.systemMessageVO.additionalData)
+						res = itemData.systemMessageVO.additionalData.val;
 					break;
 				}
-				
-				case ChatSystemMsgVO.METHOD_LOCAL_CURRENCY:
-				{
-					if (QuestionsManager.getCurrentQuestion() != null && QuestionsManager.getCurrentQuestion().priceCurrency != null)
-					{
-						res = QuestionsManager.getCurrentQuestion().priceCurrency;
-					}
-					break;
-				}
-				
-				case ChatSystemMsgVO.METHOD_LOCAL_PRICE:
-				{
-					if (QuestionsManager.getCurrentQuestion() != null && QuestionsManager.getCurrentQuestion().price != null)
-					{
-						var price:String = QuestionsManager.getCurrentQuestion().price;
+				case ChatSystemMsgVO.METHOD_LOCAL_PRICE: {
+					if (itemData.systemMessageVO.additionalData != null && itemData.systemMessageVO.additionalData.price != null) {
+						var price:String = itemData.systemMessageVO.additionalData.price;
 						res = price;
-						if (res.charAt(res.length -1) == "%")
-						{
+						if (res.charAt(res.length -1) == "%") {
 							res += " " + Lang.tenderPricePercent;
-							if (res.charAt(0) != "-")
-							{
+							if (res.charAt(0) != "-") {
 								res = "+" + res;
 							}
-							
 							var realPrice:String = price.replace("%", "");
-							if (!isNaN(Number(realPrice)) && Number(realPrice) == 0)
-							{
+							if (!isNaN(Number(realPrice)) && Number(realPrice) == 0) {
 								res = Lang.escrow_at_market_price;
 							}
-						}
-						else if (QuestionsManager.getCurrentQuestion().priceCurrency != null)
-						{
-							res += " " + QuestionsManager.getCurrentQuestion().priceCurrency;
+						} else if (itemData.systemMessageVO.additionalData.currency != null) {
+							res += " " + itemData.systemMessageVO.additionalData.currency;
 						}
 					}
 					break;
@@ -248,9 +216,9 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 				return;
 			if (messageData.systemMessageVO.method != ChatSystemMsgVO.METHOD_LOCAL_CRYPTO)
 				return;
-			if (QuestionsManager.getCurrentQuestion().instrument == null)
+			if (messageData.systemMessageVO.additionalData == null)
 				return;
-			icon = UI.getInvestIconByInstrument(QuestionsManager.getCurrentQuestion().instrument.code);
+			icon = UI.getInvestIconByInstrument(messageData.systemMessageVO.additionalData.code);
 			if (icon != null) {
 				UI.scaleToFit(icon, iconSize * 1.5, iconSize * 1.5);
 				icon.y = int(tf.y + tf.height + hTextMargin * .5 - 2);
@@ -263,37 +231,27 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 			textFormat.color = COLOR_TEXT_SELECTOR_TITLE;
 			textFormat1.color = COLOR_TEXT_SELECTOR_VALUE;
 			textFormat1.size = fontSize * 1.33;
-			if (QuestionsManager.getCurrentQuestion() == null) {
+			if (messageData.systemMessageVO.additionalData == null) {
 				tf.setTextFormat(textFormat);
 				tipsText.setTextFormat(textFormat1);
 				return;
 			}
 			if (messageData.systemMessageVO.method == ChatSystemMsgVO.METHOD_LOCAL_SIDE) {
-				if (QuestionsManager.getCurrentQuestion().subtype != null) {
-					textFormat.color = COLOR_TEXT_SELECTOR_TITLE_SELECTED;
-					textFormat1.color = COLOR_TEXT_SELECTOR_VALUE_SELECTED;
-				}
+				textFormat.color = COLOR_TEXT_SELECTOR_TITLE_SELECTED;
+				textFormat1.color = COLOR_TEXT_SELECTOR_VALUE_SELECTED;
 			} else if (messageData.systemMessageVO.method == ChatSystemMsgVO.METHOD_LOCAL_CRYPTO) {
-				if (QuestionsManager.getCurrentQuestion().instrument != null) {
-					textFormat.color = COLOR_TEXT_SELECTOR_TITLE_SELECTED;
-					textFormat1.color = COLOR_TEXT_SELECTOR_VALUE_SELECTED;
-					textFormat1.size = fontSize * 1.10;
-				}
+				textFormat.color = COLOR_TEXT_SELECTOR_TITLE_SELECTED;
+				textFormat1.color = COLOR_TEXT_SELECTOR_VALUE_SELECTED;
+				textFormat1.size = fontSize * 1.10;
 			} else if (messageData.systemMessageVO.method == ChatSystemMsgVO.METHOD_LOCAL_CRYPTO_AMOUNT) {
-				if (QuestionsManager.getCurrentQuestion().cryptoAmount != null) {
-					textFormat.color = COLOR_TEXT_SELECTOR_TITLE_SELECTED;
-					textFormat1.color = COLOR_TEXT_SELECTOR_VALUE_SELECTED;
-				}
+				textFormat.color = COLOR_TEXT_SELECTOR_TITLE_SELECTED;
+				textFormat1.color = COLOR_TEXT_SELECTOR_VALUE_SELECTED;
 			} else if (messageData.systemMessageVO.method == ChatSystemMsgVO.METHOD_LOCAL_CURRENCY) {
-				if (QuestionsManager.getCurrentQuestion().priceCurrency != null) {
-					textFormat.color = COLOR_TEXT_SELECTOR_TITLE_SELECTED;
-					textFormat1.color = COLOR_TEXT_SELECTOR_VALUE_SELECTED;
-				}
+				textFormat.color = COLOR_TEXT_SELECTOR_TITLE_SELECTED;
+				textFormat1.color = COLOR_TEXT_SELECTOR_VALUE_SELECTED;
 			} else if (messageData.systemMessageVO.method == ChatSystemMsgVO.METHOD_LOCAL_PRICE) {
-				if (QuestionsManager.getCurrentQuestion().price != null) {
-					textFormat.color = COLOR_TEXT_SELECTOR_TITLE_SELECTED;
-					textFormat1.color = COLOR_TEXT_SELECTOR_VALUE_SELECTED;
-				}
+				textFormat.color = COLOR_TEXT_SELECTOR_TITLE_SELECTED;
+				textFormat1.color = COLOR_TEXT_SELECTOR_VALUE_SELECTED;
 			}
 			tf.setTextFormat(textFormat);
 			tipsText.setTextFormat(textFormat1);
