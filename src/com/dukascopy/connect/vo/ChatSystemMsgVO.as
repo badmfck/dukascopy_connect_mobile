@@ -181,7 +181,9 @@ package com.dukascopy.connect.vo {
 				_defaultText = data.defaultText;
 			var tmp:Array;
 			if (_type != null) {
-				if (_type == TYPE_VI) {
+				if (_type == TYPE_LOCAL_QUESTION) {
+					_additionalData = data.params;
+				} else if (_type == TYPE_VI) {
 					if (_method == METHOD_VI_FAIL) {
 						_type = TYPE_CHAT_SYSTEM;
 						_method = METHOD_CALL_VIDID;
@@ -514,6 +516,7 @@ package com.dukascopy.connect.vo {
 		public function get fileVO():FileMessageVO { return _additionalData as FileMessageVO; }
 		public function get callVO():CallMessageVO { return _additionalData as CallMessageVO; }
 		public function get escrow():EscrowMessageData { return _additionalData as EscrowMessageData; }
+		public function get additionalData():Object { return _additionalData; }
 		
 		public function set originalImageHeight(value:int):void{
 			_originalImageHeight = value;

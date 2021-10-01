@@ -1,7 +1,6 @@
 package com.dukascopy.connect.managers.escrow {
 	
 	import com.dukascopy.connect.GD;
-	import com.dukascopy.connect.gui.components.message.ToastMessage;
 	import com.dukascopy.connect.managers.escrow.vo.EscrowAdsCryptoVO;
 	import com.dukascopy.connect.managers.escrow.vo.EscrowAdsFilterVO;
 	import com.dukascopy.connect.managers.escrow.vo.EscrowAdsVO;
@@ -146,9 +145,8 @@ package com.dukascopy.connect.managers.escrow {
 		
 		private function onEscrowAdsCryptosReceived(phpRespond:PHPRespond):void {
 			clearEscrowAdsCryptos();
-			if (phpRespond.error == true) {
-				ToastMessage.display(Lang.somethingWentWrong);
-			}
+			if (phpRespond.error == true)
+				GD.S_TOAST.invoke(Lang.somethingWentWrong);
 			if (phpRespond.data == null || phpRespond.data.length == 0) {
 				GD.S_ESCROW_ADS_CRYPTOS.invoke(null, true);
 				return;
@@ -163,7 +161,7 @@ package com.dukascopy.connect.managers.escrow {
 					if (phpRespond.data[j].instrument == escrowInstruments[i].code) {
 						exist = true;
 						phpRespond.data[j].instrument = escrowInstruments[i];
-						escrowAdsCryptos.push(new EscrowAdsCryptoVO(phpRespond.data[i]));
+						escrowAdsCryptos.push(new EscrowAdsCryptoVO(phpRespond.data[j]));
 						break;
 					}
 				}

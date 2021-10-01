@@ -9,6 +9,7 @@ package com.dukascopy.connect {
 	import com.dukascopy.connect.gui.components.CirclePreloader;
 	import com.dukascopy.connect.gui.components.HiddenOnlineIndicator;
 	import com.dukascopy.connect.gui.components.message.ToastMessage;
+	import com.dukascopy.connect.gui.components.message.ToastMessageGD;
 	import com.dukascopy.connect.gui.input.Input;
 	import com.dukascopy.connect.gui.lightbox.LightBox;
 	import com.dukascopy.connect.gui.networkIndicator.NetworkIndicator;
@@ -287,6 +288,7 @@ package com.dukascopy.connect {
 			new EscrowAdsManager();
 			BankCacheManager.init();
 			new CryptoWalletHolder();
+			new ToastMessageGD(stage);
 			
 			create();
 
@@ -933,6 +935,8 @@ package com.dukascopy.connect {
 				boxBlack.height = sh;
 				serviceSM.setSize(screenWidth, screenHeight);
 			}
+			
+			GD.S_STAGE_SIZE_CHANGED.invoke(sw, stageH);
 		}
 		
 		static public function setCurrentOrientation(value:String):void {

@@ -31,7 +31,13 @@ package com.dukascopy.connect.managers.escrow.vo {
 		private var _status:String;
 		private var _isRemoving:Boolean;
 		
-		public function EscrowAdsVO(data:Object) {
+		public function EscrowAdsVO(data:Object = null) {
+			update(data);
+		}
+		
+		private function update(data:Object):void {
+			if (data == null)
+				return;
 			if ("uid" in data == true && data.uid != null && data.uid is String)
 				_uid = data["uid"];
 			if ("tips" in data == true && data.tips != null) {
