@@ -1,7 +1,6 @@
 package com.dukascopy.connect.managers.escrow {
 	
 	import com.dukascopy.connect.GD;
-	import com.dukascopy.connect.data.escrow.TradeDirection;
 	import com.dukascopy.connect.data.screenAction.customActions.EscrowAdsCreationCheckAction;
 	import com.dukascopy.connect.managers.escrow.vo.EscrowAdsCryptoVO;
 	import com.dukascopy.connect.managers.escrow.vo.EscrowAdsFilterVO;
@@ -496,7 +495,7 @@ package com.dukascopy.connect.managers.escrow {
 				GD.S_ESCROW_ADS_CREATE_FAIL.invoke(Lang.escrow_fill_application_form);
 				return;
 			}
-			if (isNaN(escrowAdsVO.amount)) {
+			if (isNaN(escrowAdsVO.amount) == true) {
 				GD.S_ESCROW_ADS_CREATE_FAIL.invoke(Lang.escrow_fill_application_form);
 				return;
 			}
@@ -504,7 +503,7 @@ package com.dukascopy.connect.managers.escrow {
 				GD.S_ESCROW_ADS_CREATE_FAIL.invoke(Lang.escrow_fill_application_form);
 				return;
 			}
-			if (isNaN(escrowAdsVO.price)) {
+			if (escrowAdsVO.priceValue == null) {
 				GD.S_ESCROW_ADS_CREATE_FAIL.invoke(Lang.escrow_fill_application_form);
 				return;
 			}
@@ -576,10 +575,10 @@ package com.dukascopy.connect.managers.escrow {
 			phpRespond.dispose();
 		}
 		
-		static private function onCreateQuestionSuccess(data:Object):void {
+		private function onCreateQuestionSuccess(data:Object):void {
 			var escrowAdsVO:EscrowAdsVO = new EscrowAdsVO(data);
 			GD.S_ESCROW_ADS_CREATED.invoke(escrowAdsVO);
-		//	WSClient.call_blackHoleToGroup("que", "send", "mobile", WSMethodType.ESCROW_ADS_CREATED, { quid:questionsMine[0].uid, senderUID:senderUID } );
+			WSClient.call_blackHoleToGroup("que", "send", "mobile", WSMethodType.ESCROW_ADS_CREATED, { quid:escrowAdsVO.uid, senderUID:profile.uid } );
 		}
 	}
 }

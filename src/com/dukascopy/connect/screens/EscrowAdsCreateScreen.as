@@ -194,7 +194,7 @@ package com.dukascopy.connect.screens {
 			message = new ChatMessageVO(messageData);
 			_messages.push(message);
 			
-			if (escrowAdsVO.uid != null) {
+			if (escrowAdsVO.uid == null) {
 				messageData = {};
 				messageData.id = 0;
 				messageData.user_avatar = LocalAvatars.QUESTIONS;
