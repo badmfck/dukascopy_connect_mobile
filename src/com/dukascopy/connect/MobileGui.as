@@ -18,6 +18,7 @@ package com.dukascopy.connect {
 	import com.dukascopy.connect.managers.escrow.CryptoWalletHolder;
 	import com.dukascopy.connect.managers.escrow.EscrowAdsManager;
 	import com.dukascopy.connect.managers.escrow.EscrowDealManager;
+	import com.dukascopy.connect.managers.escrow.EscrowOfferManager;
 	import com.dukascopy.connect.screens.ChatScreen;
 	import com.dukascopy.connect.screens.LoginScreen;
 	import com.dukascopy.connect.screens.MyAccountScreen;
@@ -289,6 +290,7 @@ package com.dukascopy.connect {
 			BankCacheManager.init();
 			new CryptoWalletHolder();
 			new ToastMessageGD(stage);
+			new EscrowOfferManager();
 			
 			create();
 

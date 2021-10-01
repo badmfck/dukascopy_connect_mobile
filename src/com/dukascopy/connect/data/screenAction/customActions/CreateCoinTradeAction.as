@@ -348,7 +348,7 @@ package com.dukascopy.connect.data.screenAction.customActions {
 			
 			showPreloader();
 			TweenMax.killDelayedCallsTo(hidePreloader);
-			TweenMax.delayedCall(10, hidePreloader);
+		//	TweenMax.delayedCall(10, hidePreloader);
 			WSClient.call_create_offer(messageData.toServerObject(chat.uid), dealData.cryptoWallet);
 		}
 		

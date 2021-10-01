@@ -1,5 +1,6 @@
 package com.dukascopy.connect.gui.list.renderers {
 	
+	import assets.CreateDealIcon;
 	import com.dukascopy.connect.Config;
 	import com.dukascopy.connect.data.HitZoneData;
 	import com.dukascopy.connect.gui.lightbox.UI;
@@ -57,7 +58,7 @@ package com.dukascopy.connect.gui.list.renderers {
 			
 			var icon:Sprite;
 			if (icon911BMD == null) {
-				icon = new SWF911Avatar();
+				icon = new CreateDealIcon();
 				UI.scaleToFit(icon, avatarSize * 2, avatarSize * 2);
 				icon911BMD = UI.getSnapshot(icon, StageQuality.HIGH, "ListConversation.actionAvatar");
 				UI.destroy(icon);
@@ -153,7 +154,6 @@ package com.dukascopy.connect.gui.list.renderers {
 		}
 		
 		public function getView(item:ListItem, height:int, width:int, highlight:Boolean = false):IBitmapDrawable {
-			var itemData:EscrowAdsVO = item.data as EscrowAdsVO;
 			
 			avatar.graphics.clear();
 			avatar.visible = true;
@@ -178,48 +178,68 @@ package com.dukascopy.connect.gui.list.renderers {
 			tfQuestionTime.visible = true;
 			textFieldPrice.visible = false;
 			
-			if (itemData.uid != null && itemData.uid != "") {
+			if (item.data != null && "uid" in item.data && item.data.uid != null && item.data.uid != "") {
 				var hitZones:Array;
 				
-				tfQuestionTime.htmlText = getStatusText(itemData, itemData.created);
+				tfQuestionTime.htmlText = getTimeText(item.data);
 				tfQuestionTime.x = int(width - tfQuestionTime.width - Config.FINGER_SIZE_DOT_25 + 2);
 				
 				textFieldPrice.visible = true;
-				textFieldPrice.htmlText = getPrice(itemData);
-				textFieldAmount.htmlText = getAmount(itemData);
-				if (itemData.mine == true) {
-					textFieldAmount.htmlText = textFieldAmount.htmlText + " (" + Lang.mine.toUpperCase() + ")";
-				}
-				
-				if (itemData.mine && itemData.answersCount > 0)
-					textFieldStatus.defaultTextFormat = format6;
-				else
-					textFieldStatus.defaultTextFormat = format_status;
-				
-				if (itemData.status == EscrowAdsVO.STATUS_RESOLVED || itemData.status == EscrowAdsVO.STATUS_CLOSED) {
-					textFieldStatus.defaultTextFormat = format_status;
-					textFieldStatus.text = Lang.escrow_offer_closed;
-				} else {
-					var str:String;
-					str = LangManager.replace(Lang.regExtValue,Lang.escrow_already_participate, String(itemData.answersCount));
-					str = LangManager.replace(Lang.regExtValue,str,String(itemData.answersMax));
-					if (str == null)
-						str = "";
-					textFieldStatus.text = str;
-				}
+				textFieldPrice.htmlText = getPrice(item.data);
+				textFieldAmount.htmlText = getAmount(item.data);
+				textFieldStatus.defaultTextFormat = getStatusFormat(item.data);
+				textFieldStatus.text = getStatusText(item.data);
 			}
 			
 			item.setHitZones(hitZones);
 			
-			if (itemData.isRemoving == true)
-				alpha = .5;
-			else
-				alpha = 1;
+			updateItemAlpha(item.data);
 			
 			return this;
 		}
 		
-		private function getPrice(itemData:EscrowAdsVO):String {
+		private function updateItemAlpha(listData:Object):void 
+		{
+			var itemData:EscrowAdsVO = listData as EscrowAdsVO;
+			
+			if (itemData != null && itemData.isRemoving == true)
+				alpha = .5;
+			else
+				alpha = 1;
+		}
+		
+		protected function getStatusText(listData:Object):String 
+		{
+			var itemData:EscrowAdsVO = listData as EscrowAdsVO;
+			var result:String = "";
+			if (itemData.status == EscrowAdsVO.STATUS_RESOLVED || itemData.status == EscrowAdsVO.STATUS_CLOSED) {;
+				result = Lang.escrow_offer_closed;
+			} else {
+				result = LangManager.replace(Lang.regExtValue, Lang.escrow_already_participate, String(itemData.answersCount));
+				result = LangManager.replace(Lang.regExtValue, result, String(itemData.answersMax));
+				if (result == null)
+					result = "";
+			}
+			return result;
+		}
+		
+		protected function getStatusFormat(listData:Object):TextFormat 
+		{
+			var itemData:EscrowAdsVO = listData as EscrowAdsVO;
+			
+			if (itemData.mine && itemData.answersCount > 0)
+				return format6;
+			else
+				return format_status;
+			
+			if (itemData.status == EscrowAdsVO.STATUS_RESOLVED || itemData.status == EscrowAdsVO.STATUS_CLOSED) {
+				return format_status;
+			}
+		}
+		
+		protected function getPrice(listData:Object):String {
+			var itemData:EscrowAdsVO = listData as EscrowAdsVO;
+			
 			var res:String = "@" + itemData.price + " " + itemData.currency;
 			var percent:String = itemData.percent;
 			if (percent != null)
@@ -227,35 +247,41 @@ package com.dukascopy.connect.gui.list.renderers {
 			return res;
 		}
 		
-		private function getTime(itemData:EscrowAdsVO, timeValue:String):String {
-			var result:String = "";
-			if (itemData.side == "buy") {
-				result += "<font color='#" + Color.GREEN.toString(16) + "'>" + timeValue + "</font>";
-			} else {
-				result += "<font color='#" + Color.RED.toString(16) + "'>" + timeValue + "</font>";
-			}
-			return result;
-		}
-		
-		private function getAmount(itemData:EscrowAdsVO):String {
+		protected function getAmount(listData:Object):String {
+			var itemData:EscrowAdsVO = listData as EscrowAdsVO;
+			
 			var result:String = "";
 			if (itemData.side == "buy") {
 				result += "<font color='#" + Color.GREEN.toString(16) + "'>" + Lang.BUY.toUpperCase() + " " + itemData.amount + " " + itemData.crypto + "</font>";
 			} else {
 				result += "<font color='#" + Color.RED.toString(16) + "'>" + Lang.sell.toUpperCase() + " " + itemData.amount + " " + itemData.crypto + "</font>";
 			}
+			if (itemData.mine == true) {
+				textFieldAmount.htmlText = textFieldAmount.htmlText + " (" + Lang.mine.toUpperCase() + ")";
+			}
 			return result;
 		}
 		
-		private function getStatusText(itemData:EscrowAdsVO, timestamp:Number):String {
-			var date:Date = new Date(Number(timestamp * 1000));
-			return getTime(itemData, DateUtils.getComfortDateRepresentationWithMinutes(date));
+		protected function getTimeText(listData:Object):String {
+			var itemData:EscrowAdsVO = listData as EscrowAdsVO;
+			
+			var date:Date = new Date(Number(itemData.created * 1000));
+			
+			var timeValue:String = DateUtils.getComfortDateRepresentationWithMinutes(date);
+			var result:String = "";
+			if (itemData.side == "buy") {
+				result += "<font color='#" + Color.GREEN.toString(16) + "'>" + timeValue + "</font>";
+			} else {
+				result += "<font color='#" + Color.RED.toString(16) + "'>" + timeValue + "</font>";
+			}
+			
+			return result;
 		}
 		
 		override public function getSelectedHitzone(itemTouchPoint:Point, listItem:ListItem):HitZoneData {
 			var h:int = getHeight(listItem, listItem.width);
 			getView(listItem, h, listItem.width, false);
-			if (listItem.data.uid == null || listItem.data.uid == "") {
+			if (isClickable(listItem.data)) {
 				var result:HitZoneData = new HitZoneData();
 				result.type = HitZoneType.MENU_MIDDLE_ELEMENT;
 				result.x = 0;
@@ -265,6 +291,17 @@ package com.dukascopy.connect.gui.list.renderers {
 				return result;
 			}
 			return null;
+		}
+		
+		protected function isClickable(listData:Object):Boolean 
+		{
+			var itemData:EscrowAdsVO = listData as EscrowAdsVO;
+			
+			if (itemData != null && itemData.uid == null || itemData.uid == "")
+			{
+				return true;
+			}
+			return false;
 		}
 		
 		public function dispose():void {

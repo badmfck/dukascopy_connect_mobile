@@ -22,195 +22,78 @@ package com.dukascopy.connect.data.screenAction.customActions {
 	
 	public class EscrowAdsCreationCheckAction extends ScreenAction implements IScreenAction {
 		
-		private var direction:TradeDirection;
-		private var fiatAmount:Number;
-		private var currency:String;
-		private var accounts:PaymentsAccountsProvider;
-		private var instrument:EscrowInstrument;
+		private var escrowAdsVO:EscrowAdsVO;
+		private var checkPaymentsAction:TestCreateOfferAction;
 		public var disposeOnResult:Boolean;
 		
 		public function EscrowAdsCreationCheckAction(escrowAdsVO:EscrowAdsVO) {
 			setIconClass(null);
 			
-			/*this.direction = direction;
-			this.fiatAmount = fiatAmount;
-			this.currency = currency;
-			this.instrument = instrument;*/
+			this.escrowAdsVO = escrowAdsVO;
 		}
 		
 		public function execute():void {
-			/*if (direction == TradeDirection.buy) {
-				getAccounts();
-			} else if (direction == TradeDirection.sell) {
-				if (PaymentsManager.activate() == false) {
-					onLimitsReady();
-				} else {
-					PaymentsManager.S_ACCOUNT.add(onLimitsReady);
-					PaymentsManager.S_ERROR.add(onPayError);
-					if (PaymentsManager.S_BACK != null) {
-						PaymentsManager.S_BACK.add(onAuthCancelled);
+			//TODO: side;
+			var selectedDirection:TradeDirection = (escrowAdsVO.side == "buy") ? TradeDirection.buy : TradeDirection.sell;
+			var price:Number = 0;
+			if (escrowAdsVO.percent != null && escrowAdsVO.percent.indexOf("%") == -1) {
+				price = escrowAdsVO.price;
+			} else {
+				for (var i:int = 0; i < escrowAdsVO.instrument.price.length; i++) {
+					if (escrowAdsVO.instrument.price[i].name == escrowAdsVO.currency) {
+						price = escrowAdsVO.instrument.price[i].value + escrowAdsVO.instrument.price[i].value * Number(escrowAdsVO.percent.substr(0, escrowAdsVO.percent.length -1));
+						break;
 					}
 				}
-			} else {
-				onFail(Lang.escrow_offer_type_not_set);
-				ApplicationErrors.add();
-			}*/
-		}
-		
-		private function onAuthCancelled():void {
-			/*removePaymetsListeners();
-			onFail();*/
-		}
-		
-		private function onPayError(code:String = null, message:String = null):void {
-			/*removePaymetsListeners();
-			ToastMessage.display(message);*/
-		}
-		
-		private function removePaymetsListeners():void {
-			/*PaymentsManager.S_ACCOUNT.remove(onLimitsReady);
-			PaymentsManager.S_ERROR.remove(onPayError);
-			if (PaymentsManager.S_BACK != null) {
-				PaymentsManager.S_BACK.remove(onAuthCancelled);
-			}*/
-		}
-		
-		private function onLimitsReady():void {
-			/*removePaymetsListeners();
-			if (disposed) {
-				return;
-			}
-			if (PayManager.accountInfo != null && PayManager.accountInfo.limits != null) {
-				var limits:Array = PayManager.accountInfo.limits;
-				if (instrument != null && instrument.price != null) {
-					var priceForCurrentCurrency:Number;
-					var priceForUSDCurrency:Number;
-					
-					for (var i:int = 0; i < instrument.price.length; i++) {
-						if (instrument.price[i].name == currency) {
-							priceForCurrentCurrency = instrument.price[i].value;
-						} if (instrument.price[i].name == TypeCurrency.USD) {
-							priceForUSDCurrency = instrument.price[i].value;
-						}
-					}
-					
-					if (currency == TypeCurrency.EUR)
-					{
-						priceForUSDCurrency = priceForCurrentCurrency / 1.18;
-					}
-					else
-					{
-						//!TODO:;
-					}
-					
-					if (!isNaN(priceForCurrentCurrency) && !isNaN(priceForUSDCurrency)) {
-						var priceConvert:Number = priceForCurrentCurrency / priceForUSDCurrency;
-						var creditAmount:Number = fiatAmount / priceConvert;
-						var upLimit:Boolean;
-						var limit:AccountLimitVO;
-						for (var j:int = 0; j < limits.length; j++) {
-							limit = limits[j];
-							if (limit.type == "DUKAPAY_INCOMING_LIMIT_AMOUNT_Q" || limit.type == "TOTAL_EQUITY_USD")
-							{
-								if (limit.maxLimit - limit.current < creditAmount / EscrowSettings.limitAmountKoef) {
-									upLimit = true;
-								}
-							}
-						}
-						if (upLimit == false) {
-							onSuccess();
-						} else {
-							onFail(Lang.escrow_credit_amount_not_in_limits);
-						}
-					} else {
-						//!TODO: плохой текст ошибки;
-						onFail(Lang.pleaseTryLater);
-					}
-				} else {
-					//!TODO: плохой текст ошибки;
-					onFail(Lang.pleaseTryLater);
+				if (price == 0) {
+					onFail(Lang.escrow_price_zero_error);
+					return;
 				}
-			} else {
-				onFail(Lang.escrow_cant_load_account_limits);
-			}*/
+			}
+			var fiatAmount:Number = Number(escrowAdsVO.amount) * price;
+			var resultAmount:Number = fiatAmount + ((escrowAdsVO.side == "buy") ?  fiatAmount * EscrowSettings.refundableFee : fiatAmount * EscrowSettings.getCommission(escrowAdsVO.instrument.code));
+			
+			checkPaymentsAction = new TestCreateOfferAction(selectedDirection, resultAmount, escrowAdsVO.currency, escrowAdsVO.instrument);
+			checkPaymentsAction.getFailSignal().add(onPaymentsBuyCheckFail);
+			checkPaymentsAction.getSuccessSignal().add(onPaymentsBuyCheckSuccess);
+			checkPaymentsAction.execute();
 		}
 		
-		private function getAccounts():void {
-			/*accounts = new PaymentsAccountsProvider(onAccountsReady, true, onAccountsFail);
-			if (accounts.ready) {
-				onAccountsReady();
-			} else {
-				accounts.getData();
-			}*/
+		private function onPaymentsBuyCheckSuccess():void 
+		{
+			onSuccess();
 		}
 		
-		private function onAccountsFail():void {
-			/*onFail(Lang.escrow_account_not_found);*/
-		}
-		
-		private function onAccountsReady():void {
-			/*if (disposed) {
-				return;
-			}
-			if (accounts != null) {
-				var moneyAccounts:Array = accounts.moneyAccounts;
-				if (moneyAccounts != null && moneyAccounts.length > 0) {
-					var targetAccount:Object;
-					for (var i:int = 0; i < moneyAccounts.length; i++) {
-						if (moneyAccounts[i].CURRENCY == currency) {
-							targetAccount = moneyAccounts[i];
-							break;
-						}
-					}
-					if (targetAccount != null) {
-						if (Number(targetAccount.BALANCE) >= fiatAmount) {
-							onSuccess();
-						} else {
-							onFail(Lang.escrow_not_enougth_money);
-						}
-					} else {
-						onFail(Lang.escrow_account_not_found);
-					}
-				} else {
-					onFail(Lang.escrow_account_not_found);
-				}
-			} else {
-				onFail(Lang.escrow_account_not_found);
-				ApplicationErrors.add();
-			}
-			if (accounts != null) {
-				accounts.dispose();
-			}
-			accounts = null;*/
+		private function onPaymentsBuyCheckFail(errorMessage:String):void 
+		{
+			onFail(errorMessage);
 		}
 		
 		private function onSuccess():void {
-			/*if (S_ACTION_SUCCESS != null) {
-				S_ACTION_SUCCESS.invoke();
+			if (S_ACTION_SUCCESS != null) {
+				S_ACTION_SUCCESS.invoke(escrowAdsVO);
 			}
 			if (disposeOnResult) {
 				dispose();
-			}*/
+			}
 		}
 		
 		private function onFail(message:String = null):void {
-			/*if (S_ACTION_FAIL != null) {
+			if (S_ACTION_FAIL != null) {
 				S_ACTION_FAIL.invoke(message);
 			}
 			if (disposeOnResult) {
 				dispose();
-			}*/
+			}
 		}
 		
 		override public function dispose():void {
-			/*instrument = null;
-			direction = null;
-			removePaymetsListeners();
-			PaymentsManager.deactivate();
-			if (accounts != null) {
-				accounts.dispose();
-				accounts = null;
-			}*/
+			super.dispose();
+			if (checkPaymentsAction != null)
+			{
+				checkPaymentsAction.dispose();
+				checkPaymentsAction = null;
+			}
 		}
 	}
 }
