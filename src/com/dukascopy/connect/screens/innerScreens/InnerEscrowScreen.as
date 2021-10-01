@@ -12,11 +12,13 @@ package com.dukascopy.connect.screens.innerScreens {
 	import com.dukascopy.connect.gui.list.ListItem;
 	import com.dukascopy.connect.gui.list.renderers.BaseRenderer;
 	import com.dukascopy.connect.gui.list.renderers.ListEscrowAdsRenderer;
+	import com.dukascopy.connect.gui.list.renderers.ListEscrowOfferRenderer;
 	import com.dukascopy.connect.gui.list.renderers.ListLink;
 	import com.dukascopy.connect.gui.tabs.FilterTabs;
 	import com.dukascopy.connect.gui.tools.HorizontalPreloader;
 	import com.dukascopy.connect.managers.escrow.vo.EscrowAdsFilterVO;
 	import com.dukascopy.connect.managers.escrow.vo.EscrowAdsVO;
+	import com.dukascopy.connect.managers.escrow.vo.EscrowOfferVO;
 	import com.dukascopy.connect.screens.RootScreen;
 	import com.dukascopy.connect.screens.base.BaseScreen;
 	import com.dukascopy.connect.screens.dialogs.ScreenLinksDialog;
@@ -205,18 +207,27 @@ package com.dukascopy.connect.screens.innerScreens {
 			
 			preloader.setSize(_width, int(Config.FINGER_SIZE * .07));
 			
-			GD.S_ESCROW_ADS_FILTER_SETTED.remove(onFilterChanged);
+			GD.S_ESCROW_ADS_FILTER_SETTED.add(onFilterChanged);
 		}
 		
 		private function onFilterChanged():void 
 		{
 			GD.S_ESCROW_ADS_FILTER_REQUEST.invoke(onFilter);
+			TweenMax.killDelayedCallsTo(updateAdsList);
 			TweenMax.delayedCall(1, updateAdsList, null, true);
 		}
 		
 		private function updateAdsList():void 
 		{
-			
+			if (isDisposed)
+			{
+				return;
+			}
+			TweenMax.killDelayedCallsTo(updateAdsList);
+			if (selectedTabID == TAB_OTHER)
+			{
+				onTabItemSelected(selectedTabID);
+			}
 		}
 		
 		private function onFilter(filter:EscrowAdsFilterVO):void 
@@ -405,9 +416,11 @@ package com.dukascopy.connect.screens.innerScreens {
 		override public function dispose():void {
 			super.dispose();
 			
+			TweenMax.killDelayedCallsTo(updateAdsList);
 			GD.S_ESCROW_ADS.remove(onEscrowAdsLoaded);
 			GD.S_ESCROW_ADS_MINE.remove(onEscrowAdsMineLoaded);
 			GD.S_ESCROW_ADS_FILTER_SETTED.remove(onFilterChanged);
+			GD.S_ESCROW_OFFERS_READY.remove(onOffersLoaded);
 			
 			if (preloader != null)
 			{
@@ -418,22 +431,6 @@ package com.dukascopy.connect.screens.innerScreens {
 			removePlaceholder();
 			DialogManager.closeDialog();
 		}
-		
-		/*public function openQuestionCreateUpdateScreen(e:Event = null):void {
-			if (QuestionsManager.checkForUnsatisfiedQuestions() == true) {
-				DialogManager.alert(Lang.information, Lang.limitQuestionExists);
-				return;
-			}
-			MobileGui.changeMainScreen(
-				QuestionCreateUpdateScreen, {
-					backScreen:MobileGui.centerScreen.currentScreenClass,
-					title:Lang.escrow_create_your_ad,
-					backScreenData:this.data,
-					data:null
-				},
-				ScreenManager.DIRECTION_RIGHT_LEFT
-			);
-		}*/
 		
 		private function hideStatusClip():void {
 			if (statusClip)
@@ -637,6 +634,7 @@ package com.dukascopy.connect.screens.innerScreens {
 			
 			GD.S_ESCROW_ADS.remove(onEscrowAdsLoaded);
 			GD.S_ESCROW_ADS_MINE.remove(onEscrowAdsMineLoaded);
+			GD.S_ESCROW_OFFERS_READY.remove(onOffersLoaded);
 			
 			if (id == TAB_OTHER) {
 				GD.S_ESCROW_ADS.add(onEscrowAdsLoaded);
@@ -648,7 +646,24 @@ package com.dukascopy.connect.screens.innerScreens {
 				GD.S_ESCROW_ADS_MINE_REQUEST.invoke();
 				return;
 			}
+			if (id == TAB_OFFERS) {
+				GD.S_ESCROW_OFFERS_READY.add(onOffersLoaded);
+				GD.S_ESCROW_OFFERS_REQUEST.invoke();
+				
+				return;
+			}
 			setListData(null);
+		}
+		
+		private function onOffersLoaded(offers:Vector.<EscrowOfferVO>):void 
+		{
+			if (_isDisposed)
+				return;
+			if (selectedTabID != TAB_OFFERS)
+				return;
+		//	if (preloaderHide == true)
+			hidePreloader();
+			setListData(offers);
 		}
 		
 		private function onEscrowAdsLoaded(data:Array, preloaderHide:Boolean = false):void {
@@ -671,7 +686,7 @@ package com.dukascopy.connect.screens.innerScreens {
 			setListData(data);
 		}
 		
-		private function setListData(data:Array):void {
+		private function setListData(data:Object):void {
 			if (_isDisposed == true)
 				return;
 			if (list == null)
@@ -681,7 +696,9 @@ package com.dukascopy.connect.screens.innerScreens {
 				listItemClass = ListEscrowAdsRenderer;
 			else if (selectedTabID == TAB_MINE)
 				listItemClass = ListEscrowAdsRenderer;
-			var listData:Array = data;
+			else if (selectedTabID == TAB_OFFERS)
+				listItemClass = ListEscrowOfferRenderer;
+			var listData:Object = data;
 			if (listData == null)
 				listData = [];
 			list.setData(listData, listItemClass);

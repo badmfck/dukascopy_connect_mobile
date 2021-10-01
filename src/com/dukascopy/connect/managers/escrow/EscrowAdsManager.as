@@ -488,23 +488,23 @@ package com.dukascopy.connect.managers.escrow {
 		}
 		
 		private function createEscrowAds(escrowAdsVO:EscrowAdsVO):void {
-			if (currentQuestion.subtype == null) {
+			if (escrowAdsVO.side == null) {
 				GD.S_ESCROW_ADS_CREATE_FAIL.invoke(Lang.escrow_fill_application_form);
 				return;
 			}
-			if (currentQuestion.instrument == null) {
+			if (escrowAdsVO.instrument == null) {
 				GD.S_ESCROW_ADS_CREATE_FAIL.invoke(Lang.escrow_fill_application_form);
 				return;
 			}
-			if (currentQuestion.cryptoAmount == null) {
+			if (isNaN(escrowAdsVO.amount)) {
 				GD.S_ESCROW_ADS_CREATE_FAIL.invoke(Lang.escrow_fill_application_form);
 				return;
 			}
-			if (currentQuestion.priceCurrency == null) {
+			if (escrowAdsVO.currency == null) {
 				GD.S_ESCROW_ADS_CREATE_FAIL.invoke(Lang.escrow_fill_application_form);
 				return;
 			}
-			if (currentQuestion.price == null) {
+			if (isNaN(escrowAdsVO.price)) {
 				GD.S_ESCROW_ADS_CREATE_FAIL.invoke(Lang.escrow_fill_application_form);
 				return;
 			}
@@ -515,7 +515,7 @@ package com.dukascopy.connect.managers.escrow {
 			escrowAdsCreationCheckAction.execute();
 		}
 		
-		private function onPaymentsBuyCheckSuccess(escrowAdsVO:EscrowAdsVO):void {
+		private function onEscrowAdsCreationCheckSuccess(escrowAdsVO:EscrowAdsVO):void {
 			PHP.question_create(
 				onQuestionCreated,
 				Crypter.crypt("Escrow", MESSAGE_KEY),
@@ -579,7 +579,7 @@ package com.dukascopy.connect.managers.escrow {
 		static private function onCreateQuestionSuccess(data:Object):void {
 			var escrowAdsVO:EscrowAdsVO = new EscrowAdsVO(data);
 			GD.S_ESCROW_ADS_CREATED.invoke(escrowAdsVO);
-			WSClient.call_blackHoleToGroup("que", "send", "mobile", WSMethodType.ESCROW_ADS_CREATED, { quid:questionsMine[0].uid, senderUID:senderUID } );
+		//	WSClient.call_blackHoleToGroup("que", "send", "mobile", WSMethodType.ESCROW_ADS_CREATED, { quid:questionsMine[0].uid, senderUID:senderUID } );
 		}
 	}
 }
