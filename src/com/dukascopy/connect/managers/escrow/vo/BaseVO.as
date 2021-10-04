@@ -59,19 +59,35 @@ package com.dukascopy.connect.managers.escrow.vo
         public function getDate(name:String):Date{
             var val:Object=getObject(name);
             var date:Date;
+
+            if(val is String){
+                var t:Number=parseFloat(val+"");
+                if(!isNaN(t) && val.length>10){
+                    val=t;
+                }
+            }
+
             if(val is Number){
                 var tms:Number=val as Number;
                 if((val+"").length<11){
                     if(tms<0)
                         tms*=-1;
                     tms*=1000;
-                    date=new Date();
-                    date.setTime(val);
-                    return date;
                 }
+                date=new Date();
+                date.setTime(val);
+                return date;
+            }
+            
+            if(val is String){
+                if(val.indexOf("-")!=-1 || val.indexOf(".")!=-1 || val.indexOf(":")!=-1)
+                    val=val.replace(/\s/g,"");
+                val.split(/[\-\.\:\s]/);
+                for(var i:int=0;i<val.length;i++)
+                    trace(val[i]);
             }
 
-            return date;
+            return null;
         }
 
         public function getString(name:String):String{

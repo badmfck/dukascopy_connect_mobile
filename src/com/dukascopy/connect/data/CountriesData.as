@@ -21,12 +21,6 @@ package com.dukascopy.connect.data {
 			return _COUNTRIES;
 		}
 
-        // 5 - не открываем счёт
-        // 4 - обязательная проверка FT без исключения - ОЧЕНЬ НИЩИЕ (типа киргизы)
-        // 3 - FT до 25 лет // МНОГО НИЩИХ И БЕСПОЛЕЗНЫХ (белорусия)
-        // 2 - FT до 20 лет // БОЛЕЕ МЕНЕЕ (польша)
-        // 1 - без ограничений  // Швейцария
-
 		private static const _COUNTRIES:Array = [		
 			['Afghanistan', 'AF', 'AFG', '93'], // 5
 			['Albania', 'AL', 'ALB', '355'], // 3
@@ -156,6 +150,7 @@ package com.dukascopy.connect.data {
 			['Mali','ML','MLI','223'],// 4
 			['Malta','MT','MLT','356'],// 1
 			['Marshall Islands','MH','MHL','692'],// 4
+			['Martinique','MQ','MTQ','596'],// 4Martinique country code +596 
 			['Mauritania','MR','MRT','222'],// 3
 			['Mauritius','MU','MUS','230'],// 1
 			['Mayotte','YT','MYT','262'],// 4

@@ -58,7 +58,7 @@ package com.forms{
         protected var enableChilds:Boolean=true;
         private var distributeChildsCount:int=0;
         private var componentsNames:Object;
-        private var needRedraw:Boolean=true;
+        protected var needRedraw:Boolean=true;
         private var controller:IFormController=null;
         private var localIDs:Object=null;
         private var documentLoaded:Boolean=false;
