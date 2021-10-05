@@ -5,6 +5,7 @@ package com.dukascopy.connect.screens {
 	import assets.ScrollBottomIcon;
 	import com.adobe.utils.StringUtil;
 	import com.dukascopy.connect.Config;
+	import com.dukascopy.connect.GD;
 	import com.dukascopy.connect.MobileGui;
 	import com.dukascopy.connect.data.BackgroundModel;
 	import com.dukascopy.connect.data.ButtonActionData;
@@ -4355,6 +4356,8 @@ package com.dukascopy.connect.screens {
 			TweenMax.killTweensOf(backColorClip);
 			
 			NativeExtensionController.onChatScreenClosed();
+			
+			GD.S_STOP_LOAD.invoke();
 			
 			if (replyPanel != null)
 			{

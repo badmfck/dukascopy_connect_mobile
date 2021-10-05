@@ -451,6 +451,7 @@ package com.dukascopy.connect.screens.innerScreens {
 			var itemHitZone:String;
 			if (item != null)
 				itemHitZone = item.getLastHitZone();
+			var chatScreenData:ChatScreenData;
 			if (data is ChatVO) {
 				if (itemHitZone && itemHitZone == HitZoneType.DELETE) {
 					DialogManager.alert(Lang.textConfirm, Lang.alertConfirmLeaveConversation, function(val:int):void {
@@ -460,7 +461,7 @@ package com.dukascopy.connect.screens.innerScreens {
 					}, Lang.textDelete.toUpperCase(), Lang.textCancel.toUpperCase());
 					return;
 				}
-				var chatScreenData:ChatScreenData = new ChatScreenData();
+				chatScreenData = new ChatScreenData();
 				chatScreenData.chatVO = data as ChatVO;
 				chatScreenData.type = ChatInitType.CHAT;
 				chatScreenData.backScreen = RootScreen;
@@ -501,7 +502,7 @@ package com.dukascopy.connect.screens.innerScreens {
 				return;
 			}
 			if (data is EscrowOfferVO) {
-				var chatScreenData:ChatScreenData = new ChatScreenData();
+				chatScreenData = new ChatScreenData();
 				chatScreenData.type = ChatInitType.CHAT;
 				chatScreenData.chatUID = (data as EscrowOfferVO).chat_uid;
 				chatScreenData.backScreen = RootScreen;

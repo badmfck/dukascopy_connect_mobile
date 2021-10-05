@@ -12,11 +12,11 @@ package com.dukascopy.connect.data.screenAction.customActions {
 	 * @author Sergey Dobarin
 	 */
 	
-	public class getChatAction extends ScreenAction implements IScreenAction {
+	public class GetChatAction extends ScreenAction implements IScreenAction {
 		private var message:String;
 		private var userUID:String;
 		
-		public function getChatAction(chatUid:String) {
+		public function GetChatAction(chatUid:String) {
 			
 			this.message = message;
 			this.userUID = userUID;
