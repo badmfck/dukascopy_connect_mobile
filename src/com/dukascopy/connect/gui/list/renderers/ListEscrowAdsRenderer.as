@@ -123,6 +123,21 @@ package com.dukascopy.connect.gui.list.renderers {
 			addChild(textFieldStatus);
 		}
 		
+		/*private function drawIcon(data:Object):void {
+			var iconClass:Class = UI.getCryptoIconClass(data.instrument.code);
+			if (iconClass != null) {
+				if (icon.bitmapData != null) {
+					icon.bitmapData.dispose();
+					icon.bitmapData = null;
+				}
+				
+				var iconSource:Sprite = (new iconClass)();
+				UI.scaleToFit(iconSource, ICON_SIZE, ICON_SIZE);
+				icon.bitmapData = UI.getSnapshot(iconSource);
+				iconSource = null;
+			}
+		}*/
+		
 		private function initTextFormats():void {
 			format_amount.font = Config.defaultFontName;
 			format_amount.color = Style.color(Style.COLOR_TEXT);
