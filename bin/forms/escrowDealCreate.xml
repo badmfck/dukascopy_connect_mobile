@@ -13,6 +13,7 @@
     <div width="100%" height="100%" background-color="#E9F3F8" overflow="scroll">
 
         <space size="30"/>
+        <graph width="100" height="100" src="res/p2p.svg" />
     
         <div layout="horizontal" width="85%">
             <space size="10"/>

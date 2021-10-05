@@ -1,7 +1,6 @@
 package com.dukascopy.connect.data.escrow {
 	
 	import com.dukascopy.langs.Lang;
-	import mx.core.ByteArrayAsset;
 	
 	/**
 	 * ...

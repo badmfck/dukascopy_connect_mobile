@@ -129,6 +129,9 @@ package com.dukascopy.connect.gui.list.renderers {
 			
 			var itemData:EscrowAdsVO = listData as EscrowAdsVO;
 			
+			if(itemData.instrument==null)
+				return;
+				
 			var iconClass:Class = UI.getCryptoIconClass(itemData.instrument.code);
 			if (iconClass != null) {
 				if (icon.bitmapData != null) {

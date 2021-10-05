@@ -16,7 +16,7 @@ import com.greensock.TweenMax;
 import com.dukascopy.connect.managers.webview.WebViewManager;
 import com.dukascopy.connect.managers.escrow.test.EscrowTest;
 import com.dukascopy.connect.managers.escrow.test.EscrowTestForm;*/
-import com.dukascopy.connect.managers.escrow.EscrowOfferManager;
+//import com.dukascopy.connect.managers.escrow.EscrowOfferManager;
 import com.dukascopy.connect.GD;
 import com.forms.Form;
 import flash.filesystem.File;
@@ -71,7 +71,7 @@ public class MainEscrow extends Sprite {
                 trace(resp);
             },url);*/
 
-			new EscrowOfferManager();
+			//new EscrowOfferManager();
 			//new EscrowDealManager();
 		}
 		

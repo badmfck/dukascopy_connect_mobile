@@ -4,19 +4,33 @@ package com.forms.components
     import com.forms.Form;
     import flash.xml.XMLNode;
     import flash.display.Sprite;
+    import white.File;
+    import com.forms.FormResourcesLoader;
+    import flash.utils.ByteArray;
 
     public class FormGraph extends FormComponent{
 
         private var shapes:Vector.<FormGraphElement>=new Vector.<FormGraphElement>();
         private var graph:Sprite=new Sprite();
-        
+
         public function FormGraph(xml:XMLNode,form:Form){
             super(xml,form)
         }
 
         override protected function createView(xml:XMLNode):void{
+
+            if(xml.attributes.src){
+                new FormResourcesLoader(xml.attributes.src,function(res:ByteArray):void{
+                    // resource loaded
+                    trace("RESOURCE LOADED!");
+                    return;
+                })
+                return;
+            }
+
             var childs:Array=xml.childNodes;
             box.addChild(graph)
+            
             for each(var node:XMLNode in childs){
                 if(node.nodeType!=1)
                     continue;
