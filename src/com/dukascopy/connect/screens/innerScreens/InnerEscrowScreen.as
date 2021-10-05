@@ -256,19 +256,9 @@ package com.dukascopy.connect.screens.innerScreens {
 				return;
 			}
 			currentFilter = filter;
-			if (selectedTabID == TAB_OTHER)
-			{
-				onTabItemSelected(selectedTabID);
-			}
-			updatePositions();
-		}
-		
-		private function updatePositions():void 
-		{
-			var destY:int;
 			
 			var filtersPanelData:Vector.<SelectorItemData> = new Vector.<SelectorItemData>();
-			if (currentFilter != null && selectedTabID == TAB_OTHER)
+			if (currentFilter != null)
 			{
 				if (currentFilter.hideBlocked)
 				{
@@ -304,17 +294,32 @@ package com.dukascopy.connect.screens.innerScreens {
 			
 			if (filtersPanelData != null && filtersPanelData.length > 0)
 			{
-				destY += Config.FINGER_SIZE * .1;
 				filtersPanel.visible = true;
-				filtersPanel.y = destY;
-				
 				filtersPanel.draw(filtersPanelData, _width - Config.MARGIN * 4);
-				filtersPanel.x = Config.MARGIN * 2;
-				destY += filtersPanel.getHeight() + Config.FINGER_SIZE * .1;
 			}
 			else
 			{
 				filtersPanel.visible = false;
+			}
+			
+			if (filtersPanel.visible)
+			{
+				tabs.setSelection(TAB_OTHER, true);
+			//	onTabItemSelected(TAB_OTHER);
+			}
+			updatePositions();
+		}
+		
+		private function updatePositions():void 
+		{
+			var destY:int;
+			
+			if (filtersPanel.visible)
+			{
+				destY += Config.FINGER_SIZE * .1;
+				filtersPanel.y = destY;
+				filtersPanel.x = Config.MARGIN * 2;
+				destY += filtersPanel.getHeight() + Config.FINGER_SIZE * .1;
 			}
 			
 			if (tabs != null) {
