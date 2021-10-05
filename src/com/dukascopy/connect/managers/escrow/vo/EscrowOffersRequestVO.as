@@ -1,5 +1,11 @@
 package com.dukascopy.connect.managers.escrow.vo
 {
+
+    // Soon, Этот сервис будет адаптирован для публикаций объявлений по p2p транзакциям. 
+    // Please stay tuned
+    
+    // about service - не надо.
+
     public class EscrowOffersRequestVO{
 
         public static const SIDE_BUY:String="buy";

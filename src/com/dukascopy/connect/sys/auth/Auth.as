@@ -164,7 +164,11 @@ package com.dukascopy.connect.sys.auth {
 			WSClient.S_USER_PHASE_CHANGED.add(onUserPhaseChanged);
 			UsersManager.USER_BLOCK_CHANGED.add(onUserBlockStatusChanged);
 			S_AUTHORIZED.invoke();
-			GD.S_AUTHORIZED.invoke(myProfile);
+			GD.S_AUTHORIZED.invoke({
+				authKey:_authKey,
+				profile:myProfile,
+				devID:devID
+			});
 		}
 		
 		static private function onUserPhaseChanged(data:Object):void{

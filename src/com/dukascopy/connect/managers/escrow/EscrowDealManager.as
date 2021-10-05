@@ -7,8 +7,6 @@ package com.dukascopy.connect.managers.escrow{
 	import com.dukascopy.connect.managers.escrow.vo.InstrumentParser;
     import com.dukascopy.connect.sys.Dispatcher;
 	import com.dukascopy.connect.sys.applicationError.ApplicationErrors;
-	import com.dukascopy.connect.sys.auth.Auth;
-	import com.dukascopy.connect.sys.bankManager.BankManager;
 	import com.dukascopy.connect.sys.payments.PayManager;
 	import com.dukascopy.connect.sys.payments.PaymentsManager;
 	import com.dukascopy.connect.sys.php.PHP;
@@ -42,18 +40,22 @@ package com.dukascopy.connect.managers.escrow{
         // Prices
         private var isPriceLoading:Boolean=false;
 		public static var instance:EscrowDealManager;
+
+        private var authKey:String="web";
 		
         public function EscrowDealManager(){
-            
-			Auth.S_NEED_AUTHORIZATION.add(clear);
-			
+
             SimpleLoader.URL_DEFAULT="https://loki.telefision.com/escrow/";
 			
             //loadDeals();
 			
 			WSClient.S_ESCROW_DEAL_EVENT.add(onDealEvent);
 			WSClient.S_ESCROW_OFFER_EVENT.add(onOfferEvent);
-			
+
+            GD.S_AUTHORIZED.add(function(data:Object):void{
+                authKey=data.authKey;
+            })
+
             // Check if escrow manager is created
             GD.S_ESCROW_MANAGER_AVAILABLE.add(function(cb:Function):void{
                 cb();
@@ -62,7 +64,7 @@ package com.dukascopy.connect.managers.escrow{
             // CREATE ESCROW DEAL
             GD.S_ESCROW_DEAL_CREATE_REQUEST.add(function(req:EscrowDealCreateRequest):void{
                 var escrowRequest:Object=req.toObject();
-                escrowRequest.key="e41ae903d332b69f490d604474c7ca633cd8835f";
+                escrowRequest.key=authKey//"e41ae903d332b69f490d604474c7ca633cd8835f";
                 escrowRequest.method="Escrow.StartDeal"
                 new SimpleLoader(
                     escrowRequest,
@@ -313,18 +315,25 @@ package com.dukascopy.connect.managers.escrow{
         private function loadDeals():void{
             //TODO: Server method - load deals, fire callback
             new SimpleLoader({
-                key:"e41ae903d332b69f490d604474c7ca633cd8835f",
+                key:authKey,//"e41ae903d332b69f490d604474c7ca633cd8835f",
                 method:"Escrow.GetDeals"
             },function(resp:SimpleLoaderResponse):void{
-                trace(resp);
+                if(resp.error){
+                    GD.S_ESCROW_DEALS_LOADED_ERROR.invoke(resp.error);
+                    return;
+                }
+                onDealsLoaded(resp.data);
             })
         }
 		
         private function onDealsLoaded(data:Object):void{
             
             // DATA MUST BE ARRAY!
-            if(data==null || !(data is Array))
+            if(data==null || !(data is Array)){
+                if(!(data is Array))
+                    GD.S_ESCROW_DEALS_LOADED_ERROR.invoke("Wrong data format");
                 return;
+            }
 			
             var l:int=(data as Array).length;
 			

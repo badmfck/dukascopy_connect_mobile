@@ -549,7 +549,7 @@ package com.dukascopy.connect.sys.php {
 		}
 		
 		static public function question_get(callBack:Function, hash:String = null, quid:String = null, categories:String = null, limit:int = 50, filters:Object = null):void {
-			var request:Object = { hash:hash, qUID:quid, categories:categories, ver:6, limit:limit };
+			var request:Object = { hash:hash, qUID:quid, categories:categories, ver:7, limit:limit };
 			if (filters != null)
 			{
 				request.filters = filters;
@@ -558,7 +558,7 @@ package com.dukascopy.connect.sys.php {
 		}
 		
 		static public function getEscrowAds(callBack:Function, filters:Object, hash:String, callID:String):void {
-			var request:Object = { hash:hash, ver:6, limit:50 };
+			var request:Object = { hash:hash, ver:7, limit:50 };
 			if (filters != null) {
 				request.filters = filters;
 			}
@@ -566,7 +566,7 @@ package com.dukascopy.connect.sys.php {
 		}
 		
 		static public function question_getOne(callBack:Function, quid:String = null):void {
-			call("question.get", callBack, { qUID:quid, ver:6 }, null, false, "POST", true, false, { quid:quid } );
+			call("question.get", callBack, { qUID:quid, ver:7 }, null, false, "POST", true, false, { quid:quid } );
 		}
 		
 		static public function question_prolong(callBack:Function, quid:String, trx:String):void {

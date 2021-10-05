@@ -74,7 +74,7 @@ public class MainEscrow extends Sprite {
             },url);*/
 
 			new EscrowOfferManager();
-			
+			//new EscrowDealManager();
 		}
 		
 		

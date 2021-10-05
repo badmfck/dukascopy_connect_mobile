@@ -53,6 +53,7 @@ package com.dukascopy.connect
 		static public const S_ESCROW_WALLETS_REQUEST:S_EscrowWalletsRequest = new S_EscrowWalletsRequest();
 		static public const S_ESCROW_OFFER_CREATE_REQUEST:S_EscrowOfferCreateRequest = new S_EscrowOfferCreateRequest();
 		static public const S_ESCROW_DEAL_CREATED:S_EscrowDealCreated = new S_EscrowDealCreated();
+		static public const S_ESCROW_DEALS_LOADED_ERROR:Signal = new Signal("S_ESCROW_DEALS_LOADED_ERROR"); // error
 
 		static public const S_ESCROW_OFFERS_REQUEST:S_EscrowOffersRequest = new S_EscrowOffersRequest();
 		static public const S_ESCROW_OFFERS_READY:Signal = new Signal("S_ESCROW_OFFERS_READY");

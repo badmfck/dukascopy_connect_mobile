@@ -61,8 +61,8 @@ package com.dukascopy.connect.managers.escrow {
 			GD.S_UNAUTHORIZED.add(onUnuthorized);
 		}
 		
-		private function onAuthorized(userVO:UserVO):void {
-			profile = userVO;
+		private function onAuthorized(data:Object):void {
+			profile = data.profile;
 		}
 		
 		private function onUnuthorized():void {
