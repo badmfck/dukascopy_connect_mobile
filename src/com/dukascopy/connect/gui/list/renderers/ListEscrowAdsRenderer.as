@@ -15,6 +15,7 @@ package com.dukascopy.connect.gui.list.renderers {
 	import com.dukascopy.connect.utils.DateUtils;
 	import com.dukascopy.langs.Lang;
 	import com.dukascopy.langs.LangManager;
+	import flash.display.Bitmap;
 	import flash.display.IBitmapDrawable;
 	import flash.display.Shape;
 	import flash.display.Sprite;
@@ -32,11 +33,12 @@ package com.dukascopy.connect.gui.list.renderers {
 	
 	public class ListEscrowAdsRenderer extends BaseRenderer implements IListRenderer {
 		
+		
 		static protected var avatarSize:int = Config.FINGER_SIZE * .4;
 		static protected var avatarPosX:int = Config.FINGER_SIZE * .18;
 		static protected var avatarPosY:int = Config.FINGER_SIZE * .2;
 		
-		protected var icon911BMD:ImageBitmapData;
+		protected var icon:Bitmap;
 		
 		protected var format_amount:TextFormat = new TextFormat();
 		protected var format_price:TextFormat = new TextFormat();
@@ -45,7 +47,6 @@ package com.dukascopy.connect.gui.list.renderers {
 		protected var format6:TextFormat = new TextFormat();
 		
 		protected var bg:Shape;
-		protected var avatar:Shape;
 		
 		protected var textFieldAmount:TextField;
 		protected var textFieldPrice:TextField;
@@ -56,26 +57,22 @@ package com.dukascopy.connect.gui.list.renderers {
 			
 			initTextFormats();
 			
-			var icon:Sprite;
+			/*var icon:Sprite;
 			if (icon911BMD == null) {
 				icon = new CreateDealIcon();
 				UI.scaleToFit(icon, avatarSize * 2, avatarSize * 2);
 				icon911BMD = UI.getSnapshot(icon, StageQuality.HIGH, "ListConversation.actionAvatar");
 				UI.destroy(icon);
 				icon = null;
-			}
+			}*/
 			
 			bg = new Shape();
 				bg.graphics.beginFill(Style.color(Style.COLOR_BACKGROUND));
 				bg.graphics.drawRect(0, 0, 1, 1);
 				bg.graphics.endFill();
 			addChild(bg);
-			avatar = new Shape();
-				avatar.x = avatarPosX;
-				avatar.y = avatarPosY;
-			addChild(avatar);
 			
-			var textPosition:int = int(avatar.x + avatarSize * 2 + Config.FINGER_SIZE * .28);
+			var textPosition:int = int(avatarPosX + avatarSize * 2 + Config.FINGER_SIZE * .28);
 			
 			textFieldAmount = new TextField();
 				textFieldAmount.defaultTextFormat = format_amount;
@@ -121,10 +118,18 @@ package com.dukascopy.connect.gui.list.renderers {
 				textFieldStatus.x = textPosition;
 				textFieldStatus.y = int(textFieldPrice.y + FontSize.BODY + Config.FINGER_SIZE * .1);
 			addChild(textFieldStatus);
+			
+			icon = new Bitmap();
+			icon.x = avatarPosX;
+			icon.y = avatarPosY;
+			addChild(icon);
 		}
 		
-		/*private function drawIcon(data:Object):void {
-			var iconClass:Class = UI.getCryptoIconClass(data.instrument.code);
+		protected function drawIcon(listData:Object):void {
+			
+			var itemData:EscrowAdsVO = listData as EscrowAdsVO;
+			
+			var iconClass:Class = UI.getCryptoIconClass(itemData.instrument.code);
 			if (iconClass != null) {
 				if (icon.bitmapData != null) {
 					icon.bitmapData.dispose();
@@ -132,11 +137,11 @@ package com.dukascopy.connect.gui.list.renderers {
 				}
 				
 				var iconSource:Sprite = (new iconClass)();
-				UI.scaleToFit(iconSource, ICON_SIZE, ICON_SIZE);
+				UI.scaleToFit(iconSource, avatarSize * 2, avatarSize * 2);
 				icon.bitmapData = UI.getSnapshot(iconSource);
 				iconSource = null;
 			}
-		}*/
+		}
 		
 		private function initTextFormats():void {
 			format_amount.font = Config.defaultFontName;
@@ -170,14 +175,11 @@ package com.dukascopy.connect.gui.list.renderers {
 		
 		public function getView(item:ListItem, height:int, width:int, highlight:Boolean = false):IBitmapDrawable {
 			
-			avatar.graphics.clear();
-			avatar.visible = true;
-			
 			textFieldAmount.text = "";
 			tfQuestionTime.text = "";
 			textFieldStatus.text = "";
 			
-			ImageManager.drawGraphicCircleImage(avatar.graphics, avatarSize, avatarSize, avatarSize, icon911BMD, ImageManager.SCALE_PORPORTIONAL);
+		//	ImageManager.drawGraphicCircleImage(avatar.graphics, avatarSize, avatarSize, avatarSize, icon911BMD, ImageManager.SCALE_PORPORTIONAL);
 			
 			bg.width = width;
 			bg.height = height;
@@ -204,6 +206,8 @@ package com.dukascopy.connect.gui.list.renderers {
 				textFieldAmount.htmlText = getAmount(item.data);
 				textFieldStatus.defaultTextFormat = getStatusFormat(item.data);
 				textFieldStatus.text = getStatusText(item.data);
+				
+				drawIcon(item.data);
 			}
 			
 			item.setHitZones(hitZones);
@@ -351,17 +355,14 @@ package com.dukascopy.connect.gui.list.renderers {
 			UI.destroy(bg);
 			bg = null;
 			
-			UI.destroy(avatar);
-			avatar = null;
-			
-			icon911BMD.dispose();
-			icon911BMD = null;
-			
 			graphics.clear();
 			
 			if (parent) {
 				parent.removeChild(this);
 			}
+			
+			UI.destroy(icon);
+			icon = null;
 		}
 		
 		/* INTERFACE com.dukascopy.connect.gui.list.renderers.IListRenderer */

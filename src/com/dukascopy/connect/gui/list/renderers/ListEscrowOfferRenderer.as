@@ -2,10 +2,12 @@ package com.dukascopy.connect.gui.list.renderers {
 	
 	import com.dukascopy.connect.data.escrow.EscrowStatus;
 	import com.dukascopy.connect.data.escrow.TradeDirection;
+	import com.dukascopy.connect.gui.lightbox.UI;
 	import com.dukascopy.connect.managers.escrow.vo.EscrowOfferVO;
 	import com.dukascopy.connect.sys.style.presets.Color;
 	import com.dukascopy.connect.utils.DateUtils;
 	import com.dukascopy.langs.Lang;
+	import flash.display.Sprite;
 	import flash.text.TextFormat;
 	
 	/**
@@ -55,6 +57,24 @@ package com.dukascopy.connect.gui.list.renderers {
 				}
 			}
 			return result;
+		}
+		
+		override protected function drawIcon(listData:Object):void {
+			
+			var itemData:EscrowOfferVO = listData as EscrowOfferVO;
+			
+			var iconClass:Class = UI.getCryptoIconClass(itemData.data.instrument);
+			if (iconClass != null) {
+				if (icon.bitmapData != null) {
+					icon.bitmapData.dispose();
+					icon.bitmapData = null;
+				}
+				
+				var iconSource:Sprite = (new iconClass)();
+				UI.scaleToFit(iconSource, avatarSize * 2, avatarSize * 2);
+				icon.bitmapData = UI.getSnapshot(iconSource);
+				iconSource = null;
+			}
 		}
 		
 		override protected function getStatusFormat(listData:Object):TextFormat 
