@@ -12,6 +12,7 @@ package com.dukascopy.connect.screens.innerScreens {
 	import com.dukascopy.connect.gui.list.ListItem;
 	import com.dukascopy.connect.gui.list.renderers.BaseRenderer;
 	import com.dukascopy.connect.gui.list.renderers.ListEscrowAdsRenderer;
+	import com.dukascopy.connect.gui.list.renderers.ListEscrowDealRenderer;
 	import com.dukascopy.connect.gui.list.renderers.ListEscrowOfferRenderer;
 	import com.dukascopy.connect.gui.list.renderers.ListLink;
 	import com.dukascopy.connect.gui.tabs.FilterTabs;
@@ -33,9 +34,11 @@ package com.dukascopy.connect.screens.innerScreens {
 	import com.dukascopy.connect.type.HitZoneType;
 	import com.dukascopy.connect.utils.TextUtils;
 	import com.dukascopy.connect.vo.ChatVO;
+	import com.dukascopy.connect.vo.EscrowDealVO;
 	import com.dukascopy.connect.vo.screen.ChatScreenData;
 	import com.dukascopy.langs.Lang;
 	import com.greensock.TweenMax;
+	import com.telefision.utils.maps.EscrowDealMap;
 	import flash.display.Bitmap;
 	import flash.text.TextFieldAutoSize;
 	import flash.text.TextFormatAlign;
@@ -421,6 +424,7 @@ package com.dukascopy.connect.screens.innerScreens {
 			GD.S_ESCROW_ADS_MINE.remove(onEscrowAdsMineLoaded);
 			GD.S_ESCROW_ADS_FILTER_SETTED.remove(onFilterChanged);
 			GD.S_ESCROW_OFFERS_READY.remove(onOffersLoaded);
+			GD.S_ESCROW_DEALS_LOADED.remove(onDealsLoaded);
 			
 			if (preloader != null)
 			{
@@ -644,6 +648,7 @@ package com.dukascopy.connect.screens.innerScreens {
 			GD.S_ESCROW_ADS.remove(onEscrowAdsLoaded);
 			GD.S_ESCROW_ADS_MINE.remove(onEscrowAdsMineLoaded);
 			GD.S_ESCROW_OFFERS_READY.remove(onOffersLoaded);
+			GD.S_ESCROW_DEALS_LOADED.remove(onDealsLoaded);
 			
 			if (id == TAB_OTHER) {
 				GD.S_ESCROW_ADS.add(onEscrowAdsLoaded);
@@ -658,10 +663,25 @@ package com.dukascopy.connect.screens.innerScreens {
 			if (id == TAB_OFFERS) {
 				GD.S_ESCROW_OFFERS_READY.add(onOffersLoaded);
 				GD.S_ESCROW_OFFERS_REQUEST.invoke();
-				
+				return;
+			}
+			if (id == TAB_DEALS) {
+				GD.S_ESCROW_DEALS_LOADED.add(onDealsLoaded);
+				GD.S_ESCROW_DEALS_REQUEST.invoke();
 				return;
 			}
 			setListData(null);
+		}
+		
+		private function onDealsLoaded(deals:EscrowDealMap):void 
+		{
+			if (_isDisposed)
+				return;
+			if (selectedTabID != TAB_DEALS)
+				return;
+		//	if (preloaderHide == true)
+			hidePreloader();
+			setListData(deals.getValues());
 		}
 		
 		private function onOffersLoaded(offers:Vector.<EscrowOfferVO>):void 
@@ -707,6 +727,8 @@ package com.dukascopy.connect.screens.innerScreens {
 				listItemClass = ListEscrowAdsRenderer;
 			else if (selectedTabID == TAB_OFFERS)
 				listItemClass = ListEscrowOfferRenderer;
+			else if (selectedTabID == TAB_DEALS)
+				listItemClass = ListEscrowDealRenderer;
 			var listData:Object = data;
 			if (listData == null)
 				listData = [];

@@ -1,6 +1,7 @@
 package com.dukascopy.connect.vo
 {
-    public class EscrowDealVO{
+	import com.dukascopy.connect.managers.escrow.vo.BaseVO;
+    public class EscrowDealVO extends BaseVO{
 
         private var _uid:String;
         private var _side:String;
@@ -19,15 +20,24 @@ package com.dukascopy.connect.vo
         private var _crypto_claim_id:String; // id жалобы от инициатора сделки
         private var _mca_claim_id:String; // id жалобы второй стороны
         private var raw:Object;
-
-        public function EscrowDealVO(data:Object){
-            update(data);
+		
+		public function get status():String{return getString("status");}
+		public function get instrument():String{return getString("instrument");}
+		public function get price():Number{return getNumber("price");}
+		public function get currency():String{return getString("mca_ccy");}
+		public function get side():String{ return getString("side"); }
+		public function get created():Number{ return getNumber("created_at"); }
+		public function get amount():Number{ return getNumber("amount"); }
+		
+        public function EscrowDealVO(raw:Object){
+			super(raw);
+            update(raw);
         }
-
+		
         public function update(data:Object):void{
             raw=data;
         }
-
+		
         private function getVal(name:String):Object{
             if(raw==null || name==null)
                 return null;
@@ -35,7 +45,7 @@ package com.dukascopy.connect.vo
                 return raw[name];
             return null;
         }
-
-        public function get uid():String{ return getVal("uid") as String;}
+		
+        public function get uid():String{ return getString("deal_uid") as String;}
     }
 }

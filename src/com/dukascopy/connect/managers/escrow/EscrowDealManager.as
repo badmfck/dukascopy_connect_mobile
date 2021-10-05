@@ -45,7 +45,7 @@ package com.dukascopy.connect.managers.escrow{
 		
         public function EscrowDealManager(){
 
-            SimpleLoader.URL_DEFAULT="https://loki.telefision.com/escrow/";
+            SimpleLoader.URL_DEFAULT="https://loki.telefision.com/master/";
 			
             //loadDeals();
 			
@@ -316,7 +316,7 @@ package com.dukascopy.connect.managers.escrow{
             //TODO: Server method - load deals, fire callback
             new SimpleLoader({
                 key:authKey,//"e41ae903d332b69f490d604474c7ca633cd8835f",
-                method:"Escrow.GetDeals"
+                method:"Cp2p.getDeals"
             },function(resp:SimpleLoaderResponse):void{
                 if(resp.error){
                     GD.S_ESCROW_DEALS_LOADED_ERROR.invoke(resp.error);
@@ -339,13 +339,13 @@ package com.dukascopy.connect.managers.escrow{
 			
             for(var i:int=0;i<l;i++){
                 var deal:Object=data[i];
-                if(!('uid' in deal) || deal.uid==null)
+                if(!('deal_uid' in deal) || deal.deal_uid == null)
                     continue;
                 var dealVO:EscrowDealVO=escrowDeals.getDeal(deal.uid);
                 if(dealVO==null)
                     dealVO=new EscrowDealVO(deal);
                 dealVO.update(deal);
-                escrowDeals.addDeal(deal.uid,dealVO);
+                escrowDeals.addDeal(deal.deal_uid, dealVO);
             }
 			
             GD.S_ESCROW_DEALS_LOADED.invoke(escrowDeals);
