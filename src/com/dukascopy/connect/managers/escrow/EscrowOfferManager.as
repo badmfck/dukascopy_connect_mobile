@@ -12,10 +12,15 @@ package com.dukascopy.connect.managers.escrow
         private var loading:Boolean=false;
         private var needReload:Boolean=true;
         private var lastLoadTime:Number=0;
+        private var authKey:String="web";
 
         public function EscrowOfferManager(){
 
             
+
+            GD.S_AUTHORIZED.add(function(data:Object):void{
+                authKey=data.authKey
+            })
 
 
             //GD.S_ESCROW_OFFER_CREATE_REQUEST.add(onEscrowOfferCreateRequest,this);
@@ -70,7 +75,7 @@ state
             //0f211baf3e629a41afbe39d3a275890772f3ab45 // ilya
             var loader:SimpleLoader=new SimpleLoader({
                 method:"Cp2p.Offer.Get",
-                key:"0f211baf3e629a41afbe39d3a275890772f3ab45",
+                key:authKey,//"0f211baf3e629a41afbe39d3a275890772f3ab45",
                 status:status,
                 side:side
             },function(resp:SimpleLoaderResponse):void{
