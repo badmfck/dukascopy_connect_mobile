@@ -1,5 +1,7 @@
 package com.dukascopy.connect.screens.innerScreens {
 	
+	import assets.PlusAvatar;
+	import assets.PlusIcon;
 	import com.dukascopy.connect.Config;
 	import com.dukascopy.connect.GD;
 	import com.dukascopy.connect.MobileGui;
@@ -15,13 +17,16 @@ package com.dukascopy.connect.screens.innerScreens {
 	import com.dukascopy.connect.gui.list.renderers.ListEscrowDealRenderer;
 	import com.dukascopy.connect.gui.list.renderers.ListEscrowOfferRenderer;
 	import com.dukascopy.connect.gui.list.renderers.ListLink;
+	import com.dukascopy.connect.gui.menuVideo.HidableButton;
 	import com.dukascopy.connect.gui.tabs.FilterTabs;
 	import com.dukascopy.connect.gui.tools.HorizontalPreloader;
 	import com.dukascopy.connect.managers.escrow.vo.EscrowAdsFilterVO;
 	import com.dukascopy.connect.managers.escrow.vo.EscrowAdsVO;
 	import com.dukascopy.connect.managers.escrow.vo.EscrowOfferVO;
+	import com.dukascopy.connect.screens.EscrowAdsCreateScreen;
 	import com.dukascopy.connect.screens.RootScreen;
 	import com.dukascopy.connect.screens.base.BaseScreen;
+	import com.dukascopy.connect.screens.base.ScreenManager;
 	import com.dukascopy.connect.screens.dialogs.ScreenLinksDialog;
 	import com.dukascopy.connect.screens.escrow.FiltersPanel;
 	import com.dukascopy.connect.sys.applicationError.ApplicationErrors;
@@ -73,6 +78,7 @@ package com.dukascopy.connect.screens.innerScreens {
 		private var filtersPanel:FiltersPanel;
 		private var currentFilter:EscrowAdsFilterVO;
 		private var isFirstActivation:Boolean = true;
+		private var createButton:HidableButton;
 		
 		public function InnerEscrowScreen() { }
 		
@@ -99,6 +105,12 @@ package com.dukascopy.connect.screens.innerScreens {
 				storedTabListPosition[TAB_MINE] = {};
 				storedTabListPosition[TAB_DEALS] = {};
 			}
+			
+			createButton = new HidableButton();
+			createButton.tapCallback = onBottomButtonTap;
+			_view.addChild(createButton);
+			createButton.setDesign(new CreateButtonIcon());
+			createButton.visible = true;
 			
 			preloader = new HorizontalPreloader(Style.color(Style.COLOR_ICON_LIGHT));
 			_view.addChild(preloader);
@@ -211,6 +223,9 @@ package com.dukascopy.connect.screens.innerScreens {
 			preloader.setSize(_width, int(Config.FINGER_SIZE * .07));
 			
 			GD.S_ESCROW_ADS_FILTER_SETTED.add(onFilterChanged);
+			
+			createButton.setPosition(_width - Config.FINGER_SIZE - Config.MARGIN * 2,  _height - Config.FINGER_SIZE - Config.MARGIN * 2);
+			createButton.setOffset(Config.TOP_BAR_HEIGHT * 2 + Config.APPLE_TOP_OFFSET);
 		}
 		
 		private function onFilterChanged():void 
@@ -323,6 +338,17 @@ package com.dukascopy.connect.screens.innerScreens {
 			//TweenMax.killDelayedCallsTo(QuestionsManager.askFirstQuestion);
 		}
 		
+		private function onBottomButtonTap():void 
+		{
+			MobileGui.changeMainScreen(EscrowAdsCreateScreen, {
+					backScreen:RootScreen,
+					title:Lang.escrow_create_your_ad, 
+					backScreenData:null,
+					data:null
+				}, ScreenManager.DIRECTION_RIGHT_LEFT
+			);
+		}
+		
 		override public function activateScreen():void {
 			super.activateScreen();
 			if (_isDisposed == true)
@@ -350,6 +376,8 @@ package com.dukascopy.connect.screens.innerScreens {
 			{
 				filtersPanel.activate();
 			}
+			if (createButton != null)
+				createButton.activate();
 		}
 		
 		private function showPreloader():void 
@@ -396,6 +424,9 @@ package com.dukascopy.connect.screens.innerScreens {
 			{
 				filtersPanel.deactivate();
 			}
+			if (createButton != null){				
+				createButton.deactivate();
+			}
 		}
 		
 		private function showLoading():void {
@@ -434,6 +465,10 @@ package com.dukascopy.connect.screens.innerScreens {
 			}
 			removePlaceholder();
 			DialogManager.closeDialog();
+			
+			if (createButton)
+				createButton.dispose();
+			createButton = null;
 		}
 		
 		private function hideStatusClip():void {
@@ -509,6 +544,14 @@ package com.dukascopy.connect.screens.innerScreens {
 				chatScreenData = new ChatScreenData();
 				chatScreenData.type = ChatInitType.CHAT;
 				chatScreenData.chatUID = (data as EscrowOfferVO).chat_uid;
+				chatScreenData.backScreen = RootScreen;
+				MobileGui.showChatScreen(chatScreenData);
+				return;
+			}
+			if (data is EscrowDealVO) {
+				chatScreenData = new ChatScreenData();
+				chatScreenData.type = ChatInitType.CHAT;
+				chatScreenData.chatUID = (data as EscrowDealVO).chatUID;
 				chatScreenData.backScreen = RootScreen;
 				MobileGui.showChatScreen(chatScreenData);
 				return;

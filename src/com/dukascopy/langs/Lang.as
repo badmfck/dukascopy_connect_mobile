@@ -2574,6 +2574,11 @@ package com.dukascopy.langs {
 		static public var escrow_offer_status_cancelled:String = "cancelled";
 		static public var escrow_offer_status_expired:String = "expired";
 		static public var escrow_offer_status_rejected:String = "rejected";
+		static public var escrow_deal_status_created:String = "created";
+		static public var escrow_deal_status_completed:String = "completed";
+		static public var escrow_deal_status_mca_hold:String = "MCA hold";
+		static public var escrow_deal_status_expired:String = "expired";
+		static public var escrow_deal_status_paid_crypto:String = "paid crypto";
 		
 		static public function updateKeys(keys:Object):void {
 			for (var n:String in keys) {

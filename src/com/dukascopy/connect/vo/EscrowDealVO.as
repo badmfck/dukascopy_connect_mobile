@@ -26,6 +26,7 @@ package com.dukascopy.connect.vo
 		public function get price():Number{return getNumber("price");}
 		public function get currency():String{return getString("mca_ccy");}
 		public function get side():String{ return getString("side"); }
+		public function get chatUID():String{ return getString("chat_uid"); }
 		public function get created():Number{ return getNumber("created_at"); }
 		public function get amount():Number{ return getNumber("amount"); }
 		

@@ -13,13 +13,11 @@ package com.dukascopy.connect.data.screenAction.customActions {
 	 */
 	
 	public class GetChatAction extends ScreenAction implements IScreenAction {
-		private var message:String;
-		private var userUID:String;
+		private var chatUid:String;
 		
 		public function GetChatAction(chatUid:String) {
 			
-			this.message = message;
-			this.userUID = userUID;
+			this.chatUid = chatUid;
 			
 			setIconClass(null);
 		}

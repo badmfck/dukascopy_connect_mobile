@@ -29,29 +29,29 @@ package com.dukascopy.connect.gui.list.renderers {
 			if (itemData != null) {
 				switch(itemData.status)
 				{
-					case EscrowStatus.offer_created:
+					case EscrowStatus.deal_created.value:
 					{
-						result = Lang.escrow_offer_status_created;
+						result = Lang.escrow_deal_status_created;
 						break;
 					}
-					case EscrowStatus.offer_accepted:
+					case EscrowStatus.deal_completed.value:
 					{
-						result = Lang.escrow_offer_status_accepted;
+						result = Lang.escrow_deal_status_completed;
 						break;
 					}
-					case EscrowStatus.offer_cancelled:
+					case EscrowStatus.deal_mca_hold.value:
 					{
-						result = Lang.escrow_offer_status_cancelled;
+						result = Lang.escrow_deal_status_mca_hold;
 						break;
 					}
-					case EscrowStatus.offer_expired:
+					case EscrowStatus.offer_expired.value:
 					{
-						result = Lang.escrow_offer_status_expired;
+						result = Lang.escrow_deal_status_expired;
 						break;
 					}
-					case EscrowStatus.offer_rejected:
+					case EscrowStatus.paid_crypto.value:
 					{
-						result = Lang.escrow_offer_status_rejected;
+						result = Lang.escrow_deal_status_paid_crypto;
 						break;
 					}
 				}

@@ -1,7 +1,10 @@
 package com.dukascopy.connect.screens.innerScreens {
 	
+	import assets.PlusAvatar;
+	import assets.PlusIcon;
 	import com.dukascopy.connect.Config;
 	import com.dukascopy.connect.GD;
+	import com.dukascopy.connect.MobileGui;
 	import com.dukascopy.connect.gui.lightbox.UI;
 	import com.dukascopy.connect.gui.list.List;
 	import com.dukascopy.connect.gui.list.ListItem;
@@ -10,17 +13,24 @@ package com.dukascopy.connect.screens.innerScreens {
 	import com.dukascopy.connect.gui.list.renderers.ListEscrowDealRenderer;
 	import com.dukascopy.connect.gui.list.renderers.ListEscrowInstrumentRenderer;
 	import com.dukascopy.connect.gui.list.renderers.ListEscrowOfferRenderer;
+	import com.dukascopy.connect.gui.menuVideo.HidableButton;
 	import com.dukascopy.connect.gui.tabs.FilterTabs;
 	import com.dukascopy.connect.gui.tools.HorizontalPreloader;
 	import com.dukascopy.connect.managers.escrow.vo.EscrowAdsCryptoVO;
 	import com.dukascopy.connect.managers.escrow.vo.EscrowAdsVO;
 	import com.dukascopy.connect.managers.escrow.vo.EscrowOfferVO;
+	import com.dukascopy.connect.screens.EscrowAdsCreateScreen;
+	import com.dukascopy.connect.screens.RootScreen;
 	import com.dukascopy.connect.screens.base.BaseScreen;
+	import com.dukascopy.connect.screens.base.ScreenManager;
 	import com.dukascopy.connect.sys.dialogManager.DialogManager;
 	import com.dukascopy.connect.sys.style.FontSize;
 	import com.dukascopy.connect.sys.style.Style;
+	import com.dukascopy.connect.type.ChatInitType;
 	import com.dukascopy.connect.type.HitZoneType;
 	import com.dukascopy.connect.utils.TextUtils;
+	import com.dukascopy.connect.vo.EscrowDealVO;
+	import com.dukascopy.connect.vo.screen.ChatScreenData;
 	import com.dukascopy.langs.Lang;
 	import com.greensock.TweenMax;
 	import com.telefision.utils.maps.EscrowDealMap;
@@ -53,6 +63,7 @@ package com.dukascopy.connect.screens.innerScreens {
 		private var preloader:HorizontalPreloader;
 		
 		private var isFirstActivation:Boolean = true;
+		private var createButton:HidableButton;
 		
 		public function InnerEscrowInstrumentScreen() { }
 		
@@ -75,6 +86,22 @@ package com.dukascopy.connect.screens.innerScreens {
 			
 			preloader = new HorizontalPreloader(Style.color(Style.COLOR_ICON_LIGHT));
 			_view.addChild(preloader);
+			
+			createButton = new HidableButton();
+			createButton.tapCallback = onBottomButtonTap;
+			_view.addChild(createButton);
+			createButton.setDesign(new CreateButtonIcon());
+		}
+		
+		private function onBottomButtonTap():void 
+		{
+			MobileGui.changeMainScreen(EscrowAdsCreateScreen, {
+					backScreen:RootScreen,
+					title:Lang.escrow_create_your_ad, 
+					backScreenData:null,
+					data:null
+				}, ScreenManager.DIRECTION_RIGHT_LEFT
+			);
 		}
 		
 		private function createTabs():void{
@@ -89,6 +116,9 @@ package com.dukascopy.connect.screens.innerScreens {
 			_params.doDisposeAfterClose = true;
 			
 			preloader.setSize(_width, int(Config.FINGER_SIZE * .07));
+			
+			createButton.setPosition(_width - Config.FINGER_SIZE - Config.MARGIN * 2,  _height - Config.FINGER_SIZE - Config.MARGIN * 2);
+			createButton.setOffset(Config.TOP_BAR_HEIGHT * 2 + Config.APPLE_TOP_OFFSET);
 		}
 		
 		override public function clearView():void {
@@ -152,6 +182,8 @@ package com.dukascopy.connect.screens.innerScreens {
 				else
 					tabs.setSelection(selectedTabID, true);
 			}
+			if (createButton != null)
+				createButton.activate();
 		}
 		
 		override public function deactivateScreen():void {
@@ -165,6 +197,9 @@ package com.dukascopy.connect.screens.innerScreens {
 			if (tabs != null && tabs.isDisposed == false) {
 				tabs.S_ITEM_SELECTED.remove(onTabItemSelected);
 				tabs.deactivate();
+			}
+			if (createButton != null){				
+				createButton.deactivate();
 			}
 		}
 		
@@ -187,6 +222,10 @@ package com.dukascopy.connect.screens.innerScreens {
 			GD.S_ESCROW_OFFERS_READY.remove(onOffersLoaded);
 			GD.S_ESCROW_DEALS_LOADED.remove(onDealsLoaded);
 			DialogManager.closeDialog();
+			
+			if (createButton)
+				createButton.dispose();
+			createButton = null;
 		}
 		
 		override public function drawViewLang():void {
@@ -223,6 +262,23 @@ package com.dukascopy.connect.screens.innerScreens {
 					GD.S_ESCROW_ADS_ANSWERS.invoke(escrowAdsVO.uid);
 					return;
 				}
+				return;
+			}
+			var chatScreenData:ChatScreenData;
+			if (data is EscrowOfferVO) {
+				chatScreenData = new ChatScreenData();
+				chatScreenData.type = ChatInitType.CHAT;
+				chatScreenData.chatUID = (data as EscrowOfferVO).chat_uid;
+				chatScreenData.backScreen = RootScreen;
+				MobileGui.showChatScreen(chatScreenData);
+				return;
+			}
+			if (data is EscrowDealVO) {
+				chatScreenData = new ChatScreenData();
+				chatScreenData.type = ChatInitType.CHAT;
+				chatScreenData.chatUID = (data as EscrowDealVO).chatUID;
+				chatScreenData.backScreen = RootScreen;
+				MobileGui.showChatScreen(chatScreenData);
 				return;
 			}
 		}
