@@ -8,10 +8,12 @@ package com.dukascopy.connect.screens.innerScreens {
 	import com.dukascopy.connect.gui.list.renderers.BaseRenderer;
 	import com.dukascopy.connect.gui.list.renderers.ListEscrowAdsRenderer;
 	import com.dukascopy.connect.gui.list.renderers.ListEscrowInstrumentRenderer;
+	import com.dukascopy.connect.gui.list.renderers.ListEscrowOfferRenderer;
 	import com.dukascopy.connect.gui.tabs.FilterTabs;
 	import com.dukascopy.connect.gui.tools.HorizontalPreloader;
 	import com.dukascopy.connect.managers.escrow.vo.EscrowAdsCryptoVO;
 	import com.dukascopy.connect.managers.escrow.vo.EscrowAdsVO;
+	import com.dukascopy.connect.managers.escrow.vo.EscrowOfferVO;
 	import com.dukascopy.connect.screens.base.BaseScreen;
 	import com.dukascopy.connect.sys.dialogManager.DialogManager;
 	import com.dukascopy.connect.sys.style.FontSize;
@@ -180,6 +182,7 @@ package com.dukascopy.connect.screens.innerScreens {
 			removePlaceholder();
 			GD.S_ESCROW_ADS_CRYPTOS.remove(onEscrowAdsCryptoLoaded);
 			GD.S_ESCROW_ADS_MINE.remove(onEscrowAdsCryptoLoaded);
+			GD.S_ESCROW_OFFERS_READY.remove(onOffersLoaded);
 			DialogManager.closeDialog();
 		}
 		
@@ -229,6 +232,7 @@ package com.dukascopy.connect.screens.innerScreens {
 			saveListPosition();
 			GD.S_ESCROW_ADS_CRYPTOS.remove(onEscrowAdsCryptoLoaded);
 			GD.S_ESCROW_ADS_MINE.remove(onEscrowAdsMineLoaded);
+			GD.S_ESCROW_OFFERS_READY.remove(onOffersLoaded);
 			showPreloader();
 			if (id == TAB_ID_CRYPTO) {
 				GD.S_ESCROW_ADS_CRYPTOS.add(onEscrowAdsCryptoLoaded);
@@ -240,7 +244,24 @@ package com.dukascopy.connect.screens.innerScreens {
 				GD.S_ESCROW_ADS_MINE_REQUEST.invoke();
 				return;
 			}
+			if (id == TAB_ID_OFFERS) {
+				GD.S_ESCROW_OFFERS_READY.add(onOffersLoaded);
+				GD.S_ESCROW_OFFERS_REQUEST.invoke();
+				
+				return;
+			}
 			setListData(null);
+		}
+		
+		private function onOffersLoaded(offers:Vector.<EscrowOfferVO>):void 
+		{
+			if (_isDisposed)
+				return;
+			if (selectedTabID != TAB_ID_OFFERS)
+				return;
+		//	if (preloaderHide == true)
+			hidePreloader();
+			setListData(offers);
 		}
 		
 		private function saveListPosition():void {
@@ -283,7 +304,7 @@ package com.dukascopy.connect.screens.innerScreens {
 				removePlaceholder();
 		}
 		
-		private function setListData(data:Array):void {
+		private function setListData(data:Object):void {
 			if (_isDisposed == true)
 				return;
 			if (list == null)
@@ -293,7 +314,9 @@ package com.dukascopy.connect.screens.innerScreens {
 				listItemClass = ListEscrowInstrumentRenderer;
 			else if (selectedTabID == TAB_ID_MINE)
 				listItemClass = ListEscrowAdsRenderer;
-			var listData:Array = data;
+			else if (selectedTabID == TAB_ID_OFFERS)
+				listItemClass = ListEscrowOfferRenderer;
+			var listData:Object = data;
 			if (listData == null)
 				listData = [];
 			list.setData(listData, listItemClass);
