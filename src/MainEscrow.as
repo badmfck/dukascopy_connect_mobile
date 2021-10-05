@@ -22,8 +22,6 @@ import com.forms.Form;
 import flash.filesystem.File;
 import com.dukascopy.connect.managers.escrow.vo.EscrowOfferVO;
 import com.forms.components.FormList;
-import com.telefision.utils.SimpleLoaderResponse;
-import com.telefision.utils.SimpleLoader;
 
 
 
