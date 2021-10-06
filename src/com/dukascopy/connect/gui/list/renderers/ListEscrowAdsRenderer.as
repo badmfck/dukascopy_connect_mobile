@@ -288,7 +288,7 @@ package com.dukascopy.connect.gui.list.renderers {
 				result += "<font color='#" + Color.RED.toString(16) + "'>" + Lang.sell.toUpperCase() + " " + itemData.amount + " " + itemData.crypto + "</font>";
 			}
 			if (itemData.mine == true) {
-				textFieldAmount.htmlText = textFieldAmount.htmlText + " (" + Lang.mine.toUpperCase() + ")";
+				result = result + "<font color='#" + Style.color(Style.COLOR_TEXT).toString(16) + "'> (" + Lang.mine.toUpperCase() + ")";
 			}
 			return result;
 		}

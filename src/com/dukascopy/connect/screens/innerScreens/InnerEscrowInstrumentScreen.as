@@ -198,7 +198,7 @@ package com.dukascopy.connect.screens.innerScreens {
 				tabs.S_ITEM_SELECTED.remove(onTabItemSelected);
 				tabs.deactivate();
 			}
-			if (createButton != null){				
+			if (createButton != null) {
 				createButton.deactivate();
 			}
 		}
