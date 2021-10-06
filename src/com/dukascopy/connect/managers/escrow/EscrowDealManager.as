@@ -103,7 +103,8 @@ package com.dukascopy.connect.managers.escrow{
                     //!TODO:;
                 })
 				
-					// TODO: SEND TO SERVER, GET RESPONSE, REBUILD INSTRUMENTS
+				// TODO: SEND TO SERVER, GET RESPONSE, REBUILD INSTRUMENTS
+                
                 //FAKE
                 var timer:Timer=new Timer(1000,1);
                 var dis:Dispatcher=new Dispatcher(timer)

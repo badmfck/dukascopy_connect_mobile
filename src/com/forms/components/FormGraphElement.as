@@ -49,7 +49,7 @@ package com.forms.components
                 this[name+"IsSet"]=false;
                 return;
             }
-            var clr:uint=parseInt("0x"+xml.attributes[name]);
+            var clr:uint=parseInt("0x"+xml.attributes[name].substr(1));
             if(isNaN(clr)){
                 this[name+"IsSet"]=false;
                 return;

@@ -65,6 +65,10 @@ package com.forms{
         private static var nextTempID:int=0;
         private var predefinedStyle:Object;
         private var originalXML:XMLNode;
+        private var _formFile:File;
+        public function get formFile():File{
+            return _formFile;
+        }
 
         // variables
         protected var userValues:Object=null;
@@ -232,6 +236,8 @@ package com.forms{
                 setupError("File not exists: "+file.nativePath);
                 return;
             }
+
+            _formFile=file;
 
             var fs:FileStream=new FileStream();
             fdis=new Dispatcher(fs);
