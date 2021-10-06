@@ -1,4 +1,5 @@
 package com.dukascopy.connect.managers.escrow.vo {
+	import com.dukascopy.connect.sys.payments.CurrencyHelpers;
 	
 	/**
 	 * ...
@@ -124,8 +125,11 @@ package com.dukascopy.connect.managers.escrow.vo {
 				return 0;
 			var l:int = _instrument.price.length;
 			for (var i:int = 0; i < l; i++) {
-				if (_instrument.price[i].name == _currency)
-					return _instrument.price[i].value * (1 + Number(_price.substr(0, _price.length - 1)));
+				if (_instrument.price[i].name == _currency) {
+					var additional:Number = _instrument.price[i].value * (Number(_price.substr(0, _price.length - 1)) * .01);
+					var sum:Number = _instrument.price[i].value + additional;
+					return parseFloat(sum.toFixed(CurrencyHelpers.getMaxDecimalCount(_instrument.price[i].name)));
+				}
 			}
 			return 0;
 		}
