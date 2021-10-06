@@ -104,7 +104,7 @@ package com.dukascopy.connect.managers.escrow{
                 })
 				
 				// TODO: SEND TO SERVER, GET RESPONSE, REBUILD INSTRUMENTS
-                
+
                 //FAKE
                 var timer:Timer=new Timer(1000,1);
                 var dis:Dispatcher=new Dispatcher(timer)
@@ -201,6 +201,24 @@ package com.dukascopy.connect.managers.escrow{
 		
 		private function onInstrumentsLoaded(respond:PHPRespond):void 
 		{
+
+
+            // TODO: REMOVE AND MOVE TO SERVER
+            var cardano:Object={
+                ask:2.32,
+                bid:1.92,
+                code:"ADA",
+                fiat:"USD",
+                id:11223,
+                name:"Cardano",
+                precision:4
+            }
+
+            if(respond.data is Array)
+                respond.data.push(cardano);
+                    else
+                        respond.data[3]=cardano;
+
 			if (respond.error == true)
 			{
 				isInstrumentLoading = false;

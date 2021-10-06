@@ -113,9 +113,9 @@ package com.dukascopy.connect.gui.list.renderers {
 		
 		private function drawName(data:Object):void {
 			var code:String = data.instrument.code;
-			var name:String = "";
-			if (code in Lang.cryptoTitles == true)
-				name = Lang.cryptoTitles[code];
+			var name:String = data.instrument.name;
+			/*if (code in Lang.cryptoTitles == true)
+				name = Lang.cryptoTitles[code];*/
 			if (code == "DCO")
 				code = "DUK+";
 			var text:String = String(name + " (" + code + ")").toUpperCase();

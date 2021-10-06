@@ -2,7 +2,7 @@
     <div height="34"></div>
     <div height="68" layout="horizontal" align="center">
         <space size="10"/>
-        <div>BCK</div>
+        <graph width="10" height="10" src="res/backarrow.svg" />
         <space size="15"/>
         <div width="100%" font-size="22">Create your ad</div>
         <space size="10"/>
@@ -14,7 +14,7 @@
 
         <space size="30"/>
 
-        <graph width="100" height="100" src="res/p2p.svg" />
+        
     
         <div layout="horizontal" width="85%">
             <space size="10"/>
@@ -48,7 +48,7 @@
                 
                 <div layout="horizontal">
                     <div width="100%" font-size="18" color="#B0B0B0">Choose operation type</div>
-                    <div>V</div>
+                    <graph width="10" height="10" src="res/downarrow.svg" />
                 </div>
 
                 <space size="10"/>
@@ -57,7 +57,7 @@
                     <div>
                         <div layout="horizontal">
                         <div width="100%" font-size="18" color="#B0B0B0">Select crypto</div>
-                        <div>V</div>
+                        <graph width="10" height="10" src="res/downarrow.svg" />
                     </div>
                 </div>
 

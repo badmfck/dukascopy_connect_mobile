@@ -359,8 +359,9 @@ package com.dukascopy.connect.screens {
 					if (code == "DCO")
 						code = "DUK+";
 					var name:String = "";
-					if (instrument.instrument.code in Lang.cryptoTitles == true)
-						name = Lang.cryptoTitles[instrument.instrument.code];
+					/*if (instrument.instrument.code in Lang.cryptoTitles == true)
+						name = Lang.cryptoTitles[instrument.instrument.code];*/
+					name=instrument.instrument.name;
 					var text:String = String(name + " (" + code + ")").toUpperCase();
 					instrumentTabObject.title = text;
 				}
