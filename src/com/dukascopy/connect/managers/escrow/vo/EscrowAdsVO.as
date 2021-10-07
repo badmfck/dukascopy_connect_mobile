@@ -136,7 +136,7 @@ package com.dukascopy.connect.managers.escrow.vo {
 		
 		public function get priceValue():String { return _price; }
 		public function set priceValue(val:String):void {
-			_price = val
+			_price = val;
 		}
 		
 		public function dispose():void {

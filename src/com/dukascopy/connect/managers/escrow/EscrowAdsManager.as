@@ -178,6 +178,8 @@ package com.dukascopy.connect.managers.escrow {
 					} ));
 				}
 			}
+			if (escrowAdsCryptos != null)
+				escrowAdsCryptos.sortOn("instrumentCode");
 			GD.S_ESCROW_ADS_CRYPTOS.invoke(escrowAdsCryptos, true);
 		}
 		
@@ -370,6 +372,7 @@ package com.dukascopy.connect.managers.escrow {
 				GD.S_ESCROW_INSTRUMENTS_REQUEST.invoke();
 			}
 			escrowAdsMine = escrowAdsPHP;
+			escrowAdsMine.sortOn("created", Array.NUMERIC | Array.DESCENDING);
 			escrowAdsPHP = null;
 			GD.S_ESCROW_ADS_MINE.invoke(escrowAdsMine, true);
 		}
