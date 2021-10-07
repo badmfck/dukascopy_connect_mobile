@@ -39,8 +39,8 @@ package com.forms.components
 
             if(strokeIsSet)
                 _view.graphics.lineStyle(strokeWidth,stroke,1,false,"normal",CapsStyle.SQUARE,JointStyle.MITER);
-            /*if(fillIsSet)
-                _view.graphics.beginFill(fill,1);*/
+            if(fillIsSet)
+                _view.graphics.beginFill(fill,1);
             
         }
 

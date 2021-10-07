@@ -430,19 +430,19 @@ package com.dukascopy.connect.screens {
 				return;
 			if (escrowAdsVO == null)
 				return;
-			if (ei.isLinked) {
+			/*if (ei.isLinked) {*/
 				escrowAdsVO.instrument = ei;
 				msgCrypto.params = { code:ei.code, name:ei.name }
 				list.getItemByNum(2).data.updateText(Config.BOUNDS + JSON.stringify(msgCrypto));
 				list.updateItemByIndex(2, true, true);
-			} else {
+			/*} else {
 				var screenData:AlertScreenData = new AlertScreenData();
 				screenData.text = Lang.escrow_blockchain_address_needed.replace(Lang.regExtValue, ei.name);
 				screenData.button = Lang.textRegister.toUpperCase();
 				screenData.callback = registerBlockchain;
 				screenData.callbackData = ei.code;
 				ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, FloatAlert, screenData);
-			}
+			}*/
 		}
 		
 		private function registerBlockchain(instrumentCode:String):void {

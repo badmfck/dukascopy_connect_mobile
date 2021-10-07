@@ -606,9 +606,9 @@ package com.dukascopy.connect.screens {
 				bottomTabs.selectTap(screensArray[currentTabIndex].id);
 			}
 		}
-		
-		private function onSwipe(direction:String):void {
-			echo("RootScreen", "onSwipe", direction);
+
+		override protected function onSwipe(d:String):void{
+			echo("RootScreen", "onSwipe", d);
 			//!TODO: need rewrite. Bad architecture (create visual controller, add signals)
 			if (LightBox.isShowing || ImagePreviewCrop.isShowing) {
 				return;
@@ -618,11 +618,11 @@ package com.dukascopy.connect.screens {
 				return;
 			}
 			var tapIndex:int = currentTabIndex;
-			if (direction == Swiper.DIRECTION_RIGHT) {
+			if (d == Swiper.DIRECTION_RIGHT) {
 				if (tapIndex == 0)
 					return;
 				tapIndex--;
-			} else if (direction == Swiper.DIRECTION_LEFT) {
+			} else if (d == Swiper.DIRECTION_LEFT) {
 				if (tapIndex == screensArray.length - 1)
 					return;
 				tapIndex++;

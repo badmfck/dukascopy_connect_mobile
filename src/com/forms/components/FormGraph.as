@@ -77,6 +77,8 @@ package com.forms.components
             }
             graph.width=tw;
             graph.height=th;
+            graph.x=(tw-gw)*.5;
+            graph.y=(th-gh)*.5;
         }
 
 

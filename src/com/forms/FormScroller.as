@@ -61,9 +61,9 @@ package com.forms
                 
             TweenMax.killTweensOf(target);
             TweenMax.to(target,.6,{y:mask.height-bounds.height,roundProps:["y"],ease:Power4.easeOut,onUpdate:function():void{
-                         if(onMoved!=null)
-                            onMoved();
-                    }});
+                if(onMoved!=null)
+                    onMoved();
+            }});
          
         }
 
@@ -108,6 +108,8 @@ package com.forms
         
 
         private function onMouseMove(e:MouseEvent):void{
+            if(eventTarget==null)
+                return;
             movingPhase="drag";
             ty=startY+(eventTarget.mouseY-startMY);
         }
