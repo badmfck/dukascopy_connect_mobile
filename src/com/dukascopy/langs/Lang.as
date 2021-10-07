@@ -2407,8 +2407,8 @@ package com.dukascopy.langs {
 		static public var sell_offer_description:String = "Once the offer is accepted, you will have %@ minutes to sent the crypto to the indicated wallet address of the buyer. Please get prepared in advance.";
 		static public var escrow_send_obligation_penalty:String = "Failure to fulfill the sending obligation will incur penalties. See Terms & Conditions for details";
 		static public var escrow_send_obligation_penalty_url:String = "http://google.com";
-		static public var offer_buy_expired_details:String = "Offer expired. The funds were unblocked.";
-		static public var offer_sell_expired_details:String = "Offer expired.";
+		static public var offer_buy_expired_details:String = "Offer was not accepted by the counterparty and expired. The funds reserved for this transaction were unblocked.";
+		static public var offer_sell_expired_details:String = "Offer was not accepted by the counterparty and expired. You may create a new offer now.";
 		static public var cancel_offer:String = "CANCEL OFFER";
 		static public var amount_blocked:String = "Amount blocked";
 		static public var amount_unblocked:String = "Amount unblocked";

@@ -264,12 +264,15 @@ package com.dukascopy.connect.screens.dialogs.x.base.float
 					if (topColorClip == null)
 					{
 						topColorClip = new Sprite();
-						topColorClip.graphics.beginFill(topColor);
-						topColorClip.graphics.drawRect(0, 0, getWidth(), colorPosition - scrollPanel.view.y);
-						topColorClip.graphics.endFill();
 						addItem(topColorClip);
 						toBack(topColorClip);
 					}
+					topColorClip.graphics.clear();
+					topColorClip.graphics.beginFill(topColor);
+					topColorClip.graphics.drawRect(0, 0, getWidth(), colorPosition - scrollPanel.view.y);
+					topColorClip.graphics.endFill();
+				//	topColorClip.x = 100;
+					
 					if (scrollPanel != null)
 					{
 						scrollPanel.blockTopOvermove();

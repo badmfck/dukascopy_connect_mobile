@@ -423,6 +423,10 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 				alertText.y = position;
 				position += alertText.height + contentPaddingV;
 			}
+			else
+			{
+				removeItem(alertText);
+			}
 			
 			if (escrowOffer != null && !EscrowScreenNavigation.isExpired(escrowOffer, offerCreatedTime))
 			{
