@@ -221,6 +221,7 @@ package com.dukascopy.connect.managers.escrow {
 			if (phpRespond.error == true) {
 				if (phpRespond.errorMsg == "io" && NetworkManager.isConnected == true && escrowAdsFilterSetted == false)
 					TweenMax.delayedCall(5, onEscrowAdsRequested, [ true ]);
+				escrowAdsFilterSetted = true;
 				phpRespond.dispose();
 				return;
 			}
@@ -228,6 +229,7 @@ package com.dukascopy.connect.managers.escrow {
 				DialogManager.alert(Lang.textWarning, Lang.serverError + " " + Lang.emptyData);
 				phpRespond.dispose();
 				clearEscrowAds();
+				escrowAdsFilterSetted = true;
 				GD.S_ESCROW_ADS.invoke(null, true, true);
 				return;
 			}
@@ -301,7 +303,7 @@ package com.dukascopy.connect.managers.escrow {
 				escrowAds.sortOn("created", Array.NUMERIC | Array.DESCENDING);
 			} else if (escrowAdsFilter.sort == EscrowAdsFilterVO.SORT_PRICE) {
 				if (escrowAdsFilter.side == "buy")
-					escrowAds.sortOn("price", Array.NUMERIC | Array.DESCENDING).reverse();
+					escrowAds.sortOn("price", Array.NUMERIC);
 				else
 					escrowAds.sortOn("price", Array.NUMERIC | Array.DESCENDING);
 			}
