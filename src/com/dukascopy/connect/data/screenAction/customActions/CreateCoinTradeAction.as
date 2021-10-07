@@ -217,7 +217,6 @@ package com.dukascopy.connect.data.screenAction.customActions {
 		
 		private function onPriceReady(respond:PHPRespond):void 
 		{
-			trace("PRICE ID:", respond.data.id);
 			if (respond.error)
 			{
 				onFail();
