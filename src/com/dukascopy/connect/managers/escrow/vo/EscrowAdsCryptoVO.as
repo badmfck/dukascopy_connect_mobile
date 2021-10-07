@@ -35,6 +35,7 @@ package com.dukascopy.connect.managers.escrow.vo {
 		public function get maxID():int { return _maxID; }
 		public function get count():int { return _count; }
 		public function get volume():Number { return _volume; }
+		public function get instrumentCode():String { return (_instrument != null) ? _instrument.code : null; }
 		
 		public function dispose():void {
 			_instrument = null;
