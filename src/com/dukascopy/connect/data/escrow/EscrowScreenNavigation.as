@@ -148,6 +148,11 @@ package com.dukascopy.connect.data.escrow
 							GD.S_ESCROW_INSTRUMENTS_REQUEST.invoke();
 						}
 					}
+					/*else
+					{
+						screenData.callback = onSelfOfferCommand;
+						ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, EscrowOfferScreen, screenData);
+					}*/
 				}
 				else if (escrow.status == EscrowStatus.offer_cancelled)
 				{
