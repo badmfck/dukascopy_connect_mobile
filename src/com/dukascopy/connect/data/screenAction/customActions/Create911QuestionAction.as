@@ -4,7 +4,7 @@ package com.dukascopy.connect.data.screenAction.customActions {
 	import com.dukascopy.connect.MobileGui;
 	import com.dukascopy.connect.data.screenAction.IScreenAction;
 	import com.dukascopy.connect.data.screenAction.ScreenAction;
-	import com.dukascopy.connect.screens.EscrowAdsCreateScreen;
+	import com.dukascopy.connect.screens.EscrowAdsCreateScreenForm;
 	import com.dukascopy.connect.screens.QuestionCreateUpdateScreen;
 	import com.dukascopy.connect.screens.RootScreen;
 	import com.dukascopy.connect.screens.base.ScreenManager;
@@ -29,7 +29,7 @@ package com.dukascopy.connect.data.screenAction.customActions {
 				DialogManager.alert(Lang.information, Lang.limitQuestionExists);
 				return;
 			}
-			MobileGui.changeMainScreen(EscrowAdsCreateScreen, {
+			MobileGui.changeMainScreen(EscrowAdsCreateScreenForm, {
 					backScreen:RootScreen,
 					title:Lang.escrow_create_your_ad, 
 					backScreenData:null,
