@@ -4,8 +4,6 @@ package com.forms
     import flash.text.TextField;
     import flash.text.TextFormat;
     import flash.text.TextFieldAutoSize;
-    import flash.text.TextFormatAlign;
-    import flash.text.engine.FontWeight;
     import flash.text.AntiAliasType;
 
     public class FormText extends FormComponent{
@@ -35,6 +33,11 @@ package com.forms
 
         override public function set textContent(val:String):void{
             text=val;
+            var txt:String=text;
+            txt=txt.replace(/^[\s\n\t\r]/gm,"");
+            txt=txt.replace(/[\s\n\t\r]$/gm,"");
+            txt=txt.replace(/ {2,}/gm,"");
+            parsed=txt;
         }
 
         override protected function redraw(percentOffsetW:int = -1, percentOffsetH:int = -1,parentValues:Object=null):void{
