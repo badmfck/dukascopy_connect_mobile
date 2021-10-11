@@ -2579,6 +2579,8 @@ package com.dukascopy.langs {
 		static public var escrow_deal_status_mca_hold:String = "MCA hold";
 		static public var escrow_deal_status_expired:String = "expired";
 		static public var escrow_deal_status_paid_crypto:String = "paid crypto";
+		static public var below_market_price:String = "below market price";
+		static public var above_market_price:String = "above market price";
 		
 		static public function updateKeys(keys:Object):void {
 			for (var n:String in keys) {
