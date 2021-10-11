@@ -5,13 +5,13 @@ package com.dukascopy.connect.data.screenAction.customActions {
 	import com.dukascopy.connect.data.screenAction.IScreenAction;
 	import com.dukascopy.connect.data.screenAction.ScreenAction;
 	import com.dukascopy.connect.screens.EscrowAdsCreateScreenForm;
-	import com.dukascopy.connect.screens.QuestionCreateUpdateScreen;
 	import com.dukascopy.connect.screens.RootScreen;
 	import com.dukascopy.connect.screens.base.ScreenManager;
 	import com.dukascopy.connect.sys.dialogManager.DialogManager;
 	import com.dukascopy.connect.sys.questionsManager.QuestionsManager;
 	import com.dukascopy.connect.sys.style.Style;
 	import com.dukascopy.langs.Lang;
+	import com.dukascopy.connect.screens.EscrowAdsCreateScreen;
 	
 	/**
 	 * ...
@@ -29,6 +29,16 @@ package com.dukascopy.connect.data.screenAction.customActions {
 				DialogManager.alert(Lang.information, Lang.limitQuestionExists);
 				return;
 			}
+			/**/
+			MobileGui.changeMainScreen(EscrowAdsCreateScreen, {
+					backScreen:RootScreen,
+					title:Lang.escrow_create_your_ad, 
+					backScreenData:null,
+					data:null
+				}, ScreenManager.DIRECTION_RIGHT_LEFT
+			);
+			
+			/** /
 			MobileGui.changeMainScreen(EscrowAdsCreateScreenForm, {
 					backScreen:RootScreen,
 					title:Lang.escrow_create_your_ad, 
@@ -36,6 +46,7 @@ package com.dukascopy.connect.data.screenAction.customActions {
 					data:null
 				}, ScreenManager.DIRECTION_RIGHT_LEFT
 			);
+			/**/
 			dispose();
 		}
 		

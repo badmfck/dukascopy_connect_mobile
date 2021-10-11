@@ -204,7 +204,7 @@ package com.dukascopy.connect.managers.escrow{
 
 
             // TODO: REMOVE AND MOVE TO SERVER
-            var cardano:Object={
+            /*var cardano:Object={
                 ask:2.32,
                 bid:1.92,
                 code:"ADA",
@@ -217,7 +217,7 @@ package com.dukascopy.connect.managers.escrow{
             if(respond.data is Array)
                 respond.data.push(cardano);
                     else
-                        respond.data[3]=cardano;
+                        respond.data[3]=cardano;*/
 
 			if (respond.error == true)
 			{

@@ -111,6 +111,8 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 					break;
 				}
 			}
+			if(res==null)
+				res="";
 			return res;
 		}
 		
