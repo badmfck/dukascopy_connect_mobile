@@ -395,7 +395,10 @@ package com.dukascopy.connect.screens {
 			if (val == "")
 				val = null;
 			amountString = val;
-			msgAmount.params = { val:val }
+			if (val == null)
+				delete msgAmount.params;
+			else
+				msgAmount.params = { val:val }
 			list.getItemByNum(3).data.updateText(Config.BOUNDS + JSON.stringify(msgAmount));
 			list.updateItemByIndex(3);
 		}
