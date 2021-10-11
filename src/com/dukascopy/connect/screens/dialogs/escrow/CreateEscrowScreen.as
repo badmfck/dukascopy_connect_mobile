@@ -1824,10 +1824,10 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 				refreshPrice();
 			}
 			
-			if (selectedCrypto != null && !selectedCrypto.isLinked && state != STATE_REGISTER)
+			/*if (selectedCrypto != null && !selectedCrypto.isLinked && state != STATE_REGISTER)
 			{
 				toState(STATE_REGISTER);
-			}
+			}*/
 		}
 		
 		private function refreshPrice(overridePrice:Number = NaN, pricePercentStartValue:Number = 0):void 
