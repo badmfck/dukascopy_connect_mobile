@@ -97,6 +97,8 @@ package com.forms
                 stageLink.removeEventListener(MouseEvent.MOUSE_MOVE,onMouseMove)
                 stageLink.removeEventListener(MouseEvent.MOUSE_UP,onMouseUp)
             }
+            if(eventTarget==null)
+                return;
             ty=startY+(eventTarget.mouseY-startMY);
             movingPhase="moving";
             clearTimer();
@@ -199,11 +201,13 @@ package com.forms
             if(eventTarget){
                 eventTarget.removeEventListener(Event.ENTER_FRAME,onFrame)
                 eventTarget.removeEventListener(mDown,onMDown)
-                if(stageLink!=null){
-                    stageLink.removeEventListener(MouseEvent.MOUSE_MOVE,onMouseMove)
-                    stageLink.removeEventListener(MouseEvent.MOUSE_UP,onMouseUp)
-                }
             }
+
+            if(stageLink!=null){
+                stageLink.removeEventListener(MouseEvent.MOUSE_MOVE,onMouseMove)
+                stageLink.removeEventListener(MouseEvent.MOUSE_UP,onMouseUp)
+            }
+            
             stageLink=null;
             clearTimer();
             frameAdded=false;
