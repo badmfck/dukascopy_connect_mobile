@@ -1,6 +1,7 @@
 package com.dukascopy.connect.screens.base {
 	
 	import com.adobe.crypto.MD5;
+	import com.dukascopy.connect.GD;
 	import com.dukascopy.connect.MobileGui;
 	import com.dukascopy.connect.screens.RootScreen;
 	import com.dukascopy.connect.screens.dialogs.PopupDialogBase;
@@ -258,6 +259,7 @@ package com.dukascopy.connect.screens.base {
 			screen.manager = manager;
 			screen.setInitialSize(_width, _height);
 			screen.initScreen(_data);
+			GD.S_SCREEN_READY.invoke(getQualifiedClassName(screen).split("::")[1]);
 			S_SCREEN_INITED.invoke(_cls + "");
 			
 			setScreenSizeAndDrawView(screen);

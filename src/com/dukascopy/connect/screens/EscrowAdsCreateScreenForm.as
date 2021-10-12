@@ -226,6 +226,9 @@ package com.dukascopy.connect.screens {
 			if (val == null)
 				return;
 			escrowAdsVO.side = val.value;
+			lblSide.setStyle( {
+				color: "#363D4D"
+			} );
 			lblSide.textContent = val.name;
 			/*msgSide.params = { val:val.value, name:val.lang }
 			list.getItemByNum(1).data.updateText(Config.BOUNDS + JSON.stringify(msgSide));
