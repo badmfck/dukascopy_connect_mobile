@@ -23,25 +23,52 @@ package com.dukascopy.connect.data.screenAction.customActions {
 		}
 		
 		public function execute():void {
-			var existingChat:ChatVO = ChatManager.getChatWithUsersList([userUID]);
+			var existingChat:ChatVO = ChatManager.getChatByUID(chatUid);
 			if (existingChat != null && existingChat.uid != null && existingChat.uid.length != 0)
 			{
-				ChatManager.sendMessageToOtherChat(message, existingChat.uid, existingChat.securityKey, false);
+				onSuccess(existingChat);
 			}
 			else
 			{
-				PHP.chat_start(onChatLoadedFromPHPAndOpen, [userUID], false, "SendMessageToUserAction");
+				ChatManager.S_CHAT_PREPARED.add(onChatLoaded);
+				ChatManager.S_CHAT_PREPARED_FAIL.add(onChatLoadFail);
+				ChatManager.loadChatFromPHP(chatUid, false);
+			}
+		}
+		
+		private function onChatLoaded(chatVO:ChatVO):void 
+		{
+			ChatManager.S_CHAT_PREPARED.remove(onChatLoaded);
+			ChatManager.S_CHAT_PREPARED_FAIL.remove(onChatLoadFail);
+			onSuccess(chatVO);
+		}
+		
+		private function onChatLoadFail(chatUID:String):void 
+		{
+			if (chatUid == chatUID)
+			{
+				onFail();
+			}
+		}
+		
+		private function onSuccess(chatVO:ChatVO):void 
+		{
+			ChatManager.S_CHAT_PREPARED.remove(onChatLoaded);
+			ChatManager.S_CHAT_PREPARED_FAIL.remove(onChatLoadFail);
+			if (S_ACTION_SUCCESS != null)
+			{
+				S_ACTION_SUCCESS.invoke(chatVO);
 			}
 		}
 		
 		private function onChatLoadedFromPHPAndOpen(phpRespond:PHPRespond):void {
 			if (phpRespond.error == true)
 			{
-				
+				onFail();
 			}
 			else if (phpRespond.data == null)
 			{
-				
+				onFail();
 			}
 			else
 			{
@@ -53,13 +80,28 @@ package com.dukascopy.connect.data.screenAction.customActions {
 				} else
 					c.setData(phpRespond.data);
 				
-				ChatManager.updateLatestsInStore();
-				
-				ChatManager.sendMessageToOtherChat(message, c.uid, c.securityKey, false);
+				onSuccess(c);
 			}
 			
 			phpRespond.dispose();
 			dispose();
+		}
+		
+		private function onFail():void 
+		{
+			ChatManager.S_CHAT_PREPARED.remove(onChatLoaded);
+			ChatManager.S_CHAT_PREPARED_FAIL.remove(onChatLoadFail);
+			if (S_ACTION_FAIL != null)
+			{
+				S_ACTION_FAIL.invoke();
+			}
+		}
+		
+		override public function dispose():void
+		{
+			super.dispose();
+			ChatManager.S_CHAT_PREPARED.remove(onChatLoaded);
+			ChatManager.S_CHAT_PREPARED_FAIL.remove(onChatLoadFail);
 		}
 	}
 }

@@ -2581,6 +2581,8 @@ package com.dukascopy.langs {
 		static public var escrow_deal_status_paid_crypto:String = "paid crypto";
 		static public var below_market_price:String = "below market price";
 		static public var above_market_price:String = "above market price";
+		static public var under_investigation:String = "Under investigation";
+		static public var escrow_deal_status_claimed:String = "Under investigation";
 		
 		static public function updateKeys(keys:Object):void {
 			for (var n:String in keys) {

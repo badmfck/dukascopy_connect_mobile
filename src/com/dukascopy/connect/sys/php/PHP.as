@@ -209,7 +209,7 @@ package com.dukascopy.connect.sys.php {
 			call('ban.byUser', callBack, { uid:userUID, reason:reason } );
 		}
 		
-		static public function chat_get(callBack:Function, chatUID:String, fullKey:Boolean = true, updateUnreaded:Boolean = true, reason:String = ""):void {
+		static public function chat_get(callBack:Function, chatUID:String, fullKey:Boolean = true, updateUnreaded:Boolean = true, reason:String = "", chatUID:String = null):void {
 			if (chatUID == null || chatUID == "")
 			{
 				ApplicationErrors.add();
@@ -218,7 +218,7 @@ package com.dukascopy.connect.sys.php {
 				Main.onGlobalError(e);
 				return;
 			}
-			call('chat.get', callBack, { chatUID:chatUID, fullKey:fullKey,updateUnreaded:updateUnreaded, ver:1 } );
+			call('chat.get', callBack, { chatUID:chatUID, fullKey:fullKey,updateUnreaded:updateUnreaded, ver:1 } , null, false, 'POST', true, false, chatUID);
 		}
 		
 		static public function auth_getCurrentUser(callBack:Function, hash:String = null):void{

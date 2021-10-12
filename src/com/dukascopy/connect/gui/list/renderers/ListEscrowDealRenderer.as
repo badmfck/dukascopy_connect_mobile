@@ -54,6 +54,11 @@ package com.dukascopy.connect.gui.list.renderers {
 						result = Lang.escrow_deal_status_paid_crypto;
 						break;
 					}
+					case EscrowStatus.deal_claimed.value:
+					{
+						result = Lang.escrow_deal_status_claimed;
+						break;
+					}
 				}
 			}
 			return result;
@@ -131,7 +136,7 @@ package com.dukascopy.connect.gui.list.renderers {
 			var result:String = "";
 			if (itemData != null)
 			{
-				var timeValue:String = DateUtils.getComfortDateRepresentationWithMinutes(new Date(itemData.created));
+				var timeValue:String = DateUtils.getComfortDateRepresentationWithMinutes(itemData.created);
 				
 				if (itemData != null)
 				{

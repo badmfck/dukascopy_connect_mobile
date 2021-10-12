@@ -5,6 +5,8 @@ package com.dukascopy.connect.screens.innerScreens {
 	import com.dukascopy.connect.Config;
 	import com.dukascopy.connect.GD;
 	import com.dukascopy.connect.MobileGui;
+	import com.dukascopy.connect.data.screenAction.customActions.OpenDealAction;
+	import com.dukascopy.connect.data.screenAction.customActions.OpenOfferAction;
 	import com.dukascopy.connect.gui.lightbox.UI;
 	import com.dukascopy.connect.gui.list.List;
 	import com.dukascopy.connect.gui.list.ListItem;
@@ -272,7 +274,13 @@ package com.dukascopy.connect.screens.innerScreens {
 				return;
 			}
 			var chatScreenData:ChatScreenData;
+			
 			if (data is EscrowOfferVO) {
+				
+				var openOfferAction:OpenOfferAction = new OpenOfferAction((data as EscrowOfferVO).data, (data as EscrowOfferVO).created.time, (data as EscrowOfferVO).msg_id);
+				openOfferAction.execute();
+				return;
+				
 				chatScreenData = new ChatScreenData();
 				chatScreenData.type = ChatInitType.CHAT;
 				chatScreenData.chatUID = (data as EscrowOfferVO).chat_uid;
@@ -281,6 +289,11 @@ package com.dukascopy.connect.screens.innerScreens {
 				return;
 			}
 			if (data is EscrowDealVO) {
+				
+				var openDealAction:OpenDealAction = new OpenDealAction(data as EscrowDealVO);
+				openDealAction.execute();
+				return;
+				
 				chatScreenData = new ChatScreenData();
 				chatScreenData.type = ChatInitType.CHAT;
 				chatScreenData.chatUID = (data as EscrowDealVO).chatUID;
