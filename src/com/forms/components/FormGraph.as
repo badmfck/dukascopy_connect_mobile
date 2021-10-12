@@ -7,6 +7,7 @@ package com.forms.components
     import com.forms.FormResourcesLoader;
     import flash.utils.ByteArray;
     import flash.xml.XMLDocument;
+        
 
     public class FormGraph extends FormComponent{
 
@@ -14,29 +15,60 @@ package com.forms.components
         private var graph:Sprite=new Sprite();
         private var gw:Number;
         private var gh:Number;
+        private var _src:String;
+        private var resouceLoader:FormResourcesLoader;
+        private var onLoaded:Function;
+
 
         public function FormGraph(xml:XMLNode,form:Form){
             super(xml,form)
         }
 
+        public function set src(val:String):void{
+            if(_src==val)
+                return;
+            _src=val;
+            loadResource();
+        }
+
+        public function get src():String{
+            return _src;
+        }
+
+        
+
         override protected function createView(xml:XMLNode):void{
 
             if(xml.attributes.src){
-                new FormResourcesLoader(xml.attributes.src,form.formFile,function(res:ByteArray):void{
-                    // resource loaded
-                    trace("RESOURCE LOADED!");
-                    res.position=0;
-                    var xml:XMLDocument=new XMLDocument(new XML(res.readUTFBytes(res.length)));
-                    createGraphNodes(xml.firstChild);
-                    resizeGraph();
-                })
+                _src=xml.attributes.src;
+                loadResource();
                 return;
             }
-
             createGraphNodes(xml);
 
-
             // TODO: AS BITMAP
+        }
+
+        private function loadResource():void{
+            var self:FormGraph=this;
+            if(resouceLoader)
+                resouceLoader.stopLoading();
+            resouceLoader=new FormResourcesLoader(_src,form.formFile,function(res:ByteArray):void{
+                // resource loaded
+                res.position=0;
+                var xml:XMLDocument=new XMLDocument(new XML(res.readUTFBytes(res.length)));
+                createGraphNodes(xml.firstChild);
+                resizeGraph();
+                if(onLoaded!=null && onLoaded is Function){
+                    if(onLoaded.length==0){
+                        onLoaded();
+                        return;
+                    }else if(onLoaded.length==1){
+                        onLoaded(self);
+                        return;
+                    }
+                }
+            })
         }
 
 
@@ -77,8 +109,8 @@ package com.forms.components
             }
             graph.width=tw;
             graph.height=th;
-            graph.x=(tw-gw)*.5;
-            graph.y=(th-gh)*.5;
+            graph.x=(bounds.display_width-tw)*.5;
+            graph.y=(bounds.display_height-th)*.5;
         }
 
 

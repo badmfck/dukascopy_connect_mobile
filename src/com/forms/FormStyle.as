@@ -222,6 +222,12 @@ package com.forms
         }
 
         private function setupColor():void{
+
+            if(runtimeStyles!=null && "color" in runtimeStyles && runtimeStyles.color!=null){
+                color=new FormColor(runtimeStyles['color']);
+                return;
+            }
+
             if('color' in values && values['color']!=null){
                 color=new FormColor(values['color']);
                 return;

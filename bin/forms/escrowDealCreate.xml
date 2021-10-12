@@ -39,6 +39,8 @@
 					<div font-size="14">Crypto</div>
 					<div>
 						<div layout="horizontal">
+                            <img src="res/154264.jpg" width="100" height="100" background-color="#00FFCC" />
+                            <graph id="icoCurrency" background-color="#FFCCAA" width="120" height='120'></graph>
 							<div id="lblInstrument" width="100%" font-size="18" color="#B0B0B0">Select crypto</div>
 							<graph width="10" height="10" src="res/downarrow.svg" />
 						</div>

@@ -16,8 +16,15 @@ package com.forms
         
         private static const cache:Array=[];
         private static const pendingResources:Array=[];
+        
+        private var url:String;
+        private var callback:Function;
 
         public function FormResourcesLoader(url:String,formFile:File,callback/*ByteArray*/:Function){
+            
+            this.url=url;
+            this.callback=callback;
+
             var pe:PendingResource=getPendingResource(url);
             if(pe!=null){
                 pe.addCallback(callback);
@@ -36,15 +43,15 @@ package com.forms
 
             if(url.indexOf("http")==0){
                 // TODO: REMOTE LOADING
-                loadRemoteFile(url);
+                loadRemoteFile();
                 return;
             }
 
-            loadLocalFile(url,formFile);
+            loadLocalFile(formFile);
             
         }
 
-        private function loadRemoteFile(url:String):void{
+        private function loadRemoteFile():void{
             var ur:URLRequest=new URLRequest(url);
             ur.method=URLRequestMethod.GET;
             var ul:URLLoader=new URLLoader(ur);
@@ -71,10 +78,11 @@ package com.forms
                 dis.clear();
                 fireCallback(url,null);
             });
+            
 
         }
 
-        private function loadLocalFile(url:String,formFile:File):void{
+        private function loadLocalFile(formFile:File):void{
             // local loading
             var f:File=formFile==null?File.applicationDirectory.resolvePath(url):formFile.parent.resolvePath(url);
             if(!f.exists || f.isDirectory){
@@ -87,8 +95,9 @@ package com.forms
             dis.add(Event.COMPLETE,function(e:Event):void{
                 var ba:ByteArray=new ByteArray();
                 fs.readBytes(ba,0,f.size);
-                var c:Cache=new Cache(url,ba);
-                cache.push(c);
+                
+                //var c:Cache=new Cache(url,ba);
+                //cache.push(c);
                 fireCallback(url,ba);;
                 fs.close();
                 dis.clear()
@@ -107,6 +116,20 @@ package com.forms
             });
 
             fs.openAsync(f,FileMode.READ);
+        }
+
+        public function stopLoading():void{
+            var l:int=pendingResources.length;
+            for(var i:int=0;i<l;i++){
+                var pr:PendingResource=pendingResources[i];
+                if(pr.url==url){
+                    pr.removeCallback(callback);
+                    if(pr.callbacks.length==0)
+                        pendingResources.removeAt(i);
+                    pr.dispose();
+                    break;
+                }
+            }
         }
 
         private function fireCallback(url:String,ba:ByteArray):void{
@@ -136,6 +159,12 @@ package com.forms
             }
             return null;
         }
+
+        public function dispose():void{
+            stopLoading();
+            url=null;
+            callback=null;
+        }
     }
 }
 
@@ -159,6 +188,16 @@ class PendingResource{
         callbacks.push(cb)
     }
 
+    public function removeCallback(cb:Function):void{
+        var l:int=0;
+        for(var i:int=0;i<l;i++){
+            if(callbacks[i]==cb){
+                callbacks.removeAt(i);
+                break;
+            }
+        }
+    }
+
     public function fireCallback(ba:ByteArray):void{
         if(callbacks==null)
             return;
@@ -166,6 +205,10 @@ class PendingResource{
         for each(var f:Function in callbacks)
             f(ba);
         
+        dispose();
+    }
+
+    public function dispose():void{
         url=null;
         callbacks=null;
     }

@@ -618,6 +618,11 @@ package com.dukascopy.connect.screens {
 				return;
 			}
 			var tapIndex:int = currentTabIndex;
+
+			if(tapIndex<0 || tapIndex>=screensArray.length)
+				return;
+			
+
 			if (d == Swiper.DIRECTION_RIGHT) {
 				if (tapIndex == 0)
 					return;
@@ -628,6 +633,7 @@ package com.dukascopy.connect.screens {
 				tapIndex++;
 			} else
 				return;
+			
 			onBottomTabsClick(screensArray[tapIndex].id);
 		}
 		

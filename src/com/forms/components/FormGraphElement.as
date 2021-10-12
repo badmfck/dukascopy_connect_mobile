@@ -36,11 +36,16 @@ package com.forms.components
                     strokeIsSet=true;
                 }
             }
-
+            /*
+            _view.graphics.beginFill(0xFF0000);
+            _view.graphics.drawRect(0,0,2,2);
+            _view.graphics.endFill();
+            */
             if(strokeIsSet)
                 _view.graphics.lineStyle(strokeWidth,stroke,1,false,"normal",CapsStyle.SQUARE,JointStyle.MITER);
             if(fillIsSet)
                 _view.graphics.beginFill(fill,1);
+            
             
         }
 

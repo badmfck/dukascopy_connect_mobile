@@ -22,6 +22,8 @@ import com.forms.Form;
 import flash.filesystem.File;
 import com.dukascopy.connect.managers.escrow.vo.EscrowOfferVO;
 import com.forms.components.FormList;
+import flash.utils.setTimeout;
+import com.forms.components.FormGraph;
 
 
 
@@ -60,6 +62,11 @@ public class MainEscrow extends Sprite {
 					list.setData(offers);
 			})
 
+
+			setTimeout(function():void{
+				var icoCurrency:FormGraph=form.getComponentByID("icoCurrency") as FormGraph;
+				icoCurrency.src="res/p2p.svg";
+			},5000)
 
 			/*var url:String="https://loki.telefision.com/master/";
             var loader:SimpleLoader=new SimpleLoader({

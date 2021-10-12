@@ -10,6 +10,7 @@ package com.forms
     import com.forms.components.FormListItem;
     import com.forms.components.FormTopOffset;
     import com.forms.components.FormBottomOffset;
+    import com.forms.components.FormImg;
     
     public class Form extends FormComponent{
         private var disposed:Boolean=false;
@@ -43,6 +44,7 @@ package com.forms
             _avaiableComponentRenderers.push(new FormRegisteredComponent("top-offset",FormTopOffset));
             _avaiableComponentRenderers.push(new FormRegisteredComponent("bottom-offset",FormBottomOffset));
             _avaiableComponentRenderers.push(new FormRegisteredComponent("graph",FormGraph));
+            _avaiableComponentRenderers.push(new FormRegisteredComponent("img",FormImg));
             _avaiableComponentRenderers.push(new FormRegisteredComponent("input",FormInput));
             _avaiableComponentRenderers.push(new FormRegisteredComponent("list",FormList));
             _avaiableComponentRenderers.push(new FormRegisteredComponent("li",FormListItem));
@@ -145,6 +147,13 @@ package com.forms
 
         public function getComponentByID(id:String):FormComponent{
             return registeredComponents[id];
+        }
+
+        public function setStyleByID(id:String,style:Object):void{
+            var cmp:FormComponent=getComponentByID(id);
+            if(cmp==null)
+                return;
+            cmp.setStyle(style);
         }
 
         public function get avaiableComponentRenderes():Vector.<FormRegisteredComponent>{

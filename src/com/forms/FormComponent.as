@@ -115,6 +115,10 @@ package com.forms{
             return -1;
         }
 
+        public function update():void{
+            rebuild(true);
+        }
+
 
         private var _onTap:Function=null;
         public function set onTap(val:Function):void{
@@ -279,9 +283,8 @@ package com.forms{
 
         public function setStyle(val:Object):void{
             style.setStyle(val);
-            needRedraw=true;
-            draw();
-
+            /*needRedraw=true;
+            draw();*/
         }
 
         public function set textContent(val:String):void{
@@ -300,7 +303,7 @@ package com.forms{
             if(_components.length == 1 && _components[0] is FormText && lines.length==1){
                 txtNode=_components[0] as FormText;
                 txtNode.textContent=val;
-                rebuild();
+                //rebuild();
                 return;
             }
 
@@ -309,7 +312,7 @@ package com.forms{
                 var txt:FormText=createTextNode(lines[i]);
                 _add(txt,-1,false);
             }
-            rebuild();
+            //rebuild();
         }
 
 
@@ -678,7 +681,10 @@ package com.forms{
             }
         }
 
-        protected function rebuild():void{
+        protected function rebuild(force:Boolean=false):void{
+            if(!needRedraw && force)
+                needRedraw=true;
+
             // root level;
             if(parent==null){
                 redraw();
@@ -700,6 +706,8 @@ package com.forms{
             // find root
             var p:FormComponent=parent;
             while(p.parent!=null){
+                if(p.mask!=null && p.mask.parent!=null)
+                    break;
                 p=p.parent;
             }
             p.redraw();
