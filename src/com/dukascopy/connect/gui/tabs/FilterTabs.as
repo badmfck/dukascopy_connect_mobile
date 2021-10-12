@@ -126,8 +126,11 @@ package com.dukascopy.connect.gui.tabs {
 			var index:int = stock.indexOf(item);
 			if (index >= stock.length)
 				index = stock.length - 1;
-			if (_indexSelected == index)
+			if (_indexSelected == index){
+				if (invokeSignal)
+					S_ITEM_SELECTED.invoke(stock[index].id);
 				return;
+			}
 			if (_indexSelected != -1) {
 				stock[_indexSelected].selection = false;
 				stock[_indexSelected].rebuild(getColors(), tabW, tabH, tabsWidthByText);

@@ -96,9 +96,15 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 						var price:String = itemData.systemMessageVO.additionalData.price;
 						res = price;
 						if (res.charAt(res.length -1) == "%") {
-							res += " " + Lang.tenderPricePercent;
-							if (res.charAt(0) != "-") {
-								res = "+" + res;
+						//	res += " " + Lang.tenderPricePercent;
+							if (res.charAt(0) == "-") {
+							//	res = "+" + res;
+								res = res.replace("-", "");
+								res += " " + Lang.below_market_price;
+							}
+							else
+							{
+								res += " " + Lang.above_market_price;
 							}
 							var realPrice:String = price.replace("%", "");
 							if (!isNaN(Number(realPrice)) && Number(realPrice) == 0) {

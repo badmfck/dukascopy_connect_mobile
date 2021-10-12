@@ -93,8 +93,7 @@ package com.dukascopy.connect.screens.innerScreens {
 			createButton.setDesign(new CreateButtonIcon());
 		}
 		
-		private function onBottomButtonTap():void 
-		{
+		private function onBottomButtonTap():void {
 			MobileGui.changeMainScreen(EscrowAdsCreateScreen, {
 					backScreen:RootScreen,
 					title:Lang.escrow_create_your_ad, 
@@ -119,6 +118,13 @@ package com.dukascopy.connect.screens.innerScreens {
 			
 			createButton.setPosition(_width - Config.FINGER_SIZE - Config.MARGIN * 2,  _height - Config.FINGER_SIZE - Config.MARGIN * 2);
 			createButton.setOffset(Config.TOP_BAR_HEIGHT * 2 + Config.APPLE_TOP_OFFSET);
+			
+			GD.S_SCREEN_READY.add(onScreenReady);
+		}
+		
+		private function onScreenReady(screenName:String):void {
+			if (screenName == "RootScreen")
+				isFirstActivation = true;
 		}
 		
 		override public function clearView():void {
@@ -221,6 +227,7 @@ package com.dukascopy.connect.screens.innerScreens {
 			GD.S_ESCROW_ADS_MINE.remove(onEscrowAdsCryptoLoaded);
 			GD.S_ESCROW_OFFERS_READY.remove(onOffersLoaded);
 			GD.S_ESCROW_DEALS_LOADED.remove(onDealsLoaded);
+			GD.S_SCREEN_READY.remove(onScreenReady);
 			DialogManager.closeDialog();
 			
 			if (createButton)

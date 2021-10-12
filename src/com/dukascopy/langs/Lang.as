@@ -2404,7 +2404,7 @@ package com.dukascopy.langs {
 		static public var buy_offer_awaiting_acceptance:String = "BUY offer is awaiting acceptance";
 		static public var sell_offer_awaiting_acceptance:String = "SELL offer is awaiting acceptance";
 		static public var buy_offer_description:String = "If it is not accepted within %@1 minutes, the offer is canceled automatically and the fiat funds on your account get unblocked. Until the offer is confirmed by the %@2, you can cancel it at any moment, without penalties.";
-		static public var sell_offer_description:String = "Once the offer is accepted, you will have %@ minutes to sent the crypto to the indicated wallet address of the buyer. Please get prepared in advance.";
+		static public var sell_offer_description:String = "Once the offer is accepted, you will have %@ minutes to send the crypto to the indicated wallet address of the buyer. Please get prepared in advance.";
 		static public var escrow_send_obligation_penalty:String = "Failure to fulfill the sending obligation will incur penalties. See Terms & Conditions for details";
 		static public var escrow_send_obligation_penalty_url:String = "http://google.com";
 		static public var offer_buy_expired_details:String = "Offer was not accepted by the counterparty and expired. The funds reserved for this transaction were unblocked.";
@@ -2490,7 +2490,7 @@ package com.dukascopy.langs {
 		static public var escrow_target_price_per_coin:String = "Target price per Coin";
 		
 		static public var addTender:String = "Add your tender";
-		static public var tenderStartText1:String = "Create your ad you intend to publish, indicating the required details.\nOnce someonce reacts to your ad, switch to the one-to-one chat with the counterparty, agree on the ultimate conditions of the future deal and initiate a binding offer through a dedicated form right from the chat.\n\n<font color=\"#CD3F43\"><a href=\"sdgsdfgsdfghdfh\">Terms & Conditions</a></font>";
+		static public var tenderStartText1:String = "Create your ad you intend to publish, indicating the required details.\nOnce someone reacts to your ad, switch to the one-to-one chat with the counterparty, agree on the ultimate conditions of the future deal and initiate a binding offer through a dedicated form right from the chat.\n\n<font color=\"#CD3F43\"><a href=\"sdgsdfgsdfghdfh\">Terms & Conditions</a></font>";
 		static public var tenderSide:String = "I would like to";
 		static public var tenderTypeOperation:String = "Choose operation type";
 		static public var tenderCrypto:String = "Crypto";
@@ -2579,6 +2579,8 @@ package com.dukascopy.langs {
 		static public var escrow_deal_status_mca_hold:String = "MCA hold";
 		static public var escrow_deal_status_expired:String = "expired";
 		static public var escrow_deal_status_paid_crypto:String = "paid crypto";
+		static public var below_market_price:String = "below market price";
+		static public var above_market_price:String = "above market price";
 		
 		static public function updateKeys(keys:Object):void {
 			for (var n:String in keys) {

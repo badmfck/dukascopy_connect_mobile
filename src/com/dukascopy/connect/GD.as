@@ -25,6 +25,7 @@ package com.dukascopy.connect
 		
 		static public const S_STAGE_SIZE_CHANGED:Signal = new Signal("S_STAGE_SIZE_CHANGED");
 		static public const S_TOAST:Signal = new Signal("S_TOAST");
+		static public const S_SCREEN_READY:Signal = new Signal("S_SCREEN_READY");
 		
 		static public const S_TIMEZONE_REQUEST:Signal = new Signal("S_TIMEZONE_REQUEST");
 		
