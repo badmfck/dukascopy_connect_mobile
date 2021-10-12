@@ -158,7 +158,7 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 			addChild(iconTime);
 			UI.scaleToFit(iconTime, iconSize, iconSize);
 			
-			iconSize = Config.FINGER_SIZE * .32;
+			iconSize = Config.FINGER_SIZE * .5;
 			iconAlert = new EscrowAlert();
 			addChild(iconAlert);
 			UI.scaleToFit(iconAlert, iconSize, iconSize);
@@ -320,7 +320,11 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 			var direction:TradeDirection = data.direction;
 			
 			var result:String = "";
-			if (EscrowScreenNavigation.isExpired(messageData.systemMessageVO.escrow, messageData.created) && data.inactive == false)
+			if (status == EscrowStatus.deal_claimed)
+			{
+				result = Lang.under_investigation;
+			}
+			else if (EscrowScreenNavigation.isExpired(messageData.systemMessageVO.escrow, messageData.created) && data.inactive == false)
 			{
 				if (messageData.systemMessageVO.escrow.status == EscrowStatus.deal_created ||
 					messageData.systemMessageVO.escrow.status == EscrowStatus.deal_mca_hold ||
@@ -517,7 +521,11 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 					}
 				}
 				
-				if (messageData.systemMessageVO.escrow.status == EscrowStatus.offer_created)
+				if (messageData.systemMessageVO.escrow.status == EscrowStatus.deal_claimed)
+				{
+					iconAlert.visible = true;
+				}
+				else if (messageData.systemMessageVO.escrow.status == EscrowStatus.offer_created)
 				{
 					iconTime.visible = true;
 					time.visible = true;
@@ -795,6 +803,11 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 			{
 				switch(status)
 				{
+					case EscrowStatus.deal_claimed:
+					{
+						return Color.RED;
+						break;
+					}
 					case EscrowStatus.offer_expired:
 					{
 						return Color.GREY;

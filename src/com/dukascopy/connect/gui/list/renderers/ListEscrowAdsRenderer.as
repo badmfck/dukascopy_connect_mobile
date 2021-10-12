@@ -229,7 +229,7 @@ package com.dukascopy.connect.gui.list.renderers {
 			return false;
 		}
 		
-		private function updateItemAlpha(listData:Object):void 
+		protected function updateItemAlpha(listData:Object):void 
 		{
 			var itemData:EscrowAdsVO = listData as EscrowAdsVO;
 			

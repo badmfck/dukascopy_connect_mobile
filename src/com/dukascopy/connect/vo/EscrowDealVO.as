@@ -27,8 +27,15 @@ package com.dukascopy.connect.vo
 		public function get currency():String{return getString("mca_ccy");}
 		public function get side():String{ return getString("side"); }
 		public function get chatUID():String{ return getString("chat_uid"); }
-		public function get created():Number{ return getNumber("created_at"); }
+		public function get created():Date{ return getDate("created_at"); }
 		public function get amount():Number{ return getNumber("amount"); }
+		
+		public function get cryptoUserUID():String{ return getString("crypto_user_uid"); }
+		public function get mcaUserUID():String{ return getString("mca_user_uid"); }
+		public function get cryptoTransactionId():String{ return getString("crypto_trn_id"); }
+		public function get messageId():Number{ return getNumber("msg_id"); }
+		public function get cryptoWallet():String{ return getString("crypto_wallet"); }
+		public function get debitAccount():String{ return getString("debit_account"); }
 		
         public function EscrowDealVO(raw:Object){
 			super(raw);

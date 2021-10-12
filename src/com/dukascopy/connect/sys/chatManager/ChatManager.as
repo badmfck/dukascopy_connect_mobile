@@ -113,6 +113,7 @@ package com.dukascopy.connect.sys.chatManager {
 		static public var S_SERVER_DATA_LOAD_END:Signal = new Signal('ChatManager.S_SERVER_DATA_LOAD_END');
 		static public var S_CHAT_READY:Signal = new Signal('ChatManager.S_CHAT_READY');
 		static public var S_CHAT_PREPARED:Signal = new Signal('ChatManager.S_CHAT_PREPARED');
+		static public var S_CHAT_PREPARED_FAIL:Signal = new Signal('ChatManager.S_CHAT_PREPARED_FAIL');
 		static public var S_EDIT_MESSAGE:Signal = new Signal('ChatManager.S_EDIT_MESSAGE');
 		
 		static public var S_LOAD_START:Signal = new Signal('ChatManager.S_LOAD_START');
@@ -2389,11 +2390,15 @@ package com.dukascopy.connect.sys.chatManager {
 		
 		static public function loadChatFromPHP(chatUID:String, openAfterLoad:Boolean = false, reason:String = ""):void {
 			echo("ChatManager", "loadChatFromPHP");
-			PHP.chat_get((openAfterLoad == true) ? onChatLoadedFromPHPAndOpen : onChatLoadedFromPHP, chatUID, true, true, "loadChatFromPHP." + reason);
+			PHP.chat_get((openAfterLoad == true) ? onChatLoadedFromPHPAndOpen : onChatLoadedFromPHP, chatUID, true, true, "loadChatFromPHP." + reason, chatUID);
 		}
 		
 		static private function onChatLoadedFromPHP(phpRespond:PHPRespond):void {
-			prepareLoadedChat(phpRespond);
+			var chatVO:ChatVO = prepareLoadedChat(phpRespond);
+			if (chatVO == null)
+			{
+				S_CHAT_PREPARED_FAIL.invoke(phpRespond.additionalData);
+			}
 			phpRespond.dispose();
 		}
 		

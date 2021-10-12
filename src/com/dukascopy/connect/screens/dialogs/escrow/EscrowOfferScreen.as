@@ -150,7 +150,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			
 			if (escrowOffer != null)
 			{
-				if (escrowOffer.status == EscrowStatus.offer_created)
+				if (escrowOffer.status == EscrowStatus.offer_created || escrowOffer.status == EscrowStatus.offer_expired)
 				{
 					if (EscrowScreenNavigation.isExpired(escrowOffer, offerCreatedTime))
 					{
@@ -259,7 +259,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			{
 				var text:String = "";
 				var color:Number = Color.GREEN;
-				if (escrowOffer.status == EscrowStatus.offer_created)
+				if (escrowOffer.status == EscrowStatus.offer_created || escrowOffer.status == EscrowStatus.offer_expired)
 				{
 					if (EscrowScreenNavigation.isExpired(escrowOffer, offerCreatedTime))
 					{
@@ -347,7 +347,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			var text:String = "";
 			if (escrowOffer != null)
 			{
-				if (escrowOffer.status == EscrowStatus.offer_created)
+				if (escrowOffer.status == EscrowStatus.offer_created || escrowOffer.status == EscrowStatus.offer_expired)
 				{
 					if (EscrowScreenNavigation.isExpired(escrowOffer, offerCreatedTime))
 					{

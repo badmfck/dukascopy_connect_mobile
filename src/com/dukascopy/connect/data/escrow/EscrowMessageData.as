@@ -26,7 +26,7 @@ package com.dukascopy.connect.data.escrow
 		public var chatUID:String;
 		public var deal_uid:String;
 		public var debit_account:String;
-		public var msg_id:String;
+		public var msg_id:Number;
 		public var transactionConfirmShown:Boolean;
 		public var priceID:int;
 		

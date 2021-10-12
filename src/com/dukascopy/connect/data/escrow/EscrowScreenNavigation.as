@@ -148,11 +148,24 @@ package com.dukascopy.connect.data.escrow
 							GD.S_ESCROW_INSTRUMENTS_REQUEST.invoke();
 						}
 					}
-					/*else
+					else
 					{
 						screenData.callback = onSelfOfferCommand;
 						ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, EscrowOfferScreen, screenData);
-					}*/
+					}
+				}
+				else if (escrow.status == EscrowStatus.offer_expired)
+				{
+					if ((escrow.direction == TradeDirection.sell && escrow.crypto_user_uid == Auth.uid) || (escrow.direction == TradeDirection.buy && escrow.mca_user_uid == Auth.uid))
+					{
+					//	screenData.callback = onSelfOfferCommand;
+						ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, EscrowOfferScreen, screenData);
+					}
+					else
+					{
+					//	screenData.callback = onSelfOfferCommand;
+						ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, EscrowOfferScreen, screenData);
+					}
 				}
 				else if (escrow.status == EscrowStatus.offer_cancelled)
 				{
@@ -342,7 +355,7 @@ package com.dukascopy.connect.data.escrow
 			}
 			
 			var selectedInstrument:EscrowInstrument;
-			if (lastRequestData != null && lastRequestData.escrow != null && lastRequestData.escrow.status == EscrowStatus.offer_created)
+			if (lastRequestData != null && lastRequestData.escrow != null && (lastRequestData.escrow.status == EscrowStatus.offer_created || lastRequestData.escrow.status == EscrowStatus.offer_expired))
 			{
 				if (lastRequestData.escrow.instrument != null)
 				{
@@ -652,6 +665,10 @@ package com.dukascopy.connect.data.escrow
 		
 		static public function isExpired(escrow:EscrowMessageData, created:Number):Boolean
 		{
+			if (escrow.status == EscrowStatus.offer_expired)
+			{
+				return true;
+			}
 			//!TODO:;
 			if (escrow.status == EscrowStatus.offer_created)
 			{
@@ -660,6 +677,7 @@ package com.dukascopy.connect.data.escrow
 			else if (escrow.status == EscrowStatus.deal_created)
 			{
 				//!TODO:;
+				trace(((new Date()).time / 1000 - created) / 60);
 				return (((new Date()).time / 1000 - created) / 60) > EscrowSettings.dealMaxTime;
 			}
 			else if (escrow.status == EscrowStatus.deal_mca_hold)

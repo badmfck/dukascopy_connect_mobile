@@ -75,7 +75,7 @@ package com.dukascopy.connect.managers.escrow.vo
                     tms*=1000;
                 }
                 date=new Date();
-                date.setTime(val);
+                date.setTime(tms);
                 return date;
             }
             

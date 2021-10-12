@@ -59,6 +59,16 @@ package com.dukascopy.connect.gui.list.renderers {
 			return result;
 		}
 		
+		override protected function updateItemAlpha(listData:Object):void 
+		{
+			var itemData:EscrowOfferVO = listData as EscrowOfferVO;
+			
+			if (itemData.data.status == EscrowStatus.offer_expired)
+				alpha = .6;
+			else
+				alpha = 1;
+		}
+		
 		override protected function drawIcon(listData:Object):void {
 			
 			var itemData:EscrowOfferVO = listData as EscrowOfferVO;
