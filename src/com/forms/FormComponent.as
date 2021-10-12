@@ -50,7 +50,7 @@ package com.forms{
         protected var _components:Vector.<FormComponent>=new Vector.<FormComponent>();
         public function get children():Vector.<FormComponent>{return _components}
         protected var form:Form;
-        protected var parent:FormComponent=null;
+        protected var _parent:FormComponent=null;
         protected var destroyed:Boolean=false;
         private var mask:Sprite;
         private var scroller:FormScroller;
@@ -72,6 +72,8 @@ package com.forms{
 
         // variables
         protected var userValues:Object=null;
+
+        private var oldTextContent:String;
 
         // listeners
         private var drawn:Boolean=false;
@@ -115,7 +117,7 @@ package com.forms{
             return -1;
         }
 
-        public function update():void{
+        public function update():void{  
             rebuild(true);
         }
 
@@ -137,7 +139,7 @@ package com.forms{
         private var fdis:Dispatcher;
         private var filePath:String=null;
         
-        public function FormComponent(xml:*,form:Form,predefinedStyle:Object=null,additionalChilds:XML=null){
+        public function FormComponent(xml:*,form:Form,predefinedStyle:Object=null,additionalChilds:XML=null,dolly:Boolean=false){
             
             if(xml==null)
                 trace('CREATE COMPONENT!',xml);
@@ -156,12 +158,12 @@ package com.forms{
             
             this.form=form;
             if(xml is XML){
-                onXMLReady(new XMLDocument(xml).firstChild,predefinedStyle,additionalChilds);
+                onXMLReady(new XMLDocument(xml).firstChild,predefinedStyle,additionalChilds,dolly);
                 return;
             }
 
             if(xml is XMLNode){
-                onXMLReady(xml,predefinedStyle,additionalChilds)
+                onXMLReady(xml,predefinedStyle,additionalChilds,dolly)
                 return;
             }
             if(xml is String){
@@ -278,24 +280,23 @@ package com.forms{
             })
 
             fs.openAsync(file,FileMode.READ);
-
         }
 
         public function setStyle(val:Object):void{
             style.setStyle(val);
-            /*needRedraw=true;
-            draw();*/
         }
 
         public function set textContent(val:String):void{
-            
+
+            if(val==oldTextContent)
+                return;
+            oldTextContent=val;
+
             var txtNode:FormText;
             if(val==null || val==""){
                 clearAll();
                 return;
             }
-
-            //TODO: DO NOT CHANGE TEXT CONTENT IF IT THE SAME!!!
 
             var lines:Array=val.split("\n");
 
@@ -303,7 +304,7 @@ package com.forms{
             if(_components.length == 1 && _components[0] is FormText && lines.length==1){
                 txtNode=_components[0] as FormText;
                 txtNode.textContent=val;
-                //rebuild();
+                rebuild();
                 return;
             }
 
@@ -312,7 +313,11 @@ package com.forms{
                 var txt:FormText=createTextNode(lines[i]);
                 _add(txt,-1,false);
             }
-            //rebuild();
+            rebuild();
+        }
+
+        public function get parent():FormComponent{
+            return _parent;
         }
 
 
@@ -333,7 +338,7 @@ package com.forms{
                 })
             }
 
-            
+             
             var timer:Timer=new Timer(2000);
             var ddis:Dispatcher=new Dispatcher(timer);
             var lastFileModDate:Number=file.modificationDate.getTime();
@@ -390,7 +395,7 @@ package com.forms{
             _id=newID;
         }
 
-        private function onXMLReady(xml:XMLNode,predefinedStyle:Object,additionalChilds:XML):void{
+        private function onXMLReady(xml:XMLNode,predefinedStyle:Object,additionalChilds:XML,dolly:Boolean=false):void{
             _nodeName=xml.nodeName;
             _nodeType=xml.nodeType;
 
@@ -432,7 +437,7 @@ package com.forms{
             
           
             if(_id){
-                if(this.form!=null && attributes["--local-child-id"]!=true){
+                if(this.form!=null && attributes["--local-child-id"]!=true && !dolly){
                     this.form.regID(_id,this);
                     if(box!=null)
                         box.name="box_"+nodeName+"_"+_id;
@@ -662,7 +667,7 @@ package com.forms{
                 box.addChild(component.view);
             }
             
-            component.parent=this;
+            component._parent=this;
             if(component.id!=null)
                 attachControllerUpward(component);
 
@@ -1499,7 +1504,7 @@ package com.forms{
         }
 
         protected function removeFromStage():void{
-            parent=null;
+            _parent=null;
             if(_view!=null && _view.parent!=null)
                 _view.parent.removeChild(_view);
         }
@@ -1535,7 +1540,7 @@ package com.forms{
                 trace("WARN: component not ready yet to clone");
                 return null;
             }
-            var dolly:FormComponent=new FormComponent(originalXML,form,predefinedStyle);
+            var dolly:FormComponent=new FormComponent(originalXML,form,predefinedStyle,null,true);
             return dolly;
         }
 
@@ -1550,7 +1555,7 @@ package com.forms{
                 form.unregID(id);
             if(_onTap!=null)
                 onTap=null
-            parent=null;
+            _parent=null;
             userValues=null;
             style=null;
             bounds=null;

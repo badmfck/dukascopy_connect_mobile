@@ -8,6 +8,7 @@ package com.forms
     import flash.display.Sprite;
     import com.greensock.TweenMax;
     import com.greensock.easing.Power4;
+    import flash.display.Stage;
 
 
     public class FormScroller{
@@ -41,6 +42,8 @@ package com.forms
 
         private var mDown:String=MouseEvent.MOUSE_DOWN;
 
+        private var stageLink:Stage;
+
         public var onMoved:Function;
         
         
@@ -70,6 +73,8 @@ package com.forms
         private function onMDown(e:MouseEvent):void{
             if(eventTarget.stage==null)
                 return;
+
+            stageLink=eventTarget.stage;
             movingPhase="drag";
             eventTarget.stage.addEventListener(MouseEvent.MOUSE_MOVE,onMouseMove)
             eventTarget.stage.addEventListener(MouseEvent.MOUSE_UP,onMouseUp)
@@ -88,8 +93,10 @@ package com.forms
         }
 
         private function onMouseUp(e:MouseEvent):void{
-            eventTarget.stage.removeEventListener(MouseEvent.MOUSE_MOVE,onMouseMove)
-            eventTarget.stage.removeEventListener(MouseEvent.MOUSE_UP,onMouseUp)
+            if(stageLink){
+                stageLink.removeEventListener(MouseEvent.MOUSE_MOVE,onMouseMove)
+                stageLink.removeEventListener(MouseEvent.MOUSE_UP,onMouseUp)
+            }
             ty=startY+(eventTarget.mouseY-startMY);
             movingPhase="moving";
             clearTimer();
@@ -192,11 +199,12 @@ package com.forms
             if(eventTarget){
                 eventTarget.removeEventListener(Event.ENTER_FRAME,onFrame)
                 eventTarget.removeEventListener(mDown,onMDown)
-                if(eventTarget.stage!=null){
-                    eventTarget.stage.removeEventListener(MouseEvent.MOUSE_MOVE,onMouseMove)
-                    eventTarget.stage.removeEventListener(MouseEvent.MOUSE_UP,onMouseUp)
+                if(stageLink!=null){
+                    stageLink.removeEventListener(MouseEvent.MOUSE_MOVE,onMouseMove)
+                    stageLink.removeEventListener(MouseEvent.MOUSE_UP,onMouseUp)
                 }
             }
+            stageLink=null;
             clearTimer();
             frameAdded=false;
             eventTarget=null;

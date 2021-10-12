@@ -24,6 +24,7 @@ import com.dukascopy.connect.managers.escrow.vo.EscrowOfferVO;
 import com.forms.components.FormList;
 import flash.utils.setTimeout;
 import com.forms.components.FormGraph;
+import com.forms.FormComponent;
 
 
 
@@ -47,7 +48,7 @@ public class MainEscrow extends Sprite {
 		
 		private function start():void{
 			//Form.debug=true;
-            var form:Form=new Form(File.applicationDirectory.resolvePath("forms"+File.separator+"escrowDealCreate.xml"));
+            var form:Form=new Form(File.applicationDirectory.resolvePath("forms"+File.separator+"escrowMain.xml"));
 			form.showDeviceFrame("iosx");
 			var list:FormList;
 			addChild(form.view);
@@ -55,6 +56,11 @@ public class MainEscrow extends Sprite {
 			form.onDocumentLoaded=function():void{
 				list=form.getComponentByID("offers") as FormList;
 				GD.S_ESCROW_OFFERS_REQUEST.invoke();
+
+
+				var cmp:FormComponent=form.getComponentByID("component");
+				var cmp2:FormComponent=cmp.clone();
+				cmp.parent.add(cmp2);
 			};
 
 			GD.S_ESCROW_OFFERS_READY.add(function(offers:Vector.<EscrowOfferVO>):void{
@@ -65,7 +71,8 @@ public class MainEscrow extends Sprite {
 
 			setTimeout(function():void{
 				var icoCurrency:FormGraph=form.getComponentByID("icoCurrency") as FormGraph;
-				icoCurrency.src="res/p2p.svg";
+				if(icoCurrency!=null)
+					icoCurrency.src="res/p2p.svg";
 			},5000)
 
 			/*var url:String="https://loki.telefision.com/master/";
