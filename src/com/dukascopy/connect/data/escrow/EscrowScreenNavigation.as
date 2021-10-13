@@ -181,14 +181,32 @@ package com.dukascopy.connect.data.escrow
 				}
 				else if (escrow.status == EscrowStatus.deal_created)
 				{
-					if (isExpired(escrow, created))
+					
+					/*!!!!
+					var screenData:AlertScreenData = new AlertScreenData();
+					screenData.text = Lang.escrow_report_sent;
+					screenData.button = Lang.textOk.toUpperCase();
+					
+					ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, FloatAlert, screenData);*/
+				}
+				else if (escrow.status == EscrowStatus.deal_claimed)
+				{
+					var alertScreenData:AlertScreenData;
+					if (escrow.mca_user_uid == Auth.uid)
 					{
-						//!TODO:;
-					//	ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, SendCryptoExpiredScreen, screenData);
+						alertScreenData = new AlertScreenData();
+						alertScreenData.text = Lang.escrow_report_sent;
+						alertScreenData.button = Lang.textOk.toUpperCase();
+						
+						ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, FloatAlert, alertScreenData);
 					}
 					else
 					{
-						//!TODO:;
+						alertScreenData = new AlertScreenData();
+						alertScreenData.text = Lang.escrow_under_investigation;
+						alertScreenData.button = Lang.textOk.toUpperCase();
+						
+						ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, FloatAlert, alertScreenData);
 					}
 				}
 				else if (escrow.status == EscrowStatus.deal_mca_hold)

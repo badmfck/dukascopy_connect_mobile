@@ -281,12 +281,12 @@ package com.dukascopy.connect.screens.innerScreens {
 				openOfferAction.execute();
 				return;
 				
-				chatScreenData = new ChatScreenData();
+				/*chatScreenData = new ChatScreenData();
 				chatScreenData.type = ChatInitType.CHAT;
 				chatScreenData.chatUID = (data as EscrowOfferVO).chat_uid;
 				chatScreenData.backScreen = RootScreen;
 				MobileGui.showChatScreen(chatScreenData);
-				return;
+				return;*/
 			}
 			if (data is EscrowDealVO) {
 				
@@ -294,12 +294,12 @@ package com.dukascopy.connect.screens.innerScreens {
 				openDealAction.execute();
 				return;
 				
-				chatScreenData = new ChatScreenData();
+				/*chatScreenData = new ChatScreenData();
 				chatScreenData.type = ChatInitType.CHAT;
 				chatScreenData.chatUID = (data as EscrowDealVO).chatUID;
 				chatScreenData.backScreen = RootScreen;
 				MobileGui.showChatScreen(chatScreenData);
-				return;
+				return;*/
 			}
 		}
 		

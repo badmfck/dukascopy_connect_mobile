@@ -2583,7 +2583,11 @@ package com.dukascopy.langs {
 		static public var above_market_price:String = "above market price";
 		static public var under_investigation:String = "Under investigation";
 		static public var escrow_deal_status_claimed:String = "Under investigation";
-		
+		static public var escrow_under_investigation:String = "Manual investigation was requested by your counterparty.\n\nThe transaction has been suspended. Dukascopy Bank will contact you if any explanation is required.";
+		static public var escrow_sell_offer_rejected_self_side:String = "Offer was rejected by you.\nYou may create a new offer now.";
+		static public var escrow_sell_offer_rejected_counterparty_side:String = "Offer was rejected by the counterparty.\nYou may create a new offer now.";
+		static public var escrow_buy_offer_rejected_self_side:String = "Offer was rejected by you.\nThe funds were unblocked.";
+		static public var escrow_buy_offer_rejected_counterparty_side:String = "Offer was rejected by the counterparty.\nThe funds were unblocked.";		
 		static public function updateKeys(keys:Object):void {
 			for (var n:String in keys) {
 				if (n.indexOf("REFERAL_") == 0) {

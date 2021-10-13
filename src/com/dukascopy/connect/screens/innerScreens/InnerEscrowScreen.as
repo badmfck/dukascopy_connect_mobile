@@ -8,6 +8,8 @@ package com.dukascopy.connect.screens.innerScreens {
 	import com.dukascopy.connect.data.LabelItem;
 	import com.dukascopy.connect.data.SelectorItemData;
 	import com.dukascopy.connect.data.escrow.filter.EscrowFilterType;
+	import com.dukascopy.connect.data.screenAction.customActions.OpenDealAction;
+	import com.dukascopy.connect.data.screenAction.customActions.OpenOfferAction;
 	import com.dukascopy.connect.gui.components.StatusClip;
 	import com.dukascopy.connect.gui.lightbox.UI;
 	import com.dukascopy.connect.gui.list.List;
@@ -546,20 +548,30 @@ package com.dukascopy.connect.screens.innerScreens {
 				return;
 			}
 			if (data is EscrowOfferVO) {
-				chatScreenData = new ChatScreenData();
+				
+				var openOfferAction:OpenOfferAction = new OpenOfferAction((data as EscrowOfferVO).data, (data as EscrowOfferVO).created.time, (data as EscrowOfferVO).msg_id);
+				openOfferAction.execute();
+				return;
+				
+				/*chatScreenData = new ChatScreenData();
 				chatScreenData.type = ChatInitType.CHAT;
 				chatScreenData.chatUID = (data as EscrowOfferVO).chat_uid;
 				chatScreenData.backScreen = RootScreen;
 				MobileGui.showChatScreen(chatScreenData);
-				return;
+				return;*/
 			}
 			if (data is EscrowDealVO) {
-				chatScreenData = new ChatScreenData();
+				
+				var openDealAction:OpenDealAction = new OpenDealAction(data as EscrowDealVO);
+				openDealAction.execute();
+				return;
+				
+				/*chatScreenData = new ChatScreenData();
 				chatScreenData.type = ChatInitType.CHAT;
 				chatScreenData.chatUID = (data as EscrowDealVO).chatUID;
 				chatScreenData.backScreen = RootScreen;
 				MobileGui.showChatScreen(chatScreenData);
-				return;
+				return;*/
 			}
 			
 			/*else if (data is QuestionVO) {

@@ -15,6 +15,7 @@ package com.dukascopy.connect.data {
 			{ code:"380", phone:"631686555", pass:"Dukascopy123#"},
 			{ code: "7", phone: "9998181810", pass: "Dukascopy123" },
 			{ code: "7", phone: "9999638920", pass: "Dukascopy123#" },
+			{ code: "7", phone: "9999999977", pass: "Dukascopy123#" },
 			{ code: "371", phone: "25914896", pass: "Dukascopy123" },
 			{ code: "371", phone: "26884412", pass: "" }
 		];
