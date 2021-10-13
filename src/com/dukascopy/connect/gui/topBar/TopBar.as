@@ -382,6 +382,7 @@ package com.dukascopy.connect.gui.topBar {
 				backButton.dispose();
 				backButton = null;
 			}
+			updateLayout();
 		}
 		
 		private function clearActions():void {
