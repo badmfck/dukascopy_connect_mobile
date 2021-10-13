@@ -2,6 +2,7 @@ package com.dukascopy.connect.screens.dialogs.x.base.float
 {
 	import assets.NewCloseIcon;
 	import com.dukascopy.connect.Config;
+	import com.dukascopy.connect.data.screenAction.IScreenAction;
 	import com.dukascopy.connect.gui.components.CirclePreloader;
 	import com.dukascopy.connect.gui.lightbox.UI;
 	import com.dukascopy.connect.gui.menuVideo.BitmapButton;
@@ -46,6 +47,7 @@ package com.dukascopy.connect.screens.dialogs.x.base.float
 		protected var mainPadding:Number;
 		private var topColorClip:Sprite;
 		private var preloader:CirclePreloader;
+		private var additionalButton:BitmapButton;
 		protected var needCallback:Boolean;
 		protected var colorDelimiterPosition:int = -1;
 		
@@ -66,12 +68,52 @@ package com.dukascopy.connect.screens.dialogs.x.base.float
 			closeButton.x = int(getWidth() - contentPadding - closeButton.width);
 			closeButton.y = contentPadding;
 			
+			if (data != null && "additionalTopButton" in data && data.additionalTopButton != null && data.additionalTopButton is IScreenAction)
+			{
+				addAdditionalButton();
+			}
+			
+			if (additionalButton != null)
+			{
+				additionalButton.x = int(closeButton.x - closeButton.width - Config.FINGER_SIZE * .4);
+				additionalButton.y = int(closeButton.y + closeButton.height * .5 - additionalButton.height * .5);
+			}
+			
 			scrollPanel.view.y = closeButton.y + closeButton.height + Config.FINGER_SIZE * .1;
 			
 			recreateLayout();
 			
 			container.alpha = 0;
 			backgroundContent.alpha = 0;
+		}
+		
+		private function addAdditionalButton():void 
+		{
+			additionalButton = new BitmapButton();
+			additionalButton.setStandartButtonParams();
+			additionalButton.setDownColor(NaN);
+			additionalButton.setDownScale(0.7);
+			additionalButton.setOverlay(HitZoneType.CIRCLE);
+			additionalButton.cancelOnVerticalMovement = true;
+			additionalButton.tapCallback = onButtonAdditionalClick;
+			additionalButton.setOverflow(Config.FINGER_SIZE * .3, Config.FINGER_SIZE * .3, Config.FINGER_SIZE * .3, Config.FINGER_SIZE * .3);
+			additionalButton.setOverlayPadding(Config.FINGER_SIZE * .2);
+			container.addChild(additionalButton);
+			
+			var classIcon:Class = (data.additionalTopButton as IScreenAction).getIconClass()
+			var icon:Sprite = new classIcon();
+			UI.scaleToFit(icon, int(Config.FINGER_SIZE * .35), int(Config.FINGER_SIZE * .35));
+			additionalButton.setBitmapData(UI.getSnapshot(UI.colorize(icon, Style.color(Style.COLOR_ICON_SETTINGS))));
+			UI.destroy(icon);
+		}
+		
+		private function onButtonAdditionalClick():void 
+		{
+			if (data != null && "additionalTopButton" in data && data.additionalTopButton != null && data.additionalTopButton is IScreenAction)
+			{
+				(data.additionalTopButton as IScreenAction).execute();
+			}
+			close();
 		}
 		
 		protected function recreateLayout():void 
@@ -184,6 +226,11 @@ package com.dukascopy.connect.screens.dialogs.x.base.float
 			PointerManager.addTap(background, close);
 			closeButton.activate();
 			scrollPanel.enable();
+			
+			if (additionalButton != null)
+			{
+				additionalButton.activate();
+			}
 		}
 		
 		override public function deactivateScreen():void {
@@ -194,6 +241,11 @@ package com.dukascopy.connect.screens.dialogs.x.base.float
 			PointerManager.removeTap(background, close);
 			closeButton.deactivate();
 			scrollPanel.disable();
+			
+			if (additionalButton != null)
+			{
+				additionalButton.deactivate();
+			}
 		}
 		
 		private function showFirstTime():void 
@@ -550,6 +602,11 @@ package com.dukascopy.connect.screens.dialogs.x.base.float
 			{
 				preloader.dispose();
 				preloader = null;
+			}
+			if (additionalButton != null)
+			{
+				additionalButton.dispose();
+				additionalButton = null;
 			}
 		}
 	}

@@ -1,6 +1,8 @@
 package com.dukascopy.connect.data 
 {
 	import com.dukascopy.connect.data.escrow.EscrowMessageData;
+	import com.dukascopy.connect.data.screenAction.IScreenAction;
+	import com.dukascopy.connect.data.screenAction.customActions.StartChatAction;
 	import com.dukascopy.connect.managers.escrow.vo.EscrowInstrument;
 	import com.dukascopy.connect.vo.ChatVO;
 	/**
@@ -17,6 +19,7 @@ package com.dukascopy.connect.data
 		public var messageId:Number;
 		public var instrument:EscrowInstrument;
 		public var title:String;
+		public var additionalTopButton:StartChatAction;
 		
 		public function EscrowScreenData() 
 		{

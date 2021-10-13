@@ -6,6 +6,7 @@ package com.dukascopy.connect.managers.escrow {
 	import com.dukascopy.connect.managers.escrow.vo.EscrowAdsFilterVO;
 	import com.dukascopy.connect.managers.escrow.vo.EscrowAdsVO;
 	import com.dukascopy.connect.managers.escrow.vo.EscrowInstrument;
+	import com.dukascopy.connect.sys.applicationError.ApplicationErrors;
 	import com.dukascopy.connect.sys.connectionManager.NetworkManager;
 	import com.dukascopy.connect.sys.crypter.Crypter;
 	import com.dukascopy.connect.sys.dialogManager.DialogManager;
@@ -426,7 +427,13 @@ package com.dukascopy.connect.managers.escrow {
 				if (phpRespond.errorMsg == "io") {
 					DialogManager.alert(Lang.information, Lang.noInternetConnection);
 				} else {
-					DialogManager.alert(Lang.textError, Lang.serverError + ": " + phpRespond.errorMsg);
+					var errorText:String = phpRespond.errorMsgLocalized;
+					if (errorText == null)
+					{
+						ApplicationErrors.add();
+						errorText = Lang.serverError + ": " + phpRespond.errorMsg;
+					}
+					DialogManager.alert(Lang.textError, errorText);
 				}
 				var escrowAdsVO:EscrowAdsVO = getEscrowAdsByUID(phpRespond.additionalData.qUID);
 				if (escrowAdsVO != null) {

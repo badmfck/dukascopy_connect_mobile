@@ -2569,25 +2569,28 @@ package com.dukascopy.langs {
 		static public var escrow_countries_excluded:String = "Countries excluded";
 		static public var escrow_provide_crypto_wallet:String = "Please provide crypto address";
 		static public var escrow_price_zero_error:String = "price should be non zero";
-		static public var escrow_offer_status_created:String = "created";
-		static public var escrow_offer_status_accepted:String = "accepted";
-		static public var escrow_offer_status_cancelled:String = "cancelled";
-		static public var escrow_offer_status_expired:String = "expired";
-		static public var escrow_offer_status_rejected:String = "rejected";
-		static public var escrow_deal_status_created:String = "created";
-		static public var escrow_deal_status_completed:String = "completed";
+		static public var escrow_offer_status_created:String = "Сreated";
+		static public var escrow_offer_status_accepted:String = "Accepted";
+		static public var escrow_offer_status_cancelled:String = "Cancelled";
+		static public var escrow_offer_status_expired:String = "Expired";
+		static public var escrow_offer_status_rejected:String = "Rejected";
+		static public var escrow_deal_status_created:String = "Created";
+		static public var escrow_deal_status_completed:String = "Completed";
 		static public var escrow_deal_status_mca_hold:String = "MCA hold";
 		static public var escrow_deal_status_expired:String = "expired";
 		static public var escrow_deal_status_paid_crypto:String = "paid crypto";
-		static public var below_market_price:String = "below market price";
-		static public var above_market_price:String = "above market price";
+		static public var below_market_price:String = "Below market price";
+		static public var above_market_price:String = "Above market price";
 		static public var under_investigation:String = "Under investigation";
 		static public var escrow_deal_status_claimed:String = "Under investigation";
 		static public var escrow_under_investigation:String = "Manual investigation was requested by your counterparty.\n\nThe transaction has been suspended. Dukascopy Bank will contact you if any explanation is required.";
 		static public var escrow_sell_offer_rejected_self_side:String = "Offer was rejected by you.\nYou may create a new offer now.";
 		static public var escrow_sell_offer_rejected_counterparty_side:String = "Offer was rejected by the counterparty.\nYou may create a new offer now.";
 		static public var escrow_buy_offer_rejected_self_side:String = "Offer was rejected by you.\nThe funds were unblocked.";
-		static public var escrow_buy_offer_rejected_counterparty_side:String = "Offer was rejected by the counterparty.\nThe funds were unblocked.";		
+		static public var escrow_buy_offer_rejected_counterparty_side:String = "Offer was rejected by the counterparty.\nThe funds were unblocked.";
+		static public var error_remove_ads_has_answers:String = "You cannot remove this ad since it contains incomplete deal(s)";
+		static public var escrow_deal_created_status:String = "The deal has been created but the funds is not yet charged from the Buyer's account. If you believe this takes too much time, please let us know in Support chat.";
+		
 		static public function updateKeys(keys:Object):void {
 			for (var n:String in keys) {
 				if (n.indexOf("REFERAL_") == 0) {

@@ -189,7 +189,8 @@ package com.dukascopy.connect.sys.errors {
 			refer08:"deviceAlreadyInList",
 			refer09:"unknownPromoCode",
 			lotl_04:"registeredInPayments",
-			refer10:"alreadyInPayments"
+			refer10:"alreadyInPayments",
+			que__26:"error_remove_ads_has_answers"
 		};
 		
 		static public const FIND_USER_TARGET:String = "findUser";

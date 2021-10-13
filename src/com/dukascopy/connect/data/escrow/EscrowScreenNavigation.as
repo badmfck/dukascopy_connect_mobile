@@ -6,6 +6,10 @@ package com.dukascopy.connect.data.escrow
 	import com.dukascopy.connect.data.AlertScreenData;
 	import com.dukascopy.connect.data.EscrowScreenData;
 	import com.dukascopy.connect.data.SelectorItemData;
+	import com.dukascopy.connect.data.screenAction.IScreenAction;
+	import com.dukascopy.connect.data.screenAction.customActions.OpenSupportChatAction;
+	import com.dukascopy.connect.data.screenAction.customActions.StartChatAction;
+	import com.dukascopy.connect.data.screenAction.customActions.StartChatWithUidAction;
 	import com.dukascopy.connect.gui.components.message.ToastMessage;
 	import com.dukascopy.connect.managers.escrow.vo.EscrowInstrument;
 	import com.dukascopy.connect.screens.dialogs.ScreenWebviewDialogBase;
@@ -89,7 +93,7 @@ package com.dukascopy.connect.data.escrow
 			trace("123");
 		}
 		
-		static public function showScreen(escrow:EscrowMessageData, created:Number, userVO:UserVO, chatVO:ChatVO, messageId:Number):void
+		static public function showScreen(escrow:EscrowMessageData, created:Number, userVO:UserVO, chatVO:ChatVO, messageId:Number, showChatButton:Boolean = false):void
 		{
 			GD.S_STOP_LOAD.invoke();
 			lastRequestData = null;
@@ -105,7 +109,10 @@ package com.dukascopy.connect.data.escrow
 				screenData.created = created;
 				screenData.chat = chatVO;
 				screenData.messageId = messageId;
-				
+				if (showChatButton)
+				{
+					screenData.additionalTopButton = new StartChatAction(chatVO.uid, chatVO);
+				}
 				
 				/*showFinishScreen(escrow);
 				   return;*/
@@ -118,7 +125,7 @@ package com.dukascopy.connect.data.escrow
 				{
 					screenData.userName = Lang.chatmate;
 				}
-				
+				var alertScreenData:AlertScreenData;
 				if (escrow.status == EscrowStatus.offer_created)
 				{
 					if (!isExpired(escrow, created))
@@ -181,20 +188,29 @@ package com.dukascopy.connect.data.escrow
 				}
 				else if (escrow.status == EscrowStatus.deal_created)
 				{
+					alertScreenData = new AlertScreenData();
+					if (showChatButton)
+					{
+						alertScreenData.additionalTopButton = new StartChatAction(chatVO.uid, chatVO);
+					}
+					alertScreenData.text = Lang.escrow_deal_created_status;
+					alertScreenData.button = Lang.close.toUpperCase();
+					var action:IScreenAction = new OpenSupportChatAction(Config.EP_P2P_CLAIM);
+					action.setData(Lang.startSupportChat.toUpperCase());
+					alertScreenData.additionalButton = action;
 					
-					/*!!!!
-					var screenData:AlertScreenData = new AlertScreenData();
-					screenData.text = Lang.escrow_report_sent;
-					screenData.button = Lang.textOk.toUpperCase();
-					
-					ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, FloatAlert, screenData);*/
+					ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, FloatAlert, alertScreenData);
 				}
 				else if (escrow.status == EscrowStatus.deal_claimed)
 				{
-					var alertScreenData:AlertScreenData;
+					
 					if (escrow.mca_user_uid == Auth.uid)
 					{
 						alertScreenData = new AlertScreenData();
+						if (showChatButton)
+						{
+							alertScreenData.additionalTopButton = new StartChatAction(chatVO.uid, chatVO);
+						}
 						alertScreenData.text = Lang.escrow_report_sent;
 						alertScreenData.button = Lang.textOk.toUpperCase();
 						
@@ -205,6 +221,10 @@ package com.dukascopy.connect.data.escrow
 						alertScreenData = new AlertScreenData();
 						alertScreenData.text = Lang.escrow_under_investigation;
 						alertScreenData.button = Lang.textOk.toUpperCase();
+						if (showChatButton)
+						{
+							alertScreenData.additionalTopButton = new StartChatAction(chatVO.uid, chatVO);
+						}
 						
 						ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, FloatAlert, alertScreenData);
 					}
