@@ -28,7 +28,7 @@
 			<div width="40" height="40" opacity="0">avatar</div>
 			<div width="100%" background-color="#FFFFFF" border-radius="15" padding="15">
 				<div id="btnSide">
-					<div font-size="14">I would like to</div>
+					<div id="titleSide" font-size="14">I would like to</div>
 					<div layout="horizontal">
 						<div id="lblSide" width="100%" font-size="18" color="#B0B0B0">Choose operation type</div>
 						<graph width="10" height="10" src="res/downarrow.svg" />
@@ -36,7 +36,7 @@
 				</div>
 				<space size="10"/>
 				<div id="btnInstrument">
-					<div font-size="14">Crypto</div>
+					<div id="titleInstrument" font-size="14">Crypto</div>
 					<div>
 						<div layout="horizontal">
                             <img src="res/154264.jpg" width="100" height="100" background-color="#00FFCC" />
@@ -48,12 +48,12 @@
 				</div>
 				<space size="10"/>
 				<div id="btnAmount">
-					<div font-size="14">Amount of crypto</div>
+					<div id="titleAmount" font-size="14">Amount of crypto</div>
 					<div id="lblAmount" font-size="18" color="#B0B0B0">Amount</div>
 				</div>
 				<space size="10"/>
 				<div id="btnPrice">
-					<div font-size="14">Price per coin</div>
+					<div id="titlePrice" font-size="14">Price per coin</div>
 					<div font-size="18" color="#B0B0B0" layout="horizontal" border="0 0 2 0" border-color="#FF0000">
 						<div id="lblPrice" width="100%">Input price</div>
 						<space size="10"/>

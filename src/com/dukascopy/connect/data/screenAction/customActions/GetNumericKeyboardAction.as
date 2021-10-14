@@ -1,13 +1,10 @@
 package com.dukascopy.connect.data.screenAction.customActions {
 	
-	import assets.IconInfoClip;
 	import com.dukascopy.connect.Config;
 	import com.dukascopy.connect.MobileGui;
 	import com.dukascopy.connect.data.screenAction.IScreenAction;
 	import com.dukascopy.connect.data.screenAction.ScreenAction;
 	import com.dukascopy.connect.gui.input.Input;
-	import com.dukascopy.connect.screens.ChatScreen;
-	import com.dukascopy.connect.screens.base.BaseScreen;
 	import com.dukascopy.connect.sys.pointerManager.PointerManager;
 	import com.dukascopy.connect.sys.softKeyboard.SoftKeyboard;
 	import com.greensock.TweenMax;

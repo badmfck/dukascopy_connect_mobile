@@ -157,9 +157,8 @@ package com.dukascopy.connect.screens {
 				val += "%";
 			escrowAdsVO.currency = currency;
 			escrowAdsVO.priceValue = val;
-			/*msgPrice.params = { price:val, currency:currency }
-			list.getItemByNum(4).data.updateText(Config.BOUNDS + JSON.stringify(msgPrice));
-			list.updateItemByIndex(4);*/
+			setContent(currency, lblCurrency, "titleCurrency");
+			setContent(val, lblPrice, "titlePrice");
 		}
 		
 		private var testCounter:int;
@@ -181,9 +180,7 @@ package com.dukascopy.connect.screens {
 				if (val.charAt(val.length - 1) == ".") {
 					val = val.substr(0, val.length -1);
 					amountString = val;
-					/*msgAmount.params = { val:val }
-					list.getItemByNum(3).data.updateText(Config.BOUNDS + JSON.stringify(msgAmount));
-					list.updateItemByIndex(3);*/
+					setContent(amountString, lblAmount, "titleAmount");
 				}
 			}
 			escrowAdsVO.amount = Number(val);
@@ -217,22 +214,14 @@ package com.dukascopy.connect.screens {
 			if (val == "")
 				val = null;
 			amountString = val;
-			/*msgAmount.params = { val:val }
-			list.getItemByNum(3).data.updateText(Config.BOUNDS + JSON.stringify(msgAmount));
-			list.updateItemByIndex(3);*/
+			setContent(amountString, lblAmount, "titleAmount");
 		}
 		
 		private function onSideChanged(val:EscrowSide):void {
 			if (val == null)
 				return;
 			escrowAdsVO.side = val.value;
-			lblSide.setStyle( {
-				color: "#363D4D"
-			} );
-			lblSide.textContent = val.name;
-			/*msgSide.params = { val:val.value, name:val.lang }
-			list.getItemByNum(1).data.updateText(Config.BOUNDS + JSON.stringify(msgSide));
-			list.updateItemByIndex(1);*/
+			setContent(val.name, lblSide, "titleSide");
 		}
 		
 		private function onResult(instruments:Vector.<EscrowInstrument>):void {
@@ -257,12 +246,42 @@ package com.dukascopy.connect.screens {
 			if (escrowAdsVO == null)
 				return;
 			escrowAdsVO.instrument = ei;
-			/*msgCrypto.params = { code:ei.code, name:ei.name }
-			list.getItemByNum(2).data.updateText(Config.BOUNDS + JSON.stringify(msgCrypto));
-			list.updateItemByIndex(2, true, true);*/
+			setContent(null, lblCurrency, "titleCurrency");
+			setContent(null, lblPrice, "titlePrice");
 		}
 		
+		private function setContent(val:String, fc:FormComponent, title:String):void {
+			var styleTitle:Object;
+			var styleLabel:Object;
+			if (val == null) {
+				val = getDefaultLabel(fc);
+			} else {
+				styleTitle = { color: "#7E95A8" };
+				styleLabel = { color: "#363D4D" };
+			}
+			form.setStyleByID(title, styleTitle);
+			fc.setStyle(styleLabel);
+			fc.textContent = val;
+			form.update();
+		}
 		
+		public function getDefaultLabel(fc:FormComponent):String {
+			switch (fc) {
+				case lblSide: {
+					return Lang.tenderSide
+				}
+				case lblInstrument: {
+					return Lang.tenderCrypto
+				}
+				case lblAmount: {
+					return Lang.tenderCryptoAmount
+				}
+				case lblPrice: {
+					return Lang.tenderInputPrice
+				}
+			}
+			return "";
+		}
 		
 		private function onChatSend():Boolean {
 			return true;

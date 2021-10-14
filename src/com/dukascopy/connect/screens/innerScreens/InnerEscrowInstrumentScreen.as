@@ -394,7 +394,7 @@ package com.dukascopy.connect.screens.innerScreens {
 			if (preloaderHide == true)
 				hidePreloader();
 			setListData(data);
-			if (data == null || data.length == 0)
+			if ((data == null || data.length == 0) && preloaderHide == true)
 				addPlaceholder(Lang.escrow_no_active_ads_placeholder);
 			else
 				removePlaceholder();

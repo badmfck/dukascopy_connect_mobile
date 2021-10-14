@@ -552,10 +552,10 @@ package com.dukascopy.connect.screens.innerScreens {
 					}, Lang.textDelete.toUpperCase(), Lang.textCancel.toUpperCase());
 					return;
 				}
-				if (escrowAdsVO.answersCount > 0) {
+				//if (escrowAdsVO.answersCount > 0) {
 					GD.S_ESCROW_ADS_ANSWERS.invoke(escrowAdsVO.uid);
-					return;
-				}
+				//	return;
+				//}
 				return;
 			}
 			if (data is EscrowOfferVO) {
@@ -625,8 +625,7 @@ package com.dukascopy.connect.screens.innerScreens {
 						return;
 					}
 					if (itemHitZone == HitZoneType.QUESTION_INFO) {
-						//if (QuestionsManager.getCategoriesFilterNames() == "")
-							QuestionsManager.showRules();
+						QuestionsManager.showRules();
 						return;
 					}
 					if (itemHitZone == HitZoneType.TIPS) {
