@@ -360,12 +360,11 @@ package com.dukascopy.connect.gui.topBar {
 		
 		private function updateLayout():void 
 		{
-			if (backButton != null)
-			{
+			if (_isDisposed == true)
+				return;
+			if (backButton != null) {
 				titleBitmap.x = backButton.x + backButton.width + Config.DOUBLE_MARGIN;
-			}
-			else
-			{
+			} else {
 				titleBitmap.x = Config.DOUBLE_MARGIN;
 			}
 			updateTitle();
