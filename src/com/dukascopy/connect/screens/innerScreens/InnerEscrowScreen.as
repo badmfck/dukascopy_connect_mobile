@@ -27,6 +27,7 @@ package com.dukascopy.connect.screens.innerScreens {
 	import com.dukascopy.connect.managers.escrow.vo.EscrowOfferVO;
 	import com.dukascopy.connect.screens.EscrowAdsCreateScreen;
 	import com.dukascopy.connect.screens.RootScreen;
+	import com.dukascopy.connect.screens.SwipeUpdateScreen;
 	import com.dukascopy.connect.screens.base.BaseScreen;
 	import com.dukascopy.connect.screens.base.ScreenManager;
 	import com.dukascopy.connect.screens.dialogs.ScreenLinksDialog;
@@ -55,7 +56,7 @@ package com.dukascopy.connect.screens.innerScreens {
 	 * @author Ilya Shcherbakov. Telefision TEAM Riga.
 	 */
 	
-	public class InnerEscrowScreen extends BaseScreen {
+	public class InnerEscrowScreen extends SwipeUpdateScreen {
 		
 		private const TAB_OTHER:String = "crypto";
 		private const TAB_MINE:String = "mine";
@@ -116,6 +117,11 @@ package com.dukascopy.connect.screens.innerScreens {
 			
 			preloader = new HorizontalPreloader(Style.color(Style.COLOR_ICON_LIGHT));
 			_view.addChild(preloader);
+		}
+		
+		override protected function update():void
+		{
+			onTabItemSelected(selectedTabID);
 		}
 		
 		private function onFilterRemove(filter:SelectorItemData):void 
@@ -365,6 +371,8 @@ package com.dukascopy.connect.screens.innerScreens {
 				list.activate();
 				list.S_ITEM_TAP.add(onItemTap);
 				list.S_ITEM_HOLD.add(onItemHold);
+				list.S_MOVING.add(onListMove);
+				list.S_UP.add(onListTouchUp);
 			}
 			
 			if (tabs != null && tabs.isDisposed == false) {
@@ -404,6 +412,7 @@ package com.dukascopy.connect.screens.innerScreens {
 		
 		private function hidePreloader():void 
 		{
+			hideHistoryLoader();
 			TweenMax.killDelayedCallsTo(startPreloader);
 			preloader.stop();
 		}
@@ -416,11 +425,13 @@ package com.dukascopy.connect.screens.innerScreens {
 			super.deactivateScreen();
 			if (_isDisposed == true)
 				return;
-			
+			hideHistoryLoader();
 			if (list != null && list.isDisposed == false) {
 				list.deactivate();
 				list.S_ITEM_TAP.remove(onItemTap);
 				list.S_ITEM_HOLD.remove(onItemHold);
+				list.S_MOVING.remove(onListMove);
+				list.S_UP.remove(onListTouchUp);
 			}
 			
 			if (tabs != null && tabs.isDisposed == false) {
@@ -700,6 +711,7 @@ package com.dukascopy.connect.screens.innerScreens {
 		private function onTabItemSelected(id:String):void {
 			if (_isDisposed == true)
 				return;
+			hideHistoryLoader();
 			selectedTabID = id;
 			updatePositions();
 			saveListPosition();

@@ -505,7 +505,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		
 		override protected function onRemove():void 
 		{
-			if (command != null && "callback" in data && data.callback != null && data.callback is Function && (data.callback as Function).length == 4)
+			if (command != null && "callback" in data && data.callback != null && data.callback is Function && (data.callback as Function).length == 5)
 			{
 				(data.callback as Function)(escrowOffer, messageId, chat, offerCreatedTime, command);
 				command = null;

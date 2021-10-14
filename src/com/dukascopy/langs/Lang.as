@@ -2589,7 +2589,7 @@ package com.dukascopy.langs {
 		static public var escrow_buy_offer_rejected_self_side:String = "Offer was rejected by you.\nThe funds were unblocked.";
 		static public var escrow_buy_offer_rejected_counterparty_side:String = "Offer was rejected by the counterparty.\nThe funds were unblocked.";
 		static public var error_remove_ads_has_answers:String = "You cannot remove this ad since it contains incomplete deal(s)";
-		static public var escrow_deal_created_status:String = "The deal has been created but the funds is not yet charged from the Buyer's account. If you believe this takes too much time, please let us know in Support chat.";
+		static public var escrow_deal_created_status:String = "The deal has been created but the funds have not been charged yet from the Buy-side account. If you believe the operation takes more time than reasonably required, please let us know in Support chat.";
 		
 		static public function updateKeys(keys:Object):void {
 			for (var n:String in keys) {
