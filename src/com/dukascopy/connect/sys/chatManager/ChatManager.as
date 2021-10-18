@@ -70,6 +70,7 @@ package com.dukascopy.connect.sys.chatManager {
 	import com.dukascopy.connect.vo.users.adds.ChatUserVO;
 	import com.dukascopy.langs.Lang;
 	import com.dukascopy.langs.LangManager;
+	import com.greensock.TweenMax;
 	import com.milkmangames.nativeextensions.CMNetworkType;
 	import com.telefision.sys.signals.Signal;
 	import flash.media.Camera;
@@ -191,8 +192,20 @@ package com.dukascopy.connect.sys.chatManager {
 			VideoUploader.S_FILE_UPLOADED_FINISH.add(sendVideoMessageFinish);
 			VideoUploader.S_FILE_UPLOADED_PROGRESS.add(sendVideoMessageProgress);
 			WSClient.S_LOYALTY_CHANGE.add(onLoyaltyChanged);
+			GD.S_ESCROW_INSTRUMENTS.add(onEscrowInstruments);
 			
 			S_CHAT_OPENED.add(onChatOpened);
+		}
+		
+		static private function onEscrowInstruments(...rest):void {
+			TweenMax.delayedCall(1, function():void {
+				if (currentChat == null)
+					return;
+				if (currentChat.getQuestion() == null)
+					return;
+				currentChat.regenerateQuestionMessage();
+				S_MESSAGE_UPDATED.invoke(currentChat.messages[0]);
+			}, null, true);
 		}
 		
 		private static function onLoyaltyChanged(loyalty:String):void

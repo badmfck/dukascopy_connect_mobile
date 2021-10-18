@@ -63,7 +63,7 @@ package com.dukascopy.connect.data.screenAction.customActions {
 			{
 				ApplicationErrors.add();
 			}
-			EscrowScreenNavigation.showScreen(offerData, created, userVO, chatVO, messageId);
+			EscrowScreenNavigation.showScreen(offerData, created, userVO, chatVO, messageId, true);
 			
 			dispose();
 		}

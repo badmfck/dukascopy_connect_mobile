@@ -2490,7 +2490,7 @@ package com.dukascopy.langs {
 		static public var escrow_target_price_per_coin:String = "Target price per Coin";
 		
 		static public var addTender:String = "Add your tender";
-		static public var tenderStartText1:String = "Create your ad you intend to publish, indicating the required details.\nOnce someone reacts to your ad, switch to the one-to-one chat with the counterparty, agree on the ultimate conditions of the future deal and initiate a binding offer through a dedicated form right from the chat.\n\n<font color=\"#CD3F43\"><a href=\"sdgsdfgsdfghdfh\">Terms & Conditions</a></font>";
+		static public var tenderStartText1:String = "Create your ad you intend to publish, indicating the required details.\nOnce someonce reacts to your ad, switch to the one-to-one chat with the counterparty, agree on the ultimate conditions of the future deal and initiate a binding offer through a dedicated form right from the chat.";
 		static public var tenderSide:String = "I would like to";
 		static public var tenderTypeOperation:String = "Choose operation type";
 		static public var tenderCrypto:String = "Crypto";
@@ -2514,7 +2514,14 @@ package com.dukascopy.langs {
 		static public var escrow_your_ad_created:String = "Your ad has been successfully created";
 		static public var escrow_ad_intro_message:String = "I would like to %@1 %@2 at %@3 per coin.";
 		static public var escrow_ad_intro_message_percent:String = "I would like to %@1 %@2 at %@3 per coin. (%@4 %@5 the market price)";
+		static public var escrow_ad_intro_message_percent_nan:String = "I would like to %@1 %@2 at --- per coin. (%@4 %@5 the market price)";
 		static public var escrow_ad_intro_message_at_market_price:String = "I would like to %@1 %@2 at market price";
+		
+		static public var escrowAdsIntroMsg:String = "I would like to %@1 %@2 at %@3 per coin.";
+		static public var escrowAdsIntroMsgMarketPrice:String = "I would like to %@1 %@2 at market price";
+		static public var escrowAdsIntroMsgPercentAdd:String = " (%@4% %@5 the market price)";
+		static public var escrowAdsIntroMsgMarketPriceAdd:String = " (%@3 per coin)";
+		
 		static public var escrow_buy:String = "Buy";
 		static public var escrow_sell:String = "Sell";
 		static public var make_offer:String = "MAKE OFFER";
@@ -2569,20 +2576,33 @@ package com.dukascopy.langs {
 		static public var escrow_countries_excluded:String = "Countries excluded";
 		static public var escrow_provide_crypto_wallet:String = "Please provide crypto address";
 		static public var escrow_price_zero_error:String = "price should be non zero";
-		static public var escrow_offer_status_created:String = "created";
-		static public var escrow_offer_status_accepted:String = "accepted";
-		static public var escrow_offer_status_cancelled:String = "cancelled";
-		static public var escrow_offer_status_expired:String = "expired";
-		static public var escrow_offer_status_rejected:String = "rejected";
-		static public var escrow_deal_status_created:String = "created";
-		static public var escrow_deal_status_completed:String = "completed";
+		static public var escrow_offer_status_created:String = "Сreated";
+		static public var escrow_offer_status_accepted:String = "Accepted";
+		static public var escrow_offer_status_cancelled:String = "Cancelled";
+		static public var escrow_offer_status_expired:String = "Expired";
+		static public var escrow_offer_status_rejected:String = "Rejected";
+		static public var escrow_deal_status_created:String = "Created";
+		static public var escrow_deal_status_completed:String = "Completed";
 		static public var escrow_deal_status_mca_hold:String = "MCA hold";
 		static public var escrow_deal_status_expired:String = "expired";
 		static public var escrow_deal_status_paid_crypto:String = "paid crypto";
-		static public var below_market_price:String = "below market price";
-		static public var above_market_price:String = "above market price";
+		static public var below_market_price:String = "Below market price";
+		static public var above_market_price:String = "Above market price";
 		static public var under_investigation:String = "Under investigation";
 		static public var escrow_deal_status_claimed:String = "Under investigation";
+		static public var escrow_under_investigation:String = "Manual investigation was requested by your counterparty.\n\nThe transaction has been suspended. Dukascopy Bank will contact you if any explanation is required.";
+		static public var escrow_sell_offer_rejected_self_side:String = "Offer was rejected by you.\nYou may create a new offer now.";
+		static public var escrow_sell_offer_rejected_counterparty_side:String = "Offer was rejected by the counterparty.\nYou may create a new offer now.";
+		static public var escrow_buy_offer_rejected_self_side:String = "Offer was rejected by you.\nThe funds were unblocked.";
+		static public var escrow_buy_offer_rejected_counterparty_side:String = "Offer was rejected by the counterparty.\nThe funds were unblocked.";
+		static public var error_remove_ads_has_answers:String = "You cannot remove this ad since it contains incomplete deal(s)";
+		static public var escrow_deal_created_status:String = "The deal has been created but the funds have not been charged yet from the Buy-side account. If you believe the operation takes more time than reasonably required, please let us know in Support chat.";
+		
+		static public var offer_sell_expired_details_buyer_side:String = "Offer was not accepted by you and expired.\nYou may create a new offer now.";
+		static public var offer_sell_expired_details_seller_side:String = "Offer was not accepted by the counterparty and expired.\nYou may create a new offer now.";
+		static public var offer_buy_expired_details_buyer_side:String = "Offer was not accepted by the counterparty and expired.\nThe funds reserved for this transaction were unblocked.";
+		static public var offer_buy_expired_details_seller_side:String = "Offer was not accepted by you and expired.\nYou may create a new offer now.";
+		static public var error_cant_start_deal_active_deals:String = "The new deal cannot be initiated before the previous deal between both of you is completed";
 		
 		static public function updateKeys(keys:Object):void {
 			for (var n:String in keys) {

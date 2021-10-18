@@ -3,12 +3,15 @@ package com.dukascopy.connect.screens.dialogs.x.base.float {
 	import com.dukascopy.connect.Config;
 	import com.dukascopy.connect.data.AlertScreenData;
 	import com.dukascopy.connect.data.TextFieldSettings;
+	import com.dukascopy.connect.data.screenAction.IScreenAction;
 	import com.dukascopy.connect.gui.lightbox.UI;
 	import com.dukascopy.connect.gui.menuVideo.BitmapButton;
 	import com.dukascopy.connect.screens.dialogs.x.base.float.FloatPopup;
+	import com.dukascopy.connect.sys.applicationError.ApplicationErrors;
 	import com.dukascopy.connect.sys.imageManager.ImageBitmapData;
 	import com.dukascopy.connect.sys.style.FontSize;
 	import com.dukascopy.connect.sys.style.Style;
+	import com.dukascopy.connect.sys.style.presets.Color;
 	import com.dukascopy.connect.type.HitZoneType;
 	import com.dukascopy.connect.utils.TextUtils;
 	import com.dukascopy.langs.Lang;
@@ -30,6 +33,8 @@ package com.dukascopy.connect.screens.dialogs.x.base.float {
 		private var title:Bitmap;
 		private var description:Bitmap;
 		private var illustration:Bitmap;
+		private var executeAction:Boolean;
+		private var additonalButton:BitmapButton;
 		protected var screenData:AlertScreenData;
 		
 		public function FloatAlert() { }
@@ -75,7 +80,29 @@ package com.dukascopy.connect.screens.dialogs.x.base.float {
 		
 		override public function initScreen(data:Object = null):void {
 			screenData = data as AlertScreenData;
+			if (screenData.additionalButton != null)
+			{
+				createAdditionalButton(screenData.additionalButton);
+			}
 			super.initScreen(data);
+		}
+		
+		private function createAdditionalButton(additionalButton:IScreenAction):void 
+		{
+			additonalButton = new BitmapButton();
+			additonalButton.setStandartButtonParams();
+			additonalButton.tapCallback = onAdditionalClick;
+			additonalButton.disposeBitmapOnDestroy = true;
+			additonalButton.setDownScale(1);
+			additonalButton.setOverlay(HitZoneType.BUTTON);
+			addItem(additonalButton);
+		}
+		
+		private function onAdditionalClick():void 
+		{
+			needCallback = true;
+			executeAction = true;
+			close();
 		}
 		
 		override protected function drawContent():void 
@@ -154,6 +181,13 @@ package com.dukascopy.connect.screens.dialogs.x.base.float {
 			description.y = position;
 			position += description.height + contentPaddingV * 2.5;
 			
+			if (additonalButton != null)
+			{
+				additonalButton.x = contentPadding;
+				additonalButton.y = position;
+				position += additonalButton.height + contentPaddingV;
+			}
+			
 			nextButton.x = contentPadding;
 			nextButton.y = position;
 			position += nextButton.height + contentPaddingV;
@@ -169,6 +203,13 @@ package com.dukascopy.connect.screens.dialogs.x.base.float {
 			var textSettings:TextFieldSettings = new TextFieldSettings(buttonText, Style.color(Style.COLOR_TEXT), FontSize.BODY, TextFormatAlign.CENTER);
 			var buttonBitmap:ImageBitmapData = TextUtils.createbutton(textSettings, Style.color(Style.COLOR_BACKGROUND), 1, -1, Style.color(Style.COLOR_BUTTON_OUTLINE), getButtonWidth(), Style.size(Style.BUTTON_PADDING), Style.size(Style.SIZE_BUTTON_CORNER));
 			nextButton.setBitmapData(buttonBitmap, true);
+			
+			if (additonalButton != null && screenData.additionalButton != null && screenData.additionalButton.getData() != null)
+			{
+				textSettings = new TextFieldSettings(screenData.additionalButton.getData() as String, Style.color(Style.COLOR_BACKGROUND), FontSize.BODY, TextFormatAlign.CENTER);
+				buttonBitmap = TextUtils.createbutton(textSettings, Style.color(Style.COLOR_BUTTON_SECONDARY), 1, -1, Style.color(Style.COLOR_BUTTON_OUTLINE), getButtonWidth(), Style.size(Style.BUTTON_PADDING), Style.size(Style.SIZE_BUTTON_CORNER));
+				additonalButton.setBitmapData(buttonBitmap, true);
+			}
 		}
 		
 		private function getButtonWidth():int 
@@ -190,6 +231,10 @@ package com.dukascopy.connect.screens.dialogs.x.base.float {
 			}
 			
 			nextButton.activate();
+			if (additonalButton != null)
+			{
+				additonalButton.activate();
+			}
 		}
 		
 		override public function deactivateScreen():void {
@@ -199,21 +244,39 @@ package com.dukascopy.connect.screens.dialogs.x.base.float {
 			}
 			
 			nextButton.deactivate();
+			if (additonalButton != null)
+			{
+				additonalButton.deactivate();
+			}
 		}
 		
 		override protected function onRemove():void 
 		{
 			if (needCallback)
 			{
-				if (screenData.callback != null)
+				if (executeAction)
 				{
-					if (screenData.callback.length == 0)
+					if (screenData.additionalButton != null)
 					{
-						screenData.callback();
+						screenData.additionalButton.execute();
 					}
-					else if (screenData.callback.length == 1)
+					else
 					{
-						screenData.callback(screenData.callbackData);
+						ApplicationErrors.add();
+					}
+				}
+				else
+				{
+					if (screenData.callback != null)
+					{
+						if (screenData.callback.length == 0)
+						{
+							screenData.callback();
+						}
+						else if (screenData.callback.length == 1)
+						{
+							screenData.callback(screenData.callbackData);
+						}
 					}
 				}
 			}
@@ -226,6 +289,11 @@ package com.dukascopy.connect.screens.dialogs.x.base.float {
 			{
 				nextButton.dispose();
 				nextButton = null;
+			}
+			if (additonalButton != null)
+			{
+				additonalButton.dispose();
+				additonalButton = null;
 			}
 			if (illustration != null)
 			{

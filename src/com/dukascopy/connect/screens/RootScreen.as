@@ -542,6 +542,18 @@ package com.dukascopy.connect.screens {
 			updateMissedCallsNum(CallsHistoryManager.getMissedNum());
 			CallsHistoryManager.S_MISSED_NUM.add(updateMissedCallsNum);
 			
+			if(topBar != null)
+			{
+				if (currentTabID == ESCROW_INSTRUMENT_SCREEN_ID)
+				{
+					topBar.addBackButton();
+				}
+				else
+				{
+					topBar.removeBackButton();
+				}
+			}
+			
 			if (ratesPanel != null)
 			{
 				ratesPanel.activate();

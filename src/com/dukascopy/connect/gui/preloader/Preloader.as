@@ -105,6 +105,7 @@ package com.dukascopy.connect.gui.preloader {
 			_disposeOnHide = disposeOnHide;
 			TweenMax.killTweensOf(holder);
 			TweenMax.to(holder, hideTime , { scaleX:0, scaleY:0, ease:Quint.easeOut, delay:delay, onComplete:onHidePreComplete, onCompleteParams:[callBack] } );
+			stopAnimation();
 		}
 		
 		private function onHidePreComplete(callBack:Function):void {

@@ -6,6 +6,7 @@ package com.dukascopy.connect.managers.escrow {
 	import com.dukascopy.connect.managers.escrow.vo.EscrowAdsFilterVO;
 	import com.dukascopy.connect.managers.escrow.vo.EscrowAdsVO;
 	import com.dukascopy.connect.managers.escrow.vo.EscrowInstrument;
+	import com.dukascopy.connect.sys.applicationError.ApplicationErrors;
 	import com.dukascopy.connect.sys.connectionManager.NetworkManager;
 	import com.dukascopy.connect.sys.crypter.Crypter;
 	import com.dukascopy.connect.sys.dialogManager.DialogManager;
@@ -90,6 +91,7 @@ package com.dukascopy.connect.managers.escrow {
 				crypto = "DCO";
 			escrowAdsCryptosIds ||= {};
 			escrowAdsCryptosIds[crypto] = escrowAdsCrypto.maxID;
+			escrowAdsCrypto.newExists = false;
 			escrowAdsFilter.instrument = escrowAdsCrypto.instrument;
 			onEscrowFilterSetted();
 			Store.save("escrowAdsCryptoIds", escrowAdsCryptosIds);
@@ -177,6 +179,8 @@ package com.dukascopy.connect.managers.escrow {
 						instrument:escrowInstruments[i]
 					} ));
 				}
+				var escrowAdsCrypto:EscrowAdsCryptoVO = escrowAdsCryptos[escrowAdsCryptos.length - 1];
+				escrowAdsCrypto.newExists = escrowAdsCryptosIds == null || escrowAdsCrypto.instrument.code in escrowAdsCryptosIds == false || escrowAdsCryptosIds[escrowAdsCrypto.instrument.code] != escrowAdsCrypto.maxID;
 			}
 			if (escrowAdsCryptos != null)
 				escrowAdsCryptos.sortOn("instrumentCode");
@@ -417,8 +421,8 @@ package com.dukascopy.connect.managers.escrow {
 				escrowAdsVO.isRemoving = true;
 			}
 			TweenMax.delayedCall(5, function():void {
-			PHP.postEscrowAdsClose(onEscrowClosed, escrowAdsUid);
-			});
+				PHP.postEscrowAdsClose(onEscrowClosed, escrowAdsUid);
+			} );
 		}
 		
 		private function onEscrowClosed(phpRespond:PHPRespond):void {
@@ -426,7 +430,13 @@ package com.dukascopy.connect.managers.escrow {
 				if (phpRespond.errorMsg == "io") {
 					DialogManager.alert(Lang.information, Lang.noInternetConnection);
 				} else {
-					DialogManager.alert(Lang.textError, Lang.serverError + ": " + phpRespond.errorMsg);
+					var errorText:String = phpRespond.errorMsgLocalized;
+					if (errorText == null)
+					{
+						ApplicationErrors.add();
+						errorText = Lang.serverError + ": " + phpRespond.errorMsg;
+					}
+					DialogManager.alert(Lang.textError, errorText);
 				}
 				var escrowAdsVO:EscrowAdsVO = getEscrowAdsByUID(phpRespond.additionalData.qUID);
 				if (escrowAdsVO != null) {

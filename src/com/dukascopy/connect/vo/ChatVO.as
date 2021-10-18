@@ -459,139 +459,92 @@ package com.dukascopy.connect.vo {
 			if (type != ChatRoomType.QUESTION)
 				return;
 			_hasQuestionAnswer = (_messages.length > 0);
-			if (_qVO == null)
+			if (_qVO == null || _qVO.messages.length != 1)
 				return;
 			if (_messages == null)
 				_messages = new Vector.<ChatMessageVO>();
 			if (_messages.length > 0 && _messages[0].id == 0)
 				return;
 			lastMessagesHash = null;
-			var messageData:Object = { };
-			/*if (_qVO.userUID != Auth.uid) {
-				var createdTime:Number = (_qVO.messages != null && _qVO.messages.length > 0) ? _qVO.messages[0].createdTime : _qVO.createdTime;
-				messageData.created = createdTime;
-				
-				var actionQuestion:ChatMessageVO = new ChatMessageVO(messageData);
-				actionQuestion.action = new CallChatInfoAction();
-				actionQuestion.action.setData(Lang.repostAbuse);
-				_messages.unshift(actionQuestion);
-				
-				var actionEuro:ChatMessageVO = new ChatMessageVO(messageData);
-				actionEuro.action = new CallGetEuroAction();
-				actionEuro.action.setData(Lang.questionInfoButton);
-				
-				if (isNaN(_qVO.tipsAmount) == false) {
-					var tipsData:Entry = new Entry();
-					tipsData.title = Lang.extraTipsTitle.toUpperCase() + ":";
-					tipsData.value = _qVO.tipsAmount + " " + _qVO.tipsCurrency.toUpperCase();
-					actionEuro.action.setAdditionalData(tipsData);
-				}
-				euroActionMessageVO = actionEuro;
-				_messages.unshift(actionEuro);
-			}*/
 			
-			var userAvatar:String;
+			var messageData:Object = {
+				id: 0,
+				usePlainText: true,
+				created: _qVO.messages[0].createdTime,
+				user_uid: _qVO.userUID
+			};
 			
-			if (_qVO.messages != null) {
-				var qml:int = _qVO.messages.length;
-				for (var j:int = 0; j < qml; j++) {
-					messageData = { };
-					messageData.id = 0;
-					
-					var marketPrice:Number;
-					
-					if (_qVO.instrument != null)
-					{
-						marketPrice = EscrowDealManager.getPrice(_qVO.instrument.code, _qVO.priceCurrency);
-					}
-					
-					userAvatar = getUserAvatar(_qVO.userUID);
-					if (userAvatar) {
-						messageData.user_avatar = userAvatar;
-					} else {
-						messageData.user_avatar = _qVO.avatarURL;
-					}
-					
-					var userName:String = "";
-					if (_qVO.user != null)
-						userName = _qVO.user.getDisplayName();
-					messageData.user_name = userName;
-					
-					var text:String;
-					var isPercent:Boolean = false;
-					var realPrice:String;
-					if (_qVO.price != null && _qVO.price.indexOf("%") != -1)
-					{
-						isPercent = true;
-						realPrice = _qVO.price.replace("%", "");
-						if (!isNaN(Number(realPrice)) && Number(realPrice) == 0)
-						{
-							text = Lang.escrow_ad_intro_message_at_market_price;
-							if (!isNaN(marketPrice))
-							{
-								text += " (" + Lang.price_per_coin.replace("%@", NumberFormat.formatAmount(marketPrice, _qVO.priceCurrency)) + ")";
-							}
-						}
-						else
-						{
-							text = Lang.escrow_ad_intro_message_percent;
-						}
-					}
-					else
-					{
-						text = Lang.escrow_ad_intro_message;
-					}
-					
-					if (_qVO.subtype == "buy")
-					{
-						text = text.replace("%@1", Lang.escrow_buy);
-					}
-					else
-					{
-						text = text.replace("%@1", Lang.escrow_sell);
-					}
-					text = text.replace("%@2", _qVO.cryptoAmount + " " + _qVO.tipsCurrencyDisplay);
-					
-					
-					var price:String = _qVO.price;
-					
-					if (isPercent)
-					{
-						text = text.replace("%@4", price);
-						text = text.replace("-", "");
-						
-						if (Number(realPrice) > 0)
-						{
-							text = text.replace("%@5", Lang.above);
-						}
-						else
-						{
-							text = text.replace("%@5", Lang.below);
-						}
-						
-						if (!isNaN(marketPrice))
-						{
-							price = NumberFormat.formatAmount(marketPrice * (1 + Number(realPrice)/100), _qVO.priceCurrency);
-						}
-						else
-						{
-							price = "@MKT";
-						}
-					}
-					else
-					{
-						price += " " + _qVO.priceCurrency;
-					}
-					
-					text = text.replace("%@3", price);
-					
-					messageData.text = text;
-					messageData.usePlainText = true;
-					messageData.created = _qVO.messages[j].createdTime;
-					messageData.user_uid = _qVO.userUID;
-					_messages.splice(j, 0, new ChatMessageVO(messageData));
-				}
+			var userAvatar:String = getUserAvatar(_qVO.userUID);
+			messageData.user_avatar = (userAvatar) ? userAvatar : _qVO.avatarURL;
+			
+			var userName:String = "";
+			messageData.user_name = (_qVO.user != null) ? _qVO.user.getDisplayName() : userName;
+			
+			messageData.text = generateQuestionMessage();
+			
+			_messages.push(new ChatMessageVO(messageData));
+		}
+		
+		private function generateQuestionMessage():String {
+			var text:String;
+			var isPercent:Boolean;
+			var realPrice:Number;
+			if (_qVO.price != null) {
+				isPercent = _qVO.price.indexOf("%") != -1;
+				realPrice = Number((isPercent == true) ? _qVO.price.replace("%", "") : _qVO.price);
 			}
+			if (isPercent == true) {
+				var marketPrice:Number = NaN;
+				if (_qVO.instrument != null && _qVO.instrument.price && _qVO.instrument.price.length > 0) {
+					for (var i:int = 0; i < _qVO.instrument.price.length; i++) {
+						if (_qVO.instrument.price[i].name == _qVO.priceCurrency) {
+							marketPrice = _qVO.instrument.price[i].value;
+							break;
+						}
+					}
+				}
+				if (realPrice == 0) {
+					text = Lang.escrowAdsIntroMsgMarketPrice;
+					if (isNaN(marketPrice) == false)
+						text += Lang.escrowAdsIntroMsgMarketPriceAdd;
+				} else {
+					text = Lang.escrowAdsIntroMsg + Lang.escrowAdsIntroMsgPercentAdd;
+				}
+			} else
+				text = Lang.escrowAdsIntroMsg;
+			
+			text = text.replace("%@1", (_qVO.subtype == "buy") ? Lang.escrow_buy : Lang.escrow_sell);
+			text = text.replace("%@2", _qVO.cryptoAmount + " " + _qVO.tipsCurrencyDisplay);
+			
+			var currentPrice:String;
+			if (isPercent) {
+				if (isNaN(realPrice) == true) {
+					currentPrice = "---";
+					text = text.replace("%@4", "---");
+					text = text.replace("%@5", "");
+				} else {
+					if (isNaN(marketPrice) == true)
+						currentPrice = "@MKT";
+					else
+						currentPrice = NumberFormat.formatAmount(marketPrice * (1 + Number(realPrice) / 100), _qVO.priceCurrency)
+					text = text.replace("%@4", Math.abs(realPrice));
+					text = text.replace("%@5", (realPrice > 0) ? Lang.above.toLowerCase() : Lang.below.toLowerCase());
+				}
+			} else {
+				currentPrice = (isNaN(realPrice) == true) ? "---" : realPrice + "";
+			}
+			
+			text = text.replace("%@3", currentPrice);
+			
+			return text;
+		}
+		
+		public function regenerateQuestionMessage():void {
+			if (_qVO == null)
+				return;
+			if (_messages.length == 0 || _messages[0].id != 0)
+				return;
+			messages[0].updateText(generateQuestionMessage());
 		}
 		
 		private var test:int = 0;

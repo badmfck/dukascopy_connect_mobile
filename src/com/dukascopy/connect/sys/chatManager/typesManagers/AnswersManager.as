@@ -391,16 +391,14 @@ package com.dukascopy.connect.sys.chatManager.typesManagers {
 			if (data != null)
 				items = data.answers;
 			
-			if (data != null) {
-				DialogManager.showDialog(
-                                ScreenQuestionsDialog,
-                                {
-									qUID:loadingAnswersUID,
-                                    items:items,
-                                    title:Lang.latestAnswer
-                                }, ServiceScreenManager.TYPE_SCREEN
-                            );
-			}
+			DialogManager.showDialog(
+				ScreenQuestionsDialog,
+				{
+					qUID:loadingAnswersUID,
+					items:items,
+					title:Lang.latestAnswer
+				}, ServiceScreenManager.TYPE_SCREEN
+			);
 			
 			if (data != null && data.hash != null)
 				loadAnswersFromPHP(loadingAnswersUID, data.hash);

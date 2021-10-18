@@ -1,6 +1,8 @@
 package com.dukascopy.connect.data 
 {
 	import assets.StarIcon3;
+	import com.dukascopy.connect.data.screenAction.IScreenAction;
+	import com.dukascopy.connect.data.screenAction.customActions.StartChatAction;
 	import com.dukascopy.connect.sys.style.Style;
 	/**
 	 * ...
@@ -17,6 +19,8 @@ package com.dukascopy.connect.data
 		public var mainTitle:String;
 		public var textColor:Number = NaN;
 		public var callbackData:Object;
+		public var additionalButton:IScreenAction;
+		public var additionalTopButton:StartChatAction;
 		
 		public function AlertScreenData() 
 		{

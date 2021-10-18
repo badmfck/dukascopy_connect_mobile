@@ -1,13 +1,10 @@
 package com.dukascopy.connect.gui.list.renderers {
 	
-	import assets.CreateDealIcon;
 	import com.dukascopy.connect.Config;
 	import com.dukascopy.connect.data.HitZoneData;
 	import com.dukascopy.connect.gui.lightbox.UI;
 	import com.dukascopy.connect.gui.list.ListItem;
 	import com.dukascopy.connect.managers.escrow.vo.EscrowAdsVO;
-	import com.dukascopy.connect.sys.imageManager.ImageBitmapData;
-	import com.dukascopy.connect.sys.imageManager.ImageManager;
 	import com.dukascopy.connect.sys.style.FontSize;
 	import com.dukascopy.connect.sys.style.Style;
 	import com.dukascopy.connect.sys.style.presets.Color;
@@ -19,7 +16,6 @@ package com.dukascopy.connect.gui.list.renderers {
 	import flash.display.IBitmapDrawable;
 	import flash.display.Shape;
 	import flash.display.Sprite;
-	import flash.display.StageQuality;
 	import flash.geom.Point;
 	import flash.text.TextField;
 	import flash.text.TextFieldAutoSize;
@@ -32,7 +28,6 @@ package com.dukascopy.connect.gui.list.renderers {
 	 */
 	
 	public class ListEscrowAdsRenderer extends BaseRenderer implements IListRenderer {
-		
 		
 		static protected var avatarSize:int = Config.FINGER_SIZE * .4;
 		static protected var avatarPosX:int = Config.FINGER_SIZE * .18;
@@ -54,17 +49,7 @@ package com.dukascopy.connect.gui.list.renderers {
 		protected var tfQuestionTime:TextField;
 		
 		public function ListEscrowAdsRenderer() {
-			
 			initTextFormats();
-			
-			/*var icon:Sprite;
-			if (icon911BMD == null) {
-				icon = new CreateDealIcon();
-				UI.scaleToFit(icon, avatarSize * 2, avatarSize * 2);
-				icon911BMD = UI.getSnapshot(icon, StageQuality.HIGH, "ListConversation.actionAvatar");
-				UI.destroy(icon);
-				icon = null;
-			}*/
 			
 			bg = new Shape();
 				bg.graphics.beginFill(Style.color(Style.COLOR_BACKGROUND));
@@ -126,12 +111,11 @@ package com.dukascopy.connect.gui.list.renderers {
 		}
 		
 		protected function drawIcon(listData:Object):void {
-			
 			var itemData:EscrowAdsVO = listData as EscrowAdsVO;
 			
-			if(itemData.instrument==null)
+			if (itemData.instrument == null)
 				return;
-				
+			
 			var iconClass:Class = UI.getCryptoIconClass(itemData.instrument.code);
 			if (iconClass != null) {
 				if (icon.bitmapData != null) {
@@ -177,12 +161,9 @@ package com.dukascopy.connect.gui.list.renderers {
 		}
 		
 		public function getView(item:ListItem, height:int, width:int, highlight:Boolean = false):IBitmapDrawable {
-			
 			textFieldAmount.text = "";
 			tfQuestionTime.text = "";
 			textFieldStatus.text = "";
-			
-		//	ImageManager.drawGraphicCircleImage(avatar.graphics, avatarSize, avatarSize, avatarSize, icon911BMD, ImageManager.SCALE_PORPORTIONAL);
 			
 			bg.width = width;
 			bg.height = height;
@@ -220,17 +201,14 @@ package com.dukascopy.connect.gui.list.renderers {
 			return this;
 		}
 		
-		protected function isValidData(listData:Object):Boolean 
-		{
-			if (listData != null && "uid" in listData && listData.uid != null && listData.uid != "")
-			{
+		protected function isValidData(listData:Object):Boolean {
+			if (listData != null && "uid" in listData && listData.uid != null && listData.uid != "") {
 				return true;
 			}
 			return false;
 		}
 		
-		protected function updateItemAlpha(listData:Object):void 
-		{
+		protected function updateItemAlpha(listData:Object):void {
 			var itemData:EscrowAdsVO = listData as EscrowAdsVO;
 			
 			if (itemData != null && itemData.isRemoving == true)
@@ -239,11 +217,10 @@ package com.dukascopy.connect.gui.list.renderers {
 				alpha = 1;
 		}
 		
-		protected function getStatusText(listData:Object):String 
-		{
+		protected function getStatusText(listData:Object):String {
 			var itemData:EscrowAdsVO = listData as EscrowAdsVO;
 			var result:String = "";
-			if (itemData.status == EscrowAdsVO.STATUS_RESOLVED || itemData.status == EscrowAdsVO.STATUS_CLOSED) {;
+			if (itemData.status == EscrowAdsVO.STATUS_RESOLVED || itemData.status == EscrowAdsVO.STATUS_CLOSED) {
 				result = Lang.escrow_offer_closed;
 			} else {
 				result = LangManager.replace(Lang.regExtValue, Lang.escrow_already_participate, String(itemData.answersCount));
@@ -254,8 +231,7 @@ package com.dukascopy.connect.gui.list.renderers {
 			return result;
 		}
 		
-		protected function getStatusFormat(listData:Object):TextFormat 
-		{
+		protected function getStatusFormat(listData:Object):TextFormat {
 			var itemData:EscrowAdsVO = listData as EscrowAdsVO;
 			
 			if (itemData.mine && itemData.answersCount > 0)

@@ -30,7 +30,7 @@ package com.dukascopy.connect.managers.escrow.vo
             if(val==null)
                 return 0
             if(val is String){
-                var num:int=parseFloat(val as String);
+                var num:Number=parseFloat(val as String);
                 if(isNaN(num))
                     return 0;
                 return num;

@@ -102,8 +102,7 @@ package com.dukascopy.connect.gui.list.renderers {
 			drawAmount(li.data);
 			
 			newMessages.visible = false;
-			var newCount:Boolean = QuestionsManager.escrowStat == null || data.instrument in QuestionsManager.escrowStat == false || QuestionsManager.escrowStat[data.instrument] != data.maxId;
-			if (newCount) {
+			if (data.newExists == true) {
 				newMessages.x = w - NEW_COUNT_SIZE - Config.DOUBLE_MARGIN;
 				newMessages.visible = true;
 				tfNewMessagesCnt.text = "!";

@@ -5,8 +5,10 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 	import com.dukascopy.connect.data.TextFieldSettings;
 	import com.dukascopy.connect.data.escrow.EscrowMessageData;
 	import com.dukascopy.connect.data.escrow.EscrowSettings;
+	import com.dukascopy.connect.data.escrow.TradeDirection;
 	import com.dukascopy.connect.gui.lightbox.UI;
 	import com.dukascopy.connect.gui.menuVideo.BitmapButton;
+	import com.dukascopy.connect.sys.auth.Auth;
 	import com.dukascopy.connect.sys.imageManager.ImageBitmapData;
 	import com.dukascopy.connect.sys.style.FontSize;
 	import com.dukascopy.connect.sys.style.Style;
@@ -114,11 +116,12 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			
 			if (escrowOffer != null)
 			{
-				texts.push(Lang.amount_unblocked);
-				
-				colors.push(Style.color(Style.COLOR_SUBTITLE));
-				
-				values.push(NumberFormat.formatAmount(escrowOffer.amount * escrowOffer.price * EscrowSettings.refundableFee + escrowOffer.amount * escrowOffer.price, escrowOffer.currency));
+				if (escrowOffer.direction == TradeDirection.buy && escrowOffer.mca_user_uid == Auth.uid)
+				{
+					texts.push(Lang.amount_unblocked);
+					colors.push(Style.color(Style.COLOR_SUBTITLE));
+					values.push(NumberFormat.formatAmount(escrowOffer.amount * escrowOffer.price * EscrowSettings.refundableFee + escrowOffer.amount * escrowOffer.price, escrowOffer.currency));
+				}
 			}
 			
 			if (balance == null)
@@ -133,7 +136,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		private function drawStatus():void 
 		{
 			var text:String = Lang.escrow_offer_was_rejected;
-			var color:Number = Color.GREEN;
+			var color:Number = Color.GREY;
 			
 			status.draw(getWidth() - contentPadding * 2, text, color);
 		}
@@ -201,6 +204,32 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		private function drawText():void 
 		{
 			var text:String = Lang.escrow_offer_rejected;
+			
+			if (escrowOffer != null)
+			{
+				if (escrowOffer.direction == TradeDirection.sell)
+				{
+					if (escrowOffer.mca_user_uid == Auth.uid)
+					{
+						text = Lang.escrow_sell_offer_rejected_self_side;
+					}
+					else
+					{
+						text = Lang.escrow_sell_offer_rejected_counterparty_side;
+					}
+				}
+				else
+				{
+					if (escrowOffer.crypto_user_uid == Auth.uid)
+					{
+						text = Lang.escrow_buy_offer_rejected_self_side;
+					}
+					else
+					{
+						text = Lang.escrow_buy_offer_rejected_counterparty_side;
+					}
+				}
+			}
 			
 			if (description.bitmapData != null)
 			{

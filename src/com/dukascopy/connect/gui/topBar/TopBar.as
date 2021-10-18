@@ -349,39 +349,33 @@ package com.dukascopy.connect.gui.topBar {
 			updateLayout();
 		}
 		
-		private function onBackClick():void 
-		{
-			if (onBackCallback != null)
-			{
+		private function onBackClick():void {
+			if (onBackCallback != null) {
 				onBackCallback();
 			}
 			updateLayout();
 		}
 		
-		private function updateLayout():void 
-		{
-			if (backButton != null)
-			{
+		private function updateLayout():void {
+			if (_isDisposed == true)
+				return;
+			if (backButton != null) {
 				titleBitmap.x = backButton.x + backButton.width + Config.DOUBLE_MARGIN;
-			}
-			else
-			{
+			} else {
 				titleBitmap.x = Config.DOUBLE_MARGIN;
 			}
 			updateTitle();
 		}
 		
-		public function removeBackButton():void 
-		{
-			if (backButton != null)
-			{
-				if (content != null && _view.contains(backButton))
-				{
+		public function removeBackButton():void {
+			if (backButton != null) {
+				if (content != null && _view.contains(backButton)) {
 					content.removeChild(backButton);
 				}
 				backButton.dispose();
 				backButton = null;
 			}
+			updateLayout();
 		}
 		
 		private function clearActions():void {

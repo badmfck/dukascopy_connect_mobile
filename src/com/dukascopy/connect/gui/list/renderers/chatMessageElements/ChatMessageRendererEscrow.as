@@ -20,6 +20,7 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 	import com.dukascopy.connect.sys.style.Style;
 	import com.dukascopy.connect.sys.style.presets.Color;
 	import com.dukascopy.connect.type.HitZoneType;
+	import com.dukascopy.connect.utils.DateUtils;
 	import com.dukascopy.connect.utils.NumberFormat;
 	import com.dukascopy.connect.vo.AnimatedZoneVO;
 	import com.dukascopy.connect.vo.ChatMessageVO;
@@ -289,7 +290,6 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 			result = result.replace(Lang.regExtValue, data.price + " " + getCurrency(data));
 			
 			if (data.status == EscrowStatus.deal_completed ||
-				data.status == EscrowStatus.deal_created ||
 				data.status == EscrowStatus.deal_mca_hold ||
 				data.status == EscrowStatus.paid_crypto)
 			{
@@ -415,7 +415,7 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 						}
 						else
 						{
-							result = Lang.escrow_tap_deal_form;
+							result = Lang.waiting_for_crypto;
 						}
 						
 						break;
@@ -540,7 +540,7 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 					}
 					else
 					{
-						time.text = gettimeDifference(getMaxTime(messageData.systemMessageVO.escrow.status) * 60 - ((new Date()).time / 1000 - messageData.created));
+						time.text = gettimeDifference(EscrowSettings.getTime(messageData.systemMessageVO.escrow));
 					}
 					
 					time.width = time.textWidth + 5;
@@ -555,25 +555,33 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 					iconTime.visible = false;
 					time.visible = false;
 					//!TODO: передать верное время
-					if (EscrowScreenNavigation.isExpired(messageData.systemMessageVO.escrow, messageData.created) && messageData.systemMessageVO.escrow.inactive == false)
+					if (EscrowScreenNavigation.isExpired(messageData.systemMessageVO.escrow, messageData.systemMessageVO.escrow.created) && messageData.systemMessageVO.escrow.inactive == false)
 					{
 						iconFail.visible = true;
 						UI.colorize(iconSuccess, getIconColor(messageData.systemMessageVO.escrow.status, messageData.systemMessageVO.escrow.direction, messageData));
 					}
 					else
 					{
-						iconTime.visible = true;
-						time.visible = true;
-						
-						time.width = leftSideSize - Config.FINGER_SIZE * .1 * 2;
-						
-						time.text = gettimeDifference(getMaxTime(messageData.systemMessageVO.escrow.status) - ((new Date()).time / 1000 - messageData.created));
-						
-						time.width = time.textWidth + 5;
-						time.height = time.textHeight + 5;
-						
-						time.x = int(leftSideSize * .5 - time.width * .5);
-						time.y = int(resultHeight * .5 + Config.FINGER_SIZE * .05);
+						if (messageData.systemMessageVO.escrow.status != EscrowStatus.deal_created)
+						{
+							iconTime.visible = true;
+							time.visible = true;
+							
+							time.width = leftSideSize - Config.FINGER_SIZE * .1 * 2;
+							
+							time.text = gettimeDifference(EscrowSettings.getTime(messageData.systemMessageVO.escrow));
+							
+							time.width = time.textWidth + 5;
+							time.height = time.textHeight + 5;
+							
+							time.x = int(leftSideSize * .5 - time.width * .5);
+							time.y = int(resultHeight * .5 + Config.FINGER_SIZE * .05);
+						}
+						else
+						{
+							iconSuccess.visible = true;
+							UI.colorize(iconSuccess, getIconColor(messageData.systemMessageVO.escrow.status, messageData.systemMessageVO.escrow.direction, messageData));
+						}
 					}
 				}
 				else if (messageData.systemMessageVO.escrow.status == EscrowStatus.offer_expired)
@@ -658,28 +666,6 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 			}
 		}
 		
-		private function getMaxTime(status:EscrowStatus):Number 
-		{
-			if (status == EscrowStatus.offer_created)
-			{
-				return EscrowSettings.offerMaxTime;
-			}
-			else if (status == EscrowStatus.deal_created)
-			{
-				return EscrowSettings.dealMaxTime;
-			}
-			else if (status == EscrowStatus.deal_mca_hold)
-			{
-				return EscrowSettings.dealMaxTime;
-			}
-			else if (status == EscrowStatus.paid_crypto)
-			{
-				return EscrowSettings.receiptConfirmationTime;
-			}
-			
-			return EscrowSettings.offerMaxTime;
-		}
-		
 		private function getIconColor(status:EscrowStatus, direction:TradeDirection, messageData:ChatMessageVO):Number 
 		{
 			if (EscrowScreenNavigation.isExpired(messageData.systemMessageVO.escrow, messageData.created) && messageData.systemMessageVO.escrow.inactive == false)
@@ -730,7 +716,7 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 					{
 						if (messageData.systemMessageVO.escrow.inactive == true)
 						{
-							return Color.GREY_DARK;
+							return Color.WHITE;
 						}
 						return Color.WHITE;
 						break;
@@ -773,7 +759,14 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 			}
 			else
 			{
-				result = Math.ceil(seconds/60) + " " + Lang.min;
+				if (seconds > 3600)
+				{
+					result = DateUtils.getComfortTimeRepresentation(seconds * 1000);
+				}
+				else
+				{
+					result = Math.ceil(seconds/60) + " " + Lang.min;
+				}
 			}
 			result += " " + Lang.left;
 			return result;
