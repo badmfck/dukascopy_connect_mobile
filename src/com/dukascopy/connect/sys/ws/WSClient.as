@@ -1159,6 +1159,7 @@ import com.dukascopy.connect.MobileGui;
 				if (bhData == null)
 					return;
 				S_QUESTION_UPDATED.invoke(bhData);
+				GD.S_ESCROW_AD_UPDATED.invoke(bhData);
 				return;
 			}
 			if (bhMethod == WSMethodType.QUESTION_CLOSED) {

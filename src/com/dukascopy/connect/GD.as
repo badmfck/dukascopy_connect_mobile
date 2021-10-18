@@ -83,6 +83,7 @@ package com.dukascopy.connect
 		static public const S_ESCROW_ADS_CREATE:Signal = new Signal("GD.S_ESCROW_ADS_CREATE");
 		static public const S_ESCROW_ADS_CREATED:Signal = new Signal("GD.S_ESCROW_ADS_CREATED");
 		static public const S_ESCROW_ADS_CREATE_FAIL:Signal = new Signal("GD.S_ESCROW_ADS_FAIL");
+		static public const S_ESCROW_AD_UPDATED:Signal = new Signal("GD.S_ESCROW_AD_UPDATED");
 
 		static public const S_IOS_LOCALIZATION_UPDATE:Signal=new Signal("S_IOS_LOCALIZATION_UPDATE");
 		
