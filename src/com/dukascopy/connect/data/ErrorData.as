@@ -6,11 +6,14 @@ package com.dukascopy.connect.data
 	 */
 	public class ErrorData 
 	{
+		public var dccError:String;
+		public var id:String;
 		public var code:String;
 		public var message:String;
 		
-		public function ErrorData(raw:Object) 
+		public function ErrorData(raw:Object, id:String = null) 
 		{
+			this.id = id;
 			if (raw != null)
 			{
 				if ("code" in raw && raw.code != null)
@@ -20,6 +23,10 @@ package com.dukascopy.connect.data
 				if ("msg" in raw && raw.msg != null)
 				{
 					message = raw.msg;
+				}
+				if ("dccError" in raw && raw.dccError != null)
+				{
+					dccError = raw.dccError;
 				}
 			}
 		}

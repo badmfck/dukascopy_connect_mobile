@@ -11,6 +11,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 	import com.dukascopy.connect.data.escrow.TradeDirection;
 	import com.dukascopy.connect.gui.lightbox.UI;
 	import com.dukascopy.connect.gui.menuVideo.BitmapButton;
+	import com.dukascopy.connect.sys.auth.Auth;
 	import com.dukascopy.connect.sys.imageManager.ImageBitmapData;
 	import com.dukascopy.connect.sys.style.FontSize;
 	import com.dukascopy.connect.sys.style.Style;
@@ -154,7 +155,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 				{
 					if (EscrowScreenNavigation.isExpired(escrowOffer, offerCreatedTime))
 					{
-						if (escrowOffer.direction == TradeDirection.buy)
+						if (escrowOffer.direction == TradeDirection.buy && escrowOffer.mca_user_uid == Auth.uid)
 						{
 							texts.push(Lang.amount_unblocked);
 							colors.push(Style.color(Style.COLOR_SUBTITLE));
@@ -193,7 +194,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 				}
 				else if (escrowOffer.status == EscrowStatus.offer_cancelled)
 				{
-					if (escrowOffer.direction == TradeDirection.buy)
+					if (escrowOffer.direction == TradeDirection.buy && escrowOffer.mca_user_uid == Auth.uid)
 					{
 						texts.push(Lang.amount_unblocked);
 						colors.push(Style.color(Style.COLOR_SUBTITLE));
@@ -202,7 +203,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 				}
 				else if (escrowOffer.status == EscrowStatus.offer_rejected)
 				{
-					if (escrowOffer.direction == TradeDirection.buy)
+					if (escrowOffer.direction == TradeDirection.buy && escrowOffer.mca_user_uid == Auth.uid)
 					{
 						texts.push(Lang.amount_unblocked);
 						colors.push(Style.color(Style.COLOR_SUBTITLE));
@@ -353,11 +354,25 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 					{
 						if (escrowOffer.direction == TradeDirection.buy)
 						{
-							text = Lang.offer_buy_expired_details;
+							if (escrowOffer.mca_user_uid == Auth.uid)
+							{
+								text = Lang.offer_buy_expired_details_buyer_side;
+							}
+							else
+							{
+								text = Lang.offer_buy_expired_details_seller_side;
+							}
 						}
 						else if (escrowOffer.direction == TradeDirection.sell)
 						{
-							text = Lang.offer_sell_expired_details;
+							if (escrowOffer.mca_user_uid == Auth.uid)
+							{
+								text = Lang.offer_sell_expired_details_buyer_side;
+							}
+							else
+							{
+								text = Lang.offer_sell_expired_details_seller_side;
+							}
 						}
 					}
 					else if (escrowOffer.direction == TradeDirection.buy)

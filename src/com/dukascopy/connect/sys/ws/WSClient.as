@@ -120,6 +120,7 @@ import com.dukascopy.connect.MobileGui;
 		static public var S_ESCROW_DEAL_EVENT:Signal = new Signal("WSClient.S_ESCROW_DEAL_EVENT");
 		static public var S_ESCROW_OFFER_EVENT:Signal = new Signal("WSClient.S_ESCROW_OFFER_EVENT");
 		static public var S_OFFER_CREATE_FAIL:Signal = new Signal("WSClient.S_OFFER_CREATE_FAIL");
+		static public var S_OFFER_ACCEPT_FAIL:Signal = new Signal("WSClient.S_OFFER_ACCEPT_FAIL");
 		static public var S_OFFER_CREATED:Signal = new Signal("WSClient.S_OFFER_CREATED");
 		
 		static private var wasMessage:Boolean;
@@ -985,6 +986,10 @@ import com.dukascopy.connect.MobileGui;
 				S_ESCROW_OFFER_EVENT.invoke(EscrowEventType.OFFER_CREATED, pack.data.offer);
 				return;
 			}
+			if (pack.method == WSMethodType.ESCROW_OFFER_ACCEPT_ERROR)
+			{
+				trace("123");
+			}
 			if (pack.method == WSMethodType.ESCROW_OFFER_ERROR)
 			{
 				var errorObject:Object;
@@ -993,7 +998,26 @@ import com.dukascopy.connect.MobileGui;
 				{
 					errorObject = pack.data.error;
 				}
-				S_OFFER_CREATE_FAIL.invoke(new ErrorData(errorObject));
+				if ("data" in pack && pack.data != null &&
+					"method" in pack.data && pack.data.method != null)
+				{
+					var offerId:String;
+					if ("offer" in pack.data && pack.data.offer != null && "offer_id" in pack.data.offer)
+					{
+						offerId = pack.data.offer.offerId;
+					}
+					
+					if (pack.data.method == WSMethodType.ESCROW_OFFER_ACCEPT)
+					{
+						S_OFFER_ACCEPT_FAIL.invoke(new ErrorData(errorObject, offerId));
+					}
+					else if (pack.data.method == WSMethodType.ESCROW_OFFER_CREATE)
+					{
+						S_OFFER_CREATE_FAIL.invoke(new ErrorData(errorObject, offerId));
+					}
+				}
+				
+				
 				
 				/*pack : Object {
 					data : Object {

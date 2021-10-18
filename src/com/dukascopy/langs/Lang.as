@@ -2598,6 +2598,12 @@ package com.dukascopy.langs {
 		static public var error_remove_ads_has_answers:String = "You cannot remove this ad since it contains incomplete deal(s)";
 		static public var escrow_deal_created_status:String = "The deal has been created but the funds have not been charged yet from the Buy-side account. If you believe the operation takes more time than reasonably required, please let us know in Support chat.";
 		
+		static public var offer_sell_expired_details_buyer_side:String = "Offer was not accepted by you and expired.\nYou may create a new offer now.";
+		static public var offer_sell_expired_details_seller_side:String = "Offer was not accepted by the counterparty and expired.\nYou may create a new offer now.";
+		static public var offer_buy_expired_details_buyer_side:String = "Offer was not accepted by the counterparty and expired.\nThe funds reserved for this transaction were unblocked.";
+		static public var offer_buy_expired_details_seller_side:String = "Offer was not accepted by you and expired.\nYou may create a new offer now.";
+		static public var error_cant_start_deal_active_deals:String = "The new deal cannot be initiated before the previous deal between both of you is completed";
+		
 		static public function updateKeys(keys:Object):void {
 			for (var n:String in keys) {
 				if (n.indexOf("REFERAL_") == 0) {

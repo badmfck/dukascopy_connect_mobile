@@ -18,7 +18,7 @@ package com.dukascopy.connect.data.escrow
 		
 		static public var offerMaxTime:Number = 5;
 		static public var dealMaxTime:Number = 30;
-		static public var confirmTransactionTime:Number = 1440;
+	//	static public var confirmTransactionTime:Number = 1440;
 		static public var penalty:Number = 0.01;
 		static public var limitAmountKoef:Number = 0.9;
 		static public var receiptConfirmationTime:Number = 24*60;
@@ -46,6 +46,32 @@ package com.dukascopy.connect.data.escrow
 			
 			ApplicationErrors.add();
 			return defaultCommission;
+		}
+		
+		public static function getTime(escrow:EscrowMessageData):Number 
+		{
+			var timeNow:Number = (new Date()).time / 1000;
+			var difference:Number = 0;
+			
+			if (escrow.status == EscrowStatus.offer_created)
+			{
+				difference = EscrowSettings.offerMaxTime * 60 - (timeNow - escrow.created);
+			}
+			else if (escrow.status == EscrowStatus.deal_mca_hold)
+			{
+				difference = EscrowSettings.dealMaxTime * 60 - (timeNow - escrow.created);
+			}
+			else if (escrow.status == EscrowStatus.paid_crypto)
+			{
+				difference = EscrowSettings.receiptConfirmationTime * 60 - (timeNow - escrow.created);
+			}
+			
+			if (isNaN(difference))
+			{
+				difference = 0;
+				ApplicationErrors.add();
+			}
+			return Math.max(difference, 0);
 		}
 		
 		static public function get refundableFee():Number
