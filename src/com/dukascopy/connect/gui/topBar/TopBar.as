@@ -349,17 +349,14 @@ package com.dukascopy.connect.gui.topBar {
 			updateLayout();
 		}
 		
-		private function onBackClick():void 
-		{
-			if (onBackCallback != null)
-			{
+		private function onBackClick():void {
+			if (onBackCallback != null) {
 				onBackCallback();
 			}
 			updateLayout();
 		}
 		
-		private function updateLayout():void 
-		{
+		private function updateLayout():void {
 			if (_isDisposed == true)
 				return;
 			if (backButton != null) {
@@ -370,12 +367,9 @@ package com.dukascopy.connect.gui.topBar {
 			updateTitle();
 		}
 		
-		public function removeBackButton():void 
-		{
-			if (backButton != null)
-			{
-				if (content != null && _view.contains(backButton))
-				{
+		public function removeBackButton():void {
+			if (backButton != null) {
+				if (content != null && _view.contains(backButton)) {
 					content.removeChild(backButton);
 				}
 				backButton.dispose();

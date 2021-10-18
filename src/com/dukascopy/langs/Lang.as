@@ -2490,7 +2490,7 @@ package com.dukascopy.langs {
 		static public var escrow_target_price_per_coin:String = "Target price per Coin";
 		
 		static public var addTender:String = "Add your tender";
-		static public var tenderStartText1:String = "Create your ad you intend to publish, indicating the required details.\nOnce someone reacts to your ad, switch to the one-to-one chat with the counterparty, agree on the ultimate conditions of the future deal and initiate a binding offer through a dedicated form right from the chat.\n\n<font color=\"#CD3F43\"><a href=\"sdgsdfgsdfghdfh\">Terms & Conditions</a></font>";
+		static public var tenderStartText1:String = "Create your ad you intend to publish, indicating the required details.\nOnce someonce reacts to your ad, switch to the one-to-one chat with the counterparty, agree on the ultimate conditions of the future deal and initiate a binding offer through a dedicated form right from the chat.";
 		static public var tenderSide:String = "I would like to";
 		static public var tenderTypeOperation:String = "Choose operation type";
 		static public var tenderCrypto:String = "Crypto";
@@ -2514,7 +2514,14 @@ package com.dukascopy.langs {
 		static public var escrow_your_ad_created:String = "Your ad has been successfully created";
 		static public var escrow_ad_intro_message:String = "I would like to %@1 %@2 at %@3 per coin.";
 		static public var escrow_ad_intro_message_percent:String = "I would like to %@1 %@2 at %@3 per coin. (%@4 %@5 the market price)";
+		static public var escrow_ad_intro_message_percent_nan:String = "I would like to %@1 %@2 at --- per coin. (%@4 %@5 the market price)";
 		static public var escrow_ad_intro_message_at_market_price:String = "I would like to %@1 %@2 at market price";
+		
+		static public var escrowAdsIntroMsg:String = "I would like to %@1 %@2 at %@3 per coin.";
+		static public var escrowAdsIntroMsgMarketPrice:String = "I would like to %@1 %@2 at market price";
+		static public var escrowAdsIntroMsgPercentAdd:String = " (%@4% %@5 the market price)";
+		static public var escrowAdsIntroMsgMarketPriceAdd:String = " (%@3 per coin)";
+		
 		static public var escrow_buy:String = "Buy";
 		static public var escrow_sell:String = "Sell";
 		static public var make_offer:String = "MAKE OFFER";

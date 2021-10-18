@@ -418,8 +418,8 @@ package com.dukascopy.connect.managers.escrow {
 				escrowAdsVO.isRemoving = true;
 			}
 			TweenMax.delayedCall(5, function():void {
-			PHP.postEscrowAdsClose(onEscrowClosed, escrowAdsUid);
-			});
+				PHP.postEscrowAdsClose(onEscrowClosed, escrowAdsUid);
+			} );
 		}
 		
 		private function onEscrowClosed(phpRespond:PHPRespond):void {

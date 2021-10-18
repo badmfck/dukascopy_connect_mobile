@@ -224,13 +224,11 @@ package com.dukascopy.connect.vo {
 		}
 		
 		public function decrypt(chatSecrutiyKey:String, pin:String = null, isLocalIncomeChat:Boolean = false):void {
-			if (isLocalIncomeChat == true || (chatSecrutiyKey != null && chatSecrutiyKey.indexOf(LocalChatsSynchronizer.LOCAL_INCOME_CHAT_FLAG) == 0))
-			{
+			if (isLocalIncomeChat == true || (chatSecrutiyKey != null && chatSecrutiyKey.indexOf(LocalChatsSynchronizer.LOCAL_INCOME_CHAT_FLAG) == 0)) {
 				_text = Lang.cryptedMessage;
 				_crypted = false;
 				return;
 			}
-			
 			if (_crypted == false)
 				return;
 			if (_originalText == null) {
@@ -267,7 +265,7 @@ package com.dukascopy.connect.vo {
 				} catch (err:Error) {
 					echo("ChatMessageVO", "decrypt", "JSON ERROR (SystemMessage)", true);
 				}
-				if (_additionalData != null){
+				if (_additionalData != null) {
 					_systemMessageVO = new ChatSystemMsgVO(_additionalData, chatUID, id);
 				}
 			}
@@ -278,14 +276,11 @@ package com.dukascopy.connect.vo {
 				grabAllLinks(txt);
 				txt = null;
 				_crypted = false;
-				
-				if (_text != null && _text.indexOf(BOUND_BIG_MESSAGE) == 0)
-				{
+				if (_text != null && _text.indexOf(BOUND_BIG_MESSAGE) == 0) {
 					_text = _text.substr(BOUND_BIG_MESSAGE.length);
 					renderInfo = new ListRenderInfo();
 					renderInfo.renderInforenderBigFont = true;
-					if (_text != null && _text.indexOf(BOUND_COLOR) == 0 && _text.length > 7)
-					{
+					if (_text != null && _text.indexOf(BOUND_COLOR) == 0 && _text.length > 7) {
 						var textColorString:String = _text.substr(1, 6);
 						if (!isNaN(Number("0x" + textColorString)))
 						{
