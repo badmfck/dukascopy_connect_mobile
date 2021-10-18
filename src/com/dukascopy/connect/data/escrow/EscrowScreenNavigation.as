@@ -70,6 +70,12 @@ package com.dukascopy.connect.data.escrow
 			WSClient.S_ESCROW_DEAL_EVENT.add(onDealEvent);
 			WSClient.S_OFFER_ACCEPT_FAIL.add(onOfferAcceptFailEvent);
 			WSClient.S_OFFER_CREATED.add(onOfferCreatedEvent);
+			WSClient.S_OFFER_ACCEPT_SUCCESS.add(onOfferAcceptSuccessEvent);
+		}
+		
+		static private function onOfferAcceptSuccessEvent(offerData:Object):void 
+		{
+			GD.S_STOP_LOAD.invoke();
 		}
 		
 		static private function onOfferCreatedEvent(offerData:Object):void 
@@ -619,7 +625,7 @@ package com.dukascopy.connect.data.escrow
 		
 		static private function onDealCreated(dealRawData:Object):void 
 		{
-			GD.S_ESCROW_DEAL_CREATE_REQUEST
+		//	GD.S_ESCROW_DEAL_CREATE_REQUEST
 			/*if (dealRawData != null && dealRawData.status == EscrowStatus.deal_created.value)
 			{
 				if (dealRawData.side == "SELL")

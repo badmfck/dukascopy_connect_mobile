@@ -122,6 +122,7 @@ import com.dukascopy.connect.MobileGui;
 		static public var S_OFFER_CREATE_FAIL:Signal = new Signal("WSClient.S_OFFER_CREATE_FAIL");
 		static public var S_OFFER_ACCEPT_FAIL:Signal = new Signal("WSClient.S_OFFER_ACCEPT_FAIL");
 		static public var S_OFFER_CREATED:Signal = new Signal("WSClient.S_OFFER_CREATED");
+		static public var S_OFFER_ACCEPT_SUCCESS:Signal = new Signal("WSClient.S_OFFER_ACCEPT_SUCCESS");
 		
 		static private var wasMessage:Boolean;
 
@@ -973,6 +974,7 @@ import com.dukascopy.connect.MobileGui;
 			
 			if (pack.method == WSMethodType.ESCROW_OFFER_ACCEPT)
 			{
+				S_OFFER_ACCEPT_SUCCESS.invoke(pack.data.offer);
 				return;
 			}
 			if (pack.method == WSMethodType.ESCROW_OFFER_CREATE_SUCCESS)
