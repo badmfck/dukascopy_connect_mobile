@@ -14,6 +14,8 @@ package com.dukascopy.connect.managers.escrow.vo {
 		private var _count:int = 0;
 		private var _volume:Number = 0;
 		
+		public var newExists:Boolean = false;
+		
 		public function EscrowAdsCryptoVO(data:Object) {
 			if ("instrument" in data == true)
 				_instrument = data["instrument"];

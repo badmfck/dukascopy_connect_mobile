@@ -91,6 +91,7 @@ package com.dukascopy.connect.managers.escrow {
 				crypto = "DCO";
 			escrowAdsCryptosIds ||= {};
 			escrowAdsCryptosIds[crypto] = escrowAdsCrypto.maxID;
+			escrowAdsCrypto.newExists = false;
 			escrowAdsFilter.instrument = escrowAdsCrypto.instrument;
 			onEscrowFilterSetted();
 			Store.save("escrowAdsCryptoIds", escrowAdsCryptosIds);
@@ -178,6 +179,8 @@ package com.dukascopy.connect.managers.escrow {
 						instrument:escrowInstruments[i]
 					} ));
 				}
+				var escrowAdsCrypto:EscrowAdsCryptoVO = escrowAdsCryptos[escrowAdsCryptos.length - 1];
+				escrowAdsCrypto.newExists = escrowAdsCryptosIds == null || escrowAdsCrypto.instrument.code in escrowAdsCryptosIds == false || escrowAdsCryptosIds[escrowAdsCrypto.instrument.code] != escrowAdsCrypto.maxID;
 			}
 			if (escrowAdsCryptos != null)
 				escrowAdsCryptos.sortOn("instrumentCode");
