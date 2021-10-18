@@ -4,6 +4,7 @@ package com.dukascopy.connect.data.escrow
 	import com.dukascopy.connect.Config;
 	import com.dukascopy.connect.GD;
 	import com.dukascopy.connect.data.AlertScreenData;
+	import com.dukascopy.connect.data.ErrorData;
 	import com.dukascopy.connect.data.EscrowScreenData;
 	import com.dukascopy.connect.data.SelectorItemData;
 	import com.dukascopy.connect.data.screenAction.IScreenAction;
@@ -67,6 +68,30 @@ package com.dukascopy.connect.data.escrow
 		public static function init():void
 		{
 			WSClient.S_ESCROW_DEAL_EVENT.add(onDealEvent);
+			WSClient.S_OFFER_ACCEPT_FAIL.add(onOfferAcceptFailEvent);
+			WSClient.S_OFFER_CREATED.add(onOfferCreatedEvent);
+			WSClient.S_OFFER_ACCEPT_SUCCESS.add(onOfferAcceptSuccessEvent);
+		}
+		
+		static private function onOfferAcceptSuccessEvent(offerData:Object):void 
+		{
+			GD.S_STOP_LOAD.invoke();
+		}
+		
+		static private function onOfferCreatedEvent(offerData:Object):void 
+		{
+			GD.S_STOP_LOAD.invoke();
+		}
+		
+		static private function onOfferAcceptFailEvent(error:ErrorData):void 
+		{
+			GD.S_STOP_LOAD.invoke();
+			var errorMessage:String = error.message;
+			if (error.dccError != null)
+			{
+				errorMessage = ErrorLocalizer.getText(error.dccError);
+			}
+			ToastMessage.display(errorMessage);
 		}
 		
 		static private function confirmCryptoReceiveCommand(escrow:EscrowMessageData, messageId:Number, chatVO:ChatVO, created:Number, command:OfferCommand = null):void
@@ -302,7 +327,7 @@ package com.dukascopy.connect.data.escrow
 				}
 				else if (escrow.status == EscrowStatus.deal_completed)
 				{
-					showFinishScreen(escrow);
+					showFinishScreen(escrow, showChatButton, chatVO);
 				}
 			}
 			else
@@ -343,9 +368,13 @@ package com.dukascopy.connect.data.escrow
 			}
 		}
 		
-		static private function showFinishScreen(escrow:EscrowMessageData):void
+		static private function showFinishScreen(escrow:EscrowMessageData, showChatButton:Boolean = false, chatVO:ChatVO = null):void
 		{
 			var screenData:AlertScreenData = new AlertScreenData();
+			if (showChatButton)
+			{
+				screenData.additionalTopButton = new StartChatAction(chatVO.uid, chatVO);
+			}
 			screenData.icon = EscrowSuccess;
 			screenData.iconColor = Color.GREEN;
 			//	screenData.callback = finishOffer;
@@ -515,6 +544,7 @@ package com.dukascopy.connect.data.escrow
 						}
 					}
 					
+					GD.S_START_LOAD.invoke();
 					WSClient.call_accept_offer(messageId, debitAccount, cryptoWallet);
 				}
 				else
@@ -595,7 +625,7 @@ package com.dukascopy.connect.data.escrow
 		
 		static private function onDealCreated(dealRawData:Object):void 
 		{
-			GD.S_ESCROW_DEAL_CREATE_REQUEST
+		//	GD.S_ESCROW_DEAL_CREATE_REQUEST
 			/*if (dealRawData != null && dealRawData.status == EscrowStatus.deal_created.value)
 			{
 				if (dealRawData.side == "SELL")
@@ -707,16 +737,15 @@ package com.dukascopy.connect.data.escrow
 			{
 				return true;
 			}
-			//!TODO:;
+			
 			if (escrow.status == EscrowStatus.offer_created)
 			{
 				return (((new Date()).time / 1000 - created) / 60) > EscrowSettings.offerMaxTime;
 			}
 			else if (escrow.status == EscrowStatus.deal_created)
 			{
-				//!TODO:;
-				trace(((new Date()).time / 1000 - created) / 60);
-				return (((new Date()).time / 1000 - created) / 60) > EscrowSettings.dealMaxTime;
+				return false;
+			//	return (((new Date()).time / 1000 - created) / 60) > EscrowSettings.dealMaxTime;
 			}
 			else if (escrow.status == EscrowStatus.deal_mca_hold)
 			{

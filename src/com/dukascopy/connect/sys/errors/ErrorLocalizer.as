@@ -190,9 +190,10 @@ package com.dukascopy.connect.sys.errors {
 			refer09:"unknownPromoCode",
 			lotl_04:"registeredInPayments",
 			refer10:"alreadyInPayments",
-			que__26:"error_remove_ads_has_answers"
+			que__26:"error_remove_ads_has_answers",
+			cp2p_01:"error_cant_start_deal_active_deals"
 		};
-		
+		"cp2p.01 Cant start new deal with this user having active deal"
 		static public const FIND_USER_TARGET:String = "findUser";
 		static public const ENTER_PROMOCODE_TARGET:String = "enterPromocodeTarget";
 		

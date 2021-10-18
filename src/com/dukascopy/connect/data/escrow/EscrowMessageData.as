@@ -29,6 +29,7 @@ package com.dukascopy.connect.data.escrow
 		public var msg_id:Number;
 		public var transactionConfirmShown:Boolean;
 		public var priceID:int;
+		public var created:Number = 0;
 		
 		public function EscrowMessageData(data:Object = null) 
 		{
@@ -40,8 +41,21 @@ package com.dukascopy.connect.data.escrow
 		
 		private function parse(data:Object):void 
 		{
+			trace(data.msg_id, data.status);
+			if (data.msg_id == null)
+			{
+				
+			}
 			raw = data;
 			
+			if ("lifeTime" in data)
+			{
+				created = data.lifeTime;
+			}
+			if ("created_at" in data)
+			{
+				created = data.created_at;
+			}
 			if ("crypto_trn_id" in data)
 			{
 				transactionId = data.crypto_trn_id;
