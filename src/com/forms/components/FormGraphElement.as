@@ -2,7 +2,6 @@ package com.forms.components
 {
     import flash.xml.XMLNode;
     import flash.display.Sprite;
-    import flash.display.Shape;
     import flash.display.CapsStyle;
     import flash.display.JointStyle;
 
@@ -24,6 +23,7 @@ package com.forms.components
         private var commands:Vector.<Command>;
 
         public function FormGraphElement(xml:XMLNode):void{
+
             this.xml=xml;
             _view=new Sprite();
             parseColorValue("fill");
@@ -36,16 +36,16 @@ package com.forms.components
                     strokeIsSet=true;
                 }
             }
-            /*
+            
             _view.graphics.beginFill(0xFF0000);
             _view.graphics.drawRect(0,0,2,2);
             _view.graphics.endFill();
-            */
+            
             if(strokeIsSet)
                 _view.graphics.lineStyle(strokeWidth,stroke,1,false,"normal",CapsStyle.SQUARE,JointStyle.MITER);
+
             if(fillIsSet)
                 _view.graphics.beginFill(fill,1);
-            
             
         }
 
@@ -65,7 +65,6 @@ package com.forms.components
 
 
         public function render(force:Boolean=false):void{
-            trace("TrY RENDED "+xml.nodeName)
             if(rendered && !force)
                 return;
             rendered=true;
@@ -85,13 +84,13 @@ package com.forms.components
 
         private function drawPath(d:String):void{
 
-
             var l:int=d.length;
             var command:Command;
             commands=new <Command>[];
             var data:String="";
             for(var i:int=0;i<l;i++){
-                var sym:String=d.charAt(i).toLowerCase();
+                var orig:String=d.charAt(i);
+                var sym:String=orig.toLowerCase();
                 if(sym=="m" || sym=="l" || sym=="h" || sym=="v" || sym=="z" || sym=="c" || sym=="s" || sym=="q" || sym=="t" || sym=="a"){
                     // got command
                     if(command!=null){
@@ -103,7 +102,7 @@ package com.forms.components
                         data="";
                         drawCommand(command);
                     }
-                    command=new Command(sym);
+                    command=new Command(sym,orig!=sym);
                     continue;
                 }
                 data+=sym;
@@ -134,9 +133,11 @@ package com.forms.components
                 _view.graphics.lineTo(commands[0].d[0],commands[0].d[1]);
                 return;
             }
-            if(cmd.name=="c"){
+
+            if(cmd.name=="c" || cmd.name=="s"){
                 _view.graphics.cubicCurveTo(cmd.d[0],cmd.d[1],cmd.d[2],cmd.d[3],cmd.d[4],cmd.d[5]);
             }
+            
             //TODO: S Q T 
         }
 
@@ -153,13 +154,23 @@ package com.forms.components
 }
 
 class Command{
+    
     public var name:String;
     public var d:Array;
-    public function Command(cmd:String){
+    public var absolute:Boolean;
+
+    public var x:Number;
+    public var y:Number;
+
+    public function Command(cmd:String,absolute:Boolean){
+        this.absolute=absolute;
         this.name=cmd;
     }
     public function parse(data:String,parent:Command):void{
         d=[];
+        var orign:String=data;
+        data=data.replace(/\-/g," -");
+
         var coords:Array=data.split(/[\s,;]/gi);
         var l:int=coords.length;
         for(var i:int=0;i<l;i++){
@@ -169,12 +180,44 @@ class Command{
             var crd:Number=parseFloat(coords[i]);
             if(isNaN(crd))
                 continue;
+
             d.push(crd);
+            trace(i+": "+crd);
         }
+
+        if(!absolute && parent){
+            if(name=="m"){
+                d[0]=parent.d[0]+d[0];
+                d[1]=parent.d[1]+d[1];
+            }
+            if(name=="h"){
+                d[0]=parent.d[0]+d[0];
+            }
+            if(name=="v"){
+                d[0]=parent.d[0]+d[0];
+            }
+        }
+
+
         if(name=="v" && parent!=null)
             d.unshift(parent.d[0])
+
         if(name=="h" && parent!=null)
             d.push(parent.d[1])
+
+        if(name=="s" && parent!=null){
+            var a:Number=0;
+            var b:Number=0;
+            if(parent.name=="c" || parent.name=="s"){
+                a=parent.d[2];
+                b=parent.d[3];
+            }else{
+                a=d[0];
+                b=d[1];
+            }
+            d.unshift(b);
+            d.unshift(a);
+        }
 
         //TODO: S Q T 
     }

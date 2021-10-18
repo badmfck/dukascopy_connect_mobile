@@ -590,10 +590,11 @@ package com.forms{
             return new FormText(txt);
         }
 
-        public function addAll(components:Vector.<FormComponent>):void{
+        public function addAll(components:Vector.<FormComponent>,doRebuild:Boolean=true):void{
             for each(var c:FormComponent in components)
                 _add(c,-1,false)
-            rebuild();
+            if(doRebuild)
+                rebuild();
         }
 
         protected function _removeAll(components:Vector.<FormComponent>,doRebuld:Boolean=true):void{
@@ -823,8 +824,8 @@ package com.forms{
                 return;
 
 
-            if(id=="avatest")                  
-                trace("123");
+            if(id=="tst")                  
+                 trace("123");
 
      
             var uv:Object=parentValues;
@@ -844,10 +845,13 @@ package com.forms{
             // border
             nextPos+=style.layout.toString()==FormLayout.VERTICAL?style.border.top:style.border.left;
 
+            var startPos:int=nextPos;
+
             var maxSize:int=0;
             var lastSize:int=0;
             var offset:Object;
-
+            var oppositeOffset:int=0;
+            var maxH:int=0;
 
             var c:FormComponent;
             var absCmp:Vector.<FormComponent>;
@@ -927,8 +931,31 @@ package com.forms{
 
                     var oppositePos:int=style.layout.toString()==FormLayout.VERTICAL?style.padding.left:style.padding.top;
                     oppositePos+=style.layout.toString()==FormLayout.VERTICAL?style.border.left:style.border.top;
+                    oppositePos+=oppositeOffset;
 
                     c.view[style.layout.oppositeAxis]=oppositePos;
+
+                    if(style.layout.toString()==FormLayout.HORIZONTAL && attributes!=null && attributes.wrap=="true"){
+
+                        if(c.bounds.display_height>maxH)
+                            maxH=c.bounds.display_height;
+
+                        if(c.view[style.layout.axis]+c.bounds.display_width>bounds.display_width){
+
+                            nextPos=startPos;
+                            oppositeOffset+=maxH;
+                            maxH=0;
+
+                            oppositePos=style.layout.toString()==FormLayout.VERTICAL?style.padding.left:style.padding.top;
+                            oppositePos+=style.layout.toString()==FormLayout.VERTICAL?style.border.left:style.border.top;
+                            oppositePos+=oppositeOffset;
+
+                            c.view[style.layout.oppositeAxis]=oppositePos;
+                            c.view[style.layout.axis]=nextPos; 
+                        }
+
+                    }
+
                     setupAlign(c);
                     nextPos+=c.bounds["display_"+style.layout.side]; // inc position
                     if(c.bounds[style.layout.oppositeSide]>maxSize)
@@ -937,6 +964,11 @@ package com.forms{
                     // do offset
                     offset=setupOffset(c);
                     nextPos+=offset[style.layout.axis];
+
+                    
+
+                    
+
                 }
                 
             }
@@ -983,6 +1015,9 @@ package com.forms{
             // move bounds to display size, if display size > 0
             
             if(percentagesChidldren.length>0){
+                oppositeOffset=0;
+                maxH=0;
+
                 nextPos=style.layout.toString()==FormLayout.VERTICAL?style.padding.top:style.padding.left;
                 nextPos+=style.layout.toString()==FormLayout.VERTICAL?style.border.top:style.border.left;
                 for each(c in _components){
@@ -1007,6 +1042,29 @@ package com.forms{
                         oppositePos=style.layout.toString()==FormLayout.VERTICAL?style.padding.left:style.padding.top;
                         oppositePos+=style.layout.toString()==FormLayout.VERTICAL?style.border.left:style.border.top;
                         c.view[style.layout.oppositeAxis]=oppositePos;
+
+
+                        if(style.layout.toString()==FormLayout.HORIZONTAL && attributes!=null && attributes.wrap=="true"){
+
+                            if(c.bounds.display_height>maxH)
+                                maxH=c.bounds.display_height;
+
+                            if(c.view[style.layout.axis]+c.bounds.display_width>bounds.display_width){
+
+                                nextPos=startPos;
+                                oppositeOffset+=maxH;
+                                maxH=0;
+
+                                oppositePos=style.layout.toString()==FormLayout.VERTICAL?style.padding.left:style.padding.top;
+                                oppositePos+=style.layout.toString()==FormLayout.VERTICAL?style.border.left:style.border.top;
+                                oppositePos+=oppositeOffset;
+
+                                c.view[style.layout.oppositeAxis]=oppositePos;
+                                c.view[style.layout.axis]=nextPos; 
+                            }
+
+                        }
+
                         setupAlign(c);
                         nextPos+=c.bounds["display_"+style.layout.side]; // inc position
                         if(c.bounds[style.layout.oppositeSide]>maxSize)
@@ -1015,6 +1073,8 @@ package com.forms{
                         // do offset
                         offset=setupOffset(c);
                         nextPos+=offset[style.layout.axis];
+
+                        
                     }
                 }
             
@@ -1536,10 +1596,18 @@ package com.forms{
         }
 
         public function clone():FormComponent{
+            
             if(!originalXML){
                 trace("WARN: component not ready yet to clone");
                 return null;
             }
+
+            if(form==null){
+                // NO FORM!!
+                trace("WARN: No-form!")
+                return null;
+            }
+
             var dolly:FormComponent=new FormComponent(originalXML,form,predefinedStyle,null,true);
             return dolly;
         }

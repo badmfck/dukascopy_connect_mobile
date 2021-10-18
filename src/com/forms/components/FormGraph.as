@@ -59,15 +59,6 @@ package com.forms.components
                 var xml:XMLDocument=new XMLDocument(new XML(res.readUTFBytes(res.length)));
                 createGraphNodes(xml.firstChild);
                 resizeGraph();
-                if(onLoaded!=null && onLoaded is Function){
-                    if(onLoaded.length==0){
-                        onLoaded();
-                        return;
-                    }else if(onLoaded.length==1){
-                        onLoaded(self);
-                        return;
-                    }
-                }
             })
         }
 

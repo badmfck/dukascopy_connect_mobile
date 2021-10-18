@@ -59,8 +59,20 @@ public class MainEscrow extends Sprite {
 
 
 				var cmp:FormComponent=form.getComponentByID("component");
-				var cmp2:FormComponent=cmp.clone();
-				cmp.parent.add(cmp2);
+				var cmps:Vector.<FormComponent>=new <FormComponent>[];
+				for(var i:int=0;i<10;i++){
+					var c:FormComponent=cmp.clone();
+					c.setupUserValues({
+						name:"TEST_"+i
+					})
+					c.onTap=function(cmp:FormComponent):void{
+						trace("TAPPED!",cmp.getUserValues().name);
+					}
+					cmps.push(c);
+				}
+				cmp.parent.addAll(cmps,false);
+				cmp.parent.remove(cmp)
+				
 			};
 
 			GD.S_ESCROW_OFFERS_READY.add(function(offers:Vector.<EscrowOfferVO>):void{
