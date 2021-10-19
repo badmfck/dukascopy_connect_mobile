@@ -118,10 +118,16 @@ package com.telefision.utils
             var ts:Number=new Date().getTime();
             if(url==null)
                 url=URL_DEFAULT;
+
+            if(url==null){
+                trace("ERROR! Can't start loader with no URL!");
+                return;
+            }
             loader=new URLLoader()
             this.url=url;
             this.callback=callback;
             id=nextID++;
+            
             
             var ur:URLRequest=new URLRequest(url);
             var uv:URLVariables = new URLVariables();

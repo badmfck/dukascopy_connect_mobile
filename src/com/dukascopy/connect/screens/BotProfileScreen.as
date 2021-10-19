@@ -274,10 +274,12 @@ package com.dukascopy.connect.screens {
 			var iconR:DisplayObject;
 			var btn:BitmapButton;
 			var l:int = actions.length;
+			var cls:Class;
 			for (var i:int = 0; i < l; i++) {
 				obj = actions[i];
 				if (obj.iconL != undefined && obj.iconL != null) {
-					iconL = new obj.iconL();
+					cls=obj.iconL;
+					iconL = new cls();
 					if (obj.red == true)
 						UI.colorize(iconL, MainColors.RED);
 					else
@@ -285,7 +287,8 @@ package com.dukascopy.connect.screens {
 					UI.scaleToFit(iconL, iconSize, iconSize);
 				}
 				if (obj.iconR != undefined && obj.iconR != null) {
-					iconR = new obj.iconR();
+					cls=obj.iconR;
+					iconR = new cls();
 					if (obj.red == true)
 						UI.colorize(iconR, MainColors.RED);
 					else
@@ -348,8 +351,10 @@ package com.dukascopy.connect.screens {
 			var btn:BitmapButton;
 			var cnt:Sprite;
 			var l:int = actions.length;
+			var cls:Class;
 			for (var i:int = 0; i < l; i++) {
-				cnt = new actions[i].icon();
+				cls=actions[i].icon;
+				cnt = cls();
 				cnt.height = circleButtonsSize;
 				cnt.width = cnt.width * cnt.scaleY;
 				btn = new BitmapButton();
@@ -552,12 +557,15 @@ package com.dukascopy.connect.screens {
 			
 			var iconL:DisplayObject;
 			var iconR:DisplayObject;
+			var cls:Class;
 			if (actionBlockUser.iconL != undefined && actionBlockUser.iconL != null) {
-				iconL = new actionBlockUser.iconL();
+				cls=actionBlockUser.iconL;
+				iconL = new cls();
 				UI.scaleToFit(iconL, iconSize, iconSize);
 			}
 			if (actionBlockUser.iconR != undefined && actionBlockUser.iconR != null) {
-				iconR = new actionBlockUser.iconR();
+				cls=actionBlockUser.iconR;
+				iconR = new cls();
 				UI.scaleToFit(iconR, iconArrowSize, iconArrowSize);
 			}
 			var ibmd:ImageBitmapData = UI.renderSettingsTextAdvanced(

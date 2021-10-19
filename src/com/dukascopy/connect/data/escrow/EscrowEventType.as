@@ -6,16 +6,19 @@ package com.dukascopy.connect.data.escrow
 	 */
 	public class EscrowEventType 
 	{
-		static public const CREATED:String = "deal_created";
-		static public const HOLD_MCA:String = "hold_mca";
-		static public const CRYPTO_ACCEPTED:String = "crypto_accepted";
-		static public const PAID_CRYPTO:String = "paid_crypto";
-		static public const CANCEL:String = "cancel";
-		static public const OFFER_CREATED:String = "offerCreated";
+		static public const CREATED:EscrowEventType = new EscrowEventType("deal_created");
+		static public const HOLD_MCA:EscrowEventType = new EscrowEventType("hold_mca");
+		static public const CRYPTO_ACCEPTED:EscrowEventType = new EscrowEventType("crypto_accepted");
+		static public const PAID_CRYPTO:EscrowEventType = new EscrowEventType("paid_crypto");
+		static public const CANCEL:EscrowEventType =new EscrowEventType("cancel");
+		static public const OFFER_CREATED:EscrowEventType = new EscrowEventType("offerCreated");
 		
-		public function EscrowEventType() 
-		{
-			
+		private var type:String;
+		public function EscrowEventType(type:String){
+			this.type=type;
 		}
+
+		public function get value():String{return type;}
+		public function toString():String{return type;}
 	}
 }

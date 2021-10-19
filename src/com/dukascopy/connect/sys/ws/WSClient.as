@@ -594,6 +594,9 @@ import com.dukascopy.connect.MobileGui;
 				send('pong', pack.data);
 				return;
 			}
+
+			GD.S_WS_PACKET_RECEIVED.invoke(pack.data);
+
 			if (pack.method == "usersOnline") {
 				S_ONLINE_USERS.invoke(pack.data);
 				return;

@@ -1,5 +1,6 @@
 package com.dukascopy.connect {
 	
+	
 	import assets.JailedIllustrationClip;
 	import com.dukascopy.connect.data.ChatSettingsModel;
 	import com.dukascopy.connect.data.PopupData;
@@ -117,6 +118,7 @@ package com.dukascopy.connect {
 	import flash.text.TextFormat;
 	import flash.ui.Keyboard;
 	import com.dukascopy.langs.IOSLocalization;
+	import com.dukascopy.connect.vo.URLConfigVO;
 	
 	public class MobileGui {
 		
@@ -179,7 +181,6 @@ package com.dukascopy.connect {
 			_softKeyboardYPosition = stage.stageHeight;
 			
 
-		
 			if (Config.PLATFORM_APPLE){
 				DCCExt.init();
 
@@ -287,12 +288,20 @@ package com.dukascopy.connect {
 			
 			new EscrowDealManager();
 			new EscrowAdsManager();
+			new EscrowOfferManager();
+
 			BankCacheManager.init();
 			new CryptoWalletHolder();
 			new ToastMessageGD(stage);
-			new EscrowOfferManager();
+			
+
+			GD.S_URL_CONFIG_READY.invoke(new URLConfigVO({
+				DCCAPI_URL:Config.URL_PHP_CORE_SERVER
+			}))
 			
 			create();
+
+			
 
 			/*if(Config.PLATFORM_WINDOWS)
 				stage.addChild(new MemoryMonitor());*/

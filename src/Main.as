@@ -28,7 +28,6 @@ import flash.ui.Multitouch;
 import flash.ui.MultitouchInputMode;
 import flash.utils.ByteArray;
 import flash.utils.getTimer;
-import flash.text.TextField;
 
 
 

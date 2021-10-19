@@ -7,11 +7,14 @@ package com.dukascopy.connect.managers.escrow{
 	import com.dukascopy.connect.managers.escrow.vo.InstrumentParser;
     import com.dukascopy.connect.sys.Dispatcher;
 	import com.dukascopy.connect.sys.applicationError.ApplicationErrors;
-	import com.dukascopy.connect.sys.payments.PayManager;
+	
+    // TODO: remove thoses imports!
+    import com.dukascopy.connect.sys.payments.PayManager;
 	import com.dukascopy.connect.sys.payments.PaymentsManager;
 	import com.dukascopy.connect.sys.php.PHP;
 	import com.dukascopy.connect.sys.php.PHPRespond;
 	import com.dukascopy.connect.sys.ws.WSClient;
+
     import com.dukascopy.connect.vo.EscrowDealVO;
     import com.telefision.utils.maps.EscrowDealMap;
     import com.telefision.utils.SimpleLoader;
@@ -19,6 +22,8 @@ package com.dukascopy.connect.managers.escrow{
     import flash.utils.Timer;
     import flash.events.TimerEvent;
     import com.dukascopy.connect.managers.escrow.vo.EscrowInstrument;
+    import com.dukascopy.connect.vo.URLConfigVO;
+    import com.dukascopy.connect.managers.escrow.vo.EscrowDealEventSentRequestVO;
     
 
     /**
@@ -36,6 +41,9 @@ package com.dukascopy.connect.managers.escrow{
         private var timeInstrumentRequest:Number=0;
         private var instrumentDataLifetime:Number=1000*60*5; // 5 min
         private var isInstrumentLoading:Boolean=false;
+
+        // Deals 
+        
 		
         // Prices
         private var isPriceLoading:Boolean=false;
@@ -45,20 +53,75 @@ package com.dukascopy.connect.managers.escrow{
 		
         public function EscrowDealManager(){
 
-            SimpleLoader.URL_DEFAULT="https://loki.telefision.com/master/";
+            GD.S_URL_CONFIG_READY.add(function(cfg:URLConfigVO):void{
+                SimpleLoader.URL_DEFAULT=cfg.DCCAPI_URL;//"https://loki.telefision.com/master/";    
+            })
+
+             GD.S_AUTHORIZED.add(function(data:Object):void{
+                authKey=data.authKey;
+            })
+
 			
-            //loadDeals();
-			
-			WSClient.S_ESCROW_DEAL_EVENT.add(onDealEvent);
+			//WSClient.S_ESCROW_DEAL_EVENT.add(onDealEvent);
 			WSClient.S_ESCROW_OFFER_EVENT.add(onOfferEvent);
 
-            GD.S_AUTHORIZED.add(function(data:Object):void{
-                authKey=data.authKey;
+           
+            // Handle WS packet for deals
+            GD.S_WS_PACKET_RECEIVED.add(function(packet:Object):void{
+                if (packet.method != "evCp2p")
+                    return;
+			
+				if (packet.action == "cp2p_deal_created" && packet.data != null && packet.data.event != null && packet.data.event.type == EscrowEventType.CREATED.value){
+                    createDeal(packet.data);
+                    //S_ESCROW_DEAL_EVENT.invoke(EscrowEventType.CREATED, pack.data.deal);
+                    return;
+				}
+
+				if (packet.action == "cp2p_deal_created" && packet.data != null && packet.data.event != null && packet.data.event.type == EscrowEventType.HOLD_MCA.value){
+                    holdMCA(packet.data);
+					//S_ESCROW_DEAL_EVENT.invoke(EscrowEventType.HOLD_MCA, pack.data.deal);
+                    return;
+				}
+				
             })
 
             // Check if escrow manager is created
             GD.S_ESCROW_MANAGER_AVAILABLE.add(function(cb:Function):void{
                 cb();
+            })
+
+            // Send escrow deal event to dccapi
+            GD.S_ESCROW_REQUEST_DEAL_EVENT_SENT.add(function(req:EscrowDealEventSentRequestVO):void{
+
+                new SimpleLoader({
+                    method:"Cp2p.addEvent",
+                    key:authKey,
+                    event_type:req.type.value,
+                    deal_uid:req.dealUID,
+                    notifyWS:req.notifyWS    
+                },function(resp:SimpleLoaderResponse):void{
+                    trace(resp);
+                    //TODO: Check response
+                    if(resp.error){
+                        GD.S_ESCROW_REQUEST_DEAL_EVENT_SENT_FAIL.invoke(resp.error)
+                        return;
+                    }
+                    
+                    
+                    if(resp.data==null || !("deal_uid" in resp.data)){
+                        //TODO: WRONG ANSWER FROM PHP;
+                        var deal:EscrowDealVO=escrowDeals.getDeal(resp.data.deal_uid);
+                        if(deal==null){
+                            deal=new EscrowDealVO(resp.data);
+                            escrowDeals.addDeal(resp.data.deal_uid,deal);
+                            fireDeals();
+                        }else
+                            deal.update(resp.data);
+                    }
+
+                    //{"data":{"deal_uid":"6346558610124544830","side":"SELL","status":"completed","instrument":"DCO","amount":"1.0000000000","mca_ccy":"EUR","price":"2.2800000000","rate":"0.438596","debit_account":"380867781292","crypto_wallet":"0x8deaA0eE98f8482C2D3B93ec57DE678a65759ef9","crypto_user_uid":"I6D5WsWZDLWj","mca_user_uid":"WLDNWrWbWoIxIbWI","chat_uid":"WLDIDRWmDNW5WPWe","msg_id":35653518,"crypto_trn_id":null,"mca_trn_id":"t1R9WOTI","crypto_claim_id":null,"mca_claim_id":null,"percent_price":0,"created_at":1634655861,"updated_at":1634659026,"events":[{"uid":"6346558610168205037","deal_uid":"6346558610124544830","created_at":"2021-10-19 15:04:21","type":"deal_created","data":null,"state":"active","created_by":"WLDNWrWbWoIxIbWI"},{"uid":"6346558832800725474","deal_uid":"6346558610124544830","created_at":"2021-10-19 15:04:43","type":"hold_mca","data":"{\"mca_trn_id\":\"t1R9WOTI\",\"price\":\"2.28\"}","state":"active","created_by":"WLDNWrWbWoIxIbWI"},{"uid":"6346559484383820583","deal_uid":"6346558610124544830","created_at":"2021-10-19 15:05:48","type":"paid_crypto","data":null,"state":"active","created_by":"I6D5WsWZDLWj"},{"uid":"6346590264360429302","deal_uid":"6346558610124544830","created_at":"2021-10-19 15:57:06","type":"crypto_accepted","data":null,"state":"active","created_by":"WLDNWrWbWoIxIbWI"}],"claims":[],"hash":null},"status":{"error":false,"errorMsg":"","respondTime":"8.70"}}
+
+                })
             })
 			
             // CREATE ESCROW DEAL
@@ -73,6 +136,9 @@ package com.dukascopy.connect.managers.escrow{
                     }
                 );
             },this);
+
+
+            // SEND DEAL EVENT
 			
             GD.S_ESCROW_DEALS_REQUEST.add(function():void{
                 loadDeals();
@@ -123,14 +189,36 @@ package com.dukascopy.connect.managers.escrow{
             // instrument, price, amount
 			instance = this;
         }
+
+        /**
+         * Got command frow WS, create deal
+         * @param data - object from ws
+         */
+        private function createDeal(data:Object):void{
+            trace(JSON.stringify(data));
+        }
+
+
+        /**
+         * Got command frow WS, change deal status to MCA
+         * @param data - object from ws
+         */
+        private function holdMCA(data:Object):void{
+
+        }
+
+
+        private function fireDeals():void{
+            GD.S_ESCROW_DEALS_LOADED.invoke(escrowDeals);
+        }
 		
 		static private function onDealEvent(escrowEventType:String, dealRawData:Object):void 
 		{
-			if (escrowEventType == EscrowEventType.CREATED)
+			if (escrowEventType == EscrowEventType.CREATED.value)
 			{
 				onDealCreated(dealRawData);
 			}
-			else if (escrowEventType == EscrowEventType.HOLD_MCA)
+			else if (escrowEventType == EscrowEventType.HOLD_MCA.value)
 			{
 				
 			}
@@ -138,11 +226,11 @@ package com.dukascopy.connect.managers.escrow{
 		
 		static private function onOfferEvent(escrowEventType:String, offerRawData:Object):void 
 		{
-			if (escrowEventType == EscrowEventType.CANCEL)
+			if (escrowEventType == EscrowEventType.CANCEL.value)
 			{
 				onOfferCanceled(offerRawData);
 			}
-			else if (escrowEventType == EscrowEventType.OFFER_CREATED)
+			else if (escrowEventType == EscrowEventType.OFFER_CREATED.value)
 			{
 				onOfferCreated(offerRawData);
 			}

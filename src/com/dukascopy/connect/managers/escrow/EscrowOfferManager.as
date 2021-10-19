@@ -5,6 +5,7 @@ package com.dukascopy.connect.managers.escrow
     import com.telefision.utils.SimpleLoaderResponse;
     import com.dukascopy.connect.managers.escrow.vo.EscrowOfferVO;
     import com.dukascopy.connect.managers.escrow.vo.EscrowOffersRequestVO;
+    import com.dukascopy.connect.vo.URLConfigVO;
 
     public class EscrowOfferManager{
 
@@ -16,7 +17,9 @@ package com.dukascopy.connect.managers.escrow
 
         public function EscrowOfferManager(){
 
-            
+            GD.S_URL_CONFIG_READY.add(function(cfg:URLConfigVO):void{
+                SimpleLoader.URL_DEFAULT=cfg.DCCAPI_URL;//"https://loki.telefision.com/master/";    
+            })
 
             GD.S_AUTHORIZED.add(function(data:Object):void{
                 authKey=data.authKey
@@ -70,7 +73,6 @@ state
         private function loadOffers(status:String=null,side:String=null):void{
             loading=true;
             needReload=false;
-            var url:String="https://loki.telefision.com/master/";
             //e41ae903d332b69f490d604474c7ca633cd8835f // bloom
             //0f211baf3e629a41afbe39d3a275890772f3ab45 // ilya
             var loader:SimpleLoader=new SimpleLoader({
@@ -101,7 +103,7 @@ state
                 loading=false;
                 lastLoadTime=new Date().getTime();
                 GD.S_ESCROW_OFFERS_READY.invoke(offers);
-            },url);
+            });
             
         }
 

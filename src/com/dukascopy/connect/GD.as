@@ -19,6 +19,9 @@ package com.dukascopy.connect
 	import com.dukascopy.connect.managers.escrow.signals.S_EscrowOfferCreateRequest;
 	import com.dukascopy.connect.managers.escrow.signals.S_EscrowOffersRequest;
 	import com.dukascopy.connect.managers.escrow.signals.S_CryptoWalletAdd;
+	import com.dukascopy.connect.managers.escrow.signals.S_EscrowRequestDealEventSent;
+	import com.telefision.sys.signals.S_URLConfigReady;
+	import com.telefision.sys.signals.S_StringSignal;
 	
 	public class GD
 	{
@@ -32,8 +35,13 @@ package com.dukascopy.connect
 		static public const S_AUTHORIZED:Signal = new Signal("S_AUTHORIZED");
 		static public const S_UNAUTHORIZED:Signal = new Signal("S_UNAUTHORIZED");
 		
-		static public const S_CONFIG_UPDATED:Signal = new Signal("GD.S_CONFIG_UPDATED");
 		
+
+		// Fires when config ready to work
+		static public const S_URL_CONFIG_READY:S_URLConfigReady = new S_URLConfigReady();
+		
+		static public const S_WS_PACKET_RECEIVED:Signal=new Signal("S_WS_PACKET_RECEIVED")
+
 		static public const S_PAYPASS_BACK_CLICK:Signal = new Signal();
 		static public const S_SHOW_SYSTEM_TRACE:Signal = new Signal();
 		static public const S_REQUEST_SHARE_TEXT:Signal = new Signal();
@@ -55,6 +63,9 @@ package com.dukascopy.connect
 		static public const S_ESCROW_OFFER_CREATE_REQUEST:S_EscrowOfferCreateRequest = new S_EscrowOfferCreateRequest();
 		static public const S_ESCROW_DEAL_CREATED:S_EscrowDealCreated = new S_EscrowDealCreated();
 		static public const S_ESCROW_DEALS_LOADED_ERROR:Signal = new Signal("S_ESCROW_DEALS_LOADED_ERROR"); // error
+
+		static public const S_ESCROW_REQUEST_DEAL_EVENT_SENT:S_EscrowRequestDealEventSent = new S_EscrowRequestDealEventSent(); // error
+		static public const S_ESCROW_REQUEST_DEAL_EVENT_SENT_FAIL:S_StringSignal = new S_StringSignal(); // error
 
 		static public const S_ESCROW_OFFERS_REQUEST:S_EscrowOffersRequest = new S_EscrowOffersRequest();
 		static public const S_ESCROW_OFFERS_READY:Signal = new Signal("S_ESCROW_OFFERS_READY");

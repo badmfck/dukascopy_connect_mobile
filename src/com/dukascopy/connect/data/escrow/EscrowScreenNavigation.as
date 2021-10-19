@@ -47,6 +47,7 @@ package com.dukascopy.connect.data.escrow
 	import com.dukascopy.connect.vo.ChatVO;
 	import com.dukascopy.connect.vo.users.UserVO;
 	import com.dukascopy.langs.Lang;
+	import com.dukascopy.connect.managers.escrow.vo.EscrowDealEventSentRequestVO;
 	
 	/**
 	 * ...
@@ -67,7 +68,7 @@ package com.dukascopy.connect.data.escrow
 		
 		public static function init():void
 		{
-			WSClient.S_ESCROW_DEAL_EVENT.add(onDealEvent);
+			/*WSClient.S_ESCROW_DEAL_EVENT.add(onDealEvent);*/
 			WSClient.S_OFFER_ACCEPT_FAIL.add(onOfferAcceptFailEvent);
 			WSClient.S_OFFER_CREATED.add(onOfferCreatedEvent);
 			WSClient.S_OFFER_ACCEPT_SUCCESS.add(onOfferAcceptSuccessEvent);
@@ -108,15 +109,21 @@ package com.dukascopy.connect.data.escrow
 			}
 			else if (command == OfferCommand.confirm_crypto_recieve)
 			{
-				PHP.escrow_addEvent(onConfirmCryptoEvent, {event_type: EscrowEventType.CRYPTO_ACCEPTED, deal_uid: escrow.deal_uid, notifyWS: true});
-			//	PHP.escrow_addEvent(onConfirmCryptoEvent, {event_type: "cp2p_crypto_accepted", deal_uid: escrow.deal_uid, notifyWS: true});
+
+				// Die fantastische wunderbare Ueberlogik.
+				GD.S_ESCROW_REQUEST_DEAL_EVENT_SENT.invoke(
+					new EscrowDealEventSentRequestVO(
+						EscrowEventType.CRYPTO_ACCEPTED, // type
+						escrow.deal_uid, // deal_uid
+						true // notifyWS
+					)
+				)
+
+		
+				//PHP.escrow_addEvent(onConfirmCryptoEvent, {event_type: "cp2p_crypto_accepted", deal_uid: escrow.deal_uid, notifyWS: true});
 			}
 		}
 		
-		static private function onConfirmCryptoEvent(respond:PHPRespond):void 
-		{
-			trace("123");
-		}
 		
 		static public function showScreen(escrow:EscrowMessageData, created:Number, userVO:UserVO, chatVO:ChatVO, messageId:Number, showChatButton:Boolean = false):void
 		{
