@@ -1890,7 +1890,7 @@ package com.dukascopy.connect.sys.questionsManager {
 			var needToResendInOut:Boolean;
 			if (flagInOut == true) {
 				needToRefresh = true;
-				needToResendInOut = !WSClient.call_blackHoleToGroup("que", "subscribe");
+				//needToResendInOut = !WSClient.call_blackHoleToGroup("que", "subscribe");
 				
 				WSClient.S_QUESTION_NEW.add(getQuestionNewFromWS);
 				WSClient.S_QUESTION_UPDATED.add(getQuestionUpdateFromWS);
@@ -1898,7 +1898,7 @@ package com.dukascopy.connect.sys.questionsManager {
 			} else {
 				categoriesFilter = null;
 				categoriesFilterNames = "";
-				needToResendInOut = !WSClient.call_blackHoleToGroup("que", "unsubscribe");
+				//needToResendInOut = !WSClient.call_blackHoleToGroup("que", "unsubscribe");
 				
 				WSClient.S_QUESTION_NEW.remove(getQuestionNewFromWS);
 				WSClient.S_QUESTION_UPDATED.remove(getQuestionUpdateFromWS);
@@ -1914,6 +1914,7 @@ package com.dukascopy.connect.sys.questionsManager {
 		}
 		
 		static private function resendInOut():void {
+			return;
 			WS.S_CONNECTED.remove(resendInOut);
 			if (flagInOut == true)
 				WSClient.call_blackHoleToGroup("que", "subscribe");
