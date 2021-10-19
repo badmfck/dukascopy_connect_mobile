@@ -139,6 +139,10 @@ package com.dukascopy.connect.managers.escrow.vo {
 			_price = val;
 		}
 		
+		public function updateAnswers(val:int):void {
+			_answersCount = val;
+		}
+		
 		public function dispose():void {
 			_uid = null;
 			_crypto = null;

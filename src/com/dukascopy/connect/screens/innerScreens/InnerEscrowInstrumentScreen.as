@@ -106,7 +106,7 @@ package com.dukascopy.connect.screens.innerScreens {
 			);
 		}
 		
-		private function createTabs():void{
+		private function createTabs():void {
 			tabs.add(Lang.escrow_text_instruments, TAB_ID_CRYPTO, false, "l");
 			tabs.add(Lang.textMine, TAB_ID_MINE, false);
 			tabs.add(Lang.escrow_text_offers, TAB_ID_OFFERS, false);
@@ -125,8 +125,7 @@ package com.dukascopy.connect.screens.innerScreens {
 			GD.S_SCREEN_READY.add(onScreenReady);
 		}
 		
-		override protected function update():void
-		{
+		override protected function update():void {
 			onTabItemSelected(selectedTabID);
 		}
 		

@@ -14,7 +14,6 @@ package com.dukascopy.connect.managers.escrow {
 	import com.dukascopy.connect.sys.php.PHPRespond;
 	import com.dukascopy.connect.sys.store.Store;
 	import com.dukascopy.connect.sys.ws.WSClient;
-	import com.dukascopy.connect.sys.ws.WSMethodType;
 	import com.dukascopy.connect.vo.users.UserVO;
 	import com.dukascopy.langs.Lang;
 	import com.greensock.TweenMax;
@@ -57,6 +56,7 @@ package com.dukascopy.connect.managers.escrow {
 			GD.S_ESCROW_ADS_MINE_REQUEST.add(onEscrowAdsMineRequested);
 			GD.S_ESCROW_ADS_REMOVE.add(close);
 			GD.S_ESCROW_ADS_CREATE.add(createEscrowAds);
+			GD.S_ESCROW_AD_UPDATED.add(onEscrowAdUpdatedWS);
 			
 			GD.S_AUTHORIZED.add(onAuthorized);
 			GD.S_UNAUTHORIZED.add(onUnuthorized);
@@ -100,6 +100,7 @@ package com.dukascopy.connect.managers.escrow {
 		}
 		
 		private function onEscrowAdsCryptosRequested():void {
+			WSClient.call_blackHoleToGroup("que", "subscribe");
 			GD.S_ESCROW_INSTRUMENTS.add(onEscrowInstrumentsReceived);
 			if (escrowAdsCryptosIdsLoadedFromStore == true) {
 				GD.S_ESCROW_ADS_CRYPTOS.invoke(escrowAdsCryptos);
@@ -197,7 +198,24 @@ package com.dukascopy.connect.managers.escrow {
 		}
 		
 // <-- ESCROW ADVERTISING CRYPTO || ESCROW ADVERTISING --> //
-
+		
+		private function onEscrowAdUpdatedWS(data:Object):void {
+			if ("action" in data == false)
+				return;
+			if (data.action != "take")
+				return;
+			var escrowAd:EscrowAdsVO = getEscrowAdsByUID(data.quid, escrowAds);
+			if (escrowAd != null) {
+				escrowAd.updateAnswers(escrowAd.answersCount + 1);
+				GD.S_ESCROW_ADS.invoke(escrowAds, true);
+			}
+			escrowAd = getEscrowAdsByUID(data.quid, escrowAdsMine);
+			if (escrowAd != null) {
+				escrowAd.updateAnswers(escrowAd.answersCount + 1);
+				GD.S_ESCROW_ADS_MINE.invoke(escrowAdsMine, true);
+			}
+		}
+		
 		private function onEscrowAdsRequested(afterError:Boolean = false):void {
 			if (afterError == false && escrowAdsFilterSetted == false) {
 				escrowAdsSort();
@@ -471,9 +489,7 @@ package com.dukascopy.connect.managers.escrow {
 				for (i = 0; i < l; i++) {
 					escrowAdsVO = escrowAdsMine[i];
 					if (escrowAdsVO.uid == escrowAdsUid) {
-						if (escrowAdsVO.status == status)
-							return;
-						escrowAdsVO.status = status
+						escrowAdsMine.removeAt(i);
 						GD.S_ESCROW_ADS_MINE.invoke(escrowAdsMine);
 						break;
 					}
@@ -481,17 +497,17 @@ package com.dukascopy.connect.managers.escrow {
 			}
 		}
 		
-		private function getEscrowAdsByUID(escrowAdsUid:String):EscrowAdsVO {
+		private function getEscrowAdsByUID(escrowAdsUid:String, escrows:Array = null):EscrowAdsVO {
 			var l:int;
 			var i:int;
-			if (escrowAds != null) {
+			if ((escrows == null || escrows == escrowAds) && escrowAds != null) {
 				l = escrowAds.length;
 				for (i = 0; i < l; i++) {
 					if (escrowAds[i].uid == escrowAdsUid)
 						return escrowAds[i];
 				}
 			}
-			if (escrowAdsMine != null) {
+			if ((escrows == null || escrows == escrowAds) && escrowAdsMine != null) {
 				l = escrowAdsMine.length;
 				for (i = 0; i < l; i++) {
 					if (escrowAdsMine[i].uid == escrowAdsUid)
@@ -593,7 +609,7 @@ package com.dukascopy.connect.managers.escrow {
 		private function onCreateQuestionSuccess(data:Object):void {
 			var escrowAdsVO:EscrowAdsVO = new EscrowAdsVO(data);
 			GD.S_ESCROW_ADS_CREATED.invoke(escrowAdsVO);
-			WSClient.call_blackHoleToGroup("que", "send", "mobile", WSMethodType.ESCROW_ADS_CREATED, { quid:escrowAdsVO.uid, senderUID:profile.uid } );
+			//WSClient.call_blackHoleToGroup("que", "send", "mobile", WSMethodType.ESCROW_ADS_CREATED, { quid:escrowAdsVO.uid, senderUID:profile.uid } );
 		}
 	}
 }
