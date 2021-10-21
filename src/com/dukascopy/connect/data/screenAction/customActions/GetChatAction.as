@@ -6,6 +6,7 @@ package com.dukascopy.connect.data.screenAction.customActions {
 	import com.dukascopy.connect.sys.php.PHP;
 	import com.dukascopy.connect.sys.php.PHPRespond;
 	import com.dukascopy.connect.vo.ChatVO;
+	import flash.utils.getTimer;
 	
 	/**
 	 * ...

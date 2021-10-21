@@ -165,7 +165,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			if (escrowOffer != null && !EscrowScreenNavigation.isExpired(escrowOffer, offerCreatedTime))
 			{
 				//!TODO: check start time;
-				time.draw(getWidth() - contentPadding * 2, EscrowSettings.dealMaxTime * 60 - ((new Date()).time / 1000 - offerCreatedTime));
+				time.draw(getWidth() - contentPadding * 2, EscrowSettings.dealMaxTime * 60 - ((new Date()).time / 1000 - offerCreatedTime / 1000));
 			}
 			else
 			{

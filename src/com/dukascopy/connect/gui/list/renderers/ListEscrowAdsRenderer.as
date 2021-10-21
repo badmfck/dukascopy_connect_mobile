@@ -197,8 +197,14 @@ package com.dukascopy.connect.gui.list.renderers {
 			item.setHitZones(hitZones);
 			
 			updateItemAlpha(item.data);
+			updateBack(item.data);
 			
 			return this;
+		}
+		
+		protected function updateBack(listData:Object):void 
+		{
+			
 		}
 		
 		protected function isValidData(listData:Object):Boolean {

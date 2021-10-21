@@ -40,6 +40,7 @@ package com.dukascopy.connect.screens.innerScreens {
 	import flash.display.Bitmap;
 	import flash.text.TextFieldAutoSize;
 	import flash.text.TextFormatAlign;
+	import flash.utils.getTimer;
 	
 	/**
 	 * ...
@@ -299,11 +300,9 @@ package com.dukascopy.connect.screens.innerScreens {
 				return;*/
 			}
 			if (data is EscrowDealVO) {
-				
 				var openDealAction:OpenDealAction = new OpenDealAction(data as EscrowDealVO);
 				openDealAction.execute();
 				return;
-				
 				/*chatScreenData = new ChatScreenData();
 				chatScreenData.type = ChatInitType.CHAT;
 				chatScreenData.chatUID = (data as EscrowDealVO).chatUID;

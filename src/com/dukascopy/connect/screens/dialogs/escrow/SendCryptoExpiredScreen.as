@@ -86,6 +86,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		
 		private function onTimeFinish():void 
 		{
+			//!TODO:;
 			if (isDisposed)
 			{
 				return;
