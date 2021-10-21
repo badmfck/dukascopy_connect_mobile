@@ -612,17 +612,11 @@ package com.dukascopy.connect.vo {
 				_messageVO = null;
 				return;
 			}
-			if (_messageVO != null && _messageVO.num > message.num)
-			{
+			if (_messageVO != null && _messageVO.num > message.num) {
 				return;
 			}
 			_messageVO ||= new ChatMessageVO();
 			_messageVO.setData(message);
-			if (_messageVO.id > 0) {
-				if (_qVO != null)
-					_qVO.setHasMyAnswer();
-				_hasQuestionAnswer = true;
-			}
 			_messageRaw = message;
 			
 			if (_messageVO.userUID == Auth.uid)
@@ -930,15 +924,8 @@ package com.dukascopy.connect.vo {
 		}
 		
 		public function setQuestion(qVO:QuestionVO):Boolean {
-			if (qVO != null && _qVO == qVO) {
-				if (_hasQuestionAnswer == false) {
-					if (_qVO.answersCount > 0)
-						return false;
-					disposeMessagesWithoutID();
-					addQuestionMessages();
-				}
+			if (qVO != null && _qVO == qVO)
 				return true;
-			}
 			_qVO = qVO;
 			if (_qVO == null)
 				return false;
