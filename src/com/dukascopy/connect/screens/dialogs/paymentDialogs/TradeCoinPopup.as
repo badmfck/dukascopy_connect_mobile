@@ -666,8 +666,12 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 		private function processOrder():void {
 			
 			var price:Number = inputPrice.value;
-			
-			if (!isNaN(price) && price <= PayManager.systemOptions.coin_llf_price_limit && screenData.type == TradingOrder.BUY)
+			var needShowAlert:Boolean = true;
+			if (!isNaN(screenData.bestPrice) && screenData.bestPrice != 0 && screenData.bestPrice != Number.POSITIVE_INFINITY && screenData.bestPrice < PayManager.systemOptions.coin_llf_price_limit)
+			{
+				needShowAlert = false;
+			}
+			if (!isNaN(price) && price <= PayManager.systemOptions.coin_llf_price_limit && screenData.type == TradingOrder.BUY && needShowAlert)
 			{
 				var text:String = Lang.coinBuyLowPriceWarning.replace("%@1", PayManager.systemOptions.coin_llf_price_limit);
 				text = text.replace("%@2", PayManager.systemOptions.coin_llf_eur_per_coin);
