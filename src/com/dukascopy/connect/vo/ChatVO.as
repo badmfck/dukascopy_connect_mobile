@@ -358,7 +358,6 @@ package com.dukascopy.connect.vo {
 			if (companyChat == true)
 				addCompanyMessage(true);
 			if (data == null || data.length == 0) {
-				addQuestionMessages();
 				return true;
 			}
 			var companyAvatar:String = "";
@@ -377,7 +376,6 @@ package com.dukascopy.connect.vo {
 				_messages.push(cmVO);
 			}
 			_lattestMsgID = _messages[0].id;
-			addQuestionMessages();
 			return true;
 		}
 		
@@ -458,13 +456,12 @@ package com.dukascopy.connect.vo {
 		private function addQuestionMessages():void {
 			if (type != ChatRoomType.QUESTION)
 				return;
-			_hasQuestionAnswer = (_messages.length > 0);
-			if (_qVO == null || _qVO.messages.length != 1)
+			if (_qVO == null)
 				return;
-			if (_messages == null)
-				_messages = new Vector.<ChatMessageVO>();
-			if (_messages.length > 0 && _messages[0].id == 0)
+			if (_hasQuestionAnswer == true)
 				return;
+			_hasQuestionAnswer = true;
+			_messages ||= new Vector.<ChatMessageVO>();
 			lastMessagesHash = null;
 			
 			var messageData:Object = {
@@ -482,7 +479,7 @@ package com.dukascopy.connect.vo {
 			
 			messageData.text = generateQuestionMessage();
 			
-			_messages.push(new ChatMessageVO(messageData));
+			_messages.unshift(new ChatMessageVO(messageData));
 		}
 		
 		private function generateQuestionMessage():String {
