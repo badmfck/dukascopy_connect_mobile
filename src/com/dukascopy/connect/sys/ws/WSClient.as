@@ -1,15 +1,13 @@
 package com.dukascopy.connect.sys.ws{
 	
 	import com.dukascopy.connect.Config;
-import com.dukascopy.connect.GD;
-import com.dukascopy.connect.MobileGui;
+	import com.dukascopy.connect.GD;
 	import com.dukascopy.connect.data.ErrorData;
 	import com.dukascopy.connect.data.MessageData;
 	import com.dukascopy.connect.data.UserBanData;
 	import com.dukascopy.connect.data.escrow.EscrowEventType;
 	import com.dukascopy.connect.data.location.Location;
 	import com.dukascopy.connect.gui.components.message.ToastMessage;
-	import com.dukascopy.connect.gui.lightbox.UI;
 	import com.dukascopy.connect.sys.auth.Auth;
 	import com.dukascopy.connect.sys.callManager.connection.WebRTCChannel;
 	import com.dukascopy.connect.sys.chatManager.ChatManager;
@@ -26,10 +24,7 @@ import com.dukascopy.connect.MobileGui;
 	import com.dukascopy.langs.LangManager;
 	import com.telefision.sys.etc.Print_r;
 	import com.telefision.sys.signals.Signal;
-	import flash.text.TextField;
-	import mx.core.Singleton;
 	import com.dukascopy.connect.sys.php.PHP;
-	import com.telefision.sys.etc.Print_r;
 
 	/**
 	 * ...
@@ -117,7 +112,7 @@ import com.dukascopy.connect.MobileGui;
 		static public var S_IDENTIFICATION_QUEUE:Signal = new Signal("WSClient.S_IDENTIFICATION_QUEUE");
 		static public var S_LOYALTY_CHANGE:Signal = new Signal("WSClient.S_LOYALTY_CHANGE");
 		static public var S_ACTIVITY:Signal = new Signal("WSClient.S_ACTIVITY");
-		static public var S_ESCROW_DEAL_EVENT:Signal = new Signal("WSClient.S_ESCROW_DEAL_EVENT");
+		//static public var S_ESCROW_DEAL_EVENT:Signal = new Signal("WSClient.S_ESCROW_DEAL_EVENT");
 		static public var S_ESCROW_OFFER_EVENT:Signal = new Signal("WSClient.S_ESCROW_OFFER_EVENT");
 		static public var S_OFFER_CREATE_FAIL:Signal = new Signal("WSClient.S_OFFER_CREATE_FAIL");
 		static public var S_OFFER_ACCEPT_FAIL:Signal = new Signal("WSClient.S_OFFER_ACCEPT_FAIL");
@@ -595,7 +590,7 @@ import com.dukascopy.connect.MobileGui;
 				return;
 			}
 
-			GD.S_WS_PACKET_RECEIVED.invoke(pack.data);
+			GD.S_WS_PACKET_RECEIVED.invoke(pack);
 
 			if (pack.method == "usersOnline") {
 				S_ONLINE_USERS.invoke(pack.data);
@@ -1079,18 +1074,18 @@ import com.dukascopy.connect.MobileGui;
 				
 				return;
 			}
-			if (pack.method == WSMethodType.ESCROW_EVENT)
+			/*if (pack.method == WSMethodType.ESCROW_EVENT)
 			{
 				if (pack.action == "cp2p_deal_created" && pack.data != null && pack.data.event != null && pack.data.event.type == EscrowEventType.CREATED)
 				{
-					S_ESCROW_DEAL_EVENT.invoke(EscrowEventType.CREATED, pack.data.deal);
+					//S_ESCROW_DEAL_EVENT.invoke(EscrowEventType.CREATED, pack.data.deal);
 				}
 				if (pack.action == "cp2p_deal_created" && pack.data != null && pack.data.event != null && pack.data.event.type == EscrowEventType.HOLD_MCA)
 				{
-					S_ESCROW_DEAL_EVENT.invoke(EscrowEventType.HOLD_MCA, pack.data.deal);
+					//S_ESCROW_DEAL_EVENT.invoke(EscrowEventType.HOLD_MCA, pack.data.deal);
 				}
 				return;
-			}
+			}*/
 		}
 		
 		static private function traceObject(raw:Object, keyRaw:String = " "):void 

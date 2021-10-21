@@ -30,6 +30,7 @@ package com.dukascopy.connect
 		static public const S_TOAST:Signal = new Signal("S_TOAST");
 		static public const S_SCREEN_READY:Signal = new Signal("S_SCREEN_READY");
 		
+		
 		static public const S_TIMEZONE_REQUEST:Signal = new Signal("S_TIMEZONE_REQUEST");
 		
 		static public const S_AUTHORIZED:Signal = new Signal("S_AUTHORIZED");
@@ -38,6 +39,7 @@ package com.dukascopy.connect
 		
 
 		// Fires when config ready to work
+		static public const S_CONFIG_UPDATED:Signal=new Signal();
 		static public const S_URL_CONFIG_READY:S_URLConfigReady = new S_URLConfigReady();
 		
 		static public const S_WS_PACKET_RECEIVED:Signal=new Signal("S_WS_PACKET_RECEIVED")
@@ -61,7 +63,9 @@ package com.dukascopy.connect
 		static public const S_ESCROW_MONEY_HOLD_REQUEST:S_EscrowMoneyHoldRequest = new S_EscrowMoneyHoldRequest();
 		static public const S_ESCROW_WALLETS_REQUEST:S_EscrowWalletsRequest = new S_EscrowWalletsRequest();
 		static public const S_ESCROW_OFFER_CREATE_REQUEST:S_EscrowOfferCreateRequest = new S_EscrowOfferCreateRequest();
+
 		static public const S_ESCROW_DEAL_CREATED:S_EscrowDealCreated = new S_EscrowDealCreated();
+		
 		static public const S_ESCROW_DEALS_LOADED_ERROR:Signal = new Signal("S_ESCROW_DEALS_LOADED_ERROR"); // error
 
 		static public const S_ESCROW_REQUEST_DEAL_EVENT_SENT:S_EscrowRequestDealEventSent = new S_EscrowRequestDealEventSent(); // error
@@ -109,5 +113,10 @@ package com.dukascopy.connect
 		static public const S_CRYPTO_WALLET_REQUEST:Signal = new Signal("GD.S_CRYPTO_WALLET_REQUEST");
 		static public const S_CRYPTO_WALLETS:S_CryptoWallets = new S_CryptoWallets();
 		static public const S_CRYPTO_WALLET_ADD:S_CryptoWalletAdd = new S_CryptoWalletAdd();
+
+
+
+		//PAY
+		static public const S_PAY_REQUEST_WALLETS:Signal=new Signal("S_PAY_REQUEST_WALLETS");
 	}
 }

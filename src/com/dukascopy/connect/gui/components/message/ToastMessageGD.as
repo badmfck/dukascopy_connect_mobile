@@ -15,6 +15,8 @@ package com.dukascopy.connect.gui.components.message {
 	import flash.text.TextFieldAutoSize;
 	import flash.text.TextFormat;
 	import flash.text.TextFormatAlign;
+	import com.dukascopy.connect.data.ErrorData;
+	import com.dukascopy.connect.sys.errors.ErrorLocalizer;
 	
 	/**
 	 * ...
@@ -46,11 +48,21 @@ package com.dukascopy.connect.gui.components.message {
 			);
 		}
 		
-		public function display(value:String):void {
+		public function display(value:*):void {
 			if (value == null)
 				return;
+				
 			if (displayed == true)
 				cleanCurrent();
+
+			if(value is ErrorData){
+				var err:ErrorData=value;
+				var errorMessage:String = err.message;
+				if (err.dccError != null)
+					errorMessage = ErrorLocalizer.getText(err.dccError);
+				value=errorMessage;
+			}
+
 			displayed = true;
 			messageClip = new Bitmap();
 			messageClip.bitmapData = createImage(value);

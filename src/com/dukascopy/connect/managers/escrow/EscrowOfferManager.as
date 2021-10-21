@@ -6,6 +6,7 @@ package com.dukascopy.connect.managers.escrow
     import com.dukascopy.connect.managers.escrow.vo.EscrowOfferVO;
     import com.dukascopy.connect.managers.escrow.vo.EscrowOffersRequestVO;
     import com.dukascopy.connect.vo.URLConfigVO;
+    import com.dukascopy.connect.data.escrow.EscrowEventType;
 
     public class EscrowOfferManager{
 
@@ -25,6 +26,12 @@ package com.dukascopy.connect.managers.escrow
                 authKey=data.authKey
             })
 
+            /*
+            WSClient.S_ESCROW_OFFER_EVENT.add(onOfferEvent);
+            WSClient.S_OFFER_ACCEPT_FAIL.add(onOfferAcceptFailEvent);
+			WSClient.S_OFFER_CREATED.add(onOfferCreatedEvent);
+			WSClient.S_OFFER_ACCEPT_SUCCESS.add(onOfferAcceptSuccessEvent);
+            */
 
             //GD.S_ESCROW_OFFER_CREATE_REQUEST.add(onEscrowOfferCreateRequest,this);
 
@@ -61,6 +68,36 @@ package com.dukascopy.connect.managers.escrow
             })
         }   
 
+
+        static private function onOfferAcceptSuccessEvent(offerData:Object):void{
+			GD.S_STOP_LOAD.invoke();
+		}
+		
+		static private function onOfferCreatedEvent(offerData:Object):void{
+			GD.S_STOP_LOAD.invoke();
+		}
+
+        static private function onOfferAcceptFailEvent(error:*):void{
+			GD.S_STOP_LOAD.invoke();
+            GD.S_TOAST.invoke(error);
+		}
+		
+		private function onOfferEvent(escrowEventType:String, offerRawData:Object):void{
+			if (escrowEventType == EscrowEventType.CANCEL.value){
+				onOfferCanceled(offerRawData);
+			}else if (escrowEventType == EscrowEventType.OFFER_CREATED.value){
+				onOfferCreated(offerRawData);
+			}
+		}
+		
+		private function onOfferCreated(offerRawData:Object):void{
+			//var offer:EscrowMessageData = new EscrowMessageData(offerRawData);
+		}
+		
+		private function onOfferCanceled(offerRawData:Object):void{
+			//var offer:EscrowMessageData = new EscrowMessageData(offerRawData);
+		}
+
         /*status из таблицы
 side 'BOTH', 'BUY', 'SELL' +null
 ccy 'both', 'crypto', 'mca' +null*/
@@ -76,7 +113,7 @@ state
             //e41ae903d332b69f490d604474c7ca633cd8835f // bloom
             //0f211baf3e629a41afbe39d3a275890772f3ab45 // ilya
             var loader:SimpleLoader=new SimpleLoader({
-                method:"Cp2p.Offer.Get",
+                method:"Cp2p.Offer.Get", 
                 key:authKey,//"0f211baf3e629a41afbe39d3a275890772f3ab45",
                 status:status,
                 side:side

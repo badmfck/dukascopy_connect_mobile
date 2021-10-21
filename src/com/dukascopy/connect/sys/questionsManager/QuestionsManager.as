@@ -210,9 +210,6 @@ package com.dukascopy.connect.sys.questionsManager {
 			VideoUploader.S_FILE_UPLOADED_FINISH.add(sendVideoMessageFinish);
 			VideoUploader.S_FILE_UPLOADED_PROGRESS.add(sendVideoMessageProgress);
 			
-		//	GD.S_ESCROW_FILTER.add(onFilterAdded);
-			
-			GD.S_ESCROW_DEAL_CREATED.add(onDealCreated);
 			
 			initPayingUIDS();
 		}
@@ -226,9 +223,6 @@ package com.dukascopy.connect.sys.questionsManager {
 			Store.save("escrowMaxID", escrowStat);
 		}
 		
-		/*static private function onFilterAdded(escrowFilterVO:EscrowFilterVO):void {
-			getQuestions(escrowFilterVO);
-		}*/
 		
 		static private var maxIDWasLoaded:Boolean = false;
 		
@@ -265,9 +259,6 @@ package com.dukascopy.connect.sys.questionsManager {
 			GD.S_ESCROW_STAT.invoke(phpRespond.data);
 		}
 		
-		static private function onDealCreated(dealData:EscrowMessageData):void {
-			
-		}
 		
 		static private function onImageUploadReady(success:Boolean, ibd:ImageBitmapData, title:String):void {
 			if (MobileGui.centerScreen.currentScreenClass != QuestionCreateUpdateScreen) {

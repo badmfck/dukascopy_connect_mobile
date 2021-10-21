@@ -68,32 +68,10 @@ package com.dukascopy.connect.data.escrow
 		
 		public static function init():void
 		{
-			/*WSClient.S_ESCROW_DEAL_EVENT.add(onDealEvent);*/
-			WSClient.S_OFFER_ACCEPT_FAIL.add(onOfferAcceptFailEvent);
-			WSClient.S_OFFER_CREATED.add(onOfferCreatedEvent);
-			WSClient.S_OFFER_ACCEPT_SUCCESS.add(onOfferAcceptSuccessEvent);
+			
 		}
 		
-		static private function onOfferAcceptSuccessEvent(offerData:Object):void 
-		{
-			GD.S_STOP_LOAD.invoke();
-		}
 		
-		static private function onOfferCreatedEvent(offerData:Object):void 
-		{
-			GD.S_STOP_LOAD.invoke();
-		}
-		
-		static private function onOfferAcceptFailEvent(error:ErrorData):void 
-		{
-			GD.S_STOP_LOAD.invoke();
-			var errorMessage:String = error.message;
-			if (error.dccError != null)
-			{
-				errorMessage = ErrorLocalizer.getText(error.dccError);
-			}
-			ToastMessage.display(errorMessage);
-		}
 		
 		static private function confirmCryptoReceiveCommand(escrow:EscrowMessageData, messageId:Number, chatVO:ChatVO, created:Number, command:OfferCommand = null):void
 		{

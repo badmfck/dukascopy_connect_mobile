@@ -17,6 +17,7 @@ import com.dukascopy.connect.managers.webview.WebViewManager;
 import com.dukascopy.connect.managers.escrow.test.EscrowTest;
 import com.dukascopy.connect.managers.escrow.test.EscrowTestForm;*/
 //import com.dukascopy.connect.managers.escrow.EscrowOfferManager;
+
 import com.dukascopy.connect.GD;
 import com.forms.Form;
 import flash.filesystem.File;

@@ -2,18 +2,16 @@ package com.dukascopy.connect.managers.escrow{
 
     import com.dukascopy.connect.GD;
 	import com.dukascopy.connect.data.escrow.EscrowEventType;
-	import com.dukascopy.connect.data.escrow.EscrowMessageData;
 	import com.dukascopy.connect.managers.escrow.vo.EscrowPrice;
 	import com.dukascopy.connect.managers.escrow.vo.InstrumentParser;
     import com.dukascopy.connect.sys.Dispatcher;
 	import com.dukascopy.connect.sys.applicationError.ApplicationErrors;
 	
     // TODO: remove thoses imports!
-    import com.dukascopy.connect.sys.payments.PayManager;
+    /*import com.dukascopy.connect.sys.payments.PayManager;
 	import com.dukascopy.connect.sys.payments.PaymentsManager;
 	import com.dukascopy.connect.sys.php.PHP;
-	import com.dukascopy.connect.sys.php.PHPRespond;
-	import com.dukascopy.connect.sys.ws.WSClient;
+	import com.dukascopy.connect.sys.php.PHPRespond;*/
 
     import com.dukascopy.connect.vo.EscrowDealVO;
     import com.telefision.utils.maps.EscrowDealMap;
@@ -39,7 +37,7 @@ package com.dukascopy.connect.managers.escrow{
         // Instruments
         private var instruments:Vector.<EscrowInstrument>=new Vector.<EscrowInstrument>();
         private var timeInstrumentRequest:Number=0;
-        private var instrumentDataLifetime:Number=1000*60*5; // 5 min
+        private var instrumentDataLifetime:Number=1000*60*1; // 5 min
         private var isInstrumentLoading:Boolean=false;
 
         // Deals 
@@ -59,13 +57,10 @@ package com.dukascopy.connect.managers.escrow{
 
              GD.S_AUTHORIZED.add(function(data:Object):void{
                 authKey=data.authKey;
+                loadDeals();
             })
 
-			
-			//WSClient.S_ESCROW_DEAL_EVENT.add(onDealEvent);
-			WSClient.S_ESCROW_OFFER_EVENT.add(onOfferEvent);
-
-           
+		           
             // Handle WS packet for deals
             GD.S_WS_PACKET_RECEIVED.add(function(packet:Object):void{
                 if (packet.method != "evCp2p")
@@ -190,12 +185,16 @@ package com.dukascopy.connect.managers.escrow{
 			instance = this;
         }
 
+        
+
         /**
          * Got command frow WS, create deal
          * @param data - object from ws
          */
         private function createDeal(data:Object):void{
-            trace(JSON.stringify(data));
+            //var msgData:EscrowMessageData = new EscrowMessageData(data);
+
+			//GD.S_ESCROW_DEAL_CREATED.invoke(msgData);
         }
 
 
@@ -204,7 +203,7 @@ package com.dukascopy.connect.managers.escrow{
          * @param data - object from ws
          */
         private function holdMCA(data:Object):void{
-
+            // GOT PACKET FROW WS
         }
 
 
@@ -212,45 +211,13 @@ package com.dukascopy.connect.managers.escrow{
             GD.S_ESCROW_DEALS_LOADED.invoke(escrowDeals);
         }
 		
-		static private function onDealEvent(escrowEventType:String, dealRawData:Object):void 
-		{
-			if (escrowEventType == EscrowEventType.CREATED.value)
-			{
-				onDealCreated(dealRawData);
-			}
-			else if (escrowEventType == EscrowEventType.HOLD_MCA.value)
-			{
-				
-			}
-		}
+	
 		
-		static private function onOfferEvent(escrowEventType:String, offerRawData:Object):void 
-		{
-			if (escrowEventType == EscrowEventType.CANCEL.value)
-			{
-				onOfferCanceled(offerRawData);
-			}
-			else if (escrowEventType == EscrowEventType.OFFER_CREATED.value)
-			{
-				onOfferCreated(offerRawData);
-			}
-		}
-		
-		static private function onOfferCreated(offerRawData:Object):void 
-		{
-			var offer:EscrowMessageData = new EscrowMessageData(offerRawData);
-		}
-		
-		static private function onOfferCanceled(offerRawData:Object):void 
-		{
-			var offer:EscrowMessageData = new EscrowMessageData(offerRawData);
-		}
-		
-		static private function onDealCreated(dealRawData:Object):void 
+		/*static private function onDealCreated(dealRawData:Object):void 
 		{
 			var deal:EscrowMessageData = new EscrowMessageData(dealRawData);
 			GD.S_ESCROW_DEAL_CREATED.invoke(deal);
-		}
+		}*/
 		
 		private function clear():void 
 		{
@@ -262,106 +229,26 @@ package com.dukascopy.connect.managers.escrow{
             if(isInstrumentLoading)
                 return;
             isInstrumentLoading=true;
-			
-			PHP.p2p_getRates(onInstrumentsLoaded);
-			
-            //TODO: get from sever DUMMY ->
-           /* var timer:Timer=new Timer(1000,1);
-            var dis:Dispatcher=new Dispatcher(timer);
-            dis.add(TimerEvent.TIMER_COMPLETE,function(e:TimerEvent):void{
-                dis.clear();
-				
-				if (PaymentsManager.activate() == false)
-				{
-					onWalletsLoaded();
-				}
-				else
-				{
-					PaymentsManager.S_ACCOUNT.add(onWalletsLoaded);
-					PaymentsManager.S_BACK.add(onWalletsLoadError);
-				}
-				
-                timeInstrumentRequest=new Date().getTime();
+
+            var loader:SimpleLoader=new SimpleLoader({
+                method:"Cp2p.getRates",
+                key:authKey
+            },function(resp:SimpleLoaderResponse):void{
+                // Instruments loaded
+                isInstrumentLoading = false;
+                if (resp.error == true)
+                    return;
+                parseInstruments(resp.data);
+                //loadWallets();
             })
-            timer.start();*/
-            // DUMMY <-
         }
 		
-		private function onInstrumentsLoaded(respond:PHPRespond):void 
-		{
-
-
-            // TODO: REMOVE AND MOVE TO SERVER
-            /*var cardano:Object={
-                ask:2.32,
-                bid:1.92,
-                code:"ADA",
-                fiat:"USD",
-                id:11223,
-                name:"Cardano",
-                precision:4
-            }
-
-            if(respond.data is Array)
-                respond.data.push(cardano);
-                    else
-                        respond.data[3]=cardano;*/
-
-			if (respond.error == true)
-			{
-				isInstrumentLoading = false;
-				//!TODO:;
-			}
-			else
-			{
-				parseInstruments(respond.data);
-				loadWallets();
-			}
-			
-			respond.dispose();
-		}
 		
-		private function loadWallets():void 
-		{
-			if (PaymentsManager.activate() == false)
-			{
-				onWalletsLoaded();
-			}
-			else
-			{
-				PaymentsManager.S_ACCOUNT.add(onWalletsLoaded);
-				PaymentsManager.S_BACK.add(onWalletsLoadError);
-			}
-		}
 		
-		private function onWalletsLoadError(code:String = null, message:String = null):void 
-		{
-			isInstrumentLoading = false;
+		private function loadWallets():void{
+            GD.S_PAY_REQUEST_WALLETS.invoke();
+        }
 			
-			PaymentsManager.S_ACCOUNT.remove(onWalletsLoaded);
-			PaymentsManager.S_BACK.remove(onWalletsLoadError);
-			
-			isInstrumentLoading = false;
-			GD.S_ESCROW_INSTRUMENTS.invoke(null);
-			
-			PaymentsManager.deactivate();
-		}
-		
-		private function onWalletsLoaded(data:Array = null, local:Boolean = false):void 
-		{
-			PaymentsManager.S_ACCOUNT.remove(onWalletsLoaded);
-			PaymentsManager.S_BACK.remove(onWalletsLoadError);
-			
-			for (var i:int = 0; i < instruments.length; i++) 
-			{
-				instruments[i].wallet = PayManager.getDCOWallet(instruments[i].code)
-			}
-			
-            isInstrumentLoading = false;
-			PaymentsManager.deactivate();
-			
-			GD.S_ESCROW_INSTRUMENTS.invoke(instruments);
-		}
 		
         /**
          * Parse response width avaialable instruments from server.
@@ -373,20 +260,19 @@ package com.dukascopy.connect.managers.escrow{
 			var parser:InstrumentParser = new InstrumentParser();
             for each(var instrumentRawData:Object in instrumentsRaw){
 				instrument = parser.parse(instrumentRawData);
-				if (instrument != null)
-				{
+				if (instrument != null){
 					tmp.push(instrument);
 					GD.S_ESCROW_PRICE.invoke(instrument);
-				}
-				else
-				{
+				}else{
 					ApplicationErrors.add();
 				}
             }
+            
             if(tmp.length>0){
                 instruments=tmp;
-            //    GD.S_ESCROW_INSTRUMENTS.invoke(instruments);
+                GD.S_ESCROW_INSTRUMENTS.invoke(instruments);
             }
+
         };
 		
         /**
