@@ -23,6 +23,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 	import flash.events.Event;
 	import flash.text.TextFieldAutoSize;
 	import flash.text.TextFormatAlign;
+	import flash.utils.getTimer;
 	
 	/**
 	 * ...
@@ -109,13 +110,23 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		
 		override public function initScreen(data:Object = null):void {
 			
+			
+		//	var time:Number = getTimer();
+			
+			
 			var screenData:EscrowScreenData = data as EscrowScreenData;
 			offerCreatedTime = screenData.created;
+			if (offerCreatedTime.toString().length > 11)
+			{
+				offerCreatedTime = offerCreatedTime / 1000;
+			}
 			escrowOffer = screenData.escrowOffer;
 			chat = screenData.chat;
 			messageId = screenData.messageId;
 			
 			super.initScreen(data);
+			
+		//	trace("----1 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!", getTimer() - time);
 		}
 		
 		override protected function drawContent():void 

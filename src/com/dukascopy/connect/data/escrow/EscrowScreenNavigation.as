@@ -47,7 +47,7 @@ package com.dukascopy.connect.data.escrow
 	import com.dukascopy.connect.vo.ChatVO;
 	import com.dukascopy.connect.vo.users.UserVO;
 	import com.dukascopy.langs.Lang;
-	import com.dukascopy.connect.managers.escrow.vo.EscrowDealEventSentRequestVO;
+	import flash.utils.getTimer;
 	
 	/**
 	 * ...
@@ -87,24 +87,20 @@ package com.dukascopy.connect.data.escrow
 			}
 			else if (command == OfferCommand.confirm_crypto_recieve)
 			{
-
-				// Die fantastische wunderbare Ueberlogik.
-				GD.S_ESCROW_REQUEST_DEAL_EVENT_SENT.invoke(
-					new EscrowDealEventSentRequestVO(
-						EscrowEventType.CRYPTO_ACCEPTED, // type
-						escrow.deal_uid, // deal_uid
-						true // notifyWS
-					)
-				)
-
-		
-				//PHP.escrow_addEvent(onConfirmCryptoEvent, {event_type: "cp2p_crypto_accepted", deal_uid: escrow.deal_uid, notifyWS: true});
+				PHP.escrow_addEvent(onConfirmCryptoEvent, {event_type: EscrowEventType.CRYPTO_ACCEPTED, deal_uid: escrow.deal_uid, notifyWS: true});
+			//	PHP.escrow_addEvent(onConfirmCryptoEvent, {event_type: "cp2p_crypto_accepted", deal_uid: escrow.deal_uid, notifyWS: true});
 			}
 		}
 		
+		static private function onConfirmCryptoEvent(respond:PHPRespond):void 
+		{
+			trace("123");
+		}
 		
 		static public function showScreen(escrow:EscrowMessageData, created:Number, userVO:UserVO, chatVO:ChatVO, messageId:Number, showChatButton:Boolean = false):void
 		{
+			var time:Number = getTimer();
+			
 			GD.S_STOP_LOAD.invoke();
 			lastRequestData = null;
 			if (escrow != null)

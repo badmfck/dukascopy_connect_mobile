@@ -9,6 +9,7 @@ package com.dukascopy.connect.data.screenAction.customActions {
 	import com.dukascopy.connect.sys.auth.Auth;
 	import com.dukascopy.connect.vo.ChatVO;
 	import com.dukascopy.connect.vo.users.UserVO;
+	import flash.utils.getTimer;
 	
 	/**
 	 * ...
@@ -31,7 +32,6 @@ package com.dukascopy.connect.data.screenAction.customActions {
 		}
 		
 		public function execute():void {
-			
 			getChatAction = new GetChatAction(offerData.chatUID);
 			getChatAction.S_ACTION_SUCCESS.add(onChatReady);
 			getChatAction.S_ACTION_FAIL.add(onChatFail);
@@ -49,6 +49,7 @@ package com.dukascopy.connect.data.screenAction.customActions {
 		private function onChatReady(chatVO:ChatVO):void 
 		{
 			var userVO:UserVO;
+			
 			if (chatVO != null && chatVO.users != null && chatVO.users.length > 0)
 			{
 				for (var i:int = 0; i < chatVO.users.length; i++) 
@@ -59,10 +60,14 @@ package com.dukascopy.connect.data.screenAction.customActions {
 					}
 				}
 			}
+			
+			
+			
 			if (userVO == null)
 			{
 				ApplicationErrors.add();
 			}
+			
 			EscrowScreenNavigation.showScreen(offerData, created, userVO, chatVO, messageId, true);
 			
 			dispose();

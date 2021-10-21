@@ -18,8 +18,10 @@ package com.dukascopy.connect.screens.base {
 	import flash.display.Bitmap;
 	import flash.display.Sprite;
 	import flash.display.StageQuality;
+	import flash.utils.ByteArray;
 	import flash.utils.getDefinitionByName;
 	import flash.utils.getQualifiedClassName;
+	import flash.utils.getTimer;
 	
 	/**
 	 * ...
@@ -125,6 +127,7 @@ package com.dukascopy.connect.screens.base {
 		 * @param	direction  0 - hides to left, shows from right, 1 - hides to right, shows from left
 		 */
 		public function show(cls:Class, data:Object = null, direction:int = 0, transitionTime:Number = 0.3, currentScreenEndAlpha:Number = 1):void {
+			
 			_direction = direction;
 			_transitionTime = transitionTime;
 			
@@ -171,7 +174,11 @@ package com.dukascopy.connect.screens.base {
 				
 			var hash:String = null;
 			try{
-				hash = MD5.hash(JSON.stringify(hashData));
+				var ba:ByteArray = new ByteArray();
+				ba.writeObject(hashData);
+				
+			//	hash = MD5.hash(JSON.stringify(hashData));
+				hash = MD5.hashBinary(ba);
 			}catch (e:Error){
 				echo("ScreenManager (" + screenManagerName + ")", "show", "Can`t create hash for object");
 			}
@@ -232,7 +239,6 @@ package com.dukascopy.connect.screens.base {
 					}
 				}
 			}
-			
 			
 			var waitTime:Number = 0.01;
 			// START TO SHOW SCREEN

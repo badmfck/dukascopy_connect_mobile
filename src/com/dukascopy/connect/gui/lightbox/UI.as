@@ -12,8 +12,10 @@ package com.dukascopy.connect.gui.lightbox {
 	import com.dukascopy.connect.sys.theme.AppTheme;
 	import com.dukascopy.connect.type.MainColors;
 	import com.dukascopy.connect.type.TransferType;
+	import com.dukascopy.connect.utils.ColorUtils;
 	import com.dukascopy.connect.utils.TextUtils;
 	import com.telefision.shapes.Box3D;
+	import fl.motion.Color;
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
 	import flash.display.CapsStyle;
@@ -2825,6 +2827,18 @@ package com.dukascopy.connect.gui.lightbox {
 				}
 			}
 			return null;
+		}
+		
+		static public function getColorOverlay(color:Number = NaN):Color 
+		{
+			ColorUtils.getColorBrightness
+			var c:Color;
+			if (!isNaN(color))
+			{
+				c = new Color();
+				c.color = color;
+			}
+			return c;
 		}
 	}
 }

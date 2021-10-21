@@ -64,6 +64,27 @@ package com.dukascopy.connect.gui.list.renderers {
 			return result;
 		}
 		
+		override protected function updateBack(listData:Object):void 
+		{
+			/*var itemData:EscrowDealVO = listData as EscrowDealVO;
+			if (itemData != null) {
+				bg.transform.colorTransform = UI.getColorOverlay();
+				switch(itemData.status)
+				{
+					case EscrowStatus.deal_completed.value:
+					{
+						bg.transform.colorTransform = UI.getColorOverlay(Color.GREEN);
+						break;
+					}
+					case EscrowStatus.deal_claimed.value:
+					{
+						bg.transform.colorTransform = UI.getColorOverlay(Color.RED);
+						break;
+					}
+				}
+			}*/
+		}
+		
 		override protected function drawIcon(listData:Object):void {
 			
 			var itemData:EscrowDealVO = listData as EscrowDealVO;
