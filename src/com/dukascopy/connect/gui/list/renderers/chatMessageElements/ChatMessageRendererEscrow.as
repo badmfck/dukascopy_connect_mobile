@@ -328,6 +328,8 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 			{
 				if (messageData.systemMessageVO.escrow.status == EscrowStatus.deal_created ||
 					messageData.systemMessageVO.escrow.status == EscrowStatus.deal_mca_hold ||
+					messageData.systemMessageVO.escrow.status == EscrowStatus.deal_crypto_send_fail ||
+					messageData.systemMessageVO.escrow.status == EscrowStatus.deal_crypto_send_wait_investigation ||
 					messageData.systemMessageVO.escrow.status == EscrowStatus.paid_crypto)
 				{
 					result = Lang.deal_expired;
@@ -461,6 +463,32 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 						
 						break;
 					}
+					case EscrowStatus.deal_crypto_send_fail:
+					{
+						if (data.crypto_user_uid == Auth.uid)
+						{
+							result = Lang.escrow_deal_crypto_send_fail_seller;
+						}
+						else
+						{
+							result = Lang.escrow_deal_crypto_send_fail_buyer;
+						}
+						
+						break;
+					}
+					case EscrowStatus.deal_crypto_send_wait_investigation:
+					{
+						if (data.crypto_user_uid == Auth.uid)
+						{
+							result = Lang.escrow_deal_crypto_send_investigation_seller;
+						}
+						else
+						{
+							result = Lang.escrow_deal_crypto_send_investigation_buyer;
+						}
+						
+						break;
+					}
 				}
 			}
 			
@@ -550,7 +578,11 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 					time.y = int(resultHeight * .5 + Config.FINGER_SIZE * .05);
 				}
 				else if (messageData.systemMessageVO.escrow.inactive == false && 
-						 (messageData.systemMessageVO.escrow.status == EscrowStatus.deal_created || messageData.systemMessageVO.escrow.status == EscrowStatus.deal_mca_hold || messageData.systemMessageVO.escrow.status == EscrowStatus.paid_crypto))
+						 (
+							messageData.systemMessageVO.escrow.status == EscrowStatus.deal_created || 
+							messageData.systemMessageVO.escrow.status == EscrowStatus.deal_mca_hold || 
+							messageData.systemMessageVO.escrow.status == EscrowStatus.deal_crypto_send_wait_investigation || 
+							messageData.systemMessageVO.escrow.status == EscrowStatus.paid_crypto))
 				{
 					iconTime.visible = false;
 					time.visible = false;
@@ -585,6 +617,12 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 					}
 				}
 				else if (messageData.systemMessageVO.escrow.status == EscrowStatus.offer_expired)
+				{
+					iconFail.visible = true;
+					iconTime.visible = false;
+					time.visible = false;
+				}
+				else if (messageData.systemMessageVO.escrow.status == EscrowStatus.deal_crypto_send_fail)
 				{
 					iconFail.visible = true;
 					iconTime.visible = false;
@@ -744,6 +782,11 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 						return Color.BLACK;
 						break;
 					}
+					case EscrowStatus.deal_crypto_send_fail:
+					{
+						return Color.GREY_SUPER_LIGHT;
+						break;
+					}
 				}
 			}
 			
@@ -761,7 +804,7 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 			{
 				if (seconds > 3600)
 				{
-					result = DateUtils.getComfortTimeRepresentation(seconds * 1000);
+					result = DateUtils.getComfortTimeRepresentationSmall(seconds * 1000);
 				}
 				else
 				{
@@ -900,6 +943,35 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 					case EscrowStatus.deal_completed:
 					{
 						return Color.GREY_SUPER_LIGHT;
+						break;
+					}
+					case EscrowStatus.deal_crypto_send_fail:
+					{
+						return Color.GREY;
+						break;
+					}
+					case EscrowStatus.deal_crypto_send_fail:
+					{
+						if (messageData.systemMessageVO.escrow.crypto_user_uid == Auth.uid)
+						{
+							return Color.GREY_DARK;
+						}
+						else
+						{
+							return Color.GREY_DARK;
+						}
+						break;
+					}
+					case EscrowStatus.deal_crypto_send_wait_investigation:
+					{
+						if (messageData.systemMessageVO.escrow.crypto_user_uid == Auth.uid)
+						{
+							return Color.GREY_DARK;
+						}
+						else
+						{
+							return Color.GREY_DARK;
+						}
 						break;
 					}
 				}

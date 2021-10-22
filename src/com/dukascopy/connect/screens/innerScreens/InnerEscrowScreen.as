@@ -89,6 +89,7 @@ package com.dukascopy.connect.screens.innerScreens {
 			super.createView();
 			
 			list = new List("EscrowAdsList");
+			list.allowSmallListMove(true);
 			list.setMask(true);
 			list.backgroundColor = Style.color(Style.COLOR_BACKGROUND);
 			list.background = true;
@@ -723,7 +724,7 @@ package com.dukascopy.connect.screens.innerScreens {
 			
 			if (id == TAB_OTHER) {
 				GD.S_ESCROW_ADS.add(onEscrowAdsLoaded);
-				GD.S_ESCROW_ADS_REQUEST.invoke();
+				GD.S_ESCROW_ADS_REQUEST.invoke(false, true);
 				return;
 			}
 			if (id == TAB_MINE) {

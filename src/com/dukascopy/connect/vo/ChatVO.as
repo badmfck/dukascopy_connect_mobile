@@ -331,6 +331,7 @@ package com.dukascopy.connect.vo {
 			_messages = new Vector.<ChatMessageVO>();
 			lastMessagesHash = null;
 			euroActionMessageVO = null;
+			_hasQuestionAnswer = false;
 		}
 		
 		public function addQuestionData(data:Object):void {
@@ -353,6 +354,9 @@ package com.dukascopy.connect.vo {
 				cm = null;
 			}
 			disposeMessages();
+			if (type == ChatRoomType.QUESTION) {
+				addQuestionMessages();
+			}
 			lastMessagesHash = hash;
 			var companyChat:Boolean = type == ChatRoomType.COMPANY;
 			if (companyChat == true)

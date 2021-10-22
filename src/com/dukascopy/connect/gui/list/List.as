@@ -799,7 +799,6 @@ package com.dukascopy.connect.gui.list {
 			setScrollBarSize();
 			
 			TweenMax.delayedCall(1, function():void {
-
 				if (box == null)
 					return;
 				S_MOVING.invoke(box.y);
