@@ -18,6 +18,7 @@ package com.dukascopy.connect.data.escrow
 		
 		static public var offerMaxTime:Number = 5;
 		static public var dealMaxTime:Number = 30;
+		static public var dealCryptoInvestigationTime:Number = 60;
 	//	static public var confirmTransactionTime:Number = 1440;
 		static public var penalty:Number = 0.01;
 		static public var limitAmountKoef:Number = 0.9;
@@ -64,6 +65,10 @@ package com.dukascopy.connect.data.escrow
 			else if (escrow.status == EscrowStatus.paid_crypto)
 			{
 				difference = EscrowSettings.receiptConfirmationTime * 60 - (timeNow - escrow.created);
+			}
+			else if (escrow.status == EscrowStatus.deal_crypto_send_wait_investigation)
+			{
+				difference = EscrowSettings.dealCryptoInvestigationTime * 60 - (timeNow - escrow.created);
 			}
 			
 			if (isNaN(difference))

@@ -188,7 +188,7 @@ package com.dukascopy.connect.sys.configManager {
 			if ("open_link_in_browser_mark" in loadedConfigData == true && loadedConfigData.open_link_in_browser_mark != "")
 				NativeExtensionController.open_link_in_browser_mark = loadedConfigData.open_link_in_browser_mark;
 			
-			GD.S_CONFIG_UPDATED.invoke();
+//			GD.S_CONFIG_UPDATED.invoke();
 		}
 		
 		static private function updateBankManagerControllerConfig(loadedConfigData:Object):void 

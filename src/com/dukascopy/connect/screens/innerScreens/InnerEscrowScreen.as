@@ -89,6 +89,7 @@ package com.dukascopy.connect.screens.innerScreens {
 			super.createView();
 			
 			list = new List("EscrowAdsList");
+			list.allowSmallListMove(true);
 			list.setMask(true);
 			list.backgroundColor = Style.color(Style.COLOR_BACKGROUND);
 			list.background = true;
