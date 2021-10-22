@@ -222,12 +222,16 @@ package com.dukascopy.connect.screens.context
 																						0, 1, 0, 0, brightness, 
 																						0, 0, 1, 0, brightness, 
 																						0, 0, 0, 1, 0]));
-			icon.bitmapData.applyFilter(icon.bitmapData, icon.bitmapData.rect, new Point(), new ColorMatrixFilter(
+			if (icon.bitmapData != null)
+			{
+				icon.bitmapData.applyFilter(icon.bitmapData, icon.bitmapData.rect, new Point(), new ColorMatrixFilter(
 																					[
 																						1, 0, 0, 0, brightness,
 																						0, 1, 0, 0, brightness, 
 																						0, 0, 1, 0, brightness, 
 																						0, 0, 0, 1, 0]));
+			}
+			
 			icon.alpha = 1;
 		}
 	}

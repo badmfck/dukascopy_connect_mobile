@@ -20,8 +20,10 @@ package com.dukascopy.connect.screens {
 	import com.dukascopy.connect.data.RateBotData;
 	import com.dukascopy.connect.data.ScanPassportResult;
 	import com.dukascopy.connect.data.SoundStatusData;
+	import com.dukascopy.connect.data.TestHelper;
 	import com.dukascopy.connect.data.UserBanData;
 	import com.dukascopy.connect.data.escrow.EscrowScreenNavigation;
+	import com.dukascopy.connect.data.escrow.EscrowStatus;
 	import com.dukascopy.connect.data.escrow.TradeDirection;
 	import com.dukascopy.connect.data.location.Location;
 	import com.dukascopy.connect.data.screenAction.IScreenAction;
@@ -46,6 +48,7 @@ package com.dukascopy.connect.screens {
 	import com.dukascopy.connect.data.screenAction.customActions.chatMessageAction.ReplyMessageAction;
 	import com.dukascopy.connect.data.screenAction.customActions.chatMessageAction.ResendMessageAction;
 	import com.dukascopy.connect.data.screenAction.customActions.chatMessageAction.SendGiftMessageAction;
+	import com.dukascopy.connect.data.screenAction.customActions.test.SendEscrowTestAction;
 	import com.dukascopy.connect.gui.button.ChatNewMessagesButton;
 	import com.dukascopy.connect.gui.button.InfoButtonPanel;
 	import com.dukascopy.connect.gui.button.LoadingRectangleButton;
@@ -1863,7 +1866,37 @@ package com.dukascopy.connect.screens {
 			
 			if (messageType == ChatSystemMsgVO.TYPE_ESCROW_OFFER)
 			{
-				menuItems.push( { fullLink:Lang.escrow_copy_transaction, id:ChatItemContextMenuItemType.COPY } );
+				if (!Config.isTest())
+					menuItems.push( { fullLink:Lang.escrow_copy_transaction, id:ChatItemContextMenuItemType.COPY } );
+				if (Config.isTest())
+				{
+					var escrowStatus:EscrowStatus = msgVO.systemMessageVO.escrow.status;
+					if (escrowStatus == EscrowStatus.offer_accepted || 
+						escrowStatus == EscrowStatus.offer_cancelled ||
+						escrowStatus == EscrowStatus.offer_created ||
+						escrowStatus == EscrowStatus.offer_expired ||
+						escrowStatus == EscrowStatus.offer_rejected)
+					{
+						menuItems.push( { fullLink:"offer ACCEPT", id:ChatItemContextMenuItemType.OFFER_ACCEPT } );
+						menuItems.push( { fullLink:"offer ACCEPT 2 раза", id:ChatItemContextMenuItemType.OFFER_ACCEPT_2 } );
+						menuItems.push( { fullLink:"offer REJECT", id:ChatItemContextMenuItemType.OFFER_REJECT } );
+						menuItems.push( { fullLink:"offer REJECT 2 раза", id:ChatItemContextMenuItemType.OFFER_REJECT_2 } );
+						menuItems.push( { fullLink:"offer CANCEL", id:ChatItemContextMenuItemType.OFFER_CANCEL } );
+						menuItems.push( { fullLink:"offer CANCEL 2 раза", id:ChatItemContextMenuItemType.OFFER_CANCEL_2 } );
+					}
+					else if (escrowStatus == EscrowStatus.deal_claimed ||
+							escrowStatus == EscrowStatus.deal_completed ||
+							escrowStatus == EscrowStatus.deal_created ||
+							escrowStatus == EscrowStatus.deal_crypto_send_fail ||
+							escrowStatus == EscrowStatus.deal_crypto_send_wait_investigation ||
+							escrowStatus == EscrowStatus.deal_mca_hold ||
+							escrowStatus == EscrowStatus.paid_crypto)
+					{
+						menuItems.push( { fullLink:"send crypto id", id:ChatItemContextMenuItemType.DEAL_SEND_ID } );
+						menuItems.push( { fullLink:"accept crypto", id:ChatItemContextMenuItemType.DEAL_ACCEPT_CRYPTO } );
+						menuItems.push( { fullLink:"claim", id:ChatItemContextMenuItemType.DEAL_CLAIM } );
+					}
+				}
 			}
 			else{
 				
@@ -2126,6 +2159,52 @@ package com.dukascopy.connect.screens {
 					case ChatItemContextMenuItemType.MINIMIZE:
 					{
 						action = new MinimizeMessageAction(msgVO, list);
+						break;
+					}
+					
+					case ChatItemContextMenuItemType.OFFER_ACCEPT:
+					{
+						action = new SendEscrowTestAction(msgVO.systemMessageVO.escrow, ChatItemContextMenuItemType.OFFER_ACCEPT, msgVO.id, menuItems[i].fullLink);
+						break;
+					}
+					case ChatItemContextMenuItemType.OFFER_ACCEPT_2:
+					{
+						action = new SendEscrowTestAction(msgVO.systemMessageVO.escrow, ChatItemContextMenuItemType.OFFER_ACCEPT_2, msgVO.id, menuItems[i].fullLink);
+						break;
+					}
+					case ChatItemContextMenuItemType.OFFER_CANCEL:
+					{
+						action = new SendEscrowTestAction(msgVO.systemMessageVO.escrow, ChatItemContextMenuItemType.OFFER_CANCEL, msgVO.id, menuItems[i].fullLink);
+						break;
+					}
+					case ChatItemContextMenuItemType.OFFER_CANCEL_2:
+					{
+						action = new SendEscrowTestAction(msgVO.systemMessageVO.escrow, ChatItemContextMenuItemType.OFFER_CANCEL_2, msgVO.id, menuItems[i].fullLink);
+						break;
+					}
+					case ChatItemContextMenuItemType.OFFER_REJECT:
+					{
+						action = new SendEscrowTestAction(msgVO.systemMessageVO.escrow, ChatItemContextMenuItemType.OFFER_REJECT, msgVO.id, menuItems[i].fullLink);
+						break;
+					}
+					case ChatItemContextMenuItemType.OFFER_REJECT_2:
+					{
+						action = new SendEscrowTestAction(msgVO.systemMessageVO.escrow, ChatItemContextMenuItemType.OFFER_REJECT_2, msgVO.id, menuItems[i].fullLink);
+						break;
+					}
+					case ChatItemContextMenuItemType.DEAL_ACCEPT_CRYPTO:
+					{
+						action = new SendEscrowTestAction(msgVO.systemMessageVO.escrow, ChatItemContextMenuItemType.DEAL_ACCEPT_CRYPTO, msgVO.id, menuItems[i].fullLink);
+						break;
+					}
+					case ChatItemContextMenuItemType.DEAL_CLAIM:
+					{
+						action = new SendEscrowTestAction(msgVO.systemMessageVO.escrow, ChatItemContextMenuItemType.DEAL_CLAIM, msgVO.id, menuItems[i].fullLink);
+						break;
+					}
+					case ChatItemContextMenuItemType.DEAL_SEND_ID:
+					{
+						action = new SendEscrowTestAction(msgVO.systemMessageVO.escrow, ChatItemContextMenuItemType.DEAL_SEND_ID, msgVO.id, menuItems[i].fullLink);
 						break;
 					}
 				}

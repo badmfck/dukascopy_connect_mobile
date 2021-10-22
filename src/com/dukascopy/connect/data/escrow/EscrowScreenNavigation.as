@@ -320,7 +320,7 @@ package com.dukascopy.connect.data.escrow
 			}
 		}
 		
-		static private function requestInvestigation(escrow:EscrowMessageData, reason:SelectorItemData):void
+		static public function requestInvestigation(escrow:EscrowMessageData, reason:SelectorItemData):void
 		{
 			if (escrow != null && reason != null)
 			{
