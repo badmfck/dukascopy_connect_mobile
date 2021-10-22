@@ -723,7 +723,7 @@ package com.dukascopy.connect.screens.innerScreens {
 			
 			if (id == TAB_OTHER) {
 				GD.S_ESCROW_ADS.add(onEscrowAdsLoaded);
-				GD.S_ESCROW_ADS_REQUEST.invoke();
+				GD.S_ESCROW_ADS_REQUEST.invoke(false, true);
 				return;
 			}
 			if (id == TAB_MINE) {
