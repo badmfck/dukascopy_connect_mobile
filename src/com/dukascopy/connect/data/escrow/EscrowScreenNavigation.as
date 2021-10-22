@@ -4,7 +4,6 @@ package com.dukascopy.connect.data.escrow
 	import com.dukascopy.connect.Config;
 	import com.dukascopy.connect.GD;
 	import com.dukascopy.connect.data.AlertScreenData;
-	import com.dukascopy.connect.data.ErrorData;
 	import com.dukascopy.connect.data.EscrowScreenData;
 	import com.dukascopy.connect.data.SelectorItemData;
 	import com.dukascopy.connect.data.screenAction.IScreenAction;
