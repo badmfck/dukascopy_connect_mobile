@@ -40,7 +40,7 @@ package com.dukascopy.connect.data.escrow
 	import com.dukascopy.connect.vo.ChatVO;
 	import com.dukascopy.connect.vo.users.UserVO;
 	import com.dukascopy.langs.Lang;
-	import flash.utils.getTimer;
+	import com.dukascopy.connect.managers.escrow.vo.EscrowDealEventSentRequestVO;
 	
 	/**
 	 * ...
@@ -463,8 +463,18 @@ package com.dukascopy.connect.data.escrow
 			{
 				if (escrow != null)
 				{
-					PHP.escrow_addEvent(onEventCryptoSend, {event_type: EscrowEventType.PAID_CRYPTO.value, data:escrow.transactionId, deal_uid: escrow.deal_uid, notifyWS: true}, 
-										{transaction:escrow.transactionId, chatVO:chatVO});
+					GD.S_ESCROW_REQUEST_DEAL_EVENT_SENT.invoke(new EscrowDealEventSentRequestVO(
+						EscrowEventType.PAID_CRYPTO,
+						escrow.deal_uid,
+						escrow.transactionId,
+						true
+					))
+
+					/*PHP.escrow_addEvent(
+						onEventCryptoSend,
+						{event_type: EscrowEventType.PAID_CRYPTO.value, data:escrow.transactionId, deal_uid: escrow.deal_uid, notifyWS: true}, 
+						{transaction:escrow.transactionId, chatVO:chatVO}
+					);*/
 				}
 				else
 				{

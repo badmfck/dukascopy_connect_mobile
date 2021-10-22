@@ -88,6 +88,7 @@ package com.dukascopy.connect.managers.escrow{
                     key:authKey,
                     event_type:req.type.value,
                     deal_uid:req.dealUID,
+                    data:req.data,
                     notifyWS:req.notifyWS    
                 },function(resp:SimpleLoaderResponse):void{
                     trace(resp);
