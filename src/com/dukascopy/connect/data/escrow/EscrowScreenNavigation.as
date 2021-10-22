@@ -594,11 +594,11 @@ package com.dukascopy.connect.data.escrow
 		static private function onDealEvent(escrowEventType:String, dealRawData:Object):void 
 		{
 			//!TODO:; - не использовать объект, получить deal;
-			if (escrowEventType == EscrowEventType.CREATED)
+			if (escrowEventType == EscrowEventType.CREATED.value)
 			{
 				onDealCreated(dealRawData);
 			}
-			else if (escrowEventType == EscrowEventType.HOLD_MCA)
+			else if (escrowEventType == EscrowEventType.HOLD_MCA.value)
 			{
 				//!TODO:;
 			}

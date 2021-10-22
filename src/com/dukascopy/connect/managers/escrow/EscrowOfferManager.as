@@ -7,6 +7,9 @@ package com.dukascopy.connect.managers.escrow
     import com.dukascopy.connect.managers.escrow.vo.EscrowOffersRequestVO;
     import com.dukascopy.connect.vo.URLConfigVO;
     import com.dukascopy.connect.data.escrow.EscrowEventType;
+    import com.dukascopy.connect.vo.WSPacketVO;
+    import com.dukascopy.connect.sys.ws.WSMethodType;
+    import com.dukascopy.connect.data.ErrorData;
 
     public class EscrowOfferManager{
 
@@ -26,12 +29,11 @@ package com.dukascopy.connect.managers.escrow
                 authKey=data.authKey
             })
 
-            /*
-            WSClient.S_ESCROW_OFFER_EVENT.add(onOfferEvent);
-            WSClient.S_OFFER_ACCEPT_FAIL.add(onOfferAcceptFailEvent);
-			WSClient.S_OFFER_CREATED.add(onOfferCreatedEvent);
-			WSClient.S_OFFER_ACCEPT_SUCCESS.add(onOfferAcceptSuccessEvent);
-            */
+
+            // DO CLIENT
+            GD.S_WS_PACKET_RECEIVED.add(function(packet:WSPacketVO):void{
+                parseWSPacket(packet);
+            })
 
             //GD.S_ESCROW_OFFER_CREATE_REQUEST.add(onEscrowOfferCreateRequest,this);
 
@@ -69,6 +71,64 @@ package com.dukascopy.connect.managers.escrow
         }   
 
 
+        private function parseWSPacket(packet:WSPacketVO):void{
+            
+            if (packet.method == WSMethodType.ESCROW_OFFER_ACCEPT){
+                onOfferAcceptSuccessEvent(packet.data!=null?packet.data.offer:null);
+				return;
+			}
+
+			if (packet.method == WSMethodType.ESCROW_OFFER_CREATE_SUCCESS){
+				// !TODO: нет такого сигнала?;
+				return;
+			}
+
+			if (packet.method == WSMethodType.ESCROW_OFFER_CREATE){
+				GD.S_OFFER_CREATED.invoke(packet.data.offer);
+				return;
+			}
+
+			if (packet.method == WSMethodType.ESCROW_OFFER_ACCEPT_ERROR){
+				trace("123");
+                return;
+			}
+
+			if (packet.method == WSMethodType.ESCROW_OFFER_ERROR){
+
+				var errorObject:Object;
+                if (packet.data!=null){
+
+                    if("error" in packet.data && packet.data.error != null){
+					    errorObject = packet.data.error;
+				    }
+                
+				    if ("method" in packet.data && packet.data.method != null){
+					
+                        var offerId:String;
+                        if ("offer" in packet.data && packet.data.offer != null && "offer_id" in packet.data.offer){
+                            offerId = packet.data.offer.offerId;
+                        }
+
+                        var errorData:ErrorData=new ErrorData(errorObject, offerId)
+                        if (packet.data.method == WSMethodType.ESCROW_OFFER_ACCEPT){
+                            onOfferAcceptFailEvent(errorData);
+                            GD.S_OFFER_ACCEPT_FAIL.invoke(errorData);
+                        }else if (packet.data.method == WSMethodType.ESCROW_OFFER_CREATE){
+                            onOfferAcceptFailEvent(errorData)
+                            GD.S_OFFER_CREATE_FAIL.invoke(errorData);
+                        }
+				    }
+                }
+				return;
+			}
+
+			if (packet.method == WSMethodType.ESCROW_OFFER_CANCEL){
+				return;
+			}
+            
+        }
+
+
         static private function onOfferAcceptSuccessEvent(offerData:Object):void{
 			GD.S_STOP_LOAD.invoke();
 		}
@@ -98,14 +158,6 @@ package com.dukascopy.connect.managers.escrow
 			//var offer:EscrowMessageData = new EscrowMessageData(offerRawData);
 		}
 
-        /*status из таблицы
-side 'BOTH', 'BUY', 'SELL' +null
-ccy 'both', 'crypto', 'mca' +null*/
-
-/*status
-'awaiting','offer_created','created','accepted','canceled','rejected','outdated'
-state
-'awaiting','check_mca','invalid','confirmed'*/
 
         private function loadOffers(status:String=null,side:String=null):void{
             loading=true;

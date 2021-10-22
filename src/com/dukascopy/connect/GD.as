@@ -22,6 +22,8 @@ package com.dukascopy.connect
 	import com.dukascopy.connect.managers.escrow.signals.S_EscrowRequestDealEventSent;
 	import com.telefision.sys.signals.S_URLConfigReady;
 	import com.telefision.sys.signals.S_StringSignal;
+	import com.telefision.sys.signals.S_WSPacketReceived;
+	import com.telefision.sys.signals.S_ErrorData;
 	
 	public class GD
 	{
@@ -42,7 +44,7 @@ package com.dukascopy.connect
 		static public const S_CONFIG_UPDATED:Signal=new Signal();
 		static public const S_URL_CONFIG_READY:S_URLConfigReady = new S_URLConfigReady();
 		
-		static public const S_WS_PACKET_RECEIVED:Signal=new Signal("S_WS_PACKET_RECEIVED")
+		static public const S_WS_PACKET_RECEIVED:S_WSPacketReceived=new S_WSPacketReceived();
 
 		static public const S_PAYPASS_BACK_CLICK:Signal = new Signal();
 		static public const S_SHOW_SYSTEM_TRACE:Signal = new Signal();
@@ -70,6 +72,10 @@ package com.dukascopy.connect
 
 		static public const S_ESCROW_REQUEST_DEAL_EVENT_SENT:S_EscrowRequestDealEventSent = new S_EscrowRequestDealEventSent(); // error
 		static public const S_ESCROW_REQUEST_DEAL_EVENT_SENT_FAIL:S_StringSignal = new S_StringSignal(); // error
+
+		static public const S_OFFER_CREATED:Signal = new Signal(); 
+		static public const S_OFFER_CREATE_FAIL:S_ErrorData = new S_ErrorData();
+		static public const S_OFFER_ACCEPT_FAIL:S_ErrorData = new S_ErrorData();
 
 		static public const S_ESCROW_OFFERS_REQUEST:S_EscrowOffersRequest = new S_EscrowOffersRequest();
 		static public const S_ESCROW_OFFERS_READY:Signal = new Signal("S_ESCROW_OFFERS_READY");
@@ -113,8 +119,6 @@ package com.dukascopy.connect
 		static public const S_CRYPTO_WALLET_REQUEST:Signal = new Signal("GD.S_CRYPTO_WALLET_REQUEST");
 		static public const S_CRYPTO_WALLETS:S_CryptoWallets = new S_CryptoWallets();
 		static public const S_CRYPTO_WALLET_ADD:S_CryptoWalletAdd = new S_CryptoWalletAdd();
-
-
 
 		//PAY
 		static public const S_PAY_REQUEST_WALLETS:Signal=new Signal("S_PAY_REQUEST_WALLETS");

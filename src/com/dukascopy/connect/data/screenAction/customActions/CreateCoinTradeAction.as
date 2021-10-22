@@ -342,8 +342,8 @@ package com.dukascopy.connect.data.screenAction.customActions {
 			
 			pendingOfferData = dealData;
 			
-			WSClient.S_OFFER_CREATED.add(onOfferCreateSuccess);
-			WSClient.S_OFFER_CREATE_FAIL.add(onOfferCreateFail);
+			GD.S_OFFER_CREATED.add(onOfferCreateSuccess);
+			GD.S_OFFER_CREATE_FAIL.add(onOfferCreateFail);
 			
 			showPreloader();
 			TweenMax.killDelayedCallsTo(hidePreloader);
@@ -392,8 +392,8 @@ package com.dukascopy.connect.data.screenAction.customActions {
 		
 		private function removeListeners():void 
 		{
-			WSClient.S_OFFER_CREATED.remove(onOfferCreateSuccess);
-			WSClient.S_OFFER_CREATE_FAIL.remove(onOfferCreateFail);
+			GD.S_OFFER_CREATED.remove(onOfferCreateSuccess);
+			GD.S_OFFER_CREATE_FAIL.remove(onOfferCreateFail);
 		}
 	}
 }

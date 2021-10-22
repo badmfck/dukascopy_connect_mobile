@@ -521,9 +521,14 @@ package com.dukascopy.connect.screens {
 			GD.S_ESCROW_ADS_CREATE_FAIL.remove(onEscrowAdsCreatedFail);
 			fillList();
 			topBar.setActions( [ actionTrash ] );
+
+			//GO BACK
+			onBack();
 		}
 		
 		private function onEscrowAdsCreatedFail(message:String = null):void {
+			busy=false;
+			GD.S_TOAST.invoke(message);
 			GD.S_ESCROW_ADS_CREATED.remove(onEscrowAdsCreatedSuccess);
 			GD.S_ESCROW_ADS_CREATE_FAIL.remove(onEscrowAdsCreatedFail);
 		}

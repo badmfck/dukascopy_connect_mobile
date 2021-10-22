@@ -6,12 +6,6 @@ package com.dukascopy.connect.managers.escrow{
 	import com.dukascopy.connect.managers.escrow.vo.InstrumentParser;
     import com.dukascopy.connect.sys.Dispatcher;
 	import com.dukascopy.connect.sys.applicationError.ApplicationErrors;
-	
-    // TODO: remove thoses imports!
-    /*import com.dukascopy.connect.sys.payments.PayManager;
-	import com.dukascopy.connect.sys.payments.PaymentsManager;
-	import com.dukascopy.connect.sys.php.PHP;
-	import com.dukascopy.connect.sys.php.PHPRespond;*/
 
     import com.dukascopy.connect.vo.EscrowDealVO;
     import com.telefision.utils.maps.EscrowDealMap;
@@ -22,6 +16,7 @@ package com.dukascopy.connect.managers.escrow{
     import com.dukascopy.connect.managers.escrow.vo.EscrowInstrument;
     import com.dukascopy.connect.vo.URLConfigVO;
     import com.dukascopy.connect.managers.escrow.vo.EscrowDealEventSentRequestVO;
+    import com.dukascopy.connect.vo.WSPacketVO;
     
 
     /**
@@ -62,7 +57,7 @@ package com.dukascopy.connect.managers.escrow{
 
 		           
             // Handle WS packet for deals
-            GD.S_WS_PACKET_RECEIVED.add(function(packet:Object):void{
+            GD.S_WS_PACKET_RECEIVED.add(function(packet:WSPacketVO):void{
                 if (packet.method != "evCp2p")
                     return;
 			
@@ -120,7 +115,7 @@ package com.dukascopy.connect.managers.escrow{
             })
 			
             // CREATE ESCROW DEAL
-            GD.S_ESCROW_DEAL_CREATE_REQUEST.add(function(req:EscrowDealCreateRequest):void{
+            /*GD.S_ESCROW_DEAL_CREATE_REQUEST.add(function(req:EscrowDealCreateRequest):void{
                 var escrowRequest:Object=req.toObject();
                 escrowRequest.key=authKey//"e41ae903d332b69f490d604474c7ca633cd8835f";
                 escrowRequest.method="Escrow.StartDeal"
@@ -130,7 +125,7 @@ package com.dukascopy.connect.managers.escrow{
                        trace(resp);
                     }
                 );
-            },this);
+            },this);*/
 
 
             // SEND DEAL EVENT
@@ -212,13 +207,7 @@ package com.dukascopy.connect.managers.escrow{
         }
 		
 	
-		
-		/*static private function onDealCreated(dealRawData:Object):void 
-		{
-			var deal:EscrowMessageData = new EscrowMessageData(dealRawData);
-			GD.S_ESCROW_DEAL_CREATED.invoke(deal);
-		}*/
-		
+			
 		private function clear():void 
 		{
 			instruments = new Vector.<EscrowInstrument>();
@@ -267,6 +256,7 @@ package com.dukascopy.connect.managers.escrow{
 					ApplicationErrors.add();
 				}
             }
+
             
             if(tmp.length>0){
                 instruments=tmp;

@@ -34,6 +34,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 	import flash.text.TextFieldAutoSize;
 	import flash.text.TextFormat;
 	import flash.text.TextFormatAlign;
+	import com.dukascopy.connect.GD;
 	
 	/**
 	 * ...
@@ -252,6 +253,15 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		
 		private function onNextClick():void 
 		{
+
+			var isFixed:Boolean=controlPriceSelected == inputPrice;
+			// check price
+			if(isFixed && !checkPriceValue(inputPrice.value)){
+				GD.S_TOAST.invoke(Lang.escrow_invalidFixedPrice);
+				dataValid=false;
+				return;
+			}
+
 			var dataValid:Boolean = true;
 			
 			if (isNaN(selectedPrice) || selectedPrice == 0)
@@ -263,6 +273,10 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 				dataValid = false;
 			}
 			
+			
+			
+
+
 			if (dataValid)
 			{
 				if (controlPriceSelected == inputPrice)
@@ -294,10 +308,21 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			addItem(inputPrice);
 		}
 		
-		private function onPriceInputChange():void 
-		{
-			inputPrice.valid();
-			setPrice(inputPrice.value);
+		private function onPriceInputChange():void{
+			
+			if(checkPriceValue(inputPrice.value)){;
+				inputPrice.valid();
+				setPrice(inputPrice.value);
+			}else{
+				inputPrice.invalid();
+			}
+		}
+
+		private function checkPriceValue(val:Number):Boolean{
+			var price:Number=getPrice();
+			var min:Number=price*.95;
+			var max:Number=price*1.05;
+			return val>=min && val<=max;
 		}
 		
 		override public function initScreen(data:Object = null):void {

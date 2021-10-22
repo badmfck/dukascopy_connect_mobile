@@ -2360,6 +2360,7 @@ package com.dukascopy.langs {
 		static public var wantBuyCrypto:String = "I WANT TO BUY CRYPTO";
 		static public var escrow_description:String = "You can use Dukascopy Bank as intermediary to secure exchange of cryptocurrency versus fiat and vice versa.";
 		static public var escrow_about_service_url:String = "https://dukascopy.com";
+		static public var escrow_invalidFixedPrice:String = "Invalid price, please use price from market with deviation +/- 5%";
 		static public var aboutService:String = "About service";
 		static public var openMcaAccount:String = "OPEN MCA ACCOUNT";
 		static public var register_mca_description:String = "For getting access to the service, register a Multi-currency account that will be used for payments processing.";

@@ -25,6 +25,7 @@ package com.dukascopy.connect.sys.ws{
 	import com.telefision.sys.etc.Print_r;
 	import com.telefision.sys.signals.Signal;
 	import com.dukascopy.connect.sys.php.PHP;
+	import com.dukascopy.connect.vo.WSPacketVO;
 
 	/**
 	 * ...
@@ -112,13 +113,21 @@ package com.dukascopy.connect.sys.ws{
 		static public var S_IDENTIFICATION_QUEUE:Signal = new Signal("WSClient.S_IDENTIFICATION_QUEUE");
 		static public var S_LOYALTY_CHANGE:Signal = new Signal("WSClient.S_LOYALTY_CHANGE");
 		static public var S_ACTIVITY:Signal = new Signal("WSClient.S_ACTIVITY");
+
+		// MOVED TO EscrowDeal/EscrowOffer manager
 		//static public var S_ESCROW_DEAL_EVENT:Signal = new Signal("WSClient.S_ESCROW_DEAL_EVENT");
-		static public var S_ESCROW_OFFER_EVENT:Signal = new Signal("WSClient.S_ESCROW_OFFER_EVENT");
+		//static public var S_ESCROW_OFFER_EVENT:Signal = new Signal("WSClient.S_ESCROW_OFFER_EVENT");
+		
+		
+		/*
+		MOVED TO GD, HANDLED IN EscrowOfferManager
 		static public var S_OFFER_CREATE_FAIL:Signal = new Signal("WSClient.S_OFFER_CREATE_FAIL");
 		static public var S_OFFER_ACCEPT_FAIL:Signal = new Signal("WSClient.S_OFFER_ACCEPT_FAIL");
 		static public var S_OFFER_CREATED:Signal = new Signal("WSClient.S_OFFER_CREATED");
 		static public var S_OFFER_ACCEPT_SUCCESS:Signal = new Signal("WSClient.S_OFFER_ACCEPT_SUCCESS");
-		
+		*/
+
+
 		static private var wasMessage:Boolean;
 
 		static private var isGuestWasConnected:Boolean=false;
@@ -590,7 +599,7 @@ package com.dukascopy.connect.sys.ws{
 				return;
 			}
 
-			GD.S_WS_PACKET_RECEIVED.invoke(pack);
+			GD.S_WS_PACKET_RECEIVED.invoke(new WSPacketVO(pack));
 
 			if (pack.method == "usersOnline") {
 				S_ONLINE_USERS.invoke(pack.data);
@@ -970,110 +979,8 @@ package com.dukascopy.connect.sys.ws{
 				return;
 			}
 			
-			if (pack.method == WSMethodType.ESCROW_OFFER_ACCEPT)
-			{
-				S_OFFER_ACCEPT_SUCCESS.invoke(pack.data.offer);
-				return;
-			}
-			if (pack.method == WSMethodType.ESCROW_OFFER_CREATE_SUCCESS)
-			{
-				// !TODO: нет такого сигнала?;
-				return;
-			}
-			if (pack.method == WSMethodType.ESCROW_OFFER_CREATE)
-			{
-				S_OFFER_CREATED.invoke(pack.data.offer);
-				S_ESCROW_OFFER_EVENT.invoke(EscrowEventType.OFFER_CREATED, pack.data.offer);
-				return;
-			}
-			if (pack.method == WSMethodType.ESCROW_OFFER_ACCEPT_ERROR)
-			{
-				trace("123");
-			}
-			if (pack.method == WSMethodType.ESCROW_OFFER_ERROR)
-			{
-				var errorObject:Object;
-				if ("data" in pack && pack.data != null &&
-					"error" in pack.data && pack.data.error != null)
-				{
-					errorObject = pack.data.error;
-				}
-				if ("data" in pack && pack.data != null &&
-					"method" in pack.data && pack.data.method != null)
-				{
-					var offerId:String;
-					if ("offer" in pack.data && pack.data.offer != null && "offer_id" in pack.data.offer)
-					{
-						offerId = pack.data.offer.offerId;
-					}
-					
-					if (pack.data.method == WSMethodType.ESCROW_OFFER_ACCEPT)
-					{
-						S_OFFER_ACCEPT_FAIL.invoke(new ErrorData(errorObject, offerId));
-					}
-					else if (pack.data.method == WSMethodType.ESCROW_OFFER_CREATE)
-					{
-						S_OFFER_CREATE_FAIL.invoke(new ErrorData(errorObject, offerId));
-					}
-				}
-				
-				
-				
-				/*pack : Object {
-					data : Object {
-						error : Object {
-							code : "PAYAPI03" 
-							msg : "Payment API Error: Wrong response" 
-						}
-						offer : Object {
-							amount : 1 
-							chatUID : "WLDIDRWmDNW5WPWe" 
-							crypto_user_uid : "WLDNWrWbWoIxIbWI" 
-							debit_account : "314931366384" 
-							instrument : "DCO" 
-							mca_ccy : "EUR" 
-							mca_user_uid : "I6D5WsWZDLWj" 
-							offer_id : 1630916498828 [0x17bba32d58c] 
-							price : 1.15 
-							side : "buy" 
-							type : "typeCp2pOffer" 
-						}
-					}
-					method : "cp2pOfferError" 
-				}*/
-				
-				return;
-			}
-			if (pack.method == WSMethodType.ESCROW_OFFER_CANCEL)
-			{
-				S_ESCROW_OFFER_EVENT.invoke(EscrowEventType.CANCEL, pack.data.offer);
-				/*pack : Object {
-					data : Object {
-						offer : Object {
-							amount : 1 
-							chatUID : "WLDIDRWmDNW5WPWe" 
-							crypto_user_uid : "I6D5WsWZDLWj" 
-							deal_uid : null 
-							debit_account : "380867781292" 
-							instrument : "DCO" 
-							mca_ccy : "EUR" 
-							mca_user_uid : "WLDNWrWbWoIxIbWI" 
-							msg_id : 35651395 [0x21fff43] 
-							offer_id : 1630928952116 [0x17bbaf0db34] 
-							price : 1.42 
-							side : "buy" 
-							status : "canceled" 
-							type : "typeCp2pOffer" 
-							userUID : null 
-						}
-						reason : "canceled" 
-					}
-					method : "cp2pOfferCancel" 
-				}*/
-				
-				
-				return;
-			}
+			
+			
 			/*if (pack.method == WSMethodType.ESCROW_EVENT)
 			{
 				if (pack.action == "cp2p_deal_created" && pack.data != null && pack.data.event != null && pack.data.event.type == EscrowEventType.CREATED)
