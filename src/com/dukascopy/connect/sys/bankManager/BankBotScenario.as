@@ -2886,7 +2886,15 @@ package com.dukascopy.connect.sys.bankManager {
 				desc:"lang.operationDetails",
 				item: {
 					type:"operationDetails"
-				}
+				},
+				menu: [
+					{
+						type:"operationPDF",
+						text:"lang.menuOperationPDF",
+						action:"nav:operationAsFileConfirmed",
+						disabled:true
+					}
+				]
 			},
 			
 			openTradingAccountConfirm: {

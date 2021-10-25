@@ -1766,6 +1766,10 @@ package com.dukascopy.connect.sys.paymentsManagerNew {
 			PayServer.cardStatement(cardNumber, from, to, timezone);
 		}
 		
+		static public function callOperationStatement(uid:String):void {
+			PayServer.operationStatement(uid);
+		}
+		
 		static public function callWalletStatement(accountNumber:String, from:String, to:String, timezone:String = null):void {
 			PayServer.walletStatement(accountNumber, from, to, timezone);
 		}
