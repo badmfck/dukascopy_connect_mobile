@@ -1267,7 +1267,7 @@ package com.dukascopy.connect.sys.php {
 		
 		static public function escrow_requestPrice(callBack:Function = null, data:Object = null, additionalData:Object = null):void 
 		{
-			call('Cp2p.ReservePriceID', callBack, data, null, false, "POST", true, false, additionalData);
+			call('Cp2p.Deal.ReservePriceID', callBack, data, null, false, "POST", true, false, additionalData);
 		}
 		
 		static private function call(method:String, callBack:Function = null, data:Object = null,  url:String = null, rawRespond:Boolean = false, requestMethod:String = 'POST', crypt:Boolean = true, noAuthKey:Boolean = false, additionalData:Object = null):void {
