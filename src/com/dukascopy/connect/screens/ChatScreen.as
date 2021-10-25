@@ -88,7 +88,6 @@ package com.dukascopy.connect.screens {
 	import com.dukascopy.connect.screens.dialogs.ScreenQuestionReactionsDialog;
 	import com.dukascopy.connect.screens.dialogs.calendar.RecognitionDateRemindPopup;
 	import com.dukascopy.connect.screens.dialogs.calendar.SelectRecognitionDatePopup;
-	import com.dukascopy.connect.screens.dialogs.newDialogs.FileDownloadPopup;
 	import com.dukascopy.connect.screens.dialogs.paymentDialogs.FeedbackPopup;
 	import com.dukascopy.connect.screens.serviceScreen.Overlay;
 	import com.dukascopy.connect.sys.DocumentUploader;

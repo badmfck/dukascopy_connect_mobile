@@ -84,7 +84,7 @@ package com.dukascopy.connect.managers.escrow{
             GD.S_ESCROW_REQUEST_DEAL_EVENT_SENT.add(function(req:EscrowDealEventSentRequestVO):void{
 
                 new SimpleLoader({
-                    method:"Cp2p.addEvent",
+                    method:"Cp2p.Deal.AddEvent",
                     key:authKey,
                     event_type:req.type.value,
                     deal_uid:req.dealUID,
@@ -220,7 +220,7 @@ package com.dukascopy.connect.managers.escrow{
             isInstrumentLoading=true;
 
             var loader:SimpleLoader=new SimpleLoader({
-                method:"Cp2p.getRates",
+                method:"Cp2p.Deal.GetRates",
                 key:authKey
             },function(resp:SimpleLoaderResponse):void{
                 // Instruments loaded
@@ -299,7 +299,7 @@ package com.dukascopy.connect.managers.escrow{
             //TODO: Server method - load deals, fire callback
             new SimpleLoader({
                 key:authKey,//"e41ae903d332b69f490d604474c7ca633cd8835f",
-                method:"Cp2p.getDeals"
+                method:"Cp2p.Deal.GetDeals"
             },function(resp:SimpleLoaderResponse):void{
                 if(resp.error){
                     GD.S_ESCROW_DEALS_LOADED_ERROR.invoke(resp.error);

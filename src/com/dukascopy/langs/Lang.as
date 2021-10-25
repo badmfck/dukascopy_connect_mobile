@@ -2609,6 +2609,7 @@ package com.dukascopy.langs {
 		static public var escrow_deal_crypto_send_fail_buyer:String = "Seller did not send the Transaction ID";
 		static public var escrow_deal_crypto_send_investigation_seller:String = "Request an investigation";
 		static public var escrow_deal_crypto_send_investigation_buyer:String = "Waiting for Seller's decision";
+		static public var select_crypto_wallet:String = "Select crypto wallet";
 		
 		static public function updateKeys(keys:Object):void {
 			for (var n:String in keys) {

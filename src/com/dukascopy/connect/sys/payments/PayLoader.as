@@ -123,7 +123,7 @@ package com.dukascopy.connect.sys.payments {
 			
 			var fmVO:FileMessageVO = new FileMessageVO();
 			fmVO.title = "paymentsReport";
-			var action:DownloadFileAction = new DownloadFileAction(urlRequest, fmVO);
+			var action:DownloadFileAction = new DownloadFileAction(urlRequest, fmVO, DownloadFileAction.PDF);
 			action.execute();
 		}
 		

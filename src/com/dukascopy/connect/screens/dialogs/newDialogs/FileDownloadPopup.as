@@ -2,6 +2,7 @@ package com.dukascopy.connect.screens.dialogs.newDialogs {
 	
 	import com.dukascopy.connect.Config;
 	import com.dukascopy.connect.data.TextFieldSettings;
+	import com.dukascopy.connect.data.screenAction.customActions.DownloadFileAction;
 	import com.dukascopy.connect.gui.components.CirclePreloader;
 	import com.dukascopy.connect.gui.components.message.ToastMessage;
 	import com.dukascopy.connect.gui.lightbox.UI;
@@ -65,6 +66,7 @@ package com.dukascopy.connect.screens.dialogs.newDialogs {
 		private var loaded:Boolean;
 		private var animationCpmplete:Boolean;
 		private var urlRequest:URLRequest;
+		private var fileType:String;
 		
 		public function FileDownloadPopup() {
 			super();
@@ -110,6 +112,7 @@ package com.dukascopy.connect.screens.dialogs.newDialogs {
 			
 			fileData = data.fileData as FileMessageVO;
 			urlRequest = data.request as URLRequest;
+			fileType = data.fileType as String;
 			
 			drawNextButton();
 			
@@ -159,9 +162,67 @@ package com.dukascopy.connect.screens.dialogs.newDialogs {
 		
 		private function onLoadComplete(e:Event):void 
 		{
-			if (loaderData != null && loaderData.data != null && loaderData.data is ByteArray && (loaderData.data as ByteArray).length == 330)
+			if (loaderData != null && loaderData.data != null && loaderData.data is ByteArray)
 			{
-				onLoadError(null);
+				if ((loaderData.data as ByteArray).length == 330)
+				{
+					onLoadError(null);
+				}
+				else
+				{
+					var fileData:ByteArray = (loaderData.data as ByteArray);
+					if (fileData.length > 4)
+					{
+						if (fileType != null)
+						{
+							var header:String;
+							for (var i:int = 0; i < 4; i++) 
+							{
+								try
+								{
+									header += fileData.readUTFBytes(1);
+								}
+								catch (e:Error)
+								{
+									onLoadError(null);
+									break;
+								}
+							}
+							if (header == fileType)
+							{
+								if (urlRequest != null && urlRequest.data != null)
+								{
+									if (fileType == DownloadFileAction.PDF)
+									{
+										urlRequest.data.asfile = "pdf";
+									}
+								}
+								loaded = true;
+								finishDownload();
+							}
+							else
+							{
+								if (fileData.length < 2000)
+								{
+									tryLoadAsText();
+								}
+								else
+								{
+									onLoadError(null);
+								}
+							}
+						}
+						else
+						{
+							loaded = true;
+							finishDownload();
+						}
+					}
+					else
+					{
+						onLoadError(null);
+					}
+				}
 			}
 			else
 			{
@@ -170,6 +231,69 @@ package com.dukascopy.connect.screens.dialogs.newDialogs {
 				{
 					finishDownload();
 				}
+			}
+		}
+		
+		private function tryLoadAsText():void 
+		{
+			if (loaderData != null)
+			{
+				loaderData.removeEventListener(Event.COMPLETE, onLoadComplete);
+				loaderData.removeEventListener(ProgressEvent.PROGRESS, onLoadProgress);
+				loaderData.removeEventListener(IOErrorEvent.IO_ERROR, onLoadError);
+				try{
+					loaderData.close();
+				}
+				catch (e:Error)
+				{
+					
+				}
+			}
+			
+			loaderData = new URLLoader();
+			loaderData.dataFormat = URLLoaderDataFormat.TEXT;
+			loaderData.addEventListener(Event.COMPLETE, onLoadCompleteText);
+			loaderData.addEventListener(IOErrorEvent.IO_ERROR, onLoadErrorText);
+			loaderData.load(urlRequest);
+		}
+		
+		private function onLoadErrorText(e:IOErrorEvent):void 
+		{
+			ToastMessage.display(Lang.fileLoadError);
+			close();
+		}
+		
+		private function close():void 
+		{
+			ServiceScreenManager.closeView();
+		}
+		
+		private function onLoadCompleteText(e:Event):void 
+		{
+			if (loaderData != null && loaderData.data != null && loaderData.data is String)
+			{
+				var result:Object;
+				try
+				{
+					result = JSON.parse(loaderData.data as String);
+				}
+				catch (e:Error)
+				{
+					
+				}
+				if (result != null && "error" in result && result.error != null)
+				{
+					ToastMessage.display(result.error as String);
+					close();
+				}
+				else
+				{
+					onLoadError(null);
+				}
+			}
+			else
+			{
+				onLoadError(null);
 			}
 		}
 		
@@ -216,7 +340,8 @@ package com.dukascopy.connect.screens.dialogs.newDialogs {
 			}
 			else
 			{
-				var fs2:FileStream = new FileStream(); 
+				var fs2:FileStream = new FileStream();
+				fs2.addEventListener(IOErrorEvent.IO_ERROR, onError);
 				fs2.open(fl, "write");
 				fs2.writeBytes(loaderData.data);
 				fs2.close();
@@ -250,6 +375,11 @@ package com.dukascopy.connect.screens.dialogs.newDialogs {
 			ServiceScreenManager.closeView();
 		}
 		
+		private function onError(e:IOErrorEvent):void 
+		{
+			trace("123");
+		}
+		
 		private function onLoadProgress(e:ProgressEvent):void {
 			if (preloader != null) {
 				if (container.contains(preloader) == true) {
@@ -266,7 +396,11 @@ package com.dukascopy.connect.screens.dialogs.newDialogs {
 			progressAnimation = new Object();
 			progressAnimation.current = currentProgress;
 			progressAnimation.target = e.bytesLoaded / e.bytesTotal;
-			TweenMax.to(progressAnimation, 1.2, {current:progressAnimation.target, onUpdate:drawProgress, onComplete:onAnimationComplete});
+		//	if (e.bytesTotal > 0)
+		//	{
+				TweenMax.to(progressAnimation, 1.2, {current:progressAnimation.target, onUpdate:drawProgress, onComplete:onAnimationComplete});
+		//	}
+			
 			drawSize(e.bytesLoaded);
 		}
 		
@@ -487,6 +621,9 @@ package com.dukascopy.connect.screens.dialogs.newDialogs {
 				loaderData.removeEventListener(Event.COMPLETE, onLoadComplete);
 				loaderData.removeEventListener(ProgressEvent.PROGRESS, onLoadProgress);
 				loaderData.removeEventListener(IOErrorEvent.IO_ERROR, onLoadError);
+				
+				loaderData.removeEventListener(Event.COMPLETE, onLoadCompleteText);
+				loaderData.removeEventListener(IOErrorEvent.IO_ERROR, onLoadErrorText);
 				
 				loaderData = null;
 			}

@@ -17,12 +17,16 @@ package com.dukascopy.connect.data.screenAction.customActions {
 	
 	public class DownloadFileAction extends ScreenAction implements IScreenAction {
 		
+		static public const PDF:String = "%PDF";
+		
 		private var url:URLRequest;
 		private var fileData:FileMessageVO;
+		private var fileType:String;
 		
-		public function DownloadFileAction(url:URLRequest, fileData:FileMessageVO) {
+		public function DownloadFileAction(url:URLRequest, fileData:FileMessageVO, fileType:String = null) {
 			this.url = url;
 			this.fileData = fileData;
+			this.fileType = fileType;
 			setIconClass(Style.icon(Style.ICON_FILE));
 		}
 		
@@ -30,6 +34,7 @@ package com.dukascopy.connect.data.screenAction.customActions {
 			if (Config.PLATFORM_ANDROID == true || Config.PLATFORM_WINDOWS == true) {
 				ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_DIALOG, FileDownloadPopup, 
 					{
+						fileType:fileType,
 						fileData:fileData,
 						request:(url)
 					}
