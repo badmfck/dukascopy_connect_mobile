@@ -1044,7 +1044,11 @@ package com.dukascopy.connect.sys.bankManager {
 				} else if (data.type == "operationPDF") {
 					if (_initData == null || "transactionID" in _initData == false || _initData.transactionID == null)
 						return;
-					sendMessage("val:" + _initData.transactionID);
+					if (_initData == null || "raw" in _initData == false || _initData.raw == null)
+						return;
+					if ("UID" in _initData.raw == false || _initData.raw.UID == null)
+						return;
+					sendMessage("val:" + _initData.raw.UID);
 					sendMessage(data.action);
 				} else if (data.type == "cardSelect") {
 					if ("status" in data.param == false ||
