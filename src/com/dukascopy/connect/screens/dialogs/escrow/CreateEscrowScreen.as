@@ -405,26 +405,28 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		private function selectFiat(currency:String):void 
 		{
 			var filteredAccounts:Array = getAccounts();
-			
-			var preselectedAccount:Object;
-			if (filteredAccounts.length > 0)
+			if (filteredAccounts != null)
 			{
-				preselectedAccount = filteredAccounts[0];
-			}
-			var preferredCurrency:String = currency;
-			for (var i:int = 0; i < filteredAccounts.length; i++) 
-			{
-				if (filteredAccounts[i].CURRENCY == preferredCurrency)
+				var preselectedAccount:Object;
+				if (filteredAccounts.length > 0)
 				{
-					preselectedAccount = filteredAccounts[i];
-					break;
+					preselectedAccount = filteredAccounts[0];
 				}
-			}
-			if (preselectedAccount != null)
-			{
-				selectedFiatAccount = preselectedAccount;
-				
-				selectorAccont.setValue(selectedFiatAccount);
+				var preferredCurrency:String = currency;
+				for (var i:int = 0; i < filteredAccounts.length; i++) 
+				{
+					if (filteredAccounts[i].CURRENCY == preferredCurrency)
+					{
+						preselectedAccount = filteredAccounts[i];
+						break;
+					}
+				}
+				if (preselectedAccount != null)
+				{
+					selectedFiatAccount = preselectedAccount;
+					
+					selectorAccont.setValue(selectedFiatAccount);
+				}
 			}
 		}
 		
