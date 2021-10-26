@@ -328,14 +328,17 @@ package com.dukascopy.connect.screens {
 		private function onPriceChange(price:Number, isPercent:Boolean, currency:String):void {
 			if (isDisposed)
 				return;
-			if (isPercent == false)
+			if (isPercent == false && isNaN(price) == false)
 				price = parseFloat(NumberFormat.formatAmount(price, currency, true));
-			var val:String = price.toString();
+			var val:String = (isNaN(price) == false) ? price.toString() : null;
 			if (isPercent == true)
 				val += "%";
 			escrowAdsVO.currency = currency;
 			escrowAdsVO.priceValue = val;
-			msgPrice.params = { price:val, currency:currency }
+			if (val == null)
+				delete msgPrice.params;
+			else
+				msgPrice.params = { price:val, currency:currency }
 			list.getItemByNum(4).data.updateText(Config.BOUNDS + JSON.stringify(msgPrice));
 			list.updateItemByIndex(4);
 		}
@@ -433,19 +436,11 @@ package com.dukascopy.connect.screens {
 				return;
 			if (escrowAdsVO == null)
 				return;
-			/*if (ei.isLinked) {*/
-				escrowAdsVO.instrument = ei;
-				msgCrypto.params = { code:ei.code, name:ei.name }
-				list.getItemByNum(2).data.updateText(Config.BOUNDS + JSON.stringify(msgCrypto));
-				list.updateItemByIndex(2, true, true);
-			/*} else {
-				var screenData:AlertScreenData = new AlertScreenData();
-				screenData.text = Lang.escrow_blockchain_address_needed.replace(Lang.regExtValue, ei.name);
-				screenData.button = Lang.textRegister.toUpperCase();
-				screenData.callback = registerBlockchain;
-				screenData.callbackData = ei.code;
-				ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, FloatAlert, screenData);
-			}*/
+			escrowAdsVO.instrument = ei;
+			msgCrypto.params = { code:ei.code, name:ei.name }
+			list.getItemByNum(2).data.updateText(Config.BOUNDS + JSON.stringify(msgCrypto));
+			list.updateItemByIndex(2, true, true);
+			onPriceChange(NaN, false, null);
 		}
 		
 		private function registerBlockchain(instrumentCode:String):void {
