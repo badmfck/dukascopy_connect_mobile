@@ -9,11 +9,10 @@ package com.dukascopy.connect.utils
 	 */
 	public class NumberFormat 
 	{
-		
-		public function NumberFormat() 
-		{
-			
-		}
+		// Decimals loaded
+		private var currencyDecimalRulesLoaded:Boolean=false;
+
+		public function NumberFormat(){}
 		
 		static public function formatAmount(amount:Number, currency:String, removeCurrency:Boolean = false):String 
 		{
@@ -25,6 +24,7 @@ package com.dukascopy.connect.utils
 			if (PayManager.systemOptions != null && PayManager.systemOptions.currencyDecimalRules != null && PayManager.systemOptions.currencyDecimalRules[currency] != null)
 			{
 				decimals = PayManager.systemOptions.currencyDecimalRules[currency];
+
 			}
 			else
 			{

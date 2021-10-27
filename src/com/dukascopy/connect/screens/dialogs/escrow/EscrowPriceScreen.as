@@ -274,7 +274,6 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			}
 			
 			
-			
 
 
 			if (dataValid)

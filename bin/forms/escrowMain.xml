@@ -2,12 +2,13 @@
 
 <style>
     .className{
-        layout:"horizontal";
-        width:"40";
+        layout:horizontal;
+        width:40;
+        background-color:#FFCC00;
     }
 </style>
 
-<div id="tst" layout="horizontal" wrap="true" background-color="#FFCCAA" width="100%">
+<div id="tst" layout="horizontal" wrap="true" background-color="#FFCCAA" width="400">
     <div  id="component" width="25%" background-color="#CCCCCC">
         <div>${name}</div>
     </div>

@@ -26,6 +26,9 @@ import com.forms.components.FormList;
 import flash.utils.setTimeout;
 import com.forms.components.FormGraph;
 import com.forms.FormComponent;
+import com.dukascopy.connect.managers.escrow.EscrowOfferManager;
+import com.dukascopy.connect.managers.escrow.EscrowDealManager;
+import com.dukascopy.connect.vo.URLConfigVO;
 
 
 
@@ -88,18 +91,14 @@ public class MainEscrow extends Sprite {
 					icoCurrency.src="res/p2p.svg";
 			},5000)
 
-			/*var url:String="https://loki.telefision.com/master/";
-            var loader:SimpleLoader=new SimpleLoader({
-                method:"Cp2p.GetPriceByID",
-                key:"cc661021e5b5948a0634417dace5378760513a9b",
-                hash:"58644ff421b7e4ed7840f4edc191616b",
-                id:108
-            },function(resp:SimpleLoaderResponse):void{
-                trace(resp);
-            },url);*/
-
-			//new EscrowOfferManager();
-			//new EscrowDealManager();
+			
+			new EscrowOfferManager();
+			new EscrowDealManager();
+			
+			GD.S_URL_CONFIG_READY.invoke(new URLConfigVO({
+				DCCAPI_URL:"https://loki.telefision.com/master/"
+			}))
+			
 		}
 		
 		
