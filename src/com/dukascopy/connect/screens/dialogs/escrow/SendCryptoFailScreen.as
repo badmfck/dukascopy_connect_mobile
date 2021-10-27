@@ -2,6 +2,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 	
 	import com.dukascopy.connect.Config;
 	import com.dukascopy.connect.data.EscrowScreenData;
+	import com.dukascopy.connect.data.SelectorItemData;
 	import com.dukascopy.connect.data.TextFieldSettings;
 	import com.dukascopy.connect.data.escrow.EscrowMessageData;
 	import com.dukascopy.connect.data.escrow.EscrowScreenNavigation;
@@ -18,6 +19,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 	import com.dukascopy.connect.sys.style.Style;
 	import com.dukascopy.connect.sys.style.presets.Color;
 	import com.dukascopy.connect.type.HitZoneType;
+	import com.dukascopy.connect.utils.DateUtils;
 	import com.dukascopy.connect.utils.NumberFormat;
 	import com.dukascopy.connect.utils.TextUtils;
 	import com.dukascopy.connect.vo.ChatVO;
@@ -49,8 +51,8 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		private var offerCreatedTime:Number;
 		private var command:OfferCommand;
 		private var chat:ChatVO;
-		private var transaction:InputField;
-		private var transactionId:String;
+		private var claimReasonInput:InputField;
+		private var claimReason:String;
 		private var messageId:Number;
 		
 		public function SendCryptoFailScreen() { }
@@ -88,33 +90,33 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			tf.color = Style.color(Style.COLOR_TEXT);
 			tf.font = Config.defaultFontName;
 			
-			transaction = new InputField( -1, Input.MODE_INPUT);
-			transaction.onSelectedFunction = onInputSelected;
-			transaction.onChangedFunction = onInputChange;
-			transaction.setMaxChars(100);
+			claimReasonInput = new InputField( -1, Input.MODE_INPUT);
+			claimReasonInput.onSelectedFunction = onInputSelected;
+			claimReasonInput.onChangedFunction = onInputChange;
+			claimReasonInput.setMaxChars(100);
 		//	transaction.restrict = "a-z A-z 0-9 ^[^] \\_,.";
-			transaction.setPadding(0);
-			transaction.updateTextFormat(tf);
-			addItem(transaction);
+			claimReasonInput.setPadding(0);
+			claimReasonInput.updateTextFormat(tf);
+			addItem(claimReasonInput);
 		}
 		
 		private function onInputSelected():void 
 		{
-			transaction.valid();
+			claimReasonInput.valid();
 		}
 		
 		private function onInputChange(e:Event = null):void
 		{
-			if (transaction != null)
+			if (claimReasonInput != null)
 			{
-				if (transaction.valueString == null || transaction.valueString == "")
+				if (claimReasonInput.valueString == null || claimReasonInput.valueString == "")
 				{
-					transaction.invalid();
+					claimReasonInput.invalid();
 				}
 				else
 				{
-					transaction.valid();
-					transaction.updatePositions();
+					claimReasonInput.valid();
+					claimReasonInput.updatePositions();
 				}
 			}
 		}
@@ -131,15 +133,15 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		
 		private function onAcceptClick():void 
 		{
-			if (transaction.valueString == null || transaction.valueString == "")
+			if (claimReasonInput.valueString == null || claimReasonInput.valueString == "")
 			{
-				transaction.invalid();
-				ToastMessage.display(Lang.escrow_enter_transaction_id);
+				claimReasonInput.invalid();
+				ToastMessage.display(Lang.escrow_enter_investigation_reason);
 			}
 			else
 			{
-				transactionId = transaction.valueString;
-				command = OfferCommand.send_transaction_id;
+				claimReason = claimReasonInput.valueString;
+				command = OfferCommand.send_crypti_claim;
 				close();
 			}
 			
@@ -191,7 +193,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		
 		private function drawTransaction():void 
 		{
-			transaction.drawString(getWidth() - contentPadding * 2, Lang.type_explanation, "");
+			claimReasonInput.drawString(getWidth() - contentPadding * 2, Lang.type_explanation, "");
 		}
 		
 		private function createBalance():void 
@@ -320,15 +322,8 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		private function drawText():void 
 		{
 			var text:String = Lang.send_crypto_fail_description;
-			text = text.replace("%@1", EscrowSettings.dealMaxTime);
-			if (escrowOffer != null)
-			{
-				text = text.replace("%@2", NumberFormat.formatAmount(escrowOffer.amount, escrowOffer.instrument));
-			}
-			else
-			{
-				ApplicationErrors.add();
-			}
+			text = text.replace("%@1", DateUtils.getComfortTimeRepresentationSmall(EscrowSettings.dealMaxTime * 60 * 1000));
+			text = text.replace("%@2", DateUtils.getComfortTimeRepresentationSmall(EscrowSettings.dealCryptoInvestigationTime * 60 * 1000));
 			
 			if (description.bitmapData != null)
 			{
@@ -373,9 +368,9 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			description.y = position;
 			position += description.height + contentPaddingV * 1.5;
 			
-			transaction.x = contentPadding;
-			transaction.y = position;
-			position += transaction.getFullHeight() + contentPaddingV * 1;
+			claimReasonInput.x = contentPadding;
+			claimReasonInput.y = position;
+			position += claimReasonInput.getFullHeight() + contentPaddingV * 1;
 			
 			if (time != null && time.parent != null)
 			{
@@ -426,7 +421,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 				return;
 			}
 			
-			transaction.activate();
+			claimReasonInput.activate();
 			acceptButton.activate();
 		}
 		
@@ -436,16 +431,15 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 				return;
 			}
 			
-			transaction.deactivate();
+			claimReasonInput.deactivate();
 			acceptButton.deactivate();
 		}
 		
 		override protected function onRemove():void 
 		{
-			if (command != null && "callback" in data && data.callback != null && data.callback is Function && (data.callback as Function).length == 4)
+			if (command != null && "callback" in data && data.callback != null && data.callback is Function && (data.callback as Function).length == 2)
 			{
-				escrowOffer.transactionId = transactionId;
-				(data.callback as Function)(escrowOffer, messageId, chat, command);
+				(data.callback as Function)(escrowOffer, new SelectorItemData(claimReason, claimReason));
 				command = null;
 				chat = null;
 				escrowOffer = null;

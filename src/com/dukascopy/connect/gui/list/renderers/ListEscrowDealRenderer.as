@@ -3,6 +3,7 @@ package com.dukascopy.connect.gui.list.renderers {
 	import com.dukascopy.connect.data.escrow.EscrowStatus;
 	import com.dukascopy.connect.data.escrow.TradeDirection;
 	import com.dukascopy.connect.gui.lightbox.UI;
+	import com.dukascopy.connect.sys.auth.Auth;
 	import com.dukascopy.connect.sys.style.presets.Color;
 	import com.dukascopy.connect.utils.DateUtils;
 	import com.dukascopy.connect.vo.EscrowDealVO;
@@ -57,6 +58,28 @@ package com.dukascopy.connect.gui.list.renderers {
 					case EscrowStatus.deal_claimed.value:
 					{
 						result = Lang.escrow_deal_status_claimed;
+						break;
+					}
+					case EscrowStatus.deal_mca_hold_fail.value:
+					{
+						result = Lang.escrow_deal_status_mca_failed;
+						break;
+					}
+					case EscrowStatus.deal_crypto_send_fail.value:
+					{
+						result = Lang.escrow_deal_status_failed;
+						break;
+					}
+					case EscrowStatus.deal_crypto_send_wait_investigation.value:
+					{
+						if (itemData.cryptoUserUID == Auth.uid)
+						{
+							result = Lang.escrow_deal_crypto_send_investigation_seller;
+						}
+						else
+						{
+							result = Lang.escrow_deal_crypto_send_investigation_buyer;
+						}
 						break;
 					}
 				}

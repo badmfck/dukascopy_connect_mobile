@@ -2618,6 +2618,14 @@ package com.dukascopy.langs {
 		static public var waiting_for_crypto_fail_description:String = "The Seller has failed to confirm the sending of crypto and providing the transaction ID. The fiat funds reserved for this transaction will be unblocked in %@ unless the Seller requests an investigation. In this case, the funds will be unblocked after the investigation is done (during business hours).";
 		static public var send_crypto_fail_description:String = "You have failed to confirm the transfer and to provide the transaction ID during %@1. You have additional %@2 to request an investigation in case something went wrong. An optional 50 USD of Investigation fee may be applied, if investigation finds no ground to prove your claim.<br><br>If investigation request is not done, the following set of events will happen:<br><br><li>the Buyer gets the reserved for the deal funds back;</li><li>a penalty charge of 1% from the amount of the failed transaction will be applied. If there is no sufficient funds to cover the penalty fee, the access to the 911 Crypto P2P service will be blocked for you.</li>";
 		static public var type_explanation:String = "Type your explanation here";
+		static public var escrow_deal_fail_description_seller:String = "You failed to confirm the transfer and to provide the transaction ID during %@1. Since no investigation request during next %@2 was created the following events have happened:<br><br><li>the Buyer got the reserved for the deal funds back;</li><li>a penalty charge of 1% from the amount of the failed transaction was applied. If there were no sufficient funds to cover the penalty fee, the access to the 911 Crypto P2P service was blocked for you.</li>";
+		static public var escrow_deal_fail_description_buyer:String = "The Seller failed to confirm the sending of crypto and providing the transaction ID. Since no investigation request was created by the Seller, the funds reserved for this transaction were unblocked and returned back to your account.";
+		static public var escrow_enter_investigation_reason:String = "!!!";
+		static public var offer_cancelled_description:String = "Offer was cancelled by you.";
+		static public var offer_cancelled_counterparty_description:String = "Offer was cancelled by your counterparty.";
+		static public var escrow_deal_status_failed:String = "Failed";
+		static public var escrow_offer_accepted_status:String = "The offer was accepted and thus became a deal. You may find it in the Deals tab.";
+		static public var escrow_deal_status_mca_failed:String = "mca failed";
 		
 		
 		static public function updateKeys(keys:Object):void {
