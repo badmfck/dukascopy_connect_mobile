@@ -1,4 +1,5 @@
 package com.dukascopy.connect.sys.payments {
+	
 	import com.dukascopy.langs.Lang;
 	
 	/**
@@ -66,53 +67,59 @@ package com.dukascopy.connect.sys.payments {
 			"XAU": "ounce",
 			"GAS": "MMBTU",
 			"OIL": "barrel",
-			"USA": "contracts",
-			"CHE": "contracts",
-			"GBR": "contracts",
-			"FRA": "contracts",
-			"DEU": "contracts",
-			"JPN": "contracts",
-			"US5": "contracts",
-			"UST": "contracts",
+			"USA": "contract",
+			"CHE": "contract",
+			"GBR": "contract",
+			"FRA": "contract",
+			"DEU": "contract",
+			"JPN": "contract",
+			"US5": "contract",
+			"UST": "contract",
 			"BTC": "Ƀ",
 			"ETH": "Ξ",
 			"DCO": "DUK+",
-			"AMZ": "shares",
-			"FBU": "shares",
-			"MSF": "shares",
-			"GOO": "shares",
-			"NFL": "shares",
-			"TSL": "shares",
-			"AAP": "shares",
-			"NVD": "shares",
-			"ADS": "shares",
-			"AIR": "shares",
-			"BAR": "shares",
-			"BMW": "shares",
-			"BOS": "shares",
-			"BPG": "shares",
-			"CAR": "shares",
-			"ORF": "shares",
-			"MCF": "shares",
-			"DAI": "shares",
-			"NES": "shares",
-			"RNO": "shares",
-			"SAE": "shares",
-			"129": "shares",
-			"070": "shares",
-			"675": "shares",
-			"450": "shares",
-			"720": "shares",
-			"LTC": "coins"
+			"AMZ": "share",
+			"FBU": "share",
+			"MSF": "share",
+			"GOO": "share",
+			"NFL": "share",
+			"TSL": "share",
+			"AAP": "share",
+			"NVD": "share",
+			"ADS": "share",
+			"AIR": "share",
+			"BAR": "share",
+			"BMW": "share",
+			"BOS": "share",
+			"BPG": "share",
+			"CAR": "share",
+			"ORF": "share",
+			"MCF": "share",
+			"DAI": "share",
+			"NES": "share",
+			"RNO": "share",
+			"SAE": "share",
+			"129": "share",
+			"070": "share",
+			"675": "share",
+			"450": "share",
+			"720": "share",
+			"LTC": "coin"
 		};
 		
-		private static var fromLang:Array = ["coins", "contracts", "shares", "barrel", "ounce"];
+		private static var fromLang:Array = ["coin", "contract", "share", "barrel", "ounce"];
 		
 		private static var supportedCardsCurrencies:Array = ["EUR","USD","GBP","CHF"];
 		
-		public function CurrencyHelpers() { }
+		static public function updateDecimalsRulesAndSymbols(dr:Object, cs:Object = null):void {
+			for (var n:String in dr)
+				decimalRules[n] = dr[n];
+			for (n in cs)
+				currencySymbols[n] = cs[n];
+			trace();
+		}
 		
-		public static function getCurrencyByKey(key:String):String {
+		static public function getCurrencyByKey(key:String):String {
 			if (key == null)
 				return "";			
 			var result:String = currencySymbols[key];
@@ -129,7 +136,7 @@ package com.dukascopy.connect.sys.payments {
 		 * @param	value
 		 * @return
 		 */
-		public static function isValidDecimalForCurrency(currency:String, value:String):Boolean {
+		static public function isValidDecimalForCurrency(currency:String, value:String):Boolean {
 			if (currency == null || currency == "") return false;
 			if (value == null) return false;
 			var nr:Number = Number(value);
@@ -158,7 +165,7 @@ package com.dukascopy.connect.sys.payments {
 		}
 		
 		
-		public static function isAllowedDigitsCount(currency:String, value:String):Boolean
+		static public function isAllowedDigitsCount(currency:String, value:String):Boolean
 		{
 			if (value == "") return false;
 			var dotIndex:int = value.indexOf(".");
@@ -173,7 +180,7 @@ package com.dukascopy.connect.sys.payments {
 			}
 		}
 		
-		public static function getMaxDecimalCount(currency:String):int{
+		static public function getMaxDecimalCount(currency:String):int{
 			if (currency in decimalRules) {
 				return  decimalRules[currency];
 			} else {
@@ -181,7 +188,7 @@ package com.dukascopy.connect.sys.payments {
 			}
 		}
 		
-		public static function getZerosForCurrency(currency:String ):String {
+		static public function getZerosForCurrency(currency:String ):String {
 			var numDecimal:int  = getMaxDecimalCount(currency);
 			var resultStr:String = "";
 			for (var i:int = 0; i < numDecimal; i++) {
@@ -190,9 +197,8 @@ package com.dukascopy.connect.sys.payments {
 			return resultStr;
 		}
 		
-		public static function isCurrencySupportedInDukascopCards(currency:String):Boolean {
+		static public function isCurrencySupportedInDukascopCards(currency:String):Boolean {
 			return supportedCardsCurrencies.indexOf(currency) != -1;
 		}
 	}
-
 }

@@ -1334,6 +1334,9 @@ package com.dukascopy.langs {
 			"coins": "coins",
 			"contracts": "contracts",
 			"shares": "shares",
+			"coin": "coin",
+			"contract": "contract",
+			"share": "share",
 			"barrel": "barrel",
 			"ounce": "ounce"
 		};

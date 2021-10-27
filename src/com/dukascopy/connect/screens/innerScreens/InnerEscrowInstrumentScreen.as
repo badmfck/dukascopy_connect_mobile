@@ -33,7 +33,6 @@ package com.dukascopy.connect.screens.innerScreens {
 	import com.dukascopy.connect.type.HitZoneType;
 	import com.dukascopy.connect.utils.TextUtils;
 	import com.dukascopy.connect.vo.EscrowDealVO;
-	import com.dukascopy.connect.vo.screen.ChatScreenData;
 	import com.dukascopy.langs.Lang;
 	import com.greensock.TweenMax;
 	import com.telefision.utils.maps.EscrowDealMap;
@@ -285,31 +284,15 @@ package com.dukascopy.connect.screens.innerScreens {
 				}
 				return;
 			}
-			var chatScreenData:ChatScreenData;
-			
 			if (data is EscrowOfferVO) {
-				
 				var openOfferAction:OpenOfferAction = new OpenOfferAction((data as EscrowOfferVO).data, (data as EscrowOfferVO).created.time, (data as EscrowOfferVO).msg_id);
 				openOfferAction.execute();
 				return;
-				
-				/*chatScreenData = new ChatScreenData();
-				chatScreenData.type = ChatInitType.CHAT;
-				chatScreenData.chatUID = (data as EscrowOfferVO).chat_uid;
-				chatScreenData.backScreen = RootScreen;
-				MobileGui.showChatScreen(chatScreenData);
-				return;*/
 			}
 			if (data is EscrowDealVO) {
 				var openDealAction:OpenDealAction = new OpenDealAction(data as EscrowDealVO);
 				openDealAction.execute();
 				return;
-				/*chatScreenData = new ChatScreenData();
-				chatScreenData.type = ChatInitType.CHAT;
-				chatScreenData.chatUID = (data as EscrowDealVO).chatUID;
-				chatScreenData.backScreen = RootScreen;
-				MobileGui.showChatScreen(chatScreenData);
-				return;*/
 			}
 		}
 		
@@ -348,13 +331,11 @@ package com.dukascopy.connect.screens.innerScreens {
 			setListData(null);
 		}
 		
-		private function onOffersLoaded(offers:Vector.<EscrowOfferVO>):void 
-		{
+		private function onOffersLoaded(offers:Vector.<EscrowOfferVO>):void {
 			if (_isDisposed)
 				return;
 			if (selectedTabID != TAB_ID_OFFERS)
 				return;
-		//	if (preloaderHide == true)
 			hidePreloader();
 			setListData(offers);
 		}
@@ -399,13 +380,11 @@ package com.dukascopy.connect.screens.innerScreens {
 				removePlaceholder();
 		}
 		
-		private function onDealsLoaded(deals:EscrowDealMap):void 
-		{
+		private function onDealsLoaded(deals:EscrowDealMap):void {
 			if (_isDisposed)
 				return;
 			if (selectedTabID != TAB_ID_DEALS)
 				return;
-		//	if (preloaderHide == true)
 			hidePreloader();
 			setListData(deals.getValues());
 		}

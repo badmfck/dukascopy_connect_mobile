@@ -343,8 +343,6 @@ package com.dukascopy.connect.screens {
 			list.updateItemByIndex(4);
 		}
 		
-		private var testCounter:int;
-		
 		private function callKeyboard():void {
 			getKeyboardAction = new GetNumericKeyboardAction();
 			getKeyboardAction.S_ACTION_SUCCESS.add(onAmountChange);

@@ -14,6 +14,7 @@ package com.dukascopy.connect.sys.payments.vo {
 		public var investmentDeliveryCurrencies:Array;
 		public var investmentDisclaimer:String;
 		public var currencyDecimalRules:Object;
+		public var currencySymbols:Object;
 		public var max_pwp_limit_amount:Number;
 		public var max_pwp_limit_daily:Number;
 		public var pp_cards_actions_disabled:Boolean;
@@ -69,6 +70,9 @@ package com.dukascopy.connect.sys.payments.vo {
 			key = 'currency-decimal-rules';
 			if (key in data == true)
 				currencyDecimalRules = data[key];
+			key = 'currency-symbols';
+			if (key in data == true)
+				currencySymbols = data[key];
 			key = 'invest_disclaimer';
 			if (key in data == true)
 				investmentDisclaimer = data[key];
