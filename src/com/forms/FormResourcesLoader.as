@@ -11,6 +11,9 @@ package com.forms
     import flash.net.URLRequestMethod;
     import flash.net.URLLoader;
     import flash.net.URLLoaderDataFormat;
+    import flash.display.Loader;
+    import flash.display.BitmapData;
+    import flash.display.Bitmap;
 
     public class FormResourcesLoader{
         
@@ -89,6 +92,16 @@ package com.forms
                 fireCallback(url,null);
                 return;
             }
+
+            var isImage:Boolean=formFile.extension.toLowerCase().indexOf("png") 
+            || formFile.extension.toLowerCase().indexOf("jpg") 
+            || formFile.extension.toLowerCase().indexOf("jpeg");
+
+            if(isImage){
+                loadLocalImage(formFile);
+                return;
+            }
+
             var fs:FileStream=new FileStream()
             var dis:Dispatcher=new Dispatcher(fs);
 
@@ -118,6 +131,38 @@ package com.forms
             fs.openAsync(f,FileMode.READ);
         }
 
+        private function loadLocalImage(formFile:File):void{
+            var loader:Loader=new Loader()
+            var dis:Dispatcher=new Dispatcher(loader.contentLoaderInfo);
+
+            dis.add(Event.COMPLETE,function(e:Event):void{
+                var bmd:BitmapData;
+                if(loader.content is Bitmap && (loader.content as Bitmap).bitmapData!=null){
+                    bmd=(loader.content as Bitmap).bitmapData;
+                    if(bmd!=null && bmd.width>0 && bmd.height>0){
+                        var c:Cache=new Cache(url,null,bmd);
+                        cache.push(c);
+                    }else
+                        bmd=null
+                }
+
+                fireImageCallback(url,bmd);
+                dis.clear()
+            });
+
+            dis.add(IOErrorEvent.IO_ERROR,function(e:Event):void{
+                dis.clear();
+                fireImageCallback(url,null);
+            });
+
+            dis.add(SecurityErrorEvent.SECURITY_ERROR,function(e:Event):void{
+                dis.clear();
+                fireImageCallback(url,null);
+            });
+
+            loader.load(new URLRequest(formFile.nativePath));
+        }
+
         public function stopLoading():void{
             var l:int=pendingResources.length;
             for(var i:int=0;i<l;i++){
@@ -127,6 +172,18 @@ package com.forms
                     if(pr.callbacks.length==0)
                         pendingResources.removeAt(i);
                     pr.dispose();
+                    break;
+                }
+            }
+        }
+
+        private function fireImageCallback(url:String,bmd:BitmapData):void{
+            var l:int=pendingResources.length;
+            for(var i:int=0;i<l;i++){
+                var pr:PendingResource=pendingResources[i];
+                if(pr.url==url){
+                    //pr.fireCallback(ba);
+                    pendingResources.removeAt(i);
                     break;
                 }
             }
@@ -170,6 +227,7 @@ package com.forms
 
 
 import flash.utils.ByteArray;
+import flash.display.BitmapData;
 
 class PendingResource{
 
@@ -217,8 +275,10 @@ class PendingResource{
 class Cache{
     public var url:String;
     public var bytes:ByteArray;
-    public function Cache(url:String,bytes:ByteArray){
+    public var bitmapData:BitmapData;
+    public function Cache(url:String,bytes:ByteArray,bitmapData:BitmapData=null){
         this.url=url;
         this.bytes=bytes;
+        this.bitmapData=bitmapData;
     }
 }

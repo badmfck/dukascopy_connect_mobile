@@ -416,7 +416,7 @@ package com.dukascopy.connect.screens.context
 			}
 		}
 		
-		private function preClose(holdMenu:Boolean = false, selectedIndex = -1):void {
+		private function preClose(holdMenu:Boolean = false, selectedIndex:int = -1):void {
 			screenLocked = true;
 			deactivateScreen();
 			TweenMax.delayedCall(0.4, close);

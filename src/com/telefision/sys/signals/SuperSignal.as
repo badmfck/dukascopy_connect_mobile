@@ -16,6 +16,10 @@ package com.telefision.sys.signals
             this.name=name;
 
         }
+
+        public function get listening():Boolean{
+            return methods.length>0;
+        }
         
         /**
          * Add listener to signal

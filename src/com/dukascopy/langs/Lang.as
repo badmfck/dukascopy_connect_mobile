@@ -1,10 +1,6 @@
 package com.dukascopy.langs {
 	
-	import com.dukascopy.connect.sys.echo.echo;
 	import com.telefision.sys.signals.Signal;
-	import flash.desktop.SystemIdleMode;
-	import flash.desktop.SystemTrayIcon;
-	import flash.net.dns.SRVRecord;
 
 	/**
 	 * ...
@@ -2655,7 +2651,7 @@ package com.dukascopy.langs {
 					if (keys[n] != null)
 						Lang[n] = keys[n];
 				} catch (err:Error) {
-					echo("Lang", "installLanguage", "Can`t add  text to Lang file, the key: " + n + ' are missed');
+					trace("Lang -> installLanguage-> Can`t add  text to Lang file, the key: " + n + ' are missed');
 				}
 			}
 		}

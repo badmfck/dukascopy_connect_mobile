@@ -2,7 +2,7 @@ package com.dukascopy.connect.vo
 {
 	import com.dukascopy.connect.managers.escrow.vo.BaseVO;
     public class EscrowDealVO extends BaseVO{
-
+        /*
         private var _uid:String;
         private var _side:String;
         private var _created_at:Number;
@@ -19,6 +19,7 @@ package com.dukascopy.connect.vo
         private var _mca_trn_id:String; // id mca транзакции
         private var _crypto_claim_id:String; // id жалобы от инициатора сделки
         private var _mca_claim_id:String; // id жалобы второй стороны
+        */
         private var raw:Object;
 		
 		public function get status():String{return getString("status");}

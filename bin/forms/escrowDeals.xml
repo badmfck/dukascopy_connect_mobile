@@ -1,11 +1,13 @@
 <body>
-    <div>
-        ALL DEALS
-    </div>
 
-     <list id="deals">
+    <div>ALL DEALSZ</div>
+
+     <list id="deals" height="400" overflow="scroll">
         <li>
-            DEAL
+            <div layout="horizontal">
+                <img src="res/Psilocybe.zapotecorum.1.jpg" width="100" height="100"/>
+                <div> ${side} ${amount} </div>
+            </div>
         </li>
-     </div>
+     </list>
 </body>

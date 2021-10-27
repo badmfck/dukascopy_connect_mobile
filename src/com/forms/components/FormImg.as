@@ -12,6 +12,7 @@ package com.forms.components
     import flash.display.BitmapData;
     import flash.display.StageQuality;
     import flash.geom.Matrix;
+    import com.forms.FormBounds;
 
     public class FormImg extends FormComponent{
 
@@ -110,6 +111,14 @@ package com.forms.components
             if(image==null || bmd==null || bmd.width<1)
                 return;
             
+            var rebuildFromRoot:Boolean=false;
+            if(bounds==null){
+                bounds=new FormBounds(bmd.width,bmd.height);
+                bounds.display_height=bounds.height;
+                bounds.display_width=bounds.width;
+                rebuildFromRoot=true;
+            }
+
             var tw:int=bounds.display_width;
             var th:int=(bmd.height*tw)/bmd.width;
             
@@ -136,6 +145,9 @@ package com.forms.components
 
             image.x=(tw-image.width)*.5;
             image.y=(th-image.height)*.5;
+            
+            if(rebuildFromRoot)
+                rebuild();
         }
 
 

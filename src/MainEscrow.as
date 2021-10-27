@@ -29,6 +29,7 @@ import com.forms.FormComponent;
 import com.dukascopy.connect.managers.escrow.EscrowOfferManager;
 import com.dukascopy.connect.managers.escrow.EscrowDealManager;
 import com.dukascopy.connect.vo.URLConfigVO;
+import com.telefision.utils.maps.EscrowDealMap;
 
 
 
@@ -52,37 +53,27 @@ public class MainEscrow extends Sprite {
 		
 		private function start():void{
 			//Form.debug=true;
-            var form:Form=new Form(File.applicationDirectory.resolvePath("forms"+File.separator+"escrowMain.xml"));
+            var form:Form=new Form(File.applicationDirectory.resolvePath("forms"+File.separator+"escrowDeals.xml"));
 			form.showDeviceFrame("iosx");
 			var list:FormList;
 			addChild(form.view);
 			form.setSize(stage.stageWidth,stage.stageHeight);
 			form.onDocumentLoaded=function():void{
-				list=form.getComponentByID("offers") as FormList;
-				GD.S_ESCROW_OFFERS_REQUEST.invoke();
+				list=form.getComponentByID("deals") as FormList;
+				
 
+				
+			
+				GD.S_ESCROW_DEALS_LOADED.add(function(deals:EscrowDealMap):void{
+					if(list!=null)
+						list.setData(deals.getValues());
+				})
 
-				var cmp:FormComponent=form.getComponentByID("component");
-				var cmps:Vector.<FormComponent>=new <FormComponent>[];
-				for(var i:int=0;i<10;i++){
-					var c:FormComponent=cmp.clone();
-					c.setupUserValues({
-						name:"TEST_"+i
-					})
-					c.onTap=function(cmp:FormComponent):void{
-						trace("TAPPED!",cmp.getUserValues().name);
-					}
-					cmps.push(c);
-				}
-				cmp.parent.addAll(cmps,false);
-				cmp.parent.remove(cmp)
+				GD.S_ESCROW_DEALS_REQUEST.invoke();
 				
 			};
 
-			GD.S_ESCROW_OFFERS_READY.add(function(offers:Vector.<EscrowOfferVO>):void{
-				if(list!=null)
-					list.setData(offers);
-			})
+		
 
 
 			setTimeout(function():void{
@@ -94,11 +85,16 @@ public class MainEscrow extends Sprite {
 			
 			new EscrowOfferManager();
 			new EscrowDealManager();
-			
+
 			GD.S_URL_CONFIG_READY.invoke(new URLConfigVO({
 				DCCAPI_URL:"https://loki.telefision.com/master/"
 			}))
-			
+
+			GD.S_AUTHORIZED.invoke({
+				authKey:"c0b9230cfaa4fe51289c60d02efe930a60d8f08a",
+				profile:{},
+				devID:"test_dev_uid"
+			});
 		}
 		
 		
