@@ -3,23 +3,17 @@ package com.dukascopy.connect.screens {
 	import com.dukascopy.connect.Config;
 	import com.dukascopy.connect.GD;
 	import com.dukascopy.connect.MobileGui;
-	import com.dukascopy.connect.data.AlertScreenData;
 	import com.dukascopy.connect.data.LocalAvatars;
 	import com.dukascopy.connect.data.escrow.EscrowScreenNavigation;
 	import com.dukascopy.connect.data.escrow.EscrowSide;
 	import com.dukascopy.connect.data.escrow.TradeDirection;
-	import com.dukascopy.connect.data.screenAction.IScreenAction;
 	import com.dukascopy.connect.data.screenAction.customActions.GetNumericKeyboardAction;
 	import com.dukascopy.connect.gui.chat.BubbleButton;
-	import com.dukascopy.connect.gui.chat.ConnectionIndicator;
-	import com.dukascopy.connect.gui.components.message.ToastMessage;
 	import com.dukascopy.connect.gui.lightbox.UI;
 	import com.dukascopy.connect.gui.list.List;
 	import com.dukascopy.connect.gui.list.renderers.ListChatItem;
 	import com.dukascopy.connect.gui.list.renderers.ListCryptoWallet;
 	import com.dukascopy.connect.gui.list.renderers.ListEscrowSide;
-	import com.dukascopy.connect.gui.list.renderers.ListPayCurrency;
-	import com.dukascopy.connect.gui.menuVideo.HidableButton;
 	import com.dukascopy.connect.gui.preloader.Preloader;
 	import com.dukascopy.connect.gui.topBar.TopBarScreen;
 	import com.dukascopy.connect.managers.escrow.vo.EscrowAdsFilterVO;
@@ -28,7 +22,6 @@ package com.dukascopy.connect.screens {
 	import com.dukascopy.connect.screens.base.BaseScreen;
 	import com.dukascopy.connect.screens.dialogs.escrow.EscrowPriceScreen;
 	import com.dukascopy.connect.screens.dialogs.x.base.bottom.ListSelectionPopup;
-	import com.dukascopy.connect.screens.dialogs.x.base.float.FloatAlert;
 	import com.dukascopy.connect.screens.payments.card.TypeCurrency;
 	import com.dukascopy.connect.sys.applicationError.ApplicationErrors;
 	import com.dukascopy.connect.sys.auth.Auth;
@@ -45,10 +38,8 @@ package com.dukascopy.connect.screens {
 	import com.dukascopy.connect.vo.ChatSystemMsgVO;
 	import com.dukascopy.connect.vo.QuestionVO;
 	import com.dukascopy.langs.Lang;
-	import com.greensock.TweenMax;
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
-	import flash.events.Event;
 	
 	/**
 	 * ...
@@ -343,8 +334,6 @@ package com.dukascopy.connect.screens {
 			list.updateItemByIndex(4);
 		}
 		
-		private var testCounter:int;
-		
 		private function callKeyboard():void {
 			getKeyboardAction = new GetNumericKeyboardAction();
 			getKeyboardAction.S_ACTION_SUCCESS.add(onAmountChange);
@@ -356,8 +345,8 @@ package com.dukascopy.connect.screens {
 			if (isDisposed)
 				return;
 			var val:String = amountString;
-			if (isNaN(escrowAdsVO.amount) == false)
-				val = escrowAdsVO.amount + "";
+			/*if (isNaN(escrowAdsVO.amount) == false)
+				val = escrowAdsVO.amount + "";*/
 			if (val != null && val.length > 0) {
 				if (val.charAt(val.length - 1) == ".") {
 					val = val.substr(0, val.length -1);

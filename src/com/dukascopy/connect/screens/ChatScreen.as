@@ -1887,6 +1887,7 @@ package com.dukascopy.connect.screens {
 							escrowStatus == EscrowStatus.deal_completed ||
 							escrowStatus == EscrowStatus.deal_created ||
 							escrowStatus == EscrowStatus.deal_crypto_send_fail ||
+							escrowStatus == EscrowStatus.deal_mca_hold_fail ||
 							escrowStatus == EscrowStatus.deal_crypto_send_wait_investigation ||
 							escrowStatus == EscrowStatus.deal_mca_hold ||
 							escrowStatus == EscrowStatus.paid_crypto)

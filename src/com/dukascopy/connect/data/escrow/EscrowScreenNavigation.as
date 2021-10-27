@@ -37,6 +37,7 @@ package com.dukascopy.connect.data.escrow
 	import com.dukascopy.connect.sys.serviceScreenManager.ServiceScreenManager;
 	import com.dukascopy.connect.sys.style.presets.Color;
 	import com.dukascopy.connect.sys.ws.WSClient;
+	import com.dukascopy.connect.utils.DateUtils;
 	import com.dukascopy.connect.vo.ChatVO;
 	import com.dukascopy.connect.vo.users.UserVO;
 	import com.dukascopy.langs.Lang;
@@ -158,33 +159,63 @@ package com.dukascopy.connect.data.escrow
 				}
 				else if (escrow.status == EscrowStatus.offer_expired)
 				{
-					if ((escrow.direction == TradeDirection.sell && escrow.crypto_user_uid == Auth.uid) || (escrow.direction == TradeDirection.buy && escrow.mca_user_uid == Auth.uid))
-					{
-					//	screenData.callback = onSelfOfferCommand;
-						ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, EscrowOfferScreen, screenData);
-					}
-					else
-					{
-					//	screenData.callback = onSelfOfferCommand;
-						ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, EscrowOfferScreen, screenData);
-					}
+					ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, EscrowOfferScreen, screenData);
 				}
 				else if (escrow.status == EscrowStatus.deal_crypto_send_wait_investigation)
 				{
-					if ((escrow.direction == TradeDirection.sell && escrow.crypto_user_uid == Auth.uid) || (escrow.direction == TradeDirection.buy && escrow.mca_user_uid == Auth.uid))
+					if (escrow.crypto_user_uid == Auth.uid)
 					{
-					//	screenData.callback = onSelfOfferCommand;
+						screenData.callback = requestInvestigation;
 						ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, SendCryptoFailScreen, screenData);
 					}
 					else
 					{
-					//	screenData.callback = onSelfOfferCommand;
 						ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, WaitCryptoFailScreen, screenData);
 					}
 				}
+				else if (escrow.status == EscrowStatus.deal_crypto_send_fail)
+				{
+					alertScreenData = new AlertScreenData();
+					
+					if (escrow.crypto_user_uid == Auth.uid)
+					{
+						alertScreenData.text = Lang.escrow_deal_fail_description_seller;
+						if (alertScreenData.text != null)
+						{
+							alertScreenData.text = alertScreenData.text.replace("%@1", DateUtils.getComfortTimeRepresentationSmall(EscrowSettings.dealMaxTime * 60 * 1000));
+							alertScreenData.text = alertScreenData.text.replace("%@2", DateUtils.getComfortTimeRepresentationSmall(EscrowSettings.dealCryptoInvestigationTime * 60 * 1000));
+						}
+					}
+					else
+					{
+						alertScreenData.text = Lang.escrow_deal_fail_description_buyer;
+					}
+					if (showChatButton)
+					{
+						alertScreenData.additionalTopButton = new StartChatAction(chatVO.uid, chatVO);
+					}
+					
+					alertScreenData.button = Lang.close.toUpperCase();
+					
+					ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, FloatAlert, alertScreenData);
+				}
 				else if (escrow.status == EscrowStatus.offer_cancelled)
 				{
-					
+					alertScreenData = new AlertScreenData();
+					if ((escrow.crypto_user_uid == Auth.uid && escrow.direction == TradeDirection.sell) || (escrow.crypto_user_uid == Auth.uid && escrow.direction == TradeDirection.buy))
+					{
+						alertScreenData.text = Lang.offer_cancelled_description;
+					}
+					else
+					{
+						alertScreenData.text = Lang.offer_cancelled_counterparty_description;
+					}
+					if (showChatButton)
+					{
+						alertScreenData.additionalTopButton = new StartChatAction(chatVO.uid, chatVO);
+					}
+					alertScreenData.button = Lang.close.toUpperCase();
+					ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, FloatAlert, alertScreenData);
 				}
 				else if (escrow.status == EscrowStatus.offer_rejected)
 				{
@@ -192,7 +223,14 @@ package com.dukascopy.connect.data.escrow
 				}
 				else if (escrow.status == EscrowStatus.offer_accepted)
 				{
-					
+					alertScreenData = new AlertScreenData();
+					alertScreenData.text = Lang.escrow_offer_accepted_status;
+					alertScreenData.button = Lang.textOk.toUpperCase();
+					if (showChatButton)
+					{
+						alertScreenData.additionalTopButton = new StartChatAction(chatVO.uid, chatVO);
+					}
+					ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, FloatAlert, alertScreenData);
 				}
 				else if (escrow.status == EscrowStatus.deal_created)
 				{
@@ -212,7 +250,7 @@ package com.dukascopy.connect.data.escrow
 				else if (escrow.status == EscrowStatus.deal_claimed)
 				{
 					
-					if (escrow.mca_user_uid == Auth.uid)
+					if ((escrow.mca_user_uid == Auth.uid && escrow.transactionId != null) || (escrow.crypto_user_uid == Auth.uid && escrow.transactionId == null))
 					{
 						alertScreenData = new AlertScreenData();
 						if (showChatButton)

@@ -596,7 +596,7 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 							messageData.systemMessageVO.escrow.status == EscrowStatus.deal_created || 
 							messageData.systemMessageVO.escrow.status == EscrowStatus.deal_mca_hold || 
 							messageData.systemMessageVO.escrow.status == EscrowStatus.deal_crypto_send_wait_investigation || 
-						//	messageData.systemMessageVO.escrow.status == EscrowStatus.deal_mca_hold_fail || 
+							messageData.systemMessageVO.escrow.status == EscrowStatus.deal_mca_hold_fail || 
 							messageData.systemMessageVO.escrow.status == EscrowStatus.paid_crypto))
 				{
 					iconTime.visible = false;
@@ -979,6 +979,11 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 					}
 					case EscrowStatus.deal_crypto_send_fail:
 					{
+						if (messageData.systemMessageVO.escrow.inactive == true)
+						{
+							return Color.GREY_LIGHT;
+						}
+						
 						if (messageData.systemMessageVO.escrow.crypto_user_uid == Auth.uid)
 						{
 							return Color.GREY_DARK;
@@ -991,6 +996,10 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 					}
 					case EscrowStatus.deal_crypto_send_wait_investigation:
 					{
+						if (messageData.systemMessageVO.escrow.inactive == true)
+						{
+							return Color.GREY_LIGHT;
+						}
 						if (messageData.systemMessageVO.escrow.crypto_user_uid == Auth.uid)
 						{
 							return Color.GREY_DARK;

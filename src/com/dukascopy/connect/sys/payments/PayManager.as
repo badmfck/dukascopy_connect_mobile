@@ -215,6 +215,7 @@ package com.dukascopy.connect.sys.payments {
 			}
 			systemOptions ||= new SystemOptionsVO();
 			systemOptions.update(respond.data);
+			CurrencyHelpers.updateDecimalsRulesAndSymbols(systemOptions.currencyDecimalRules, systemOptions.currencySymbols);
 			S_SYSTEM_OPTIONS_READY.invoke();
 		}
 		

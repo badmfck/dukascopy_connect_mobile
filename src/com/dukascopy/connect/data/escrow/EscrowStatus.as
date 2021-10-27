@@ -17,7 +17,7 @@ package com.dukascopy.connect.data.escrow
 		private static const DEAL_COMPLETED:String = "completed";
 		private static const OFFER_EXPIRED:String = "outdated";
 		private static const CLAIMED:String = "claimed";
-		private static const CRYPTO_SEND_FAIL:String = "send_crypto_fail";
+		private static const CRYPTO_SEND_FAIL:String = "failed";
 		private static const CRYPTO_SEND_EXPIRED:String = "expired";
 		private static const MCA_HOLD_FAIL:String = "paid_mca_failed";
 		
