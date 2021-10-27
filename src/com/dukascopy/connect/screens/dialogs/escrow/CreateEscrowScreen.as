@@ -125,7 +125,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		
 		private function createAccountSelector():void 
 		{
-			selectorAccont = new DDAccountButton(openWalletSelector, Lang.TEXT_SELECT_ACCOUNT, true, -1, NaN, Lang.escrow_debit_from_account);
+			selectorAccont = new DDAccountButton(openWalletSelector, Lang.TEXT_SELECT_ACCOUNT, false, -1, NaN, Lang.escrow_debit_from_account);
 			addItem(selectorAccont);
 		}
 		
@@ -1124,10 +1124,10 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			
 		private function activateStartState():void 
 		{
-			if (selectorAccont != null)
+			/*if (selectorAccont != null)
 			{
 				selectorAccont.activate();
-			}
+			}*/
 			if (selectorCurrency != null)
 			{
 				selectorCurrency.activate();

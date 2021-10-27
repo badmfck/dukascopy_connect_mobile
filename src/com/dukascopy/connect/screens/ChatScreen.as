@@ -1891,9 +1891,11 @@ package com.dukascopy.connect.screens {
 							escrowStatus == EscrowStatus.deal_mca_hold ||
 							escrowStatus == EscrowStatus.paid_crypto)
 					{
+						menuItems.push( { fullLink:"set money hold status", id:ChatItemContextMenuItemType.DEAL_MONEY_HOLD } );
 						menuItems.push( { fullLink:"send crypto id", id:ChatItemContextMenuItemType.DEAL_SEND_ID } );
 						menuItems.push( { fullLink:"accept crypto", id:ChatItemContextMenuItemType.DEAL_ACCEPT_CRYPTO } );
 						menuItems.push( { fullLink:"claim", id:ChatItemContextMenuItemType.DEAL_CLAIM } );
+						menuItems.push( { fullLink:"set hold money fail", id:ChatItemContextMenuItemType.DEAL_FAIL_HOLD } );
 					}
 				}
 			}
@@ -2204,6 +2206,16 @@ package com.dukascopy.connect.screens {
 					case ChatItemContextMenuItemType.DEAL_SEND_ID:
 					{
 						action = new SendEscrowTestAction(msgVO.systemMessageVO.escrow, ChatItemContextMenuItemType.DEAL_SEND_ID, msgVO.id, menuItems[i].fullLink);
+						break;
+					}
+					case ChatItemContextMenuItemType.DEAL_MONEY_HOLD:
+					{
+						action = new SendEscrowTestAction(msgVO.systemMessageVO.escrow, ChatItemContextMenuItemType.DEAL_MONEY_HOLD, msgVO.id, menuItems[i].fullLink);
+						break;
+					}
+					case ChatItemContextMenuItemType.DEAL_FAIL_HOLD:
+					{
+						action = new SendEscrowTestAction(msgVO.systemMessageVO.escrow, ChatItemContextMenuItemType.DEAL_FAIL_HOLD, msgVO.id, menuItems[i].fullLink);
 						break;
 					}
 				}

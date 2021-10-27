@@ -26,6 +26,8 @@ package com.dukascopy.connect.type {
 		static public const DEAL_SEND_ID:String = "dealSendId";
 		static public const DEAL_ACCEPT_CRYPTO:String = "dealAcceptCrypto";
 		static public const DEAL_CLAIM:String = "dealClaim";
+		static public const DEAL_MONEY_HOLD:String = "dealMoneyHold";
+		static public const DEAL_FAIL_HOLD:String = "hold_mca_failed";
 		
 		public function ChatItemContextMenuItemType() { }
 	}

@@ -71,6 +71,14 @@ package com.dukascopy.connect.data.screenAction.customActions.test
 			{
 				PHP.escrow_addEvent(null, {event_type: EscrowEventType.PAID_CRYPTO.value, transaction:"test_id", deal_uid: escrow.deal_uid, notifyWS: true});
 			}
+			else if (command == ChatItemContextMenuItemType.DEAL_SEND_ID)
+			{
+				PHP.escrow_addEvent(null, {event_type: EscrowEventType.HOLD_MCA.value, data:{mca_trn_id:"qPTUotIJ", price:escrow.price}, deal_uid: escrow.deal_uid, notifyWS: true});
+			}
+			else if (command == ChatItemContextMenuItemType.DEAL_FAIL_HOLD)
+			{
+				PHP.escrow_addEvent(null, {event_type: EscrowEventType.HOLD_MCA_FAIL.value, deal_uid: escrow.deal_uid, notifyWS: true});
+			}
 		}
 		
 		private function calReject2():void 
