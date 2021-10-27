@@ -1,24 +1,16 @@
 package com.dukascopy.connect.gui.list.renderers {
 	
 	import com.dukascopy.connect.Config;
-	import com.dukascopy.connect.data.CountriesData;
 	import com.dukascopy.connect.gui.lightbox.UI;
 	import com.dukascopy.connect.gui.list.ListItem;
 	import com.dukascopy.connect.managers.escrow.vo.EscrowInstrument;
-	import com.dukascopy.connect.sys.assets.Assets;
-	import com.dukascopy.connect.sys.imageManager.ImageManager;
 	import com.dukascopy.connect.sys.style.FontSize;
 	import com.dukascopy.connect.sys.style.Style;
-	import com.dukascopy.connect.sys.theme.AppTheme;
-	import com.dukascopy.connect.vo.EntryPointVO;
 	import com.dukascopy.langs.Lang;
-	import flash.display.Bitmap;
 	import flash.display.IBitmapDrawable;
 	import flash.display.Sprite;
-	import flash.text.TextField;
 	import flash.text.TextFieldAutoSize;
 	import flash.text.TextFormat;
-	import flash.text.TextFormatAlign;
 	/**
 	 * ...
 	 * @author IgorBloom

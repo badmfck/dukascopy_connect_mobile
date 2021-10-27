@@ -136,6 +136,17 @@ package com.dukascopy.connect.sys.bankManager {
 				}
 			}
 			if (command == "nav") {
+				/*if (tmp[1] == "transactionOut" ||
+					tmp[1] == "transactionOutNoUser" ||
+					tmp[1] == "transactionIn" ||
+					tmp[1] == "transactionInNoUser") {
+						if (tmp.length > 2) {
+							if (tmp[2] == "PDF") {
+								sendBlock(tmp[1], false);
+								return;
+							}
+						}
+				}*/
 				if (tmp[1] == "cryptoDeposites") {
 					delete scenario.scenario.cryptoDeposites.menu[2].disabled;
 					delete scenario.scenario.cryptoDeposites.menu[3].disabled;
@@ -414,6 +425,10 @@ package com.dukascopy.connect.sys.bankManager {
 				}
 				if (tmp[1] == "cardStatementAsFileConfirmed") {
 					onCardStatementAsFileConfirmed();
+					return;
+				}
+				if (tmp[1] == "operationAsFileConfirmed") {
+					onOperationAsFileConfirmed();
 					return;
 				}
 				if (tmp[1] == "walletStatementAsFileConfirmed") {
@@ -860,6 +875,10 @@ package com.dukascopy.connect.sys.bankManager {
 			callPaymentsMethod("cardStatementAsFile:" + steps[steps.length - 1].val);
 		}
 		
+		static private function onOperationAsFileConfirmed():void {
+			callPaymentsMethod("operationAsFile:" + steps[steps.length - 1].val);
+		}
+		
 		static private function onWalletStatementAsFileConfirmed():void {
 			callPaymentsMethod("walletStatementAsFile:" + steps[steps.length - 1].val);
 		}
@@ -1012,14 +1031,13 @@ package com.dukascopy.connect.sys.bankManager {
 				PaymentsManagerNew.fatCatz(onFatCatz);
 			}
 			if (command == "cardStatementAsFile") {
-				/*temp = msg.substr(command.length + 1).split("|!|");
-				if (temp.length != 3)
-					return;
-				PaymentsManagerNew.callCardStatement(temp[2], temp[0], temp[1]);*/
 				temp = msg.substr(command.length + 1).split("|!|");
 				if (temp.length != 4)
 					return;
 				PaymentsManagerNew.callCardStatement(temp[2], temp[0], temp[1], temp[3]);
+			}
+			if (command == "operationAsFile") {
+				PaymentsManagerNew.callOperationStatement(msg.substr(command.length + 1));
 			}
 			if (command == "changeMainCurrency") {
 				if (checkForPaymentsRequestExist(msg) == true)
@@ -1028,10 +1046,6 @@ package com.dukascopy.connect.sys.bankManager {
 				PaymentsManagerNew.changeMainCurrency(onMainCurrencyChanged, msg.substr(command.length + 1));
 			}
 			if (command == "walletStatementAsFile") {
-				/*temp = msg.substr(command.length + 1).split("|!|");
-				if (temp.length != 3)
-					return;
-				PaymentsManagerNew.callWalletStatement(temp[2], temp[0], temp[1]);*/
 				temp = msg.substr(command.length + 1).split("|!|");
 				if (temp.length != 4)
 					return;

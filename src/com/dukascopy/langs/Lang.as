@@ -2609,6 +2609,13 @@ package com.dukascopy.langs {
 		static public var escrow_deal_crypto_send_fail_buyer:String = "Seller did not send the Transaction ID";
 		static public var escrow_deal_crypto_send_investigation_seller:String = "Request an investigation";
 		static public var escrow_deal_crypto_send_investigation_buyer:String = "Waiting for Seller's decision";
+		static public var select_crypto_wallet:String = "Select crypto wallet";
+		static public var escrow_deal_mca_hold_fail_seller:String = "MCA hold fail for seller";
+		static public var escrow_deal_mca_hold_fail_buyer:String = "MCA hold fail for buyer";
+		static public var waiting_for_crypto_fail_description:String = "The Seller has failed to confirm the sending of crypto and providing the transaction ID. The fiat funds reserved for this transaction will be unblocked in %@ unless the Seller requests an investigation. In this case, the funds will be unblocked after the investigation is done (during business hours).";
+		static public var send_crypto_fail_description:String = "You have failed to confirm the transfer and to provide the transaction ID during %@1. You have additional %@2 to request an investigation in case something went wrong. An optional 50 USD of Investigation fee may be applied, if investigation finds no ground to prove your claim.<br><br>If investigation request is not done, the following set of events will happen:<br><br><li>the Buyer gets the reserved for the deal funds back;</li><li>a penalty charge of 1% from the amount of the failed transaction will be applied. If there is no sufficient funds to cover the penalty fee, the access to the 911 Crypto P2P service will be blocked for you.</li>";
+		static public var type_explanation:String = "Type your explanation here";
+		
 		
 		static public function updateKeys(keys:Object):void {
 			for (var n:String in keys) {

@@ -1243,7 +1243,7 @@ package com.dukascopy.connect.sys.php {
 		
 		static public function escrow_requestInvestigation(callBack:Function = null, data:Object = null):void 
 		{
-			call('Cp2p.claim', callBack, data);
+			call('Cp2p.Deal.Claim', callBack, data);
 		}
 		
 		static public function escrow_getStat(callBack:Function = null):void {
@@ -1252,22 +1252,22 @@ package com.dukascopy.connect.sys.php {
 		
 		static public function p2p_getInstruments(callBack:Function = null, data:Object = null):void 
 		{
-			call('Cp2p.getInstruments', callBack, data);
+			call('Cp2p.Deal.GetInstruments', callBack, data);
 		}
 		
 		static public function p2p_getRates(callBack:Function = null, data:Object = null):void 
 		{
-			call('Cp2p.getRates', callBack, data);
+			call('Cp2p.Deal.GetRates', callBack, data);
 		}
 		
 		static public function escrow_addEvent(callBack:Function = null, data:Object = null, additionalData:Object = null):void 
 		{
-			call('Cp2p.addEvent', callBack, data, null, false, "POST", true, false, additionalData);
+			call('Cp2p.Deal.AddEvent', callBack, data, null, false, "POST", true, false, additionalData);
 		}
 		
 		static public function escrow_requestPrice(callBack:Function = null, data:Object = null, additionalData:Object = null):void 
 		{
-			call('Cp2p.ReservePriceID', callBack, data, null, false, "POST", true, false, additionalData);
+			call('Cp2p.Deal.ReservePriceID', callBack, data, null, false, "POST", true, false, additionalData);
 		}
 		
 		static private function call(method:String, callBack:Function = null, data:Object = null,  url:String = null, rawRespond:Boolean = false, requestMethod:String = 'POST', crypt:Boolean = true, noAuthKey:Boolean = false, additionalData:Object = null):void {

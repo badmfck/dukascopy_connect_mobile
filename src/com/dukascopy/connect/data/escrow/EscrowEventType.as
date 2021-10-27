@@ -8,6 +8,7 @@ package com.dukascopy.connect.data.escrow
 	{
 		static public const CREATED:EscrowEventType = new EscrowEventType("deal_created");
 		static public const HOLD_MCA:EscrowEventType = new EscrowEventType("hold_mca");
+		static public const HOLD_MCA_FAIL:EscrowEventType = new EscrowEventType("hold_mca_failed");
 		static public const CRYPTO_ACCEPTED:EscrowEventType = new EscrowEventType("crypto_accepted");
 		static public const PAID_CRYPTO:EscrowEventType = new EscrowEventType("paid_crypto");
 		static public const CANCEL:EscrowEventType =new EscrowEventType("cancel");

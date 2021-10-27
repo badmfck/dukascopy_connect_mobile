@@ -1041,6 +1041,15 @@ package com.dukascopy.connect.sys.bankManager {
 					popupData1.data = data;
 					popupData1.callback = onPeriodSetted;
 					ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, BottomTimeSelectionScreen, popupData1);
+				} else if (data.type == "operationPDF") {
+					if (_initData == null || "transactionID" in _initData == false || _initData.transactionID == null)
+						return;
+					if (_initData == null || "raw" in _initData == false || _initData.raw == null)
+						return;
+					if ("UID" in _initData.raw == false || _initData.raw.UID == null)
+						return;
+					sendMessage("val:" + _initData.raw.UID);
+					sendMessage(data.action);
 				} else if (data.type == "cardSelect") {
 					if ("status" in data.param == false ||
 						data.param.status == null ||
@@ -2394,6 +2403,13 @@ package com.dukascopy.connect.sys.bankManager {
 				}
 				if (lastBankMessageVO.item.type == "operationDetails") {
 					if (_initData != null && "transactionID" in _initData == true && _initData.transactionID != null) {
+						if ("raw" in _initData && _initData.raw != null && _initData.raw.PDF == true) {
+							for (var i:int = 0; i < lastBankMessageVO.menu.length; i++) {
+								if ("type" in lastBankMessageVO.menu[i] &&
+									lastBankMessageVO.menu[i].type == "operationPDF")
+										lastBankMessageVO.menu[i].disabled = false;
+							}
+						}
 						if ("raw" in _initData == false) {
 							lastBankMessageVO.waitingType = "operationDetails" + _initData.uid;
 							getOperationTransactions(_initData.uid);

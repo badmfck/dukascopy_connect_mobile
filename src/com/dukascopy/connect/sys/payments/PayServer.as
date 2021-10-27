@@ -887,6 +887,16 @@ package com.dukascopy.connect.sys.payments {
 		}
 		
 		/**
+		 * This method generates PDF document for chosen operation (which should have PENDING or COMPLETED status). See description:
+		 * https://jira.site.dukascopy.com/wiki/display/webdev/GetOperationPDF
+		 */
+		static public function operationStatement(uid:String):void {
+			if (uid == "")
+				return;
+			call("money/history/pdf", null, { uid:uid }, URLRequestMethod.GET, null, true);
+		}
+		
+		/**
 		 * This method returns list of transactions (statement) of particular prepaid card. See description:
 		 * https://intranet.dukascopy.dom/wiki/pages/viewpage.action?pageId=70681606
 		 */

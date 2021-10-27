@@ -837,6 +837,10 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs {
 				scroll.addObject(changeAddressButton);
 				scroll.removeObject(moreInfo);
 				drawChangeButton(Lang.addAddress);
+				if (terms != null)
+				{
+					scroll.removeObject(terms);
+				}
 			}
 			if (giftData != null && giftData.type != 3)
 			{

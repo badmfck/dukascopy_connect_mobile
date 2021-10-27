@@ -101,7 +101,7 @@ package com.dukascopy.connect.data.escrow
 				
 				var screenData:EscrowScreenData = new EscrowScreenData();
 				screenData.escrowOffer = escrow;
-				screenData.created = created;
+				screenData.created = escrow.created;
 				screenData.chat = chatVO;
 				screenData.messageId = messageId;
 				if (showChatButton)

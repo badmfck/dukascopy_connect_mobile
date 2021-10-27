@@ -47,7 +47,7 @@ package com.dukascopy.connect.data.escrow
 				
 			}
 			raw = data;
-			
+		//	trace("---------------", data.status);
 			if ("lifeTime" in data)
 			{
 				created = data.lifeTime;

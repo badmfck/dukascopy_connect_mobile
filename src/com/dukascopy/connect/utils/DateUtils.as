@@ -235,7 +235,14 @@ package com.dukascopy.connect.utils {
 				result += days + " " + Lang.days + " ";
 			}
 			if (hours > 0) {
-				result += hours + " " + Lang.textHours + " ";
+				if (hours == 1)
+				{
+					result += hours + " " + Lang.textHour + " ";
+				}
+				else
+				{
+					result += hours + " " + Lang.textHours + " ";
+				}
 			}
 			if (minutes > 0) {
 				result += minutes + " " + Lang.textMinutes + " ";

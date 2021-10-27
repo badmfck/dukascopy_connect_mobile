@@ -352,7 +352,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 				{
 					title = Lang.pay_from_account;
 				}
-				selectorAccont = new DDAccountButton(openWalletSelector, Lang.TEXT_SELECT_ACCOUNT, true, -1, NaN, title);
+				selectorAccont = new DDAccountButton(openWalletSelector, Lang.TEXT_SELECT_ACCOUNT, false, -1, NaN, title);
 				addItem(selectorAccont);
 			}
 			
@@ -1053,7 +1053,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 				return;
 			}
 			
-			selectorAccont.activate();
+		//	selectorAccont.activate();
 			acceptButton.activate();
 			rejectButton.activate();
 			terms.activate();
