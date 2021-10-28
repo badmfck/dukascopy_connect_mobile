@@ -8,7 +8,7 @@
             "src"
         ],
         "load-config": [
-            "conf/project.xml"
+            "conf/empty_project.xml"
         ],
         "library-path": [
             "src/swc/greensock.swc"

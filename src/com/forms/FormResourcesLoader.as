@@ -14,6 +14,7 @@ package com.forms
     import flash.display.Loader;
     import flash.display.BitmapData;
     import flash.display.Bitmap;
+    import flash.events.ProgressEvent;
 
     public class FormResourcesLoader{
         
@@ -36,7 +37,10 @@ package com.forms
 
             var c:Cache=getCache(url);
             if(c!=null){
-                callback(c.bytes);
+                if(c.bitmapData!=null)
+                    callback(c.bitmapData);
+                        else
+                            callback(c.bytes);
                 return;
             }
 
@@ -97,24 +101,53 @@ package com.forms
             || formFile.extension.toLowerCase().indexOf("jpg") 
             || formFile.extension.toLowerCase().indexOf("jpeg");
 
-            if(isImage){
-                loadLocalImage(formFile);
-                return;
-            }
-
             var fs:FileStream=new FileStream()
             var dis:Dispatcher=new Dispatcher(fs);
-
+            
+            var ba:ByteArray=new ByteArray();
+            var st:Number=new Date().getTime();
             dis.add(Event.COMPLETE,function(e:Event):void{
-                var ba:ByteArray=new ByteArray();
-                fs.readBytes(ba,0,f.size);
+                st=new Date().getTime();
+
+                // REPRESENT AS IMAGE
+                // 2mb image bytes loads 11ms to mem
+                // 2mb image loads 90ms from disk
+                if(isImage){
+                    var loader:Loader=new Loader();
+                    var dis2:Dispatcher=new Dispatcher(loader.contentLoaderInfo);
+                    dis2.add(Event.COMPLETE,function(e:Event):void{
+                        var bmd:BitmapData;
+                        if(loader.content is Bitmap && (loader.content as Bitmap).bitmapData!=null){
+                            bmd=(loader.content as Bitmap).bitmapData;
+                            if(bmd!=null && bmd.width>0 && bmd.height>0){
+                                var c:Cache=new Cache(url,null,bmd);
+                                cache.push(c);
+                            }else
+                                bmd=null
+                        }
+                        fireImageCallback(url,bmd);
+                        dis2.clear();
+                    })
+                    dis2.add(IOErrorEvent.IO_ERROR,function(e:IOErrorEvent):void{
+                        dis2.clear();
+                    })
+                    loader.loadBytes(ba);
+                    return;
+                }
                 
-                //var c:Cache=new Cache(url,ba);
-                //cache.push(c);
-                fireCallback(url,ba);;
+
+                var c:Cache=new Cache(url,ba);
+                cache.push(c);
+                fireCallback(url,ba);
                 fs.close();
                 dis.clear()
+                trace(">>>>>>>>" + (new Date().getTime()-st));
             });
+
+            dis.add(ProgressEvent.PROGRESS,function(e:ProgressEvent):void{
+                if(fs.bytesAvailable>0)
+                    fs.readBytes(ba,ba.length,fs.bytesAvailable);
+            })
 
             dis.add(IOErrorEvent.IO_ERROR,function(e:Event):void{
                 fs.close();
@@ -132,9 +165,11 @@ package com.forms
         }
 
         private function loadLocalImage(formFile:File):void{
+            
             var loader:Loader=new Loader()
             var dis:Dispatcher=new Dispatcher(loader.contentLoaderInfo);
-
+            
+            var st:Number=new Date().getTime();
             dis.add(Event.COMPLETE,function(e:Event):void{
                 var bmd:BitmapData;
                 if(loader.content is Bitmap && (loader.content as Bitmap).bitmapData!=null){
@@ -146,6 +181,7 @@ package com.forms
                         bmd=null
                 }
 
+                trace(">>>>" + (new Date().getTime()-st));
                 fireImageCallback(url,bmd);
                 dis.clear()
             });
@@ -159,8 +195,9 @@ package com.forms
                 dis.clear();
                 fireImageCallback(url,null);
             });
-
-            loader.load(new URLRequest(formFile.nativePath));
+            
+            var ur:URLRequest=new URLRequest(formFile.nativePath);
+            loader.load(ur);
         }
 
         public function stopLoading():void{
@@ -182,7 +219,7 @@ package com.forms
             for(var i:int=0;i<l;i++){
                 var pr:PendingResource=pendingResources[i];
                 if(pr.url==url){
-                    //pr.fireCallback(ba);
+                    pr.fireCallback(bmd);
                     pendingResources.removeAt(i);
                     break;
                 }
@@ -256,7 +293,7 @@ class PendingResource{
         }
     }
 
-    public function fireCallback(ba:ByteArray):void{
+    public function fireCallback(ba:Object):void{
         if(callbacks==null)
             return;
 

@@ -698,7 +698,7 @@ package com.forms{
             }
 
             // IF MASKED
-            if(scroller && mask!=null && mask.parent!=null){
+            if(scroller!=null && mask!=null && mask.parent!=null){
                 redraw()
                 return;
             }
@@ -712,7 +712,7 @@ package com.forms{
             // find root
             var p:FormComponent=parent;
             while(p.parent!=null){
-                if(p.mask!=null && p.mask.parent!=null)
+                if(p.mask!=null && p.mask.parent!=null && p.scroller!=null)
                     break;
                 p=p.parent;
             }
@@ -965,10 +965,6 @@ package com.forms{
                     offset=setupOffset(c);
                     nextPos+=offset[style.layout.axis];
 
-                    
-
-                    
-
                 }
                 
             }
@@ -1100,11 +1096,9 @@ package com.forms{
                 setupScroll(style.layout.axis);
             }else{
                 if(mask!=null){
-                    mask.graphics.clear();
-                    if(mask.parent!=null)
-                        mask.parent.removeChild(mask)
-                    _view.mask=null;
-                    mask=null;
+
+                    // if border radius !=null
+                    removeMaskIfNeeded();
                     
                     box.x=0;
                     box.y=0;
@@ -1137,14 +1131,9 @@ package com.forms{
         protected function setupScroll(axis:String):void{
             if(style.overflow!="scroll" && style.overflow!="hidden")
                 return;
-            if(mask==null){
-                mask=new Sprite();
-                view.mask=mask;
-                
-                (view as DisplayObjectContainer).addChild(mask)
-            }
-            mask.graphics.beginFill(0xFF0000,.2);
-            mask.graphics.drawRect(0,0,bounds.display_width,bounds.display_height);
+            if(mask==null)
+                createMask();
+
             if(style.overflow=="hidden"){
                 if(scroller){
                     scroller.dispose()
@@ -1299,7 +1288,7 @@ package com.forms{
                 spr.graphics.endFill();
 
 
-                if(true==false && style.border.isSet && style.borderColor.isSet){
+                if(style.border.isSet && style.borderColor.isSet){
                     border.graphics.clear();
                     border.graphics.beginFill(style.borderColor.top);
                     var radius:Object=style.borderRadius;
@@ -1308,6 +1297,9 @@ package com.forms{
                     drawBorder(s);
                     drawBorder(size,true);
                 }
+
+                if(style.borderRadius.isSet())
+                    createMask();
 
                 needRedraw=false;
             }
@@ -1331,6 +1323,39 @@ package com.forms{
 
             // draw as bitmap
             redrawBitmap()
+        }
+
+        private function createMask():void{
+            if(mask==null){
+                mask=new Sprite();
+                view.mask=mask;
+            }
+            if(mask.parent==null)
+                (view as DisplayObjectContainer).addChild(mask)
+
+            mask.graphics.clear();
+            mask.graphics.beginFill(0xFF0000);
+            mask.graphics.drawRoundRectComplex(
+                0,
+                0,
+                bounds.display_width,
+                bounds.display_height,
+                style.borderRadius.top,
+                style.borderRadius.right,
+                style.borderRadius.left,
+                style.borderRadius.bottom
+            );
+
+        }
+
+        private function removeMaskIfNeeded():void{
+            if(style.borderRadius.isSet())
+                return;
+            mask.graphics.clear();
+            if(mask.parent!=null)
+                mask.parent.removeChild(mask)
+            _view.mask=null;
+            mask=null;
         }
 
         private function drawBorder(size:Object,second:Boolean=false):void{

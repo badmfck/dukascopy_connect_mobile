@@ -4,15 +4,9 @@ package com.forms.components
     import com.forms.Form;
     import flash.xml.XMLNode;
     import com.forms.FormResourcesLoader;
-    import flash.utils.ByteArray;
     import flash.display.Bitmap;
-    import flash.display.Loader;
-    import com.forms.Dispatcher;
-    import flash.events.Event;
     import flash.display.BitmapData;
-    import flash.display.StageQuality;
-    import flash.geom.Matrix;
-    import com.forms.FormBounds;
+    import com.forms.FormBitmapData;
 
     public class FormImg extends FormComponent{
 
@@ -20,8 +14,8 @@ package com.forms.components
         private var resouceLoader:FormResourcesLoader;
         private var onLoaded:Function;
         private var image:Bitmap;
-        private var bmd:BitmapData;
-        private var resized:BitmapData;
+        private var resized:FormBitmapData;
+        private var bmd:BitmapData; //pointer to bitmapData in cache
 
         public function FormImg(xml:XMLNode,form:Form){
             super(xml,form)
@@ -49,13 +43,14 @@ package com.forms.components
 
         private function loadResource():void{
             var self:FormImg=this;
+            
             if(resouceLoader)
                 resouceLoader.stopLoading();
-            resouceLoader=new FormResourcesLoader(_src,form.formFile,function(res:ByteArray):void{
+
+            resouceLoader=new FormResourcesLoader(_src,form.formFile,function(res:Object):void{
                 // resource loaded
                 createImage(res);
-                resizeImage();
-
+                
                 if(onLoaded!=null && onLoaded is Function){
                     if(onLoaded.length==0){
                         onLoaded();
@@ -70,35 +65,30 @@ package com.forms.components
         }
 
         //TODO: 
-        private function createImage(res:ByteArray):void{
+        private function createImage(res:Object):void{
+            if(!res is BitmapData){
+                trace("Error! Wrong bitmap data");
+                return;
+            }
+            bmd=res as BitmapData;
             var self:FormImg=this;
-            var loader:Loader=new Loader();
-            var dis:Dispatcher=new Dispatcher(loader.contentLoaderInfo);
-            dis.add(Event.COMPLETE,function(e:Event):void{
-                if(loader.content!=null && loader.content is Bitmap){
-                    if(bmd!=null)
-                        bmd.dispose();
-                    bmd=(loader.content as Bitmap).bitmapData;
-                    
-                    if(image==null){
-                        image=new Bitmap();
-                        box.addChild(image);
-                    }
-                    
-                    resizeImage();
-                    if(onLoaded!=null && onLoaded is Function){
-                        if(onLoaded.length==0){
-                            onLoaded();
-                            return;
-                        }else if(onLoaded.length==1){
-                            onLoaded(self);
-                            return;
-                        }
-                    }
+            if(image==null){
+                image=new Bitmap();
+                box.addChild(image);
+            }
+
+            resizeImage();
+            
+            if(onLoaded!=null && onLoaded is Function){
+                if(onLoaded.length==0){
+                    onLoaded();
+                    return;
+                }else if(onLoaded.length==1){
+                    onLoaded(self);
+                    return;
                 }
-                dis.clear();
-            })
-            loader.loadBytes(res);
+            }
+            
         }
 
         override protected function draw():void{
@@ -111,55 +101,66 @@ package com.forms.components
             if(image==null || bmd==null || bmd.width<1)
                 return;
             
-            var rebuildFromRoot:Boolean=false;
+            //var rebuildFromRoot:Boolean=false;
             if(bounds==null){
-                bounds=new FormBounds(bmd.width,bmd.height);
+                /*bounds=new FormBounds(bmd.width,bmd.height);
                 bounds.display_height=bounds.height;
                 bounds.display_width=bounds.width;
-                rebuildFromRoot=true;
+                rebuildFromRoot=true;*/
+                trace("Warning -> Image has no width & height");
+                return;
             }
 
             var tw:int=bounds.display_width;
             var th:int=(bmd.height*tw)/bmd.width;
-            
-            if(th>bounds.display_height){
-                th=bounds.display_height;
-                tw=(bmd.width*th)/bmd.height;
-            }
+            var resize:String="contain"; // cover/ scale
+            if(attributes && "resize" in attributes)
+                resize=attributes.resize.toLowerCase()
 
+            if(resize=="cover"){
+                if(th<bounds.display_height){
+                    th=bounds.display_height;
+                    tw=(bmd.width*th)/bmd.height;
+                }
+            }else if(resize="scale"){
+                tw=bounds.display_width;
+                th=bounds.display_height;
+            }else/*contain*/{
+                
+                if(th>bounds.display_height){
+                    th=bounds.display_height;
+                    tw=(bmd.width*th)/bmd.height;
+                }
+            }
+            
             if(this.resized!=null && this.resized.width==tw && this.resized.height==th)
                 return;
             
-            if(this.resized!=null)
+            if(this.resized!=null){
                 this.resized.dispose();
+                image.bitmapData=null;
+            }
 
             if(tw==0 || th==0)
                 return;
 
-            this.resized=new BitmapData(tw,th,true,0);
-            var m:Matrix=new Matrix();
-            m.scale(tw/bmd.width,th/bmd.height)
-            this.resized.drawWithQuality(bmd,m,null,null,null,true,StageQuality.BEST);
-            image.smoothing=true;
-            image.bitmapData=resized;
-
-            image.x=(tw-image.width)*.5;
-            image.y=(th-image.height)*.5;
+            this.resized=new FormBitmapData(bmd,_src,tw,th,bounds.display_width,bounds.display_height,true,0);
             
-            if(rebuildFromRoot)
-                rebuild();
+            image.smoothing=true;
+            image.bitmapData=resized.bitmapData;
+
+            //image.x=(tw-image.width)*.5;
+            //image.y=(th-image.height)*.5;
+            
         }
 
 
         override public function destroy():void{
             super.destroy();
-            if(image!=null && image.bitmapData!=null)
-                image.bitmapData.dispose();
+            if(image!=null)
+                image.bitmapData=null;
             if(resized!=null)
                 resized.dispose();
-            
         }
-
-    
     }
 }

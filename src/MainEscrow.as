@@ -30,6 +30,7 @@ import com.dukascopy.connect.managers.escrow.EscrowOfferManager;
 import com.dukascopy.connect.managers.escrow.EscrowDealManager;
 import com.dukascopy.connect.vo.URLConfigVO;
 import com.telefision.utils.maps.EscrowDealMap;
+import com.forms.FPS;
 
 
 
@@ -95,9 +96,11 @@ public class MainEscrow extends Sprite {
 				profile:{},
 				devID:"test_dev_uid"
 			});
+
+
+			var fps:FPS=new FPS();
+			addChild(fps);
 		}
-		
-		
 		
 
 		public static function onGlobalError(e:UncaughtErrorEvent = null):void {

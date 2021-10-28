@@ -56,6 +56,30 @@ package com.dukascopy.connect.managers.escrow.vo
             return false;
         }
 
+        /**
+         * 
+         * @param name property name
+         * @param format string with format, where: %y - year, %m - month, %d - day, %h - hours, %i - minutes, %s - seconds. if null - return standart date
+         * @return 
+         */
+        public function getFormattedDate(name:String,format:String):String{
+            var date:Date=getDate(name);
+            if(date==null)
+                return "";
+
+            var y:int=date.getFullYear();
+            var m:int=date.getMonth()+1;
+            var d:int=date.getDate();
+
+            var h:int=date.getHours();
+            var i:int=date.getMinutes();
+            var s:int=date.getSeconds();
+
+            // TODO: AGO FROM NOW, WEEKDAY NAME, MONTH NAME
+
+            return format.replace("%y",y).replace("%m",m).replace("%d",d).replace("%h",h).replace("%i",i).replace("%s",s);
+        }
+
         public function getDate(name:String):Date{
             var val:Object=getObject(name);
             var date:Date;
