@@ -83,6 +83,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		private function createPriceSelector():void 
 		{
 			priceSelector = new PriceSelector(onPriceChange);
+			priceSelector.disableCurrencyChange();
 		}
 		
 		private function onPriceChange(value:Number):void 
@@ -136,7 +137,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		
 		private function createCurrencySelector():void 
 		{
-			selectorCurrency = new DDFieldButton(selectCurrencyTap, "", true, NaN, null, FontSize.AMOUNT);
+			selectorCurrency = new DDFieldButton(selectCurrencyTap, "", false, NaN, null, FontSize.AMOUNT);
 			addItem(selectorCurrency);
 		}
 		
@@ -206,10 +207,10 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		
 		private function activateStartState():void 
 		{
-			if (selectorCurrency != null)
+			/*if (selectorCurrency != null)
 			{
 				selectorCurrency.activate();
-			}
+			}*/
 			if (nextButton != null)
 			{
 				nextButton.activate();
