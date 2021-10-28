@@ -20,6 +20,7 @@ package com.dukascopy.connect.data
 		public var instrument:EscrowInstrument;
 		public var title:String;
 		public var additionalTopButton:StartChatAction;
+		public var instruments:Vector.<EscrowInstrument>;
 		
 		public function EscrowScreenData() 
 		{

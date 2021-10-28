@@ -790,7 +790,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs {
 			if (giftData != null && giftData.type == 4)
 			{
 				terms = new TermsChecker(onTermsChecker);
-				terms.draw(_width - Config.DIALOG_MARGIN* 2, Lang.crypto_terms, Lang.crypto_terms_link);
+				terms.draw(_width - Config.DIALOG_MARGIN * 2, Lang.crypto_terms, Lang.crypto_terms_link);
 				scroll.addObject(terms);
 			}
 			

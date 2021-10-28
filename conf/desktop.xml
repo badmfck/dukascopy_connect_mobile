@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <application xmlns="http://ns.adobe.com/air/application/32.0">
-    <id>com.iswfx.connect</id>
+    <id>com.iswfx.connect2</id>
     <versionLabel>3.5.50</versionLabel>
     <versionNumber>3.5.50</versionNumber>
     <supportedProfiles>mobileDevice</supportedProfiles>

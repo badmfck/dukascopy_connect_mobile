@@ -667,7 +667,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 			
 			var price:Number = inputPrice.value;
 			var needShowAlert:Boolean = true;
-			if (!isNaN(screenData.bestPrice) && screenData.bestPrice != 0 && screenData.bestPrice != Number.POSITIVE_INFINITY && screenData.bestPrice < PayManager.systemOptions.coin_llf_price_limit)
+			if (!isNaN(screenData.bestPrice) && screenData.bestPrice != 0 && screenData.bestPrice != Number.POSITIVE_INFINITY && screenData.bestPrice <= PayManager.systemOptions.coin_llf_price_limit)
 			{
 				needShowAlert = false;
 			}

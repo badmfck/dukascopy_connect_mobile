@@ -478,6 +478,7 @@ package com.dukascopy.connect.data.escrow
 					
 					screenData.callback = onOfferCommand;
 					screenData.instrument = selectedInstrument;
+					screenData.instruments = instruments;
 					ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, AcceptOfferScreen, screenData);
 				}
 				else

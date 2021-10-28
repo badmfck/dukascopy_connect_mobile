@@ -48,6 +48,7 @@ package com.dukascopy.connect.screens.dialogs.escrow
 		private var onPriceChanged:Function;
 		private var selectorCurrency:DDFieldButton;
 		private var zeroValue:Number;
+		private var currencyChangeAvaliable:Boolean = true;
 		
 		public function PriceSelector(onChange:Function) 
 		{
@@ -393,7 +394,7 @@ package com.dukascopy.connect.screens.dialogs.escrow
 		public function activate():void 
 		{
 			seekBar.activate();
-			if (selectorCurrency != null)
+			if (selectorCurrency != null && currencyChangeAvaliable)
 			{
 				selectorCurrency.activate();
 			}
@@ -499,11 +500,16 @@ package com.dukascopy.connect.screens.dialogs.escrow
 			seekBar.setValue(selectedValue);
 		}
 		
+		public function disableCurrencyChange():void 
+		{
+			currencyChangeAvaliable = false;
+		}
+		
 		private function createCurrencySelector():void 
 		{
 			if (selectorCurrency == null)
 			{
-				selectorCurrency = new DDFieldButton(selectCurrencyTap, "", true, NaN, null, FontSize.BODY);
+				selectorCurrency = new DDFieldButton(selectCurrencyTap, "", currencyChangeAvaliable, NaN, null, FontSize.BODY);
 				selectorCurrency.setSize(int(Config.FINGER_SIZE * 1.2), Config.FINGER_SIZE * 0.6);
 				addChild(selectorCurrency);
 				selectorCurrency.activate();
