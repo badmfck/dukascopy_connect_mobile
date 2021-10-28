@@ -3,6 +3,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 	import assets.ListIcon;
 	import com.dukascopy.connect.Config;
 	import com.dukascopy.connect.GD;
+	import com.dukascopy.connect.MobileGui;
 	import com.dukascopy.connect.data.SelectorItemData;
 	import com.dukascopy.connect.data.TextFieldSettings;
 	import com.dukascopy.connect.data.coinMarketplace.PaymentsAccountsProvider;
@@ -110,6 +111,8 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		private var currentCryptoWallet:String;
 		private var cryptoWalletInput:InputField;
 		private var selectCryptoButton:BitmapButton;
+		private var openAccountTitle:Bitmap;
+		private var openAccountButton:BitmapButton;
 		
 		public function CreateEscrowScreen() { }
 		
@@ -422,13 +425,107 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 						break;
 					}
 				}
+				
 				if (preselectedAccount != null)
 				{
 					selectedFiatAccount = preselectedAccount;
 					
-					selectorAccont.setValue(selectedFiatAccount);
+					if (selectorAccont == null)
+					{
+						createAccountSelector();
+						selectorAccont.setSize(_width - contentPadding * 2, Config.FINGER_SIZE * .8);
+					}
+					if (openAccountTitle != null)
+					{
+						removeItem(openAccountTitle);
+						UI.destroy(openAccountTitle);
+						openAccountTitle = null;
+					}
+					if (openAccountButton != null)
+					{
+						removeItem(openAccountButton);
+						openAccountButton = null;
+						openAccountButton = null;
+					}
+					
+					if (selectorAccont != null)
+					{
+						selectorAccont.setValue(selectedFiatAccount);
+					}
+					else
+					{
+						ApplicationErrors.add();
+					}
+				}
+				else
+				{
+					selectedFiatAccount = null;
+					if (selectedDirection == TradeDirection.buy)
+					{
+						if (selectorAccont != null)
+						{
+							removeItem(selectorAccont);
+							selectorAccont.dispose();
+							selectorAccont = null;
+						}
+						addOpenAccountItems(preferredCurrency);
+					}
 				}
 			}
+		}
+		
+		private function addOpenAccountItems(preferredCurrency:String):void 
+		{
+			if (openAccountTitle == null)
+			{
+				openAccountTitle = new Bitmap();
+				
+				var text:String = Lang.need_account;
+				if (preferredCurrency != null)
+				{
+					text = text.replace("%@", preferredCurrency);
+				}
+				else
+				{
+					ApplicationErrors.add();
+				}
+				
+				openAccountTitle.bitmapData = TextUtils.createTextFieldData(text, _width - contentPadding * 2, 10, true,
+																		TextFormatAlign.LEFT, TextFieldAutoSize.LEFT, 
+																		FontSize.BODY, true, Style.color(Style.COLOR_TEXT),
+																		Style.color(Style.COLOR_BACKGROUND));
+			}
+			
+			addItem(openAccountTitle);
+			
+			if (openAccountButton == null)
+			{
+				openAccountButton = new BitmapButton();
+				openAccountButton.setStandartButtonParams();
+				openAccountButton.tapCallback = openAccountClick;
+				openAccountButton.disposeBitmapOnDestroy = true;
+				openAccountButton.setDownScale(1);
+				openAccountButton.setOverlay(HitZoneType.BUTTON);
+				addItem(openAccountButton);
+				if (isActivated)
+				{
+					openAccountButton.activate();
+				}
+				
+				var textSettings:TextFieldSettings = new TextFieldSettings(Lang.openAccount, Style.color(Style.COLOR_TEXT), FontSize.BODY, TextFormatAlign.CENTER);
+				var buttonBitmap:ImageBitmapData = TextUtils.createbutton(textSettings, Style.color(Style.COLOR_BACKGROUND), 1, -1, Style.color(Style.COLOR_BUTTON_OUTLINE), getButtonWidth(), Style.size(Style.BUTTON_PADDING), Style.size(Style.SIZE_BUTTON_CORNER));
+				openAccountButton.setBitmapData(buttonBitmap, true);
+			}
+			
+			addItem(openAccountButton);
+			
+			updateContentPositions();
+		}
+		
+		private function openAccountClick():void 
+		{
+			MobileGui.openBankBot();
+			close();
 		}
 		
 		private function getInstrument():String
@@ -592,58 +689,45 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 				addSelectWalletButton();
 			}
 			
+			if (cryptoWalletInput == null)
+			{
+				var tf:TextFormat = new TextFormat();
+				tf.size = FontSize.BODY;
+				tf.color = Style.color(Style.COLOR_TEXT);
+				tf.font = Config.defaultFontName;
+				
+				cryptoWalletInput = new InputField( -1, Input.MODE_INPUT);
+				cryptoWalletInput.onSelectedFunction = onInputSelected;
+				cryptoWalletInput.onChangedFunction = onInputChange;
+				cryptoWalletInput.setMaxChars(300);
+				cryptoWalletInput.setPadding(0);
+				cryptoWalletInput.updateTextFormat(tf);
+			}
+			addItem(cryptoWalletInput);
+				
+			var inputWidth:int = _width - contentPadding * 2;
+			if (numWallets > 1 && selectCryptoButton != null)
+			{
+				inputWidth -= int(selectCryptoButton.width + Config.FINGER_SIZE * .3);
+			}
 			
-			
-				if (cryptoWalletInput == null)
-				{
-					var tf:TextFormat = new TextFormat();
-					tf.size = FontSize.BODY;
-					tf.color = Style.color(Style.COLOR_TEXT);
-					tf.font = Config.defaultFontName;
-					
-					cryptoWalletInput = new InputField( -1, Input.MODE_INPUT);
-					cryptoWalletInput.onSelectedFunction = onInputSelected;
-					cryptoWalletInput.onChangedFunction = onInputChange;
-					cryptoWalletInput.setMaxChars(300);
-					cryptoWalletInput.setPadding(0);
-					cryptoWalletInput.updateTextFormat(tf);
-				}
-				addItem(cryptoWalletInput);
+			cryptoWalletInput.drawString(inputWidth, null, "");
 				
-				var inputWidth:int = _width - contentPadding * 2;
-				if (numWallets > 1 && selectCryptoButton != null)
+			if (selectedCrypto.isLinked || localWalletExist())
+			{
+				var cryptoWallet:String;
+				if (selectedCrypto.isLinked)
 				{
-					inputWidth -= int(selectCryptoButton.width + Config.FINGER_SIZE * .3);
+					cryptoWallet = selectedCrypto.wallet;
+				}
+				else
+				{
+					cryptoWallet = getLocalCryptoWallet();
+					currentCryptoWallet = cryptoWallet;
 				}
 				
-				cryptoWalletInput.drawString(inputWidth, null, "");
-				
-				
-				if (selectedCrypto.isLinked || localWalletExist())
-				{
-					var cryptoWallet:String;
-					if (selectedCrypto.isLinked)
-					{
-						cryptoWallet = selectedCrypto.wallet;
-					}
-					else
-					{
-						cryptoWallet = getLocalCryptoWallet();
-						currentCryptoWallet = cryptoWallet;
-					}
-					
-					cryptoWalletInput.valueString = cryptoWallet;
-				}
-				
-				if (selectorWallet == null)
-				{
-					/*if ()
-					{
-						
-					}
-					selectorWallet = new WalletButton(selectWallet, null, true, Lang.escrow_*/
-				}
-			
+				cryptoWalletInput.valueString = cryptoWallet;
+			}
 			
 			creeateTerms();
 		}
@@ -657,7 +741,9 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 				selectCryptoButton.tapCallback = onSelectWalletClick;
 				selectCryptoButton.disposeBitmapOnDestroy = true;
 				selectCryptoButton.setDownScale(1);
-				selectCryptoButton.setOverlay(HitZoneType.BUTTON);
+				selectCryptoButton.setOverlay(HitZoneType.CIRCLE);
+				selectCryptoButton.setOverlayPadding(int(Config.FINGER_SIZE * .2));
+				selectCryptoButton.setOverflow(Config.FINGER_SIZE * .2, Config.FINGER_SIZE * .2, Config.FINGER_SIZE * .2, Config.FINGER_SIZE * .2);
 				
 				var icon:Sprite = new ListIcon();
 				var iconSize:int = Config.FINGER_SIZE * .3;
@@ -1075,7 +1161,11 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		
 		private function openWalletSelector():void 
 		{
-			selectorAccont.valid();
+			if (selectorAccont != null)
+			{
+				selectorAccont.valid();
+			}
+			
 			if (dataLoaded)
 			{
 				SoftKeyboard.closeKeyboard();
@@ -1116,7 +1206,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		
 		private function onWalletFiatSelect(account:Object, cleanCurrent:Boolean = false):void
 		{
-			if (account != null)
+			if (account != null && selectorAccont != null)
 			{
 				selectedFiatAccount = account;
 				selectorAccont.setValue(account);
@@ -1144,6 +1234,10 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			if (sendButton != null)
 			{
 				sendButton.activate();
+			}
+			if (openAccountButton != null)
+			{
+				openAccountButton.activate();
 			}
 			
 			radio.activate();
@@ -1318,6 +1412,10 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			{
 				sendButton.deactivate();
 			}
+			if (openAccountButton != null)
+			{
+				openAccountButton.deactivate();
+			}
 			
 			radio.deactivate();
 			inputAmount.deactivate();
@@ -1346,10 +1444,16 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			{
 				var dataValid:Boolean = true;
 				
-				if (selectedDirection == TradeDirection.buy && selectedFiatAccount == null)
+				if (selectedDirection == TradeDirection.buy)
 				{
-					selectorAccont.invalid();
-					dataValid = false;
+					if (selectedFiatAccount == null)
+					{
+						if (selectorAccont != null)
+						{
+							selectorAccont.invalid();
+						}
+						dataValid = false;
+					}
 				}
 				if (!dataLoaded)
 				{
@@ -1687,6 +1791,20 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 					position += selectorAccont.height + contentPaddingV;
 				}
 				
+				if (openAccountTitle != null)
+				{
+					openAccountTitle.x = contentPadding;
+					openAccountTitle.y = position;
+					position += openAccountTitle.height + contentPaddingV * 1;
+				}
+				
+				if (openAccountButton != null)
+				{
+					openAccountButton.x = contentPadding;
+					openAccountButton.y = position;
+					position += openAccountButton.height + contentPaddingV * 1;
+				}
+				
 				if (terms != null && terms.parent != null)
 				{
 					terms.x = contentPadding;
@@ -1816,7 +1934,6 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 				buttonBitmap = TextUtils.createbutton(textSettings, Style.color(Style.COLOR_BACKGROUND), 1, -1, Style.color(Style.COLOR_BUTTON_OUTLINE), getButtonWidth(), Style.size(Style.BUTTON_PADDING), Style.size(Style.SIZE_BUTTON_CORNER));
 				nextButton.setBitmapData(buttonBitmap, true);
 			}
-			
 			
 			inputAmount.draw(_width - contentPadding * 2, Lang.textAmount, 0);
 			
@@ -2318,6 +2435,11 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 				UI.destroy(registerDescriptionClip);
 				registerDescriptionClip = null;
 			}
+			if (openAccountTitle != null)
+			{
+				UI.destroy(openAccountTitle);
+				openAccountTitle = null;
+			}
 			if (balance != null)
 			{
 				balance.dispose();
@@ -2387,6 +2509,11 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			{
 				selectCryptoButton.dispose();
 				selectCryptoButton = null;
+			}
+			if (openAccountButton != null)
+			{
+				openAccountButton.dispose();
+				openAccountButton = null;
 			}
 			
 			selectedFiatAccount = null;

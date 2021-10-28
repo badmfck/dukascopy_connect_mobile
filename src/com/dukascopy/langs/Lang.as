@@ -2358,7 +2358,7 @@ package com.dukascopy.langs {
 		static public var wantSellCrypto:String = "I WANT TO SELL CRYPTO";
 		static public var wantBuyCrypto:String = "I WANT TO BUY CRYPTO";
 		static public var escrow_description:String = "You can use Dukascopy Bank as intermediary to secure exchange of cryptocurrency versus fiat and vice versa.";
-		static public var escrow_about_service_url:String = "https://dukascopy.com";
+		static public var escrow_about_service_url:String = "https://www.911p2p.io/";
 		static public var escrow_invalidFixedPrice:String = "Invalid price, please use price from market with deviation +/- 5%";
 		static public var aboutService:String = "About service";
 		static public var openMcaAccount:String = "OPEN MCA ACCOUNT";
@@ -2385,7 +2385,7 @@ package com.dukascopy.langs {
 		static public var current_price_of_instrument:String = "Current price of 1 %@";
 		static public var send_offer:String = "SEND OFFER";
 		static public var my_blockchain_address:String = "My blockchain address";
-		static public var escrow_terms_link:String = "http://google.com";
+		static public var escrow_terms_link:String = "https://www.911p2p.io/pages/T&C_P2P_CRYPTO_FIAT_TRANSACTIONS.pdf";
 		static public var escrow_terms_accept:String = "I have read and accepted <font color='#CD3F43'>Terms&Conditions</font> <font color='#CD3F43'>🡭</font>";
 		static public var need_accept_terms:String = "Please accept Terms&Conditions";
 		static public var you_sent_buy_offer:String = "You sent a Buy offer!";
@@ -2622,6 +2622,7 @@ package com.dukascopy.langs {
 		static public var escrow_deal_status_failed:String = "Failed";
 		static public var escrow_offer_accepted_status:String = "The offer was accepted and thus became a deal. You may find it in the Deals tab.";
 		static public var escrow_deal_status_mca_failed:String = "mca failed";
+		static public var need_account:String = "To proceed with the offer, you need to open an account in %@";
 		
 		
 		static public function updateKeys(keys:Object):void {
