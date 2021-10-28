@@ -2562,7 +2562,7 @@ package com.dukascopy.langs {
 		static public var escrow_offer_was_rejected:String = "Offer was rejected";
 		static public var escrow_offer_rejected:String = "Offer was rejected by the counterparty.\nThe funds were unblocked.";
 		static public var instrument:String = "Instrument";
-		static public var crypto_terms_link:String = "google.com";
+		static public var crypto_terms_link:String = "https://www.dukascopy.com/swiss/docs/bankForms/Crypto%20Terms%20&%20conditions%20-%2004-07-2019%20-%20in%20use.pdf";
 		static public var crypto_terms:String = "The use of the deposit function is possible only upon accepting the <font color='#CD3F43'>Crypto Terms & conditions</font>";
 		static public var escrow_tap_deal_form:String = "Tap to see deal form";
 		static public var tapToUpenForm:String = "Tap to open deal form";

@@ -175,7 +175,7 @@ package com.dukascopy.connect.screens.dialogs.newDialogs {
 					{
 						if (fileType != null)
 						{
-							var header:String;
+							var header:String = "";
 							for (var i:int = 0; i < 4; i++) 
 							{
 								try
