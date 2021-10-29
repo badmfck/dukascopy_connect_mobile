@@ -263,7 +263,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			if (escrowOffer != null && !EscrowScreenNavigation.isExpired(escrowOffer, offerCreatedTime))
 			{
 				//!TODO: check start time;
-				time.draw(getWidth() - contentPadding * 2, EscrowSettings.dealMaxTime * 60 - ((new Date()).time / 1000 - offerCreatedTime));
+				time.draw(getWidth() - contentPadding * 2, EscrowSettings.receiptConfirmationTime * 60 - ((new Date()).time / 1000 - offerCreatedTime));
 			}
 			else
 			{
@@ -284,7 +284,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 				}
 				else
 				{
-					text = Lang.offer_expired;
+					text = Lang.deal_expired;
 					color = Color.GREY;
 				}
 				

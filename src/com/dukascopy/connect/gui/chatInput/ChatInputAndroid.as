@@ -170,7 +170,10 @@ package com.dukascopy.connect.gui.chatInput {
 			updateView(true, "onInputChanged");
 			inputPanel.updateView(stickerMenu);
 			echo("input!", "onInputChanged");
-			DraftMessage.setValue(ChatManager.getCurrentChat().uid, ChatManager.getCurrentChat().chatSecurityKey, inputPanel.getText());
+			if (ChatManager.getCurrentChat() != null)
+			{
+				DraftMessage.setValue(ChatManager.getCurrentChat().uid, ChatManager.getCurrentChat().chatSecurityKey, inputPanel.getText());
+			}
 		}
 		
 		private function onSentPressed(value:String):void 
