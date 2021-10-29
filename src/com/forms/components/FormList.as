@@ -17,6 +17,9 @@ package com.forms.components{
         private var timeoutID:int;
         private var data:Object;
 
+        public var onItemBeforeDraw:Function;
+        public var onItemAfterDraw:Function;
+
       
         private var listBox:Sprite=new Sprite();
             
