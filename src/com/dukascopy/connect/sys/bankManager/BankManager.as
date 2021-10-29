@@ -1050,6 +1050,8 @@ package com.dukascopy.connect.sys.bankManager {
 						return;
 					sendMessage("val:" + _initData.raw.UID);
 					sendMessage(data.action);
+					if (lastBankMessageVO != null)
+						lastBankMessageVO.enable();
 				} else if (data.type == "cardSelect") {
 					if ("status" in data.param == false ||
 						data.param.status == null ||

@@ -17,9 +17,9 @@ package com.dukascopy.connect.sys.socialManager {
 		
 		static private const STORE_KEY:String = "socialAvaliable";
 		static private const STORE_KEY_FIRST_TIME:String = "SM_FirstTime";
-		static private const COUNTRIES_AVALIABLE:Array = [7, 380, 375, 996];
+		static private const COUNTRIES_DISABLED:Array = [];
 		
-		static private var socialAvailable:Boolean = false;
+		static private var socialAvailable:Boolean = true;
 		static private var initCallback:Function;
 		static private var checkerState:int;
 		
@@ -29,7 +29,6 @@ package com.dukascopy.connect.sys.socialManager {
 				invokeInitCallback();
 				return;
 			}
-			socialAvailable = false;
 			if (Auth.isFirstInstall() == false) {
 				onKeyFTLoaded(Auth.getItem(STORE_KEY_FIRST_TIME));
 				return;
@@ -59,7 +58,6 @@ package com.dukascopy.connect.sys.socialManager {
 		}
 		
 		static private function onKeyLoaded(data:String):void {
-		//	Auth.setItem(STORE_KEY_FIRST_TIME, "1");
 			if (data == null) {
 				checkForSocialContinue();
 				return;
@@ -77,9 +75,9 @@ package com.dukascopy.connect.sys.socialManager {
 		}
 		
 		static private function checkForCountry():void {
-			for (var i:int = 0; i < COUNTRIES_AVALIABLE.length; i++) {
-				if (Auth.countryCode == COUNTRIES_AVALIABLE[i]) {
-					socialAvailable = true;
+			for (var i:int = 0; i < COUNTRIES_DISABLED.length; i++) {
+				if (Auth.countryCode == COUNTRIES_DISABLED[i]) {
+					socialAvailable = false;
 					return;
 				}
 			}
