@@ -591,14 +591,14 @@ package com.dukascopy.connect.screens {
 			
 			buttons.push(line_2);
 			
-			if (Config.socialAvailable == true && Auth.bank_phase == "ACC_APPROVED") {
+			//if (Config.socialAvailable == true && Auth.bank_phase == "ACC_APPROVED") {
 				buttons.push(btnSocialObject);
-			}
+			//}
 		//	buttons.push(btnShowRatingObject);
 			
-			if (SocialManager.available == true) {
-				buttons.push(btn911SectionObject);
-			}
+			//if (SocialManager.available == true) {
+				//buttons.push(btn911SectionObject);
+			//}
 			
 			enterReferralCodeButtonExist = false;
 			var paidBanAvaliable:Boolean = false;
