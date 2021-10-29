@@ -8,11 +8,15 @@ package com.dukascopy.connect.data.screenAction.customActions {
 	import com.dukascopy.connect.gui.components.message.ToastMessage;
 	import com.dukascopy.connect.managers.escrow.vo.EscrowAdsVO;
 	import com.dukascopy.connect.managers.escrow.vo.EscrowInstrument;
+	import com.dukascopy.connect.screens.dialogs.escrow.RegisterEscrowScreen;
 	import com.dukascopy.connect.screens.payments.card.TypeCurrency;
 	import com.dukascopy.connect.sys.applicationError.ApplicationErrors;
+	import com.dukascopy.connect.sys.auth.Auth;
 	import com.dukascopy.connect.sys.payments.PayManager;
 	import com.dukascopy.connect.sys.payments.PaymentsManager;
 	import com.dukascopy.connect.sys.payments.vo.AccountLimitVO;
+	import com.dukascopy.connect.sys.serviceScreenManager.ServiceScreenManager;
+	import com.dukascopy.connect.type.BankPhaze;
 	import com.dukascopy.langs.Lang;
 
 	/**
@@ -34,6 +38,11 @@ package com.dukascopy.connect.data.screenAction.customActions {
 		
 		public function execute():void {
 			//TODO: side;
+			if (Auth.bank_phase != BankPhaze.ACC_APPROVED) {
+				ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, RegisterEscrowScreen);
+				S_ACTION_FAIL.invoke(null);
+				return;
+			}
 			var selectedDirection:TradeDirection = (escrowAdsVO.side == "buy") ? TradeDirection.buy : TradeDirection.sell;
 			var price:Number = 0;
 			if (escrowAdsVO.percent == null || escrowAdsVO.percent.indexOf("%") == -1) {
