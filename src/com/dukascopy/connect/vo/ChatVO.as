@@ -532,7 +532,7 @@ package com.dukascopy.connect.vo {
 					text = text.replace("%@5", (realPrice > 0) ? Lang.above.toLowerCase() : Lang.below.toLowerCase());
 				}
 			} else {
-				currentPrice = (isNaN(realPrice) == true) ? "---" : realPrice + "";
+				currentPrice = (isNaN(realPrice) == true) ? "---" : realPrice + " " + _qVO.priceCurrency;
 			}
 			
 			text = text.replace("%@3", currentPrice);
