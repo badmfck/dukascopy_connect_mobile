@@ -77,7 +77,18 @@ package com.dukascopy.connect.managers.escrow.vo
 
             // TODO: AGO FROM NOW, WEEKDAY NAME, MONTH NAME
 
-            return format.replace("%y",y).replace("%m",m).replace("%d",d).replace("%h",h).replace("%i",i).replace("%s",s);
+            return format.replace("%y",y)
+            .replace("%m",leadZero(m))
+            .replace("%d",leadZero(d))
+            .replace("%h",leadZero(h))
+            .replace("%i",leadZero(i))
+            .replace("%s",leadZero(s));
+        }
+
+        private static function leadZero(val:int):String{
+            if(val<10)
+                return "0"+val;
+            return val+"";
         }
 
         public function getDate(name:String):Date{

@@ -4,9 +4,18 @@
 
      <list id="deals" height="400" overflow="scroll">
         <li>
+
             <div layout="horizontal">
-                <img src="res/Psilocybe.zapotecorum.1.jpg" border-radius="26" resize="cover" width="55" height="55"/>
-                <div> ${side} ${amount} ${instrument} ${status} @${price} ${mca_ccy} ${time}</div>
+                <space size="10"/>
+                <img src="res/Psilocybe.zapotecorum.1.jpg" border-radius="27" resize="cover" width="55" height="55"/>
+                <space size="10"/>
+                <div width="100%" font-size="18"> 
+                    <div height="22">${side} ${amount} ${instrument}</div>
+                    <div height="22">@${price} ${mca_ccy} </div>
+                    <div font-size="13">${status}</div>
+                </div>
+                <div font-size="13">${time}</div>
+                <space size="10"/>
             </div>
             <space size="10"/>
         </li>

@@ -25,6 +25,10 @@ package com.dukascopy.connect.data.screenAction.customActions {
 		public function OpenOfferAction(offerData:EscrowMessageData, created:Number, messageId:Number) {
 			
 			this.offerData = offerData;
+			if (offerData.created == 0)
+			{
+				offerData.created = created;
+			}
 			this.created = created;
 			this.messageId = messageId;
 			

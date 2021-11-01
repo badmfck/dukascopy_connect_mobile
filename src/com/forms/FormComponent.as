@@ -25,6 +25,7 @@ package com.forms{
     import com.forms.components.FormListItem;
     import flash.events.KeyboardEvent;
     import flash.ui.Keyboard;
+    import flash.system.System;
     
 
     public class FormComponent{
@@ -158,7 +159,9 @@ package com.forms{
             
             this.form=form;
             if(xml is XML){
-                onXMLReady(new XMLDocument(xml).firstChild,predefinedStyle,additionalChilds,dolly);
+                onXMLReady(new XMLDocument(
+                    
+                ).firstChild,predefinedStyle,additionalChilds,dolly);
                 return;
             }
 
@@ -1674,6 +1677,9 @@ package com.forms{
                     delete localIDs[s];
                 }
             }
+            
+            originalXML=null;
+            
             localIDs=null;
             form=null;
             if(box!=null)

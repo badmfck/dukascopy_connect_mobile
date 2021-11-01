@@ -44,13 +44,13 @@ package com.forms
                 return;
             }
 
-            pe=new PendingResource(url);
+            pe=new PendingResource(url,formFile.nativePath);
             pe.addCallback(callback);
             pendingResources.push(pe);
 
             if(url.indexOf("http")==0){
                 // TODO: REMOTE LOADING
-                loadRemoteFile();
+                loadRemoteFile(formFile);
                 return;
             }
 
@@ -58,7 +58,11 @@ package com.forms
             
         }
 
-        private function loadRemoteFile():void{
+        public function clearFormCache(formFile:File):void{
+            
+        }
+
+        private function loadRemoteFile(formFile:File):void{
             var ur:URLRequest=new URLRequest(url);
             ur.method=URLRequestMethod.GET;
             var ul:URLLoader=new URLLoader(ur);
@@ -68,7 +72,7 @@ package com.forms
             dis.add(Event.COMPLETE,function(e:Event):void{
                 dis.clear();
                 if(ul.data is ByteArray){
-                    var c:Cache=new Cache(url,ul.data as ByteArray);
+                    var c:Cache=new Cache(formFile.nativePath,url,ul.data as ByteArray);
                     cache.push(c);
                     fireCallback(url,ul.data);
                     return;
@@ -120,7 +124,7 @@ package com.forms
                         if(loader.content is Bitmap && (loader.content as Bitmap).bitmapData!=null){
                             bmd=(loader.content as Bitmap).bitmapData;
                             if(bmd!=null && bmd.width>0 && bmd.height>0){
-                                var c:Cache=new Cache(url,null,bmd);
+                                var c:Cache=new Cache(formFile.nativePath,url,null,bmd);
                                 cache.push(c);
                             }else
                                 bmd=null
@@ -136,7 +140,7 @@ package com.forms
                 }
                 
 
-                var c:Cache=new Cache(url,ba);
+                var c:Cache=new Cache(formFile.nativePath,url,ba);
                 cache.push(c);
                 fireCallback(url,ba);
                 fs.close();
@@ -175,7 +179,7 @@ package com.forms
                 if(loader.content is Bitmap && (loader.content as Bitmap).bitmapData!=null){
                     bmd=(loader.content as Bitmap).bitmapData;
                     if(bmd!=null && bmd.width>0 && bmd.height>0){
-                        var c:Cache=new Cache(url,null,bmd);
+                        var c:Cache=new Cache(formFile.nativePath,url,null,bmd);
                         cache.push(c);
                     }else
                         bmd=null
@@ -269,10 +273,12 @@ import flash.display.BitmapData;
 class PendingResource{
 
     public var url:String;
+    public var formFilePath:String;
     public var callbacks:Vector.<Function>=new <Function>[];
 
-    public function PendingResource(url:String){
+    public function PendingResource(url:String,formFilePath:String){
         this.url=url;
+        this.formFilePath=formFilePath;
     }
 
     public function addCallback(cb:Function):void{
@@ -311,11 +317,13 @@ class PendingResource{
 
 class Cache{
     public var url:String;
+    public var formFilePath:String;
     public var bytes:ByteArray;
     public var bitmapData:BitmapData;
-    public function Cache(url:String,bytes:ByteArray,bitmapData:BitmapData=null){
+    public function Cache(formFilePath:String,url:String,bytes:ByteArray,bitmapData:BitmapData=null){
         this.url=url;
         this.bytes=bytes;
         this.bitmapData=bitmapData;
+        this.formFilePath=formFilePath;
     }
 }
