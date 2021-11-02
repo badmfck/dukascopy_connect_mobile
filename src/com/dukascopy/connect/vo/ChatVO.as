@@ -38,6 +38,7 @@ package com.dukascopy.connect.vo {
 		static public const LOCAL_CHAT_FLAG:String = "#LOCAL_";
 		
 		private var _hasQuestionAnswer:Boolean = false;
+		private var _hasQuestionMessage:Boolean = false;
 		
 		private var _pin:String;
 		private var _isDisposed:Boolean = false;
@@ -331,7 +332,7 @@ package com.dukascopy.connect.vo {
 			_messages = new Vector.<ChatMessageVO>();
 			lastMessagesHash = null;
 			euroActionMessageVO = null;
-			_hasQuestionAnswer = false;
+			_hasQuestionMessage = false;
 		}
 		
 		public function addQuestionData(data:Object):void {
@@ -387,11 +388,6 @@ package com.dukascopy.connect.vo {
 			if (data == null || data.length == 0)
 				return;
 			var companyAvatar:String;
-			/*if (type == ChatRoomType.COMPANY) {
-				var epModel:EntryPointVO = Auth.getPhaseByID(pid);
-				if (epModel != null)
-					companyAvatar = epModel.avatarURL;
-			}*/
 			var i:int = 0;
 			var l:int = 0;
 			var firstIndex:int = 0;
@@ -462,9 +458,9 @@ package com.dukascopy.connect.vo {
 				return;
 			if (_qVO == null)
 				return;
-			if (_hasQuestionAnswer == true)
+			if (_hasQuestionMessage == true)
 				return;
-			_hasQuestionAnswer = true;
+			_hasQuestionMessage = true;
 			_messages ||= new Vector.<ChatMessageVO>();
 			lastMessagesHash = null;
 			
@@ -1148,7 +1144,7 @@ package com.dukascopy.connect.vo {
 		}*/
 		
 		public function get hasQuestionAnswer():Boolean {
-			return _hasQuestionAnswer;
+			return !isNaN(_lattestMsgID) && _lattestMsgID != 0;
 		}
 		
 		public function get messageVO():ChatMessageVO {
