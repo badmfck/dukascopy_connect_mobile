@@ -1144,7 +1144,7 @@ package com.dukascopy.connect.vo {
 		}*/
 		
 		public function get hasQuestionAnswer():Boolean {
-			return !isNaN(_lattestMsgID) && _lattestMsgID != 0;
+			return _messages != null && _messages.length != 0 && _messages[messages.length - 1].num > 0;
 		}
 		
 		public function get messageVO():ChatMessageVO {

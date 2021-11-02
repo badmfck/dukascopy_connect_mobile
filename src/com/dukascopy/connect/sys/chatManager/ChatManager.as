@@ -2261,14 +2261,13 @@ package com.dukascopy.connect.sys.chatManager {
 				}
 				loadChatFromPHP(data.chatUID, false, "onChatMessage");
 			} else {
-				var hasAnswer:Boolean = chatVO.hasQuestionAnswer; // Here, because chatVO.setNewUreadedMessage() update this param.
 				var oldDate:Date = chatVO.getDate();
 				
 				chatVO.setNewUreadedMessage(data, currentChat == null || (currentChat.uid != data.chatUID) || !(MobileGui.centerScreen.currentScreen is ChatScreen));
 				NewMessageNotifier.onNewMessage(data.num, chatVO);
 				var newDate:Date = chatVO.getDate();
 				if (chatVO.type == ChatRoomType.QUESTION || (chatVO.type == ChatRoomType.CHANNEL && chatVO.questionID != null && chatVO.questionID != "")) {
-					if (hasAnswer == false && data.id > 0 && isMine == true) {
+					if (data.num == 1 && isMine == true) {
 						AnswersManager.sendToTop(chatVO, oldDate, newDate);
 						WSClient.call_blackHoleToGroup("que", "send", "mobile", WSMethodType.QUESTION_UPDATED, { quid:chatVO.questionID, action:"take", chatUID:chatVO.uid } );
 					}
