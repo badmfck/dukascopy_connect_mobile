@@ -2575,7 +2575,7 @@ package com.dukascopy.connect.sys.bankManager {
 				buttons: [
 					{
 						text:"lang.buttonNo",
-						type:"selectCurrency",
+						type:"selectCurrencyInvestment",
 						action:"nav:investmentCurrencyConfirm"
 					}, {
 						text:"lang.buttonConfirm",
@@ -2608,7 +2608,7 @@ package com.dukascopy.connect.sys.bankManager {
 				menu:[
 					{
 						text:"lang.menuAcceptAndProceed",
-						type:"selectCurrency",
+						type:"selectCurrencyInvestment",
 						action:"nav:investmentCurrencyConfirm",
 						textForUser:"lang.itemInvestmentCurrency"
 					}

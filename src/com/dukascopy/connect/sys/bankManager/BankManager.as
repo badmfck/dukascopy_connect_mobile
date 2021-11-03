@@ -1017,6 +1017,12 @@ package com.dukascopy.connect.sys.bankManager {
 							openCurrencySelectorAll(data);
 						}
 					);
+				} else if (data.type == "selectCurrencyInvestment") {
+					PayManager.callGetSystemOptions(
+						function ():void {
+							openCurrencySelectorInvestment(data);
+						}
+					);
 				} else if (data.type == "selectedAccCurrency") {
 					var acc:Object = getAccountByNumber(data.val);
 					if (acc == null)
@@ -1668,7 +1674,7 @@ package com.dukascopy.connect.sys.bankManager {
 			return null;
 		}
 		
-		static private function openCurrencySelector(data:Object):void {
+		static private function openCurrencySelector(data:Object, checkInCurrencyList:Boolean = false):void {
 			if (accountInfo == null) {
 				PayManager.callGetAccountInfo(function():void{
 					accountInfo = PayManager.accountInfo;
@@ -1699,10 +1705,40 @@ package com.dukascopy.connect.sys.bankManager {
 		static private function openCurrencySelectorAll(data:Object):void {
 			if (PayManager.systemOptions == null)
 				return;
-			
 			DialogManager.showDialog(ScreenPayDialog, {
 				callback: callBackSelectCurrencyWithValue,
 				data: PayManager.systemOptions.currencyList,
+				itemClass: ListPayCurrency,
+				label: Lang.selectCurrency,
+				additionalData: data
+			} );
+		}
+		
+		static private function openCurrencySelectorInvestment(data:Object):void {
+			if (PayManager.systemOptions == null)
+				return;
+			if (accountInfo == null) {
+				PayManager.callGetAccountInfo(function():void{
+					accountInfo = PayManager.accountInfo;
+					if (accountInfo != null)
+						openCurrencySelectorInvestment(data);
+				});
+				return;
+			}
+			var accounts:Array = accountInfo.accounts;
+			var currencies:Array = PayManager.systemOptions.currencyList;
+			var res:Array = [];
+			for (var i:int = 0; i < accounts.length; i++) {
+				for (var j:int = 0; j < currencies.length; j++) {
+					if (accounts[i].CURRENCY == currencies[j]) {
+						res.push(currencies[j]);
+						break;
+					}
+				}
+			}
+			DialogManager.showDialog(ScreenPayDialog, {
+				callback: callBackSelectCurrencyWithValue,
+				data: res,
 				itemClass: ListPayCurrency,
 				label: Lang.selectCurrency,
 				additionalData: data
