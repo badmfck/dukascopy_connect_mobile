@@ -1687,9 +1687,11 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements {
 			var l:int = cryptoRDs.length;
 			for (var i:int = 0; i < l; i++) {
 				if ("value" in bmVO.item == true) {
-					if (cryptoRDs[i].status != bmVO.item.value)
-						continue;
-				} else if (cryptoRDs[i].status != "ACTIVE") {
+					if (cryptoRDs[i].status != bmVO.item.value) {
+						if (!(bmVO.item.value == "ACTIVE" && cryptoRDs[i].status == "ON_HOLD"))
+							continue;
+					}
+				} else if (cryptoRDs[i].status != "ACTIVE" && cryptoRDs[i].status != "ON_HOLD") {
 					continue;
 				}
 				cryptoRDSection = new BACryptoRDSection();

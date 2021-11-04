@@ -1289,7 +1289,8 @@ package com.dukascopy.langs {
 		static public var rdStatuses:Object = {
 			"canceled": "Canceled",
 			"closed": "Closed",
-			"active": "Active"
+			"active": "Active",
+			"on_hold": "On hold"
 		};
 		
 		static public var investmentsTitles:Object = {
