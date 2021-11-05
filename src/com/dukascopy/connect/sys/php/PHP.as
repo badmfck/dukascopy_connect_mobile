@@ -618,7 +618,11 @@ package com.dukascopy.connect.sys.php {
 				}
 				if (reservedQuestionId != null)
 					data.preOrder = reservedQuestionId;
-				call("question.create", callBack, data);
+				call("question.create", callBack, data, null, null, "POST", true, false, data);
+		}
+		
+		static public function question_recreate(callBack:Function, data:Object):void {
+			call("question.create", callBack, data);
 		}
 		
 		static public function question_edit(callBack:Function, quid:String, text:String, tipsAmount:Number, tipsCurrency:String, categories:String, incognito:Boolean = false):void {

@@ -2522,6 +2522,7 @@ package com.dukascopy.langs {
 		static public var escrowAdsIntroMsgMarketPrice:String = "I would like to %@1 %@2 at market price";
 		static public var escrowAdsIntroMsgPercentAdd:String = " (%@4% %@5 the market price)";
 		static public var escrowAdsIntroMsgMarketPriceAdd:String = " (%@3 per coin)";
+		static public var escrowAdsDisclaimer:String = "Please be informed that you are about to submit your P2P crypto/fiat ad to the ads board where it will become visible for a broad audience. By proceeding with the ad publishing, you confirm and understand that you will voluntarily disclose the fact of having an account with Dukascopy Bank to other users of the P2P crypto/fiat service and therefore you expressly waive the benefit of banking secrecy and data protection and you release the Dukascopy Bank from any liability in that respect.";
 		
 		static public var escrow_buy:String = "Buy";
 		static public var escrow_sell:String = "Sell";

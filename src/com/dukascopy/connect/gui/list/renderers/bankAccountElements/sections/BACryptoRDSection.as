@@ -195,6 +195,8 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements.sections {
 				statusColor = 0x954880;
 			else if (data.status == "CANCELLED")
 				statusColor = 0x7E94A9;
+			else if (data.status == "ON_HOLD")
+				statusColor = 0xFFCC00;
 			var buttonBitmap:ImageBitmapData = TextUtils.createbutton(
 				textSettings,
 				statusColor,

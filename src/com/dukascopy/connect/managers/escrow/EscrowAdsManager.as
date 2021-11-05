@@ -588,7 +588,20 @@ package com.dukascopy.connect.managers.escrow {
 					}
 					DialogManager.alert(Lang.textAttention, errorText);
 				}
-				GD.S_ESCROW_ADS_CREATE_FAIL.invoke();
+				if (errorMsg.substr(0, 7) == "que..29") {
+					var data:Object = phpRespond.additionalData;
+					data.first = phpRespond.data.data;
+					var code:String = phpRespond.data.data;
+					DialogManager.alert(Lang.approveTerms, Lang.escrowAdsDisclaimer, function(val:int):void {
+						if (val != 1) {
+							GD.S_ESCROW_ADS_CREATE_FAIL.invoke();
+							return;
+						}
+						PHP.question_recreate(onQuestionCreated, data);
+					}, Lang.confirm.toLocaleUpperCase(), Lang.CANCEL.toUpperCase());
+				} else {
+					GD.S_ESCROW_ADS_CREATE_FAIL.invoke();
+				}
 				phpRespond.dispose();
 				errorMsg = "";
 				return;
@@ -609,7 +622,6 @@ package com.dukascopy.connect.managers.escrow {
 		private function onCreateQuestionSuccess(data:Object):void {
 			var escrowAdsVO:EscrowAdsVO = new EscrowAdsVO(data);
 			GD.S_ESCROW_ADS_CREATED.invoke(escrowAdsVO);
-			//WSClient.call_blackHoleToGroup("que", "send", "mobile", WSMethodType.ESCROW_ADS_CREATED, { quid:escrowAdsVO.uid, senderUID:profile.uid } );
 		}
 	}
 }
