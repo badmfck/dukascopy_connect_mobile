@@ -6,6 +6,7 @@ package com.dukascopy.connect.gui.list.renderers {
 	import com.dukascopy.connect.gui.list.ListItem;
 	import com.dukascopy.connect.sys.assets.Assets;
 	import com.dukascopy.connect.sys.imageManager.ImageManager;
+	import com.dukascopy.connect.sys.payments.PayInvestmentsManager;
 	import com.dukascopy.connect.sys.style.FontSize;
 	import com.dukascopy.connect.sys.style.Style;
 	import com.dukascopy.connect.sys.theme.AppTheme;
@@ -134,6 +135,10 @@ package com.dukascopy.connect.gui.list.renderers {
 			if ("TYPE" in data && data.TYPE != null && Lang.otherAccTypes[data.TYPE] != null)
 			{
 				result = Lang.otherAccTypes[data.TYPE];
+			}
+			else if ("INSTRUMENT" in data && data.INSTRUMENT != null && PayInvestmentsManager.getInvestmentNameByInstrument(data.INSTRUMENT) != null)
+			{
+				result = PayInvestmentsManager.getInvestmentNameByInstrument(data.INSTRUMENT);
 			}
 			return result;
 		}

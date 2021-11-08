@@ -13,6 +13,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 	import com.dukascopy.connect.sys.dialogManager.DialogManager;
 	import com.dukascopy.connect.sys.imageManager.ImageManager;
 	import com.dukascopy.connect.sys.payments.InvoiceManager;
+	import com.dukascopy.connect.sys.payments.PayInvestmentsManager;
 	import com.dukascopy.connect.sys.payments.PayManager;
 	import com.dukascopy.connect.sys.payments.PaymentsManager;
 	import com.dukascopy.connect.sys.paymentsManagerNew.PaymentsManagerNew;
@@ -135,6 +136,10 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 			}
 		}
 		
+		override protected function checkCommision(immidiate:Boolean = false):void {
+			
+		}
+		
 		override protected function nextClick():void {
 			SoftKeyboard.closeKeyboard();
 			
@@ -185,7 +190,9 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 			}
 			if (account != null || cleanCurrent == true)
 			{
+				selectorDebitAccont.setTitle(PayInvestmentsManager.getInvestmentNameByInstrument(account.INSTRUMENT));
 				selectorDebitAccont.setValue(account);
+			//	selectorDebitAccont.drawTitle();
 			}
 		}
 		
@@ -235,8 +242,10 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 			if (account != null)
 			{
 				selectedAccount = account;
+				selectorDebitAccont.setTitle(PayInvestmentsManager.getInvestmentNameByInstrument(account.INSTRUMENT));
 				selectorDebitAccont.setValue(account);
-				selectorCurrency.setValue(account.CURRENCY);
+			//	selectorDebitAccont.drawTitle();
+				selectorCurrency.setValue(account.INSTRUMENT);
 			}
 		}
 		
@@ -251,7 +260,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 			for (var i:int = 0; i < l; i++)
 			{
 				walletItem = cryptoWallets[i];
-				if (currencyNeeded == walletItem.CURRENCY)
+				if (currencyNeeded == walletItem.INSTRUMENT)
 				{
 					defaultAccount = walletItem;
 					break;

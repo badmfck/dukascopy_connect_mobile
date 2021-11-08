@@ -148,6 +148,11 @@ package com.dukascopy.connect.gui.button
 		//	drawDescription();
 		}
 		
+		public function setTitle(value:String):void
+		{
+			title = value;
+		}
+		
 		public function drawDescription():void
 		{
 			if (description.bitmapData != null)

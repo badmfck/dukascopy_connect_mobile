@@ -900,7 +900,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 			}
 		}
 		
-		private function checkCommision(immidiate:Boolean = false):void {
+		protected function checkCommision(immidiate:Boolean = false):void {
 			needShowPuspoose = false;
 			_lastCommissionCallID = null;
 			currentCommision = 0;

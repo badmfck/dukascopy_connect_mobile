@@ -6,6 +6,7 @@ package com.dukascopy.connect.gui.list.renderers {
 	import com.dukascopy.connect.gui.list.ListItem;
 	import com.dukascopy.connect.sys.assets.Assets;
 	import com.dukascopy.connect.sys.imageManager.ImageManager;
+	import com.dukascopy.connect.sys.payments.PayInvestmentsManager;
 	import com.dukascopy.connect.sys.style.FontSize;
 	import com.dukascopy.connect.sys.style.Style;
 	import com.dukascopy.connect.sys.theme.AppTheme;
@@ -95,7 +96,14 @@ package com.dukascopy.connect.gui.list.renderers {
 				tfName.text = Lang["currency_" + originalCurrency];
 			}
 			else{
-				tfName.text = "";
+				if (PayInvestmentsManager.getInvestmentNameByInstrument(originalCurrency) != null)
+				{
+					tfName.text = PayInvestmentsManager.getInvestmentNameByInstrument(originalCurrency);
+				}
+				else
+				{
+					tfName.text = "";
+				}
 			}
 			
 			updatePositions(h, w);
