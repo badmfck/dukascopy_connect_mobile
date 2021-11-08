@@ -23,6 +23,7 @@ package com.dukascopy.connect.vo {
 		public var additionalData:Object;
 		
 		public var waitingType:String;
+		public var callData:Object;
 		
 		private var _linksArray:Array;
 		

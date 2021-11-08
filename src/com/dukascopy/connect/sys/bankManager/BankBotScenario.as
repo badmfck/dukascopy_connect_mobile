@@ -2194,6 +2194,11 @@ package com.dukascopy.connect.sys.bankManager {
 						text:"lang.menuInvestFromBC",
 						action:"nav:cryptoBCDeposite1"
 					}, {
+						text:"lang.menuInvestmentTransfer",
+						textForUser:"lang.itemSendMoneyPhone",
+						type:"investmentTransferPhone",
+						action:"nav:transactionConfirm"
+					}, {
 						text:"lang.menuInvestmentSell",
 						action:"nav:investmentsListSell"
 					}, {

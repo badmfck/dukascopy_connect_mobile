@@ -160,6 +160,7 @@ package com.dukascopy.connect.sys.bankManager {
 		static public var confirmedTransactionAdd:String = "Please note that this payment method is intended for sending money <b>internally</b> between two Multi-Currency Account holders.\\n\\nThe Bank reserves the right to clarify the purpose of money transfer. To avoid delay in payment processing it is recommended to always fill in the <b>Message</b> field.";
 		
 		// MENU ITEMS
+		static public var menuInvestmentTransfer:String = "Investment transfer";
 		static public var menuOperationPDF:String = "PDF statement";
 		static public var menuInvestmentDeliveryBC:String = "Delivery to blockchain";
 		static public var menuInvestFromBC:String = "Invest from blockchain";

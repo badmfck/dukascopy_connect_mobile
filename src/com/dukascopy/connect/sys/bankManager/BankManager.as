@@ -653,6 +653,28 @@ package com.dukascopy.connect.sys.bankManager {
 					}
 					giftData.callback = onMoneySendPhoneCallback;
 					ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_DIALOG, SendMoneyByPhonePopup, { giftData: giftData } );
+				} else if (data.type == "investmentTransferPhone") {
+					// TODO:SERZH
+					var investmentsAccounts:Array;
+					if (investments == null) {
+						waitingBMVO = lastBankMessageVO;
+						waitingBMVO.waitingType = "investmentsTransf";
+						waitingBMVO.callData = data;
+						getInvestments(false);
+						return;
+					}
+					giftData = new GiftData();
+					giftData.additionalData = data;
+					if (_initData != null) {
+						if ("phone" in _initData == true)
+							giftData.credit_account_number = _initData.phone;
+						if ("acc" in _initData == true)
+							giftData.currency = _initData.acc;
+						if ("amount" in _initData == true)
+							giftData.customValue = Math.abs(_initData.amount);
+					}
+					giftData.callback = onMoneySendPhoneCallback;
+					ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_DIALOG, SendMoneyByPhonePopup, { giftData: giftData } );
 				} else if (data.type == "cryptoSendPhone") {
 					giftData = new GiftData();
 					giftData.additionalData = data;
@@ -3511,8 +3533,13 @@ package com.dukascopy.connect.sys.bankManager {
 			processInvestments(data);
 			S_INVESTMENTS.invoke(investments, false);
 			if (waitingBMVO != null) {
-				if (waitingBMVO.waitingType != "investments")
-					return;
+				if (waitingBMVO.waitingType != "investments") {
+					if (waitingBMVO.waitingType == "investmentsTransf") {
+						if (investments != null && investments.length > 0)
+							preSendMessage(waitingBMVO.callData);
+						return;
+					}
+				}
 				invokeAnswerSignal(waitingBMVO);
 				waitingBMVO = null;
 			}
