@@ -261,6 +261,10 @@ package com.dukascopy.connect.gui.list.renderers {
 			{
 				result = data.COIN;
 			}
+			else if ("INSTRUMENT" in data)
+			{
+				result = data.INSTRUMENT;
+			}
 			return result;
 		}
 		
@@ -326,6 +330,10 @@ package com.dukascopy.connect.gui.list.renderers {
 		protected function getIcon(data:Object):Sprite 
 		{
 			var flagAsset:Sprite = UI.getFlagByCurrency(getCurrency(data));
+			if (flagAsset == null || flagAsset is SWFFlagNONE)
+			{
+				flagAsset = UI.getInvestIconByInstrument(getCurrency(data));
+			}
 			UI.disposeBMD(icon.bitmapData);
 			return flagAsset;
 		}

@@ -27,6 +27,7 @@ package com.dukascopy.connect.sys.bankManager {
 	import com.dukascopy.connect.screens.dialogs.CreateTemplateDialog;
 	import com.dukascopy.connect.screens.dialogs.ScreenAddInvoiceDialog;
 	import com.dukascopy.connect.screens.dialogs.ScreenPayDialog;
+	import com.dukascopy.connect.screens.dialogs.paymentDialogs.SendInvestmentByPhonePopup;
 	import com.dukascopy.connect.screens.dialogs.x.base.bottom.ListSelectionPopup;
 	import com.dukascopy.connect.screens.dialogs.x.base.content.ShareLinkPopup;
 	import com.dukascopy.connect.screens.dialogs.gifts.CreateGiftPopup;
@@ -673,8 +674,10 @@ package com.dukascopy.connect.sys.bankManager {
 						if ("amount" in _initData == true)
 							giftData.customValue = Math.abs(_initData.amount);
 					}
+					giftData.wallets = investments;
 					giftData.callback = onMoneySendPhoneCallback;
-					ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_DIALOG, SendMoneyByPhonePopup, { giftData: giftData } );
+					
+					ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_DIALOG, SendInvestmentByPhonePopup, { giftData: giftData } );
 				} else if (data.type == "cryptoSendPhone") {
 					giftData = new GiftData();
 					giftData.additionalData = data;

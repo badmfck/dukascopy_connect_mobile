@@ -324,7 +324,7 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 			{
 				result = Lang.under_investigation;
 			}
-			else if (EscrowScreenNavigation.isExpired(messageData.systemMessageVO.escrow, messageData.systemMessageVO.escrow.created) && data.inactive == false)
+			else if (EscrowScreenNavigation.isExpired(messageData.systemMessageVO.escrow, messageData.systemMessageVO.escrow.created) && data.inactive == false && messageData.systemMessageVO.escrow.status != EscrowStatus.deal_crypto_send_wait_investigation)
 			{
 				if (messageData.systemMessageVO.escrow.status == EscrowStatus.deal_created ||
 					messageData.systemMessageVO.escrow.status == EscrowStatus.deal_mca_hold ||

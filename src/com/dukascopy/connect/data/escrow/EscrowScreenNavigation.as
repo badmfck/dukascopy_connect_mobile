@@ -17,6 +17,7 @@ package com.dukascopy.connect.data.escrow
 	import com.dukascopy.connect.screens.dialogs.escrow.EscrowReportScreen;
 	import com.dukascopy.connect.screens.dialogs.escrow.ReceiveCryptoScreen;
 	import com.dukascopy.connect.screens.dialogs.escrow.RegisterBlockchainScreen;
+	import com.dukascopy.connect.screens.dialogs.escrow.RegisterEscrowScreen;
 	import com.dukascopy.connect.screens.dialogs.escrow.RejectOfferScreen;
 	import com.dukascopy.connect.screens.dialogs.escrow.SendCryptoExpiredScreen;
 	import com.dukascopy.connect.screens.dialogs.escrow.SendCryptoFailScreen;
@@ -37,6 +38,7 @@ package com.dukascopy.connect.data.escrow
 	import com.dukascopy.connect.sys.serviceScreenManager.ServiceScreenManager;
 	import com.dukascopy.connect.sys.style.presets.Color;
 	import com.dukascopy.connect.sys.ws.WSClient;
+	import com.dukascopy.connect.type.BankPhaze;
 	import com.dukascopy.connect.utils.DateUtils;
 	import com.dukascopy.connect.vo.ChatVO;
 	import com.dukascopy.connect.vo.users.UserVO;
@@ -93,6 +95,13 @@ package com.dukascopy.connect.data.escrow
 		{
 			GD.S_STOP_LOAD.invoke();
 			lastRequestData = null;
+			
+			if (Auth.bank_phase != BankPhaze.ACC_APPROVED)
+			{
+				showRegisterMCAScreen();
+				return;
+			}
+			
 			if (escrow != null)
 			{
 				if (escrow.inactive == true)
@@ -355,6 +364,11 @@ package com.dukascopy.connect.data.escrow
 			{
 				ApplicationErrors.add();
 			}
+		}
+		
+		static private function showRegisterMCAScreen():void 
+		{
+			ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, RegisterEscrowScreen);
 		}
 		
 		static public function requestInvestigation(escrow:EscrowMessageData, reason:SelectorItemData):void

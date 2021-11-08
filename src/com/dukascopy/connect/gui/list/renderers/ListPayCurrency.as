@@ -121,6 +121,10 @@ package com.dukascopy.connect.gui.list.renderers {
 			if (data != ""){
 				flagIcon.visible = true;
 				var flagAsset:Sprite = UI.getFlagByCurrency(data as String);
+				if (flagAsset == null || flagAsset is SWFFlagNONE)
+				{
+					flagAsset = UI.getInvestIconByInstrument(data as String);
+				}
 				UI.scaleToFit(flagAsset, ICON_SIZE, ICON_SIZE);
 				flagIcon.addChild(flagAsset);
 				

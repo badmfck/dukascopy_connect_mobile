@@ -7,6 +7,7 @@ package com.dukascopy.connect.screens {
 	import com.adobe.crypto.MD5;
 	import com.dukascopy.connect.Config;
 	import com.dukascopy.connect.MobileGui;
+	import com.dukascopy.connect.data.GiftData;
 	import com.dukascopy.connect.data.PopupData;
 	import com.dukascopy.connect.data.TextFieldSettings;
 	import com.dukascopy.connect.data.TradeNotesRequest;
@@ -31,6 +32,8 @@ package com.dukascopy.connect.screens {
 	import com.dukascopy.connect.screens.dialogs.QueuePopup;
 	import com.dukascopy.connect.screens.dialogs.QueueUnderagePopup;
 	import com.dukascopy.connect.screens.dialogs.UseFingerprintDialog;
+	import com.dukascopy.connect.screens.dialogs.paymentDialogs.SendInvestmentByPhonePopup;
+	import com.dukascopy.connect.screens.dialogs.paymentDialogs.SendMoneyByPhonePopup;
 	import com.dukascopy.connect.screens.dialogs.x.base.bottom.AnimatedTitlePopup;
 	import com.dukascopy.connect.screens.dialogs.x.base.bottom.ListSelectionPopup;
 	import com.dukascopy.connect.screens.dialogs.x.base.content.ShareLinkPopup;
@@ -63,6 +66,7 @@ package com.dukascopy.connect.screens {
 	import com.dukascopy.connect.sys.notificationManager.PushNotificationsNative;
 	import com.dukascopy.connect.sys.payments.PayAPIManager;
 	import com.dukascopy.connect.sys.payments.PayConfig;
+	import com.dukascopy.connect.sys.payments.PayManager;
 	import com.dukascopy.connect.sys.photoGaleryManager.PhotoGaleryManager;
 	import com.dukascopy.connect.sys.php.PHP;
 	import com.dukascopy.connect.sys.php.PHPRespond;
