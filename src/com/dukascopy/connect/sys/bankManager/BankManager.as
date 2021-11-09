@@ -655,8 +655,6 @@ package com.dukascopy.connect.sys.bankManager {
 					giftData.callback = onMoneySendPhoneCallback;
 					ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_DIALOG, SendMoneyByPhonePopup, { giftData: giftData } );
 				} else if (data.type == "investmentTransferPhone") {
-					// TODO:SERZH
-					var investmentsAccounts:Array;
 					if (investments == null) {
 						waitingBMVO = lastBankMessageVO;
 						waitingBMVO.waitingType = "investmentsTransf";
@@ -664,6 +662,13 @@ package com.dukascopy.connect.sys.bankManager {
 						getInvestments(false);
 						return;
 					}
+					var investmentsAccounts:Array = [];
+					for (var i:int = 0; i < investments.length; i++) {
+						if (investments[i].BALANCE > 0)
+							investmentsAccounts.push(investments[i]);
+					}
+					if (investmentsAccounts.length == 0)
+						return;
 					giftData = new GiftData();
 					giftData.additionalData = data;
 					if (_initData != null) {
@@ -674,9 +679,8 @@ package com.dukascopy.connect.sys.bankManager {
 						if ("amount" in _initData == true)
 							giftData.customValue = Math.abs(_initData.amount);
 					}
-					giftData.wallets = investments;
+					giftData.wallets = investmentsAccounts;
 					giftData.callback = onMoneySendPhoneCallback;
-					
 					ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_DIALOG, SendInvestmentByPhonePopup, { giftData: giftData } );
 				} else if (data.type == "cryptoSendPhone") {
 					giftData = new GiftData();
@@ -2423,8 +2427,9 @@ package com.dukascopy.connect.sys.bankManager {
 				if (lastBankMessageVO.item.type == "investments") {
 					if (investmentExist == false) {
 						lastBankMessageVO.menu[2].disabled = true;
+						lastBankMessageVO.menu[3].disabled = true;
 					} else {
-						lastBankMessageVO.menu[4].disabled = true;
+						lastBankMessageVO.menu[5].disabled = true;
 					}
 				}
 				if (lastBankMessageVO.item.type == "walletSelect" || lastBankMessageVO.item.type == "walletSelectAll" || lastBankMessageVO.item.type == "walletSelectWithoutTotal") {
