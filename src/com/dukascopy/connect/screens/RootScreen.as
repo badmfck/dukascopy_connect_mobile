@@ -52,6 +52,7 @@ package com.dukascopy.connect.screens {
 	import com.greensock.TweenMax;
 	import flash.events.Event;
 	import flash.system.Capabilities;
+	import flash.utils.getQualifiedClassName;
 	
 	/**
 	 * ...
@@ -333,7 +334,6 @@ package com.dukascopy.connect.screens {
 			NewMessageNotifier.S_UPDATE_EXIST.add(needNotification);
 			
 			GD.S_SHOW_ESCROW_ADS.add(onIstrumentSelected);
-		//	GD.S_ESCROW_INSTRUMENT_Q_SELECTED.add(onIstrumentSelected);
 		}
 		
 		private function onIstrumentSelected(instrument:EscrowAdsFilterVO = null):void 
@@ -656,7 +656,13 @@ package com.dukascopy.connect.screens {
 			var tabIndex:int = getTabIndexById(tabId);
 			if (tabIndex == -1)
 				return;
-			
+			if (tabIndex == 10) {
+				DialogManager.alert('AAAAA', "BBBBBBBBBBBBBBBBBB");
+				return;
+			} else if (tabIndex == 11) {
+				DialogManager.alert('AAAAA', "BBBBBBBBBBBBBBBBBB");
+				return;
+			}
 			if(topBar != null)
 			{
 				if (tabId == ESCROW_INSTRUMENT_SCREEN_ID)
@@ -705,15 +711,9 @@ package com.dukascopy.connect.screens {
 			var tabObject:Object;
 			if (tabIndex == 10) {
 				tabObject = questionTabObject;
-				QuestionsManager.setInOut(true);
-			}
-			else if (tabIndex == 11)
-			{
+			} else if (tabIndex == 11) {
 				tabObject = instrumentTabObject;
-				QuestionsManager.setInOut(true);
-			}
-			else {
-				QuestionsManager.setInOut(false);
+			} else {
 				tabObject = screensArray[tabIndex];
 			}
 			
