@@ -465,5 +465,13 @@ package com.dukascopy.connect.vo {
 				result = int(_raw.deal_confirm_crypto / (1000 * 60));
 			return result;
 		}
+		
+		public function get disableP2P():Boolean {
+			if (_raw == null)
+				return false;
+			if ("DISABLE_P2P" in _raw == true && _raw.DISABLE_P2P == "true")
+				return true;
+			return false;
+		}
 	}
 }

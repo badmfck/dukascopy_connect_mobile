@@ -660,16 +660,14 @@ package com.dukascopy.connect.screens {
 			var tabIndex:int = getTabIndexById(tabId);
 			if (tabIndex == -1)
 				return;
-			if (tabIndex == 10) {
-				
-				showGoodbyePopup();
-				
-				return;
-			} else if (tabIndex == 11) {
-				
-				showGoodbyePopup();
-				
-				return;
+			if (ConfigManager.config.disableP2P == true) {
+				if (tabIndex == 10) {
+					showGoodbyePopup();
+					return;
+				} else if (tabIndex == 11) {
+					showGoodbyePopup();
+					return;
+				}
 			}
 			if(topBar != null)
 			{
