@@ -437,5 +437,33 @@ package com.dukascopy.connect.vo {
 				return _raw.SUPPORT_BOT_UID;
 			return "WgDNWdIEW4I6IsWg";
 		}
+		
+		public function get escrow_time_offer_accepted():int {
+			var result:Number = 5;
+			if (_raw != null && "offer_accepted" in _raw == true)
+				result = int(_raw.offer_accepted /  (1000 * 60));
+			return result;
+		}
+		
+		public function get escrow_time_deal_completed():int {
+			var result:Number = 30;
+			if (_raw != null && "deal_completed" in _raw == true)
+				result = int(_raw.deal_completed /  (1000 * 60));
+			return result;
+		}
+		
+		public function get escrow_time_deal_expired():int {
+			var result:Number = 60;
+			if (_raw != null && "deal_expired" in _raw == true)
+				result = int(_raw.deal_expired /  (1000 * 60));
+			return result;
+		}
+		
+		public function get escrow_time_deal_confirm_crypto():int {
+			var result:Number = 24 * 60;
+			if (_raw != null && "deal_confirm_crypto" in _raw == true)
+				result = int(_raw.deal_confirm_crypto / (1000 * 60));
+			return result;
+		}
 	}
 }

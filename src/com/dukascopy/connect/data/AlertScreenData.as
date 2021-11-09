@@ -21,6 +21,7 @@ package com.dukascopy.connect.data
 		public var callbackData:Object;
 		public var additionalButton:IScreenAction;
 		public var additionalTopButton:StartChatAction;
+		public var link:SelectorItemData;
 		
 		public function AlertScreenData() 
 		{

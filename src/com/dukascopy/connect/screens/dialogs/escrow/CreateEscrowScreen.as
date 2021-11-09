@@ -113,6 +113,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		private var selectCryptoButton:BitmapButton;
 		private var openAccountTitle:Bitmap;
 		private var openAccountButton:BitmapButton;
+		private var selectedPriceObject:EscrowPrice;
 		
 		public function CreateEscrowScreen() { }
 		
@@ -2164,7 +2165,13 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 				setPrice(price);
 				inputPrice.value = selectedPrice;
 				
-				var underlineText:String = Lang.current_price_of_instrument.replace(Lang.regExtValue, getInstrument()) + " = " + price + " " + getCurrency();
+				var currentPriceValue:String = price + " " + getCurrency();
+				if (selectedPriceObject != null)
+				{
+					currentPriceValue = NumberFormat.formatAmount(selectedPriceObject.value, currencySign, false);
+				}
+				
+				var underlineText:String = Lang.current_price_of_instrument.replace(Lang.regExtValue, getInstrument()) + " = " + currentPriceValue;
 				inputPrice.drawUnderlineValue(underlineText);
 			}
 			return originalPrice;
@@ -2185,6 +2192,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 							{
 								currencySign = selectedFiatAccount.CURRENCY;
 								price = selectedCrypto.price[i].value;
+								selectedPriceObject = selectedCrypto.price[i];
 								break;
 							}
 						}
@@ -2196,12 +2204,14 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 								{
 									currencySign = TypeCurrency.USD;
 									price = selectedCrypto.price[j].value;
+									selectedPriceObject = selectedCrypto.price[j];
 								}
 							}
 							if (isNaN(price) && selectedCrypto.price.length > 0)
 							{
 								currencySign = selectedCrypto.price[0].name;
 								price = selectedCrypto.price[0].value;
+								selectedPriceObject = selectedCrypto.price[0];
 							}
 						}
 					}
@@ -2210,19 +2220,18 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 				{
 					if (currencySign != null)
 					{
-						var selectedPrice:EscrowPrice;
+						
 						for (var k:int = 0; k < selectedCrypto.price.length; k++) 
 						{
 							if (selectedCrypto.price[k].name == currencySign)
 							{
-								selectedPrice = selectedCrypto.price[k];
-								
+								selectedPriceObject = selectedCrypto.price[k];
 								break;
 							}
 						}
-						if (selectedPrice != null)
+						if (selectedPriceObject != null)
 						{
-							price = selectedPrice.value;
+							price = selectedPriceObject.value;
 							price = parseFloat(NumberFormat.formatAmount(price, currencySign, true));
 						}
 						else

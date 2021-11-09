@@ -82,6 +82,16 @@ package com.dukascopy.connect.gui.list.renderers {
 						}
 						break;
 					}
+					case EscrowStatus.deal_canceled.value:
+					{
+						result = Lang.escrow_deal_status_canceled;
+						break;
+					}
+					case EscrowStatus.deal_resolved.value:
+					{
+						result = Lang.escrow_deal_status_resolved;
+						break;
+					}
 				}
 			}
 			return result;

@@ -816,7 +816,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 				var curentResultPhone:String = UI.isEmpty(inptCodeAndPhone.getInfoBoxValue()) ? inptCodeAndPhone.value : inptCodeAndPhone.getInfoBoxValue() + inptCodeAndPhone.value;
 				if (startPhoneNumber != curentResultPhone)
 				{
-					value = Lang.transferMoneyToPhoneNumber;
+					value = Lang.transferInvestmrntToPhoneNumber;
 				}
 				else
 				{
@@ -825,7 +825,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 			}
 			else
 			{
-				value = Lang.transferMoneyToPhoneNumber;
+				value = Lang.transferInvestmrntToPhoneNumber;
 			}
 			
 			sendSectionTitle.bitmapData = TextUtils.createTextFieldData(value, componentsWidth, 10, true, 

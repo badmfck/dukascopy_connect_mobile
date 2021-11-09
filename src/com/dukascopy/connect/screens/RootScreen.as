@@ -4,6 +4,8 @@ package com.dukascopy.connect.screens {
 	import com.dukascopy.connect.Config;
 	import com.dukascopy.connect.GD;
 	import com.dukascopy.connect.MobileGui;
+	import com.dukascopy.connect.data.AlertScreenData;
+	import com.dukascopy.connect.data.SelectorItemData;
 	import com.dukascopy.connect.data.screenAction.IScreenAction;
 	import com.dukascopy.connect.data.screenAction.customActions.Create911QuestionAction;
 	import com.dukascopy.connect.data.screenAction.customActions.CreateChatAction;
@@ -25,6 +27,7 @@ package com.dukascopy.connect.screens {
 	import com.dukascopy.connect.managers.escrow.vo.EscrowInstrument;
 	import com.dukascopy.connect.screens.base.BaseScreen;
 	import com.dukascopy.connect.screens.base.ScreenManager;
+	import com.dukascopy.connect.screens.dialogs.x.base.float.FloatAlert;
 	import com.dukascopy.connect.screens.innerScreens.InnerCallsScreen;
 	import com.dukascopy.connect.screens.innerScreens.InnerChatScreen;
 	import com.dukascopy.connect.screens.innerScreens.InnerContactScreen;
@@ -42,6 +45,7 @@ package com.dukascopy.connect.screens {
 	import com.dukascopy.connect.sys.notificationManager.InnerNotificationManager;
 	import com.dukascopy.connect.sys.notifier.NewMessageNotifier;
 	import com.dukascopy.connect.sys.questionsManager.QuestionsManager;
+	import com.dukascopy.connect.sys.serviceScreenManager.ServiceScreenManager;
 	import com.dukascopy.connect.sys.socialManager.SocialManager;
 	import com.dukascopy.connect.sys.store.Store;
 	import com.dukascopy.connect.sys.style.Style;
@@ -657,10 +661,14 @@ package com.dukascopy.connect.screens {
 			if (tabIndex == -1)
 				return;
 			if (tabIndex == 10) {
-				DialogManager.alert('AAAAA', "BBBBBBBBBBBBBBBBBB");
+				
+				showGoodbyePopup();
+				
 				return;
 			} else if (tabIndex == 11) {
-				DialogManager.alert('AAAAA', "BBBBBBBBBBBBBBBBBB");
+				
+				showGoodbyePopup();
+				
 				return;
 			}
 			if(topBar != null)
@@ -729,6 +737,17 @@ package com.dukascopy.connect.screens {
 			{
 				Store.save(Store.VAR_ROOT_SCREEN_TAB, currentTabID);
 			}
+		}
+		
+		private function showGoodbyePopup():void 
+		{
+			var alertScreenData:AlertScreenData = new AlertScreenData();
+			
+			alertScreenData.text = Lang.goodbye_911;
+			alertScreenData.icon = ExchangeIcon2;
+			alertScreenData.button = Lang.textOk.toUpperCase();
+			alertScreenData.link = new SelectorItemData(Lang.aboutService, Lang.escrow_about_service_url);
+			ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, FloatAlert, alertScreenData);
 		}
 		
 		private function showInnerScreen(screenClass:Class, dir:int = 0, time:Number = 0.3):void {

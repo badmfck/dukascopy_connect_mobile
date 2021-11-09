@@ -2371,7 +2371,7 @@ package com.dukascopy.langs {
 		static public var deviation_from_market:String = "% deviation from the market price";
 		static public var fixed_price:String = "Fixed price";
 		static public var declare_blockchain:String = "For getting access to external blockchain operations, you need to declare your wallet address in this blockchain <font color='#CD3F43'>(read more)</font>";
-		static public var declare_blockchain_description_url:String = "http://google.com";
+		static public var declare_blockchain_description_url:String = "https://www.dukascopy.com/swiss/english/crypto/sign-message/";
 		static public var indicative_price:String = "Indicative price:";
 		static public var current_price:String = "Current price";
 		static public var below:String = "Below";
@@ -2407,7 +2407,7 @@ package com.dukascopy.langs {
 		static public var buy_offer_description:String = "If it is not accepted within %@1 minutes, the offer is canceled automatically and the fiat funds on your account get unblocked. Until the offer is confirmed by the %@2, you can cancel it at any moment, without penalties.";
 		static public var sell_offer_description:String = "Once the offer is accepted, you will have %@ minutes to send the crypto to the indicated wallet address of the buyer. Please get prepared in advance.";
 		static public var escrow_send_obligation_penalty:String = "Failure to fulfill the sending obligation will incur penalties. See Terms & Conditions for details";
-		static public var escrow_send_obligation_penalty_url:String = "http://google.com";
+		static public var escrow_send_obligation_penalty_url:String = "https://www.911p2p.io/pages/T&C_P2P_CRYPTO_FIAT_TRANSACTIONS.pdf";
 		static public var offer_buy_expired_details:String = "Offer was not accepted by the counterparty and expired. The funds reserved for this transaction were unblocked.";
 		static public var offer_sell_expired_details:String = "Offer was not accepted by the counterparty and expired. You may create a new offer now.";
 		static public var cancel_offer:String = "CANCEL OFFER";
@@ -2458,7 +2458,7 @@ package com.dukascopy.langs {
 		static public var escrow_text_instruments:String = "Crypto";
 		static public var escrow_text_offers:String = "Offers";
 		static public var escrow_text_deals:String = "Deals";
-		static public var please_select_reason:String = "todo";
+		static public var please_select_reason:String = "Please specify the reason of your investigation request.";
 		static public var indicate_issue_type:String = "Indicate issue type";
 		static public var escrow_report:String = "REPORT";
 		static public var escrow_report_sent:String = "The transaction has been suspended and forwarded to manual investigation by Dukascopy Support. Dukascopy Bank will contact you if any explanation is required.";
@@ -2611,21 +2611,33 @@ package com.dukascopy.langs {
 		static public var escrow_deal_crypto_send_investigation_seller:String = "Request an investigation";
 		static public var escrow_deal_crypto_send_investigation_buyer:String = "Waiting for Seller's decision";
 		static public var select_crypto_wallet:String = "Select crypto wallet";
-		static public var escrow_deal_mca_hold_fail_seller:String = "MCA hold fail for seller";
-		static public var escrow_deal_mca_hold_fail_buyer:String = "MCA hold fail for buyer";
+		static public var escrow_deal_mca_hold_fail_seller:String = "Funds reservation failed";
+		static public var escrow_deal_mca_hold_fail_buyer:String = "Funds reservation failed";
 		static public var waiting_for_crypto_fail_description:String = "The Seller has failed to confirm the sending of crypto and providing the transaction ID. The fiat funds reserved for this transaction will be unblocked in %@ unless the Seller requests an investigation. In this case, the funds will be unblocked after the investigation is done (during business hours).";
 		static public var send_crypto_fail_description:String = "You have failed to confirm the transfer and to provide the transaction ID during %@1. You have additional %@2 to request an investigation in case something went wrong. An optional 50 USD of Investigation fee may be applied, if investigation finds no ground to prove your claim.<br><br>If investigation request is not done, the following set of events will happen:<br><br><li>the Buyer gets the reserved for the deal funds back;</li><li>a penalty charge of 1% from the amount of the failed transaction will be applied. If there is no sufficient funds to cover the penalty fee, the access to the 911 Crypto P2P service will be blocked for you.</li>";
 		static public var type_explanation:String = "Type your explanation here";
 		static public var escrow_deal_fail_description_seller:String = "You failed to confirm the transfer and to provide the transaction ID during %@1. Since no investigation request during next %@2 was created the following events have happened:<br><br><li>the Buyer got the reserved for the deal funds back;</li><li>a penalty charge of 1% from the amount of the failed transaction was applied. If there were no sufficient funds to cover the penalty fee, the access to the 911 Crypto P2P service was blocked for you.</li>";
 		static public var escrow_deal_fail_description_buyer:String = "The Seller failed to confirm the sending of crypto and providing the transaction ID. Since no investigation request was created by the Seller, the funds reserved for this transaction were unblocked and returned back to your account.";
-		static public var escrow_enter_investigation_reason:String = "!!!";
+		static public var escrow_enter_investigation_reason:String = "Please specify the reason of your investigation request.";
 		static public var offer_cancelled_description:String = "Offer was cancelled by you.";
 		static public var offer_cancelled_counterparty_description:String = "Offer was cancelled by your counterparty.";
-		static public var escrow_deal_status_failed:String = "Failed";
+		static public var escrow_deal_status_failed:String = "Crypto sending failed";
 		static public var escrow_offer_accepted_status:String = "The offer was accepted and thus became a deal. You may find it in the Deals tab.";
-		static public var escrow_deal_status_mca_failed:String = "mca failed";
+		static public var escrow_deal_status_mca_failed:String = "Funds reservation failed";
 		static public var need_account:String = "To proceed with the offer, you need to open an account in %@";
 		
+		static public var escrow_deal_status_canceled:String = "Canceled";
+		static public var escrow_deal_status_resolved:String = "Resolved";
+		static public var escrow_mca_hold_fail_description_seller:String = "The deal was created but the attempt to make the funds reservation on the Buyer's side has failed. As a result, the deal was cancelled. The Buyer was informed about possible reason and further steps.";
+		static public var escrow_mca_hold_fail_description_buyer:String = "The deal was created but the attempt to make the funds reservation on your account has failed. As a result, the deal was cancelled. Please check the sufficiency of the funds on your account and repeat the attempt. Alternatively, contact your counterparty to clarify the situation if the circumstances changed.";
+		
+		static public var transferInvestmrntToPhoneNumber:String = "Investment transfer to a phone number";
+		static public var transferInvestmentTo:String = "Investment transfer to";
+		static public var escrow_deal_resolved_description:String = "123";
+		static public var escrow_deal_canceled_description:String = "123";
+		static public var deal_resolved:String = "Transaction successfully completed by the Bank";
+		static public var deal_canceled:String = "Transaction was cancelled by the Bank";
+		static public var goodbye_911:String = "It's time to say goodbye to the 911 Questions and Answers. The service will soon be transformed into crypto peer-to-peer transactions advertising board. Please stay tuned.";
 		
 		static public function updateKeys(keys:Object):void {
 			for (var n:String in keys) {

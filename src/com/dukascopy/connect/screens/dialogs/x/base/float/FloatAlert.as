@@ -2,8 +2,10 @@ package com.dukascopy.connect.screens.dialogs.x.base.float {
 	
 	import com.dukascopy.connect.Config;
 	import com.dukascopy.connect.data.AlertScreenData;
+	import com.dukascopy.connect.data.SelectorItemData;
 	import com.dukascopy.connect.data.TextFieldSettings;
 	import com.dukascopy.connect.data.screenAction.IScreenAction;
+	import com.dukascopy.connect.gui.components.LinkClip;
 	import com.dukascopy.connect.gui.lightbox.UI;
 	import com.dukascopy.connect.gui.menuVideo.BitmapButton;
 	import com.dukascopy.connect.screens.dialogs.x.base.float.FloatPopup;
@@ -35,6 +37,7 @@ package com.dukascopy.connect.screens.dialogs.x.base.float {
 		private var illustration:Bitmap;
 		private var executeAction:Boolean;
 		private var additonalButton:BitmapButton;
+		private var linkClip:LinkClip;
 		protected var screenData:AlertScreenData;
 		
 		public function FloatAlert() { }
@@ -84,7 +87,17 @@ package com.dukascopy.connect.screens.dialogs.x.base.float {
 			{
 				createAdditionalButton(screenData.additionalButton);
 			}
+			if (screenData.link != null)
+			{
+				createLinkClip(screenData.link);
+			}
 			super.initScreen(data);
+		}
+		
+		private function createLinkClip(linkData:SelectorItemData):void 
+		{
+			linkClip = new LinkClip(linkData.label, linkData.data as String, getWidth());
+			addItem(linkClip);
 		}
 		
 		private function createAdditionalButton(additionalButton:IScreenAction):void 
@@ -181,6 +194,14 @@ package com.dukascopy.connect.screens.dialogs.x.base.float {
 			description.y = position;
 			position += description.height + contentPaddingV * 2.5;
 			
+			if (linkClip != null)
+			{
+				position -= contentPaddingV;
+				linkClip.x = int(getWidth() * .5 - linkClip.width * .5);
+				linkClip.y = position;
+				position += linkClip.height + contentPaddingV * 2.5;
+			}
+			
 			if (additonalButton != null)
 			{
 				additonalButton.x = contentPadding;
@@ -235,6 +256,10 @@ package com.dukascopy.connect.screens.dialogs.x.base.float {
 			{
 				additonalButton.activate();
 			}
+			if (linkClip != null)
+			{
+				linkClip.activate();
+			}
 		}
 		
 		override public function deactivateScreen():void {
@@ -247,6 +272,10 @@ package com.dukascopy.connect.screens.dialogs.x.base.float {
 			if (additonalButton != null)
 			{
 				additonalButton.deactivate();
+			}
+			if (linkClip != null)
+			{
+				linkClip.deactivate();
 			}
 		}
 		
@@ -309,6 +338,11 @@ package com.dukascopy.connect.screens.dialogs.x.base.float {
 			{
 				UI.destroy(title);
 				title = null;
+			}
+			if (linkClip != null)
+			{
+				linkClip.dispose();
+				linkClip = null;
 			}
 		}
 	}

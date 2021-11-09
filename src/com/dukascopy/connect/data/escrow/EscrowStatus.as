@@ -20,6 +20,8 @@ package com.dukascopy.connect.data.escrow
 		private static const CRYPTO_SEND_FAIL:String = "failed";
 		private static const CRYPTO_SEND_EXPIRED:String = "expired";
 		private static const MCA_HOLD_FAIL:String = "paid_mca_failed";
+		private static const DEAL_CANCELED:String = "deal_canceled";
+		private static const DEAL_RESOLVED:String = "resolved";
 		
 		static public var offer_created:EscrowStatus = new EscrowStatus(EscrowStatus.OFFER_CREATED);
 		static public var offer_cancelled:EscrowStatus = new EscrowStatus(EscrowStatus.OFFER_CANCELLED);
@@ -37,6 +39,9 @@ package com.dukascopy.connect.data.escrow
 		static public var deal_crypto_send_fail:EscrowStatus = new EscrowStatus(EscrowStatus.CRYPTO_SEND_FAIL);
 		static public var deal_crypto_send_wait_investigation:EscrowStatus = new EscrowStatus(EscrowStatus.CRYPTO_SEND_EXPIRED);
 		
+		static public var deal_canceled:EscrowStatus = new EscrowStatus(EscrowStatus.DEAL_CANCELED);
+		static public var deal_resolved:EscrowStatus = new EscrowStatus(EscrowStatus.DEAL_RESOLVED);
+		
 		public function get value():String 
 		{
 			return _value;
@@ -49,8 +54,6 @@ package com.dukascopy.connect.data.escrow
 		
 		static public function getStatus(value:String):EscrowStatus 
 		{
-		//	return deal_crypto_send_wait_investigation;
-			trace(value, MCA_HOLD_FAIL == value);
 			switch(value)
 			{
 				case OFFER_CREATED:
@@ -116,6 +119,11 @@ package com.dukascopy.connect.data.escrow
 				case MCA_HOLD_FAIL:
 				{
 					return deal_mca_hold_fail;
+					break;
+				}
+				case DEAL_CANCELED:
+				{
+					return deal_canceled;
 					break;
 				}
 			}

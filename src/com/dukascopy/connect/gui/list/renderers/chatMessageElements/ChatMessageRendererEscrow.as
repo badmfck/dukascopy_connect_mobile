@@ -350,6 +350,18 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 						
 						break;
 					}
+					case EscrowStatus.deal_resolved:
+					{
+						result = Lang.deal_resolved;
+						
+						break;
+					}
+					case EscrowStatus.deal_canceled:
+					{
+						result = Lang.deal_canceled;
+						
+						break;
+					}
 					case EscrowStatus.offer_created:
 					{
 						if (direction == TradeDirection.buy)
@@ -659,6 +671,22 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 					iconSuccess.visible = true;
 					UI.colorize(iconSuccess, getIconColor(messageData.systemMessageVO.escrow.status, messageData.systemMessageVO.escrow.direction, messageData));
 				}
+				else if (messageData.systemMessageVO.escrow.status == EscrowStatus.deal_canceled)
+				{
+					iconTime.visible = false;
+					time.visible = false;
+					
+					iconFail.visible = true;
+					UI.colorize(iconFail, getIconColor(messageData.systemMessageVO.escrow.status, messageData.systemMessageVO.escrow.direction, messageData));
+				}
+				else if (messageData.systemMessageVO.escrow.status == EscrowStatus.deal_resolved)
+				{
+					iconTime.visible = false;
+					time.visible = false;
+					
+					iconSuccess.visible = true;
+					UI.colorize(iconSuccess, getIconColor(messageData.systemMessageVO.escrow.status, messageData.systemMessageVO.escrow.direction, messageData));
+				}
 				else if (messageData.systemMessageVO.escrow.status == EscrowStatus.offer_accepted)
 				{
 					iconTime.visible = false;
@@ -812,6 +840,16 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 					case EscrowStatus.deal_mca_hold_fail:
 					{
 						return Color.WHITE;
+						break;
+					}
+					case EscrowStatus.deal_resolved:
+					{
+						return Color.GREY_DARK;
+						break;
+					}
+					case EscrowStatus.deal_canceled:
+					{
+						return Color.GREY_SUPER_LIGHT;
 						break;
 					}
 				}
@@ -1013,6 +1051,16 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 					case EscrowStatus.deal_mca_hold_fail:
 					{
 						return Color.RED;
+						break;
+					}
+					case EscrowStatus.deal_canceled:
+					{
+						return Color.GREY;
+						break;
+					}
+					case EscrowStatus.deal_resolved:
+					{
+						return Color.GREY_LIGHT;
 						break;
 					}
 				}

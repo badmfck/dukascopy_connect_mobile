@@ -1,8 +1,10 @@
 package com.dukascopy.connect.data.escrow 
 {
+	import com.dukascopy.connect.Config;
 	import com.dukascopy.connect.managers.escrow.vo.EscrowInstrument;
 	import com.dukascopy.connect.screens.payments.card.TypeCurrency;
 	import com.dukascopy.connect.sys.applicationError.ApplicationErrors;
+	import com.dukascopy.connect.sys.configManager.ConfigManager;
 	/**
 	 * ...
 	 * @author Sergey Dobarin
@@ -16,13 +18,28 @@ package com.dukascopy.connect.data.escrow
 		static private var commission_ETH:Number = 0.01;
 		static private var commission_UST:Number = 0.01;
 		
-		static public var offerMaxTime:Number = 5;
-		static public var dealMaxTime:Number = 2;
-		static public var dealCryptoInvestigationTime:Number = 2;
-	//	static public var confirmTransactionTime:Number = 1440;
+		static public function get offerMaxTime():Number 
+		{
+			return ConfigManager.config.escrow_time_offer_accepted;
+		}
+		
+		static public function get dealMaxTime():Number 
+		{
+			return ConfigManager.config.escrow_time_deal_completed;
+		}
+		
+		static public function get dealCryptoInvestigationTime():Number 
+		{
+			return ConfigManager.config.escrow_time_deal_expired;
+		}
+		
+		static public function get receiptConfirmationTime():Number 
+		{
+			return ConfigManager.config.escrow_time_deal_confirm_crypto;
+		}
+		
 		static public var penalty:Number = 0.01;
 		static public var limitAmountKoef:Number = 0.9;
-		static public var receiptConfirmationTime:Number = 24*60;
 		
 		static public function getCommission(instrument:String):Number 
 		{

@@ -359,6 +359,51 @@ package com.dukascopy.connect.data.escrow
 				{
 					showFinishScreen(escrow, showChatButton, chatVO);
 				}
+				else if (escrow.status == EscrowStatus.deal_mca_hold_fail)
+				{
+					alertScreenData = new AlertScreenData();
+					if (escrow.crypto_user_uid == Auth.uid)
+					{
+						alertScreenData.text = Lang.escrow_mca_hold_fail_description_seller;
+					}
+					else
+					{
+						alertScreenData.text = Lang.escrow_mca_hold_fail_description_buyer;
+					}
+					
+					alertScreenData.button = Lang.textOk.toUpperCase();
+					if (showChatButton)
+					{
+						alertScreenData.additionalTopButton = new StartChatAction(chatVO.uid, chatVO);
+					}
+					ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, FloatAlert, alertScreenData);
+				}
+				else if (escrow.status == EscrowStatus.deal_resolved)
+				{
+					alertScreenData = new AlertScreenData();
+					
+					alertScreenData.text = Lang.escrow_deal_resolved_description;
+					
+					alertScreenData.button = Lang.textOk.toUpperCase();
+					if (showChatButton)
+					{
+						alertScreenData.additionalTopButton = new StartChatAction(chatVO.uid, chatVO);
+					}
+					ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, FloatAlert, alertScreenData);
+				}
+				else if (escrow.status == EscrowStatus.deal_canceled)
+				{
+					alertScreenData = new AlertScreenData();
+					
+					alertScreenData.text = Lang.escrow_deal_canceled_description;
+					
+					alertScreenData.button = Lang.textOk.toUpperCase();
+					if (showChatButton)
+					{
+						alertScreenData.additionalTopButton = new StartChatAction(chatVO.uid, chatVO);
+					}
+					ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, FloatAlert, alertScreenData);
+				}
 			}
 			else
 			{
