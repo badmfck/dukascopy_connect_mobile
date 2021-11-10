@@ -1569,7 +1569,7 @@ package com.dukascopy.langs {
 		static public var currency_RON : String = "Romanian leu";
 		static public var currency_DCO : String = "Dukascoin";
 		
-		static public var approveTerms:String="Approve terms";
+		static public var approveTerms:String="Disclaimer";
 		static public var approveChannel:String = "Approve channel";
 		static public var moveToSpam:String = "Move to spam";
 		static public var spamChannelsNotification:String = "Please be aware that content in SPAM section is not moderated. Would you like to proceed?";
