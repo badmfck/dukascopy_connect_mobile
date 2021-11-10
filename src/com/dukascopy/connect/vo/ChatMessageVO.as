@@ -275,7 +275,8 @@ package com.dukascopy.connect.vo {
 				txt = detectLink(txt);
 				txt = detectMail(txt);
 				grabAllLinks(txt);
-				_text = txt;
+				if (isEntryMessage)
+					_text = txt;
 				txt = null;
 				_crypted = false;
 				if (_text != null && _text.indexOf(BOUND_BIG_MESSAGE) == 0) {
