@@ -126,6 +126,11 @@ package com.dukascopy.connect.data.escrow
 					return deal_canceled;
 					break;
 				}
+				case DEAL_RESOLVED:
+				{
+					return deal_resolved;
+					break;
+				}
 			}
 			return null;
 		}

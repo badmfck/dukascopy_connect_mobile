@@ -1,9 +1,12 @@
 package com.dukascopy.connect.sys.serviceScreenManager {
 	
+	import avmplus.getQualifiedSuperclassName;
 	import com.dukascopy.connect.MobileGui;
 	import com.dukascopy.connect.data.GiftData;
 	import com.dukascopy.connect.screens.dialogs.bankBot.OrderCardDialog;
 	import com.dukascopy.connect.screens.dialogs.gifts.CreateGiftPopup;
+	import com.dukascopy.connect.screens.dialogs.x.base.float.FloatAlert;
+	import com.dukascopy.connect.screens.dialogs.x.base.float.FloatPopup;
 	import com.dukascopy.connect.screens.gifts.GiftInfoScreen;
 	import com.dukascopy.connect.screens.gifts.GiftsTutorialScreen;
 	import com.dukascopy.connect.vo.users.UserVO;
@@ -66,6 +69,13 @@ package com.dukascopy.connect.sys.serviceScreenManager {
 		static public function showScreen(screenType:String, screenClass:Class, screenData:Object = null, transitionTime:Number = 0.5, transparency:Number = 0.5, direction:int = 0):void {
 			_hasOpenedDialog = true;
 			currentScreenType = screenType;
+			var class1:String = getQualifiedSuperclassName(screenClass);
+			
+			if (screenClass == FloatPopup || screenClass == FloatAlert)
+			{
+				transitionTime = 0.1;
+			}
+			
 			S_SHOW.invoke(screenClass, screenData, transitionTime, transparency, direction);
 		}
 		

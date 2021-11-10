@@ -2492,7 +2492,7 @@ package com.dukascopy.langs {
 		
 		static public var addTender:String = "Add your tender";
 		static public var tenderStartText:String = "Create your ad you intend to publish, indicating the required details.\nOnce someonce reacts to your ad, switch to the one-to-one chat with the counterparty, agree on the ultimate conditions of the future deal and initiate a binding offer through a dedicated form right from the chat.";
-		static public var tenderStartText1:String = "Create your ad you intend to publish, indicating the required details.\nOnce someonce reacts to your ad, switch to the one-to-one chat with the counterparty, agree on the ultimate conditions of the future deal and initiate a binding offer through a dedicated form right from the chat.";
+		static public var tenderStartText1:String = "Create your ad you intend to publish, indicating the required details.<br>Once someone reacts to your ad, switch to the one-to - one chat with the counterparty, agree on the ultimate conditions of the future deal and initiate a binding offer through a dedicated form right from the chat.<br><br><font color='#CD3F43'><a href='https://www.911p2p.io/pages/T&C_P2P_CRYPTO_FIAT_TRANSACTIONS.pdf'>Terms & Conditions</a></font>"";
 		static public var tenderSide:String = "I would like to";
 		static public var tenderTypeOperation:String = "Choose operation type";
 		static public var tenderCrypto:String = "Crypto";
@@ -2634,10 +2634,10 @@ package com.dukascopy.langs {
 		
 		static public var transferInvestmrntToPhoneNumber:String = "Investment transfer to a phone number";
 		static public var transferInvestmentTo:String = "Investment transfer to";
-		static public var escrow_deal_resolved_description:String = "123";
-		static public var escrow_deal_canceled_description:String = "123";
-		static public var deal_resolved:String = "Transaction successfully completed by the Bank";
-		static public var deal_canceled:String = "Transaction was cancelled by the Bank";
+		static public var escrow_deal_resolved_description:String = "The Bank has finished the investigation request and taken the decision to complete the deal. The funds were transferred to the Seller's account.";
+		static public var escrow_deal_canceled_description:String = "The Bank has finished the investigation request and taken the decision to cancel the deal. The reserved funds were unblocked and returned back to the Buyer's account. The Seller's account was charged by 1% of Penalty fee.";
+		static public var deal_resolved:String = "The deal is successfully completed by the Bank";
+		static public var deal_canceled:String = "The deal was cancelled by the Bank";
 		static public var goodbye_911:String = "It's time to say goodbye to the 911 Questions and Answers. The service will soon be transformed into crypto peer-to-peer transactions advertising board. Please stay tuned.";
 		
 		static public function updateKeys(keys:Object):void {
