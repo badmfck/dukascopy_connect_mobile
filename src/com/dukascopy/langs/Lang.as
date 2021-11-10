@@ -2492,7 +2492,7 @@ package com.dukascopy.langs {
 		
 		static public var addTender:String = "Add your tender";
 		static public var tenderStartText:String = "Create your ad you intend to publish, indicating the required details.\nOnce someonce reacts to your ad, switch to the one-to-one chat with the counterparty, agree on the ultimate conditions of the future deal and initiate a binding offer through a dedicated form right from the chat.";
-		static public var tenderStartText1:String = "Create your ad you intend to publish, indicating the required details.<br>Once someone reacts to your ad, switch to the one-to - one chat with the counterparty, agree on the ultimate conditions of the future deal and initiate a binding offer through a dedicated form right from the chat.<br><br><font color='#CD3F43'><a href='https://www.911p2p.io/pages/T&C_P2P_CRYPTO_FIAT_TRANSACTIONS.pdf'>Terms & Conditions</a></font>"";
+		static public var tenderStartText1:String = "Create your ad you intend to publish, indicating the required details.<br>Once someone reacts to your ad, switch to the one-to - one chat with the counterparty, agree on the ultimate conditions of the future deal and initiate a binding offer through a dedicated form right from the chat.<br><br><font color='#CD3F43'><a href='https://www.911p2p.io/pages/T&C_P2P_CRYPTO_FIAT_TRANSACTIONS.pdf'>Terms & Conditions</a></font>";
 		static public var tenderSide:String = "I would like to";
 		static public var tenderTypeOperation:String = "Choose operation type";
 		static public var tenderCrypto:String = "Crypto";
