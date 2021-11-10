@@ -22,6 +22,7 @@ package com.dukascopy.connect.vo {
 	import com.dukascopy.connect.vo.users.UserVO;
 	import com.dukascopy.connect.vo.users.adds.ChatUserVO;
 	import com.dukascopy.langs.Lang;
+	import com.mteamapp.StringFunctions;
 	
 	
 	/**
@@ -44,7 +45,7 @@ package com.dukascopy.connect.vo {
 		static public const BOUND_COLOR:String = "#";
 		
 		static private var _mainPattern:RegExp = /\b((?:https?:\/\/|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}\/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'".,<>?«»“”‘’]))/ig;
-		static private var _secondaryPattern:RegExp = /\"www/g;
+		static private var _secondaryPattern:RegExp = /\'www/g;
 		static private var _mailPattern:RegExp = /([a-z0-9._-]+)@([a-z0-9.-]+)\.([a-z]{2,4})/g;
 		
 		private var _rawObject:Object;
@@ -274,6 +275,7 @@ package com.dukascopy.connect.vo {
 				txt = detectLink(txt);
 				txt = detectMail(txt);
 				grabAllLinks(txt);
+				_text = txt;
 				txt = null;
 				_crypted = false;
 				if (_text != null && _text.indexOf(BOUND_BIG_MESSAGE) == 0) {
@@ -307,54 +309,44 @@ package com.dukascopy.connect.vo {
 			}
 		}
 		
-		private function detectLink(str:String):String {					
-			str = str.replace(_mainPattern, "<a target='_blank' href=\"$&\"><u>$&</u></a>");
-			str = str.replace(_secondaryPattern, "\"http://www");
-			return str;
+		private function detectLink(str:String):String {
+			var links:Array = str.match(/<a(.*?)>(.*?)<\/a>/g);
+			var res:String = str.replace(/<a(.*?)>(.*?)<\/a>/g, "|@lnk|");
+			var splited:Array = res.split("|@lnk|");
+			res = "";
+			for (var i:int = 0; i < splited.length; i++) {
+				splited[i] = splited[i].replace(_mainPattern, "<u><a target='_blank' href='$&'>$&</a></u>");
+				splited[i] = splited[i].replace(_secondaryPattern, "'https://www");
+				res += splited[i];
+				if (i + 1 != splited.length)
+					res += "<u>" + links[i] + "</u>";
+			}
+			return res;
 		}
 		
 		private function detectMail(str:String):String {
-			str = str.replace(_mailPattern, "<a  href=\"mailto:$&\"><u>$&</u></a>");
+			str = str.replace(_mailPattern, "<a  href='mailto:$&'><u>$&</u></a>");
 			return str;
 		}
 		
 		private function grabAllLinks(srcText:String):void {
-			if (_linksArray != null)
-			{
+			if (_linksArray != null) {
 				_linksArray = null;
 			}
-			var splitedText:Array = srcText.split("<a");
-			var rawLink:String;
-			var endIndex:int;
-			var linkObj:Object;
-			var link:String;
-			var hrefIndex:int;
-			var leftSplited:String;
-			for (var i:int = 0; i < splitedText.length; i++) {
-				rawLink = splitedText[i];
-				endIndex = rawLink.indexOf("</a>");
-				if (endIndex == -1)
-					continue;
-				link =  rawLink.substring(0, endIndex);
-				if (link.length > 5) {
-					link  = "<a" + link + "</a>";
-					linkObj = { };
-					linkObj.fullLink = link;
-					if (_linksArray == null) {
-						_linksArray = []; // New links array
-					}
-					_linksArray.push(linkObj);
-					hrefIndex = link.indexOf('href="');
-					if (hrefIndex == -1)
-						continue;
-					leftSplited =  link.substr(hrefIndex, link.length - 1);
-					leftSplited = leftSplited.substring(6, leftSplited.length - 1);
-					var quotesIndex:int = leftSplited.indexOf('"');
-					if (quotesIndex == -1)
-						continue;
-					leftSplited = leftSplited.substr(0, quotesIndex);
-					linkObj.shortLink = leftSplited;
-				}
+			var links:Array = srcText.match(/<a(.*?)>(.*?)<\/a>/g);
+			if (links == null || links.length == 0)
+				return;
+			_linksArray = [];
+			var linkFull:String;
+			var linkShort:String;
+			for (var i:int = 0; i < links.length; i++) {
+				linkFull = links[i];
+				linkShort = linkFull.match(/href=(.*?)[>,\s]/)[0];
+				linkShort = linkShort.substring(6, linkShort.length - 2);
+				_linksArray.push( {
+					fullLink:linkFull,
+					shortLink:linkShort
+				} );
 			}
 		}
 		
