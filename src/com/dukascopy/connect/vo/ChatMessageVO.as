@@ -340,9 +340,8 @@ package com.dukascopy.connect.vo {
 					link  = "<a" + link + "</a>";
 					linkObj = { };
 					linkObj.fullLink = link;
-					if (_linksArray == null)
-					{
-						_linksArray = []; // New links array 
+					if (_linksArray == null) {
+						_linksArray = []; // New links array
 					}
 					_linksArray.push(linkObj);
 					hrefIndex = link.indexOf('href="');

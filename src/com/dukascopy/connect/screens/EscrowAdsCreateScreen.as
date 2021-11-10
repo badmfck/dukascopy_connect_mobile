@@ -14,12 +14,14 @@ package com.dukascopy.connect.screens {
 	import com.dukascopy.connect.gui.list.renderers.ListChatItem;
 	import com.dukascopy.connect.gui.list.renderers.ListCryptoWallet;
 	import com.dukascopy.connect.gui.list.renderers.ListEscrowSide;
+	import com.dukascopy.connect.gui.list.renderers.ListLink;
 	import com.dukascopy.connect.gui.preloader.Preloader;
 	import com.dukascopy.connect.gui.topBar.TopBarScreen;
 	import com.dukascopy.connect.managers.escrow.vo.EscrowAdsFilterVO;
 	import com.dukascopy.connect.managers.escrow.vo.EscrowAdsVO;
 	import com.dukascopy.connect.managers.escrow.vo.EscrowInstrument;
 	import com.dukascopy.connect.screens.base.BaseScreen;
+	import com.dukascopy.connect.screens.dialogs.ScreenLinksDialog;
 	import com.dukascopy.connect.screens.dialogs.escrow.EscrowPriceScreen;
 	import com.dukascopy.connect.screens.dialogs.x.base.bottom.ListSelectionPopup;
 	import com.dukascopy.connect.screens.payments.card.TypeCurrency;
@@ -40,6 +42,8 @@ package com.dukascopy.connect.screens {
 	import com.dukascopy.langs.Lang;
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
+	import flash.net.URLRequest;
+	import flash.net.navigateToURL;
 	
 	/**
 	 * ...
@@ -310,6 +314,19 @@ package com.dukascopy.connect.screens {
 						if (cmsgVO.systemMessageVO.method == ChatSystemMsgVO.METHOD_LOCAL_CREATE) {
 							onChatSend();
 							return;
+						}
+					} else if (cmsgVO.linksArray != null && cmsgVO.linksArray.length > 0) {
+						var links:Array = cmsgVO.linksArray;
+						if (links.length > 1) {
+							DialogManager.showDialog(ScreenLinksDialog, { callback:function(data:Object):void {
+								if (data.id == -1)
+									return;
+								navigateToURL(new URLRequest(data.shortLink));
+							}, data:links, itemClass:ListLink, title:Lang.chooseLinkToOpen } );
+						} else {
+							var linkObj:Object = links[0];
+							if (linkObj != null)
+								navigateToURL(new URLRequest(linkObj.shortLink));
 						}
 					}
 				}
