@@ -120,7 +120,7 @@ package com.dukascopy.connect.screens {
 		private var btnPrivacyObject:Object =               { type:"button",   iconL:Style.icon(Style.ICON_SOUND_MESSAGES),  title:Lang.privacySettings, iconR:IconArrowRight,   callback:onPrivacyTap, id:21 };
 		private var btnSoundMsgObject:Object =              { type:"switcher", iconL:Style.icon(Style.ICON_SOUND_MESSAGES),  title:Lang.soundsOnMessages,   callback:onSoundMsgTap, id:1 };
 		private var btnSoundCallObject:Object =             { type:"switcher", iconL:Style.icon(Style.ICON_SOUND_CALL),     title:Lang.soundsOnCall,       callback:onSoundCallTap, id:2 };
-		private var btnSocialObject:Object =                { type:"switcher", iconL:Style.icon(Style.ICON_SOCIAL),                  title:Lang.socialOnCall,       callback:onSocialTap, id:19 };
+		//private var btnSocialObject:Object =                { type:"switcher", iconL:Style.icon(Style.ICON_SOCIAL),                  title:Lang.socialOnCall,       callback:onSocialTap, id:19 };
 		private var btn911SectionObject:Object =            { type:"button",   iconL:Style.icon(Style.ICON_STAT),          title:Lang.section911My,       callback:on911SectionTap, iconR:IconArrowRight, id:3 };
 		private var btnReferralSectionObject:Object =       { type:"button",   iconL:Style.icon(Style.ICON_REFERRAL),              title:Lang.referralProgram,    callback:onReferralSectionTap, iconR:IconArrowRight, id:7 };
 		private var btnReferralEnterCodeObject:Object =     { type:"button",   iconL:Style.icon(Style.ICON_REFERRAL),              title:Lang.enterReferralCode,  callback:onReferralEnterCodeTap, iconR:IconArrowRight, id:9 };
@@ -596,7 +596,7 @@ package com.dukascopy.connect.screens {
 			buttons.push(line_2);
 			
 			//if (Config.socialAvailable == true && Auth.bank_phase == "ACC_APPROVED") {
-				buttons.push(btnSocialObject);
+				//buttons.push(btnSocialObject);
 			//}
 		//	buttons.push(btnShowRatingObject);
 			
@@ -752,7 +752,7 @@ package com.dukascopy.connect.screens {
 			if ("uiComponent" in btnShowRatingObject == true &&
 				btnShowRatingObject.uiComponent != null)
 					btnShowRatingObject.uiComponent.isSelected = Auth.showRating == 1;
-			if ("uiComponent" in btnSocialObject == true &&
+			/*if ("uiComponent" in btnSocialObject == true &&
 				btnSocialObject.uiComponent != null) {
 					if (SocialManager.getCheckerState() == 0)
 						btnSocialObject.uiComponent.isSelected = SocialManager.available;
@@ -760,7 +760,7 @@ package com.dukascopy.connect.screens {
 						btnSocialObject.uiComponent.isSelected = true;
 					else
 						btnSocialObject.uiComponent.isSelected = false;
-			}
+			}*/
 		}
 		
 		override protected function drawView():void {
@@ -1131,9 +1131,9 @@ package com.dukascopy.connect.screens {
 			GlobalSettings.setSoundOnCalls(value);
 		}
 		
-		private function onSocialTap(value:Boolean):void {
+		/*private function onSocialTap(value:Boolean):void {
 			SocialManager.changeState(value);
-		}
+		}*/
 		
 		private function onShowRatingTap(value:Boolean):void {
 			Auth.setShowRating(value, onRatingSaved);

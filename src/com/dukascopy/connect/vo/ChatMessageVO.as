@@ -326,7 +326,7 @@ package com.dukascopy.connect.vo {
 		}
 		
 		private function detectMail(str:String):String {
-			str = str.replace(_mailPattern, "<a  href='mailto:$&'><u>$&</u></a>");
+			str = str.replace(_mailPattern, "<a href='mailto:$&'><u>$&</u></a>");
 			return str;
 		}
 		

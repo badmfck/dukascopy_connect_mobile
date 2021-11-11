@@ -338,6 +338,29 @@ package com.dukascopy.connect.screens {
 			NewMessageNotifier.S_UPDATE_EXIST.add(needNotification);
 			
 			GD.S_SHOW_ESCROW_ADS.add(onIstrumentSelected);
+			
+			Auth.S_PHAZE_CHANGE.add(onPhaseChanged);
+		}
+		
+		private function onPhaseChanged(...rest):void {
+			var tabIndex:int = getTabIndexById(currentTabID);
+			if (tabIndex == -1)
+				return;
+			var tabObject:Object;
+			if (tabIndex == 10) {
+				tabObject = questionTabObject;
+			} else if (tabIndex == 11) {
+				tabObject = instrumentTabObject;
+			} else {
+				tabObject = screensArray[tabIndex];
+			}
+			topBar.setSearchBarVisibility(tabObject.hasSearchBar);
+			topBar.setActions(getActions(tabObject.id), (currentTabID == QUESTIONS_SCREEN_ID) ? .7 : 1);
+			topBar.updateUnderline(currentTabID == SETTINGS_SCREEN_ID);
+			if ("titleIcon" in tabObject == true && tabObject.titleIcon != null)
+				topBar.setTitleIcon(tabObject.titleIcon);
+			else
+				topBar.setTitle(tabObject.title);
 		}
 		
 		private function onIstrumentSelected(instrument:EscrowAdsFilterVO = null):void 
@@ -411,13 +434,8 @@ package com.dukascopy.connect.screens {
 		
 		private function onStoreRootScreenTab(data:Object, err:Boolean):void {
 			if (err == true || data == null) {
-				/*if (SocialManager.available == true)
-					currentTabID = PROMO_SCREEN_ID;
-				else*/
-					currentTabID = CHATS_SCREEN_ID;
-			/*} else if (SocialManager.available == true) {
-				currentTabID = data as String;*/
-			} else if (/*data == PROMO_SCREEN_ID || */data == QUESTIONS_SCREEN_ID || data == CHANNELS_SCREEN_ID) {
+				currentTabID = CHATS_SCREEN_ID;
+			} else if (data == QUESTIONS_SCREEN_ID || data == CHANNELS_SCREEN_ID) {
 				currentTabID = CHATS_SCREEN_ID;
 			} else {
 				currentTabID = data as String;
@@ -446,10 +464,8 @@ package com.dukascopy.connect.screens {
 		private function setTitles():void {
 			if (screensArray != null && screensArray.length > 0) {
 				screensArray[0].title = Lang.textChats;
-				//screensArray[1].title = Lang.textChannels;
 				screensArray[1].title = Lang.textContacts;
 				screensArray[2].title = Lang.textPayments;
-				 //screensArray[3].title = Lang.textLottery;
 				screensArray[3].title = Lang.textSettings;
 			}
 		}
@@ -520,7 +536,6 @@ package com.dukascopy.connect.screens {
 			currentScreen = null;
 			
 			GD.S_SHOW_ESCROW_ADS.remove(onIstrumentSelected);
-		//	GD.S_ESCROW_INSTRUMENT_Q_SELECTED.remove(onIstrumentSelected);
 			InnerNotificationManager.S_NOTIFICATION_NEED.remove(needNotification);
 			NewMessageNotifier.S_UPDATE_EXIST.remove(needNotification);
 		}
@@ -567,10 +582,8 @@ package com.dukascopy.connect.screens {
 		private function updateMissedCallsNum(missedNum:int):void {
 			if (currentTabID != CALLS_SCREEN_ID) {
 				bottomTabs.selectNotification(CALLS_SCREEN_ID);
-			//	bottomTabs.displayNewItemsInTab(CALLS_SCREEN_ID, missedNum);
 			} else {
 				bottomTabs.selectNotification(CALLS_SCREEN_ID, false);
-			//	bottomTabs.displayNewItemsInTab(CALLS_SCREEN_ID, 0);
 			}
 		}
 		
@@ -625,7 +638,6 @@ package com.dukascopy.connect.screens {
 
 		override protected function onSwipe(d:String):void{
 			echo("RootScreen", "onSwipe", d);
-			//!TODO: need rewrite. Bad architecture (create visual controller, add signals)
 			if (LightBox.isShowing || ImagePreviewCrop.isShowing) {
 				return;
 			}
@@ -731,8 +743,7 @@ package com.dukascopy.connect.screens {
 				topBar.setTitleIcon(tabObject.titleIcon);
 			else
 				topBar.setTitle(tabObject.title);
-			if (tabIndex != 11)
-			{
+			if (tabIndex != 11) {
 				Store.save(Store.VAR_ROOT_SCREEN_TAB, currentTabID);
 			}
 		}
@@ -850,10 +861,6 @@ package com.dukascopy.connect.screens {
 				actionCreateGroupChat = new CreateChatAction();
 				array.push(actionCreateGroupChat);
 			}
-			/*if (id == PROMO_SCREEN_ID) {
-				actionPromoEvents = new OpenPromoEventsInfoAction();
-				array.push(actionPromoEvents);
-			}*/
 			return array;
 		}
 		
