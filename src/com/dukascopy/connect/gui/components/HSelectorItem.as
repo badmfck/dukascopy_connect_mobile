@@ -157,16 +157,23 @@ package com.dukascopy.connect.gui.components
 				
 				itemWidth += paddingH * 2;
 				
+				var clipHeight:int = label.height;
+				if (clipHeight <= FontSize.SUBHEAD)
+				{
+					clipHeight = FontSize.SUBHEAD;
+				}
+				
 				if (label != null)
 				{
 					label.x = int(itemWidth * .5 - label.width * .5);
+					
 					if (iconClip == null)
 					{
-						label.y = int(itemHeight * .5 - label.height * .5);
+						label.y = int(itemHeight * .5 - clipHeight * .5);
 					}
 					else
 					{
-						label.y = int(itemHeight * 0.75 - label.height * .5 - Config.FINGER_SIZE * .05);
+						label.y = int(itemHeight * 0.75 - clipHeight * .5 - Config.FINGER_SIZE * .05);
 					}
 				}
 				if (iconClip != null)

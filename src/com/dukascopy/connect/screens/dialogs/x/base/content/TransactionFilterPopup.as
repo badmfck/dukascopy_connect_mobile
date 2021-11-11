@@ -541,7 +541,7 @@ package com.dukascopy.connect.screens.dialogs.x.base.content
 		override public function dispose():void {
 			super.dispose();
 			selectedCategory = null;
-			filters = null;
+		//	filters = null;
 			if (accounts != null) {
 				accounts.dispose();
 				accounts = null;
@@ -595,6 +595,7 @@ package com.dukascopy.connect.screens.dialogs.x.base.content
 					(data.callback as Function).length == 1) {
 						data.callback(getSelectedFilters());
 				}
+				filters = null;
 			}
 		}
 		

@@ -326,7 +326,7 @@ package com.dukascopy.connect.screens {
 				{
 					filters:storedFilters,
 					callback:onFiltersSetted
-				}
+				}, 0
 			);
 		}
 		
