@@ -361,6 +361,11 @@ package com.dukascopy.connect.screens {
 				topBar.setTitleIcon(tabObject.titleIcon);
 			else
 				topBar.setTitle(tabObject.title);
+			
+			if (Auth.bank_phase != BankPhaze.ACC_APPROVED && (currentTabID == QUESTIONS_SCREEN_ID || currentTabID == ESCROW_INSTRUMENT_SCREEN_ID))
+			{
+				onBottomTabsClick(CHATS_SCREEN_ID);
+			}
 		}
 		
 		private function onIstrumentSelected(instrument:EscrowAdsFilterVO = null):void 

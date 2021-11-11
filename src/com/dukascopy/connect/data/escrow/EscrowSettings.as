@@ -20,22 +20,22 @@ package com.dukascopy.connect.data.escrow
 		
 		static public function get offerMaxTime():Number 
 		{
-			return ConfigManager.config.escrow_time_offer_accepted;
+			return ConfigManager.config.escrowTimeOfferAccepted;
 		}
 		
 		static public function get dealMaxTime():Number 
 		{
-			return ConfigManager.config.escrow_time_deal_completed;
+			return ConfigManager.config.escrowTimeDealCompleted;
 		}
 		
 		static public function get dealCryptoInvestigationTime():Number 
 		{
-			return ConfigManager.config.escrow_time_deal_expired;
+			return ConfigManager.config.escrowTimeDealExpired;
 		}
 		
 		static public function get receiptConfirmationTime():Number 
 		{
-			return ConfigManager.config.escrow_time_deal_confirm_crypto;
+			return ConfigManager.config.escrowTimeDealConfirmCrypto;
 		}
 		
 		static public var penalty:Number = 0.01;
