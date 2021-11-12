@@ -1997,7 +1997,9 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			}
 			if (selectedDirection == TradeDirection.buy)
 			{
-				selectDefaultAccount();
+				selectCurrencyFromPrices();
+				selectFiat(currencySign);
+			//	selectDefaultAccount();
 			}
 			else
 			{

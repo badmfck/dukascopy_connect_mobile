@@ -2639,6 +2639,10 @@ package com.dukascopy.langs {
 		static public var deal_resolved:String = "The deal is successfully completed by the Bank";
 		static public var deal_canceled:String = "The deal was cancelled by the Bank";
 		static public var goodbye_911:String = "It's time to say goodbye to the 911 Questions and Answers. The service will soon be transformed into crypto peer-to-peer transactions advertising board. Please stay tuned.";
+		static public var escrow_ads:String = "ADS";
+		static public var escrow_coins:String = "COINS";
+		
+		static public var escrowRulesDialogText:String = "Rules";
 		
 		static public function updateKeys(keys:Object):void {
 			for (var n:String in keys) {
@@ -2668,6 +2672,11 @@ package com.dukascopy.langs {
 				}
 				if (n.indexOf("investmentsTitles") == 0) {
 					investmentsTitles[n.substr(17).toUpperCase()] = keys[n];
+					continue;
+				}
+				var key:String = "cryptoTitles_";
+				if (n.indexOf(key) == 0) {
+					cryptoTitles[n.substr(key.length).toUpperCase()] = keys[n];
 					continue;
 				}
 				if (n.indexOf("rdStatuses") == 0) {

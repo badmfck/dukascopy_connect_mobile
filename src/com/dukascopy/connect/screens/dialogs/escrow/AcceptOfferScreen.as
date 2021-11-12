@@ -421,6 +421,10 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			
 			var screenData:EscrowScreenData = data as EscrowScreenData;
 			offerCreatedTime = screenData.created;
+			if (offerCreatedTime.toString().length > 11)
+			{
+				offerCreatedTime = offerCreatedTime / 1000;
+			}
 			escrowOffer = screenData.escrowOffer;
 			chat = screenData.chat;
 			messageId = screenData.messageId;

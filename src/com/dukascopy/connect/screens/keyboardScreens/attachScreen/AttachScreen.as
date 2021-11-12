@@ -158,6 +158,10 @@ package com.dukascopy.connect.screens.keyboardScreens.attachScreen {
 			}*/
 			
 			var showEscrowButton:Boolean = true;
+			if (Auth.bank_phase != BankPhaze.ACC_APPROVED)
+			{
+				showEscrowButton = false;
+			}
 			if (ChatManager.getCurrentChat() != null)
 			{
 				if (ChatManager.getCurrentChat().queStatus)

@@ -1,5 +1,6 @@
 package com.dukascopy.connect.managers.escrow.vo{
 	import com.dukascopy.connect.screens.payments.card.TypeCurrency;
+	import com.dukascopy.langs.Lang;
 
     public class EscrowInstrument{
 
@@ -17,6 +18,9 @@ package com.dukascopy.connect.managers.escrow.vo{
 			{
 				_code = TypeCurrency.DCO;
 			}
+			
+			updateNameFromLocatool();
+			
             if(precision is String){
                 var p:int =-1;
                 try{
@@ -28,6 +32,12 @@ package com.dukascopy.connect.managers.escrow.vo{
                 this.precision = precision;
             updatePrice(price)
         }
+		
+		private function updateNameFromLocatool():void 
+		{
+			if (Lang.cryptoTitles != null && code in Lang.cryptoTitles == true)
+				_name = Lang.cryptoTitles[code];
+		}
 		
         public function get name():String{
             return _name;

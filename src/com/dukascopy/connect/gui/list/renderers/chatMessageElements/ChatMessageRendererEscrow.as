@@ -247,8 +247,9 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 			amount.y = int(title.y + title.height + paddingV * 0.4);
 			
 			price.width = maxTextWidth;
-			price.htmlText = getPriceText(data);
 			price.textColor = getAmountColor(data.status, messageData);
+			price.htmlText = getPriceText(data);
+			
 			price.width = price.textWidth + 5;
 			price.height = price.textHeight + 5;
 			
@@ -285,7 +286,6 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 		
 		private function getPriceText(data:EscrowMessageData):String 
 		{
-			//!TODO: per coin now добавить;
 			var result:String = Lang.price_per_coin;
 			result = result.replace(Lang.regExtValue, data.price + " " + getCurrency(data));
 			
@@ -293,7 +293,10 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 				data.status == EscrowStatus.deal_mca_hold ||
 				data.status == EscrowStatus.paid_crypto)
 			{
-				result += "<br><br><font color='#24835C'>\n\n" + Lang.tapToUpenForm + "</font>";
+				if (data.inactive == true)
+				{
+					result = "<textformat leading='" + int(Config.FINGER_SIZE * .2) + "'>" + result + "<br><font color='#24835C'>" + Lang.tapToUpenForm + "</font></textformat>";
+				}
 			}
 			
 			return result;

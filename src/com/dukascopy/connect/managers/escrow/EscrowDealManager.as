@@ -1,11 +1,13 @@
 package com.dukascopy.connect.managers.escrow{
 
     import com.dukascopy.connect.GD;
+	import com.dukascopy.connect.data.ErrorData;
 	import com.dukascopy.connect.data.escrow.EscrowEventType;
 	import com.dukascopy.connect.managers.escrow.vo.EscrowPrice;
 	import com.dukascopy.connect.managers.escrow.vo.InstrumentParser;
     import com.dukascopy.connect.sys.Dispatcher;
 	import com.dukascopy.connect.sys.applicationError.ApplicationErrors;
+	import com.dukascopy.connect.sys.errors.ErrorLocalizer;
 
     import com.dukascopy.connect.vo.EscrowDealVO;
     import com.telefision.utils.maps.EscrowDealMap;
@@ -94,7 +96,9 @@ package com.dukascopy.connect.managers.escrow{
                     trace(resp);
                     //TODO: Check response
                     if(resp.error){
-                        GD.S_ESCROW_REQUEST_DEAL_EVENT_SENT_FAIL.invoke(resp.error)
+                        GD.S_ESCROW_REQUEST_DEAL_EVENT_SENT_FAIL.invoke(resp.error);
+						var errorText:String = ErrorLocalizer.getText(resp.error);
+						GD.S_TOAST.invoke(errorText);
                         return;
                     }
                     

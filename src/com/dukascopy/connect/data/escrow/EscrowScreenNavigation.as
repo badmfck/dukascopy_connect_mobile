@@ -4,12 +4,14 @@ package com.dukascopy.connect.data.escrow
 	import com.dukascopy.connect.Config;
 	import com.dukascopy.connect.GD;
 	import com.dukascopy.connect.data.AlertScreenData;
+	import com.dukascopy.connect.data.ErrorData;
 	import com.dukascopy.connect.data.EscrowScreenData;
 	import com.dukascopy.connect.data.SelectorItemData;
 	import com.dukascopy.connect.data.screenAction.IScreenAction;
 	import com.dukascopy.connect.data.screenAction.customActions.OpenSupportChatAction;
 	import com.dukascopy.connect.data.screenAction.customActions.StartChatAction;
 	import com.dukascopy.connect.gui.components.message.ToastMessage;
+	import com.dukascopy.connect.managers.escrow.EscrowOfferManager;
 	import com.dukascopy.connect.managers.escrow.vo.EscrowInstrument;
 	import com.dukascopy.connect.screens.dialogs.ScreenWebviewDialogBase;
 	import com.dukascopy.connect.screens.dialogs.escrow.AcceptOfferScreen;
@@ -64,8 +66,16 @@ package com.dukascopy.connect.data.escrow
 		
 		public static function init():void
 		{
-			
+		//	GD.S_OFFER_ACCEPT_FAIL.add(onOfferAcceptFail);
 		}
+		
+		/*static private function onOfferAcceptFail(errorData:ErrorData):void 
+		{
+			if (errorData != null)
+			{
+				ToastMessage.display(errorData.getDisplayError());
+			}
+		}*/
 		
 		static private function confirmCryptoReceiveCommand(escrow:EscrowMessageData, messageId:Number, chatVO:ChatVO, created:Number, command:OfferCommand = null):void
 		{

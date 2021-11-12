@@ -137,8 +137,8 @@ package com.dukascopy.connect.gui.list.renderers {
 			var captionSize:Number = FontSize.SUBHEAD;
 			var color:String = "#" + Style.color(Style.COLOR_TEXT).toString(16);
 			
-			result = "<font color='" + color + "' size='" + TEXT_SIZE_DESC + "'>ADS: </font><font color='#CD3F43' size='" + TEXT_SIZE_DESC_VALS + "'>" + data.count + "</font>";
-			result += "<font color='" + color + "' size='" + TEXT_SIZE_DESC + "'>, COINS: </font><font color='#CD3F43' size='" + TEXT_SIZE_DESC_VALS + "'>" + data.volume + "</font>";
+			result = "<font color='" + color + "' size='" + TEXT_SIZE_DESC + "'>" + Lang.escrow_ads + ": </font><font color='#CD3F43' size='" + TEXT_SIZE_DESC_VALS + "'>" + data.count + "</font>";
+			result += "<font color='" + color + "' size='" + TEXT_SIZE_DESC + "'>, " + Lang.escrow_coins + ": </font><font color='#CD3F43' size='" + TEXT_SIZE_DESC_VALS + "'>" + data.volume + "</font>";
 			return result;
 		}
 		

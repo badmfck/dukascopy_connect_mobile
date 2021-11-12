@@ -1738,7 +1738,7 @@ package com.dukascopy.connect.sys.questionsManager {
 			screenData.mainTitle = Lang.escrow_rules;
 			screenData.callback = showEscrowTerms;
 			screenData.button = Lang.termsAndConditions;
-			screenData.text = Lang.questionRulesDialogText;
+			screenData.text = Lang.escrowRulesDialogText;
 			screenData.textColor = Style.color(Style.COLOR_SUBTITLE);
 			
 			ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, EscrowRulesPopup, screenData);

@@ -1,5 +1,6 @@
 package com.dukascopy.connect.data 
 {
+	import com.dukascopy.connect.sys.errors.ErrorLocalizer;
 	/**
 	 * ...
 	 * @author Sergey Dobarin
@@ -29,6 +30,20 @@ package com.dukascopy.connect.data
 					dccError = raw.dccError;
 				}
 			}
+		}
+		
+		public function getDisplayError():String 
+		{
+			var result:String;
+			if (dccError  != null)
+			{
+				result = ErrorLocalizer.getText(dccError);
+			}
+			if (result == null)
+			{
+				result = message;
+			}
+			return result;
 		}
 	}
 }
