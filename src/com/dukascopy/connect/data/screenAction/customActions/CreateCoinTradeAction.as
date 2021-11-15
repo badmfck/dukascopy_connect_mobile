@@ -3,6 +3,7 @@ package com.dukascopy.connect.data.screenAction.customActions {
 	import assets.StarIcon3;
 	import com.dukascopy.connect.Config;
 	import com.dukascopy.connect.GD;
+	import com.dukascopy.connect.MobileGui;
 	import com.dukascopy.connect.data.AlertScreenData;
 	import com.dukascopy.connect.data.ErrorData;
 	import com.dukascopy.connect.data.escrow.EscrowDealData;
@@ -171,7 +172,8 @@ package com.dukascopy.connect.data.screenAction.customActions {
 		{
 			if (command == OfferCommand.register_blockchain)
 			{
-				EscrowScreenNavigation.registerBlockchain(offer.instrument);
+				MobileGui.openBankBot();
+			//	EscrowScreenNavigation.registerBlockchain(offer.instrument);
 			}
 			else if (command == OfferCommand.create_offer)
 			{

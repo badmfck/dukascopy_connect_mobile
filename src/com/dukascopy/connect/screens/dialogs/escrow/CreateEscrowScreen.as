@@ -14,7 +14,6 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 	import com.dukascopy.connect.data.screenAction.customActions.TestCreateOfferAction;
 	import com.dukascopy.connect.gui.button.DDAccountButton;
 	import com.dukascopy.connect.gui.button.DDFieldButton;
-	import com.dukascopy.connect.gui.button.WalletButton;
 	import com.dukascopy.connect.gui.components.message.ToastMessage;
 	import com.dukascopy.connect.gui.components.radio.RadioGroup;
 	import com.dukascopy.connect.gui.components.radio.RadioItem;
@@ -45,6 +44,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 	import com.dukascopy.connect.utils.NumberFormat;
 	import com.dukascopy.connect.utils.TextUtils;
 	import com.dukascopy.langs.Lang;
+	import com.dukascopy.langs.LangManager;
 	import flash.display.Bitmap;
 	import flash.display.Sprite;
 	import flash.events.Event;
@@ -286,7 +286,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		{
 			offerData = new EscrowDealData();
 			offerData.instrument = selectedCrypto.code;
-			
+			offerData.currency = currencySign;
 			needCallback = true;
 			command = OfferCommand.register_blockchain;
 			close();
@@ -394,6 +394,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			selectFiat(currencySign);
 			setCurrencyInControls();
 			
+			checkFiatAccountExist();
 			/*if (!selectedCrypto.isLinked && state != STATE_REGISTER)
 			{
 				toState(STATE_REGISTER);
@@ -402,9 +403,22 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			{
 				toState(STATE_START);
 			}*/
+			
 			updatePrice();
 			updateBalance();
 			priceSelector.draw(_width - contentPadding * 2, -5, 5, 0, selectedPrice, getCurrency());
+		}
+		
+		private function checkFiatAccountExist():void 
+		{
+			if (selectedCrypto != null && selectedFiatAccount != null && state != STATE_REGISTER && selectedDirection == TradeDirection.sell)
+			{
+				toState(STATE_REGISTER);
+			}
+			else if (state != STATE_START)
+			{
+				toState(STATE_START);
+			}
 		}
 		
 		private function selectFiat(currency:String):void 
@@ -1289,7 +1303,9 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 				registerDescriprtion.bitmapData.dispose();
 				registerDescriprtion.bitmapData = null;
 			}
-			registerDescriprtion.bitmapData = TextUtils.createTextFieldData(Lang.declare_blockchain, _width - contentPadding * 2, 10, true,
+			var text:String = Lang.register_fiat_account;
+			text = LangManager.replace(Lang.regExtValue, text, currencySign);
+			registerDescriprtion.bitmapData = TextUtils.createTextFieldData(text, _width - contentPadding * 2, 10, true,
 																	TextFormatAlign.LEFT, TextFieldAutoSize.LEFT, 
 																	FontSize.SUBHEAD, true, Style.color(Style.COLOR_SUBTITLE),
 																	Style.color(Style.COLOR_BACKGROUND), false, true);
@@ -1687,8 +1703,10 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 				}
 				else
 				{
-					hidePreloader();
-					onDataReady();
+					loadAccounts();
+					
+				//	hidePreloader();
+				//	onDataReady();
 				}
 			}
 		}
@@ -1989,7 +2007,6 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 					}
 				}
 				selectInstrument(targetInstrument);
-				
 			}
 			else
 			{
@@ -2008,6 +2025,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 					if (selectedCrypto != null)
 					{
 						selectCurrencyFromPrices();
+						selectFiat(currencySign);
 						setCurrencyInControls();
 					}
 					else
@@ -2061,10 +2079,10 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 				refreshPrice();
 			}
 			
-			/*if (selectedCrypto != null && !selectedCrypto.isLinked && state != STATE_REGISTER)
+			if (selectedCrypto != null && selectedFiatAccount != null && state != STATE_REGISTER && selectedDirection == TradeDirection.sell)
 			{
 				toState(STATE_REGISTER);
-			}*/
+			}
 		}
 		
 		private function refreshPrice(overridePrice:Number = NaN, pricePercentStartValue:Number = 0):void 

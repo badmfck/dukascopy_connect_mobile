@@ -293,9 +293,9 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 				data.status == EscrowStatus.deal_mca_hold ||
 				data.status == EscrowStatus.paid_crypto)
 			{
-				if (data.inactive == true)
+				if (data.inactive == false)
 				{
-					result = "<textformat leading='" + int(Config.FINGER_SIZE * .2) + "'>" + result + "<br><font color='#24835C'>" + Lang.tapToUpenForm + "</font></textformat>";
+					result = "<textformat leading='" + int(Config.FINGER_SIZE * .2) + "'>" + result + "<br></textformat><font color='#24835C'>" + Lang.tapToUpenForm + "</font>";
 				}
 			}
 			

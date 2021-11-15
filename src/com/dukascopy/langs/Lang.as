@@ -2643,6 +2643,7 @@ package com.dukascopy.langs {
 		static public var escrow_coins:String = "COINS";
 		
 		static public var escrowRulesDialogText:String = "Rules";
+		static public var register_fiat_account:String = "To proceed with this operation you need to have an active account in %@";
 		
 		static public function updateKeys(keys:Object):void {
 			for (var n:String in keys) {
