@@ -31,13 +31,10 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 	import com.dukascopy.connect.screens.serviceScreen.SelectContactScreen;
 	import com.dukascopy.connect.sys.auth.Auth;
 	import com.dukascopy.connect.sys.bankManager.BankManager;
-	import com.dukascopy.connect.sys.configManager.ConfigManager;
 	import com.dukascopy.connect.sys.dialogManager.DialogManager;
 	import com.dukascopy.connect.sys.imageManager.ImageBitmapData;
 	import com.dukascopy.connect.sys.payments.CoinComissionChecker;
-	import com.dukascopy.connect.sys.payments.CurrencyHelpers;
 	import com.dukascopy.connect.sys.payments.PayManager;
-	import com.dukascopy.connect.sys.payments.PayRespond;
 	import com.dukascopy.connect.sys.pointerManager.PointerManager;
 	import com.dukascopy.connect.sys.serviceScreenManager.ServiceScreenManager;
 	import com.dukascopy.connect.sys.style.FontSize;
@@ -533,6 +530,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 				{
 					maxAmount = parseFloat(accounts.coinsAccounts[0].BALANCE);
 				}
+				maxAmount -= getReservedCoins();
 				
 				if (isNaN(inputQuantity.value) || inputQuantity.value > maxAmount || inputQuantity.value == 0)
 				{
@@ -571,6 +569,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 					if (euroAcc != null)
 					{
 						maxEurosAvaliable = parseFloat(euroAcc.BALANCE);
+						maxEurosAvaliable -= getReservedFiat();
 					}	
 				}
 				
@@ -598,6 +597,15 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 				nextButton.alpha = 1;
 			}
 			return valid;
+		}
+		
+		private function getReservedCoins():Number 
+		{
+			if (data != null && "reservedCoin" in data && !isNaN(data.reservedCoin))
+			{
+				return data.reservedCoin;
+			}
+			return 0;
 		}
 		
 		private function nextClick():void {
@@ -935,6 +943,8 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 				}
 				var resultSum:Number = balance - reserved;
 				
+				resultSum -= getReservedCoins();
+				
 				maxCoinsAvaliable = Lang.avaliable + ": " + NumberFormat.formatAmount(resultSum, account.COIN);
 			}
 			
@@ -951,9 +961,15 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 						break;
 					}
 				}
+				
 				if (euroAcc != null)
 				{
-					maxEurosAvaliable = Lang.avaliable + ": " + euroAcc.BALANCE + " " + euroAcc.CURRENCY;
+					var fiatAmount:Number = euroAcc.BALANCE;
+					fiatAmount -= getReservedFiat();
+					if (euroAcc != null)
+					{
+						maxEurosAvaliable = Lang.avaliable + ": " + fiatAmount + " " + euroAcc.CURRENCY;
+					}
 				}
 			}
 			
@@ -981,6 +997,15 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 			drawView();
 			
 			horizontalLoader.y = topBar.y + topBar.trueHeight;
+		}
+		
+		private function getReservedFiat():Number 
+		{
+			if (data != null && "reservedFiat" in data && !isNaN(data.reservedFiat))
+			{
+				return data.reservedFiat;
+			}
+			return 0;
 		}
 		
 		private function drawDate():void 

@@ -71,7 +71,7 @@ package com.dukascopy.connect.screens.dialogs.escrow
 																	FontSize.BODY, true, Style.color(Style.COLOR_TEXT),
 																	Style.color(Style.COLOR_BACKGROUND), false, true);
 			
-			text.x = int(control.getWidth() + Config.FINGER_SIZE * .15);
+			text.x = int(control.getWidth() + Config.FINGER_SIZE * .25);
 			back.graphics.clear();
 			back.graphics.beginFill(0, 0);
 			back.graphics.drawRect(0, 0, text.width, text.height);

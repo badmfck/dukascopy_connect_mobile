@@ -18,6 +18,8 @@ package com.dukascopy.connect.data
 		public var bestPrice:Number;
 		public var bestSellPrice:Number;
 		public var bestBuyPrice:Number;
+		public var reservedCoin:Number = 0;
+		public var reservedFiat:Number = 0;
 		
 		public function OrderScreenData() 
 		{

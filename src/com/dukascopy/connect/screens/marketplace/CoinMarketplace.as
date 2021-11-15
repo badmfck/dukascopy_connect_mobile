@@ -14,6 +14,7 @@ package com.dukascopy.connect.screens.marketplace {
 	import com.dukascopy.connect.data.coinMarketplace.TradingOrder;
 	import com.dukascopy.connect.data.coinMarketplace.TradingOrderParser;
 	import com.dukascopy.connect.data.coinMarketplace.TradingOrderRequest;
+	import com.dukascopy.connect.data.escrow.TradeDirection;
 	import com.dukascopy.connect.data.screenAction.IScreenAction;
 	import com.dukascopy.connect.data.screenAction.customActions.EmptyAction;
 	import com.dukascopy.connect.data.screenAction.customActions.RemoveOrderAction;
@@ -27,10 +28,10 @@ package com.dukascopy.connect.screens.marketplace {
 	import com.dukascopy.connect.gui.topBar.TopBarScreen;
 	import com.dukascopy.connect.screens.base.BaseScreen;
 	import com.dukascopy.connect.screens.context.ContextMenuScreen;
-	import com.dukascopy.connect.screens.dialogs.x.base.content.CoinsBalancePopup;
 	import com.dukascopy.connect.screens.dialogs.paymentDialogs.BuySellCoinPopup;
 	import com.dukascopy.connect.screens.dialogs.paymentDialogs.TradeCoinPopup;
 	import com.dukascopy.connect.screens.dialogs.paymentDialogs.TradeCoinsExtendedPopup;
+	import com.dukascopy.connect.screens.dialogs.x.base.content.CoinsBalancePopup;
 	import com.dukascopy.connect.screens.payments.card.TypeCurrency;
 	import com.dukascopy.connect.screens.serviceScreen.BottomPopupScreen;
 	import com.dukascopy.connect.sys.applicationError.ApplicationErrors;
@@ -38,7 +39,6 @@ package com.dukascopy.connect.screens.marketplace {
 	import com.dukascopy.connect.sys.bankManager.BankManager;
 	import com.dukascopy.connect.sys.imageManager.ImageBitmapData;
 	import com.dukascopy.connect.sys.payments.PayManager;
-	import com.dukascopy.connect.sys.payments.PaymentsManager;
 	import com.dukascopy.connect.sys.serviceScreenManager.ServiceScreenManager;
 	import com.dukascopy.connect.sys.store.Store;
 	import com.dukascopy.connect.sys.style.Style;
@@ -222,6 +222,9 @@ package com.dukascopy.connect.screens.marketplace {
 			
 			bestPrice = 0;
 			dataProvider = this.screenData.dataProvider();
+			var reservedCoin:Number = 0;
+			var reservedFiat:Number = 0;
+			var offer:TradingOrder;
 			if (dataProvider != null)
 			{
 				currentData = getModels(dataProvider.BUY);
@@ -230,15 +233,34 @@ package com.dukascopy.connect.screens.marketplace {
 					l = currentData.length;
 					for (i = 0; i < l; i++) 
 					{
-						if ((currentData[i] as TradingOrder).price > bestPrice)
+						offer = (currentData[i] as TradingOrder);
+						if (offer.price > bestPrice)
 						{
-							bestPrice = (currentData[i] as TradingOrder).price;
+							bestPrice = offer.price;
+						}
+						if (offer.own == true && offer.side == TradingOrder.BUY)
+						{
+							reservedFiat += offer.quantity * offer.price;
+						}
+					}
+				}
+				currentData = getModels(dataProvider.SELL);
+				if (currentData != null && currentData.length > 0)
+				{
+					l = currentData.length;
+					for (i = 0; i < l; i++) 
+					{
+						offer = (currentData[i] as TradingOrder);
+						if (offer.own == true && offer.side == TradingOrder.SELL)
+						{
+							reservedCoin += offer.quantity;
 						}
 					}
 				}
 			}
 			screenData.bestPrice = bestPrice;
-			
+			screenData.reservedCoin = reservedCoin;
+			screenData.reservedFiat = reservedFiat;
 			ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_DIALOG, TradeCoinPopup, screenData);
 		}
 		
