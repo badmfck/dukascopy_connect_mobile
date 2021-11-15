@@ -1,42 +1,26 @@
 package com.dukascopy.connect.screens.dialogs.escrow {
 	
 	import com.dukascopy.connect.Config;
-	import com.dukascopy.connect.GD;
 	import com.dukascopy.connect.data.CountriesData;
 	import com.dukascopy.connect.data.SelectorItemData;
 	import com.dukascopy.connect.data.TextFieldSettings;
-	import com.dukascopy.connect.data.escrow.EscrowSettings;
 	import com.dukascopy.connect.data.escrow.TradeDirection;
-	import com.dukascopy.connect.data.escrow.filter.EscrowFilterType;
 	import com.dukascopy.connect.data.layout.LayoutType;
 	import com.dukascopy.connect.gui.button.Checkbox;
-	import com.dukascopy.connect.gui.button.DDFieldButton;
 	import com.dukascopy.connect.gui.components.FiltersSelectList;
 	import com.dukascopy.connect.gui.components.radio.RadioGroup;
 	import com.dukascopy.connect.gui.components.radio.RadioItem;
 	import com.dukascopy.connect.gui.components.selector.ButtonSelectorItem;
 	import com.dukascopy.connect.gui.components.selector.MultiSelector;
-	import com.dukascopy.connect.gui.input.Input;
 	import com.dukascopy.connect.gui.lightbox.UI;
 	import com.dukascopy.connect.gui.list.renderers.ListCountryExclude;
-	import com.dukascopy.connect.gui.list.renderers.ListCountrySimple;
-	import com.dukascopy.connect.gui.list.renderers.ListPayCurrency;
 	import com.dukascopy.connect.gui.menuVideo.BitmapButton;
 	import com.dukascopy.connect.managers.escrow.vo.EscrowAdsFilterVO;
-	import com.dukascopy.connect.managers.escrow.vo.EscrowInstrument;
-	import com.dukascopy.connect.managers.escrow.vo.EscrowPrice;
-	import com.dukascopy.connect.screens.dialogs.paymentDialogs.elements.InputField;
-	import com.dukascopy.connect.screens.dialogs.x.base.bottom.AnimatedTitlePopup;
-	import com.dukascopy.connect.screens.dialogs.x.base.bottom.ListSelectionPopup;
 	import com.dukascopy.connect.screens.dialogs.x.base.bottom.MultipleSelectionPopup;
 	import com.dukascopy.connect.screens.dialogs.x.base.bottom.ScrollAnimatedTitlePopup;
-	import com.dukascopy.connect.screens.dialogs.x.base.bottom.SearchListSelectionPopup;
-	import com.dukascopy.connect.screens.dialogs.x.base.float.FloatPopup;
-	import com.dukascopy.connect.screens.payments.card.TypeCurrency;
 	import com.dukascopy.connect.sys.applicationError.ApplicationErrors;
 	import com.dukascopy.connect.sys.dialogManager.DialogManager;
 	import com.dukascopy.connect.sys.imageManager.ImageBitmapData;
-	import com.dukascopy.connect.sys.payments.PayManager;
 	import com.dukascopy.connect.sys.serviceScreenManager.ServiceScreenManager;
 	import com.dukascopy.connect.sys.style.FontSize;
 	import com.dukascopy.connect.sys.style.Style;
@@ -45,10 +29,8 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 	import com.dukascopy.connect.utils.TextUtils;
 	import com.dukascopy.langs.Lang;
 	import flash.display.Bitmap;
-	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.text.TextFieldAutoSize;
-	import flash.text.TextFormat;
 	import flash.text.TextFormatAlign;
 	
 	/**
@@ -152,7 +134,19 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		
 		private function onCountryListSelected(selectedCountries:Vector.<SelectorItemData>):void
 		{
-			countryExclude.draw(selectedCountries, _width - contentPadding * 2);
+			var filtered:Vector.<SelectorItemData>;
+			if (selectedCountries != null)
+			{
+				filtered = new Vector.<SelectorItemData>();
+				for (var i:int = 0; i < selectedCountries.length; i++) 
+				{
+					if (selectedCountries[i].data != null && selectedCountries[i].data is Array && (selectedCountries[i].data as Array).length == 5)
+					{
+						filtered.push(selectedCountries[i]);
+					}
+				}
+			}
+			countryExclude.draw(filtered, _width - contentPadding * 2);
 			updatePositions();
 		}
 		
@@ -287,7 +281,138 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			
 			super.initScreen(data);
 			
+			tradingSideSelector.dataProvider = getTradingSideVariants();
+			
 			countryExclude.draw(null, _width - contentPadding * 2);
+			
+			applyCurrentFilter();
+		}
+		
+		private function applyCurrentFilter():void 
+		{
+			if (tradingSideSelector != null)
+			{
+				if (filter.side == TradeDirection.buy.type)
+				{
+					tradingSideSelector.selectItemIndex(0);
+				}
+				else if (filter.side == TradeDirection.sell.type)
+				{
+					tradingSideSelector.selectItemIndex(1);
+				}
+			}
+			else
+			{
+				ApplicationErrors.add();
+			}
+			
+			if (filter.hideBlocked == true)
+			{
+				if (hideBlocked != null)
+				{
+					hideBlocked.select();
+				}
+				else
+				{
+					ApplicationErrors.add();
+				}
+			}
+			
+			if (filter.hideNoobs == true)
+			{
+				if (hideNoobs != null)
+				{
+					hideNoobs.select();
+				}
+				else
+				{
+					ApplicationErrors.add();
+				}
+			}
+			
+			if (filter.sort == EscrowAdsFilterVO.SORT_AMOUNT)
+			{
+				if (radio != null && radioSelection != null)
+				{
+					radio.select(radioSelection[2]);
+				}
+				else
+				{
+					ApplicationErrors.add();
+				}
+			}
+			else if (filter.sort == EscrowAdsFilterVO.SORT_BUY_SELL)
+			{
+				if (tradingSideSelector != null)
+				{
+					tradingSideSelector.selectItemIndex(2);
+				}
+				else
+				{
+					ApplicationErrors.add();
+				}
+			}
+			else if (filter.sort == EscrowAdsFilterVO.SORT_DATE)
+			{
+				if (radio != null && radioSelection != null)
+				{
+					radio.select(radioSelection[0]);
+				}
+				else
+				{
+					ApplicationErrors.add();
+				}
+			}
+			else if (filter.sort == EscrowAdsFilterVO.SORT_PRICE)
+			{
+				if (radio != null && radioSelection != null)
+				{
+					radio.select(radioSelection[1]);
+				}
+				else
+				{
+					ApplicationErrors.add();
+				}
+			}
+			
+			if (filter.countries != null)
+			{
+				if (countryExclude != null)
+				{
+					var oldDelimiter:String = "";
+					var newDelimiter:String = "";
+					var cData:Array = CountriesData.COUNTRIES;
+					var cDataNew:Array = [];
+					var l:int = cData.length;
+					var i:int;
+					for (i = 0; i < l; i++) {
+						newDelimiter = String(cData[i][0]).substr(0, 1).toUpperCase();
+						if (newDelimiter != oldDelimiter) {
+							oldDelimiter = newDelimiter;
+							cDataNew.push([oldDelimiter.toLowerCase(), oldDelimiter]);
+						}
+						cDataNew.push(cData[i]);
+					}
+					l = cDataNew.length;
+					var countriesSelection:Vector.<SelectorItemData> = new Vector.<SelectorItemData>();
+					for (var j:int = 0; j < l; j++) 
+					{
+						for (i = 0; i < filter.countries.length; i++) 
+						{
+							if (filter.countries[i] == cDataNew[j][2])
+							{
+								countriesSelection.push(new SelectorItemData(cDataNew[j][4], cDataNew[j]));
+							}
+						}
+					}
+					
+					countryExclude.draw(countriesSelection, _width - contentPadding * 2);
+				}
+				else
+				{
+					ApplicationErrors.add();
+				}
+			}
 		}
 		
 		private function drawTitleBlacklist():void 
@@ -327,7 +452,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			drawTitleSort();
 			drawTitleBlacklist();
 			
-			tradingSideSelector.dataProvider = getTradingSideVariants();
+			
 			
 			updatePositions();
 		}

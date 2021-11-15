@@ -52,22 +52,35 @@ package com.dukascopy.connect.gui.list.renderers
 				
 				icon.visible = false;
 				
+				graphics.clear();
 				if (countryData.length == 2) {
 					tfCountry.textColor = Color.RED_DARK;
 					tfCountry.text = countryData[1];
 					tfCountry.width = width - padding * 2;
 					tfCountry.alpha = 1;
 				} else {
-					graphics.beginFill(Style.color(Style.COLOR_BACKGROUND));
+					if ((li.data as SelectorItemData).selected)
+					{
+						icon.visible = true;
+						
+						graphics.beginFill(Style.color(Style.COLOR_LIST_SPECIAL));
+						graphics.drawRect(0, 0, width, h);
+						graphics.endFill();
+					}
+					else
+					{
+						graphics.beginFill(Style.color(Style.COLOR_BACKGROUND));
+						graphics.drawRect(0, 0, width, h);
+						graphics.endFill();
+					}
+					
+					graphics.beginFill(Style.color(Style.COLOR_LIST_SPECIAL));
 					graphics.drawRect(0, h - 1, width, 1);
 					graphics.endFill();
 					tfCountry.textColor = Style.color(Style.COLOR_TEXT);
 					tfCountry.text = countryData[4];
 					tfCountry.width = width - tfCountry.x - padding;
-					if ((li.data as SelectorItemData).selected)
-					{
-						icon.visible = true;
-					}
+					
 				}
 				
 				tfCountry.y = Math.round((h - tfCountry.textHeight) * .5);

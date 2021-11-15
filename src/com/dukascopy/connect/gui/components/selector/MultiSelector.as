@@ -78,8 +78,11 @@ package com.dukascopy.connect.gui.components.selector {
 				_selectedIndexes.push(value);
 				select(value);
 			}
-			if (needSignal == true)
-				S_ON_SELECT.invoke((indexInSelected == -1) ? dataProvider[value] : null);
+			if (dataProvider != null)
+			{
+				if (needSignal == true)
+					S_ON_SELECT.invoke((indexInSelected == -1) ? dataProvider[value] : null);
+			}
 		}
 		
 		public function isIndexSelected(ind:int):Boolean { return _selectedIndexes.indexOf(ind) !=-1; }
