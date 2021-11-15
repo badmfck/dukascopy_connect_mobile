@@ -411,7 +411,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		
 		private function checkFiatAccountExist():void 
 		{
-			if (selectedCrypto != null && selectedFiatAccount != null && state != STATE_REGISTER && selectedDirection == TradeDirection.sell)
+			if (selectedCrypto != null && selectedFiatAccount == null && state != STATE_REGISTER && selectedDirection == TradeDirection.sell)
 			{
 				toState(STATE_REGISTER);
 			}
@@ -2079,7 +2079,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 				refreshPrice();
 			}
 			
-			if (selectedCrypto != null && selectedFiatAccount != null && state != STATE_REGISTER && selectedDirection == TradeDirection.sell)
+			if (selectedCrypto != null && selectedFiatAccount == null && state != STATE_REGISTER && selectedDirection == TradeDirection.sell)
 			{
 				toState(STATE_REGISTER);
 			}
