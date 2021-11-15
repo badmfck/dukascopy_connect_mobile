@@ -209,6 +209,8 @@ package com.dukascopy.connect.managers.escrow {
 				escrowAd.updateAnswers(escrowAd.answersCount + 1);
 				GD.S_ESCROW_ADS.invoke(escrowAds, true);
 			}
+			if (escrowAdsMine == null)
+				return;
 			escrowAd = getEscrowAdsByUID(data.quid, escrowAdsMine);
 			if (escrowAd != null) {
 				escrowAd.updateAnswers(escrowAd.answersCount + 1);
