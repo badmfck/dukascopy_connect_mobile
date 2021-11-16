@@ -6,6 +6,7 @@ package com.dukascopy.connect.data.screenAction.customActions {
 	import com.dukascopy.connect.MobileGui;
 	import com.dukascopy.connect.data.AlertScreenData;
 	import com.dukascopy.connect.data.ErrorData;
+	import com.dukascopy.connect.data.SelectorItemData;
 	import com.dukascopy.connect.data.escrow.EscrowDealData;
 	import com.dukascopy.connect.data.escrow.EscrowMessageData;
 	import com.dukascopy.connect.data.escrow.EscrowScreenNavigation;
@@ -25,6 +26,7 @@ package com.dukascopy.connect.data.screenAction.customActions {
 	import com.dukascopy.connect.sys.applicationError.ApplicationErrors;
 	import com.dukascopy.connect.sys.auth.Auth;
 	import com.dukascopy.connect.sys.chatManager.ChatManager;
+	import com.dukascopy.connect.sys.configManager.ConfigManager;
 	import com.dukascopy.connect.sys.dialogManager.DialogManager;
 	import com.dukascopy.connect.sys.payments.PayManager;
 	import com.dukascopy.connect.sys.php.PHP;
@@ -63,6 +65,19 @@ package com.dukascopy.connect.data.screenAction.customActions {
 		}
 		
 		public function execute():void {
+			
+			if (ConfigManager.config.disableP2P == true) {
+				
+				var alertScreenData:AlertScreenData = new AlertScreenData();
+				
+				alertScreenData.text = Lang.new_service_p2p;
+				alertScreenData.icon = ExchangeIcon2;
+				alertScreenData.button = Lang.textOk.toUpperCase();
+				alertScreenData.link = new SelectorItemData(Lang.aboutService, Lang.escrow_about_service_url);
+				ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, FloatAlert, alertScreenData);
+				
+				return;
+			}
 			
 			checkCurrentQuestion();
 			
