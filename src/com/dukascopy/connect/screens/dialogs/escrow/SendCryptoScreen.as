@@ -177,6 +177,10 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			var screenData:EscrowScreenData = data as EscrowScreenData;
 			
 			offerCreatedTime = screenData.created;
+			if (offerCreatedTime.toString().length > 11)
+			{
+				offerCreatedTime = offerCreatedTime / 1000;
+			}
 			escrowOffer = screenData.escrowOffer;
 			chat = screenData.chat;
 			messageId = screenData.messageId;
@@ -267,7 +271,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			if (escrowOffer != null && !EscrowScreenNavigation.isExpired(escrowOffer, offerCreatedTime))
 			{
 				//!TODO: check start time;
-				time.draw(getWidth() - contentPadding * 2, EscrowSettings.dealMaxTime * 60 - ((new Date()).time / 1000 - offerCreatedTime / 1000));
+				time.draw(getWidth() - contentPadding * 2, EscrowSettings.dealMaxTime * 60 - ((new Date()).time / 1000 - offerCreatedTime));
 			}
 			else
 			{
