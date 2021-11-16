@@ -1867,7 +1867,7 @@ package com.dukascopy.connect.screens {
 			{
 				if (!Config.isTest())
 					menuItems.push( { fullLink:Lang.escrow_copy_transaction, id:ChatItemContextMenuItemType.COPY } );
-				if (Config.isTest())
+				/*if (Config.isTest())
 				{
 					var escrowStatus:EscrowStatus = msgVO.systemMessageVO.escrow.status;
 					if (escrowStatus == EscrowStatus.offer_accepted || 
@@ -1898,7 +1898,7 @@ package com.dukascopy.connect.screens {
 						menuItems.push( { fullLink:"claim", id:ChatItemContextMenuItemType.DEAL_CLAIM } );
 						menuItems.push( { fullLink:"set hold money fail", id:ChatItemContextMenuItemType.DEAL_FAIL_HOLD } );
 					}
-				}
+				}*/
 			}
 			else{
 				
