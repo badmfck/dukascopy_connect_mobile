@@ -6,6 +6,7 @@ package com.dukascopy.connect.gui.chatInput {
 	import com.dukascopy.connect.data.MediaFileData;
 	import com.dukascopy.connect.data.screenAction.IScreenAction;
 	import com.dukascopy.connect.data.screenAction.customActions.AddInvoiceAction;
+	import com.dukascopy.connect.data.screenAction.customActions.CreateCoinTradeAction;
 	import com.dukascopy.connect.data.screenAction.customActions.CreatePuzzleAction;
 	import com.dukascopy.connect.data.screenAction.customActions.SendMoneyAction;
 	import com.dukascopy.connect.gui.lightbox.UI;
@@ -444,8 +445,9 @@ package com.dukascopy.connect.gui.chatInput {
 							case "puzzle": {
 								echo("ChatInputIOS", "inputViewAttach", "puzzle");
 								
-								var puzzle:IScreenAction = new CreatePuzzleAction();
-								puzzle.execute();
+								var tradeAction:IScreenAction = new CreateCoinTradeAction();
+								(tradeAction as CreateCoinTradeAction).chat = ChatManager.getCurrentChat();
+								tradeAction.execute();
 								break;
 							}
 							case "sendGiftWithValue1": {
