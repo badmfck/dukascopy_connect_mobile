@@ -1,6 +1,5 @@
 package com.dukascopy.connect.screens {
 	
-	import assets.Icon911;
 	import com.dukascopy.connect.Config;
 	import com.dukascopy.connect.GD;
 	import com.dukascopy.connect.MobileGui;
@@ -14,17 +13,15 @@ package com.dukascopy.connect.screens {
 	import com.dukascopy.connect.data.screenAction.customActions.Open911InfoAction;
 	import com.dukascopy.connect.data.screenAction.customActions.Open911ScreenAction;
 	import com.dukascopy.connect.data.screenAction.customActions.Open911SupportAction;
-	import com.dukascopy.connect.data.screenAction.customActions.OpenPromoEventsInfoAction;
 	import com.dukascopy.connect.data.screenAction.customActions.RefreshLotteryDataAction;
 	import com.dukascopy.connect.data.screenAction.customActions.ShowFilterEscrowAction;
-	import com.dukascopy.connect.gui.components.ratesPanel.RatesPanel;
+	//import com.dukascopy.connect.gui.components.ratesPanel.RatesPanel;
 	import com.dukascopy.connect.gui.lightbox.LightBox;
 	import com.dukascopy.connect.gui.lightbox.UI;
 	import com.dukascopy.connect.gui.tabs.TabBar;
 	import com.dukascopy.connect.gui.tools.ImagePreviewCrop;
 	import com.dukascopy.connect.gui.topBar.TopBar;
 	import com.dukascopy.connect.managers.escrow.vo.EscrowAdsFilterVO;
-	import com.dukascopy.connect.managers.escrow.vo.EscrowInstrument;
 	import com.dukascopy.connect.screens.base.BaseScreen;
 	import com.dukascopy.connect.screens.base.ScreenManager;
 	import com.dukascopy.connect.screens.dialogs.x.base.float.FloatAlert;
@@ -33,8 +30,6 @@ package com.dukascopy.connect.screens {
 	import com.dukascopy.connect.screens.innerScreens.InnerContactScreen;
 	import com.dukascopy.connect.screens.innerScreens.InnerEscrowInstrumentScreen;
 	import com.dukascopy.connect.screens.innerScreens.InnerEscrowScreen;
-	import com.dukascopy.connect.screens.innerScreens.InnerQuestionsScreen;
-	import com.dukascopy.connect.screens.promoEvent.PromoEventsScreen;
 	import com.dukascopy.connect.sys.applicationError.ApplicationErrors;
 	import com.dukascopy.connect.sys.auth.Auth;
 	import com.dukascopy.connect.sys.callManager.CallsHistoryManager;
@@ -55,8 +50,6 @@ package com.dukascopy.connect.screens {
 	import com.dukascopy.langs.Lang;
 	import com.greensock.TweenMax;
 	import flash.events.Event;
-	import flash.system.Capabilities;
-	import flash.utils.getQualifiedClassName;
 	
 	/**
 	 * ...
@@ -99,15 +92,7 @@ package com.dukascopy.connect.screens {
 				notSelectedIcon: new (Style.icon(Style.MENU_CHATS)),
 				hasSearchBar: false,
 				scaleIndex:1
-			}, /*{
-				id: CHANNELS_SCREEN_ID,
-				title: Lang.textChannels,
-				screenClass: InnerChannelsScreen,
-				selectedIcon: new SWFMainMenuIconChannelsSelected(),
-				notSelectedIcon: new SWFMainMenuIconChannels(),
-				hasSearchBar: false,
-				scaleIndex:1
-			},*/ {
+			}, {
 				id: CONTACTS_SCREEN_ID,
 				title: Lang.textContacts,
 				screenClass: InnerContactScreen,
@@ -123,15 +108,7 @@ package com.dukascopy.connect.screens {
 				notSelectedIcon: new (Style.icon(Style.MENU_BANK)),
 				hasSearchBar: false,
 				scaleIndex:1
-			}, /*{
-				id: PROMO_SCREEN_ID,
-				title: Lang.textLottery,
-				screenClass: PromoEventsScreen,
-				selectedIcon: new SWFMainMenuIconStarsSelected(),
-				notSelectedIcon: new SWFMainMenuIconStars(),
-				hasSearchBar: false,
-				scaleIndex:1
-			},*/ {
+			}, {
 				id: BOT_SCREEN_ID,
 				title: Lang.bankBot,
 				screenClass: null,
@@ -139,8 +116,7 @@ package com.dukascopy.connect.screens {
 				notSelectedIcon: new (Style.icon(Style.MENU_BOT)),
 				hasSearchBar: false,
 				scaleIndex:1
-			},
-			{
+			}, {
 				id: SETTINGS_SCREEN_ID,
 				title: Lang.textSettings,
 				screenClass: SettingsScreen,
@@ -172,11 +148,10 @@ package com.dukascopy.connect.screens {
 		private var drawViewHeight:int = -1;
 		
 		private var firstTime:Boolean;
-		private var BLINK_CHECK_INTERVAL:int = 60 * 4;// sec
+		private var BLINK_CHECK_INTERVAL:int = 60 * 4;
 		private var refreshLotteryDataAction:com.dukascopy.connect.data.screenAction.customActions.RefreshLotteryDataAction;
 		private var selectedinstrument:String;
-		private var ratesPanel:RatesPanel;
-	//	private var actionPromoEvents:com.dukascopy.connect.data.screenAction.customActions.OpenPromoEventsInfoAction;
+		//private var ratesPanel:RatesPanel;
 		
 		/**
 		 * @CONSTRUCTOR
@@ -192,103 +167,53 @@ package com.dukascopy.connect.screens {
 			innerScreenManager.ingnoreBackSignal();
 			_view.addChild(innerScreenManager.view);
 			topBar = new TopBar();
-			topBar.onBack = onTopBarBack;
+			//topBar.onBack = onTopBarBack;
 			topBar.setSearchBarVisibility(false);
 			_view.addChild(topBar.view);
 			bottomTabs = new TabBar(Style.color(Style.BOTTOM_BAR_COLOR), Style.color(Style.BOTTOM_BAR_TEXT_COLOR), 1, Style.color(Style.BOTTOM_BAR_TEXT_SELECTED_COLOR), false, Style.boolean(Style.BOTTOM_BAR_LINE), Style.color(Style.BOTTOM_BAR_SELECTED_BACKGROUND));
 			var tabScale:Number;
 			for (var i:int = 0; i < screensArray.length; i++) {
 				if (SocialManager.available == false) {
-					if (/*screensArray[i].id == PROMO_SCREEN_ID ||*/
-						screensArray[i].id == QUESTIONS_SCREEN_ID ||
+					if (screensArray[i].id == QUESTIONS_SCREEN_ID ||
 						screensArray[i].id == CHANNELS_SCREEN_ID)
 							continue;
 				}
-				/*if (screensArray[i].id == PROMO_SCREEN_ID) {
-					if (ConfigManager.config == null) {
-						ConfigManager.S_CONFIG_READY.add(onConfigLoaded);
-						continue;
-					}
-					if (Config.LOTTERY == false)
-						continue;
-				}*/
 				tabScale = UI.getMaxScale(screensArray[i].selectedIcon.width, screensArray[i].selectedIcon.height, Config.TOP_BAR_HEIGHT * .55, Config.TOP_BAR_HEIGHT * .55);
 				tabScale *= screensArray[i].scaleIndex;
-				if (Config.PLATFORM_APPLE && Config.isRetina()>0)
+				if (Config.PLATFORM_APPLE && Config.isRetina() > 0)
 					tabScale *= 0.9;
 				bottomTabs.add("", screensArray[i].id, screensArray[i].selectedIcon, screensArray[i].notSelectedIcon, null, false, tabScale, false);
 			}
-		//	bottomTabs.updateView();
 			_view.addChild(bottomTabs.view);
 			swiper = new Swiper("RootScreen");
-			
-			firstTime = true;			
-		//	InnerNotificationManager.S_NOTIFICATION_NEED.add(needNotification);				
+			firstTime = true;
 		}
 		
-		private function onTopBarBack():void 
-		{
-			if (currentTabID == ESCROW_INSTRUMENT_SCREEN_ID)
-			{
+		private function onTopBarBack():void {
+			if (currentTabID == ESCROW_INSTRUMENT_SCREEN_ID) {
 				onIstrumentSelected();
 			}
 		}
 		
-		/*private function onConfigLoaded():void {
-			ConfigManager.S_CONFIG_READY.remove(onConfigLoaded);
-			addLotteryButton();
-		}*/
-		
-		/*private function addLotteryButton():void {
-			if (SocialManager.available == false)
-				return;
-			if (bottomTabs != null) {
-				if (Config.LOTTERY == true || Auth.companyID == "08A29C35B3") {
-					var tabScale:Number;
-						tabScale = UI.getMaxScale(screensArray[4].selectedIcon.width, screensArray[4].selectedIcon.height, Config.TOP_BAR_HEIGHT * .55, Config.TOP_BAR_HEIGHT * .55);
-						tabScale *= screensArray[4].scaleIndex;
-						if (Config.PLATFORM_APPLE && Config.isRetina()>0) {
-							tabScale *= 0.9;
-					}
-					bottomTabs.addToIndex(4, "", screensArray[4].id, screensArray[4].selectedIcon, screensArray[4].notSelectedIcon, null, false, tabScale);
-					if (currentTabID == PROMO_SCREEN_ID)
-						bottomTabs.selectTap(screensArray[currentTabIndex].id);
-				}
-			}
-		}*/
-		
 		private function needNotification(display:Boolean):void {
-			/*if (MobileGui.centerScreen.currentScreen == this && currentTabID == CHATS_SCREEN_ID)
-				return;*/
 			if (bottomTabs != null) {
-				bottomTabs.selectNotification(CHATS_SCREEN_ID, display);	
+				bottomTabs.selectNotification(CHATS_SCREEN_ID, display);
 			}
 		}
 		
 		private function blinkBankButton(realChange:Boolean = true):void {
-			
-			if (Auth.tradingPhazeInVidid())
-			{
+			if (Auth.tradingPhazeInVidid()) {
 				return;
 			}
-			
 			if (Auth.bank_phase != BankPhaze.ACC_APPROVED) {
 				if (bottomTabs != null)
-					bottomTabs.selectBlink(PAYMENTS_SCREEN_ID);			
+					bottomTabs.selectBlink(PAYMENTS_SCREEN_ID);
 				TweenMax.delayedCall(BLINK_CHECK_INTERVAL, blinkBankButton);
 			} else {
 				if (bottomTabs != null)
 					bottomTabs.selectBlink(PAYMENTS_SCREEN_ID, false);	
 			}
 		}
-		
-		/*private function onTabsOffsetChange(offsetValue:Number):void {
-			if (_isDisposed == true)
-				return;
-			if (innerScreenManager == null)
-				return;
-			innerScreenManager.setSize(_width, _height - topBar.height - bottomTabs.height + offsetValue);
-		}*/
 		
 		/**
 		 * Init Screen
@@ -300,27 +225,19 @@ package com.dukascopy.connect.screens {
 			super.initScreen(data);
 			_params.title = 'Root screen';
 			_params.doDisposeAfterClose = false;
-			//bottomTabs.setExpandedState();
 			
 			if (firstTime == false) {
-				
-				if (data != null && "selectedTab" in data && data.selectedTab != null)
-				{
+				if (data != null && "selectedTab" in data && data.selectedTab != null) {
 					currentTabID = data.selectedTab;
 					onBottomTabsClick(currentTabID, false, 0);
 				}
-				
 				if (currentTabID != "" && bottomTabs != null) {
 					if (currentTabID == QUESTIONS_SCREEN_ID)
 						bottomTabs.selectTap(null);
 					else
 						bottomTabs.selectTap(currentTabID);
 				}
-				//!TODO:;
 				QuestionsManager.setInOut(currentTabIndex == 10);
-				/*if (currentTabID == CHATS_SCREEN_ID)
-					if (bottomTabs != null)
-						bottomTabs.selectNotification(CHATS_SCREEN_ID, false);*/
 				return;
 			}
 			firstTime = false;
@@ -368,44 +285,28 @@ package com.dukascopy.connect.screens {
 			}
 		}
 		
-		private function onIstrumentSelected(instrument:EscrowAdsFilterVO = null):void 
-		{
+		private function onIstrumentSelected(instrument:EscrowAdsFilterVO = null):void {
 			if (isDisposed)
-			{
 				return;
-			}
-			if (instrument != null)
-			{
+			if (instrument != null) {
 				selectedinstrument = instrument.instrument.code;
-			}
-			else
-			{
+			} else {
 				selectedinstrument = null;
 			}
-			
-			if (selectedinstrument != null)
-			{
-				if (instrumentTabObject != null)
-				{
+			if (selectedinstrument != null) {
+				if (instrumentTabObject != null) {
 					var code:String = instrument.instrument.code;
 					if (code == "DCO")
 						code = "DUK+";
 					var name:String = "";
-					/*if (instrument.instrument.code in Lang.cryptoTitles == true)
-						name = Lang.cryptoTitles[instrument.instrument.code];*/
 					name=instrument.instrument.name;
 					var text:String = String(name + " (" + code + ")").toUpperCase();
 					instrumentTabObject.title = text;
-				}
-				else
-				{
+				} else {
 					ApplicationErrors.add();
 				}
-				
 				onBottomTabsClick(RootScreen.ESCROW_INSTRUMENT_SCREEN_ID, false);
-			}
-			else
-			{
+			} else {
 				onBottomTabsClick(RootScreen.QUESTIONS_SCREEN_ID, true);
 			}
 		}
@@ -416,15 +317,11 @@ package com.dukascopy.connect.screens {
 				return;
 			if (drawViewWidth == _width && drawViewHeight == _height)
 				return;
-			
-			if (ratesPanel != null)
-			{
+			/*if (ratesPanel != null) {
 				topBar.topPadding = ratesPanel.getHeight();
-			}
-			else
-			{
+			} else {
 				topBar.topPadding = 0;
-			}
+			}*/
 			
 			//topBar.topPadding+=Config.APPLE_TOP_OFFSET;
 			
@@ -527,7 +424,7 @@ package com.dukascopy.connect.screens {
 				innerScreenManager.dispose();
 			innerScreenManager = null;
 			
-			removeRatesPanel();
+			//removeRatesPanel();
 		}
 		
 		override public function dispose():void {
@@ -535,9 +432,9 @@ package com.dukascopy.connect.screens {
 			echo("RootScreen", "dispose");
 			if (swiper != null)
 				swiper.dispose();
-			swiper = null;			
+			swiper = null;
 			TweenMax.killDelayedCallsTo(blinkBankButton);
-			Auth.S_PHAZE_CHANGE.remove(blinkBankButton);			
+			Auth.S_PHAZE_CHANGE.remove(blinkBankButton);
 			currentTabIndex = -1;
 			currentTabID = "";
 			currentScreen = null;
@@ -568,7 +465,7 @@ package com.dukascopy.connect.screens {
 			updateMissedCallsNum(CallsHistoryManager.getMissedNum());
 			CallsHistoryManager.S_MISSED_NUM.add(updateMissedCallsNum);
 			
-			if(topBar != null)
+			/*if(topBar != null)
 			{
 				if (currentTabID == ESCROW_INSTRUMENT_SCREEN_ID)
 				{
@@ -578,12 +475,12 @@ package com.dukascopy.connect.screens {
 				{
 					topBar.removeBackButton();
 				}
-			}
+			}*/
 			
-			if (ratesPanel != null)
+			/*if (ratesPanel != null)
 			{
 				ratesPanel.activate();
-			}
+			}*/
 		}
 		
 		private function updateMissedCallsNum(missedNum:int):void {
@@ -623,10 +520,10 @@ package com.dukascopy.connect.screens {
 			}
 			CallsHistoryManager.S_MISSED_NUM.remove(updateMissedCallsNum);
 			
-			if (ratesPanel != null)
+			/*if (ratesPanel != null)
 			{
 				ratesPanel.activate();
-			}
+			}*/
 		}
 
 		private function onInnerScreenShowComplete(clc:Class):void {
@@ -688,7 +585,7 @@ package com.dukascopy.connect.screens {
 					return;
 				}
 			}
-			if(topBar != null)
+			/*if(topBar != null)
 			{
 				if (tabId == ESCROW_INSTRUMENT_SCREEN_ID)
 				{
@@ -698,7 +595,7 @@ package com.dukascopy.connect.screens {
 				{
 					topBar.removeBackButton();
 				}
-			}
+			}*/
 			
 			if (currentTabIndex == tabIndex)
 			{
@@ -745,7 +642,7 @@ package com.dukascopy.connect.screens {
 			showInnerScreen(tabObject.screenClass, dir, time);
 			topBar.setSearchBarVisibility(tabObject.hasSearchBar);
 			topBar.setActions(getActions(tabObject.id), (currentTabID == QUESTIONS_SCREEN_ID) ? .7 : 1);
-			topBar.updateUnderline(currentTabID == SETTINGS_SCREEN_ID);
+			topBar.updateUnderline(true/*currentTabID == SETTINGS_SCREEN_ID*/);
 			if ("titleIcon" in tabObject == true && tabObject.titleIcon != null)
 				topBar.setTitleIcon(tabObject.titleIcon);
 			else
@@ -800,18 +697,18 @@ package com.dukascopy.connect.screens {
 			if (screenClass == InnerEscrowInstrumentScreen) {
 				bottomTabs.busy = false;
 				bottomTabs.selectTap(null);
-				addRatesPanel();
+				//addRatesPanel();
 			} else if (screenClass == InnerEscrowScreen) {
 				bottomTabs.busy = false;
 				bottomTabs.selectTap(null);
-				addRatesPanel();
+				//addRatesPanel();
 			} else 
 			{
-				removeRatesPanel();
+				//removeRatesPanel();
 			}
 		}
 		
-		private function removeRatesPanel():void 
+		/*private function removeRatesPanel():void 
 		{
 			NativeExtensionController.setStatusBarColor(Style.color(Style.COLOR_BACKGROUND));
 			if (ratesPanel != null)
@@ -835,7 +732,7 @@ package com.dukascopy.connect.screens {
 				view.addChild(ratesPanel);
 			}
 			drawView();
-		}
+		}*/
 		
 		private function getActions(id:String):Vector.<IScreenAction> {
 			var array:Vector.<IScreenAction> = new Vector.<IScreenAction>();
