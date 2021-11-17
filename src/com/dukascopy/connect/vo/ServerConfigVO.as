@@ -468,7 +468,7 @@ package com.dukascopy.connect.vo {
 		
 		public function get disableP2P():Boolean {
 			if (_raw == null)
-				return false;
+				return true;
 			if ("DISABLE_P2P" in _raw == true && _raw.DISABLE_P2P == "true")
 				return true;
 			return false;

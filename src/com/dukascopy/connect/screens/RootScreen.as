@@ -426,6 +426,8 @@ package com.dukascopy.connect.screens {
 				topBar.topPadding = 0;
 			}
 			
+			//topBar.topPadding+=Config.APPLE_TOP_OFFSET;
+			
 			topBar.setSize(_width, Config.TOP_BAR_HEIGHT);
 			topBar.show();
 			bottomTabs.setWidthAndHeight(_width, Config.TOP_BAR_HEIGHT * 1.1, Config.APPLE_BOTTOM_OFFSET);

@@ -185,7 +185,7 @@ package com.dukascopy.connect.gui.topBar {
 															Style.color(Style.TOP_BAR_TEXT_COLOR), 
 															Style.bold(Style.TOP_BAR_TEXT_BOLD));
 			titleChanged = false;
-			titleBitmap.y = int(Config.APPLE_TOP_OFFSET + (_viewHeight - Config.APPLE_TOP_OFFSET - titleBitmap.height) * .5);
+			titleBitmap.y = int((_viewHeight - titleBitmap.height) * .5);
 		}
 		
 		public function setSize(viewWidth:int, viewHeight:int):void {
@@ -229,7 +229,7 @@ package com.dukascopy.connect.gui.topBar {
 		}
 		
 		public function get height():int {
-			return _viewHeight + topPadding;
+			return _viewHeight + topPadding+ Config.APPLE_TOP_OFFSET;
 		}
 		
 		override public function dispose():void {

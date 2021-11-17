@@ -186,7 +186,7 @@ package com.dukascopy.connect {
 
 				if(DCCExt.isContextCreated()){
 
-					 DCCExt.call(new DCCExtCommand(
+					DCCExt.call(new DCCExtCommand(
 						DCCExtMethod.OS_VERSION,
 						{}
 						),function(data:DCCExtData):void{
@@ -210,6 +210,19 @@ package com.dukascopy.connect {
 				}else{
 					initComponents();
 				}
+			}else if(Config.PLATFORM_WINDOWS){
+				// Emulate ios offsets
+				Config.setupAppleTopOffset(50);
+				Config.setupAppleBottomOffset(30);
+				Config.setupFingerSize(55);
+
+				initComponents();
+
+				var spr:Sprite=new Sprite();
+				spr.graphics.beginFill(0xFF0000,.5);
+				spr.graphics.drawRect(0,0,stage.stageWidth,Config.APPLE_TOP_OFFSET);
+				spr.graphics.drawRect(0,stage.stageHeight-Config.APPLE_BOTTOM_OFFSET,stage.stageWidth,Config.APPLE_BOTTOM_OFFSET);
+				stage.addChild(spr);
 			}else{
 				initComponents();
 			}
