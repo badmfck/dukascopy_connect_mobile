@@ -2429,6 +2429,8 @@ package com.dukascopy.connect.sys.bankManager {
 						lastBankMessageVO.menu[2].disabled = true;
 						lastBankMessageVO.menu[3].disabled = true;
 					} else {
+						// TODO remove after MCA check functionality
+						lastBankMessageVO.menu[2].disabled = true;
 						lastBankMessageVO.menu[5].disabled = true;
 					}
 				}
@@ -4321,4 +4323,4 @@ package com.dukascopy.connect.sys.bankManager {
 			return true;
 		}
 	}
-}
+}
