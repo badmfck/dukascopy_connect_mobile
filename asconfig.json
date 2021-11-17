@@ -8,7 +8,7 @@
             "src"
         ],
         "load-config": [
-            "conf/empty_project.xml"
+            "conf/project.xml"
         ],
         "library-path": [
             "src/swc/greensock.swc"
@@ -24,6 +24,6 @@
 		]
 	},
 
-    "mainClass": "MainEscrow",
+    "mainClass": "Main",
     "application":"conf/desktop.xml"
 }
