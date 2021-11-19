@@ -114,6 +114,39 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 			onDataReady();
 		}
 		
+		override protected function drawSendTitle():void 
+		{
+			if (sendSectionTitle.bitmapData)
+			{
+				sendSectionTitle.bitmapData.dispose();
+				sendSectionTitle.bitmapData = null;
+			}
+			
+			var value:String;
+			if (userName != null)
+			{
+				var curentResultPhone:String = UI.isEmpty(inptCodeAndPhone.getInfoBoxValue()) ? inptCodeAndPhone.value : inptCodeAndPhone.getInfoBoxValue() + inptCodeAndPhone.value;
+				if (startPhoneNumber != curentResultPhone)
+				{
+					value = Lang.transferInvestmrntToPhoneNumber;
+				}
+				else
+				{
+					value = Lang.transferInvestmentTo + " " + userName;
+				}
+			}
+			else
+			{
+				value = Lang.transferInvestmrntToPhoneNumber;
+			}
+			
+			sendSectionTitle.bitmapData = TextUtils.createTextFieldData(value, componentsWidth, 10, true, 
+															TextFormatAlign.CENTER, TextFieldAutoSize.LEFT, Config.FINGER_SIZE * .3, true, 0x777E8A, 0xFFFFFF, false, true);
+			sendSectionTitle.x = int(_width * .5 - sendSectionTitle.width * .5);
+			
+			drawView();
+		}
+		
 		override protected function selectAccount(currency:String):void {
 			if (cryptoWallets != null) {
 				var defaultAccount:Object;
