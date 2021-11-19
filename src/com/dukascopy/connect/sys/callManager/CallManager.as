@@ -1132,9 +1132,13 @@ package com.dukascopy.connect.sys.callManager{
 			
 			echo("CallManager", "showCallScreen", "SystemIdle: "+NativeApplication.nativeApplication.systemIdleMode);
 			
-			if (MobileGui.centerScreen.currentScreenClass != TalkScreenRecognition && MobileGui.centerScreen.currentScreenClass != CallScreen && MobileGui.centerScreen.currentScreenClass != TalkScreen && MobileGui.centerScreen.currentScreenClass != VideoRecognitionScreen){
-				backScreenData = MobileGui.centerScreen.currentScreen.data;
-				backScreen = MobileGui.centerScreen.currentScreenClass;
+			if (MobileGui.centerScreen.currentScreenClass != TalkScreenRecognition &&
+				MobileGui.centerScreen.currentScreenClass != CallScreen &&
+				MobileGui.centerScreen.currentScreenClass != TalkScreen &&
+				MobileGui.centerScreen.currentScreenClass != VideoRecognitionScreen &&
+				MobileGui.centerScreen.currentScreenClass != VIChatScreen) {
+					backScreenData = MobileGui.centerScreen.currentScreen.data;
+					backScreen = MobileGui.centerScreen.currentScreenClass;
 			}
 			
 			if(MobileGui.centerScreen.currentScreenClass!=CallScreen)
@@ -1211,8 +1215,12 @@ package com.dukascopy.connect.sys.callManager{
 				MobileGui.centerScreen.show(backScreen, backScreenData, 0, transitionTime);
 			}else{
 				// возвращаемся на рутовый экран, т.к. где-то проебали backscreen
-				if (MobileGui.centerScreen.currentScreenClass == TalkScreenRecognition || MobileGui.centerScreen.currentScreenClass == CallScreen || MobileGui.centerScreen.currentScreenClass == TalkScreen || MobileGui.centerScreen.currentScreenClass == VideoRecognitionScreen){
-					MobileGui.centerScreen.show(null, null, 0, transitionTime); // показываем RootScreen
+				if (MobileGui.centerScreen.currentScreenClass == TalkScreenRecognition ||
+					MobileGui.centerScreen.currentScreenClass == CallScreen ||
+					MobileGui.centerScreen.currentScreenClass == TalkScreen ||
+					MobileGui.centerScreen.currentScreenClass == VideoRecognitionScreen ||
+					MobileGui.centerScreen.currentScreenClass == VIChatScreen){
+						MobileGui.centerScreen.show(null, null, 0, transitionTime); // показываем RootScreen
 				}
 			}
 		}
