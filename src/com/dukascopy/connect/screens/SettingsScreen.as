@@ -116,31 +116,32 @@ package com.dukascopy.connect.screens {
 	
 	public class SettingsScreen extends BaseScreen {
 		
-		private var btnNotificationObject:Object =          { type:"switcher", iconL:Style.icon(Style.ICON_NOTIFICATIONS),   title:Lang.textNotifications,  callback:onNotificationTap, id:0 };
-		private var btnPrivacyObject:Object =               { type:"button",   iconL:Style.icon(Style.ICON_SOUND_MESSAGES),  title:Lang.privacySettings, iconR:IconArrowRight,   callback:onPrivacyTap, id:21 };
-		private var btnSoundMsgObject:Object =              { type:"switcher", iconL:Style.icon(Style.ICON_SOUND_MESSAGES),  title:Lang.soundsOnMessages,   callback:onSoundMsgTap, id:1 };
-		private var btnSoundCallObject:Object =             { type:"switcher", iconL:Style.icon(Style.ICON_SOUND_CALL),     title:Lang.soundsOnCall,       callback:onSoundCallTap, id:2 };
-		//private var btnSocialObject:Object =                { type:"switcher", iconL:Style.icon(Style.ICON_SOCIAL),                  title:Lang.socialOnCall,       callback:onSocialTap, id:19 };
-		private var btn911SectionObject:Object =            { type:"button",   iconL:Style.icon(Style.ICON_STAT),          title:Lang.section911My,       callback:on911SectionTap, iconR:IconArrowRight, id:3 };
-		private var btnReferralSectionObject:Object =       { type:"button",   iconL:Style.icon(Style.ICON_REFERRAL),              title:Lang.referralProgram,    callback:onReferralSectionTap, iconR:IconArrowRight, id:7 };
-		private var btnReferralEnterCodeObject:Object =     { type:"button",   iconL:Style.icon(Style.ICON_REFERRAL),              title:Lang.enterReferralCode,  callback:onReferralEnterCodeTap, iconR:IconArrowRight, id:9 };
-		private var btnFXCommObject:Object =                { type:"button",   iconL:Style.icon(Style.ICON_COMMUNITY),              title:Lang.communityProfile,   callback:onFXCommTap, iconR:IconArrowRight, id:4 };
-		private var btnLanguageObject:Object =              { type:"button",   iconL:Style.icon(Style.ICON_LANGUAGE),               title:Lang.setLanguage,        callback:onLanguageTap, iconR:IconArrowRight, id:5 };
-		private var btnUnbanObject:Object =                 { type:"button",   iconL:Style.icon(Style.ICON_JAIL),                  title:Lang.getOutOfJail,       callback:onUnbanPaidButtonTap, id:10, red:true };
-		private var btnBuyProtectionObject:Object =         { type:"button",   iconL:Style.icon(Style.ICON_PROTECTION),                 title:Lang.buyBanProtection,   callback:onBuyProtectionButtonTap, id:11 };
-		private var btnShowProtectionObject:Object =        { type:"button",   iconL:Style.icon(Style.ICON_PROTECTION),                 title:Lang.banProtection,      callback:onShowProtectionButtonTap, id:12 };
-		private var btnShowMyBansObject:Object =            { type:"button",   iconL:Style.icon(Style.ICON_JAIL),                  title:Lang.myBans,             callback:onShowMyBansButtonTap, id:13 };
-		private var btnLogoutObject:Object =                { type:"button",   iconL:Style.icon(Style.ICON_LOGOUT),         title:Lang.logout,             callback:onLogoutTap, id:6 };
-		private var btnOneClickObject:Object =              { type:"button",   iconL:Style.icon(Style.ICON_ONE_CLICK),         title:Lang.oneClickPayments,   callback:onOneClickTap,iconR:IconArrowRight, id:8 };
-		private var btnShowRatingObject:Object =            { type:"switcher", iconL:Style.icon(Style.ICON_RATING),             title:Lang.showRating,         callback:onShowRatingTap, id:14 };
-		private var btnOpenAccountObject:Object =           { type:"button",   iconL:Style.icon(Style.ICON_BANK),                    title:Lang.openAccount,        callback:onAccountTap, id:15, red:true };
-		private var btnMyAccountObject:Object =             { type:"button",   iconL:Style.icon(Style.ICON_BANK),                    title:Lang.myAccount,          callback:onAccountTap, id:16 };
-		private var btnSubscriptionsObject:Object =         { type:"button",   iconL:Style.icon(Style.ICON_PAID_CHAT),                   title:Lang.myPaidChats,    	callback:onMyPaidChatsTap, id:17 };
-		private var btnProductsObject:Object =              { type:"button",   iconL:Style.icon(Style.ICON_PAID_CHAT),                   title:Lang.myPaidChats,        callback:onMyProductsTap, id:19 };
-		private var btnTestObject:Object =                  { type:"button",   iconL:Style.icon(Style.ICON_ATTACH),                       title:"Скопировать базу",        callback:onTestTap, id:18 };
-		private var btnTestObject2:Object =                 { type:"button",   iconL:Style.icon(Style.ICON_ATTACH),                       title:"Forgot password",       callback:onTestTap2, id:18 };
-		private var btnTestObject3:Object =                 { type:"button",   iconL:Style.icon(Style.ICON_ATTACH),                       title:"Queue popup",           callback:onTestTap3, id:19 };
-		private var btnDevices:Object =                     { type:"button",   iconL:Style.icon(Style.ICON_TEXT),                       title:Lang.myDevices,           callback:devicesTap, id:20 };
+		//private var btnSocialObject:Object =			{ type:"switcher", iconL:Style.icon(Style.ICON_SOCIAL),     title:Lang.socialOnCall,       callback:onSocialTap, id:19 };
+		//private var btn911SectionObject:Object =		{ type:"button",   iconL:Style.icon(Style.ICON_STAT),       title:Lang.section911My,       callback:on911SectionTap, iconR:IconArrowRight, id:3 };
+		//private var btnUnbanObject:Object =			{ type:"button",   iconL:Style.icon(Style.ICON_JAIL),       title:Lang.getOutOfJail,       callback:onUnbanPaidButtonTap, id:10, red:true };
+		//private var btnBuyProtectionObject:Object =	{ type:"button",   iconL:Style.icon(Style.ICON_PROTECTION), title:Lang.buyBanProtection,   callback:onBuyProtectionButtonTap, id:11 };
+		//private var btnShowProtectionObject:Object =	{ type:"button",   iconL:Style.icon(Style.ICON_PROTECTION), title:Lang.banProtection,      callback:onShowProtectionButtonTap, id:12 };
+		//private var btnShowMyBansObject:Object =		{ type:"button",   iconL:Style.icon(Style.ICON_JAIL),       title:Lang.myBans,             callback:onShowMyBansButtonTap, id:13 };
+		//private var btnShowRatingObject:Object =		{ type:"switcher", iconL:Style.icon(Style.ICON_RATING),     title:Lang.showRating,         callback:onShowRatingTap, id:14 };
+		
+		private var btnNotificationObject:Object =          { type:"switcher", iconL:Style.icon(Style.ICON_NOTIFICATIONS),  title:Lang.textNotifications, callback:onNotificationTap,      id:0 };
+		private var btnPrivacyObject:Object =               { type:"button",   iconL:Style.icon(Style.ICON_SOUND_MESSAGES), title:Lang.privacySettings,   callback:onPrivacyTap,           id:21, iconR:IconArrowRight };
+		private var btnSoundMsgObject:Object =              { type:"switcher", iconL:Style.icon(Style.ICON_SOUND_MESSAGES), title:Lang.soundsOnMessages,  callback:onSoundMsgTap,          id:1 };
+		private var btnSoundCallObject:Object =             { type:"switcher", iconL:Style.icon(Style.ICON_SOUND_CALL),     title:Lang.soundsOnCall,      callback:onSoundCallTap,         id:2 };
+		private var btnReferralSectionObject:Object =       { type:"button",   iconL:Style.icon(Style.ICON_REFERRAL),       title:Lang.referralProgram,   callback:onReferralSectionTap,   id:7, iconR:IconArrowRight };
+		private var btnReferralEnterCodeObject:Object =     { type:"button",   iconL:Style.icon(Style.ICON_REFERRAL),       title:Lang.enterReferralCode, callback:onReferralEnterCodeTap, id:9, iconR:IconArrowRight };
+		private var btnFXCommObject:Object =                { type:"button",   iconL:Style.icon(Style.ICON_COMMUNITY),      title:Lang.communityProfile,  callback:onFXCommTap,            id:4, iconR:IconArrowRight };
+		private var btnLanguageObject:Object =              { type:"button",   iconL:Style.icon(Style.ICON_LANGUAGE),       title:Lang.setLanguage,       callback:onLanguageTap,          id:5, iconR:IconArrowRight };
+		private var btnLogoutObject:Object =                { type:"button",   iconL:Style.icon(Style.ICON_LOGOUT),         title:Lang.logout,            callback:onLogoutTap,            id:6 };
+		private var btnOneClickObject:Object =              { type:"button",   iconL:Style.icon(Style.ICON_ONE_CLICK),      title:Lang.oneClickPayments,  callback:onOneClickTap,          id:8, iconR:IconArrowRight };
+		private var btnOpenAccountObject:Object =           { type:"button",   iconL:Style.icon(Style.ICON_BANK),           title:Lang.openAccount,       callback:onAccountTap,           id:15, red:true };
+		private var btnMyAccountObject:Object =             { type:"button",   iconL:Style.icon(Style.ICON_BANK),           title:Lang.myAccount,         callback:onAccountTap,           id:16 };
+		private var btnSubscriptionsObject:Object =         { type:"button",   iconL:Style.icon(Style.ICON_PAID_CHAT),      title:Lang.myPaidChats,    	  callback:onMyPaidChatsTap,       id:17 };
+		private var btnProductsObject:Object =              { type:"button",   iconL:Style.icon(Style.ICON_PAID_CHAT),      title:Lang.myPaidChats,       callback:onMyProductsTap,        id:19 };
+		private var btnTestObject:Object =                  { type:"button",   iconL:Style.icon(Style.ICON_ATTACH),         title:"Скопировать базу",     callback:onTestTap,              id:18 };
+		private var btnTestObject2:Object =                 { type:"button",   iconL:Style.icon(Style.ICON_ATTACH),         title:"Forgot password",      callback:onTestTap2,             id:18 };
+		private var btnTestObject3:Object =                 { type:"button",   iconL:Style.icon(Style.ICON_ATTACH),         title:"Queue popup",          callback:onTestTap3,             id:19 };
+		private var btnDevices:Object =                     { type:"button",   iconL:Style.icon(Style.ICON_TEXT),           title:Lang.myDevices,         callback:devicesTap,             id:20 };
 		
 		private var line_1:Object =                 		{ type:"line" };
 		private var line_2:Object =                 		{ type:"line" };
@@ -620,7 +621,7 @@ package com.dukascopy.connect.screens {
 				buttons.push(btnFXCommObject);
 			
 			
-			if (SocialManager.available == true) {
+			/*if (SocialManager.available == true) {
 				if (paidBanAvaliable == true && PaidBan.isAvaliable() == true) {
 					if (Auth.myProfile != null && Auth.myProfile.ban911VO != null)
 						PaidBan.checkBanStatus(Auth.myProfile.ban911VO);
@@ -636,7 +637,7 @@ package com.dukascopy.connect.screens {
 					}
 					buttons.push(btnShowMyBansObject);
 				}
-				/*if (Shop.isPaidChannelsAvaliable()) {
+				if (Shop.isPaidChannelsAvaliable()) {
 					if (Auth.myProfile != null && Auth.myProfile.gender != "") {
 						buttons.push(btnSubscriptionsObject);
 						buttons.push(btnProductsObject);
@@ -644,8 +645,8 @@ package com.dukascopy.connect.screens {
 						buttons.push(btnSubscriptionsObject);
 						buttons.push(btnProductsObject);
 					}
-				}*/
-			}
+				}
+			}*/
 		//	buttons.push(btnSubscriptionsObject);
 			//buttons.push(btnDevices);
 			buttons.push(line_3);
@@ -749,9 +750,9 @@ package com.dukascopy.connect.screens {
 			if ("uiComponent" in btnSoundCallObject == true &&
 				btnSoundCallObject.uiComponent != null)
 					btnSoundCallObject.uiComponent.isSelected = GlobalSettings.soundOnCalls;
-			if ("uiComponent" in btnShowRatingObject == true &&
+			/*if ("uiComponent" in btnShowRatingObject == true &&
 				btnShowRatingObject.uiComponent != null)
-					btnShowRatingObject.uiComponent.isSelected = Auth.showRating == 1;
+					btnShowRatingObject.uiComponent.isSelected = Auth.showRating == 1;*/
 			/*if ("uiComponent" in btnSocialObject == true &&
 				btnSocialObject.uiComponent != null) {
 					if (SocialManager.getCheckerState() == 0)
@@ -897,10 +898,10 @@ package com.dukascopy.connect.screens {
 			updateOnActivate = false;
 			if (buttons == null || buttons.length < 4)
 				return;
-			if (btnShowRatingObject != null && btnShowRatingObject.uiComponent != null)
+			/*if (btnShowRatingObject != null && btnShowRatingObject.uiComponent != null)
 			{
 				btnShowRatingObject.uiComponent.isSelected = Auth.showRating == 1;
-			}
+			}*/
 		}
 		
 		override public function deactivateScreen():void {
@@ -1135,7 +1136,7 @@ package com.dukascopy.connect.screens {
 			SocialManager.changeState(value);
 		}*/
 		
-		private function onShowRatingTap(value:Boolean):void {
+		/*private function onShowRatingTap(value:Boolean):void {
 			Auth.setShowRating(value, onRatingSaved);
 			btnShowRatingObject.uiComponent.deactivate();
 			btnShowRatingObject.uiComponent.isLoading = true;
@@ -1144,7 +1145,7 @@ package com.dukascopy.connect.screens {
 		private function onRatingSaved():void {
 			btnShowRatingObject.uiComponent.activate();
 			btnShowRatingObject.uiComponent.isLoading = false;
-		}
+		}*/
 		
 		private function onMySubscriptionsTap():void {
 			Shop.showMySubscriptions();
@@ -1299,18 +1300,18 @@ package com.dukascopy.connect.screens {
 			btnNotificationObject.title = Lang.textNotifications;
 			btnSoundMsgObject.title = Lang.soundsOnMessages;
 			btnSoundCallObject.title = Lang.soundsOnCall;
-			btn911SectionObject.title = Lang.section911My;
+			//btn911SectionObject.title = Lang.section911My;
 			btnReferralSectionObject.title = Lang.referralProgram;
 			btnReferralEnterCodeObject.title = Lang.enterReferralCode;
 			btnFXCommObject.title = Lang.communityProfile;
 			btnLanguageObject.title = Lang.setLanguage;
-			btnUnbanObject.title = Lang.getOutOfJail;
-			btnBuyProtectionObject.title = Lang.buyBanProtection;
-			btnShowProtectionObject.title = Lang.banProtection;
-			btnShowMyBansObject.title = Lang.myBans;
+			//btnUnbanObject.title = Lang.getOutOfJail;
+			//btnBuyProtectionObject.title = Lang.buyBanProtection;
+			//btnShowProtectionObject.title = Lang.banProtection;
+			//btnShowMyBansObject.title = Lang.myBans;
 			btnLogoutObject.title = Lang.logout;
 			btnOneClickObject.title = Lang.oneClickPayments;
-			btnShowRatingObject.title = Lang.showRating;
+			//btnShowRatingObject.title = Lang.showRating;
 			btnOpenAccountObject.title = Lang.openAccount;
 			btnMyAccountObject.title = Lang.myAccount;
 			
