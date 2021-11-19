@@ -4,14 +4,13 @@ package com.dukascopy.connect.data.escrow
 	import com.dukascopy.connect.Config;
 	import com.dukascopy.connect.GD;
 	import com.dukascopy.connect.data.AlertScreenData;
-	import com.dukascopy.connect.data.ErrorData;
 	import com.dukascopy.connect.data.EscrowScreenData;
 	import com.dukascopy.connect.data.SelectorItemData;
 	import com.dukascopy.connect.data.screenAction.IScreenAction;
 	import com.dukascopy.connect.data.screenAction.customActions.OpenSupportChatAction;
 	import com.dukascopy.connect.data.screenAction.customActions.StartChatAction;
 	import com.dukascopy.connect.gui.components.message.ToastMessage;
-	import com.dukascopy.connect.managers.escrow.EscrowOfferManager;
+	import com.dukascopy.connect.managers.escrow.vo.EscrowDealEventSentRequestVO;
 	import com.dukascopy.connect.managers.escrow.vo.EscrowInstrument;
 	import com.dukascopy.connect.screens.dialogs.ScreenWebviewDialogBase;
 	import com.dukascopy.connect.screens.dialogs.escrow.AcceptOfferScreen;
@@ -31,7 +30,6 @@ package com.dukascopy.connect.data.escrow
 	import com.dukascopy.connect.sys.applicationError.ApplicationErrors;
 	import com.dukascopy.connect.sys.auth.Auth;
 	import com.dukascopy.connect.sys.dialogManager.DialogManager;
-	import com.dukascopy.connect.sys.errors.ErrorLocalizer;
 	import com.dukascopy.connect.sys.payments.PayManager;
 	import com.dukascopy.connect.sys.payments.PaymentsManager;
 	import com.dukascopy.connect.sys.payments.advancedPayments.vo.PayTaskVO;
@@ -45,7 +43,6 @@ package com.dukascopy.connect.data.escrow
 	import com.dukascopy.connect.vo.ChatVO;
 	import com.dukascopy.connect.vo.users.UserVO;
 	import com.dukascopy.langs.Lang;
-	import com.dukascopy.connect.managers.escrow.vo.EscrowDealEventSentRequestVO;
 	
 	/**
 	 * ...
@@ -66,16 +63,8 @@ package com.dukascopy.connect.data.escrow
 		
 		public static function init():void
 		{
-		//	GD.S_OFFER_ACCEPT_FAIL.add(onOfferAcceptFail);
+			
 		}
-		
-		/*static private function onOfferAcceptFail(errorData:ErrorData):void 
-		{
-			if (errorData != null)
-			{
-				ToastMessage.display(errorData.getDisplayError());
-			}
-		}*/
 		
 		static private function confirmCryptoReceiveCommand(escrow:EscrowMessageData, messageId:Number, chatVO:ChatVO, created:Number, command:OfferCommand = null):void
 		{
@@ -91,14 +80,13 @@ package com.dukascopy.connect.data.escrow
 			}
 			else if (command == OfferCommand.confirm_crypto_recieve)
 			{
-				PHP.escrow_addEvent(onConfirmCryptoEvent, {event_type: EscrowEventType.CRYPTO_ACCEPTED.value, deal_uid: escrow.deal_uid, notifyWS: true});
-			//	PHP.escrow_addEvent(onConfirmCryptoEvent, {event_type: "cp2p_crypto_accepted", deal_uid: escrow.deal_uid, notifyWS: true});
+				GD.S_ESCROW_REQUEST_DEAL_EVENT_SENT.invoke(new EscrowDealEventSentRequestVO(
+						EscrowEventType.CRYPTO_ACCEPTED,
+						escrow.deal_uid,
+						null,
+						true
+					));
 			}
-		}
-		
-		static private function onConfirmCryptoEvent(respond:PHPRespond):void 
-		{
-			trace("123");
 		}
 		
 		static public function showScreen(escrow:EscrowMessageData, created:Number, userVO:UserVO, chatVO:ChatVO, messageId:Number, showChatButton:Boolean = false):void
@@ -332,37 +320,14 @@ package com.dukascopy.connect.data.escrow
 				}
 				else if (escrow.status == EscrowStatus.paid_crypto)
 				{
-					if (isExpired(escrow, created))
+					if (escrow.crypto_user_uid == Auth.uid)
 					{
-						//!TODO:;
-					//	ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, SendCryptoExpiredScreen, screenData);
+						ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, WaitConfirmScreen, screenData);
 					}
 					else
 					{
-						if (escrow.direction == TradeDirection.sell)
-						{
-							if (escrow.crypto_user_uid == Auth.uid)
-							{
-								ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, WaitConfirmScreen, screenData);
-							}
-							else
-							{
-								screenData.callback = confirmCryptoReceiveCommand;
-								ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, ReceiveCryptoScreen, screenData);
-							}
-						}
-						else
-						{
-							if (escrow.crypto_user_uid == Auth.uid)
-							{
-								ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, WaitConfirmScreen, screenData);
-							}
-							else
-							{
-								screenData.callback = confirmCryptoReceiveCommand;
-								ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, ReceiveCryptoScreen, screenData);
-							}
-						}
+						screenData.callback = confirmCryptoReceiveCommand;
+						ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, ReceiveCryptoScreen, screenData);
 					}
 				}
 				else if (escrow.status == EscrowStatus.deal_completed)
@@ -576,13 +541,7 @@ package com.dukascopy.connect.data.escrow
 						escrow.deal_uid,
 						escrow.transactionId,
 						true
-					))
-
-					/*PHP.escrow_addEvent(
-						onEventCryptoSend,
-						{event_type: EscrowEventType.PAID_CRYPTO.value, data:escrow.transactionId, deal_uid: escrow.deal_uid, notifyWS: true}, 
-						{transaction:escrow.transactionId, chatVO:chatVO}
-					);*/
+					));
 				}
 				else
 				{
@@ -744,30 +703,18 @@ package com.dukascopy.connect.data.escrow
 			}
 			else if (escrow.status == EscrowStatus.deal_mca_hold)
 			{
-				//!TODO:;
 				return (((new Date()).time / 1000 - created) / 60) > EscrowSettings.dealMaxTime;
 			}
 			else if (escrow.status == EscrowStatus.deal_crypto_send_wait_investigation)
 			{
-				//!TODO:;
 				return (((new Date()).time / 1000 - created) / 60) > EscrowSettings.dealCryptoInvestigationTime;
 			}
 			else if (escrow.status == EscrowStatus.paid_crypto)
 			{
-				//!TODO:;
 				return (((new Date()).time / 1000 - created) / 60) > EscrowSettings.receiptConfirmationTime;
 			}
 			return false;
 		}
-	
-	/*static public function getLeftTime(escrow:EscrowMessageData, created:Number):Number
-	   {
-	   if (escrow.status == EscrowStatus.offer_created)
-	   {
-	   return EscrowSettings.offerMaxTime * 60 - ((new Date()).time / 1000 - escrowOffer.created);
-	   }
-	   return 0;
-	   }*/
 	}
 }
 import com.dukascopy.connect.data.escrow.EscrowMessageData;

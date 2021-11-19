@@ -125,7 +125,7 @@ package com.dukascopy.connect.screens.innerScreens {
 			_params.doDisposeAfterClose = false;
 			Auth.S_AUTH_DATA_UPDATED.add(onEntrypointsUpdated);
 			
-			createChatButton.setPosition(_width - Config.FINGER_SIZE - Config.MARGIN * 2,  _height - Config.FINGER_SIZE - Config.MARGIN * 2);
+			createChatButton.setPosition(_width - Config.FINGER_SIZE - Config.MARGIN * 2,  _height - Config.FINGER_SIZE - Config.MARGIN * 2 - Config.APPLE_TOP_OFFSET);
 			createChatButton.setOffset(Config.TOP_BAR_HEIGHT * 2 + Config.APPLE_TOP_OFFSET);
 			
 			lastSelectedFilter = selectedFilter;
@@ -306,7 +306,7 @@ package com.dukascopy.connect.screens.innerScreens {
 			list.view.y = tabs.height;
 			list.setWidthAndHeight(_width, _height - list.view.y);
 			
-			createChatButton.setPosition(_width - Config.FINGER_SIZE - Config.MARGIN * 2,  _height - Config.FINGER_SIZE - Config.MARGIN * 2);
+			createChatButton.setPosition(_width - Config.FINGER_SIZE - Config.MARGIN * 2,  _height - Config.FINGER_SIZE - Config.MARGIN * 2 - Config.APPLE_TOP_OFFSET);
 			createChatButton.setOffset(MobileGui.stage.stageHeight - _height);
 			
 			//updateUnreaded();

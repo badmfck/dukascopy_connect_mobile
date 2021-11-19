@@ -225,10 +225,24 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 			
 			super.initScreen(data);
 			
+			hideInputs();
+			
 			PaymentsManager.activate();
 			PayManager.S_CANCEL_AUTH.add(cancelAuth);
 			
 			checkData();
+		}
+		
+		private function hideInputs():void 
+		{
+			if (iAmountCurrency != null)
+			{
+				iAmountCurrency.visible = false;
+			}
+			if (iAmount != null)
+			{
+				iAmount.visible = false;
+			}
 		}
 		
 		override protected function drawContent():void 
@@ -1256,6 +1270,8 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 			
 			super.activateScreen();
 			
+			showInputs();
+			
 			if (walletSelected == true)
 			{
 				if (iAmount != null && !isNaN(iAmount.value) && selectorCommodity != null && selectorCommodity.value != null)
@@ -1285,6 +1301,18 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 			{
 			//	selectorCommodity.activate();
 			//	selectorCurrency.activate();
+			}
+		}
+		
+		private function showInputs():void 
+		{
+			if (iAmount != null)
+			{
+				iAmount.visible = true;
+			}
+			if (iAmountCurrency != null)
+			{
+				iAmountCurrency.visible = true;
 			}
 		}
 		

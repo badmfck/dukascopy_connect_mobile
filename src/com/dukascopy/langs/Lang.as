@@ -2558,7 +2558,7 @@ package com.dukascopy.langs {
 		static public var escrow_blockchain_address_needed:String = "In order to get access to external blockchain operations with %@ you need to register a blockchain address that will be used for withdrawal operations.";
 		static public var escrow_create_your_ad:String = "Create your ad";
 		static public var escrow_amount_exceeds:String = "The amount of your offer exceeds the amount of the ad. Please note that it can be equal or less than the amount of the ad.";
-		static public var waiting_for_receipt_confirmation:String = "You have succesfully provided the transaction ID that now has to be checked and confirmed by your counterparty during 24 hours.";
+		static public var waiting_for_receipt_confirmation:String = "You have succesfully provided the transaction ID that now has to be checked and confirmed by your counterparty during %@ hour(s).";
 		static public var waiting_for_receipt_confirmation_status:String = "Waiting for receipt confirmation by the Buyer";
 		static public var escrow_fill_application_form:String = "Please fill in the application form";
 		static public var escrow_debit_from_account:String = "Debit from account";
@@ -2645,6 +2645,10 @@ package com.dukascopy.langs {
 		static public var escrowRulesDialogText:String = "Rules";
 		static public var register_fiat_account:String = "To proceed with this operation you need to have an active account in %@";
 		static public var new_service_p2p:String = "Soon, there will be new crypto peer-to-peer transaction service. Please stay tuned.";
+		static public var escrow_waiting_receipt_confirm_expired:String = "Suspended. Waiting for receipt confirmation by the Buyer or Support";
+		static public var waiting_for_receipt_confirmation_expired:String = "The Buyer missed the %@ hours deadline either to confirm the receipt of crypto or to request an investigation. The transaction has been suspended and forwarded to manual investigation by Dukascopy Support.";
+		static public var investigation_fee_description_expired:String = "You have missed the 24 hours deadline either to confirm the receipt of crypto or to request an investigation. The transaction has been suspended and forwarded to manual investigation by Dukascopy Support but you still may finish it by tapping “I HAVE RECEIVED THE CRYPTO” button. In any case, the Refundable fee became non-refundable and will be charged in the Bank’s favour.";
+		static public var waiting_for_receipt_confirmation_status_expired:String = "Waiting for receipt confirmation by the Buyer or Support";
 		
 		static public function updateKeys(keys:Object):void {
 			for (var n:String in keys) {

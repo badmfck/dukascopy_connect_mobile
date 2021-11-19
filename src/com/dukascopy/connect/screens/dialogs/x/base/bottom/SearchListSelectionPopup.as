@@ -44,13 +44,28 @@ package com.dukascopy.connect.screens.dialogs.x.base.bottom
 		protected function doSearch(value:String = ""):void {
 			if (list == null)
 				return;
-			var data:Array = list.data as Array;
+			var data:Object = list.data;
 			if (data == null || value == null)
 				return;
-			for (var i:int = 0; i < data.length; i++) {
-				if (data[i][0].indexOf(value) == 0) {
-					list.navigateToItem(i);
-					return;
+			if ("length" in data)
+			{
+				var item:Object;
+				for (var i:int = 0; i < data.length; i++) {
+					item = data[i];
+					if ("label" in item && item.label != null && item.label is String)
+					{
+						if ((item.label as String).toLowerCase().indexOf(value.toLowerCase()) == 0) {
+							list.navigateToItem(i);
+							return;
+						}
+					}
+					else if (item != null && item is Array && (item as Array).length > 0)
+					{
+						if (item[0].indexOf(value) == 0) {
+							list.navigateToItem(i);
+							return;
+						}
+					}
 				}
 			}
 		}

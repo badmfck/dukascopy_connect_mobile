@@ -327,7 +327,10 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 			{
 				result = Lang.under_investigation;
 			}
-			else if (EscrowScreenNavigation.isExpired(messageData.systemMessageVO.escrow, messageData.systemMessageVO.escrow.created) && data.inactive == false && messageData.systemMessageVO.escrow.status != EscrowStatus.deal_crypto_send_wait_investigation)
+			else if (EscrowScreenNavigation.isExpired(messageData.systemMessageVO.escrow, messageData.systemMessageVO.escrow.created) && 
+					data.inactive == false && 
+					messageData.systemMessageVO.escrow.status != EscrowStatus.deal_crypto_send_wait_investigation && 
+					messageData.systemMessageVO.escrow.status != EscrowStatus.paid_crypto)
 			{
 				if (messageData.systemMessageVO.escrow.status == EscrowStatus.deal_created ||
 					messageData.systemMessageVO.escrow.status == EscrowStatus.deal_mca_hold ||
@@ -440,7 +443,22 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 					}
 					case EscrowStatus.paid_crypto:
 					{
-						if (direction == TradeDirection.buy)
+						if (EscrowScreenNavigation.isExpired(data, data.created))
+						{
+							if (data.mca_user_uid == Auth.uid)
+							{
+								result = Lang.escrow_seller_sent_crypto_transaction;
+								if (data.transactionId != null)
+								{
+									result += ":\n" + data.transactionId;
+								}
+							}
+							else
+							{
+								result = Lang.escrow_waiting_receipt_confirm_expired;
+							}
+						}
+						else
 						{
 							if (data.mca_user_uid == Auth.uid)
 							{
@@ -453,21 +471,6 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 							else
 							{
 								result = Lang.escrow_waiting_receipt_confirm;
-							}
-						}
-						else if(direction == TradeDirection.sell)
-						{
-							if (data.crypto_user_uid == Auth.uid)
-							{
-								result = Lang.escrow_waiting_receipt_confirm;
-							}
-							else
-							{
-								result = Lang.escrow_seller_sent_crypto_transaction;
-								if (data.transactionId != null)
-								{
-									result += ":\n" + data.transactionId;
-								}
 							}
 						}
 						
@@ -619,8 +622,16 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 					//!TODO: передать верное время
 					if (EscrowScreenNavigation.isExpired(messageData.systemMessageVO.escrow, messageData.systemMessageVO.escrow.created) && messageData.systemMessageVO.escrow.inactive == false)
 					{
-						iconFail.visible = true;
-						UI.colorize(iconFail, getIconColor(messageData.systemMessageVO.escrow.status, messageData.systemMessageVO.escrow.direction, messageData));
+						if (messageData.systemMessageVO.escrow.status == EscrowStatus.paid_crypto)
+						{
+							iconAlert.visible = true;
+							UI.colorize(iconAlert, getIconColor(messageData.systemMessageVO.escrow.status, messageData.systemMessageVO.escrow.direction, messageData));
+						}
+						else
+						{
+							iconFail.visible = true;
+							UI.colorize(iconFail, getIconColor(messageData.systemMessageVO.escrow.status, messageData.systemMessageVO.escrow.direction, messageData));
+						}
 					}
 					else
 					{

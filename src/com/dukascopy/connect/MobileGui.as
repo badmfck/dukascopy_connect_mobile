@@ -212,9 +212,9 @@ package com.dukascopy.connect {
 				}
 			}else if(Config.PLATFORM_WINDOWS){
 				// Emulate ios offsets
-				Config.setupAppleTopOffset(50);
+				/*Config.setupAppleTopOffset(50);
 				Config.setupAppleBottomOffset(30);
-				Config.setupFingerSize(55);
+				Config.setupFingerSize(55);*/
 
 				initComponents();
 

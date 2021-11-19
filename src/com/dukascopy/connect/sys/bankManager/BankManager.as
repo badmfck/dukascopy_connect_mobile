@@ -947,7 +947,7 @@ package com.dukascopy.connect.sys.bankManager {
 						ServiceScreenManager.TYPE_SCREEN,
 						cls, { 
 							giftData:giftData
-						}
+						}, 0.1
 					);
 				} else if (data.type == "cryptoNotesBS") {
 					screenData = new OrderScreenData();
