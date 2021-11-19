@@ -5,11 +5,13 @@ package com.dukascopy.connect.gui.topBar {
 	import com.dukascopy.connect.gui.button.ActionButton;
 	import com.dukascopy.connect.gui.input.SearchBar;
 	import com.dukascopy.connect.gui.lightbox.UI;
+	import com.dukascopy.connect.gui.menuVideo.BitmapButton;
 	import com.dukascopy.connect.sys.echo.echo;
 	import com.dukascopy.connect.sys.imageManager.ImageBitmapData;
 	import com.dukascopy.connect.sys.mobileClip.MobileClip;
 	import com.dukascopy.connect.sys.style.Style;
 	import com.dukascopy.connect.sys.theme.AppTheme;
+	import com.dukascopy.connect.type.HitZoneType;
 	import com.dukascopy.connect.type.MainColors;
 	import com.dukascopy.connect.utils.TextUtils;
 	import flash.display.Bitmap;
@@ -21,6 +23,7 @@ package com.dukascopy.connect.gui.topBar {
 	import flash.geom.Rectangle;
 	import flash.text.TextFieldAutoSize;
 	import flash.text.TextFormatAlign;
+	import white.Back;
 	
 	/**
 	 * Используется в RootScren
@@ -28,18 +31,13 @@ package com.dukascopy.connect.gui.topBar {
 	 */
 	
 	public class TopBar extends MobileClip {
-		
+		public var topPadding:int = 0;
 		private var _viewWidth:int;
 		private var _viewHeight:int;
 		private var _y:int = 0;
 		private var _isActivated:Boolean = false;
 		private var _isShown:Boolean = false;
-		private var bg:Bitmap;
-		private var bgBMD:BitmapData;
-		private var bgRect:Rectangle;
 		private var titleBitmap:Bitmap;
-		private var logo:MovieClip;
-		private var logoBMP:Bitmap;
 		private var searchBar:SearchBar;
 		private var currentActions:Vector.<IScreenAction>;
 		private var actionsBar:Sprite;
@@ -47,6 +45,9 @@ package com.dukascopy.connect.gui.topBar {
 		private var titleToDraw:String;
 		private var titleChanged:Boolean;
 		private var underline:Sprite;
+		private var backButton:BitmapButton;
+		private var onBackCallback:Function;
+		private var content:Sprite;
 		
 		public function TopBar() {
 			super();
@@ -56,26 +57,20 @@ package com.dukascopy.connect.gui.topBar {
 		private function create():void {
 			_view = new Sprite();
 			
-			bgRect = new Rectangle(0, 0, 1, Config.APPLE_TOP_OFFSET);
-			bg = new Bitmap();
-			_view.addChild(bg);
+			content = new Sprite();
+			_view.addChild(content);
 			
 			titleBitmap = new Bitmap();
 			titleBitmap.x = Config.DOUBLE_MARGIN;// Config.FINGER_SIZE;
-			_view.addChild(titleBitmap);
-			
-			logo = new IconLogo();
-			
-			logoBMP = new Bitmap();
-			_view.addChild(logoBMP);
+			content.addChild(titleBitmap);
 			
 		//	addSearchBar();
 			
 			actionsBar = new Sprite();
-			_view.addChild(actionsBar);
+			content.addChild(actionsBar);
 			
 			underline = new Sprite();
-			_view.addChild(underline);
+			content.addChild(underline);
 			
 			setTitle("");
 		}
@@ -83,15 +78,20 @@ package com.dukascopy.connect.gui.topBar {
 		private function addSearchBar():void 
 		{
 			searchBar = new SearchBar();
-			_view.addChild(searchBar.view);
+			content.addChild(searchBar.view);
 			
 			searchBar.setSize(_viewWidth, _viewHeight);
-			searchBar.view.y = Config.APPLE_TOP_OFFSET;
+			searchBar.view.y = 0;
 		}
 		
 		public function show(time:Number = 0, delay:Number = 0):void
 		{
 			_isShown = true;
+		}
+		
+		public function set onBack(value:Function):void
+		{
+			onBackCallback = value;
 		}
 		
 		public function hide(time:Number = 0, delay:Number = 0):void
@@ -107,6 +107,10 @@ package com.dukascopy.connect.gui.topBar {
 				SearchBar.UPDATE_STATE.add(onSearchBarUpdate);
 				searchBar.activate();
 			}
+			if (backButton != null)
+			{
+				backButton.activate();
+			}
 		}
 		
 		public function deactivate():void {
@@ -116,6 +120,10 @@ package com.dukascopy.connect.gui.topBar {
 			{
 				SearchBar.UPDATE_STATE.remove(onSearchBarUpdate);
 				searchBar.deactivate();
+			}
+			if (backButton != null)
+			{
+				backButton.deactivate();
 			}
 		}
 		
@@ -161,6 +169,11 @@ package com.dukascopy.connect.gui.topBar {
 				titleTextMaxWidth = actionsBar.x - titleBitmap.x - Config.MARGIN;
 			else
 				titleTextMaxWidth = actionsBar.x - titleBitmap.x - Config.MARGIN;
+				
+			if (backButton != null)
+			{
+			//	titleTextMaxWidth -= backButton.width + Config.FINGER_SIZE * .5;
+			}
 			if(titleBitmap && titleBitmap.width == titleTextMaxWidth && !titleChanged)
 				return;
 			if (titleBitmap == null)
@@ -172,55 +185,31 @@ package com.dukascopy.connect.gui.topBar {
 															Style.color(Style.TOP_BAR_TEXT_COLOR), 
 															Style.bold(Style.TOP_BAR_TEXT_BOLD));
 			titleChanged = false;
-
-			//titleBitmap.y = int((_viewHeight - titleBitmap.height) * .5);
-
-			titleBitmap.y = int(Config.APPLE_TOP_OFFSET + (_viewHeight - titleBitmap.height) * .5);
-
+			titleBitmap.y = int((_viewHeight - titleBitmap.height) * .5);
 		}
 		
-		public function setSize(width:int, height:int):void {
-			if (width == _viewWidth && height == _viewHeight)
-				return;
-			_viewWidth = width;
-			_viewHeight = height;
-			
-			var trueHeight:int = _viewHeight + Config.APPLE_TOP_OFFSET;
-			
-			bgRect.width = width;
-			if (bgBMD != null)
-				bgBMD.dispose();
-			bgBMD = new ImageBitmapData("TopBar.BG", _viewWidth, _viewHeight, false, Style.color(Style.TOP_BAR));
-			if (bgRect.height > 0)
-				bgBMD.fillRect(bgRect, Style.color(Style.TOP_BAR));
-			bg.bitmapData = bgBMD;
-			
-			logoBMP.x = int(trueHeight * .2);
-			logoBMP.y = int(Config.APPLE_TOP_OFFSET + trueHeight * .2);
-			logo.height = int(trueHeight * .6);
-			logo.width = int(trueHeight * .6);
-			
-			if (logoBMP != null && logoBMP.bitmapData != null)
-				logoBMP.bitmapData.dispose();
-			//logoBMP.bitmapData = UI.getSnapshot(logo, StageQuality.HIGH, "TopBar.Logo");
+		public function setSize(viewWidth:int, viewHeight:int):void {
+			_viewWidth = viewWidth;
+			_viewHeight = viewHeight;
 			
 			if (searchBar != null)
 			{
-				searchBar.setSize(width, _viewHeight);
-				searchBar.view.y = Config.APPLE_TOP_OFFSET;
+				searchBar.setSize(_viewWidth, _viewHeight);
 			}
-			
 			
 			updateTitle();
 			
 			underline.graphics.clear();
 			underline.graphics.lineStyle(UI.getLineThickness(), Style.color(Style.COLOR_SEPARATOR));
 			underline.graphics.moveTo(0, 0);
-			underline.graphics.lineTo(width, 0);
+			underline.graphics.lineTo(_viewWidth, 0);
 			underline.y = _viewHeight - 2;
-			/*underline.graphics.beginFill(0xFF0000);
-			underline.graphics.drawRect(0, 0, 10, Config.APPLE_TOP_OFFSET);
-			underline.graphics.endFill();*/
+			
+			_view.graphics.clear();
+			_view.graphics.beginFill(Style.color(Style.TOP_BAR));
+			_view.graphics.drawRect(0, 0, _viewWidth, Config.APPLE_TOP_OFFSET + _viewHeight + topPadding);
+			
+			content.y = Config.APPLE_TOP_OFFSET + topPadding;
 		}
 		
 		private function resizeActions():void {
@@ -236,31 +225,17 @@ package com.dukascopy.connect.gui.topBar {
 			}
 			
 			actionsBar.x = pos;
-			actionsBar.y = Config.APPLE_TOP_OFFSET + int(Config.TOP_BAR_HEIGHT * .5);
+			actionsBar.y = int(Config.TOP_BAR_HEIGHT * .5);
 		}
 		
 		public function get height():int {
-
-			//return _viewHeight + topPadding+ Config.APPLE_TOP_OFFSET;
-
-			return _viewHeight + Config.APPLE_TOP_OFFSET;
-
+			return _viewHeight + topPadding;
 		}
 		
 		override public function dispose():void {
 			super.dispose();
 			
-			if (bgBMD != null)
-				bgBMD.dispose();
-			bgBMD = null;
-			
-			if (bg != null && bg.bitmapData != null)
-				bg.bitmapData.dispose();
-			bg = null;
-			
-			if (logoBMP != null && logoBMP.bitmapData != null)
-				logoBMP.bitmapData.dispose();
-			logoBMP = null;
+			onBackCallback = null;
 			
 			if (titleBitmap != null && titleBitmap.bitmapData != null)
 				titleBitmap.bitmapData.dispose();
@@ -279,7 +254,12 @@ package com.dukascopy.connect.gui.topBar {
 				underline = null;
 			}
 			
-			logo = null;
+			if (content != null) {
+				UI.destroy(content);
+				content = null;
+			}
+			
+			removeBackButton();
 		}
 		
 		public function setSearchBarVisibility(value:Boolean):void {
@@ -334,12 +314,73 @@ package com.dukascopy.connect.gui.topBar {
 			icon.transform.colorTransform = ct;
 			UI.scaleToFit(icon, Config.FINGER_SIZE_DOUBLE, Config.TOP_BAR_HEIGHT * .56);
 			titleBitmap.bitmapData = UI.getSnapshot(icon, StageQuality.HIGH, "EmergencyScreen.title");
-			titleBitmap.y = int((Config.TOP_BAR_HEIGHT - titleBitmap.height) * .5) + Config.APPLE_TOP_OFFSET;
+			titleBitmap.y = int((Config.TOP_BAR_HEIGHT - titleBitmap.height) * .5);
 		}
 		
 		public function updateUnderline(showUnderline:Boolean):void 
 		{
 			underline.visible = showUnderline;
+		}
+		
+		public function addBackButton():void 
+		{
+			if (backButton == null)
+			{
+				backButton = new BitmapButton();
+				backButton.setStandartButtonParams();
+				backButton.tapCallback = onBackClick;
+				backButton.disposeBitmapOnDestroy = true;
+				backButton.setDownScale(1);
+				backButton.setOverlay(HitZoneType.CIRCLE);
+				content.addChild(backButton);
+				
+				var icon:Sprite = new Back();
+				UI.colorize(icon, Style.color(Style.COLOR_ICON_SETTINGS));
+				UI.scaleToFit(icon, int(Config.FINGER_SIZE * .4), int(Config.FINGER_SIZE * .4));
+				backButton.setBitmapData(UI.getSnapshot(icon), true);
+				backButton.setOverflow(Config.FINGER_SIZE*.3, Config.FINGER_SIZE*.3, Config.FINGER_SIZE*.3, Config.FINGER_SIZE*.3);
+				if (_isActivated)
+				{
+					backButton.activate();
+				}
+				backButton.x = int(Config.MARGIN * 2);
+				backButton.y = int(_viewHeight * .5 - backButton.height * .5);
+			}
+			updateLayout();
+		}
+		
+		private function onBackClick():void {
+			if (onBackCallback != null) {
+				onBackCallback();
+			}
+			updateLayout();
+		}
+		
+		private function updateLayout():void {
+			if (_isDisposed == true)
+				return;
+			if (backButton != null) {
+				titleBitmap.x = backButton.x + backButton.width + Config.DOUBLE_MARGIN;
+			} else {
+				titleBitmap.x = Config.DOUBLE_MARGIN;
+			}
+			updateTitle();
+		}
+		
+		public function removeBackButton():void {
+			if (backButton != null) {
+				if (content != null && _view.contains(backButton)) {
+					content.removeChild(backButton);
+				}
+				backButton.dispose();
+				backButton = null;
+			}
+			updateLayout();
+		}
+		
+		public function getHeight():int 
+		{
+			return Config.APPLE_TOP_OFFSET + _viewHeight + topPadding;
 		}
 		
 		private function clearActions():void {

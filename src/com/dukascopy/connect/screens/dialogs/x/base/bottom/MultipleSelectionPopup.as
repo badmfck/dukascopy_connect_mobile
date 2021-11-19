@@ -101,7 +101,7 @@ package com.dukascopy.connect.screens.dialogs.x.base.bottom
 		{
 			super.drawView();
 			nextButton.x = contentPadding;
-			nextButton.y = getHeight() - nextButton.height - contentPadding;
+			nextButton.y = getContentHeight() - nextButton.height - contentPadding;
 		}
 		
 		override public function activateScreen():void 

@@ -187,6 +187,10 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		private function drawStatus():void 
 		{
 			var text:String = Lang.waiting_for_receipt_confirmation_status;
+			if (EscrowScreenNavigation.isExpired(escrowOffer, offerCreatedTime))
+			{
+				text = Lang.waiting_for_receipt_confirmation_status_expired;
+			}
 			var color:Number = Color.RED;
 			
 			status.draw(getWidth() - contentPadding * 2, text, color);
@@ -255,7 +259,13 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		private function drawText():void 
 		{
 			var text:String = Lang.waiting_for_receipt_confirmation;
-			text = text.replace("%@", EscrowSettings.dealMaxTime);
+			
+			if (EscrowScreenNavigation.isExpired(escrowOffer, offerCreatedTime))
+			{
+				text = Lang.waiting_for_receipt_confirmation_expired;
+			}
+			
+			text = text.replace("%@", int(EscrowSettings.receiptConfirmationTime / 60));
 			
 			if (description.bitmapData != null)
 			{

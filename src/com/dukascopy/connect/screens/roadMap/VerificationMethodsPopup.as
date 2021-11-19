@@ -52,6 +52,7 @@ package com.dukascopy.connect.screens.roadMap {
 		private var paddind:int;
 		private var clips:Vector.<SolencyMethodClip>;
 		private var lastSelectedItem:SolencyMethodClip;
+		private var lastSelectedData:SolvencyMethodData;
 		public var price:String;
 		
 		public function VerificationMethodsPopup() { }
@@ -136,6 +137,8 @@ package com.dukascopy.connect.screens.roadMap {
 			}
 			lastSelectedItem = selectedItem;
 			lastSelectedItem.select();
+			
+			lastSelectedData = lastSelectedItem.data;
 			
 			needCallback = true;
 			TweenMax.killDelayedCallsTo(close);
@@ -286,9 +289,9 @@ package com.dukascopy.connect.screens.roadMap {
 				needCallback = false;
 				if (data != null && "callback" in data && data.callback != null && data.callback is Function && (data.callback as Function).length == 1)
 				{
-					if (lastSelectedItem != null && lastSelectedItem.data != null)
+					if (lastSelectedData != null)
 					{
-						data.callback(lastSelectedItem.data.type);
+						data.callback(lastSelectedData.type);
 					}
 				}
 			}
@@ -302,8 +305,6 @@ package com.dukascopy.connect.screens.roadMap {
 				UI.destroy(title);
 				title = null;
 			}
-			
-			lastSelectedItem = null;
 			
 			if (clips != null)
 			{

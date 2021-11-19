@@ -133,7 +133,7 @@ package com.dukascopy.connect.screens.innerScreens {
 			
 			ConfigManager.S_CONFIG_READY.add(onConfigReady);
 			
-			createChatButton.setPosition(_width - Config.FINGER_SIZE - Config.MARGIN * 2,  _height - Config.FINGER_SIZE - Config.MARGIN * 2);
+			createChatButton.setPosition(_width - Config.FINGER_SIZE - Config.MARGIN * 2,  _height - Config.FINGER_SIZE - Config.MARGIN * 2 - Config.APPLE_TOP_OFFSET);
 			createChatButton.setOffset(Config.TOP_BAR_HEIGHT * 2 + Config.APPLE_TOP_OFFSET);
 		}
 		
@@ -428,7 +428,7 @@ package com.dukascopy.connect.screens.innerScreens {
 			horizontalLoader.y = list.view.y;
 			horizontalLoader.y = 0;
 			list.setWidthAndHeight(_width, _height - list.view.y);
-			createChatButton.setPosition(_width - Config.FINGER_SIZE - Config.MARGIN * 2,  _height - Config.FINGER_SIZE - Config.MARGIN * 2);
+			createChatButton.setPosition(_width - Config.FINGER_SIZE - Config.MARGIN * 2,  _height - Config.FINGER_SIZE - Config.MARGIN * 2 - Config.APPLE_TOP_OFFSET);
 			createChatButton.setOffset(MobileGui.stage.stageHeight - _height);
 		}
 		

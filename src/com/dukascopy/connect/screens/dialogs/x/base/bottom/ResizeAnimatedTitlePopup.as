@@ -16,7 +16,7 @@ package com.dukascopy.connect.screens.dialogs.x.base.bottom
 		
 		override protected function getHeight():int 
 		{
-			return int(Math.min(_height - Config.FINGER_SIZE * .5, getContentHeight()));
+			return int(Math.min(_height - Config.FINGER_SIZE * .5 - Config.APPLE_TOP_OFFSET, getContentHeight()));
 		}
 		
 		private function getContentHeight():int 
@@ -35,7 +35,7 @@ package com.dukascopy.connect.screens.dialogs.x.base.bottom
 		
 		protected function getMaxContentHeight():int
 		{
-			return _height - Config.FINGER_SIZE * .5 - headerHeight;
+			return _height - Config.FINGER_SIZE * .5 - headerHeight - Config.APPLE_TOP_OFFSET - Config.APPLE_BOTTOM_OFFSET;
 		}
 	}
 }

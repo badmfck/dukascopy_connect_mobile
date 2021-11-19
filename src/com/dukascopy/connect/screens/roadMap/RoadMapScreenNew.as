@@ -971,7 +971,7 @@ package com.dukascopy.connect.screens.roadMap {
 				{
 					registrationType = respond.data.reg_steps;
 				}
-				registrationType = REGISTRATION_TYPE_DEPOSIT;
+				
 				if (respond.data != null && ("price" in respond.data) == true && ("currency" in respond.data) == true)
 				{
 					depositPrice = respond.data.price + " " + respond.data.currency;
