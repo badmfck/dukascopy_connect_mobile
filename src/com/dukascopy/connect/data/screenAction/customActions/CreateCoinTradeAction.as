@@ -384,7 +384,7 @@ package com.dukascopy.connect.data.screenAction.customActions {
 		{
 			if (error != null && error.message != null)
 			{
-				ToastMessage.display(error.message);
+			//	ToastMessage.display(error.message);
 			}
 			onFail();
 		}
