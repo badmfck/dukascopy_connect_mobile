@@ -190,7 +190,7 @@ package com.dukascopy.connect.gui.topBar {
 			bgRect.width = width;
 			if (bgBMD != null)
 				bgBMD.dispose();
-			bgBMD = new ImageBitmapData("TopBar.BG", _viewWidth, _viewHeight, false, Style.color(Style.TOP_BAR));
+			bgBMD = new ImageBitmapData("TopBar.BG", _viewWidth, trueHeight, false, Style.color(Style.TOP_BAR));
 			if (bgRect.height > 0)
 				bgBMD.fillRect(bgRect, Style.color(Style.TOP_BAR));
 			bg.bitmapData = bgBMD;
@@ -217,7 +217,7 @@ package com.dukascopy.connect.gui.topBar {
 			underline.graphics.lineStyle(UI.getLineThickness(), Style.color(Style.COLOR_SEPARATOR));
 			underline.graphics.moveTo(0, 0);
 			underline.graphics.lineTo(width, 0);
-			underline.y = _viewHeight - 2;
+			underline.y = trueHeight - 2;
 			/*underline.graphics.beginFill(0xFF0000);
 			underline.graphics.drawRect(0, 0, 10, Config.APPLE_TOP_OFFSET);
 			underline.graphics.endFill();*/

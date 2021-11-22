@@ -642,7 +642,7 @@ package com.dukascopy.connect.screens {
 			showInnerScreen(tabObject.screenClass, dir, time);
 			topBar.setSearchBarVisibility(tabObject.hasSearchBar);
 			topBar.setActions(getActions(tabObject.id), (currentTabID == QUESTIONS_SCREEN_ID) ? .7 : 1);
-			topBar.updateUnderline(true/*currentTabID == SETTINGS_SCREEN_ID*/);
+			topBar.updateUnderline(currentTabID == SETTINGS_SCREEN_ID);
 			if ("titleIcon" in tabObject == true && tabObject.titleIcon != null)
 				topBar.setTitleIcon(tabObject.titleIcon);
 			else
