@@ -3,9 +3,6 @@ package com.dukascopy.connect.vo
 	import com.dukascopy.connect.managers.escrow.vo.BaseVO;
     public class EscrowDealVO extends BaseVO{
        
-        private var raw:Object;
-		
-
         public function get uid():String{ return getString("deal_uid") as String;}
 		public function get status():String{return getString("status");}
 		public function get instrument():String{return getString("instrument");}
@@ -32,7 +29,7 @@ package com.dukascopy.connect.vo
         }
 		
         public function update(data:Object):void{
-            raw=data;
+            _raw=data;
         }
     }
 }
