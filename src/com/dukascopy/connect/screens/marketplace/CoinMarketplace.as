@@ -206,13 +206,13 @@ package com.dukascopy.connect.screens.marketplace {
 		
 		private function createSell():void 
 		{
-			var screenData:OrderScreenData = new OrderScreenData();
-			screenData.additionalData = data;
-			screenData.title = Lang.newSellCoinLot;
-			screenData.type = TradingOrder.SELL;
-			screenData.orders = null;
-			screenData.localProcessing = true;
-			screenData.callback = this.screenData.createLotFunction as Function;
+			var orderScreenData:OrderScreenData = new OrderScreenData();
+			orderScreenData.additionalData = data;
+			orderScreenData.title = Lang.newSellCoinLot;
+			orderScreenData.type = TradingOrder.SELL;
+			orderScreenData.orders = null;
+			orderScreenData.localProcessing = true;
+			orderScreenData.callback = screenData.createLotFunction as Function;
 			
 			var l:int;
 			var i:int;
@@ -222,8 +222,7 @@ package com.dukascopy.connect.screens.marketplace {
 			
 			bestPrice = 0;
 			dataProvider = this.screenData.dataProvider();
-			var reservedCoin:Number = 0;
-			var reservedFiat:Number = 0;
+			
 			var offer:TradingOrder;
 			if (dataProvider != null)
 			{
@@ -238,10 +237,10 @@ package com.dukascopy.connect.screens.marketplace {
 						{
 							bestPrice = offer.price;
 						}
-						if (offer.own == true && offer.side == TradingOrder.BUY)
+						/*if (offer.own == true && offer.side == TradingOrder.BUY)
 						{
 							reservedFiat += offer.quantity * offer.price;
-						}
+						}*/
 					}
 				}
 				currentData = getModels(dataProvider.SELL);
@@ -251,17 +250,42 @@ package com.dukascopy.connect.screens.marketplace {
 					for (i = 0; i < l; i++) 
 					{
 						offer = (currentData[i] as TradingOrder);
-						if (offer.own == true && offer.side == TradingOrder.SELL)
+						/*if (offer.own == true && offer.side == TradingOrder.SELL)
 						{
 							reservedCoin += offer.quantity;
-						}
+						}*/
 					}
 				}
 			}
-			screenData.bestPrice = bestPrice;
-			screenData.reservedCoin = reservedCoin;
-			screenData.reservedFiat = reservedFiat;
-			ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_DIALOG, TradeCoinPopup, screenData);
+			
+			var reservedCoin:Number = 0;
+			var reservedFiat:Number = 0;
+			if (screenData != null && screenData.myOrders != null)
+			{
+				var dataProviderOwn:Object = screenData.myOrders();
+				var itemsSell:Array = getMy(getSell(getModels(dataProviderOwn as Array)));
+				var itemsBuy:Array = getMy(getBuy(getModels(dataProviderOwn as Array)));
+				
+				var coinBalance:Number = 0;
+				var moneyBalance:Number = 0;
+				
+				l = itemsSell.length;
+				for (i = 0; i < l; i++) 
+				{
+					reservedCoin += (itemsSell[i] as TradingOrder).quantity;
+				}
+				
+				l = itemsBuy.length;
+				for (var j:int = 0; j < l; j++) 
+				{
+					reservedFiat += (itemsBuy[j] as TradingOrder).quantity * (itemsBuy[j] as TradingOrder).price;
+				}
+			}
+			
+			orderScreenData.bestPrice = bestPrice;
+			orderScreenData.reservedCoin = reservedCoin;
+			orderScreenData.reservedFiat = reservedFiat;
+			ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_DIALOG, TradeCoinPopup, orderScreenData);
 		}
 		
 		private function onCryptoOfferCallback(val:int, data:CoinTradeOrder = null):void 
