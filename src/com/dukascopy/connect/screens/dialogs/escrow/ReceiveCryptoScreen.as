@@ -211,6 +211,10 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		private function drawAlert():void 
 		{
 			var text:String = Lang.investigation_fee_description;
+			if (EscrowScreenNavigation.isExpired(escrowOffer, offerCreatedTime))
+			{
+				text = Lang.investigation_fee_description_expired;
+			}
 			text = text.replace("%@", (EscrowSettings.refundableFee * 100));
 			alertText.draw(getWidth() - contentPadding * 2, text, null);
 		}
@@ -372,11 +376,6 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		{
 			var text:String = Lang.check_transaction;
 			
-			if (escrowOffer != null && EscrowScreenNavigation.isExpired(escrowOffer, offerCreatedTime))
-			{
-				text = Lang.offer_expired;
-			}
-			
 			if (descriptionTransaction.bitmapData != null)
 			{
 				descriptionTransaction.bitmapData.dispose();
@@ -443,9 +442,16 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			acceptButton.y = position;
 			position += acceptButton.height + contentPaddingV * 0;
 			
-			investigationButton.x = contentPadding;
-			investigationButton.y = position;
-			position += investigationButton.height + contentPaddingV;
+			if (!EscrowScreenNavigation.isExpired(escrowOffer, offerCreatedTime))
+			{
+				investigationButton.x = contentPadding;
+				investigationButton.y = position;
+				position += investigationButton.height + contentPaddingV;
+			}
+			else
+			{
+				removeItem(investigationButton);
+			}
 		}
 		
 		private function drawControls():void
@@ -453,18 +459,9 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			var textSettings:TextFieldSettings;
 			var buttonBitmap:ImageBitmapData;
 			
-			if (EscrowScreenNavigation.isExpired(escrowOffer, offerCreatedTime))
-			{
-				textSettings = new TextFieldSettings(Lang.textOk, Style.color(Style.COLOR_TEXT), FontSize.BODY, TextFormatAlign.CENTER);
-				buttonBitmap = TextUtils.createbutton(textSettings, Style.color(Style.COLOR_BACKGROUND), 1, -1, Style.color(Style.COLOR_BUTTON_OUTLINE), getButtonWidth(), Style.size(Style.BUTTON_PADDING), Style.size(Style.SIZE_BUTTON_CORNER));
-				acceptButton.setBitmapData(buttonBitmap, true);
-			}
-			else
-			{
-				textSettings = new TextFieldSettings(Lang.i_have_received_ctypto, Style.color(Style.COLOR_TEXT), FontSize.BODY, TextFormatAlign.CENTER);
-				buttonBitmap = TextUtils.createbutton(textSettings, Style.color(Style.COLOR_BACKGROUND), 1, -1, Style.color(Style.COLOR_BUTTON_OUTLINE), getButtonWidth(), Style.size(Style.BUTTON_PADDING), Style.size(Style.SIZE_BUTTON_CORNER));
-				acceptButton.setBitmapData(buttonBitmap, true);
-			}
+			textSettings = new TextFieldSettings(Lang.i_have_received_ctypto, Style.color(Style.COLOR_TEXT), FontSize.BODY, TextFormatAlign.CENTER);
+			buttonBitmap = TextUtils.createbutton(textSettings, Style.color(Style.COLOR_BACKGROUND), 1, -1, Style.color(Style.COLOR_BUTTON_OUTLINE), getButtonWidth(), Style.size(Style.BUTTON_PADDING), Style.size(Style.SIZE_BUTTON_CORNER));
+			acceptButton.setBitmapData(buttonBitmap, true);
 			
 			textSettings = new TextFieldSettings(Lang.escrow_request_investigation, Color.RED, FontSize.SUBHEAD, TextFormatAlign.CENTER);
 			buttonBitmap = TextUtils.createbutton(textSettings, Style.color(Style.COLOR_BACKGROUND), 1, -1, NaN, getButtonWidth(), Style.size(Style.BUTTON_PADDING), Style.size(Style.SIZE_BUTTON_CORNER));

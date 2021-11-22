@@ -129,7 +129,7 @@ package com.dukascopy.connect.screens.roadMap.actions
 				{
 					if (S_ACTION_SUCCESS != null)
 					{
-						S_ACTION_SUCCESS.invoke(lastSelectedCode);
+						S_ACTION_SUCCESS.invoke(lastSelectedCode, true);
 					}
 					else
 					{

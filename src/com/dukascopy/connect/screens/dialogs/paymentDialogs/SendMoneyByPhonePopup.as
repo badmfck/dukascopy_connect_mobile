@@ -87,7 +87,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 		private var preloaderShown:Boolean = false;
 		protected var iAmountCurrency:Input;
 		protected var selectorCurrency:DDFieldButton;
-		private var sendSectionTitle:Bitmap;
+		protected var sendSectionTitle:Bitmap;
 		private var accountsPreloader:HorizontalPreloader;
 		protected var giftData:GiftData;
 		private var dataRedy:Boolean;
@@ -100,8 +100,8 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 		private var messageComposerIsOppened:Boolean = false;
 		private var messageComposer:TextComposer;
 		private var descriptionBox:PayMessagePreviewBox;
-		private var userName:String;
-		private var startPhoneNumber:String;
+		protected var userName:String;
+		protected var startPhoneNumber:String;
 		protected var secureCodeManager:SendMoneySecureCodeItem = new SendMoneySecureCodeItem();
 		private var scrollPanel:ScrollPanel;
 		private var bottomClip:Sprite;
@@ -802,7 +802,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 			}
 		}
 		
-		private function drawSendTitle():void 
+		protected function drawSendTitle():void 
 		{
 			if (sendSectionTitle.bitmapData)
 			{
@@ -816,7 +816,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 				var curentResultPhone:String = UI.isEmpty(inptCodeAndPhone.getInfoBoxValue()) ? inptCodeAndPhone.value : inptCodeAndPhone.getInfoBoxValue() + inptCodeAndPhone.value;
 				if (startPhoneNumber != curentResultPhone)
 				{
-					value = Lang.transferInvestmrntToPhoneNumber;
+					value = Lang.transferMoneyToPhoneNumber;
 				}
 				else
 				{
@@ -825,7 +825,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 			}
 			else
 			{
-				value = Lang.transferInvestmrntToPhoneNumber;
+				value = Lang.transferMoneyToPhoneNumber;
 			}
 			
 			sendSectionTitle.bitmapData = TextUtils.createTextFieldData(value, componentsWidth, 10, true, 

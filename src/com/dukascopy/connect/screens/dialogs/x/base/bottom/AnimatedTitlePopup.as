@@ -107,7 +107,12 @@ package com.dukascopy.connect.screens.dialogs.x.base.bottom
 		
 		override protected function getHeight():int 
 		{
-			return _height - Config.FINGER_SIZE * .5;
+			return _height - Config.FINGER_SIZE * .5 - Config.APPLE_TOP_OFFSET;
+		}
+		
+		protected function getContentHeight():int 
+		{
+			return getHeight() - Config.APPLE_BOTTOM_OFFSET;
 		}
 		
 		override protected function drawView():void {

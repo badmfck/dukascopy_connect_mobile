@@ -15,7 +15,7 @@ package com.dukascopy.connect.screens {
 	import com.dukascopy.connect.data.screenAction.customActions.Open911SupportAction;
 	import com.dukascopy.connect.data.screenAction.customActions.RefreshLotteryDataAction;
 	import com.dukascopy.connect.data.screenAction.customActions.ShowFilterEscrowAction;
-	//import com.dukascopy.connect.gui.components.ratesPanel.RatesPanel;
+	import com.dukascopy.connect.gui.components.ratesPanel.RatesPanel;
 	import com.dukascopy.connect.gui.lightbox.LightBox;
 	import com.dukascopy.connect.gui.lightbox.UI;
 	import com.dukascopy.connect.gui.tabs.TabBar;
@@ -151,7 +151,7 @@ package com.dukascopy.connect.screens {
 		private var BLINK_CHECK_INTERVAL:int = 60 * 4;
 		private var refreshLotteryDataAction:com.dukascopy.connect.data.screenAction.customActions.RefreshLotteryDataAction;
 		private var selectedinstrument:String;
-		//private var ratesPanel:RatesPanel;
+		private var ratesPanel:RatesPanel;
 		
 		/**
 		 * @CONSTRUCTOR
@@ -167,7 +167,7 @@ package com.dukascopy.connect.screens {
 			innerScreenManager.ingnoreBackSignal();
 			_view.addChild(innerScreenManager.view);
 			topBar = new TopBar();
-			//topBar.onBack = onTopBarBack;
+			topBar.onBack = onTopBarBack;
 			topBar.setSearchBarVisibility(false);
 			_view.addChild(topBar.view);
 			bottomTabs = new TabBar(Style.color(Style.BOTTOM_BAR_COLOR), Style.color(Style.BOTTOM_BAR_TEXT_COLOR), 1, Style.color(Style.BOTTOM_BAR_TEXT_SELECTED_COLOR), false, Style.boolean(Style.BOTTOM_BAR_LINE), Style.color(Style.BOTTOM_BAR_SELECTED_BACKGROUND));
@@ -317,20 +317,20 @@ package com.dukascopy.connect.screens {
 				return;
 			if (drawViewWidth == _width && drawViewHeight == _height)
 				return;
-			/*if (ratesPanel != null) {
+			if (ratesPanel != null) {
 				topBar.topPadding = ratesPanel.getHeight();
 			} else {
 				topBar.topPadding = 0;
-			}*/
+			}
 			
-			//topBar.topPadding+=Config.APPLE_TOP_OFFSET;
+		//	topBar.topPadding+=Config.APPLE_TOP_OFFSET;
 			
 			topBar.setSize(_width, Config.TOP_BAR_HEIGHT);
 			topBar.show();
 			bottomTabs.setWidthAndHeight(_width, Config.TOP_BAR_HEIGHT * 1.1, Config.APPLE_BOTTOM_OFFSET);
 			
 			bottomTabs.view.y = _height - bottomTabs.height;
-			innerScreenManager.view.y = topBar.view.y + topBar.height;
+			innerScreenManager.view.y = topBar.view.y + topBar.getHeight();
 			
 			innerScreenManager.setSize(_width, _height - topBar.view.y - topBar.height - bottomTabs.height + bottomTabs.getCurrentOffset());
 			swiper.setBounds(_width, innerScreenManager.view.height, innerScreenManager.view, 0, innerScreenManager.view.y);
@@ -424,7 +424,7 @@ package com.dukascopy.connect.screens {
 				innerScreenManager.dispose();
 			innerScreenManager = null;
 			
-			//removeRatesPanel();
+			removeRatesPanel();
 		}
 		
 		override public function dispose():void {
@@ -465,7 +465,7 @@ package com.dukascopy.connect.screens {
 			updateMissedCallsNum(CallsHistoryManager.getMissedNum());
 			CallsHistoryManager.S_MISSED_NUM.add(updateMissedCallsNum);
 			
-			/*if(topBar != null)
+			if(topBar != null)
 			{
 				if (currentTabID == ESCROW_INSTRUMENT_SCREEN_ID)
 				{
@@ -475,12 +475,12 @@ package com.dukascopy.connect.screens {
 				{
 					topBar.removeBackButton();
 				}
-			}*/
+			}
 			
-			/*if (ratesPanel != null)
+			if (ratesPanel != null)
 			{
 				ratesPanel.activate();
-			}*/
+			}
 		}
 		
 		private function updateMissedCallsNum(missedNum:int):void {
@@ -520,10 +520,10 @@ package com.dukascopy.connect.screens {
 			}
 			CallsHistoryManager.S_MISSED_NUM.remove(updateMissedCallsNum);
 			
-			/*if (ratesPanel != null)
+			if (ratesPanel != null)
 			{
 				ratesPanel.activate();
-			}*/
+			}
 		}
 
 		private function onInnerScreenShowComplete(clc:Class):void {
@@ -585,7 +585,7 @@ package com.dukascopy.connect.screens {
 					return;
 				}
 			}
-			/*if(topBar != null)
+			if(topBar != null)
 			{
 				if (tabId == ESCROW_INSTRUMENT_SCREEN_ID)
 				{
@@ -595,7 +595,7 @@ package com.dukascopy.connect.screens {
 				{
 					topBar.removeBackButton();
 				}
-			}*/
+			}
 			
 			if (currentTabIndex == tabIndex)
 			{
@@ -697,18 +697,18 @@ package com.dukascopy.connect.screens {
 			if (screenClass == InnerEscrowInstrumentScreen) {
 				bottomTabs.busy = false;
 				bottomTabs.selectTap(null);
-				//addRatesPanel();
+				addRatesPanel();
 			} else if (screenClass == InnerEscrowScreen) {
 				bottomTabs.busy = false;
 				bottomTabs.selectTap(null);
-				//addRatesPanel();
+				addRatesPanel();
 			} else 
 			{
-				//removeRatesPanel();
+				removeRatesPanel();
 			}
 		}
 		
-		/*private function removeRatesPanel():void 
+		private function removeRatesPanel():void 
 		{
 			NativeExtensionController.setStatusBarColor(Style.color(Style.COLOR_BACKGROUND));
 			if (ratesPanel != null)
@@ -732,7 +732,7 @@ package com.dukascopy.connect.screens {
 				view.addChild(ratesPanel);
 			}
 			drawView();
-		}*/
+		}
 		
 		private function getActions(id:String):Vector.<IScreenAction> {
 			var array:Vector.<IScreenAction> = new Vector.<IScreenAction>();

@@ -113,7 +113,7 @@ package com.dukascopy.connect.screens.dialogs.x.base.bottom
 		protected function updateScrollSize():void
 		{
 			scrollBottom.y = 0;
-			scrollPanel.setWidthAndHeight(_width, getHeight() - headerHeight - getBottomPadding());
+			scrollPanel.setWidthAndHeight(_width, getContentHeight() - headerHeight - getBottomPadding());
 			scrollBottom.y = scrollPanel.itemsHeight + Config.APPLE_BOTTOM_OFFSET;
 			scrollPanel.update();
 		}

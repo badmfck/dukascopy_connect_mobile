@@ -428,15 +428,15 @@ package com.dukascopy.connect {
         static private var _appleTopOffset:int = -1;
 		
         static public function setupAppleTopOffset(offset:int):void{
-            _appleTopOffset=offset;
+            _appleTopOffset = offset;
         }
 		
         static public function setupAppleBottomOffset(offset:int):void{
-            _appleBottomOffset=offset;
+            _appleBottomOffset = offset;
         }
         
         static public function setupFingerSize(size:int):void{
-            _fingerSize=size;
+            _fingerSize = size;
         }
 
         static public function get APPLE_TOP_OFFSET():int {

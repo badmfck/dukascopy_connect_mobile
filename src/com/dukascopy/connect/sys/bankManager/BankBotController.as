@@ -1511,7 +1511,7 @@ package com.dukascopy.connect.sys.bankManager {
 						re = new RegExp("@@" + (i + 1), "gi");
 						json = json.replace(re, tmp);
 					} else {
-						re = new RegExp("\"@@\"" + (i + 1), "gi");
+						re = new RegExp("\"@@" + (i + 1) + "\"", "gi");
 						json = json.replace(re, setLang(tmp));
 					}
 				}

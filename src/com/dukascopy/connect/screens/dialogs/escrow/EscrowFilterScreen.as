@@ -519,7 +519,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			position += countryExclude.height + Config.FINGER_SIZE * .5;
 			
 			nextButton.x = contentPadding;
-			nextButton.y = getHeight() - nextButton.height - contentPadding;
+			nextButton.y = getContentHeight() - nextButton.height - contentPadding;
 			
 			if (nextButton.y + nextButton.height + contentPadding + scrollPanel.view.y < backgroundContent.height && backgroundContent.height > 0)
 			{

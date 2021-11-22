@@ -427,10 +427,10 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			if (filteredAccounts != null)
 			{
 				var preselectedAccount:Object;
-				if (filteredAccounts.length > 0)
+				/*if (filteredAccounts.length > 0)
 				{
 					preselectedAccount = filteredAccounts[0];
-				}
+				}*/
 				var preferredCurrency:String = currency;
 				for (var i:int = 0; i < filteredAccounts.length; i++) 
 				{
@@ -1844,13 +1844,13 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 					bottomButton = sendButton;
 				}
 				
-				if (getHeight() - bottomButton.height - contentPadding - balance.height - scrollPanel.view.y - contentPaddingV > position)
+				if (getContentHeight() - bottomButton.height - contentPadding - balance.height - scrollPanel.view.y - contentPaddingV > position)
 				{
-					balance.y = getHeight() - bottomButton.height - contentPadding - balance.height - scrollPanel.view.y - contentPaddingV;
+					balance.y = getContentHeight() - bottomButton.height - contentPadding - balance.height - scrollPanel.view.y - contentPaddingV;
 				}
 				
 				bottomButton.x = contentPadding;
-				bottomButton.y = int(getHeight() - bottomButton.height - contentPadding);
+				bottomButton.y = int(getContentHeight() - bottomButton.height - contentPadding);
 			}
 			else if (state == STATE_REGISTER)
 			{
@@ -1917,13 +1917,13 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 				balance.x = int(_width * .5 - balance.width * .5);
 				balance.y = position;
 				
-				if (getHeight() - nextButton.height - contentPadding - balance.height - scrollPanel.view.y - contentPaddingV > position)
+				if (getContentHeight() - nextButton.height - contentPadding - balance.height - scrollPanel.view.y - contentPaddingV > position)
 				{
-					balance.y = getHeight() - nextButton.height - contentPadding - balance.height - scrollPanel.view.y - contentPaddingV;
+					balance.y = getContentHeight() - nextButton.height - contentPadding - balance.height - scrollPanel.view.y - contentPaddingV;
 				}
 				
 				backButton.x = contentPadding;
-				backButton.y = int(getHeight() - nextButton.height - contentPadding);
+				backButton.y = int(getContentHeight() - nextButton.height - contentPadding);
 				
 				sendButton.x = contentPadding;
 				sendButton.y = int(backButton.y - sendButton.height - contentPadding);
