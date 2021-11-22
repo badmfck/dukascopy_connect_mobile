@@ -18,9 +18,26 @@ package com.dukascopy.connect.managers.escrow
         private var needReload:Boolean=true;
         private var lastLoadTime:Number=0;
         private var authKey:String="web";
+		private var sortFunction:Function;
 
         public function EscrowOfferManager(){
-
+			
+			sortFunction = function(a:EscrowOfferVO, b:EscrowOfferVO):int
+			{
+				if (a.created > b.created)
+				{
+					return -1;
+				}
+				else if (a.created < b.created)
+				{
+					return 1;
+				}
+				else
+				{
+					return 0;
+				}
+			}
+			
             GD.S_URL_CONFIG_READY.add(function(cfg:URLConfigVO):void{
                 SimpleLoader.URL_DEFAULT=cfg.DCCAPI_URL;//"https://loki.telefision.com/master/";    
             })
@@ -73,6 +90,11 @@ package com.dukascopy.connect.managers.escrow
 
         private function parseWSPacket(packet:WSPacketVO):void{
             
+			if (packet.method == "userStatus" || packet.method == "init" || packet.method == "userPhaseBank" || packet.method == "msgChange" || packet.method == "msgAdd")
+			{
+				return;
+			}
+			
             if (packet.method == WSMethodType.ESCROW_OFFER_ACCEPT){
                 onOfferAcceptSuccessEvent(packet.data!=null?packet.data.offer:null);
 				return;
@@ -86,11 +108,6 @@ package com.dukascopy.connect.managers.escrow
 			if (packet.method == WSMethodType.ESCROW_OFFER_CREATE){
 				GD.S_OFFER_CREATED.invoke(packet.data.offer);
 				return;
-			}
-
-			if (packet.method == WSMethodType.ESCROW_OFFER_ACCEPT_ERROR){
-				trace("123");
-                return;
 			}
 
 			if (packet.method == WSMethodType.ESCROW_OFFER_ERROR){
@@ -125,7 +142,6 @@ package com.dukascopy.connect.managers.escrow
 			if (packet.method == WSMethodType.ESCROW_OFFER_CANCEL){
 				return;
 			}
-            
         }
 
 
@@ -190,7 +206,9 @@ package com.dukascopy.connect.managers.escrow
                     offers.push(eovo);
                 }
                 loading=false;
-                lastLoadTime=new Date().getTime();
+                lastLoadTime = new Date().getTime();
+				
+				offers = offers.sort(sortFunction);
                 GD.S_ESCROW_OFFERS_READY.invoke(offers);
             });
             

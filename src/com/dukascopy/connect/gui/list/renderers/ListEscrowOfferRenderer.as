@@ -63,8 +63,11 @@ package com.dukascopy.connect.gui.list.renderers {
 		{
 			var itemData:EscrowOfferVO = listData as EscrowOfferVO;
 			
-			if (itemData.data.status == EscrowStatus.offer_expired)
-				alpha = .6;
+			if (itemData.data.status == EscrowStatus.offer_expired ||
+				itemData.data.status == EscrowStatus.offer_cancelled ||
+				itemData.data.status == EscrowStatus.offer_accepted ||
+				itemData.data.status == EscrowStatus.offer_rejected)
+				alpha = .5;
 			else
 				alpha = 1;
 		}

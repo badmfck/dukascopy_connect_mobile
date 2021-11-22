@@ -240,6 +240,7 @@ package com.dukascopy.connect.screens.innerScreens {
 			GD.S_ESCROW_ADS_MINE.remove(onEscrowAdsCryptoLoaded);
 			GD.S_ESCROW_OFFERS_READY.remove(onOffersLoaded);
 			GD.S_ESCROW_DEALS_LOADED.remove(onDealsLoaded);
+			GD.S_ESCROW_DEALS_UPDATE.remove(onDealsLoaded);
 			GD.S_SCREEN_READY.remove(onScreenReady);
 			DialogManager.closeDialog();
 			
@@ -307,6 +308,7 @@ package com.dukascopy.connect.screens.innerScreens {
 			GD.S_ESCROW_ADS_MINE.remove(onEscrowAdsMineLoaded);
 			GD.S_ESCROW_OFFERS_READY.remove(onOffersLoaded);
 			GD.S_ESCROW_DEALS_LOADED.remove(onDealsLoaded);
+			GD.S_ESCROW_DEALS_UPDATE.remove(onDealsLoaded);
 			showPreloader();
 			if (id == TAB_ID_CRYPTO) {
 				GD.S_ESCROW_ADS_CRYPTOS.add(onEscrowAdsCryptoLoaded);
@@ -325,6 +327,7 @@ package com.dukascopy.connect.screens.innerScreens {
 			}
 			if (id == TAB_ID_DEALS) {
 				GD.S_ESCROW_DEALS_LOADED.add(onDealsLoaded);
+				GD.S_ESCROW_DEALS_UPDATE.add(onDealsLoaded);
 				GD.S_ESCROW_DEALS_REQUEST.invoke();
 				return;
 			}

@@ -11,5 +11,11 @@ package com.telefision.utils.maps
         public function getDeal(key:String):EscrowDealVO{
             return getValue(key) as EscrowDealVO;
         }
+		
+		override public function getValues():Array{
+            var arr:Array = super.getValues();
+            arr = arr.sortOn("created", Array.NUMERIC | Array.DESCENDING);
+            return arr;
+        }
     }
 }
