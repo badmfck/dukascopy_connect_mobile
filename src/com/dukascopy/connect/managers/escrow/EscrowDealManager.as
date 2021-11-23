@@ -88,6 +88,18 @@ package com.dukascopy.connect.managers.escrow{
                     return;
 				}
 				
+				if (packet.action == "cp2p_deal_expired" && packet.data != null && packet.data.event != null && packet.data.event.type == EscrowEventType.DEAL_EXPIRED.value){
+                    updateDeal(packet.data.deal);
+					//S_ESCROW_DEAL_EVENT.invoke(EscrowEventType.HOLD_MCA, pack.data.deal);
+                    return;
+				}
+				
+				if (packet.action == "cp2p_deal_failed" && packet.data != null && packet.data.event != null && packet.data.event.type == EscrowEventType.DEAL_FAILED.value){
+                    updateDeal(packet.data.deal);
+					//S_ESCROW_DEAL_EVENT.invoke(EscrowEventType.HOLD_MCA, pack.data.deal);
+                    return;
+				}
+				
             })
 
             // Check if escrow manager is created
