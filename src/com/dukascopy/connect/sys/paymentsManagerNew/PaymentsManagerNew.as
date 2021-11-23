@@ -447,7 +447,7 @@ package com.dukascopy.connect.sys.paymentsManagerNew {
 					callbacksCardUnload[hash].push(callback);
 				return hash;
 			}
-			var type:String = (isNaN(Number(card)) == true) ? "MCARD" : "PPCARD";
+			var type:String = "PPCARD";
 			PayServer.call_putMoneyMyCardDeposit(onCardUnloaded, amount, currency, type, card, false, hash, cvv);
 			return hash;
 		}
