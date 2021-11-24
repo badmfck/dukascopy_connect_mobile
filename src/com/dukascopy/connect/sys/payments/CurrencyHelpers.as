@@ -121,7 +121,9 @@ package com.dukascopy.connect.sys.payments {
 		
 		static public function getCurrencyByKey(key:String):String {
 			if (key == null)
-				return "";			
+				return "";
+			if (key == "BTC")
+				return "Ƀ";
 			var result:String = currencySymbols[key];
 			if (result == null)
 				result = key;
