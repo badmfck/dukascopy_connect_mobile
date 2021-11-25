@@ -303,6 +303,12 @@ package com.dukascopy.connect.screens.innerScreens {
 				return;
 			hideHistoryLoader();
 			removePlaceholder();
+			
+			if (selectedTabID != id)
+			{
+				setListData(null);
+			}
+			
 			selectedTabID = id;
 			saveListPosition();
 			GD.S_ESCROW_ADS_CRYPTOS.remove(onEscrowAdsCryptoLoaded);
@@ -312,7 +318,7 @@ package com.dukascopy.connect.screens.innerScreens {
 			GD.S_ESCROW_DEALS_LOADED.remove(onDealsLoaded);
 			GD.S_ESCROW_DEALS_UPDATE.remove(onDealsLoaded);
 			showPreloader();
-			setListData(null);
+			
 			if (id == TAB_ID_CRYPTO) {
 				GD.S_ESCROW_ADS_CRYPTOS.add(onEscrowAdsCryptoLoaded);
 				GD.S_ESCROW_ADS_CRYPTOS_REQUEST.invoke();

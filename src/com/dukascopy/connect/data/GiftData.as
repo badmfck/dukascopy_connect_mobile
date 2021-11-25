@@ -52,6 +52,8 @@ package com.dukascopy.connect.data
 		public var toAccounts:Array;
 		public var currencies:Array;
 		public var transferType:String;
+		public var to:Object;
+		public var from:Object;
 		
 		public function GiftData(rawData:Object = null, chatUid:String = null) 
 		{

@@ -722,6 +722,12 @@ package com.dukascopy.connect.screens.innerScreens {
 			if (_isDisposed == true)
 				return;
 			hideHistoryLoader();
+			
+			if (selectedTabID != id)
+			{
+				setListData(null);
+			}
+			
 			selectedTabID = id;
 			updatePositions();
 			saveListPosition();
@@ -733,8 +739,6 @@ package com.dukascopy.connect.screens.innerScreens {
 			GD.S_ESCROW_DEALS_LOADED.remove(onDealsLoaded);
 			GD.S_ESCROW_DEALS_UPDATE.remove(onDealsLoaded);
 			GD.S_ESCROW_OFFERS_UPDATE.remove(onOffersLoaded);
-			
-			setListData(null);
 			
 			if (id == TAB_OTHER) {
 				GD.S_ESCROW_ADS.add(onEscrowAdsLoaded);
