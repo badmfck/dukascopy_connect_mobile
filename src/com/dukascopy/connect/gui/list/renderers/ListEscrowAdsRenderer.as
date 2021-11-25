@@ -38,6 +38,8 @@ package com.dukascopy.connect.gui.list.renderers {
 		protected var format_amount:TextFormat = new TextFormat();
 		protected var format_price:TextFormat = new TextFormat();
 		protected var format_status:TextFormat = new TextFormat();
+		protected var format_status_error:TextFormat = new TextFormat();
+		protected var format_status_active:TextFormat = new TextFormat();
 		protected var format_time:TextFormat = new TextFormat();
 		protected var format6:TextFormat = new TextFormat();
 		
@@ -144,6 +146,16 @@ package com.dukascopy.connect.gui.list.renderers {
 			format_status.size = FontSize.CAPTION_1;
 			format_status.align = TextFormatAlign.LEFT;
 			
+			format_status_active.font = Config.defaultFontName;
+			format_status_active.color = Color.GREEN_DARK;
+			format_status_active.size = FontSize.CAPTION_1;
+			format_status_active.align = TextFormatAlign.LEFT;
+			
+			format_status_error.font = Config.defaultFontName;
+			format_status_error.color = Color.RED_DARK;
+			format_status_error.size = FontSize.CAPTION_1;
+			format_status_error.align = TextFormatAlign.LEFT;
+			
 			format6.font = Config.defaultFontName;
 			format6.align = TextFormatAlign.LEFT;
 			format6.color = Color.GREEN;
@@ -167,7 +179,7 @@ package com.dukascopy.connect.gui.list.renderers {
 			
 			bg.width = width;
 			bg.height = height;
-			bg.visible = !highlight;
+		//	bg.visible = !highlight;
 			
 			var newWidth:int = width - textFieldAmount.x - Config.MARGIN;
 			
@@ -321,6 +333,8 @@ package com.dukascopy.connect.gui.list.renderers {
 			format_amount = null;
 			format_time = null;
 			format_status = null;
+			format_status_active = null;
+			format_status_error = null;
 			format6 = null;
 			format_price = null;
 			

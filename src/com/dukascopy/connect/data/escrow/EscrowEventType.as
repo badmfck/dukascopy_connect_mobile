@@ -15,6 +15,9 @@ package com.dukascopy.connect.data.escrow
 		static public const OFFER_CREATED:EscrowEventType = new EscrowEventType("offerCreated");
 		static public const DEAL_EXPIRED:EscrowEventType = new EscrowEventType("expired");
 		static public const DEAL_FAILED:EscrowEventType = new EscrowEventType("failed");
+		static public const DEAL_CLOSED:EscrowEventType = new EscrowEventType("deal_closed");
+		static public const MCA_CLAIMED:EscrowEventType = new EscrowEventType("mca_claimed");
+		static public const DEAL_CANCELLED:EscrowEventType = new EscrowEventType("deal_canceled");
 		
 		private var type:String;
 		public function EscrowEventType(type:String){

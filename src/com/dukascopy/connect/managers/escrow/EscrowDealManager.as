@@ -57,59 +57,66 @@ package com.dukascopy.connect.managers.escrow{
                 authKey=data.authKey;
                 loadDeals();
             })
-
-		           
+		    
             // Handle WS packet for deals
             GD.S_WS_PACKET_RECEIVED.add(function(packet:WSPacketVO):void{
                 if (packet.method != WSMethodType.ESCROW_EVENT)
                     return;
-			
+				
 				if (packet.action == "cp2p_deal_created" && packet.data != null && packet.data.event != null && packet.data.event.type == EscrowEventType.CREATED.value){
                     createDeal(packet.data.deal);
-                    //S_ESCROW_DEAL_EVENT.invoke(EscrowEventType.CREATED, pack.data.deal);
                     return;
 				}
 				
 				if (packet.action == "cp2p_crypto_accepted" && packet.data != null && packet.data.event != null && packet.data.event.type == EscrowEventType.CRYPTO_ACCEPTED.value){
                     updateDeal(packet.data.deal);
-                    //S_ESCROW_DEAL_EVENT.invoke(EscrowEventType.CREATED, pack.data.deal);
                     return;
 				}
-
-				if (packet.action == "cp2p_deal_created" && packet.data != null && packet.data.event != null && packet.data.event.type == EscrowEventType.HOLD_MCA.value){
-                    holdMCA(packet.data);
-					//S_ESCROW_DEAL_EVENT.invoke(EscrowEventType.HOLD_MCA, pack.data.deal);
+				
+				if (packet.action == "cp2p_hold_mca" && packet.data != null && packet.data.event != null && packet.data.event.type == EscrowEventType.HOLD_MCA.value){
+                    updateDeal(packet.data.deal);
                     return;
 				}
 				
 				if (packet.action == "cp2p_paid_crypto" && packet.data != null && packet.data.event != null && packet.data.event.type == EscrowEventType.PAID_CRYPTO.value){
                     updateDeal(packet.data.deal);
-					//S_ESCROW_DEAL_EVENT.invoke(EscrowEventType.HOLD_MCA, pack.data.deal);
                     return;
 				}
 				
 				if (packet.action == "cp2p_deal_expired" && packet.data != null && packet.data.event != null && packet.data.event.type == EscrowEventType.DEAL_EXPIRED.value){
                     updateDeal(packet.data.deal);
-					//S_ESCROW_DEAL_EVENT.invoke(EscrowEventType.HOLD_MCA, pack.data.deal);
                     return;
 				}
 				
 				if (packet.action == "cp2p_deal_failed" && packet.data != null && packet.data.event != null && packet.data.event.type == EscrowEventType.DEAL_FAILED.value){
                     updateDeal(packet.data.deal);
-					//S_ESCROW_DEAL_EVENT.invoke(EscrowEventType.HOLD_MCA, pack.data.deal);
                     return;
 				}
 				
+				if (packet.action == "cp2p_deal_closed" && packet.data != null && packet.data.event != null && packet.data.event.type == EscrowEventType.DEAL_CLOSED.value){
+                    updateDeal(packet.data.deal);
+                    return;
+				}
+				
+				if (packet.action == "cp2p_mca_claimed" && packet.data != null && packet.data.event != null && packet.data.event.type == EscrowEventType.MCA_CLAIMED.value){
+                    updateDeal(packet.data.deal);
+                    return;
+				}
+				
+				if (packet.action == "cp2p_deal_canceled" && packet.data != null && packet.data.event != null && packet.data.event.type == EscrowEventType.DEAL_CANCELLED.value){
+                    updateDeal(packet.data.deal);
+                    return;
+				}
             })
-
+			
             // Check if escrow manager is created
             GD.S_ESCROW_MANAGER_AVAILABLE.add(function(cb:Function):void{
                 cb();
             })
-
+			
             // Send escrow deal event to dccapi
             GD.S_ESCROW_REQUEST_DEAL_EVENT_SENT.add(function(req:EscrowDealEventSentRequestVO):void{
-
+				
                 new SimpleLoader({
                     method:"Cp2p.Deal.AddEvent",
                     key:authKey,
@@ -140,9 +147,9 @@ package com.dukascopy.connect.managers.escrow{
 							onDealUpdate();
 						}
                     }
-
+					
                     //{"data":{"deal_uid":"6346558610124544830","side":"SELL","status":"completed","instrument":"DCO","amount":"1.0000000000","mca_ccy":"EUR","price":"2.2800000000","rate":"0.438596","debit_account":"380867781292","crypto_wallet":"0x8deaA0eE98f8482C2D3B93ec57DE678a65759ef9","crypto_user_uid":"I6D5WsWZDLWj","mca_user_uid":"WLDNWrWbWoIxIbWI","chat_uid":"WLDIDRWmDNW5WPWe","msg_id":35653518,"crypto_trn_id":null,"mca_trn_id":"t1R9WOTI","crypto_claim_id":null,"mca_claim_id":null,"percent_price":0,"created_at":1634655861,"updated_at":1634659026,"events":[{"uid":"6346558610168205037","deal_uid":"6346558610124544830","created_at":"2021-10-19 15:04:21","type":"deal_created","data":null,"state":"active","created_by":"WLDNWrWbWoIxIbWI"},{"uid":"6346558832800725474","deal_uid":"6346558610124544830","created_at":"2021-10-19 15:04:43","type":"hold_mca","data":"{\"mca_trn_id\":\"t1R9WOTI\",\"price\":\"2.28\"}","state":"active","created_by":"WLDNWrWbWoIxIbWI"},{"uid":"6346559484383820583","deal_uid":"6346558610124544830","created_at":"2021-10-19 15:05:48","type":"paid_crypto","data":null,"state":"active","created_by":"I6D5WsWZDLWj"},{"uid":"6346590264360429302","deal_uid":"6346558610124544830","created_at":"2021-10-19 15:57:06","type":"crypto_accepted","data":null,"state":"active","created_by":"WLDNWrWbWoIxIbWI"}],"claims":[],"hash":null},"status":{"error":false,"errorMsg":"","respondTime":"8.70"}}
-
+					
                 })
             })
 			
@@ -158,8 +165,7 @@ package com.dukascopy.connect.managers.escrow{
                     }
                 );
             },this);*/
-
-
+			
             // SEND DEAL EVENT
 			
             GD.S_ESCROW_DEALS_REQUEST.add(function():void{
@@ -168,7 +174,7 @@ package com.dukascopy.connect.managers.escrow{
 			
             // Escrow get instruments, 
             GD.S_ESCROW_INSTRUMENTS_REQUEST.add(function():void{
-                if(instruments.length==0 || new Date().getTime()-timeInstrumentRequest>instrumentDataLifetime){
+                if(instruments.length == 0 || new Date().getTime() - timeInstrumentRequest > instrumentDataLifetime){
                     loadInstruments();
                     return;
                 }
@@ -192,7 +198,7 @@ package com.dukascopy.connect.managers.escrow{
                 })
 				
 				// TODO: SEND TO SERVER, GET RESPONSE, REBUILD INSTRUMENTS
-
+				
                 //FAKE
                 var timer:Timer=new Timer(1000,1);
                 var dis:Dispatcher=new Dispatcher(timer)
@@ -200,7 +206,7 @@ package com.dukascopy.connect.managers.escrow{
                     dis.clear();
                     var fake:Object={};
                     for each(var code:String in arr)
-                        fake[code]={eur:Math.random()*10000,usd:Math.random()*10000,chf:Math.random()*10000}
+                        fake[code] = {eur:Math.random() * 10000, usd:Math.random() * 10000, chf:Math.random() * 10000}
                     parsePrices(fake)
                 })
                 
@@ -269,14 +275,11 @@ package com.dukascopy.connect.managers.escrow{
         private function holdMCA(data:Object):void{
             // GOT PACKET FROW WS
         }
-
-
+		
         private function fireDeals():void{
             GD.S_ESCROW_DEALS_LOADED.invoke(escrowDeals);
         }
 		
-	
-			
 		private function clear():void 
 		{
 			instruments = new Vector.<EscrowInstrument>();
@@ -287,7 +290,7 @@ package com.dukascopy.connect.managers.escrow{
             if(isInstrumentLoading)
                 return;
             isInstrumentLoading=true;
-
+			
             var loader:SimpleLoader=new SimpleLoader({
                 method:"Cp2p.Deal.GetRates",
                 key:authKey
@@ -301,12 +304,9 @@ package com.dukascopy.connect.managers.escrow{
             })
         }
 		
-		
-		
 		private function loadWallets():void{
             GD.S_PAY_REQUEST_WALLETS.invoke();
         }
-			
 		
         /**
          * Parse response width avaialable instruments from server.
@@ -325,13 +325,11 @@ package com.dukascopy.connect.managers.escrow{
 					ApplicationErrors.add();
 				}
             }
-
             
             if(tmp.length>0){
                 instruments=tmp;
                 GD.S_ESCROW_INSTRUMENTS.invoke(instruments);
             }
-
         };
 		
         /**

@@ -1711,26 +1711,6 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			}
 		}
 		
-		/*private function loadPrices():void 
-		{
-			GD.S_ESCROW_PRICE.add(pricesLoaded);
-			GD.S_ESCROW_PRICES_REQUEST.invoke();
-		}
-		
-		private function pricesLoaded(ei:EscrowInstrument):void 
-		{
-			//!TODO: другой сигнал!, этот перенаправить
-			if (isDisposed)
-			{
-				return;
-			}
-			GD.S_ESCROW_PRICE.remove(pricesLoaded);
-			trace("123");
-			dataLoaded = true;
-			
-			getAccounts();
-		}*/
-		
 		override protected function getBottomPadding():int 
 		{
 			var result:int = 0;

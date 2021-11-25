@@ -316,7 +316,7 @@ package com.dukascopy.connect.data.screenAction.customActions {
 		
 		private function finishOffer():void 
 		{
-			trace("123");
+			
 		}
 		
 		private function onFail():void 

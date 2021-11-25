@@ -115,7 +115,6 @@ package com.dukascopy.connect.gui.menuVideo {
 		public function BitmapButton(title:String = null) {
 			_title = title;
 			_instanceCount++;
-			//trace(_instanceCount, " - ", this, "on create() ");
 			TweenPlugin.activate([TransformMatrixPlugin, ScrollRectPlugin, TintPlugin, ColorTransformPlugin]);
 			createView();
 			//flash.profiler.showRedrawRegions(true)
@@ -297,7 +296,6 @@ package com.dukascopy.connect.gui.menuVideo {
 			var movedHorizontal:Boolean = abs(horizontalMovement) > HORIZONTAL_MOVE_SENSITIVITY;
 		
 			if (movedVertical && cancelOnVerticalMovement) {
-				//trace("VERTICAL MOVED DETECTED " + abs(verticalMovement) )	
 				Loop.remove(checkForMoved);
 				PointerManager.removeUp(stageRef, onStageUp);
 				upState();
@@ -310,8 +308,7 @@ package com.dukascopy.connect.gui.menuVideo {
 				return;
 			}
 			
-			if (movedHorizontal && cancelOnHorizontalMovement) {
-				//trace("HORIZONTAL MOVED DETECTED " + abs(horizontalMovement) )	
+			if (movedHorizontal && cancelOnHorizontalMovement) {	
 				Loop.remove(checkForMoved);
 				PointerManager.removeUp(stageRef, onStageUp);
 				upState();
@@ -383,16 +380,15 @@ package com.dukascopy.connect.gui.menuVideo {
 			return buttonHitTest(this, MobileGui.stage, x, y, rotationAdded);
 		}
 		private function onTap(e:Event = null):void {
-				e.preventDefault();
-				e.stopImmediatePropagation();
-				if (tapCallback != null) {
-					if (callbackParam != "") {
-						tapCallback(callbackParam);
-					}else{
-						tapCallback();
-					}
-				}			
-				//trace(this,"ON TAP ");
+			e.preventDefault();
+			e.stopImmediatePropagation();
+			if (tapCallback != null) {
+				if (callbackParam != "") {
+					tapCallback(callbackParam);
+				}else{
+					tapCallback();
+				}
+			}
 		}
 		
 		//  STATES ====================================================
@@ -499,7 +495,6 @@ package com.dukascopy.connect.gui.menuVideo {
 			
 			TweenMax.killDelayedCallsTo(startBlink);
 			_instanceCount--;			
-			//trace(_instanceCount, " -", this, "on dispose() ");
 			
 			this.graphics.clear();
 			deactivate();

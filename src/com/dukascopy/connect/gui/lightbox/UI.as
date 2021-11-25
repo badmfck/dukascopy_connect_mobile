@@ -2831,14 +2831,26 @@ package com.dukascopy.connect.gui.lightbox {
 		
 		static public function getColorOverlay(color:Number = NaN):Color 
 		{
-			ColorUtils.getColorBrightness
 			var c:Color;
+			
+			c = new Color();
 			if (!isNaN(color))
 			{
-				c = new Color();
 				c.color = color;
 			}
 			return c;
+		}
+		
+		static public function getBetweenColourByPercent(value:Number = 0.3 /* 0-1 */, highColor:uint = 0xFFFFFF, lowColor:uint = 0x000000):uint {
+			var r:uint = highColor >> 16;
+			var g:uint = highColor >> 8 & 0xFF;
+			var b:uint = highColor & 0xFF;
+			
+			r += ((lowColor >> 16) - r) * value;
+			g += ((lowColor >> 8 & 0xFF) - g) * value;
+			b += ((lowColor & 0xFF) - b) * value;
+			
+			return (r << 16 | g << 8 | b);
 		}
 	}
 }

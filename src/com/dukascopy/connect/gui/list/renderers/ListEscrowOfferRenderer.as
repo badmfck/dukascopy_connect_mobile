@@ -4,6 +4,7 @@ package com.dukascopy.connect.gui.list.renderers {
 	import com.dukascopy.connect.data.escrow.TradeDirection;
 	import com.dukascopy.connect.gui.lightbox.UI;
 	import com.dukascopy.connect.managers.escrow.vo.EscrowOfferVO;
+	import com.dukascopy.connect.sys.applicationError.ApplicationErrors;
 	import com.dukascopy.connect.sys.style.presets.Color;
 	import com.dukascopy.connect.utils.DateUtils;
 	import com.dukascopy.langs.Lang;
@@ -63,13 +64,21 @@ package com.dukascopy.connect.gui.list.renderers {
 		{
 			var itemData:EscrowOfferVO = listData as EscrowOfferVO;
 			
-			if (itemData.data.status == EscrowStatus.offer_expired ||
-				itemData.data.status == EscrowStatus.offer_cancelled ||
-				itemData.data.status == EscrowStatus.offer_accepted ||
-				itemData.data.status == EscrowStatus.offer_rejected)
-				alpha = .5;
+			if (itemData.data != null)
+			{
+				if (itemData.data.status == EscrowStatus.offer_expired ||
+					itemData.data.status == EscrowStatus.offer_cancelled ||
+					itemData.data.status == EscrowStatus.offer_accepted ||
+					itemData.data.status == EscrowStatus.offer_rejected)
+					alpha = .5;
+				else
+					alpha = 1;
+			}
 			else
+			{
 				alpha = 1;
+				ApplicationErrors.add();
+			}
 		}
 		
 		override protected function drawIcon(listData:Object):void {
@@ -110,7 +119,7 @@ package com.dukascopy.connect.gui.list.renderers {
 		override protected function isValidData(listData:Object):Boolean 
 		{
 			var itemData:EscrowOfferVO = listData as EscrowOfferVO;
-			if (itemData != null && listData.id != 0)
+			if (itemData != null && (listData as EscrowOfferVO).offer_id != null)
 			{
 				return true;
 			}
@@ -163,7 +172,7 @@ package com.dukascopy.connect.gui.list.renderers {
 		{
 			var itemData:EscrowOfferVO = listData as EscrowOfferVO;
 			
-			if (itemData != null && itemData.id != 0)
+			if (itemData != null && itemData.offer_id != null)
 			{
 				return true;
 			}

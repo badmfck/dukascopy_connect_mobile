@@ -65,7 +65,8 @@ package com.dukascopy.connect.managers.escrow
                     return;
 
                 // 1 min
-                if(lastLoadTime-new Date().getTime()>1000*60*1){
+				trace(new Date().getTime() - lastLoadTime);
+                if(new Date().getTime() - lastLoadTime > 1000*60*1){
                     trace("Data too old")
                     needReload=true;
                 }
@@ -90,31 +91,32 @@ package com.dukascopy.connect.managers.escrow
 
         private function parseWSPacket(packet:WSPacketVO):void{
             
-			if (packet.method == "userStatus" || packet.method == "init" || packet.method == "userPhaseBank" || packet.method == "msgChange" || packet.method == "msgAdd")
-			{
-				return;
-			}
-			
             if (packet.method == WSMethodType.ESCROW_OFFER_ACCEPT){
+				
+				onOfferUpdate(packet.data!=null?packet.data.offer:null);
+				
                 onOfferAcceptSuccessEvent(packet.data!=null?packet.data.offer:null);
 				return;
 			}
-
+			
 			if (packet.method == WSMethodType.ESCROW_OFFER_CREATE_SUCCESS){
 				// !TODO: нет такого сигнала?;
 				return;
 			}
-
+			
 			if (packet.method == WSMethodType.ESCROW_OFFER_CREATE){
-				GD.S_OFFER_CREATED.invoke(packet.data.offer);
+				
+				onOfferCreated(packet.data!=null?packet.data.offer:null);
+				
+				GD.S_OFFER_CREATED.invoke(packet.data!=null?packet.data.offer:null);
 				return;
 			}
-
+			
 			if (packet.method == WSMethodType.ESCROW_OFFER_ERROR){
-
+				
 				var errorObject:Object;
                 if (packet.data!=null){
-
+					
                     if("error" in packet.data && packet.data.error != null){
 					    errorObject = packet.data.error;
 				    }
@@ -138,13 +140,15 @@ package com.dukascopy.connect.managers.escrow
                 }
 				return;
 			}
-
+			
 			if (packet.method == WSMethodType.ESCROW_OFFER_CANCEL){
+				
+				onOfferUpdate(packet.data!=null?packet.data.offer:null);
+				
 				return;
 			}
         }
-
-
+		
         static private function onOfferAcceptSuccessEvent(offerData:Object):void{
 			GD.S_STOP_LOAD.invoke();
 		}
@@ -158,16 +162,57 @@ package com.dukascopy.connect.managers.escrow
             GD.S_TOAST.invoke(error);
 		}
 		
-		private function onOfferEvent(escrowEventType:String, offerRawData:Object):void{
-			if (escrowEventType == EscrowEventType.CANCEL.value){
-				onOfferCanceled(offerRawData);
-			}else if (escrowEventType == EscrowEventType.OFFER_CREATED.value){
-				onOfferCreated(offerRawData);
+		private function onOfferUpdate(offerRawData:Object):void{
+			if (offerRawData != null && "offer_id" in offerRawData && offerRawData.offer_id != null)
+			{
+				var offer:EscrowOfferVO = getOffer(offerRawData.offer_id);
+				if (offer == null)
+				{
+					offer = new EscrowOfferVO(offerRawData);
+					offers.unshift(offer);
+				}
+				else
+				{
+					offer.update(offerRawData);
+				}
+				GD.S_ESCROW_OFFERS_UPDATE.invoke(offers);
 			}
 		}
 		
 		private function onOfferCreated(offerRawData:Object):void{
-			//var offer:EscrowMessageData = new EscrowMessageData(offerRawData);
+			if (offerRawData != null && "offer_id" in offerRawData && offerRawData.offer_id != null)
+			{
+				var offer:EscrowOfferVO = getOffer(offerRawData.offer_id);
+				if (offer == null)
+				{
+					offer = new EscrowOfferVO(offerRawData);
+					if (offers == null)
+					{
+						offers = new Vector.<EscrowOfferVO>();
+					}
+					offers.unshift(offer);
+					GD.S_ESCROW_OFFERS_UPDATE.invoke(offers);
+				}
+			}
+		}
+		
+		private function getOffer(offerId:String):EscrowOfferVO 
+		{
+			if (offerId != null)
+			{
+				if (offers != null)
+				{
+					var l:int = offers.length;
+					for (var i:int = 0; i < l; i++) 
+					{
+						if (offers[i].offer_id == offerId)
+						{
+							return offers[i];
+						}
+					}
+				}
+			}
+			return null;
 		}
 		
 		private function onOfferCanceled(offerRawData:Object):void{

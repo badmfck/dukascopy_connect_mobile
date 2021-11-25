@@ -153,11 +153,6 @@ package com.dukascopy.connect.sys.notifier
 				storeChatData(new ChatLastMessageData(chatUID, 0));*/
 			}
 			
-			/*if (handlerType == NewMessageNotifier.type_911)
-			{
-				trace("unread", chatUID, lastReceived, chatsData[chatUID]);
-			}*/
-			
 			return Math.max(lastReceived - chatsData[chatUID], 0);
 		}
 		
@@ -180,11 +175,6 @@ package com.dukascopy.connect.sys.notifier
 		
 		public function onNewMessage(chatVO:ChatVO, messageNum:uint):void 
 		{
-			/*if (handlerType == NewMessageNotifier.type_911)
-			{
-				trace("onNewMessage", chatVO.uid, messageNum);
-			}*/
-			
 			if (ChatManager.getCurrentChat() != null && NewMessageNotifier.getUID(ChatManager.getCurrentChat()) == NewMessageNotifier.getUID(chatVO) && Utils.isSubclassOf(MobileGui.centerScreen.currentScreenClass, ChatScreen))
 			{
 				setChatLastReaded(NewMessageNotifier.getUID(chatVO), messageNum);
@@ -211,11 +201,6 @@ package com.dukascopy.connect.sys.notifier
 		
 		public function addNewChat(chat:ChatVO):void 
 		{
-			/*if (handlerType == NewMessageNotifier.type_911)
-			{
-				trace("addNewChat", chat.uid);
-			}*/
-			
 			if (chatsData[NewMessageNotifier.getUID(chat)] != null)
 			{
 				// all ok;
@@ -434,8 +419,6 @@ package com.dukascopy.connect.sys.notifier
 		{
 			maskFirstDataReaded = true;
 			
-		//	trace("onDatabaseCreated", handlerType.value);
-			
 			if (type == handlerType.value)
 			{
 				SQLite.S_DATABASE_CREATED.remove(onDatabaseCreated);
@@ -473,7 +456,6 @@ package com.dukascopy.connect.sys.notifier
 			else
 			{
 				state = STATE_READY;
-			//	trace(handlerType.value);
 				
 				if (response.data != null && response.data is Array)
 				{

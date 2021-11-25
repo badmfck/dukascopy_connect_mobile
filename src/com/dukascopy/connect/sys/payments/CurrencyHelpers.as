@@ -116,7 +116,6 @@ package com.dukascopy.connect.sys.payments {
 				decimalRules[n] = dr[n];
 			for (n in cs)
 				currencySymbols[n] = cs[n];
-			trace();
 		}
 		
 		static public function getCurrencyByKey(key:String):String {

@@ -121,9 +121,9 @@ package com.dukascopy.connect.managers.escrow.vo
             if(val is String){
                 if(val.indexOf("-")!=-1 || val.indexOf(".")!=-1 || val.indexOf(":")!=-1)
                     val=val.replace(/\s/g,"");
-                val.split(/[\-\.\:\s]/);
+               /* val.split(/[\-\.\:\s]/);
                 for(var i:int=0;i<val.length;i++)
-                    trace(val[i]);
+                    trace(val[i]);*/
             }
 			
             return null;

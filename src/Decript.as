@@ -12,7 +12,6 @@ package {
 			data = data.replace(/\%20/g, "+");
 			var value:String = AESCrypter.dec(data, key);
 			var test:Object = JSON.parse(value);
-			trace();
 		}
 	}
 }

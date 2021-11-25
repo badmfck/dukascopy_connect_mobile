@@ -66,7 +66,6 @@ package com.dukascopy.connect.sys.calendar
 			date.setDate(1);
 			var index:int = month.monthIndex + 1;
 			date.setMonth(index);
-			//trace(date.month, date.getMonth());
 			var monthNext:Month = new Month(date);
 			return monthNext;
 		}
