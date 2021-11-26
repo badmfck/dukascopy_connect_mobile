@@ -316,10 +316,17 @@ package com.dukascopy.connect.sys.bankManager {
 					sendBlock(tmp[1], [vals[0]]);
 					return;
 				}
-				if (tmp[1] == "cardOperationsActive" ||
+				if (tmp[1] == "cardVOperationsActive" ||
+					tmp[1] == "cardOperationsActive" ||
 					tmp[1] == "cardLinkedOperationsActive" ||
 					tmp[1] == "cardOperationsSBlocked" ||
-					tmp[1] == "cardOperationsNew")
+					tmp[1] == "cardOperationsHBlocked" ||
+					tmp[1] == "cardOperationsNew" ||
+					tmp[1] == "cardOperationsNewTracking" ||
+					tmp[1] == "cardOperationsLNew" ||
+					tmp[1] == "cardOperationsLExp" ||
+					tmp[1] == "cardOperationsExp" ||
+					tmp[1] == "cardOperationsSRBlocked")
 						tmp[1] = "cardOperations";
 				if (tmp[1] == "cardOperations") {
 					if (steps == null)
@@ -1313,8 +1320,8 @@ package com.dukascopy.connect.sys.bankManager {
 				if (checkForPaymentsRequestExist(msg) == true)
 					return;
 				temp = msg.substr(command.length + 1).split("|!|");
-				if (temp.length == 4)
-					lastPaymentsRequests[PaymentsManagerNew.callCardWithdrawal(onCardWithdrawalCompleted, temp[0], temp[1], temp[2], temp[3], (isNaN(temp[3]) == true) ? "CARD" : "PPCARD")] = msg;
+				if (temp.length == 5)
+					lastPaymentsRequests[PaymentsManagerNew.callCardWithdrawal(onCardWithdrawalCompleted, temp[0], temp[1], temp[2], temp[3], (temp[4] == "linked") ? "CARD" : "PPCARD")] = msg;
 				return;
 			}
 			if (command == "otherWithdrawal") {

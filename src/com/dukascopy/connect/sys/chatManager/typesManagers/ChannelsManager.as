@@ -697,9 +697,6 @@ package com.dukascopy.connect.sys.chatManager.typesManagers {
 			channels = newChannels;
 			
 			if ("hash" in phpRespond.data && phpRespond.data.hash != null) {
-				if (currentHash != phpRespond.data.hash){
-					trace("NEW", phpRespond.data.hash);
-				}
 				currentHash = phpRespond.data.hash;
 				Store.save(Store.VAR_CHANNELS_HASH, phpRespond.data.hash);
 			}

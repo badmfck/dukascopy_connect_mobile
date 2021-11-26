@@ -77,10 +77,7 @@ package com.dukascopy.connect {
 			"WdW6DJIEW3WpWm," +	// Kirill Sergeev
 			"W9W5WhIkW7WhIk"	// Anastasiya Duka
 		static public const TF_UIDS:String = "WdW6DJI1WbWo," +	// Igor Bloom
-            "WdW6DJWbW3IsIb," +	// Ilya Shcherbakov
             "I6DzDaWqWKWE";		// Sergey Dobarin
-        static public const BOT_UIDS:String = "WgDNWdIEW4I6IsWg" // Support bot
-		
         /* TEST * /
 		static public const URL_PHP_CORE_SERVER:String = 'https://loki.telefision.com/master/';
 		static public const URL_WS_HOST_1:String = "wss://loki.telefision.com/wss/";

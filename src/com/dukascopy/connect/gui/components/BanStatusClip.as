@@ -168,7 +168,7 @@ package com.dukascopy.connect.gui.components
 		}
 		
 		private function onSwipe(speed:Number):void {
-			//trace("SWIPE", speed);
+			
 		}
 		
 		private function hideAnyway():void {

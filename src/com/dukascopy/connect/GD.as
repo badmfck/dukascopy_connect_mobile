@@ -58,7 +58,8 @@ package com.dukascopy.connect
 		
 		// ESCROW
 		static public const S_ESCROW_MANAGER_AVAILABLE:S_EscrowManagerAvailable = new S_EscrowManagerAvailable(); // EscrowDealMap
-		static public const S_ESCROW_DEALS_LOADED:Signal = new Signal();
+		static public const S_ESCROW_DEALS_LOADED:Signal = new Signal("S_ESCROW_DEALS_LOADED");
+		static public const S_ESCROW_DEALS_UPDATE:Signal = new Signal("S_ESCROW_DEALS_UPDATE");
 		static public const S_ESCROW_DEAL_CREATE_REQUEST:S_EscrowDealCreateRequest = new S_EscrowDealCreateRequest();
 		static public const S_ESCROW_DEALS_REQUEST:S_EscrowDealsRequest = new S_EscrowDealsRequest();
 		static public const S_ESCROW_DEAL_FORM_REQUEST:SuperSignal = new SuperSignal();
@@ -79,6 +80,7 @@ package com.dukascopy.connect
 
 		static public const S_ESCROW_OFFERS_REQUEST:S_EscrowOffersRequest = new S_EscrowOffersRequest();
 		static public const S_ESCROW_OFFERS_READY:Signal = new Signal("S_ESCROW_OFFERS_READY");
+		static public const S_ESCROW_OFFERS_UPDATE:Signal = new Signal("S_ESCROW_OFFERS_UPDATE");
 		
 		static public const S_ESCROW_INSTRUMENTS_REQUEST:S_EscrowRequestInstruments = new S_EscrowRequestInstruments();
 		static public const S_ESCROW_INSTRUMENTS:S_EscrowInstruments = new S_EscrowInstruments();

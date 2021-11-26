@@ -60,7 +60,7 @@ package com.dukascopy.connect.sys.ws
 		static public const ESCROW_OFFER_CREATE:String = "cp2pOfferAdd";
 		static public const ESCROW_OFFER_CREATE_SUCCESS:String = "cp2pOfferAdded";
 		static public const ESCROW_OFFER_ERROR:String = "cp2pOfferError";
-		static public const ESCROW_OFFER_ACCEPT_ERROR:String = "cp2pOfferAccept";
+		static public const MESSAGE_ADD:String = "msgAdd";
 		
 		public function WSMethodType() 
 		{

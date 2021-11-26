@@ -717,6 +717,9 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 						giftData.credit_account_number = selectorCard.getValue().id;
 					}
 					giftData.masked = selectorCard.getMasked();
+					
+					giftData.to = selectorCard.getValue();
+					giftData.from = selectedAccount;
 				}
 				
 				if (giftData.callback != null)

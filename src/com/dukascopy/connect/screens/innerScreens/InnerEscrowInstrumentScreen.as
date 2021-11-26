@@ -239,7 +239,9 @@ package com.dukascopy.connect.screens.innerScreens {
 			GD.S_ESCROW_ADS_CRYPTOS.remove(onEscrowAdsCryptoLoaded);
 			GD.S_ESCROW_ADS_MINE.remove(onEscrowAdsCryptoLoaded);
 			GD.S_ESCROW_OFFERS_READY.remove(onOffersLoaded);
+			GD.S_ESCROW_OFFERS_UPDATE.remove(onOffersLoaded);
 			GD.S_ESCROW_DEALS_LOADED.remove(onDealsLoaded);
+			GD.S_ESCROW_DEALS_UPDATE.remove(onDealsLoaded);
 			GD.S_SCREEN_READY.remove(onScreenReady);
 			DialogManager.closeDialog();
 			
@@ -285,7 +287,7 @@ package com.dukascopy.connect.screens.innerScreens {
 				return;
 			}
 			if (data is EscrowOfferVO) {
-				var openOfferAction:OpenOfferAction = new OpenOfferAction((data as EscrowOfferVO).data, (data as EscrowOfferVO).created.time, (data as EscrowOfferVO).msg_id);
+				var openOfferAction:OpenOfferAction = new OpenOfferAction((data as EscrowOfferVO).data, (data as EscrowOfferVO).created != null?(data as EscrowOfferVO).created.time:0, (data as EscrowOfferVO).msg_id);
 				openOfferAction.execute();
 				return;
 			}
@@ -301,13 +303,22 @@ package com.dukascopy.connect.screens.innerScreens {
 				return;
 			hideHistoryLoader();
 			removePlaceholder();
+			
+			if (selectedTabID != id)
+			{
+				setListData(null);
+			}
+			
 			selectedTabID = id;
 			saveListPosition();
 			GD.S_ESCROW_ADS_CRYPTOS.remove(onEscrowAdsCryptoLoaded);
 			GD.S_ESCROW_ADS_MINE.remove(onEscrowAdsMineLoaded);
 			GD.S_ESCROW_OFFERS_READY.remove(onOffersLoaded);
+			GD.S_ESCROW_OFFERS_UPDATE.remove(onOffersLoaded);
 			GD.S_ESCROW_DEALS_LOADED.remove(onDealsLoaded);
+			GD.S_ESCROW_DEALS_UPDATE.remove(onDealsLoaded);
 			showPreloader();
+			
 			if (id == TAB_ID_CRYPTO) {
 				GD.S_ESCROW_ADS_CRYPTOS.add(onEscrowAdsCryptoLoaded);
 				GD.S_ESCROW_ADS_CRYPTOS_REQUEST.invoke();
@@ -319,16 +330,17 @@ package com.dukascopy.connect.screens.innerScreens {
 				return;
 			}
 			if (id == TAB_ID_OFFERS) {
+				GD.S_ESCROW_OFFERS_UPDATE.add(onOffersLoaded);
 				GD.S_ESCROW_OFFERS_READY.add(onOffersLoaded);
 				GD.S_ESCROW_OFFERS_REQUEST.invoke();
 				return;
 			}
 			if (id == TAB_ID_DEALS) {
 				GD.S_ESCROW_DEALS_LOADED.add(onDealsLoaded);
+				GD.S_ESCROW_DEALS_UPDATE.add(onDealsLoaded);
 				GD.S_ESCROW_DEALS_REQUEST.invoke();
 				return;
 			}
-			setListData(null);
 		}
 		
 		private function onOffersLoaded(offers:Vector.<EscrowOfferVO>):void {

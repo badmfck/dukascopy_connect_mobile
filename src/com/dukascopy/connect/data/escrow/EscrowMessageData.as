@@ -8,7 +8,6 @@ package com.dukascopy.connect.data.escrow
 	 */
 	public class EscrowMessageData 
 	{
-		private var raw:Object;
 		public var mca_user_uid:String;
 		public var crypto_user_uid:String;
 		public var inactive:Boolean;
@@ -41,13 +40,6 @@ package com.dukascopy.connect.data.escrow
 		
 		private function parse(data:Object):void 
 		{
-			trace(data.msg_id, data.status);
-			if (data.msg_id == null)
-			{
-				
-			}
-			raw = data;
-		//	trace("---------------", data.status);
 			if ("lifeTime" in data)
 			{
 				created = data.lifeTime;
@@ -120,6 +112,10 @@ package com.dukascopy.connect.data.escrow
 			if ("chat_uid" in data)
 			{
 				chatUID = data.chat_uid;
+			}
+			else if ("chatUID" in data)
+			{
+				chatUID = data.chatUID;
 			}
 		}
 		

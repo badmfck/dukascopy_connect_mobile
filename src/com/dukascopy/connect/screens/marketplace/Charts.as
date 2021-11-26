@@ -115,7 +115,6 @@ package com.dukascopy.connect.screens.marketplace
 		
 		private function onWebViewError(e:ErrorEvent):void {
 			topBar.hideAnimation();
-			//trace(e.text);
 		}
 		
 		public function destroyWebView():void {

@@ -10,9 +10,8 @@ package com.dukascopy.connect.managers.escrow.vo
         public function get lifeTime():String{ return getString("lifeTime")};
         public function get mca_user_uid():String{ return getString("mca_user_uid")};
         public function get deal_uid():int{ return getInt("deal_uid")};
-        public function get id():int{ return getInt("id")};
         public function get msg_id():int{ return getInt("msg_id")};
-        public function get offer_id():int{ return getInt("offer_id")};
+        public function get offer_id():String{ return getString("offer_id")};
         
         public var data:EscrowMessageData; // Should be escrowOffer form messages
         
@@ -20,6 +19,11 @@ package com.dukascopy.connect.managers.escrow.vo
         public function EscrowOfferVO(raw:Object){
             super(raw);
             
+			updateMessageData(raw);
+        }
+		
+		private function updateMessageData(raw:Object):void 
+		{
 			var messageRaw:Object;
             if(raw.data is String){
                 try{
@@ -31,7 +35,19 @@ package com.dukascopy.connect.managers.escrow.vo
 				data = new EscrowMessageData(messageRaw);
 				data.setStatus(status);
 			}
+			else
+			{
+				if (!("created" in raw))
+				{
+					raw.created = raw.lifeTime;
+				}
+				data = new EscrowMessageData(raw);
+			}
+		}
+		
+		override public function update(data:Object):void{
+            super.update(data);
+			updateMessageData(data);
         }
-        
     }
 }

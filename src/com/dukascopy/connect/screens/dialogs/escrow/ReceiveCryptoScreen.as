@@ -133,7 +133,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 				return;
 			}
 			
-			if (escrowOffer != null && !EscrowScreenNavigation.isExpired(escrowOffer, offerCreatedTime))
+			if (escrowOffer != null)
 			{
 				command = OfferCommand.confirm_crypto_recieve;
 			}

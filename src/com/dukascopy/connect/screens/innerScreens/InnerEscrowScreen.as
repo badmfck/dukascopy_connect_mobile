@@ -483,6 +483,8 @@ package com.dukascopy.connect.screens.innerScreens {
 			GD.S_ESCROW_OFFERS_READY.remove(onOffersLoaded);
 			GD.S_ESCROW_DEALS_LOADED.remove(onDealsLoaded);
 			GD.S_SCREEN_READY.remove(onScreenReady);
+			GD.S_ESCROW_OFFERS_UPDATE.remove(onOffersLoaded);
+			GD.S_ESCROW_DEALS_UPDATE.remove(onDealsLoaded);
 			
 			if (preloader != null)
 			{
@@ -720,6 +722,12 @@ package com.dukascopy.connect.screens.innerScreens {
 			if (_isDisposed == true)
 				return;
 			hideHistoryLoader();
+			
+			if (selectedTabID != id)
+			{
+				setListData(null);
+			}
+			
 			selectedTabID = id;
 			updatePositions();
 			saveListPosition();
@@ -729,6 +737,8 @@ package com.dukascopy.connect.screens.innerScreens {
 			GD.S_ESCROW_ADS_MINE.remove(onEscrowAdsMineLoaded);
 			GD.S_ESCROW_OFFERS_READY.remove(onOffersLoaded);
 			GD.S_ESCROW_DEALS_LOADED.remove(onDealsLoaded);
+			GD.S_ESCROW_DEALS_UPDATE.remove(onDealsLoaded);
+			GD.S_ESCROW_OFFERS_UPDATE.remove(onOffersLoaded);
 			
 			if (id == TAB_OTHER) {
 				GD.S_ESCROW_ADS.add(onEscrowAdsLoaded);
@@ -742,15 +752,16 @@ package com.dukascopy.connect.screens.innerScreens {
 			}
 			if (id == TAB_OFFERS) {
 				GD.S_ESCROW_OFFERS_READY.add(onOffersLoaded);
+				GD.S_ESCROW_OFFERS_UPDATE.add(onOffersLoaded);
 				GD.S_ESCROW_OFFERS_REQUEST.invoke();
 				return;
 			}
 			if (id == TAB_DEALS) {
 				GD.S_ESCROW_DEALS_LOADED.add(onDealsLoaded);
+				GD.S_ESCROW_DEALS_UPDATE.add(onDealsLoaded);
 				GD.S_ESCROW_DEALS_REQUEST.invoke();
 				return;
 			}
-			setListData(null);
 		}
 		
 		private function onDealsLoaded(deals:EscrowDealMap):void 

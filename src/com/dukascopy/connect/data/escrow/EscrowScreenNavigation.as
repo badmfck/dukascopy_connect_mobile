@@ -146,6 +146,7 @@ package com.dukascopy.connect.data.escrow
 							}
 							
 							lastRequestData = new Request();
+							lastRequestData.showChatButton = showChatButton;
 							lastRequestData.escrow = escrow;
 							lastRequestData.messageId = messageId;
 							lastRequestData.userVO = userVO;
@@ -510,6 +511,11 @@ package com.dukascopy.connect.data.escrow
 						screenData.userName = Lang.chatmate;
 					}
 					
+					if (lastRequestData)
+					{
+						screenData.additionalTopButton = new StartChatAction(lastRequestData.chatVO.uid, lastRequestData.chatVO);
+					}
+					
 					screenData.callback = onOfferCommand;
 					screenData.instrument = selectedInstrument;
 					screenData.instruments = instruments;
@@ -728,4 +734,5 @@ class Request
 	public var chatVO:ChatVO;
 	public var messageId:Number;
 	public var created:Number;
+	public var showChatButton:Boolean;
 }

@@ -4,6 +4,7 @@ package com.dukascopy.connect.gui.list.renderers {
 	import com.dukascopy.connect.data.escrow.TradeDirection;
 	import com.dukascopy.connect.gui.lightbox.UI;
 	import com.dukascopy.connect.sys.auth.Auth;
+	import com.dukascopy.connect.sys.style.Style;
 	import com.dukascopy.connect.sys.style.presets.Color;
 	import com.dukascopy.connect.utils.DateUtils;
 	import com.dukascopy.connect.vo.EscrowDealVO;
@@ -99,23 +100,68 @@ package com.dukascopy.connect.gui.list.renderers {
 		
 		override protected function updateBack(listData:Object):void 
 		{
-			/*var itemData:EscrowDealVO = listData as EscrowDealVO;
+			var itemData:EscrowDealVO = listData as EscrowDealVO;
 			if (itemData != null) {
 				bg.transform.colorTransform = UI.getColorOverlay();
-				switch(itemData.status)
+				if (isActive(itemData))
 				{
-					case EscrowStatus.deal_completed.value:
-					{
-						bg.transform.colorTransform = UI.getColorOverlay(Color.GREEN);
-						break;
-					}
-					case EscrowStatus.deal_claimed.value:
-					{
-						bg.transform.colorTransform = UI.getColorOverlay(Color.RED);
-						break;
-					}
+					bg.transform.colorTransform = UI.getColorOverlay(UI.getBetweenColourByPercent(0.2, Style.color(Style.COLOR_BACKGROUND), Color.GREEN));
 				}
-			}*/
+				else if (isDealProblem(itemData))
+				{
+					bg.transform.colorTransform = UI.getColorOverlay(UI.getBetweenColourByPercent(0.2, Style.color(Style.COLOR_BACKGROUND), Color.RED));
+				}
+			}
+		}
+		
+		private function isDealProblem(itemData:EscrowDealVO):Boolean 
+		{
+			switch(itemData.status)
+			{
+				case EscrowStatus.deal_claimed.value:
+				{
+					return true;
+					break;
+				}
+			}
+			return false;
+		}
+		
+		private function isActive(itemData:EscrowDealVO):Boolean 
+		{
+			switch(itemData.status)
+			{
+				case EscrowStatus.deal_mca_hold.value:
+				{
+					if (itemData.cryptoUserUID == Auth.uid)
+					{
+						return true;
+					}
+					
+					break;
+				}
+				
+				case EscrowStatus.paid_crypto.value:
+				{
+					if (itemData.mcaUserUID == Auth.uid)
+					{
+						return true;
+					}
+					
+					break;
+				}
+				
+				case EscrowStatus.deal_crypto_send_fail.value:
+				{
+					if (itemData.cryptoUserUID == Auth.uid)
+					{
+						return true;
+					}
+					
+					break;
+				}
+			}
+			return false;
 		}
 		
 		override protected function drawIcon(listData:Object):void {
@@ -139,6 +185,14 @@ package com.dukascopy.connect.gui.list.renderers {
 		override protected function getStatusFormat(listData:Object):TextFormat 
 		{
 			var itemData:EscrowDealVO = listData as EscrowDealVO;
+			if (isActive(itemData))
+			{
+				return format_status_active;
+			}
+			else if (isDealProblem(itemData))
+			{
+				return format_status_error;
+			}
 			return format_status;
 		}
 		

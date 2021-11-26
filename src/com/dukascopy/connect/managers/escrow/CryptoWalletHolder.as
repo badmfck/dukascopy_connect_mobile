@@ -78,7 +78,7 @@ package com.dukascopy.connect.managers.escrow
 		
 		private function onLocalDataSaved(error:Boolean):void 
 		{
-			trace("123");
+			
 		}
 		
 		private function getWallets():void 

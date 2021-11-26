@@ -7,7 +7,11 @@ package com.dukascopy.connect.managers.escrow.vo
         public function BaseVO(raw:Object){
             this._raw=raw;
         }
-
+		
+		public function update(data:Object):void{
+            _raw=data;
+        }
+		
         public function getInt(name:String):int{
             var val:Object=getObject(name);
             if(val==null)
@@ -24,7 +28,7 @@ package com.dukascopy.connect.managers.escrow.vo
                 return val?1:0;
             return 0;
         }
-
+		
         public function getNumber(name:String):Number{
             var val:Object=getObject(name);
             if(val==null)
@@ -41,7 +45,7 @@ package com.dukascopy.connect.managers.escrow.vo
                 return val?1:0;
             return 0;
         }
-
+		
         public function getBool(name:String):Boolean{
             var val:Object=getObject(name);
             if(val==null)
@@ -55,7 +59,7 @@ package com.dukascopy.connect.managers.escrow.vo
             }
             return false;
         }
-
+		
         /**
          * 
          * @param name property name
@@ -66,17 +70,17 @@ package com.dukascopy.connect.managers.escrow.vo
             var date:Date=getDate(name);
             if(date==null)
                 return "";
-
+			
             var y:int=date.getFullYear();
             var m:int=date.getMonth()+1;
             var d:int=date.getDate();
-
+			
             var h:int=date.getHours();
             var i:int=date.getMinutes();
             var s:int=date.getSeconds();
-
+			
             // TODO: AGO FROM NOW, WEEKDAY NAME, MONTH NAME
-
+			
             return format.replace("%y",y)
             .replace("%m",leadZero(m))
             .replace("%d",leadZero(d))
@@ -84,24 +88,24 @@ package com.dukascopy.connect.managers.escrow.vo
             .replace("%i",leadZero(i))
             .replace("%s",leadZero(s));
         }
-
+		
         private static function leadZero(val:int):String{
             if(val<10)
                 return "0"+val;
             return val+"";
         }
-
+		
         public function getDate(name:String):Date{
             var val:Object=getObject(name);
             var date:Date;
-
+			
             if(val is String){
                 var t:Number=parseFloat(val+"");
                 if(!isNaN(t) && val.length>10){
                     val=t;
                 }
             }
-
+			
             if(val is Number){
                 var tms:Number=val as Number;
                 if((val+"").length<11){
@@ -117,33 +121,32 @@ package com.dukascopy.connect.managers.escrow.vo
             if(val is String){
                 if(val.indexOf("-")!=-1 || val.indexOf(".")!=-1 || val.indexOf(":")!=-1)
                     val=val.replace(/\s/g,"");
-                val.split(/[\-\.\:\s]/);
+               /* val.split(/[\-\.\:\s]/);
                 for(var i:int=0;i<val.length;i++)
-                    trace(val[i]);
+                    trace(val[i]);*/
             }
-
+			
             return null;
         }
-
+		
         public function getString(name:String):String{
             var val:Object=getObject(name);
             if(val is String)
                 return val as String;
             return val+"";
         }
-
+		
         public function getArray(name:String):Array{
             var val:Object=getObject(name);
             if(val!=null && val is Array)
                 return val as Array;
             return null;
         }
-
+		
         public function exists(name:String):Boolean{
             return getObject(name)!=null;
         }
-
-
+		
         public function getObject(name:String):Object{
             if(name==null)
                 return null;
@@ -153,10 +156,11 @@ package com.dukascopy.connect.managers.escrow.vo
                 return null;
             return _raw[name]
         }
-
+		
         public function dispose():void{
             _raw=null;
         }
+		
         public function toString():String{
             if(_raw)
                 return JSON.stringify(_raw);

@@ -1565,7 +1565,8 @@ package com.dukascopy.connect.sys.bankManager {
 				giftData.customValue + "|!|" +
 				giftData.currency + "|!|" +
 				giftData.accountNumber + "|!|" +
-				giftData.credit_account_number
+				giftData.credit_account_number + "|!|" +
+				giftData.to.programme
 			);
 			sendMessage(giftData.additionalData.action);
 			giftData.dispose();
