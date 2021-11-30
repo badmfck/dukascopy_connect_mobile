@@ -332,7 +332,7 @@ package com.dukascopy.connect.screens {
 			bottomTabs.view.y = _height - bottomTabs.height;
 			innerScreenManager.view.y = topBar.view.y + topBar.getHeight();
 			
-			innerScreenManager.setSize(_width, _height - topBar.view.y - topBar.height - bottomTabs.height + bottomTabs.getCurrentOffset());
+			innerScreenManager.setSize(_width, _height - innerScreenManager.view.y - bottomTabs.height + bottomTabs.getCurrentOffset());
 			swiper.setBounds(_width, innerScreenManager.view.height, innerScreenManager.view, 0, innerScreenManager.view.y);
 		}
 		
