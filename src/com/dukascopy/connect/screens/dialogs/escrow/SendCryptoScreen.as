@@ -138,7 +138,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 				return;
 			}
 			
-			recreateLayout();
+		//	recreateLayout();
 		}
 		
 		private function onAcceptClick():void 

@@ -254,7 +254,7 @@ package com.dukascopy.connect.data.screenAction.customActions {
 			respond.dispose();
 		}
 		
-		private function showCreateSuccessPopup(offer:EscrowDealData):void 
+		private function showCreateSuccessPopup(offer:EscrowMessageData):void 
 		{
 			if (offer == null)
 			{
@@ -391,7 +391,8 @@ package com.dukascopy.connect.data.screenAction.customActions {
 		
 		private function onOfferCreateSuccess(offerData:Object = null):void 
 		{
-			showCreateSuccessPopup(pendingOfferData);
+			var offer:EscrowMessageData = new EscrowMessageData(offerData);
+			showCreateSuccessPopup(offer);
 			onSuccuss();
 		}
 		

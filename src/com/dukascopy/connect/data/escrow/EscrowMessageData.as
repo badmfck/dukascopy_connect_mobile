@@ -40,13 +40,13 @@ package com.dukascopy.connect.data.escrow
 		
 		private function parse(data:Object):void 
 		{
-			if ("lifeTime" in data)
-			{
-				created = data.lifeTime;
-			}
 			if ("created_at" in data)
 			{
 				created = data.created_at;
+			}
+			if ("lifeTime" in data)
+			{
+				created = data.lifeTime;
 			}
 			if ("crypto_trn_id" in data)
 			{
