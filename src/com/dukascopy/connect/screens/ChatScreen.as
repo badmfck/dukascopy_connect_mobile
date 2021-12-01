@@ -74,6 +74,7 @@ package com.dukascopy.connect.screens {
 	import com.dukascopy.connect.gui.menuVideo.HidableButton;
 	import com.dukascopy.connect.gui.preloader.Preloader;
 	import com.dukascopy.connect.gui.puzzle.Puzzle;
+	import com.dukascopy.connect.gui.tools.HorizontalPreloader;
 	import com.dukascopy.connect.gui.topBar.TopBarChat;
 	import com.dukascopy.connect.gui.userWriting.UserWriting;
 	import com.dukascopy.connect.screens.base.BaseScreen;
@@ -253,6 +254,7 @@ package com.dukascopy.connect.screens {
 		private var lastFirstMessageNum:int;
 		private var replyPanel:ReplyMessagePanel;
 		private var payByCardAction:PayByCardAction;
+		private var messagePreloader:HorizontalPreloader;
 		protected var backColorClip:Sprite;
 		static public var scannPassTime:Number = 0;
 		
@@ -330,6 +332,9 @@ package com.dukascopy.connect.screens {
 			invoiceProcessView.initialize(view);
 			
 			createButtomButton();
+			
+			messagePreloader = new HorizontalPreloader(Color.BLUE_LIGHT);
+			_view.addChild(messagePreloader);
 		}
 		
 		private function createButtomButton():void 
@@ -419,6 +424,8 @@ package com.dukascopy.connect.screens {
 			uploadFilePanel = new UploadFilePanel(view, 0, chatTop.view.y + chatTop.height, _width);
 			
 			list.view.y = chatTop.view.y + chatTop.height;
+			messagePreloader.y = chatTop.view.y + chatTop.height;
+			messagePreloader.setSize(_width, int(Config.FINGER_SIZE * .06));
 			
 			if (Config.PLATFORM_APPLE) {
 				ChatInputIOS.S_INPUT_POSITION.add(onInputPositionChange);
@@ -2362,8 +2369,14 @@ package com.dukascopy.connect.screens {
 		}
 		
 		private function sMessagesStartLoadFromPHP():void {
-			if (preloader != null)
-				preloader.show();
+			showMessagesPreloader();
+			/*if (preloader != null)
+				preloader.show();*/
+		}
+		
+		private function showMessagesPreloader():void 
+		{
+			messagePreloader.start();
 		}
 		
 		private function onRemoteMessagesStopLoading():void {
@@ -3954,6 +3967,7 @@ package com.dukascopy.connect.screens {
 		private function onMessagesLoaded():void {
 			echo("ChatScreen", "onMessagesLoaded");
 			TweenMax.killDelayedCallsTo(addPreloader);
+			hideMessagesPreloader();
 			if (preloader != null)
 				preloader.hide();
 			
@@ -4014,6 +4028,11 @@ package com.dukascopy.connect.screens {
 			checkApproveStatus();
 		}
 		
+		private function hideMessagesPreloader():void 
+		{
+			messagePreloader.stop(false);
+		}
+		
 		private function hideHistoryLoader():void 
 		{
 			if (historyLoadingState)
@@ -4041,6 +4060,7 @@ package com.dukascopy.connect.screens {
 		private function onHistoricalMessagesLoaded():void {
 			echo("ChatScreen", "onHistoricalMessagesLoaded", "");
 			TweenMax.killDelayedCallsTo(addPreloader);
+			hideMessagesPreloader();
 			if (preloader != null)
 				preloader.hide();
 			
@@ -4558,11 +4578,15 @@ package com.dukascopy.connect.screens {
 			if (previewMessagesAction != null)
 				previewMessagesAction.dispose();
 			previewMessagesAction = null;
-
+			
 			if (forwardMessageButton != null)
 				forwardMessageButton.dispose();
 			forwardMessageButton = null;
-
+			
+			if (messagePreloader != null)
+				messagePreloader.dispose();
+			messagePreloader = null;
+			
 			_data = null;
 			//в функции dispose нужно добавить
 			NativeExtensionController.onChatScreenClosed();
