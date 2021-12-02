@@ -227,7 +227,14 @@ package com.dukascopy.connect.screens.payments.settings {
 		}
 		
 		private function openChangePass():void {
-			openScreen(PaymentsSettingsChangePassScreen);
+			DialogManager.showChangePayPass(onPassChangeComplete);
+		}
+		
+		private function onPassChangeComplete(value:int, currentPass:String = "", newPass:String = ""):void {
+			if (value == 1) {
+				PayManager.callChangePassword(currentPass, newPass);
+				return;
+			}
 		}
 		
 		private function openOneClick():void {
