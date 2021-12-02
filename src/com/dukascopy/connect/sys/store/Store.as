@@ -276,7 +276,7 @@ package com.dukascopy.connect.sys.store{
 			
 			id = counter;
 			counter++;
-			
+			echo("Store","constructor",name);
 			TweenMax.delayedCall(1, start, null, true);
 		}
 		
