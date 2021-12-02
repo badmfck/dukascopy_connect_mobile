@@ -2381,6 +2381,7 @@ package com.dukascopy.connect.screens {
 		
 		private function onRemoteMessagesStopLoading():void {
 			TweenMax.killDelayedCallsTo(addPreloader);
+			hideMessagesPreloader();
 			if (preloader != null)
 				preloader.hide();
 			hideHistoryLoader();
