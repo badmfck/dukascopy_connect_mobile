@@ -136,7 +136,7 @@ public class Main extends Sprite {
 			
 			
 			message += "\n";
-			message += "version: " + Config.VERSION + Config.SERVER_NAME + "\n";
+			message += "version: " + Config.VERSION+ "\n";
 			message += "user: " + ((Auth.username)?Auth.username:"No username") + "\n";
 			message += "user uid: " + ((Auth.uid)?Auth.uid:"No uid") + "\n";
 			message += "screen: " + cs + "\n";

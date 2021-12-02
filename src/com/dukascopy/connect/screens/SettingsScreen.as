@@ -566,7 +566,7 @@ package com.dukascopy.connect.screens {
 		}
 		
 		private function drawVersion():void {
-			var version:String = Lang.textVersion + " " + Config.VERSION + Config.SERVER_NAME + " - " + PayConfig.VERSION;
+			var version:String = Lang.textVersion + " " + Config.VERSION + " - " + PayConfig.VERSION;
 			versionBitmap.bitmapData = UI.renderText(version , FIT_WIDTH, Config.FINGER_SIZE * .5, false , TextFormatAlign.CENTER, 
 													TextFieldAutoSize.LEFT, Config.FINGER_SIZE * .28, false, 
 													Style.color(Style.COLOR_SUBTITLE), Style.color(Style.COLOR_BACKGROUND), true);
