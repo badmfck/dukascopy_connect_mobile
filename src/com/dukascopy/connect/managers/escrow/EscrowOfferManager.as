@@ -169,6 +169,10 @@ package com.dukascopy.connect.managers.escrow
 				if (offer == null)
 				{
 					offer = new EscrowOfferVO(offerRawData);
+					if (offers == null)
+					{
+						offers = new Vector.<EscrowOfferVO>();
+					}
 					offers.unshift(offer);
 				}
 				else

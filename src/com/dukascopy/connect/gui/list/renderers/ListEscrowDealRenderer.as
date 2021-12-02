@@ -153,10 +153,10 @@ package com.dukascopy.connect.gui.list.renderers {
 				
 				case EscrowStatus.deal_crypto_send_fail.value:
 				{
-					if (itemData.cryptoUserUID == Auth.uid)
+					/*if (itemData.cryptoUserUID == Auth.uid)
 					{
 						return true;
-					}
+					}*/
 					
 					break;
 				}

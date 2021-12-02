@@ -251,7 +251,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			var text:String = "";
 			if (escrowOffer != null)
 			{
-				if (escrowOffer.userUID == Auth.uid)
+				if (escrowOffer.crypto_user_uid == Auth.uid)
 				{
 					text = Lang.you_failed_confirm_transfer;
 					text = text.replace("%@1", EscrowSettings.dealMaxTime);

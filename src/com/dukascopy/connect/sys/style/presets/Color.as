@@ -32,6 +32,8 @@ package com.dukascopy.connect.sys.style.presets
 		static public const GREEN_10:Number = 0xEFF9F0;
 		static public const RED_10:Number = 0xFAECEC;
 		
+		static public const BLUE_LIGHT:Number =  0x66b3ff;
+		
 		
 		public function Color() 
 		{

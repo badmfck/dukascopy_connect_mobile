@@ -1339,6 +1339,7 @@ package com.dukascopy.connect.sys.chatManager {
 				var chatType:String;
 				if (currentChat != null)
 					chatType = currentChat.type;
+			//	S_MESSAGES_LOADING_FROM_PHP.invoke();
 				PHP.chat_getMessages(onHistoricalMessagesLoaded, currentChat.uid, "", currentChat.lattestMsgID, chatType);
 			}
 		}
@@ -1363,6 +1364,7 @@ package com.dukascopy.connect.sys.chatManager {
 		}
 		
 		static private function onHistoricalMessagesLoaded(r:PHPRespond):void {
+			S_REMOTE_MESSAGES_STOP_LOADING.invoke();
 			if (currentChat == null || currentChat.uid == null) {
 				echo("ChatManager", "onHistoricalMessagesLoaded", 'Messages loaded but no chat');
 				//TODO: Добавить сообщения в базу если они есть, но после добавления больше ничего не делать!
