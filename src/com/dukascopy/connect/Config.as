@@ -10,7 +10,7 @@ package com.dukascopy.connect {
 	
     public class Config {
 		
-/* LIVE * /
+        /* LIVE */
         static public const URL_PHP_CORE_SERVER:String = 'https://dccapi.dukascopy.online/';
         static public const URL_WS_HOST_1:String = "wss://ws.dukascopy.online"; //192.168.240.142; // 144 или 142
         static public const URL_WS_HOST_2:String = "wss://ws.dukascopy.ch"; //192.168.240.142; // 144 или 142
@@ -46,7 +46,7 @@ package com.dukascopy.connect {
 			"I6DzDaWqWKWE";		// Sergey Dobarin
 		static public const BOT_UIDS:String = "WgDNWdIEW4I6IsWg" // Support bot
 		
-/* PRE * /
+        /* PRE * /
 		static public const URL_PHP_CORE_SERVER:String = 'https://pre-dccapi-02.site.dukascopy.com/';
         static public const URL_WS_HOST_1:String = "wss://ws-pre.dukascopy.com/"; //192.168.240.142; // 144 или 142
         static public const URL_WS_HOST_2:String = "wss://ws-pre.dukascopy.com/"; //192.168.240.142; // 144 или 142
@@ -69,7 +69,7 @@ package com.dukascopy.connect {
 		static public const CAT_GENERAL:int = 2;
 		static public const SERVER_NAME:String = " PRE";
 		static public const test:Boolean = false;
-		
+		static public const BOT_UIDS:String = "WgDNWdIEW4I6IsWg" // Support bot
 		static public const ADMIN_UIDS:String = "WdW6DJI1WbWo," +	// Igor Bloom
 			"WdW6DJWbW3IsIb," +	// Ilya Shcherbakov
 			"I6DzDaWqWKWE," +	// Sergey Dobarin
@@ -77,11 +77,9 @@ package com.dukascopy.connect {
 			"WdW6DJIEW3WpWm," +	// Kirill Sergeev
 			"W9W5WhIkW7WhIk"	// Anastasiya Duka
 		static public const TF_UIDS:String = "WdW6DJI1WbWo," +	// Igor Bloom
-            "WdW6DJWbW3IsIb," +	// Ilya Shcherbakov
             "I6DzDaWqWKWE";		// Sergey Dobarin
-        static public const BOT_UIDS:String = "WgDNWdIEW4I6IsWg" // Support bot
-		
-/* TEST */
+
+        /* TEST * /
 		static public const URL_PHP_CORE_SERVER:String = 'https://loki.telefision.com/master/';
 		static public const URL_WS_HOST_1:String = "wss://loki.telefision.com/wss/";
 		static public const URL_WS_HOST_2:String = "wss://loki.telefision.com/wss/";
@@ -112,7 +110,7 @@ package com.dukascopy.connect {
 			"WdW6DJWbW3IsIb," +	// Ilya Shcherbakov
 			"I6D5WsWZDLWj";		// Sergey Dobarin
 		static public const BOT_UIDS:String = "WgDNWdIEW4I6IsWg" // Support bot
-/**/
+        /**/
 		
         static public const URL_IMAGE:String = "https://www.dukascopy.com/imageserver/img/";
 		
@@ -151,7 +149,7 @@ package com.dukascopy.connect {
 		
         static public const APPLE_LOG:Boolean=true;
         static public const ANDROID_LOG:Boolean=true;
-        static public const VERSION:String = "3.5.93o"+(Capabilities.isDebugger?" dbg":"");
+        static public const VERSION:String = "3.5.94o"+(Capabilities.isDebugger?" dbg":"")+((SERVER_NAME != "")?" - "+SERVER_NAME:"");
         static public const VERSION_SQL:int = 1;
 		
         static public const MAX_UPLOAD_THUMB_SIZE:int = 230;

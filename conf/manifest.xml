@@ -1,6 +1,6 @@
 <manifest android:installLocation="auto">
 
-    <uses-sdk android:minSdkVersion="14" android:targetSdkVersion="29"/>
+    <uses-sdk android:minSdkVersion="14" android:targetSdkVersion="30"/>
     <uses-permission android:name="android.permission.WRITE_CONTACTS" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
