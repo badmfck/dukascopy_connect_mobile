@@ -452,7 +452,8 @@ package com.dukascopy.connect.sys.payments {
 					if (MobileGui.touchIDManager != null)
 						MobileGui.touchIDManager.changePassTouchID(respond.savedRequestData.data["new"]);
 				}
-				S_PASS_CHANGED.invoke();
+				if (S_PASS_CHANGED != null)
+					S_PASS_CHANGED.invoke();
 				ToastMessage.display(Lang.alertPasswordSuccessfully);
 				return;
 			}
