@@ -8,6 +8,7 @@ package com.dukascopy.connect.data.escrow
 	 */
 	public class EscrowMessageData 
 	{
+		public var state:EscrowState;
 		public var mca_user_uid:String;
 		public var crypto_user_uid:String;
 		public var inactive:Boolean;
@@ -116,6 +117,10 @@ package com.dukascopy.connect.data.escrow
 			else if ("chatUID" in data)
 			{
 				chatUID = data.chatUID;
+			}
+			if ("state" in data)
+			{
+				state = EscrowState.getStatus(data.state);
 			}
 		}
 		

@@ -1449,12 +1449,16 @@ package com.dukascopy.connect.sys.chatManager {
 			chatsLoadingFromStore = false;
 			chatsLoadedFromStore = true;
 		//	trace("processUnreadedMessages 2", data);
+			
 			if (err == false && data != null)
+			{
 				createUpdateChats(data);
+			}
 			getChatsFromPHP();
 		}
 		
 		static private function getChatsFromPHP(firstTime:Boolean = true):Boolean {
+			
 			if (chatsLoadingFromPHP == true)
 				return false;
 			if (firstTime == true && chatsLoadedFromPHP == true) {

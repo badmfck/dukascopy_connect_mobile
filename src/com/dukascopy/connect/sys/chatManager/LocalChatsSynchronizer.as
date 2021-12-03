@@ -269,13 +269,12 @@ package com.dukascopy.connect.sys.chatManager {
 			}
 			if (chat == null)
 			{
-				var userModel:UserVO = UsersManager.getFullUserData(messageData.user_uid, false);
+			//	var userModel:UserVO = UsersManager.getFullUserData(messageData.user_uid, false);
 				var avatar:String = "";
 				var userName:String = "User";
-				if (userModel) {
-					avatar = messageData.user_avatar;
-					userName = messageData.user_name;
-				}
+				
+				avatar = messageData.user_avatar;
+				userName = messageData.user_name;
 				
 				var chatData:Object = new Object();
 				chatData.uid = messageData.chat_uid;
@@ -283,7 +282,15 @@ package com.dukascopy.connect.sys.chatManager {
 				chatData.unreaded = 0;
 				
 				chatData.created = chatData.accessed = (new Date()).getTime() / 1000;
-				chatData.securityKey = LOCAL_INCOME_CHAT_FLAG + TextUtils.generateRandomString(32 - LOCAL_INCOME_CHAT_FLAG.length);
+				if ("sec" in messageData && messageData.sec != null)
+				{
+					chatData.securityKey = Crypter.decryptAES(messageData.sec, Auth.key);
+				}
+				else
+				{
+					chatData.securityKey = LOCAL_INCOME_CHAT_FLAG + TextUtils.generateRandomString(32 - LOCAL_INCOME_CHAT_FLAG.length);
+				}
+				
 				chatData.type = ChatRoomType.PRIVATE;
 				chatData.pushAllowed = true;
 				chatData.ownerID = messageData.user_uid;

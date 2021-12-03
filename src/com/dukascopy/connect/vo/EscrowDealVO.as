@@ -20,6 +20,7 @@ package com.dukascopy.connect.vo
 		public function get messageId():Number{ return getNumber("msg_id"); }
 		public function get cryptoWallet():String{ return getString("crypto_wallet"); }
 		public function get debitAccount():String{ return getString("debit_account"); }
+		public function get state():String{ return getString("state"); }
 
         public function get time():String{ return getFormattedDate("created_at","%h:%i")}
 		

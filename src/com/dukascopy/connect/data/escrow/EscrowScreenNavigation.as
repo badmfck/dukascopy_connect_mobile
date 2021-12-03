@@ -436,24 +436,17 @@ package com.dukascopy.connect.data.escrow
 			//	screenData.callback = finishOffer;
 			
 			var description:String;
-			if (escrow.direction == TradeDirection.buy)
+			
+			if (escrow.crypto_user_uid == Auth.uid)
 			{
-				if (escrow.crypto_user_uid == Auth.uid)
-				{
-					description = Lang.escrow_deal_completed_sell;
-					description = description.replace("%@", (EscrowSettings.getCommission(escrow.instrument) * 100));
-				}
-				else
-				{
-					description = Lang.escrow_deal_completed_buy;
-				}
+				description = Lang.escrow_deal_completed_sell;
+				description = description.replace("%@", (EscrowSettings.getCommission(escrow.instrument) * 100));
 			}
 			else
 			{
-				if (escrow.crypto_user_uid == Auth.uid)
+				if (escrow.state == EscrowState.expired_by_buyer)
 				{
-					description = Lang.escrow_deal_completed_sell;
-					description = description.replace("%@", (EscrowSettings.getCommission(escrow.instrument) * 100));
+					description = Lang.escrow_deal_completed_buy_expired;
 				}
 				else
 				{

@@ -637,18 +637,26 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 					{
 						if (messageData.systemMessageVO.escrow.status != EscrowStatus.deal_created)
 						{
-							iconTime.visible = true;
-							time.visible = true;
-							
-							time.width = leftSideSize - Config.FINGER_SIZE * .1 * 2;
-							
-							time.text = gettimeDifference(EscrowSettings.getTime(messageData.systemMessageVO.escrow));
-							
-							time.width = time.textWidth + 5;
-							time.height = time.textHeight + 5;
-							
-							time.x = int(leftSideSize * .5 - time.width * .5);
-							time.y = int(resultHeight * .5 + Config.FINGER_SIZE * .05);
+							if (messageData.systemMessageVO.escrow.status == EscrowStatus.deal_mca_hold_fail)
+							{
+								iconAlert.visible = true;
+								UI.colorize(iconAlert, getIconColor(messageData.systemMessageVO.escrow.status, messageData.systemMessageVO.escrow.direction, messageData));
+							}
+							else
+							{
+								iconTime.visible = true;
+								time.visible = true;
+								
+								time.width = leftSideSize - Config.FINGER_SIZE * .1 * 2;
+								
+								time.text = gettimeDifference(EscrowSettings.getTime(messageData.systemMessageVO.escrow));
+								
+								time.width = time.textWidth + 5;
+								time.height = time.textHeight + 5;
+								
+								time.x = int(leftSideSize * .5 - time.width * .5);
+								time.y = int(resultHeight * .5 + Config.FINGER_SIZE * .05);
+							}
 						}
 						else
 						{

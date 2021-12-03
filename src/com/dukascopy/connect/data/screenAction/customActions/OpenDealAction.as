@@ -2,6 +2,7 @@ package com.dukascopy.connect.data.screenAction.customActions {
 	
 	import com.dukascopy.connect.data.escrow.EscrowMessageData;
 	import com.dukascopy.connect.data.escrow.EscrowScreenNavigation;
+	import com.dukascopy.connect.data.escrow.EscrowState;
 	import com.dukascopy.connect.data.escrow.EscrowStatus;
 	import com.dukascopy.connect.data.escrow.TradeDirection;
 	import com.dukascopy.connect.data.screenAction.IScreenAction;
@@ -40,6 +41,7 @@ package com.dukascopy.connect.data.screenAction.customActions {
 		//	escrowData.priceID
 			escrowData.setStatus(dealData.status); 
 			escrowData.transactionId = dealData.cryptoTransactionId;
+			escrowData.state = EscrowState.getStatus(dealData.state);
 		//	escrowData.type
 		//	escrowData.userUID
 			

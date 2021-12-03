@@ -87,6 +87,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		private var openAccountButton:BitmapButton;
 		private var selectCryptoButton:BitmapButton;
 		private var instruments:Vector.<EscrowInstrument>;
+		private var dataReady:Boolean;
 		
 		public function AcceptOfferScreen() { }
 		
@@ -322,6 +323,10 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		
 		private function onAcceptClick():void 
 		{
+			if (dataReady == false)
+			{
+				return;
+			}
 			if (escrowOffer.direction == TradeDirection.sell)
 			{
 				var selectedCryptoWallet:String;
@@ -559,8 +564,6 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 					addSelectWalletButton();
 				}
 				
-				
-				
 				if (cryptoWalletInput == null)
 				{
 					var tf:TextFormat = new TextFormat();
@@ -602,6 +605,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 				
 				addItem(cryptoWalletInput);
 				
+				updateContentPositions();
 				updateScroll();
 			}
 		}
@@ -765,6 +769,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		
 		public function onDataReady():void
 		{
+			dataReady = true;
 			if (isDisposed)
 			{
 				return;

@@ -18,6 +18,7 @@ package com.dukascopy.connect.sys.notificationManager {
 	import com.dukascopy.connect.sys.auth.Auth;
 	import com.dukascopy.connect.sys.chatManager.ChatManager;
 	import com.dukascopy.connect.sys.connectionManager.NetworkManager;
+	import com.dukascopy.connect.sys.crypter.Crypter;
 	import com.dukascopy.connect.sys.dialogManager.DialogManager;
 	import com.dukascopy.connect.sys.echo.echo;
 	import com.dukascopy.connect.sys.nativeExtensionController.NativeExtensionController;
@@ -247,6 +248,7 @@ package com.dukascopy.connect.sys.notificationManager {
 		}
 		
 		static private function readNotifications():void {
+			
 			if (Config.PLATFORM_APPLE == true && MobileGui.dce != null) {
 				readAppleNotifications();
 				
@@ -325,7 +327,7 @@ package com.dukascopy.connect.sys.notificationManager {
 		}
 		
 		static private function readAppleNotifications():void {
-			var messagesDataString:String = MobileGui.dce.messagesFromNotifications();
+			var messagesDataString:String;
 			
 			echo("PushNotificaionsNative", "readAppleNootifications", messagesDataString);
 
@@ -413,7 +415,13 @@ package com.dukascopy.connect.sys.notificationManager {
 			
 			messageData.created = 0;
 			if ("created" in notification && !isNaN(Number(notification.created)))
+			{
 				messageData.created = Math.round(Number(notification.created));
+				if (messageData.created.toString().length > 11)
+				{
+					messageData.created = messageData.created / 1000;
+				}
+			}
 			
 			if ("text" in notification)
 				messageData.text = notification.text;
@@ -432,6 +440,9 @@ package com.dukascopy.connect.sys.notificationManager {
 			messageData.reaction = "";
 			if ("avatar" in notification) {
 				messageData.user_avatar = notification.avatar;
+			}
+			if ("sec" in notification) {
+				messageData.sec = notification.sec;
 			}
 			return messageData;
 		}
