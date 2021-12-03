@@ -484,7 +484,7 @@ package com.dukascopy.connect.sys.notificationManager {
 					return;
 
 				} else {
-					echo("PushNotificationsNative", "onMessagesSaved", "latest no loaded from store");
+					echo("PushNotificationsNative", "onMessagesSaved", "latest not loaded from store");
 					checkForChatsExistance();
 					processUnreadedMessages();
 				}
@@ -523,6 +523,17 @@ package com.dukascopy.connect.sys.notificationManager {
 					}
 				} else {
 
+					/**
+					 * BUGFIX: CONNECT-18220
+					 * on IOS:
+					 * 	 	open app, open chat, deactivate app by swipping up.
+					 * 		wait for connection lost (about 30 sec)
+					 * 		receive message to opened chat via push notifications
+					 * 		receive message to another chat via push notifications
+					 * 		activate app, app will appear with opened chat screen without newly added messages.
+					 * 
+					 *	-------- FIXED
+					 */
 					
 					if(isChatScreenOpened && ChatManager.getCurrentChat() != null){
 						// TODO: check if current chat uid exists in updatedChats
@@ -604,12 +615,14 @@ package com.dukascopy.connect.sys.notificationManager {
 			var chatsChanged:Boolean = false;
 			var chat:ChatVO;
 			if (newUnreadedMessages != null) {
+				echo("PushNotificationsNative", "processUnreadedMessages", "not null");
 				if (ChatManager.isLoadedFromStore() == true) {
+					echo("PushNotificationsNative", "processUnreadedMessages", "loaded from store");
 					for (var uid:String in newUnreadedMessages) {
 						if (newUnreadedMessages[uid] != null) {
 							chat = ChatManager.getChatByUID(uid);
 							if (chat != null) {
-								if (chat.messageVO != null) {
+								if (chat.messageVO != null){
 									if (chat.messageVO.num < newUnreadedMessages[uid].num) {
 										chatsChanged = true;
 										chat.setNewUreadedMessage(newUnreadedMessages[uid], false);
@@ -620,13 +633,18 @@ package com.dukascopy.connect.sys.notificationManager {
 								}
 							}
 						}
+						echo("PushNotificationsNative", "processUnreadedMessages", "iterating:");
 					}
 					newUnreadedMessages = null;
+					echo("PushNotificationsNative", "processUnreadedMessages", "notifier 1");
 					NewMessageNotifier.dispatchUpdateLater();
+					echo("PushNotificationsNative", "processUnreadedMessages", "notifier 2");
 					if (chatsChanged) {
+						echo("PushNotificationsNative", "processUnreadedMessages", "chat changes");
 						ChatManager.updateLatestsInStore();
 					}
 				} else {
+					echo("PushNotificationsNative", "processUnreadedMessages", "in else");
 					ChatManager.S_LATEST.add(onLatestChatsLoaded);
 				}
 			}
