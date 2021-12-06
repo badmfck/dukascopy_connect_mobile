@@ -550,7 +550,7 @@ package com.dukascopy.connect.managers.escrow {
 		private function onEscrowAdsCreationCheckSuccess(escrowAdsVO:EscrowAdsVO):void {
 			PHP.question_create(
 				onQuestionCreated,
-				Crypter.crypt("Escrow", MESSAGE_KEY),
+				Crypter.crypt(Lang.update_your_app, MESSAGE_KEY),
 				escrowAdsVO.amount,
 				escrowAdsVO.instrument.code,
 				escrowAdsVO.currency,
