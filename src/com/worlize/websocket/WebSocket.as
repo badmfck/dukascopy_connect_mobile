@@ -103,7 +103,7 @@ import flash.net.Socket;
 		
 		public var config:WebSocketConfig = new WebSocketConfig();
 		
-		public var debug:Boolean = false;
+		public var debug:Boolean = true;
 		
 		public static var logger:Function = function(text:String):void {
 			trace(text);
@@ -113,6 +113,8 @@ import flash.net.Socket;
 		{
 			super(null);
 			_uri = new URI(uri);
+
+			trace("Worlize->WebSocket->connecting: "+uri,", origin:"+origin)
 			
 			if (protocols is String) {
 				_protocols = [protocols];

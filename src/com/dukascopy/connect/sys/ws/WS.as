@@ -21,8 +21,9 @@ import com.dukascopy.connect.MobileGui;
 	import flash.desktop.NativeApplication;
 	import flash.events.Event;
 	import flash.events.IOErrorEvent;
-import flash.system.Capabilities;
-import flash.utils.getTimer;
+
+	import flash.system.Capabilities;
+	import flash.utils.getTimer;
 
 
 	/**
@@ -246,8 +247,10 @@ import flash.utils.getTimer;
 			}
 
 			if(!Config.PLATFORM_APPLE && !Config.PLATFORM_ANDROID ){
-				if (!Config.isTest()){
+				if (Config.isLive()){
 					currentHost="ws://ws.site.dukascopy.com:8080";
+				}else if(Config.isPre()){
+					currentHost="ws://ws-pre.site.dukascopy.com:8080";
 				}
 			}
 
