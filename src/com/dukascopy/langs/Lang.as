@@ -2650,6 +2650,7 @@ package com.dukascopy.langs {
 		static public var investigation_fee_description_expired:String = "You have missed the 24 hours deadline either to confirm the receipt of crypto or to request an investigation. The transaction has been suspended and forwarded to manual investigation by Dukascopy Support but you still may finish it by tapping “I HAVE RECEIVED THE CRYPTO” button. In any case, the Refundable fee became non-refundable and will be charged in the Bank’s favour.";
 		static public var waiting_for_receipt_confirmation_status_expired:String = "Waiting for receipt confirmation by the Buyer or Support";
 		static public var escrow_deal_completed_buy_expired:String = "The fiat funds have been sent to the crypto Seller.";
+		static public var update_your_app:String = "Update your app to access crypto/fiat P2P functionality";
 		
 		static public function updateKeys(keys:Object):void {
 			for (var n:String in keys) {
