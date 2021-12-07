@@ -281,9 +281,9 @@ package com.dukascopy.connect.data
 					//	{id:"189", sort:0, ver:"1"},
 					//	{id:"205", sort:34,ver:"1"},
 				]
-			},
-			
-			{
+			}
+			,
+			/*{
 				id:1,
 				name:"adult",
 				sort:8,
@@ -307,7 +307,8 @@ package com.dukascopy.connect.data
 					
 					//	{id:"15", sort:"9", ver:"1"},
 				]
-			}];
+			}*/
+			];
 		
 		public function StickersLocalCollection() 
 		{
