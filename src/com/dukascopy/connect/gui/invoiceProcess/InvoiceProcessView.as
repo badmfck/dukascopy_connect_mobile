@@ -807,7 +807,10 @@ package com.dukascopy.connect.gui.invoiceProcess
 				TweenMax.to(view , .3, { y:_height, 
 										ease:Quint.easeOut, 
 										onComplete:onScreenHided});
-				selectorDebitAccont.deactivate();
+				if (selectorDebitAccont != null)
+				{
+					selectorDebitAccont.deactivate();
+				}
 			}
 		}
 		
