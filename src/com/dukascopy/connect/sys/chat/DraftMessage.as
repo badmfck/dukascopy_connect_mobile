@@ -108,6 +108,7 @@ package com.dukascopy.connect.sys.chat
 				messages = null;
 			}
 			clearStore();
+			messages = new Object();
 		}
 		
 		static private function clearStore():void 
