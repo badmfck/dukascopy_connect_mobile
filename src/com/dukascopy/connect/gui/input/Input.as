@@ -10,6 +10,7 @@ package com.dukascopy.connect.gui.input {
 	import com.dukascopy.connect.sys.pointerManager.PointerManager;
 	import com.dukascopy.connect.sys.pool.IPoolItem;
 	import com.dukascopy.connect.sys.softKeyboard.SoftKeyboard;
+	import com.dukascopy.connect.sys.style.FontSize;
 	import com.dukascopy.connect.sys.style.Style;
 	import com.dukascopy.connect.sys.style.presets.Color;
 	import com.dukascopy.connect.sys.theme.AppTheme;
@@ -83,10 +84,6 @@ package com.dukascopy.connect.gui.input {
 		protected var infoBox:Sprite;
 		protected var infoBoxSrc:Sprite;
 		protected var infoBoxTf:TextField;
-		private var infoBoxBmp:Bitmap;
-		private var infoBoxBgColor:uint;
-		private var infoBoxSide:int;
-		protected var infoBoxTextColor:uint;
 		private var infoBoxValue:String;
 		
 		private var customKeyboardOpening:Boolean;
@@ -104,17 +101,6 @@ package com.dukascopy.connect.gui.input {
 		private static var tempPoint:Point = new Point();
 		private static var tempRect:Rectangle = new Rectangle();
 		private var hitzoneBox:Box = new Box(0xff0000, 1, 1, .6);
-		private var _hitzoneWidth:int=0;
-		private var _hitzoneHeight:int =0;
-		public var TOP_OVERFLOW:int = 10;
-		public var LEFT_OVERFLOW:int = 10;
-		public var RIGHT_OVERFLOW:int = 10;
-		public var BOTTOM_OVERFLOW:int = 10;
-		private var downHitX:int = 0;
-		private var downHitY:int = 0;
-		private var _wasDown:Boolean = false;
-		private var downPressed:Boolean = false;
-		private var lastTouchID:int =-1;
 		private var _isFocused:Boolean = false;
 		private var decimals:int = -1;
 		private var maxValue:Number = NaN;
@@ -129,6 +115,14 @@ package com.dukascopy.connect.gui.input {
 		public var backgroundColor:int = 0xFFFFFF;
 		private var _backgroundAlpha:Number = 1;
 		
+		public function get currentFontSize():Number 
+		{
+			return _currentFontSize;
+		}
+		
+		private var _currentFontSize:Number = FontSize.BODY;
+		private var textStart:int = 0;
+		
 		public function set backgroundAlpha(value:Number):void 
 		{
 			_backgroundAlpha = value;
@@ -142,9 +136,9 @@ package com.dukascopy.connect.gui.input {
 			
 			this.type = type;
 			if (inputFormatBig == null)
-				inputFormatBig = new TextFormat('Tahoma', _height * .7 - Config.MARGIN * 2);
+				inputFormatBig = new TextFormat(Config.defaultFontName, FontSize.AMOUNT);
 			if (infoBoxFormatBig == null)
-				infoBoxFormatBig = new TextFormat('Tahoma', _height * .3);
+				infoBoxFormatBig = new TextFormat(Config.defaultFontName, FontSize.BODY);
 			_view = new ViewContainer(this);
 			textField = new TextField();
 			setFormat(inputFormatBig);
@@ -157,9 +151,9 @@ package com.dukascopy.connect.gui.input {
 			drawView();
 		}
 		
-		public function setPadding(value:int):void
+		public function setTextStart(value:int):void
 		{
-			padding = value;
+			textStart = value;
 		}
 		
 		private function selectTextField(e:MouseEvent):void 
@@ -194,6 +188,16 @@ package com.dukascopy.connect.gui.input {
 			textField.textColor = _textColor;
 			textField.height = textHeight;
 			textField.text = sv;
+			
+			updateFontSizeValue(format);
+		}
+		
+		private function updateFontSizeValue(format:TextFormat):void 
+		{
+			if (format != null && format.size != null && !isNaN(Number(format.size)))
+			{
+				_currentFontSize = Number(format.size);
+			}
 		}
 		
 		public function updateTextFormat(format:TextFormat):void {
@@ -206,25 +210,25 @@ package com.dukascopy.connect.gui.input {
 			
 			textField.height = textHeight;
 			textField.text = sv;
+			
+			updateFontSizeValue(format);
 		}
 		
-		public function setInfoBox(text:String = 'info', infoBoxBgColor:uint = 0xcd3f43, infoBoxSide:int = 0,infoBoxTextColor:uint=0xFFFFFF):void {
-			this.infoBoxTextColor = infoBoxTextColor;
-			this.infoBoxSide = infoBoxSide;
-			this.infoBoxBgColor = infoBoxBgColor;
+		public function setInfoBox(text:String = 'info'):void {
 			if (infoBox == null) {
 				infoBox = new Sprite();
-					infoBoxSrc = new Sprite();
-						infoBoxTf = new TextField();
-						infoBoxTf.defaultTextFormat = infoBoxFormatBig;
-					infoBoxSrc.addChild(infoBoxTf);
-					infoBoxBmp = new Bitmap(null, 'auto', true);
-				infoBox.addChild(infoBoxBmp);
+				infoBoxSrc = new Sprite();
+				infoBoxTf = new TextField();
+				infoBoxTf.selectable = false;
+				infoBoxTf.mouseEnabled = false;
+				infoBoxTf.defaultTextFormat = infoBoxFormatBig;
+				infoBox.addChild(infoBoxSrc);
+				infoBox.addChild(infoBoxTf);
 				_view.addChild(infoBox);
 			}
 			infoBoxValue = text;
 			infoBoxTf.text = infoBoxValue;
-			infoBoxTf.border = Capabilities.isDebugger;
+		//	infoBoxTf.border = Capabilities.isDebugger;
 			
 			deactivate();
 			activate();
@@ -245,16 +249,8 @@ package com.dukascopy.connect.gui.input {
 				if (infoBoxTf != null)
 					infoBoxTf.text = '';
 				infoBoxTf = null;
-				if (infoBoxBmp != null) {
-					if (infoBoxBmp.parent != null)
-						infoBoxBmp.parent.removeChild(infoBoxBmp);
-					if (infoBoxBmp.bitmapData != null) {
-						infoBoxBmp.bitmapData.dispose();
-						infoBoxBmp.bitmapData = null;
-					}
-				}
+				
 				infoBoxValue = null;
-				infoBoxBmp = null;
 			}
 			if (redrawView) {
 				activate();
@@ -363,45 +359,30 @@ package com.dukascopy.connect.gui.input {
 			}
 			_view.graphics.endFill();
 			
+			textField.y = Math.round(_height - _currentFontSize - Config.FINGER_SIZE * .2);
+			
 			var iboxPadd:int = 0;
 			if (infoBox != null) {
 				
-				infoBoxTf.x = Math.round(padding * .5);
+				var padd:int = padding * .5;
+				infoBoxTf.x = padd;
 				infoBoxTf.width = infoBoxTf.textWidth + 4;
 				infoBoxTf.height = infoBoxTf.textHeight + 4;
-				infoBoxTf.y = Math.round((_height - infoBoxTf.height) * .5);
-				infoBoxTf.textColor = infoBoxTextColor;
+				infoBoxTf.y = Math.round(textField.y + textField.height * .5 - infoBoxTf.height * .5);
+				
 				infoBoxSrc.graphics.clear();
-				infoBoxSrc.graphics.beginFill(infoBoxBgColor);
-				infoBoxSrc.graphics.drawRoundRect(0, padding, infoBoxTf.width + infoBoxTf.x * 2, _height-padding*2,10,10);
 				
-				iboxPadd = infoBoxSrc.width + padding * .5;
-				
-				infoBoxSrc.graphics.beginFill(0xFF0000, 0);
-				infoBoxSrc.graphics.drawRect(0, 0, infoBoxSrc.width, infoBoxSrc.height);
-				
-				if (infoBoxBmp.bitmapData == null) {
-					infoBoxBmp.bitmapData = new ImageBitmapData('infobox.bitmap', infoBoxSrc.width, infoBoxSrc.height, true);
-				}else{
-					if (infoBoxBmp.bitmapData.width != infoBoxSrc.width || infoBoxBmp.bitmapData.height != infoBoxSrc.height){
-						infoBoxBmp.bitmapData.dispose();
-						infoBoxBmp.bitmapData = null;
-						infoBoxBmp.bitmapData = new ImageBitmapData('infobox.bitmap', infoBoxSrc.width, infoBoxSrc.height, true);
-					}else{
-						infoBoxBmp.bitmapData.fillRect(infoBoxBmp.bitmapData.rect, 0);
-					}
-				}
-				
-				infoBoxBmp.x = 0;
-				infoBoxBmp.smoothing = true;
-				infoBoxBmp.bitmapData.drawWithQuality(infoBoxSrc, null, null, null, null, true, StageQuality.HIGH);
+				infoBoxSrc.graphics.beginFill(Color.GREY_SSL, 1);
+				infoBoxSrc.graphics.drawRoundRect(0, 0, int(infoBoxTf.width + padd * 2), infoBoxTf.height + padd, padd * 2, padd * 2);
+				infoBoxSrc.x = int(infoBoxTf.x - padd);
+				infoBoxSrc.y = int(infoBoxTf.y - padd * .5);
+				iboxPadd = infoBoxSrc.width + Config.FINGER_SIZE * .15;
 			}
 			_view.addChild(hitzoneBox);
-		//	textField.x = padding+iboxPadd;
-			textField.x = padding + iboxPadd;
-			textField.width = _width - padding * 2-iboxPadd;
-			textField.y = Math.round((_height - textHeight) * .5);
-
+			
+			textField.x = textStart + iboxPadd;
+			textField.width = _width - textStart - iboxPadd;
+			
 			_view.addChild(textField);
 			
 			if (line != null)
@@ -412,7 +393,7 @@ package com.dukascopy.connect.gui.input {
 					line.bitmapData = null;
 				}
 				line.bitmapData = UI.getHorizontalLine(0x33CC00, _width);
-				line.y = int(_height - line.height);
+				line.y = linePosition;
 			}
 			rightClicker.x = textField.x + textField.width;
 			rightClicker.y = textField.y;
@@ -1017,7 +998,6 @@ package com.dukascopy.connect.gui.input {
 		public function toMaterialStyle():void 
 		{
 			borderVisibility = false;
-			infoBoxBgColor = 0x6F92B0;
 			line = new Bitmap();
 			_view.addChild(line);
 		}
@@ -1036,6 +1016,11 @@ package com.dukascopy.connect.gui.input {
 			{
 				textField.type = TextFieldType.INPUT;
 			}
+		}
+		
+		public function get linePosition():int
+		{
+			return _height - Style.getLineThickness();
 		}
 	}
 }

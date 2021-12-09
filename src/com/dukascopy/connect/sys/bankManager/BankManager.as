@@ -653,7 +653,7 @@ package com.dukascopy.connect.sys.bankManager {
 							giftData.customValue = Math.abs(_initData.amount);
 					}
 					giftData.callback = onMoneySendPhoneCallback;
-					ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_DIALOG, SendMoneyByPhonePopup, { giftData: giftData } );
+					ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_DIALOG, SendMoneyByPhonePopup, { giftData: giftData, allowCoins:((giftData.currency==TypeCurrency.DCO)?true:false) } );
 				} else if (data.type == "investmentTransferPhone") {
 					if (investments == null) {
 						waitingBMVO = lastBankMessageVO;

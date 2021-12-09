@@ -46,6 +46,7 @@ package com.dukascopy.connect.gui.button {
 		private var icon:Bitmap;
 		private var innerHeight:int;
 		private var lineThickness:int;
+		private var fontSize:Number;
 
 		public function DDFieldButton(callBack:Function, value:String = "", showArrow:Boolean = true, underlineColor:Number = NaN, title:String = null, fontSize:Number = NaN) {
 			this._value = value;
@@ -53,8 +54,9 @@ package com.dukascopy.connect.gui.button {
 			this.title = title;
 			if (isNaN(fontSize))
 			{
-				fontSize = FontSize.BODY;
+				fontSize = FontSize.AMOUNT;
 			}
+			this.fontSize = fontSize;
 			
 			if (!isNaN(underlineColor))
 			{
@@ -202,7 +204,7 @@ package com.dukascopy.connect.gui.button {
 				innerHeight = h;
 			}
 			
-			tf.y = int(innerHeight - tf.height - Config.FINGER_SIZE * .1);
+			tf.y = int(innerHeight - fontSize - Config.FINGER_SIZE * .2);
 			
 			box.graphics.clear();
 				box.graphics.beginFill(Style.color(Style.COLOR_BACKGROUND), 0);

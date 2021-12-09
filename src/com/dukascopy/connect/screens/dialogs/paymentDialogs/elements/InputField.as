@@ -278,7 +278,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs.elements
 		
 		public function setPadding(value:int):void
 		{
-			input.setPadding(value);
+			input.setTextStart(value);
 		}
 		
 		public function drawString(itemWidth:int, titleValue:String, defaultValue:String, underlineString:String = null, typeValue:String = null):void 
@@ -348,7 +348,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs.elements
 			valueContainer.x = int(input.view.x + itemWidth - valueField.width);
 			valueContainer.y = int(input.view.y + tf.y + line.ascent - valueField.height + 2);
 			underline.width = itemWidth;
-			underline.y = int(input.view.y + input.getTextField().height - 2 + Config.FINGER_SIZE * .273);
+			underline.y = int(input.view.y + input.linePosition);
 			
 			if (align == ALIGN_LEFT)
 			{
