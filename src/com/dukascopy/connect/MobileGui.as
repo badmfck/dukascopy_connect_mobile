@@ -436,6 +436,8 @@ package com.dukascopy.connect {
 			
 			GD.S_START_LOAD.add(showLoader);
 			GD.S_STOP_LOAD.add(hideLoader);
+			
+			GD.S_BACK.add(onBack);
 		}
 		
 		private function showLoader():void 
@@ -494,6 +496,7 @@ package com.dukascopy.connect {
 		}
 		
 		private function onKeyDown(e:KeyboardEvent):void {
+			
 			if (e.keyCode == 27) {
 				if (MobileGui.isActive == true)
 					MobileGui.deactivateByUser();
@@ -502,6 +505,12 @@ package com.dukascopy.connect {
 				return;
 			e.preventDefault();
 			e.stopImmediatePropagation();
+			
+			onBack();
+		}
+		
+		private function onBack():void 
+		{
 			if (_softKeyboardOpened == true) {
 				SoftKeyboard.closeKeyboard();
 				onStageResize();
