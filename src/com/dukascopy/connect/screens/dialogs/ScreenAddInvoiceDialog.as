@@ -11,8 +11,8 @@ package com.dukascopy.connect.screens.dialogs {
 	import com.dukascopy.connect.gui.list.renderers.ListPayCurrency;
 	import com.dukascopy.connect.gui.menuVideo.BitmapButton;
 	import com.dukascopy.connect.gui.textedit.TextComposer;
-	import com.dukascopy.connect.screens.dialogs.x.base.bottom.ListSelectionPopup;
 	import com.dukascopy.connect.screens.dialogs.paymentDialogs.elements.InputField;
+	import com.dukascopy.connect.screens.dialogs.x.base.bottom.ListSelectionPopup;
 	import com.dukascopy.connect.screens.layout.ScrollScreen;
 	import com.dukascopy.connect.screens.payments.card.TypeCurrency;
 	import com.dukascopy.connect.sys.dialogManager.DialogManager;
@@ -205,7 +205,7 @@ package com.dukascopy.connect.screens.dialogs {
 		private function createInputAmount():void 
 		{
 			var tf:TextFormat = new TextFormat();
-			tf.size = FontSize.BODY;
+			tf.size = FontSize.AMOUNT;
 			tf.color = Style.color(Style.COLOR_TEXT);
 			tf.font = Config.defaultFontName;
 			
@@ -238,7 +238,7 @@ package com.dukascopy.connect.screens.dialogs {
 			cancelButton.setBitmapData(buttonBitmap, true);
 			
 			iCurrency.setSize(Config.FINGER_SIZE * 2, Config.FINGER_SIZE * .8);
-			inputAmount.draw(_width - Config.DIALOG_MARGIN * 3 - iCurrency.width, Lang.textAmount, 0);
+			inputAmount.draw(_width - Config.DIALOG_MARGIN * 2 - Config.FINGER_SIZE * .2 - iCurrency.width, Lang.textAmount, 0);
 		}
 		
 		private function getButtonWidth():int 
@@ -280,7 +280,7 @@ package com.dukascopy.connect.screens.dialogs {
 			inputAmount.y = position;
 			inputAmount.x = Config.DIALOG_MARGIN;
 			
-			iCurrency.y = position;
+			iCurrency.y = position + inputAmount.linePosition() - iCurrency.linePosition();
 			iCurrency.x = _width - Config.DIALOG_MARGIN - iCurrency.width;
 			
 			position += Math.max(iCurrency.fullHeight, iCurrency.height) + Config.FINGER_SIZE * .5;
