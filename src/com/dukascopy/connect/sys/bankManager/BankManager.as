@@ -1032,7 +1032,7 @@ package com.dukascopy.connect.sys.bankManager {
 				} else if (data.type == "paymentsSelectContact") {
 					DialogManager.showDialog(SelectContactScreen, { title:Lang.selectContacts, callback:onSelectContact, searchText:Lang.TEXT_SEARCH_CONTACT, data:data, dialog:true }, ServiceScreenManager.TYPE_SCREEN );
 				} else if (data.type == "paymentsSelectTemplate") {
-					DialogManager.showDialog(TransactionPresetsPopup, { title:Lang.TEXT_SELECT_ACCOUNT, renderer:TransactionTemplateRenderer, items:transactionTemplates, data:data, deleteTemplate:deleteTemplate, callback:onSelectTemplate }, ServiceScreenManager.TYPE_SCREEN);
+					DialogManager.showDialog(TransactionPresetsPopup, { title:Lang.select_template, renderer:TransactionTemplateRenderer, items:transactionTemplates, data:data, deleteTemplate:deleteTemplate, callback:onSelectTemplate }, ServiceScreenManager.TYPE_SCREEN);
 				} else if (data.type == "cryptoSelectContact") {
 					DialogManager.showDialog(SelectContactScreen, { title:Lang.selectContacts, callback:onSelectContactForCrypto, searchText:Lang.TEXT_SEARCH_CONTACT, data:data, dialog:true  }, ServiceScreenManager.TYPE_SCREEN );
 				} else if (data.type == "walletSelectCurrency") {
