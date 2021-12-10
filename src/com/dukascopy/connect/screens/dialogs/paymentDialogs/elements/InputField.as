@@ -343,7 +343,10 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs.elements
 			var titleHeight:int = FontSize.SUBHEAD;
 			
 			input.view.y = int(title.y + titleHeight - Config.FINGER_SIZE * .15);
-			input.width = itemWidth - valueField.width;
+			if (valueField.width > 0)
+			{
+				input.width = (itemWidth - valueField.width - Config.FINGER_SIZE*.1);
+			}
 			
 			valueContainer.x = int(input.view.x + itemWidth - valueField.width);
 			valueContainer.y = int(input.view.y + tf.y + line.ascent - valueField.height + 2);
