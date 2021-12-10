@@ -4,11 +4,12 @@ package com.dukascopy.connect.gui.list.renderers {
 	import com.dukascopy.connect.data.SelectorItemData;
 	import com.dukascopy.connect.gui.lightbox.UI;
 	import com.dukascopy.connect.gui.list.ListItem;
+	import com.dukascopy.connect.sys.style.FontSize;
 	import com.dukascopy.connect.sys.style.Style;
+	import com.dukascopy.connect.sys.style.presets.Color;
 	import com.dukascopy.connect.sys.usersManager.UsersManager;
 	import com.dukascopy.connect.vo.users.UserVO;
 	import com.dukascopy.langs.Lang;
-	import fl.motion.Color;
 	import flash.display.IBitmapDrawable;
 	import flash.display.Shape;
 	import flash.display.Sprite;
@@ -22,6 +23,7 @@ package com.dukascopy.connect.gui.list.renderers {
 	 */
 	
 	public class TransactionTemplateRenderer extends BaseRenderer implements IListRenderer {
+		private var contentPadding:int;
 		
 		protected var textFormat:TextFormat = new TextFormat();
 		protected var textFormatAmount:TextFormat = new TextFormat();
@@ -31,9 +33,11 @@ package com.dukascopy.connect.gui.list.renderers {
 		protected var amount:TextField;
 		protected var subtitle:TextField;
 		protected var bg:Shape;
-		protected var bgHighlight:Shape;
 		
 		public function TransactionTemplateRenderer(){
+			
+			contentPadding = Config.FINGER_SIZE * .3;
+			
 			bg = new Shape();
 				bg.graphics.beginFill(Style.color(Style.COLOR_BACKGROUND));
 				bg.graphics.drawRect(0, 0, 10, 10);
@@ -42,25 +46,16 @@ package com.dukascopy.connect.gui.list.renderers {
 				bg.graphics.drawRect(0, 9, 10, 1);
 				bg.scale9Grid = new Rectangle(1, 1, 8, 5);
 			addChild(bg);
-			bgHighlight = new Shape();
-				bgHighlight.graphics.beginFill(0x00a8ff,.2);
-				bgHighlight.graphics.drawRect(0, 0, 10, 10);
-				bgHighlight.graphics.endFill();
-				bgHighlight.graphics.beginFill(0, .10);
-				bgHighlight.graphics.drawRect(0, 9, 10, 1);
-				bgHighlight.scale9Grid = new Rectangle(1, 1, 8, 5);
-				bgHighlight.visible = false;
-			addChild(bgHighlight);
 				
 				text = new TextField();
 				textFormat.font = Config.defaultFontName;
-				textFormat.color = 0x4C5762;
-				textFormat.size = Config.FINGER_SIZE * .28;
+				textFormat.color = Style.color(Style.COLOR_TEXT);
+				textFormat.size = FontSize.BODY;
 				text.defaultTextFormat = textFormat;
 				text.text = "Pp";
 				text.height = text.textHeight + 4;
 				text.text = "";
-				text.x = Config.DIALOG_MARGIN;
+				text.x = contentPadding;
 				text.wordWrap = true;
 				text.y = Config.MARGIN * 1.5;
 				text.multiline = true;
@@ -68,13 +63,13 @@ package com.dukascopy.connect.gui.list.renderers {
 			
 			amount = new TextField();
 				textFormatAmount.font = Config.defaultFontName;
-				textFormatAmount.color = 0xE07800;
-				textFormatAmount.size = Config.FINGER_SIZE * .33;
+				textFormatAmount.color = Color.BLUE;
+				textFormatAmount.size = FontSize.BODY;
 				amount.defaultTextFormat = textFormatAmount;
 				amount.text = "Pp";
 				amount.height = amount.textHeight + 4;
 				amount.text = "";
-				amount.x = Config.DIALOG_MARGIN;
+				amount.x = contentPadding;
 				amount.wordWrap = false;
 				amount.y = Config.MARGIN * 1.5;
 				amount.multiline = false;
@@ -82,13 +77,13 @@ package com.dukascopy.connect.gui.list.renderers {
 			
 			subtitle = new TextField();
 				textFormatSubtitle.font = Config.defaultFontName;
-				textFormatSubtitle.color = 0x6B7A8A;
-				textFormatSubtitle.size = Config.FINGER_SIZE * .25;
+				textFormatSubtitle.color = Style.color(Style.COLOR_SUBTITLE);
+				textFormatSubtitle.size = FontSize.SUBHEAD;
 				subtitle.defaultTextFormat = textFormatSubtitle;
 				subtitle.text = "Pp";
 				subtitle.height = subtitle.textHeight + 4;
 				subtitle.text = "";
-				subtitle.x = Config.DIALOG_MARGIN;
+				subtitle.x = contentPadding;
 				subtitle.wordWrap = false;
 				subtitle.y = Config.MARGIN * 1.5;
 				subtitle.multiline = false;
@@ -102,15 +97,6 @@ package com.dukascopy.connect.gui.list.renderers {
 		
 		private function setText(data:ListItem, width:int):int 
 		{
-			/*data : Object {
-				acc : "314931366384" 
-				amount : "1" 
-				comment : "" 
-				currency : "EUR" 
-				name : "1 EUR to Noe IV" 
-				userUid : "WdW6DJWbW3IcWm" 
-			}*/
-			
 			if (data.data != null)
 			{
 				var textWidth:int;
@@ -126,7 +112,7 @@ package com.dukascopy.connect.gui.list.renderers {
 					amount.text = data.data.amount + " " + currency;
 					amount.width = amount.textWidth + 4;
 					amount.height = amount.textHeight + 4;
-					amount.x = width - amount.width - Config.DIALOG_MARGIN;
+					amount.x = width - amount.width - contentPadding;
 				}
 				else
 				{
@@ -136,7 +122,7 @@ package com.dukascopy.connect.gui.list.renderers {
 				var position:int = 0;
 				if ("name" in data.data && data.data.name != null)
 				{
-					textWidth = width - text.x - Config.DIALOG_MARGIN;
+					textWidth = width - text.x - contentPadding;
 					if (amount.text != "")
 					{
 						textWidth -= amount.width - Config.MARGIN;
@@ -172,7 +158,7 @@ package com.dukascopy.connect.gui.list.renderers {
 				if (comment != null)
 				{
 					subtitle.y = position;
-					textWidth = width - subtitle.x - Config.DIALOG_MARGIN;
+					textWidth = width - subtitle.x - contentPadding;
 					subtitle.width = textWidth;
 					subtitle.text = comment;
 					subtitle.height = subtitle.textHeight + 4;
@@ -196,12 +182,6 @@ package com.dukascopy.connect.gui.list.renderers {
 			bg.width = width;
 			bg.height = height;
 			
-			bgHighlight.width = width;
-			bgHighlight.height = height;
-			
-			bg.visible = !highlight;
-			bgHighlight.visible = highlight;
-			
 			return this;
 		}
 		
@@ -220,9 +200,6 @@ package com.dukascopy.connect.gui.list.renderers {
 			if (bg != null)
 				bg.graphics.clear();
 			bg = null;
-			if (bgHighlight != null)
-				bgHighlight.graphics.clear();
-			bgHighlight = null;
 		}
 		
 		/* INTERFACE com.dukascopy.connect.gui.list.renderers.IListRenderer */

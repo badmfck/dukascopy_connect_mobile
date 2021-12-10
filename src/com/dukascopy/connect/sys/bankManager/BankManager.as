@@ -20,6 +20,7 @@ package com.dukascopy.connect.sys.bankManager {
 	import com.dukascopy.connect.gui.lightbox.UI;
 	import com.dukascopy.connect.gui.lightbox.UI;
 	import com.dukascopy.connect.gui.list.renderers.ListPayCurrency;
+	import com.dukascopy.connect.gui.list.renderers.TransactionTemplateRenderer;
 	import com.dukascopy.connect.screens.BankBotChatScreen;
 	import com.dukascopy.connect.screens.MyAccountScreen;
 	import com.dukascopy.connect.screens.UserProfileScreen;
@@ -1031,7 +1032,7 @@ package com.dukascopy.connect.sys.bankManager {
 				} else if (data.type == "paymentsSelectContact") {
 					DialogManager.showDialog(SelectContactScreen, { title:Lang.selectContacts, callback:onSelectContact, searchText:Lang.TEXT_SEARCH_CONTACT, data:data, dialog:true }, ServiceScreenManager.TYPE_SCREEN );
 				} else if (data.type == "paymentsSelectTemplate") {
-					DialogManager.showDialog(TransactionPresetsPopup, { transactionTemplates:transactionTemplates, data:data, deleteTemplate:deleteTemplate, callback:onSelectTemplate } );
+					DialogManager.showDialog(TransactionPresetsPopup, { title:Lang.TEXT_SELECT_ACCOUNT, renderer:TransactionTemplateRenderer, items:transactionTemplates, data:data, deleteTemplate:deleteTemplate, callback:onSelectTemplate }, ServiceScreenManager.TYPE_SCREEN);
 				} else if (data.type == "cryptoSelectContact") {
 					DialogManager.showDialog(SelectContactScreen, { title:Lang.selectContacts, callback:onSelectContactForCrypto, searchText:Lang.TEXT_SEARCH_CONTACT, data:data, dialog:true  }, ServiceScreenManager.TYPE_SCREEN );
 				} else if (data.type == "walletSelectCurrency") {
@@ -1860,7 +1861,7 @@ package com.dukascopy.connect.sys.bankManager {
 			if (String(template.userUid).charAt(0) == "+") {
 				giftData.credit_account_number = template.userUid;
 				giftData.callback = onMoneySendPhoneCallback;
-				ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_DIALOG, SendMoneyByPhonePopup, { giftData: giftData } );
+				ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_DIALOG, SendMoneyByPhonePopup, { giftData: giftData, allowCoins:((giftData.currency==TypeCurrency.DCO)?true:false) } );
 			} else {
 				giftData.callback = onMoneySendCallback;
 				ServiceScreenManager.showScreen(

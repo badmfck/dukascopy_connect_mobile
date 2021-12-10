@@ -1,12 +1,11 @@
 package com.dukascopy.connect.screens.dialogs.x.base.bottom 
 {
 	import com.dukascopy.connect.Config;
-	//import com.dukascopy.connect.data.ICollection;
-	import com.dukascopy.connect.data.SelectorItemData;
 	import com.dukascopy.connect.gui.list.List;
 	import com.dukascopy.connect.sys.style.Style;
 	import com.greensock.TweenMax;
 	import flash.events.Event;
+	//import com.dukascopy.connect.data.ICollection;
 	/**
 	 * ...
 	 * @author Sergey Dobarin
@@ -33,6 +32,14 @@ package com.dukascopy.connect.screens.dialogs.x.base.bottom
 			list.setOverlayReaction(true);
 			
 			container.addChild(list.view);
+		}
+		
+		protected function updateContent():void 
+		{
+			if (list != null)
+			{
+				setInitialData();
+			}
 		}
 		
 		override public function onBack(e:Event = null):void

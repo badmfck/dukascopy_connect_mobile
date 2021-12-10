@@ -391,7 +391,11 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 			for (var i:int = 0; i < l; i++)
 			{
 				walletItem = wallets[i];
-				currencies.push(walletItem.CURRENCY)
+				currencies.push(walletItem.CURRENCY);
+			}
+			if (allowCoins)
+			{
+				currencies.unshift(TypeCurrency.DCO);
 			}
 			
 			DialogManager.showDialog(
@@ -650,8 +654,11 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 			drawAvatar();
 		//	drawAccountText(Lang.chooseAccount);
 			drawAcceptButton(Lang.textNext);
-			acceptButton.deactivate();
-			acceptButton.alpha = 0.5;
+			if (giftData != null && giftData.currency != TypeCurrency.DCO)
+			{
+				acceptButton.deactivate();
+				acceptButton.alpha = 0.5;
+			}
 			
 			drawBackButton();
 			
@@ -763,6 +770,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 					//drawNoAccountMessage();
 					onWalletSelect(null, true);
 				}
+				checkDataValid();
 			}
 		}
 		protected function onDataReady():void {
@@ -942,6 +950,17 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 		}
 		
 		protected function checkCommision(immidiate:Boolean = false):void {
+			
+			if (selectedAccount != null && ("COIN" in selectedAccount))
+			{
+				drawAccountText("");
+				return;
+			}
+			if (selectedAccount == null)
+			{
+				return;
+			}
+			
 			needShowPuspoose = false;
 			_lastCommissionCallID = null;
 			currentCommision = 0;
