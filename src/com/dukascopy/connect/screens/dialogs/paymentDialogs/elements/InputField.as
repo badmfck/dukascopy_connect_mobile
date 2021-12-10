@@ -347,6 +347,10 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs.elements
 			{
 				input.width = (itemWidth - valueField.width - Config.FINGER_SIZE*.1);
 			}
+			else
+			{
+				input.width = itemWidth;
+			}
 			
 			valueContainer.x = int(input.view.x + itemWidth - valueField.width);
 			valueContainer.y = int(input.view.y + tf.y + line.ascent - valueField.height + 2);
