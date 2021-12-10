@@ -269,7 +269,7 @@ package com.dukascopy.connect.sys.bankManager {
 				return;
 			}
 			if (data.length != 0)
-				delete BankBotController.getScenario().scenario.sendMoney.menu[1].disabled;
+				delete BankBotController.getScenario().scenario.sendMoney.menu[8].disabled;
 			transactionTemplates = data as Array;
 		}
 		
@@ -1409,7 +1409,7 @@ package com.dukascopy.connect.sys.bankManager {
 				return;
 			if (transactionTemplates == null)
 				return;
-			delete BankBotController.getScenario().scenario.sendMoney.menu[1].disabled;
+			delete BankBotController.getScenario().scenario.sendMoney.menu[8].disabled;
 			transactionTemplates.push(transactionData);
 			Store.save("transactionTemplates", transactionTemplates);
 		}
@@ -1879,7 +1879,7 @@ package com.dukascopy.connect.sys.bankManager {
 			transactionTemplates.splice(index, 1);
 			Store.save("transactionTemplates", transactionTemplates);
 			if (transactionTemplates.length == 0)
-				BankBotController.getScenario().scenario.sendMoney.menu[1].disabled = true;
+				BankBotController.getScenario().scenario.sendMoney.menu[8].disabled = true;
 		}
 		
 		static private function onSelectContactForCrypto(user:UserVO, data:Object):void {
