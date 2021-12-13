@@ -387,8 +387,7 @@ package com.dukascopy.connect.sys.payments {
 			//touchid
 			S_PASS_AUTHORIZE_SUCESS.invoke();
 			if (respond.savedRequestData.data != null && respond.savedRequestData.data.password != null) {
-				if (MobileGui.touchIDManager != null)
-				{
+				if (MobileGui.touchIDManager != null) {
 					MobileGui.touchIDManager.changePassTouchID(respond.savedRequestData.data.password);
 					MobileGui.touchIDManager.saveTouchID(respond.savedRequestData.data.password);
 				}
@@ -413,7 +412,6 @@ package com.dukascopy.connect.sys.payments {
 			} else if (value == 0) {
 				savedData = null;
 				TweenMax.delayedCall(.1, invokeCancelAuthSignal);				
-				//MobileGui.changeMainScreen(RootScreen, null, 1);
 				S_INVALID_PASS_DIALOG_CLOSED.invoke();
 			}
 		}
@@ -442,7 +440,6 @@ package com.dukascopy.connect.sys.payments {
 				validateAuthorization(respond);
 				return;
 			}
-
 			if (respond.error) {
 				showAlert(Lang.textAlert, respond.errorMsg);
 				return;

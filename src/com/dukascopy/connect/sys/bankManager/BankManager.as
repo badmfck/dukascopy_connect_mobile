@@ -654,7 +654,7 @@ package com.dukascopy.connect.sys.bankManager {
 							giftData.customValue = Math.abs(_initData.amount);
 					}
 					giftData.callback = onMoneySendPhoneCallback;
-					ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_DIALOG, SendMoneyByPhonePopup, { giftData: giftData, allowCoins:((giftData.currency==TypeCurrency.DCO)?true:false) } );
+					ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_DIALOG, SendMoneyByPhonePopup, { giftData: giftData, allowCoins:((giftData.currency == TypeCurrency.DCO) ? true : false) } );
 				} else if (data.type == "investmentTransferPhone") {
 					if (investments == null) {
 						waitingBMVO = lastBankMessageVO;
@@ -1364,15 +1364,11 @@ package com.dukascopy.connect.sys.bankManager {
 			sendMessage(msg);
 		}
 		
-		static private function removeCryptoAccounts(accounts:Array):Array 
-		{
+		static private function removeCryptoAccounts(accounts:Array):Array {
 			var result:Array = new Array();
-			if (accounts != null)
-			{
-				for (var i:int = 0; i < accounts.length; i++) 
-				{
-					if (!isCryptoFoundAccount(accounts[i]))
-					{
+			if (accounts != null) {
+				for (var i:int = 0; i < accounts.length; i++) {
+					if (!isCryptoFoundAccount(accounts[i])) {
 						result.push(accounts[i]);
 					}
 				}
@@ -1380,27 +1376,17 @@ package com.dukascopy.connect.sys.bankManager {
 			return result;
 		}
 		
-		static private function isCryptoFoundAccount(account:Object):Boolean 
-		{
+		static private function isCryptoFoundAccount(account:Object):Boolean {
 			var result:Boolean = false;
-			if (account != null)
-			{
+			if (account != null) {
 				if ("IS_BITCOIN_FUNDING" in account && account.IS_BITCOIN_FUNDING == "1")
-				{
 					return true;
-				}
 				if ("IS_DUKASCOINS_FUNDING" in account && account.IS_DUKASCOINS_FUNDING == "1")
-				{
 					return true;
-				}
 				if ("IS_ETHEREUM_FUNDING" in account && account.IS_ETHEREUM_FUNDING == "1")
-				{
 					return true;
-				}
 				if ("IS_TETHER_FUNDING" in account && account.IS_TETHER_FUNDING == "1")
-				{
 					return true;
-				}
 			}
 			return result;
 		}
