@@ -169,7 +169,6 @@ package com.dukascopy.connect.gui.chatInput {
 				onUserWritingTimer();
 			updateView(true, "onInputChanged");
 			inputPanel.updateView(stickerMenu);
-			echo("input!", "onInputChanged");
 			if (ChatManager.getCurrentChat() != null)
 			{
 				DraftMessage.setValue(ChatManager.getCurrentChat().uid, ChatManager.getCurrentChat().chatSecurityKey, inputPanel.getText());

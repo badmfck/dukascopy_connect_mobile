@@ -3,6 +3,7 @@ package com.dukascopy.connect.gui.input
 	import com.dukascopy.connect.Config;
 	import com.dukascopy.connect.gui.button.LongClick;
 	import com.dukascopy.connect.sys.softKeyboard.SoftKeyboard;
+	import com.dukascopy.connect.sys.style.Style;
 	import com.greensock.TweenMax;
 	import com.telefision.sys.signals.Signal;
 	import flash.events.Event;
@@ -72,13 +73,12 @@ package com.dukascopy.connect.gui.input
 				promptTextField.text = textField.text.length == 0 ? labelText : "";
 			}
 			S_CHANGED.invoke();
-			
 		}
 		
 		override protected function setFormat(format:TextFormat):void {
 			super.setFormat(format);
 			promptTextField.defaultTextFormat = textField.defaultTextFormat;
-			promptTextField.textColor = 0x666666;
+			promptTextField.textColor = Style.color(Style.COLOR_SUBTITLE);
 		}
 		
 		override public function setLabelText(value:String, textColor:Number = NaN):void {
@@ -89,11 +89,10 @@ package com.dukascopy.connect.gui.input
 		
 		override protected function drawView():void {
 			super.drawView();
-			promptTextField.x = textField.x + Config.FINGER_SIZE *0.1;
+			promptTextField.x = textField.x;
 			promptTextField.y = textField.y;
 			promptTextField.width = textField.width;
 			promptTextField.height = textField.height;
-			
 		}
 		
 		override public function set value(v:String):void{

@@ -61,8 +61,8 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 			tf.size = FontSize.SUBHEAD;
 			tf.color = Color.BLUE;
 			author.defaultTextFormat = tf;
-			author.multiline = false;
-			author.wordWrap = false;
+			author.multiline = true;
+			author.wordWrap = true;
 			author.x = hTextMargin + Config.FINGER_SIZE * .2;
 			author.y = int(Config.FINGER_SIZE * .15);
 			
@@ -97,12 +97,18 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 			return width;
 		}
 		
-		public function getHeight(messageVO:ChatMessageVO, targetWidth:int,listItem:ListItem):uint {
+		public function getHeight(messageVO:ChatMessageVO, targetWidth:int, listItem:ListItem):uint {
 			if (messageVO == null)
 				return 0;
 			
 			var maxTextWidth:int =  targetWidth;
 			var res:uint = getMegaTextHeightByChatMessage(messageVO, targetWidth) + vTextMargin * 2;
+			
+			maxTextWidth = targetWidth - Config.FINGER_SIZE * .2 - Config.FINGER_SIZE * .2;
+			author.width = maxTextWidth;
+			author.text = messageVO.systemMessageVO.replayMessage.author;
+			author.height = author.textHeight + 4;
+			author.width = author.textWidth + 4;
 			
 			res += int(author.height + Config.FINGER_SIZE * .21);
 			
@@ -155,18 +161,19 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 		
 		public function getContentWidth(messageVO:ChatMessageVO):int
 		{
-			author.width = Config.FINGER_SIZE * 5;
-			author.text = messageVO.systemMessageVO.replayMessage.author;
-			author.width = author.textWidth + 4;
+			/*author.text = messageVO.systemMessageVO.replayMessage.author;
+			author.height = author.textHeight + 4;*/
 			
-			return author.width + hTextMargin * 2 + Config.FINGER_SIZE * .2;
+			return Math.max(author.width + hTextMargin * 2 + Config.FINGER_SIZE * .2, Config.FINGER_SIZE * 3);
 		}
 		
 		public function draw(messageVO:ChatMessageVO, maxWidth:int, listItem:ListItem = null, securityKey:Array = null, minWidth:int = -1):void {
 			updateBubbleColors(messageVO);
 			
-			author.width = Config.FINGER_SIZE * 5;
+			var maxTextWidth:int = maxWidth - Config.FINGER_SIZE * .2 - Config.FINGER_SIZE * .2;
+			author.width = maxTextWidth;
 			author.text = messageVO.systemMessageVO.replayMessage.author;
+			author.height = author.textHeight + 4;
 			author.width = author.textWidth + 4;
 			
 			var thickness:int;
@@ -192,10 +199,11 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 				author.textColor = Color.GREEN;
 			}
 			
-			var maxTextWidth:int = maxWidth - Config.FINGER_SIZE * .2 - Config.FINGER_SIZE * .2;
+			megaText.y = int(author.y + author.height + Config.FINGER_SIZE * .03);
+			
 			var megaTextHeight:int = getMegaTextHeightByChatMessage(messageVO, Math.max(maxTextWidth, author.width));
 			
-			var bgH:int = megaTextHeight + vTextMargin * 2;
+			var bgH:int = megaTextHeight + vTextMargin + megaText.y;
 			var bgW:int;
 			
 			boxBg.width = maxWidth;

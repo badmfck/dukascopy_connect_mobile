@@ -24,9 +24,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 	import com.dukascopy.connect.gui.textedit.TextComposer;
 	import com.dukascopy.connect.gui.tools.HorizontalPreloader;
 	import com.dukascopy.connect.screens.base.BaseScreen;
-	import com.dukascopy.connect.screens.dialogs.ScreenCountryPicker;
 	import com.dukascopy.connect.screens.dialogs.ScreenLinksDialog;
-	import com.dukascopy.connect.screens.dialogs.ScreenPayDialog;
 	import com.dukascopy.connect.screens.dialogs.x.base.bottom.BottomAlertPopup;
 	import com.dukascopy.connect.screens.dialogs.x.base.bottom.ListSelectionPopup;
 	import com.dukascopy.connect.screens.dialogs.x.base.bottom.SearchListSelectionPopup;
@@ -47,7 +45,6 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 	import com.dukascopy.connect.sys.softKeyboard.SoftKeyboard;
 	import com.dukascopy.connect.sys.style.FontSize;
 	import com.dukascopy.connect.sys.style.Style;
-	import com.dukascopy.connect.sys.theme.AppTheme;
 	import com.dukascopy.connect.type.HitZoneType;
 	import com.dukascopy.connect.utils.TextUtils;
 	import com.dukascopy.langs.Lang;
@@ -108,6 +105,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 		private var purposeSelector:SelectorButton;
 		private var needShowPuspoose:Boolean;
 		private var needRecieveComission:Boolean;
+		private var allowCoins:Boolean = false;
 		
 		public function SendMoneyByPhonePopup() {
 			
@@ -164,6 +162,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 			var textFormat:TextFormat = iAmountCurrency.getTextField().getTextFormat();
 			textFormat.size = FontSize.AMOUNT;
 			iAmountCurrency.updateTextFormat(textFormat);
+			iAmountCurrency.setTextStart(0);
 			iAmountCurrency.S_CHANGED.add(onChangeInputValueCurrency);
 			iAmountCurrency.S_FOCUS_IN.add(onInputSelected);
 			iAmountCurrency.setRoundBG(false);
@@ -392,7 +391,11 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 			for (var i:int = 0; i < l; i++)
 			{
 				walletItem = wallets[i];
-				currencies.push(walletItem.CURRENCY)
+				currencies.push(walletItem.CURRENCY);
+			}
+			if (allowCoins)
+			{
+				currencies.unshift(TypeCurrency.DCO);
 			}
 			
 			DialogManager.showDialog(
@@ -421,7 +424,10 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 		protected function showWalletsDialog():void
 		{
 			var accounts:Array = PaymentsManagerNew.filterEmptyWallets(PayManager.accountInfo.accounts);
-			accounts = accounts.concat(PayManager.getCoins());
+			if (allowCoins)
+			{
+				accounts = accounts.concat(PayManager.getCoins());
+			}
 			
 			if (accounts.length > 0)
 			{
@@ -460,13 +466,30 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 			}
 			else{
 				selectedAccount = account;
-				selectorCurrency.setValue(account.CURRENCY);
+				selectorCurrency.setValue(getAccountCurrency(account));
 			}
 			if (account != null || cleanCurrent == true)
 			{
 				selectorDebitAccont.setValue(account);
 			}
 			checkCommision();
+		}
+		
+		private function getAccountCurrency(account:Object):String 
+		{
+			if(account != null)
+			{
+				if ("CURRENCY" in account)
+				{
+					return account.CURRENCY;
+				}
+				else if ("COIN" in account)
+				{
+					return account.COIN;
+				}
+			}
+			return null;
+			
 		}
 		
 		override public function onBack(e:Event = null):void {
@@ -593,6 +616,11 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 				giftData = data.giftData as GiftData;
 			}
 			
+			if (data != null && "allowCoins" && data.allowCoins == true)
+			{
+				allowCoins = true;
+			}
+			
 			if (giftData.userName != null)
 			{
 				this.userName = giftData.userName;
@@ -626,8 +654,11 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 			drawAvatar();
 		//	drawAccountText(Lang.chooseAccount);
 			drawAcceptButton(Lang.textNext);
-			acceptButton.deactivate();
-			acceptButton.alpha = 0.5;
+			if (giftData != null && giftData.currency != TypeCurrency.DCO)
+			{
+				acceptButton.deactivate();
+				acceptButton.alpha = 0.5;
+			}
 			
 			drawBackButton();
 			
@@ -716,12 +747,30 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 						break;
 					}
 				}
+				
+				if (defaultAccount == null)
+				{
+					var coinsAccounts:Array = PayManager.getCoins();
+					if (coinsAccounts != null)
+					{
+						for (var j:int = 0; j < coinsAccounts.length; j++) 
+						{
+							if (coinsAccounts[j].COIN == currency)
+							{
+								defaultAccount = coinsAccounts[j];
+								break;
+							}
+						}
+					}
+				}
+				
 				if (defaultAccount != null) {
 					onWalletSelect(defaultAccount);
 				} else {
 					//drawNoAccountMessage();
 					onWalletSelect(null, true);
 				}
+				checkDataValid();
 			}
 		}
 		protected function onDataReady():void {
@@ -798,7 +847,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 			{
 				selectedAccount = account;
 				selectorDebitAccont.setValue(account);
-				selectorCurrency.setValue(account.CURRENCY);
+				selectorCurrency.setValue(getAccountCurrency(account));
 			}
 		}
 		
@@ -901,6 +950,17 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 		}
 		
 		protected function checkCommision(immidiate:Boolean = false):void {
+			
+			if (selectedAccount != null && ("COIN" in selectedAccount))
+			{
+				drawAccountText("");
+				return;
+			}
+			if (selectedAccount == null)
+			{
+				return;
+			}
+			
 			needShowPuspoose = false;
 			_lastCommissionCallID = null;
 			currentCommision = 0;

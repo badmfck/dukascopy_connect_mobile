@@ -60,7 +60,7 @@ package com.dukascopy.connect.screens.payments.settings {
 			input = new Input(Input.MODE_DIGIT_DECIMAL);
 			input.setParams(Lang.textAmount, Input.MODE_DIGIT_DECIMAL);
 			input.setTextColor(Style.color(Style.COLOR_TEXT));
-			input.setPadding(0);
+			input.setTextStart(0);
 			input.setMaxValue(maxValue);
 			addChild(input.view);
 			setInputValue(curValue + "");

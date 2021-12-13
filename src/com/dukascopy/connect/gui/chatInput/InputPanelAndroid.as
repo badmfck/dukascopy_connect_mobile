@@ -1,6 +1,7 @@
 package com.dukascopy.connect.gui.chatInput
 {
 	import com.dukascopy.connect.Config;
+	import com.dukascopy.connect.GD;
 	import com.dukascopy.connect.MobileGui;
 	import com.dukascopy.connect.gui.lightbox.UI;
 	import com.dukascopy.connect.sys.echo.echo;
@@ -130,86 +131,91 @@ package com.dukascopy.connect.gui.chatInput
 				{
 					switch (args.method)
 					{
-					case "onSendMessageClick": 
-					{
-						if (onSentPressedFunction)
+						case "onSendMessageClick": 
 						{
-							onSentPressedFunction(args.value);
+							if (onSentPressedFunction)
+							{
+								onSentPressedFunction(args.value);
+							}
+							break;
 						}
-						break;
-					}
-					case "keyboardActivate": 
-					{
-						if (onSoftKeyboardActivateFunction)
+						case "keyboardActivate": 
 						{
-							onSoftKeyboardActivateFunction();
+							if (onSoftKeyboardActivateFunction)
+							{
+								onSoftKeyboardActivateFunction();
+							}
+							break;
 						}
-						break;
-					}
-					case "keyboardDeactivate": 
-					{
-						if (onSoftKeyboardDeactivateFunction)
+						case "keyboardDeactivate": 
 						{
-							onSoftKeyboardDeactivateFunction();
+							if (onSoftKeyboardDeactivateFunction)
+							{
+								onSoftKeyboardDeactivateFunction();
+							}
+							break;
 						}
-						break;
-					}
-					case "onRecordSoundClick": 
-					{
-						if (onSentVoicePressedFunction != null)
+						case "onRecordSoundClick": 
 						{
-							onSentVoicePressedFunction();
+							if (onSentVoicePressedFunction != null)
+							{
+								onSentVoicePressedFunction();
+							}
+							break;
 						}
-						break;
-					}
-					case "onStickerButtonClick": 
-					{
-						if (onSmileStickerPressedFunction != null)
+						case "onStickerButtonClick": 
 						{
-							onSmileStickerPressedFunction();
+							if (onSmileStickerPressedFunction != null)
+							{
+								onSmileStickerPressedFunction();
+							}
+							break;
 						}
-						break;
-					}
-					case "onSmileButtonClick": 
-					{
-						if (onSmileStickerPressedFunction != null)
+						case "onSmileButtonClick": 
 						{
-							onSmileStickerPressedFunction();
+							if (onSmileStickerPressedFunction != null)
+							{
+								onSmileStickerPressedFunction();
+							}
+							break;
 						}
-						break;
-					}
-					case "onAttachButtonClick": 
-					{
-						if (onAttachPressedFunction != null)
+						case "onAttachButtonClick": 
 						{
-							onAttachPressedFunction();
+							if (onAttachPressedFunction != null)
+							{
+								onAttachPressedFunction();
+							}
+							break;
 						}
-						break;
-					}
-					case "positionChange": 
-					{
-						if (lastPosition != args.value)
+						case "positionChange": 
 						{
-							lastPosition = args.value;
-							onPositionChangedFunction(lastPosition);
+							if (lastPosition != args.value)
+							{
+								lastPosition = args.value;
+								onPositionChangedFunction(lastPosition);
+							}
+							break;
 						}
-						break;
-					}
-					case "keyboardHeight": 
-					{
-						keyboardHeight = int(args.value);
-						break;
-					}
-					case "inputReady": 
-					{
-						redrawScreenshot(true);
-						break;
-					}
-					case "valueChanged": 
-					{
-						onValueChanged();
-						break;
-					}
+						case "keyboardHeight": 
+						{
+							keyboardHeight = int(args.value);
+							break;
+						}
+						case "inputReady": 
+						{
+							redrawScreenshot(true);
+							break;
+						}
+						case "valueChanged": 
+						{
+							onValueChanged();
+							break;
+						}
+						case "inputBack": 
+						{
+							GD.S_BACK.invoke();
+							break;
+						}
 					}
 				}
 			}

@@ -387,7 +387,7 @@ package com.dukascopy.connect.screens.userProfile {
 			scrollPanel.addObject(phoneBackContainer);
 			
 			phoneField = new Input();
-			phoneField.setPadding(Config.FINGER_SIZE * .2);
+			phoneField.setTextStart(Config.FINGER_SIZE * .2);
 			phoneField.backgroundColor = 0xF7F7F7;
 			phoneField.setMode(Input.MODE_PHONE);
 			var textFormat:TextFormat = new TextFormat();

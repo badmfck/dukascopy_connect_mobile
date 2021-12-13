@@ -56,6 +56,8 @@ package com.dukascopy.connect
 		static public const S_START_LOAD:Signal = new Signal();
 		static public const S_STOP_LOAD:Signal = new Signal();
 		
+		static public const S_BACK:Signal = new Signal();
+		
 		// ESCROW
 		static public const S_ESCROW_MANAGER_AVAILABLE:S_EscrowManagerAvailable = new S_EscrowManagerAvailable(); // EscrowDealMap
 		static public const S_ESCROW_DEALS_LOADED:Signal = new Signal("S_ESCROW_DEALS_LOADED");

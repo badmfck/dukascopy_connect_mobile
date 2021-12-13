@@ -1033,6 +1033,13 @@ package com.dukascopy.connect.sys.bankManager {
 						type:"sendMoneyOtherAcc",
 						value:"TRADING",
 						action:"nav:transferInternalConfirm"
+					}, {
+						text:"lang.menuFromTemplate",
+						disabled:true,
+						textForUser1:"lang.itemSendMoney",
+						textForUser2:"lang.itemSendMoneyPhone",
+						type:"paymentsSelectTemplate",
+						action:"nav:transactionConfirm"
 					}
 				]
 			},

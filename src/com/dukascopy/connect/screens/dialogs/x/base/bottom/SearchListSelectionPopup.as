@@ -24,7 +24,7 @@ package com.dukascopy.connect.screens.dialogs.x.base.bottom
 			search.S_CHANGED.add(onChanged);
 			container.addChild(search.view);
 			search.view.x = Config.DOUBLE_MARGIN;
-			search.setPadding(0);
+			search.setTextStart(0);
 		}
 		
 		private function getSearchpromt():String

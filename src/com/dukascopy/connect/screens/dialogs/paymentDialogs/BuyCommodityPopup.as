@@ -949,7 +949,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 				workHoursText = new Bitmap()
 				addItem(workHoursText);
 				
-				workHoursText.bitmapData = TextUtils.createTextFieldData(text, getWidth() - contentPadding * 2, 10, true, TextFormatAlign.LEFT, 
+				workHoursText.bitmapData = TextUtils.createTextFieldData(text, getWidth() - iconAttention2.width - contentPadding * 3, 10, true, TextFormatAlign.LEFT, 
 																	TextFieldAutoSize.LEFT, FontSize.CAPTION_1, true, Style.color(Style.COLOR_SUBTITLE), Style.color(Style.COLOR_BACKGROUND), false, true);
 				
 				iconAttention2.x = contentPadding;

@@ -1327,7 +1327,7 @@ package com.dukascopy.connect.sys.bankManager {
 			if (command == "otherWithdrawal") {
 				if (checkForPaymentsRequestExist(msg) == true)
 					return;
-				temp = msg.substr(command.length + 1).split("|!|");
+				temp = msg.substr(command.length + 1).split("|!|"); 
 				if (temp.length == 3 || temp.length == 4)
 					lastPaymentsRequests[PaymentsManagerNew.callOtherWithdrawal(onOtherWithdrawalCompleted, temp[0], temp[1], temp[2])] = msg;
 				return;

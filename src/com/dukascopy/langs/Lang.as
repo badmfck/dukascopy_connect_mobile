@@ -2651,6 +2651,8 @@ package com.dukascopy.langs {
 		static public var waiting_for_receipt_confirmation_status_expired:String = "Waiting for receipt confirmation by the Buyer or Support";
 		static public var escrow_deal_completed_buy_expired:String = "The fiat funds have been sent to the crypto Seller.";
 		static public var update_your_app:String = "Update your app to access crypto/fiat P2P functionality";
+		static public var invoice_error_max_amount:String = "Users without MCA can only pay invoices up to 100 EUR. Please open MCA to get extended possibilities.";
+		static public var select_template:String = "Select template";
 		
 		static public function updateKeys(keys:Object):void {
 			for (var n:String in keys) {

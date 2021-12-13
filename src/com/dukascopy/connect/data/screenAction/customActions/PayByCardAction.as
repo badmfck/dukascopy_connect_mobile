@@ -2,11 +2,14 @@ package com.dukascopy.connect.data.screenAction.customActions {
 	
 	import com.dukascopy.connect.Config;
 	import com.dukascopy.connect.MobileGui;
+	import com.dukascopy.connect.data.AlertScreenData;
 	import com.dukascopy.connect.data.screenAction.IScreenAction;
 	import com.dukascopy.connect.data.screenAction.ScreenAction;
 	import com.dukascopy.connect.gui.components.message.ToastMessage;
 	import com.dukascopy.connect.gui.list.renderers.ListPayWalletItem;
+	import com.dukascopy.connect.screens.dialogs.HeaderAlert;
 	import com.dukascopy.connect.screens.dialogs.ScreenPayWebviewDialog;
+	import com.dukascopy.connect.screens.dialogs.x.base.float.FloatAlert;
 	import com.dukascopy.connect.sys.chatManager.ChatManager;
 	import com.dukascopy.connect.sys.dialogManager.DialogManager;
 	import com.dukascopy.connect.sys.echo.echo;
@@ -85,7 +88,20 @@ package com.dukascopy.connect.data.screenAction.customActions {
 					//"pay..07 Error on transaction. HTTP code: 0; Amount must be less than 150 EUR or equivalent in other currency :: 3614"
 					if (r.errorMsg.indexOf("pay..07") != -1 && r.errorMsg.indexOf("code: 0") != -1)
 					{
-						DialogManager.alert(Lang.textError, Lang.sendMoneyErrorNoAccount);
+						var errorMessage:String = "";
+						if (r.errorMsg.indexOf(":: 3614") != -1)
+						{
+							var alertScreenData:AlertScreenData = new AlertScreenData();
+							alertScreenData.text = Lang.invoice_error_max_amount;
+							alertScreenData.button = Lang.openAccount.toUpperCase();
+							alertScreenData.callback = openAccount;
+							
+							ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, FloatAlert, alertScreenData);
+						}
+						else
+						{
+							DialogManager.alert(Lang.textError, Lang.sendMoneyErrorNoAccount);
+						}
 					}
 					else
 					{
@@ -140,6 +156,12 @@ package com.dukascopy.connect.data.screenAction.customActions {
 				}
 			}
 		//	r.dispose();
+		}
+		
+		private function openAccount():void 
+		{
+			var action:OpenBankAccountAction = new OpenBankAccountAction();
+			action.execute();
 		}
 		
 		private function onSuccess():void 

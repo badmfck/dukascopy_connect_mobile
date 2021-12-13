@@ -566,6 +566,8 @@ package com.dukascopy.connect.screens {
 			} else
 				return;
 			
+			return;
+			
 			onBottomTabsClick(screensArray[tapIndex].id);
 		}
 		

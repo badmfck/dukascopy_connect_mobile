@@ -3124,6 +3124,14 @@ package com.dukascopy.connect.screens {
 		private function updateChatInput():void {
 			var showFakeInput:Boolean = checkWritingAvaliablity();
 			
+			if (ChatManager.getCurrentChat() != null && ChatManager.getCurrentChat().type == ChatRoomType.COMPANY)
+			{
+				if (chatInput != null)
+				{
+					chatInput.blockStickers(true);
+				}
+			}
+			
 			if (InvoiceManager.isProcessingInvoice){
 				hideInput(showFakeInput);
 				return;
