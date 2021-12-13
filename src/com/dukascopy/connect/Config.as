@@ -11,7 +11,7 @@ package com.dukascopy.connect {
 	
     public class Config {
 		
-        /* LIVE * /
+        /* LIVE */
         static public const URL_PHP_CORE_SERVER:String = 'https://dccapi.dukascopy.online/';
         static public const URL_WS_HOST_1:String = "wss://ws.dukascopy.online"; //192.168.240.142; // 144 или 142
         static public const URL_WS_HOST_2:String = "wss://ws.dukascopy.ch"; //192.168.240.142; // 144 или 142
@@ -46,7 +46,7 @@ package com.dukascopy.connect {
 			"I6DzDaWqWKWE";		// Sergey Dobarin
 		static public const BOT_UIDS:String = "WgDNWdIEW4I6IsWg" // Support bot
 		
-        /* PRE */
+        /* PRE * /
 		static public const URL_PHP_CORE_SERVER:String = 'https://pre-dccapi-02.site.dukascopy.com/';
         static public const URL_WS_HOST_1:String = "wss://ws-pre.dukascopy.com/"; //192.168.240.142; // 144 или 142
         static public const URL_WS_HOST_2:String = "wss://ws-pre.dukascopy.com/"; //192.168.240.142; // 144 или 142
@@ -99,7 +99,7 @@ package com.dukascopy.connect {
 		static public const EP_CONNECT:int = 41;
 		static public const CAT_DATING:int = 41;
 		static public const CAT_GENERAL:int = 4;
-		static public const SERVER_NAME:String = " TEST";
+		static public const SERVER_NAME:String = "TEST";
 		
 		static public const ADMIN_UIDS:String = "WdW6DJI1WbWo," +	// Igor BloomC
 			"WdW6DJWbW3IsIb," +	// Ilya Shcherbakov

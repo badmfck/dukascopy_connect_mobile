@@ -400,19 +400,20 @@ package com.dukascopy.connect.sys.auth {
 			}
 			
 			echo("Auth", "onRequestCodeResponse", Print_r.show(r.data));
-			if ("code" in r.data && Config.isTest() == true)
-			{
+			if ("code" in r.data && Config.isTest() == true){
 				S_AUTH_CODE.invoke(r.data.code);
-			//	authorize_sendCode(r.data.to, r.data.code);
+				//	authorize_sendCode(r.data.to, r.data.code);
 			}
+
 			S_GET_SMS_CODE_RESPOND.invoke(r.error);
-		//	DialogManager.alert(Lang.information, Lang.smsCodeSent);
+				//	DialogManager.alert(Lang.information, Lang.smsCodeSent);
 			
 			if (("data" in r) && ("isCallable" in r.data)) {
 				_isCallableToObtainLoginCode = Boolean(r.data.isCallable);
 			} else {
 				_isCallableToObtainLoginCode = true;
 			}
+			
 			r.dispose();
 		}
 		
