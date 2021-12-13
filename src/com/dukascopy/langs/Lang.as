@@ -2653,6 +2653,7 @@ package com.dukascopy.langs {
 		static public var update_your_app:String = "Update your app to access crypto/fiat P2P functionality";
 		static public var invoice_error_max_amount:String = "Users without MCA can only pay invoices up to 100 EUR. Please open MCA to get extended possibilities.";
 		static public var select_template:String = "Select template";
+		static public var enter_valid_email:String = "Please enter a valid email address";
 		
 		static public function updateKeys(keys:Object):void {
 			for (var n:String in keys) {
