@@ -16,6 +16,7 @@ package com.dukascopy.connect.screens.innerScreens {
 	import com.dukascopy.connect.gui.list.renderers.ListLink;
 	import com.dukascopy.connect.gui.menuVideo.HidableButton;
 	import com.dukascopy.connect.gui.tabs.FilterTabs;
+	import com.dukascopy.connect.gui.tools.HorizontalPreloader;
 	import com.dukascopy.connect.screens.ChatScreenBankInfo;
 	import com.dukascopy.connect.screens.QuestionCreateUpdateScreen;
 	import com.dukascopy.connect.screens.RootScreen;
@@ -42,6 +43,7 @@ package com.dukascopy.connect.screens.innerScreens {
 	import com.dukascopy.connect.sys.questionsManager.QuestionsManager;
 	import com.dukascopy.connect.sys.socialManager.SocialManager;
 	import com.dukascopy.connect.sys.style.Style;
+	import com.dukascopy.connect.sys.style.presets.Color;
 	import com.dukascopy.connect.sys.usersManager.OnlineStatus;
 	import com.dukascopy.connect.sys.usersManager.UsersManager;
 	import com.dukascopy.connect.sys.usersManager.paidBan.PaidBan;
@@ -115,6 +117,7 @@ package com.dukascopy.connect.screens.innerScreens {
 		private var lastSelectedFilter:String;
 		private var needToScrollTop:Boolean;
 		private var i:int = 0;
+		private var messagePreloader:HorizontalPreloader;
 		
 		public function InnerChatScreen() { }
 		
@@ -138,6 +141,8 @@ package com.dukascopy.connect.screens.innerScreens {
 			SendTradeNotesRequestAction.S_SUCCESS.add(onLatestLoaded);
 			NewMessageNotifier.S_UPDATE.add(onChatNewMessagesUpdate);
 			NativeApplication.nativeApplication.addEventListener(Event.ACTIVATE, onActivateApplication);
+			
+			messagePreloader.setSize(_width, int(Config.FINGER_SIZE * .06));
 		}
 		
 		private function onChatNewMessagesUpdate(chatUIDs:Array = null):void {
@@ -198,6 +203,9 @@ package com.dukascopy.connect.screens.innerScreens {
 				storedTabListPosition[TAB_GROUP] = {};
 				storedTabListPosition[TAB_CALLS] = {};
 			}
+			
+			messagePreloader = new HorizontalPreloader(Color.BLUE_LIGHT);
+			_view.addChild(messagePreloader);
 		}
 		
 		private function createTabs ():void {
@@ -304,6 +312,8 @@ package com.dukascopy.connect.screens.innerScreens {
 			
 			tabs.setWidthAndHeight(_width, Config.TOP_BAR_HEIGHT);
 			list.view.y = tabs.height;
+			messagePreloader.y = tabs.height;
+			
 			list.setWidthAndHeight(_width, _height - list.view.y);
 			
 			createChatButton.setPosition(_width - Config.FINGER_SIZE - Config.MARGIN * 2,  _height - Config.FINGER_SIZE - Config.MARGIN * 2 - Config.APPLE_TOP_OFFSET);
@@ -382,6 +392,10 @@ package com.dukascopy.connect.screens.innerScreens {
 			if (statusClip != null)
 				statusClip.destroy();
 			statusClip = null;
+			
+			if (messagePreloader != null)
+				messagePreloader.dispose();
+			messagePreloader = null;
 		}
 		
 		override public function dispose():void {
@@ -521,7 +535,8 @@ package com.dukascopy.connect.screens.innerScreens {
 		}
 		
 		private function onServerDataLoadStart():void {
-			showLoading();
+			messagePreloader.start();
+		//	showLoading();
 		}
 		
 		private function showLoading():void {
@@ -642,7 +657,8 @@ package com.dukascopy.connect.screens.innerScreens {
 		}
 		
 		private function onServerDataLoadEnd():void {
-			hideStatusClip();
+			messagePreloader.stop(false);
+		//	hideStatusClip();
 		}
 		
 		private function onUserlistOnlineStatusChanged():void {
