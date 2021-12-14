@@ -882,10 +882,10 @@ package com.dukascopy.connect.screens {
 			if (userVO.fxID != 0)
 				actions.push(actionFXCommunity);
 			if (SocialManager.available == true) {
-				if (userVO.type != "bot")
-					actions.push(actionQuestionsStat);
+				/*if (userVO.type != "bot")
+					actions.push(actionQuestionsStat);*/
 				actions.push(actionBlockUser);
-				if (PaidBan.isAvaliable() == true) {
+				/*if (PaidBan.isAvaliable() == true) {
 					if (userVO.paidPanProtection != null)
 						PaidBan.checkProtectionStatus(userVO);
 					if (userVO.paidPanProtection != null)
@@ -900,7 +900,7 @@ package com.dukascopy.connect.screens {
 						actions.push(actionBanUserPaid);
 					}
 				}
-				actions.push(actionSendFlower);
+				actions.push(actionSendFlower);*/
 			} else
 				actions.push(actionBlockUser);
 			
