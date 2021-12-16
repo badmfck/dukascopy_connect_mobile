@@ -2654,6 +2654,9 @@ package com.dukascopy.langs {
 		static public var invoice_error_max_amount:String = "Users without MCA can only pay invoices up to 100 EUR. Please open MCA to get extended possibilities.";
 		static public var select_template:String = "Select template";
 		static public var enter_valid_email:String = "Please enter a valid email address";
+		static public var search_user:String = "Search user";
+		static public var enter_phone_number:String = "Enter phone number";
+		static public var search_user_description:String = "Enter the phone number of counterparty you would like to pay fromyour card opened with the other bank.";
 		
 		static public function updateKeys(keys:Object):void {
 			for (var n:String in keys) {

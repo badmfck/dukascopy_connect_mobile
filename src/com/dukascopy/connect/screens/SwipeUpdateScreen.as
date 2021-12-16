@@ -55,9 +55,6 @@ package com.dukascopy.connect.screens
 							loaderSize ++;
 						historyLoadingScroller = new Preloader(loaderSize, ListLoaderShape);
 						_view.addChild(historyLoadingScroller);
-						/*if (chatTop != null && chatTop.view != null && _view.contains(chatTop.view)) {
-							_view.setChildIndex(chatTop.view, _view.numChildren - 1);
-						}*/
 					}
 					historyLoadingScroller.y = Config.FINGER_SIZE * .65 + Config.APPLE_TOP_OFFSET - Config.FINGER_SIZE * .5;
 					historyLoadingScroller.x = int(_width * .5);

@@ -30,6 +30,7 @@ package com.dukascopy.connect.gui.preloader {
 		
 		private var MAX_SPEED:int = 13;
 		private var inAnimation:Boolean;
+		private var active:Boolean = true;
 		public var MAX_SCALE:Number = 1;
 		
 		public function Preloader(size:Number = -1, customAsset:Class = null) {
@@ -81,7 +82,8 @@ package com.dukascopy.connect.gui.preloader {
 		}
 		
 		public function show(overrideAnimation:Boolean = true, animate:Boolean = true):void	{
-			if (inAnimation)
+			
+			if (inAnimation || !active)
 			{
 				return;
 			}
@@ -91,6 +93,7 @@ package com.dukascopy.connect.gui.preloader {
 			visible = true;
 			TweenMax.killTweensOf(holder);
 			holder.alpha = 1;
+			
 			if (animate == false) {
 				_isShown = true;
 				holder.scaleX = holder.scaleY = 1;
@@ -103,6 +106,7 @@ package com.dukascopy.connect.gui.preloader {
 			startAnimation();
 			
 			holder.scaleX = holder.scaleY = 0;
+			
 			TweenMax.to(holder, .4 , {scaleX:MAX_SCALE, scaleY:MAX_SCALE, ease:Back.easeOut } );
 		}
 		
@@ -114,8 +118,16 @@ package com.dukascopy.connect.gui.preloader {
 			TweenMax.killTweensOf(holder);
 			
 			TweenMax.to(holder, hideTime , { scaleX:0, scaleY:0, alpha:0, ease:Quint.easeOut, delay:delay, onComplete:onHidePreComplete, onCompleteParams:[callBack] } );
+			active = false;
+			TweenMax.killDelayedCallsTo(activate);
+			TweenMax.delayedCall(1, activate);
 			stopAnimation();
 			inAnimation = true;
+		}
+		
+		private function activate():void 
+		{
+			active = true;
 		}
 		
 		private function onHidePreComplete(callBack:Function):void {

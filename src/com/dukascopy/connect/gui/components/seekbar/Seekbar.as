@@ -63,10 +63,24 @@ package com.dukascopy.connect.gui.components.seekbar
 			
 			button = new Sprite();
 			button.graphics.clear();
+			
+			button.graphics.beginFill(0, 0);
+			button.graphics.drawCircle(0, 1, buttonRadius * 2.5);
+			
+			button.graphics.beginFill(0, 0.2);
+			button.graphics.drawCircle(0, 1, buttonRadius + 2);
+			
+			button.graphics.beginFill(0, 0.1);
+			button.graphics.drawCircle(0, 2, buttonRadius + 2);
+			
+			button.graphics.beginFill(0, 0.05);
+			button.graphics.drawCircle(0, 5, buttonRadius);
+			
 			button.graphics.beginFill(Style.color(Style.COLOR_BACKGROUND));
 			button.graphics.drawCircle(0, 0, buttonRadius);
+			
 			button.graphics.endFill();
-			button.filters = [new DropShadowFilter(int(Config.FINGER_SIZE * .035), 90, 0, 0.35, int(Config.FINGER_SIZE * .12), int(Config.FINGER_SIZE * .12))];
+			
 			addChild(button);
 		}
 		
