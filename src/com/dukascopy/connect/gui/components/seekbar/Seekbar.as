@@ -65,13 +65,13 @@ package com.dukascopy.connect.gui.components.seekbar
 			button.graphics.clear();
 			
 			button.graphics.beginFill(0, 0);
-			button.graphics.drawCircle(0, 1, buttonRadius * 2.5);
+			button.graphics.drawCircle(0, 1, buttonRadius * 12.5);
 			
 			button.graphics.beginFill(0, 0.2);
-			button.graphics.drawCircle(0, 1, buttonRadius + 2);
+			button.graphics.drawCircle(0, 1, buttonRadius + 12);
 			
 			button.graphics.beginFill(0, 0.1);
-			button.graphics.drawCircle(0, 2, buttonRadius + 2);
+			button.graphics.drawCircle(0, 2, buttonRadius + 12);
 			
 			button.graphics.beginFill(0, 0.05);
 			button.graphics.drawCircle(0, 5, buttonRadius);
@@ -182,7 +182,7 @@ package com.dukascopy.connect.gui.components.seekbar
 		{
 			if (onChange != null && onChange.length == 1)
 			{
-				var value:Number = (zeroPosition - button.x) * (maxValue - minValue) / (width - buttonRadius * 2);
+				var value:Number = (zeroPosition - button.x) * (maxValue - minValue) / (itemWidth - buttonRadius * 2);
 				onChange(-value);
 			}
 		}

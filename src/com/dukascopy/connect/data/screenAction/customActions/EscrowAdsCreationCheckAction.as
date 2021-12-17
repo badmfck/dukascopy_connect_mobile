@@ -50,7 +50,7 @@ package com.dukascopy.connect.data.screenAction.customActions {
 			} else {
 				for (var i:int = 0; i < escrowAdsVO.instrument.price.length; i++) {
 					if (escrowAdsVO.instrument.price[i].name == escrowAdsVO.currency) {
-						price = escrowAdsVO.instrument.price[i].value + escrowAdsVO.instrument.price[i].value * Number(escrowAdsVO.percent.substr(0, escrowAdsVO.percent.length -1));
+						price = escrowAdsVO.instrument.price[i].value + escrowAdsVO.instrument.price[i].value * Number(escrowAdsVO.percent.substr(0, escrowAdsVO.percent.length -1)) / 100;
 						break;
 					}
 				}
