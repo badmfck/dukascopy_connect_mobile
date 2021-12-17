@@ -271,7 +271,13 @@ package com.dukascopy.connect.gui.list.renderers {
 			var res:String = "@" + itemData.price + " " + itemData.currency;
 			var percent:String = itemData.percent;
 			if (percent != null)
+			{
+				if (percent.indexOf("-") == -1)
+				{
+					percent = "+" + percent;
+				}
 				res += ", <font color='#BEBEBE'>MKT " + percent + "</font>";
+			}
 			return res;
 		}
 		

@@ -37,6 +37,7 @@ package com.dukascopy.connect.screens.innerScreens {
 	import com.greensock.TweenMax;
 	import com.telefision.utils.maps.EscrowDealMap;
 	import flash.display.Bitmap;
+	import flash.display.Sprite;
 	import flash.text.TextFieldAutoSize;
 	import flash.text.TextFormatAlign;
 	import flash.utils.getTimer;
@@ -62,7 +63,9 @@ package com.dukascopy.connect.screens.innerScreens {
 		
 		static private var storedTabListPosition:Object = {};
 		
-		private var placeholder:Bitmap;
+		private var placeholderTitle:Bitmap;
+		private var placeholderSubtitle:Bitmap;
+		private var placeholderContainer:Sprite;
 		private var preloader:HorizontalPreloader;
 		
 		private var isFirstActivation:Boolean = true;
@@ -344,12 +347,18 @@ package com.dukascopy.connect.screens.innerScreens {
 		}
 		
 		private function onOffersLoaded(offers:Vector.<EscrowOfferVO>):void {
+			
 			if (_isDisposed)
 				return;
 			if (selectedTabID != TAB_ID_OFFERS)
 				return;
 			hidePreloader();
 			setListData(offers);
+			
+			if ((offers == null || offers.length == 0))
+				addPlaceholder(Lang.escrow_no_offers_placeholder_title, Lang.escrow_no_offers_placeholder_subtitle);
+			else
+				removePlaceholder();
 		}
 		
 		private function saveListPosition():void {
@@ -368,37 +377,48 @@ package com.dukascopy.connect.screens.innerScreens {
 			}
 		}
 		
-		private function onEscrowAdsCryptoLoaded(data:Array, preloaderHide:Boolean = false, error:Boolean = false):void {
+		private function onEscrowAdsCryptoLoaded(dataArray:Array, preloaderHide:Boolean = false, error:Boolean = false):void {
 			if (_isDisposed)
 				return;
 			if (selectedTabID != TAB_ID_CRYPTO)
 				return;
 			if (preloaderHide == true)
 				hidePreloader();
-			setListData(data);
+			setListData(dataArray);
 		}
 		
-		private function onEscrowAdsMineLoaded(data:Array, preloaderHide:Boolean = false, error:Boolean = false):void {
+		private function onEscrowAdsMineLoaded(adsArray:Array, preloaderHide:Boolean = false, error:Boolean = false):void {
 			if (_isDisposed)
 				return;
 			if (selectedTabID != TAB_ID_MINE)
 				return;
 			if (preloaderHide == true)
 				hidePreloader();
-			setListData(data);
-			if ((data == null || data.length == 0) && preloaderHide == true)
-				addPlaceholder(Lang.escrow_no_active_ads_placeholder);
+			setListData(adsArray);
+			if ((adsArray == null || adsArray.length == 0) && preloaderHide == true)
+				addPlaceholder(Lang.escrow_no_active_ads_placeholder_title, Lang.escrow_no_active_ads_placeholder_subtitle);
 			else
 				removePlaceholder();
 		}
 		
 		private function onDealsLoaded(deals:EscrowDealMap):void {
+			
 			if (_isDisposed)
 				return;
 			if (selectedTabID != TAB_ID_DEALS)
 				return;
 			hidePreloader();
-			setListData(deals.getValues());
+			var dealsValues:Array;
+			if (deals != null)
+			{
+				dealsValues = deals.getValues();
+				setListData(dealsValues);
+			}
+			
+			if ((deals == null || dealsValues.length == 0))
+				addPlaceholder(Lang.escrow_no_deals_placeholder_title, Lang.escrow_no_deals_placeholder_subtitle);
+			else
+				removePlaceholder();
 		}
 		
 		private function setListData(data:Object):void {
@@ -426,36 +446,84 @@ package com.dukascopy.connect.screens.innerScreens {
 			list.setContextAvaliable(true);
 		}
 		
-		private function addPlaceholder(text:String):void {
-			if (placeholder == null) {
-				placeholder = new Bitmap();
-				view.addChild(placeholder);
+		private function addPlaceholder(title:String, subtitle:String):void {
+			if (placeholderContainer == null) {
+				placeholderContainer = new Sprite();
+				view.addChild(placeholderContainer);
+				
+				placeholderTitle = new Bitmap();
+				placeholderContainer.addChild(placeholderTitle);
+				
+				placeholderSubtitle = new Bitmap();
+				placeholderContainer.addChild(placeholderSubtitle);
 			}
-			if (placeholder.bitmapData != null) {
-				placeholder.bitmapData.dispose();
-				placeholder.bitmapData = null;
+			if (placeholderTitle.bitmapData != null) {
+				placeholderTitle.bitmapData.dispose();
+				placeholderTitle.bitmapData = null;
 			}
-			placeholder.bitmapData = TextUtils.createTextFieldData(
-				text,
-				_width - Config.FINGER_SIZE,
-				10,
-				true,
-				TextFormatAlign.CENTER,
-				TextFieldAutoSize.CENTER,
-				FontSize.TITLE_2,
-				true,
-				Style.color(Style.COLOR_TEXT),
-				Style.color(Style.COLOR_BACKGROUND),
-				false
-			);
-			placeholder.y = list.view.y + Config.FINGER_SIZE;
-			placeholder.x = int(_width * .5 - placeholder.width * .5);
+			
+			if (title != null)
+			{
+				placeholderTitle.bitmapData = TextUtils.createTextFieldData(
+					title,
+					_width - Config.FINGER_SIZE,
+					10,
+					true,
+					TextFormatAlign.CENTER,
+					TextFieldAutoSize.CENTER,
+					FontSize.BODY,
+					true,
+					Style.color(Style.COLOR_TEXT),
+					Style.color(Style.COLOR_BACKGROUND),
+					false
+				);
+			}
+			
+			if (placeholderSubtitle.bitmapData != null) {
+				placeholderSubtitle.bitmapData.dispose();
+				placeholderSubtitle.bitmapData = null;
+			}
+			
+			if (subtitle != null)
+			{
+				placeholderSubtitle.bitmapData = TextUtils.createTextFieldData(
+					subtitle,
+					_width - Config.FINGER_SIZE,
+					10,
+					true,
+					TextFormatAlign.CENTER,
+					TextFieldAutoSize.CENTER,
+					FontSize.SUBHEAD,
+					true,
+					Style.color(Style.COLOR_SUBTITLE),
+					Style.color(Style.COLOR_BACKGROUND),
+					false
+				);
+			}
+			
+			
+			placeholderTitle.x = int(Math.max(placeholderTitle.width, placeholderSubtitle.width) * .5 - placeholderTitle.width * .5);
+			placeholderSubtitle.x = int(Math.max(placeholderTitle.width, placeholderSubtitle.width) * .5 - placeholderSubtitle.width * .5);
+			
+			placeholderSubtitle.y = int(placeholderTitle.height + Config.FINGER_SIZE * .2);
+			
+			placeholderContainer.y = list.view.y + Config.FINGER_SIZE;
+			placeholderContainer.x = int(_width * .5 - placeholderContainer.width * .5);
 		}
 		
 		private function removePlaceholder():void {
-			if (placeholder != null) {
-				UI.destroy(placeholder);
-				placeholder = null;
+			if (placeholderTitle != null) {
+				UI.destroy(placeholderTitle);
+				placeholderTitle = null;
+			}
+			if (placeholderSubtitle != null) {
+				UI.destroy(placeholderSubtitle);
+				placeholderSubtitle = null;
+			}
+			if (placeholderContainer != null)
+			{
+				UI.destroy(placeholderContainer);
+				placeholderContainer = null;
 			}
 		}
 		
