@@ -2663,6 +2663,7 @@ package com.dukascopy.langs {
 		static public var escrow_no_deals_placeholder_subtitle:String = "";
 		static public var escrow_no_offers_placeholder_title:String = "No items";
 		static public var escrow_no_offers_placeholder_subtitle:String = "";
+		static public var mine_text:String = "MINE";
 		
 		static public function updateKeys(keys:Object):void {
 			for (var n:String in keys) {
