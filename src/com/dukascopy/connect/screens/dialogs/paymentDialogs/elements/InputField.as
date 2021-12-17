@@ -386,6 +386,14 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs.elements
 			underlineValue.y = int(underline.y + Config.FINGER_SIZE * .16);
 		}
 		
+		public function showValue():void
+		{
+			if (input != null)
+			{
+				input.view.visible = true;
+			}
+		}
+		
 		public function activate():void
 		{
 			if (input != null)
@@ -588,6 +596,14 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs.elements
 			if (input != null)
 			{
 				input.backgroundColor = color;
+			}
+		}
+		
+		public function hideValue():void 
+		{
+			if (input != null)
+			{
+				input.view.visible = false;
 			}
 		}
 		

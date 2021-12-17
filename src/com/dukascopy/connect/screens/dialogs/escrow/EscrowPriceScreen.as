@@ -218,6 +218,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			
 			radio.activate();
 			inputPrice.activate();
+			inputPrice.showValue();
 			priceSelector.activate();
 		}
 		
@@ -301,6 +302,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			inputPrice.onChangedFunction = onPriceInputChange;
 			inputPrice.setPadding(0);
 			inputPrice.updateTextFormat(tf);
+			inputPrice.hideValue();
 			addItem(inputPrice);
 		}
 		
@@ -467,7 +469,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			radioSelection.push(new SelectorItemData(Lang.deviation_from_market, showDeviationControl));
 			radioSelection.push(new SelectorItemData(Lang.fixed_price, showFixedPriceControl));
 			radio.draw(radioSelection, getWidth() - contentPadding * 2, RadioItem);
-			radio.select(radioSelection[1]);
+			radio.select(radioSelection[0]);
 			
 			var textSettings:TextFieldSettings;
 			var buttonBitmap:ImageBitmapData;
