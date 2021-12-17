@@ -332,10 +332,16 @@ package com.dukascopy.connect.screens.innerScreens {
 			
 			if (filtersPanel.visible)
 			{
-				destY += Config.FINGER_SIZE * .1;
-				filtersPanel.y = destY;
-				filtersPanel.x = Config.MARGIN * 2;
-				destY += filtersPanel.getHeight() + Config.FINGER_SIZE * .1;
+				var filtersHeight:int = filtersPanel.getHeight();
+				if (filtersHeight > 0)
+				{
+					destY += Config.FINGER_SIZE * .1;
+					filtersPanel.y = destY;
+					filtersPanel.x = Config.MARGIN * 2;
+					destY += filtersHeight;
+					destY += Config.FINGER_SIZE * .1;
+				}
+				
 			}
 			
 			if (tabs != null) {

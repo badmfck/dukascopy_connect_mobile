@@ -223,7 +223,7 @@ package com.dukascopy.connect.gui.topBar {
 			
 			trueH = h - Config.APPLE_TOP_OFFSET;
 			
-			btnSize = trueH * Style.size(Style.CHAT_TOP_ICON_SIZE);
+			btnSize = Style.size(Style.CHAT_TOP_ICON_SIZE);
 			btnY = (trueH - btnSize) * .5;
 			btnOffsetH = (trueH - btnSize) * .5;
 			btnOffsetW = btnOffsetH * .7;

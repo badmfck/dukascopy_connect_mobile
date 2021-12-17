@@ -145,7 +145,7 @@ package com.dukascopy.connect.sys.style.presets
 			this[Style.COLOR_SEPARATOR_TOP_BAR] = Color.GREY_SSL;
 			this[Style.COLOR_ICON_SETTINGS] = Color.GREY;
 			this[Style.TOP_BAR_ICON_SIZE] = Config.FINGER_SIZE * .3;
-			this[Style.CHAT_TOP_ICON_SIZE] = .45;
+			this[Style.CHAT_TOP_ICON_SIZE] = Config.FINGER_SIZE * .38;
 			this[Style.ICON_COLOR] = Color.GREY;
 			this[Style.ICON_RIGHT_COLOR] = Color.GREY_LIGHT;
 			this[Style.COLOR_BUTTON_RED_DOWN] = Color.RED_DARK;
