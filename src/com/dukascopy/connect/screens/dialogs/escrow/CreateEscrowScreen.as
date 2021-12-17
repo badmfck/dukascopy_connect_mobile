@@ -201,7 +201,6 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 				var values:Vector.<String> = new Vector.<String>();
 				var currency:String = getCurrency();
 				
-				
 				var amount:Number = getAmount();
 				var targetPrice:Number = 0;
 				if (!isNaN(selectedPrice))
@@ -1639,7 +1638,8 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			
 			drawControls();
 			createBalance();
-			showFixedPriceControl();
+			showDeviationControl();
+		//	showFixedPriceControl();
 			updatePositions();
 			updateScroll();
 			

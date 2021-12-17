@@ -254,7 +254,6 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		
 		private function onNextClick():void 
 		{
-
 			var isFixed:Boolean=controlPriceSelected == inputPrice;
 			// check price
 			if(isFixed && !checkPriceValue(inputPrice.value)){
@@ -274,9 +273,6 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 				dataValid = false;
 			}
 			
-			
-
-
 			if (dataValid)
 			{
 				if (controlPriceSelected == inputPrice)
@@ -401,7 +397,8 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			priceSelector.draw(getWidth() - contentPadding * 2, -5, 5, 0, selectedPrice, getCurrency());
 			
 			drawControls();
-			showFixedPriceControl();
+			showDeviationControl();
+		//	showFixedPriceControl();
 			onDataReady();
 			updatePositions();
 		}
