@@ -45,6 +45,10 @@ package com.dukascopy.connect.gui.components.radio
 				addChild(item as Sprite);
 			}
 			updatePositions(itemWidth);
+			if (lastSelectedValue != null)
+			{
+				updateSelection(lastSelectedValue);
+			}
 		}
 		
 		private function onItemSelected(value:SelectorItemData):void 
@@ -134,6 +138,7 @@ package com.dukascopy.connect.gui.components.radio
 		
 		public function select(selectorItemData:SelectorItemData):void 
 		{
+			lastSelectedValue = selectorItemData;
 			updateSelection(selectorItemData);
 		}
 		
