@@ -1129,6 +1129,13 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		
 		private function checkPaymentsSell():void 
 		{
+			var isFixed:Boolean = controlPriceSelected == inputPrice;
+			// check price
+			if(isFixed && !checkPriceValue(inputPrice.value)){
+				GD.S_TOAST.invoke(Lang.escrow_invalidFixedPrice);
+				return;
+			}
+			
 			//	values.push((amount * targetPrice * EscrowSettings.refundableFee + amount * targetPrice).toFixed(decimals) + " " + currency);
 			
 			//TODO: неверное значение при процентном прайсе;
@@ -1507,6 +1514,13 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		
 		private function checkPaymentsBuy():void 
 		{
+			var isFixed:Boolean = controlPriceSelected == inputPrice;
+			// check price
+			if(isFixed && !checkPriceValue(inputPrice.value)){
+				GD.S_TOAST.invoke(Lang.escrow_invalidFixedPrice);
+				return;
+			}
+			
 			//!TODO: lock;
 			
 			//TODO: неверное значение при процентном прайсе;
@@ -1518,6 +1532,13 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			checkPaymentsAction.getFailSignal().add(onPaymentsBuyCheckFail);
 			checkPaymentsAction.getSuccessSignal().add(onPaymentsBuyCheckSuccess);
 			checkPaymentsAction.execute();
+		}
+		
+		private function checkPriceValue(val:Number):Boolean{
+			var price:Number = getPrice();
+			var min:Number = price * .95;
+			var max:Number = price * 1.05;
+			return val >= min && val <= max;
 		}
 		
 		private function onPaymentsBuyCheckSuccess():void 

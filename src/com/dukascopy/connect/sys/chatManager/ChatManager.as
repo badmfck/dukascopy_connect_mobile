@@ -1812,10 +1812,10 @@ package com.dukascopy.connect.sys.chatManager {
 		static private var firstMsgsCount:Number = 10;
 		static private var firstChatsCount:Number = 10;
 		
-		static public function sendTetATetMessage(txt:String, chatUID:String, userUID:String):void {
+		/*static public function sendTetATetMessage(txt:String, chatUID:String, userUID:String):void {
 			txt = "^" + userUID + "^" + cryptTXT(txt);
 			WSClient.call_sendTextMessage(chatUID, txt, -1, true, null, false, userUID);
-		}
+		}*/
 		
 		static public function sendBotActionMessage(action:String, textToRead:String, actionData:Object = null, chatUID:String = "", userUID:String = ""):void {
 			var msg:String = "";

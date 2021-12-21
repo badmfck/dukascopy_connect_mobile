@@ -315,16 +315,15 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 				inputPrice.invalid();
 			}
 		}
-
+		
 		private function checkPriceValue(val:Number):Boolean{
 			var price:Number=getPrice();
-			var min:Number=price*.95;
-			var max:Number=price*1.05;
+			var min:Number = price * .95;
+			var max:Number = price * 1.05;
 			return val>=min && val<=max;
 		}
 		
 		override public function initScreen(data:Object = null):void {
-			
 			
 			var titleWidth:int = (_width - contentPadding * 3 - mainPadding * 2 - closeButton.width);
 			if (data != null && "title" in data && data.title != null)
