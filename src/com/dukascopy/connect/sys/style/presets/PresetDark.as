@@ -160,7 +160,7 @@ package com.dukascopy.connect.sys.style.presets
 			this[Style.BANK_BACKGROUND_ID] = null;
 			this[Style.COLOR_CHAT_MESSAGE_BACKGROUND] = Color.GREY_DARK;
 			this[Style.TOP_BAR_ICON_SIZE] = Config.FINGER_SIZE * .3;
-			this[Style.CHAT_TOP_ICON_SIZE] = .45;
+			this[Style.CHAT_TOP_ICON_SIZE] = Config.FINGER_SIZE * .38;
 			this[Style.ICON_COLOR] = Color.GREY_LIGHT;
 			this[Style.ICON_RIGHT_COLOR] = Color.GREY;
 			this[Style.COLOR_CHAT_MESSAGE_LINE] = Color.BLACK;

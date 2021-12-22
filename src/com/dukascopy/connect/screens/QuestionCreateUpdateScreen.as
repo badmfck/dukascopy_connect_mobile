@@ -552,14 +552,14 @@ package com.dukascopy.connect.screens {
 		private function callBackSelectInstrument(ei:EscrowInstrument):void {
 			if (ei == null)
 				return;
-			if (ei.isLinked) {
+		//	if (ei.isLinked) {
 				QuestionsManager.getCurrentQuestion().instrument = ei;
 				if (ei.price.length == 1)
 					QuestionsManager.getCurrentQuestion().priceCurrency = ei.price[0].name;
 				else
 					QuestionsManager.getCurrentQuestion().priceCurrency = null;
 				list.updateItemByIndex(2, true, true);
-			} else {
+			/*} else {
 				var screenData:AlertScreenData = new AlertScreenData();
 				screenData.text = Lang.escrow_blockchain_address_needed.replace(Lang.regExtValue, ei.name);
 				screenData.button = Lang.textRegister.toUpperCase();
@@ -567,7 +567,7 @@ package com.dukascopy.connect.screens {
 				screenData.callbackData = ei.code;
 				
 				ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, FloatAlert, screenData);
-			}
+			}*/
 		}
 		
 		private function registerBlockchain(instrumentCode:String):void 

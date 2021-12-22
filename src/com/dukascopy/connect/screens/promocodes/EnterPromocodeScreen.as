@@ -34,6 +34,7 @@ package com.dukascopy.connect.screens.promocodes
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.StatusEvent;
+	import flash.events.TextEvent;
 	import flash.text.TextFieldAutoSize;
 	import flash.text.TextFormat;
 	import flash.text.TextFormatAlign;
@@ -168,8 +169,8 @@ package com.dukascopy.connect.screens.promocodes
 			
 			inputContainer.graphics.lineStyle(Math.max(2, Config.FINGER_SIZE * .02), Style.color(Style.COLOR_SUBTITLE), 1, false, LineScaleMode.NORMAL, CapsStyle.NONE);
 			
-			inputContainer.graphics.moveTo(int(_width * .5 - Config.FINGER_SIZE * .1), int(codeInput1.height * .5));
-			inputContainer.graphics.lineTo(int(_width * .5 + Config.FINGER_SIZE * .1), int(codeInput1.height * .5));
+			inputContainer.graphics.moveTo(int(_width * .5 - Config.FINGER_SIZE * .1), int(codeInput1.view.y + codeInput1.getTextField().y + codeInput1.getTextField().height * .5));
+			inputContainer.graphics.lineTo(int(_width * .5 + Config.FINGER_SIZE * .1), int(codeInput1.view.y + codeInput1.getTextField().y + codeInput1.getTextField().height * .5));
 		}
 		
 		private function updatePositions():void 
@@ -308,6 +309,7 @@ package com.dukascopy.connect.screens.promocodes
 			inputContainer = new Sprite();
 			inputContainer.addChild(codeInput1.view);
 			scrollPanel.addObject(inputContainer);
+			codeInput1.getTextField().addEventListener(TextEvent.TEXT_INPUT, onCodePaste);
 			
 			codeInput2 = new Input();
 			codeInput2.backgroundColor = Style.color(Style.COLOR_BACKGROUND);
@@ -324,6 +326,7 @@ package com.dukascopy.connect.screens.promocodes
 			codeInput2.setRoundRectangleRadius(Config.FINGER_SIZE * .2);
 			codeInput2.inUse = true;
 			inputContainer.addChild(codeInput2.view);
+			codeInput2.getTextField().addEventListener(TextEvent.TEXT_INPUT, onCodePaste);
 			
 			inputContainer.y = Config.FINGER_SIZE;
 			
@@ -340,11 +343,38 @@ package com.dukascopy.connect.screens.promocodes
 			scrollPanel.addObject(bottomClip);
 		}
 		
+		private function onCodePaste(e:TextEvent):void 
+		{
+			if (e.text != null)
+			{
+				if (e.text.length == 7 && e.text.indexOf("-") == 3)
+				{
+					e.stopPropagation();
+					e.stopImmediatePropagation();
+					e.preventDefault();
+					var values:Array = e.text.split("-");
+					codeInput1.value = values[0];
+					codeInput2.value = values[1];
+					codeInput2.getTextField().setSelection(3, 3);
+				}
+				else if (e.text.length == 6)
+				{
+					e.stopPropagation();
+					e.stopImmediatePropagation();
+					e.preventDefault();
+					codeInput1.value = e.text.substr(0, 3);
+					codeInput2.value = e.text.substr(3, 3);
+					codeInput2.getTextField().setSelection(3, 3);
+				}
+			}
+		}
+		
 		private function onFirstCodeChange():void 
 		{
 			if (codeInput1 != null && codeInput1.value != null && codeInput1.value.length == 3)
 			{
-				MobileGui.stage.focus = codeInput2.getTextField();
+				MobileGui.stage.focus = null;
+				codeInput2.setFocus();
 			}
 		}
 		
@@ -524,10 +554,18 @@ package com.dukascopy.connect.screens.promocodes
 				cancelButton = null;
 			}
 			if (codeInput1 != null) {
+				if (codeInput1.getTextField() != null)
+				{
+					codeInput1.getTextField().removeEventListener(TextEvent.TEXT_INPUT, onCodePaste);
+				}
 				codeInput1.dispose();
 				codeInput1 = null;
 			}
 			if (codeInput2 != null) {
+				if (codeInput2.getTextField() != null)
+				{
+					codeInput2.getTextField().removeEventListener(TextEvent.TEXT_INPUT, onCodePaste);
+				}
 				codeInput2.dispose();
 				codeInput2 = null;
 			}

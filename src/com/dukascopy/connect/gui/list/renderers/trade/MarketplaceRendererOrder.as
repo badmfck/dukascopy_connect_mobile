@@ -169,7 +169,7 @@ package com.dukascopy.connect.gui.list.renderers.trade {
 			
 			my = new TextField();
 				my.defaultTextFormat = textFormatMy;
-				my.text = Lang.mine.toUpperCase();
+				my.text = Lang.mine_text;
 				my.height = my.textHeight + 4;
 				my.wordWrap = false;
 				my.multiline = false;
@@ -245,7 +245,7 @@ package com.dukascopy.connect.gui.list.renderers.trade {
 				if (mineExist == true)
 				{
 					my.visible = true;
-					my.text = "+" + Lang.mine.toUpperCase();
+					my.text = "+" + Lang.mine_text;
 				}
 			}
 			
@@ -372,7 +372,7 @@ package com.dukascopy.connect.gui.list.renderers.trade {
 				my.visible = true;
 				if (data.suboffers == null)
 				{
-					my.text = Lang.mine.toUpperCase();
+					my.text = Lang.mine_text;
 				}
 			}
 			

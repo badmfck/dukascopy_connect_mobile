@@ -8,6 +8,7 @@ package com.dukascopy.connect.gui.topBar {
 	import com.dukascopy.connect.gui.preloader.Preloader;
 	import com.dukascopy.connect.sys.style.Style;
 	import com.greensock.TweenMax;
+	import fl.motion.Color;
 	import flash.display.Bitmap;
 	import flash.display.Shape;
 	import flash.display.Sprite;
@@ -22,7 +23,7 @@ package com.dukascopy.connect.gui.topBar {
 	
 	public class TopBarScreen extends Sprite {
 		
-		public static const btnSize:int = Config.FINGER_SIZE * .45;
+		public static var btnSize:int;
 		public static const marge:int = Config.FINGER_SIZE * .16;
 		public static const margeLR:int = Config.FINGER_SIZE * .16;
 		public static const _trueHeight:int = Config.APPLE_TOP_OFFSET + Config.TOP_BAR_HEIGHT;
@@ -48,7 +49,9 @@ package com.dukascopy.connect.gui.topBar {
 		protected var syncIndicator:Preloader;
 		protected var tmpBtn:BitmapButton;
 		
-		public function TopBarScreen() {}
+		public function TopBarScreen() {
+			btnSize = Style.size(Style.CHAT_TOP_ICON_SIZE);
+		}
 		
 		public function setData(title:String, onBack:Boolean = true, actions:Array = null):void {
 			this.onBack = onBack;
@@ -65,6 +68,16 @@ package com.dukascopy.connect.gui.topBar {
 		private function onBackDefault():void 
 		{
 			MobileGui.S_BACK_PRESSED.invoke();
+		}
+		
+		public function set backgroundColor(value:Number):void
+		{
+			if (bgShape != null)
+			{
+				var ct:Color = new Color();
+				ct.color = value;
+				bgShape.transform.colorTransform = ct;
+			}
 		}
 		
 		public function updateAction(id:String, action:Object):void {

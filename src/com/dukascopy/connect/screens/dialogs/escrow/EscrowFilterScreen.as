@@ -281,6 +281,11 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			
 			super.initScreen(data);
 			
+			radioSelection = new Vector.<SelectorItemData>();
+			radioSelection.push(new SelectorItemData(Lang.filter_date, EscrowAdsFilterVO.SORT_DATE));
+			radioSelection.push(new SelectorItemData(Lang.filter_price, EscrowAdsFilterVO.SORT_PRICE));
+			radioSelection.push(new SelectorItemData(Lang.filter_amount, EscrowAdsFilterVO.SORT_AMOUNT));
+			
 			tradingSideSelector.dataProvider = getTradingSideVariants();
 			
 			countryExclude.draw(null, _width - contentPadding * 2);
@@ -531,13 +536,11 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		{
 			tradingSideSelector.maxWidth = getWidth();
 			
-			radioSelection = new Vector.<SelectorItemData>();
-			radioSelection.push(new SelectorItemData(Lang.filter_date, EscrowAdsFilterVO.SORT_DATE));
-			radioSelection.push(new SelectorItemData(Lang.filter_price, EscrowAdsFilterVO.SORT_PRICE));
-			radioSelection.push(new SelectorItemData(Lang.filter_amount, EscrowAdsFilterVO.SORT_AMOUNT));
-			
 			radio.draw(radioSelection, getWidth() - contentPadding * 2, RadioItem);
-			radio.select(radioSelection[0]);
+			if (radio.getSelection() == null)
+			{
+				radio.select(radioSelection[1]);
+			}
 			
 			var textSettings:TextFieldSettings;
 			var buttonBitmap:ImageBitmapData;

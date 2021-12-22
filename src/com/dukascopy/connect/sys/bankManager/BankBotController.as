@@ -2136,8 +2136,7 @@ package com.dukascopy.connect.sys.bankManager {
 			}
 		}
 		
-		static private function onPasswordChangeSuccess(requestData:Object):void   
-		{
+		static private function onPasswordChangeSuccess(requestData:Object):void {
 			var responseData:Object = new Object();
 			responseData.data = new Object();
 			responseData.data.password = requestData.pass;

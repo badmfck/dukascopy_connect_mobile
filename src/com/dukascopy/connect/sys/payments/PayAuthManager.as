@@ -131,8 +131,8 @@ package com.dukascopy.connect.sys.payments {
 			TweenMax.delayedCall(1, onBack, null, true);
 		}
 		
-		private static function onNeedPasswordChange():void {
-			if (_isManagerActivated == true)
+		public static function onNeedPasswordChange(obligatory:Boolean = false):void {
+			if (obligatory == true || _isManagerActivated == true)
 				DialogManager.showChangePayPass(onPassChangeComplete);
 		}
 		

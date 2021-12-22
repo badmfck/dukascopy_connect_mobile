@@ -74,9 +74,9 @@ package com.dukascopy.connect.gui.list.renderers {
 			
 			tfQuestionTime = new TextField();
 				tfQuestionTime.defaultTextFormat = format_time;
-				tfQuestionTime.autoSize = TextFieldAutoSize.LEFT;
-				tfQuestionTime.wordWrap = false;
-				tfQuestionTime.multiline = false;
+			//	tfQuestionTime.autoSize = TextFieldAutoSize.RIGHT;
+				tfQuestionTime.wordWrap = true;
+				tfQuestionTime.multiline = true;
 				tfQuestionTime.y = int(Config.FINGER_SIZE * .2);
 				tfQuestionTime.x = textPosition;
 				tfQuestionTime.text = "Pp";
@@ -138,6 +138,7 @@ package com.dukascopy.connect.gui.list.renderers {
 			format_amount.size = FontSize.BODY;
 			
 			format_time.font = Config.defaultFontName;
+			format_time.align = TextFormatAlign.RIGHT;
 			format_time.color = Style.color(Style.COLOR_SUBTITLE);
 			format_time.size = FontSize.CAPTION_1;
 			
@@ -172,18 +173,20 @@ package com.dukascopy.connect.gui.list.renderers {
 			return int(textFieldStatus.y + textFieldStatus.height + Config.FINGER_SIZE * .2);
 		}
 		
-		public function getView(item:ListItem, height:int, width:int, highlight:Boolean = false):IBitmapDrawable {
+		public function getView(item:ListItem, height:int, w:int, highlight:Boolean = false):IBitmapDrawable {
 			textFieldAmount.text = "";
 			tfQuestionTime.text = "";
 			textFieldStatus.text = "";
 			
-			bg.width = width;
+			bg.width = w;
 			bg.height = height;
 		//	bg.visible = !highlight;
 			
-			var newWidth:int = width - textFieldAmount.x - Config.MARGIN;
+			var newWidth:int = w - textFieldAmount.x - Config.MARGIN;
 			
-			var maxTextWidth:int = width - textFieldAmount.x - Config.FINGER_SIZE * .2;
+			var rightPadding:int = Config.FINGER_SIZE * .2;
+			
+			var maxTextWidth:int = w - textFieldAmount.x - rightPadding;
 			textFieldAmount.width = maxTextWidth;
 			textFieldPrice.width = maxTextWidth;
 			textFieldStatus.width = maxTextWidth;
@@ -192,10 +195,6 @@ package com.dukascopy.connect.gui.list.renderers {
 			textFieldPrice.visible = false;
 			
 			if (isValidData(item.data)) {
-				var hitZones:Array;
-				
-				tfQuestionTime.htmlText = getTimeText(item.data);
-				tfQuestionTime.x = int(width - tfQuestionTime.width - Config.FINGER_SIZE_DOT_25 + 2);
 				
 				textFieldPrice.visible = true;
 				textFieldPrice.htmlText = getPrice(item.data);
@@ -203,10 +202,14 @@ package com.dukascopy.connect.gui.list.renderers {
 				textFieldStatus.defaultTextFormat = getStatusFormat(item.data);
 				textFieldStatus.text = getStatusText(item.data);
 				
+				tfQuestionTime.width = w;
+				tfQuestionTime.htmlText = getTimeText(item.data);
+				tfQuestionTime.width = Math.min(tfQuestionTime.textWidth + 10, w - textFieldAmount.x - textFieldAmount.textWidth - Config.FINGER_SIZE * .2 - rightPadding);
+				tfQuestionTime.height = Math.min(tfQuestionTime.textHeight + 4, height - Config.FINGER_SIZE * .4);
+				tfQuestionTime.x = int(w - tfQuestionTime.width - Config.FINGER_SIZE_DOT_25 + 2);
+				
 				drawIcon(item.data);
 			}
-			
-			item.setHitZones(hitZones);
 			
 			updateItemAlpha(item.data);
 			updateBack(item.data);
@@ -268,7 +271,13 @@ package com.dukascopy.connect.gui.list.renderers {
 			var res:String = "@" + itemData.price + " " + itemData.currency;
 			var percent:String = itemData.percent;
 			if (percent != null)
+			{
+				if (percent.indexOf("-") == -1)
+				{
+					percent = "+" + percent;
+				}
 				res += ", <font color='#BEBEBE'>MKT " + percent + "</font>";
+			}
 			return res;
 		}
 		

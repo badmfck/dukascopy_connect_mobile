@@ -1,7 +1,5 @@
 package com.dukascopy.connect.screens.innerScreens {
 	
-	import assets.PlusAvatar;
-	import assets.PlusIcon;
 	import com.dukascopy.connect.Config;
 	import com.dukascopy.connect.GD;
 	import com.dukascopy.connect.MobileGui;
@@ -28,7 +26,6 @@ package com.dukascopy.connect.screens.innerScreens {
 	import com.dukascopy.connect.screens.EscrowAdsCreateScreen;
 	import com.dukascopy.connect.screens.RootScreen;
 	import com.dukascopy.connect.screens.SwipeUpdateScreen;
-	import com.dukascopy.connect.screens.base.BaseScreen;
 	import com.dukascopy.connect.screens.base.ScreenManager;
 	import com.dukascopy.connect.screens.dialogs.ScreenLinksDialog;
 	import com.dukascopy.connect.screens.escrow.FiltersPanel;
@@ -48,6 +45,7 @@ package com.dukascopy.connect.screens.innerScreens {
 	import com.greensock.TweenMax;
 	import com.telefision.utils.maps.EscrowDealMap;
 	import flash.display.Bitmap;
+	import flash.display.Sprite;
 	import flash.text.TextFieldAutoSize;
 	import flash.text.TextFormatAlign;
 	
@@ -75,7 +73,9 @@ package com.dukascopy.connect.screens.innerScreens {
 		
 		private var tweenObj:Object = {};
 		private var statusClip:StatusClip;
-		private var placeholder:Bitmap;
+		private var placeholderTitle:Bitmap;
+		private var placeholderSubtitle:Bitmap;
+		private var placeholderContainer:Sprite;
 		private var preloader:HorizontalPreloader;
 		private var instrument:String;
 		private var filtersPanel:FiltersPanel;
@@ -213,6 +213,11 @@ package com.dukascopy.connect.screens.innerScreens {
 			if (_isDisposed == true)
 				return;
 			
+			view.graphics.clear();
+			view.graphics.beginFill(Style.color(Style.COLOR_BACKGROUND));
+			view.graphics.drawRect(0, 0, _width, _height);
+			view.graphics.endFill();
+			
 			updatePositions();
 		}
 		
@@ -232,6 +237,7 @@ package com.dukascopy.connect.screens.innerScreens {
 			preloader.setSize(_width, int(Config.FINGER_SIZE * .07));
 			
 			GD.S_ESCROW_ADS_FILTER_SETTED.add(onFilterChanged);
+			onFilterChanged();
 			
 			createButton.setPosition(_width - Config.FINGER_SIZE - Config.MARGIN * 2,  _height - Config.FINGER_SIZE - Config.MARGIN * 2 - Config.APPLE_TOP_OFFSET);
 			createButton.setOffset(Config.TOP_BAR_HEIGHT * 2 + Config.APPLE_TOP_OFFSET);
@@ -332,10 +338,16 @@ package com.dukascopy.connect.screens.innerScreens {
 			
 			if (filtersPanel.visible)
 			{
-				destY += Config.FINGER_SIZE * .1;
-				filtersPanel.y = destY;
-				filtersPanel.x = Config.MARGIN * 2;
-				destY += filtersPanel.getHeight() + Config.FINGER_SIZE * .1;
+				var filtersHeight:int = filtersPanel.getHeight();
+				if (filtersHeight > 0)
+				{
+					destY += Config.FINGER_SIZE * .1;
+					filtersPanel.y = destY;
+					filtersPanel.x = Config.MARGIN * 2;
+					destY += filtersHeight;
+					destY += Config.FINGER_SIZE * .1;
+				}
+				
 			}
 			
 			if (tabs != null) {
@@ -470,6 +482,7 @@ package com.dukascopy.connect.screens.innerScreens {
 			{
 				tabs.updateLabels( [ Lang.ads, Lang.textMine, Lang.escrow_offers, Lang.escrow_deals ] );
 			}
+			
 			super.drawViewLang();
 		}
 		
@@ -772,7 +785,18 @@ package com.dukascopy.connect.screens.innerScreens {
 				return;
 		//	if (preloaderHide == true)
 			hidePreloader();
-			setListData(deals.getValues());
+			
+			var dealsValues:Array;
+			if (deals != null)
+			{
+				dealsValues = deals.getValues();
+				setListData(dealsValues);
+			}
+			
+			if ((dealsValues == null || dealsValues.length == 0))
+				addPlaceholder(Lang.escrow_no_deals_placeholder_title, Lang.escrow_no_deals_placeholder_subtitle);
+			else
+				removePlaceholder();
 		}
 		
 		private function onOffersLoaded(offers:Vector.<EscrowOfferVO>):void 
@@ -784,6 +808,11 @@ package com.dukascopy.connect.screens.innerScreens {
 		//	if (preloaderHide == true)
 			hidePreloader();
 			setListData(offers);
+			
+			if ((offers == null || offers.length == 0))
+				addPlaceholder(Lang.escrow_no_offers_placeholder_title, Lang.escrow_no_offers_placeholder_subtitle);
+			else
+				removePlaceholder();
 		}
 		
 		private function onEscrowAdsLoaded(data:Array, preloaderHide:Boolean = false):void {
@@ -831,39 +860,91 @@ package com.dukascopy.connect.screens.innerScreens {
 						list.setBoxY(storedTabListPosition[selectedTabID].listBoxY);
 			list.setContextAvaliable(true);
 			if (selectedTabID == TAB_MINE && (listData == null || listData.length == 0)) {
-				addPlaceholder(Lang.escrow_no_active_ads_placeholder);
+				addPlaceholder(Lang.escrow_no_active_ads_placeholder_title, Lang.escrow_no_active_ads_placeholder_subtitle);
 			} else {
 				removePlaceholder();
 			}
 		}
 		
-		private function removePlaceholder():void 
-		{
-			if (placeholder != null)
+		private function removePlaceholder():void {
+			if (placeholderTitle != null) {
+				UI.destroy(placeholderTitle);
+				placeholderTitle = null;
+			}
+			if (placeholderSubtitle != null) {
+				UI.destroy(placeholderSubtitle);
+				placeholderSubtitle = null;
+			}
+			if (placeholderContainer != null)
 			{
-				UI.destroy(placeholder);
-				placeholder = null;
+				UI.destroy(placeholderContainer);
+				placeholderContainer = null;
 			}
 		}
 		
-		private function addPlaceholder(text:String):void 
-		{
-			if (placeholder == null)
-			{
-				placeholder = new Bitmap();
-				view.addChild(placeholder);
+		private function addPlaceholder(title:String, subtitle:String):void {
+			if (placeholderContainer == null) {
+				placeholderContainer = new Sprite();
+				view.addChild(placeholderContainer);
+				
+				placeholderTitle = new Bitmap();
+				placeholderContainer.addChild(placeholderTitle);
+				
+				placeholderSubtitle = new Bitmap();
+				placeholderContainer.addChild(placeholderSubtitle);
 			}
-			if (placeholder.bitmapData != null)
-			{
-				placeholder.bitmapData.dispose();
-				placeholder.bitmapData = null;
+			if (placeholderTitle.bitmapData != null) {
+				placeholderTitle.bitmapData.dispose();
+				placeholderTitle.bitmapData = null;
 			}
-			placeholder.bitmapData = TextUtils.createTextFieldData(text, _width - Config.FINGER_SIZE, 10, true,
-																	TextFormatAlign.CENTER, TextFieldAutoSize.CENTER, 
-																	FontSize.TITLE_2, true, Style.color(Style.COLOR_TEXT),
-																	Style.color(Style.COLOR_BACKGROUND), false);
-			placeholder.y = list.view.y + Config.FINGER_SIZE;
-			placeholder.x = int(_width * .5 - placeholder.width * .5);
+			
+			if (title != null)
+			{
+				placeholderTitle.bitmapData = TextUtils.createTextFieldData(
+					title,
+					_width - Config.FINGER_SIZE,
+					10,
+					true,
+					TextFormatAlign.CENTER,
+					TextFieldAutoSize.CENTER,
+					FontSize.BODY,
+					true,
+					Style.color(Style.COLOR_TEXT),
+					Style.color(Style.COLOR_BACKGROUND),
+					false
+				);
+			}
+			
+			if (placeholderSubtitle.bitmapData != null) {
+				placeholderSubtitle.bitmapData.dispose();
+				placeholderSubtitle.bitmapData = null;
+			}
+			
+			if (subtitle != null)
+			{
+				placeholderSubtitle.bitmapData = TextUtils.createTextFieldData(
+					subtitle,
+					_width - Config.FINGER_SIZE,
+					10,
+					true,
+					TextFormatAlign.CENTER,
+					TextFieldAutoSize.CENTER,
+					FontSize.SUBHEAD,
+					true,
+					Style.color(Style.COLOR_SUBTITLE),
+					Style.color(Style.COLOR_BACKGROUND),
+					false
+				);
+			}
+			
+			
+			placeholderTitle.x = int(Math.max(placeholderTitle.width, placeholderSubtitle.width) * .5 - placeholderTitle.width * .5);
+			placeholderSubtitle.x = int(Math.max(placeholderTitle.width, placeholderSubtitle.width) * .5 - placeholderSubtitle.width * .5);
+			
+			placeholderSubtitle.y = int(placeholderTitle.height + Config.FINGER_SIZE * .2);
+			
+			placeholderContainer.y = list.view.y + Config.FINGER_SIZE;
+			placeholderContainer.x = int(_width * .5 - placeholderContainer.width * .5);
 		}
 	}
 }

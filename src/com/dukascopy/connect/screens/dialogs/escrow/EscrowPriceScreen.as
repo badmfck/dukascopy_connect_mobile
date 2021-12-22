@@ -218,6 +218,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			
 			radio.activate();
 			inputPrice.activate();
+			inputPrice.showValue();
 			priceSelector.activate();
 		}
 		
@@ -254,7 +255,6 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		
 		private function onNextClick():void 
 		{
-
 			var isFixed:Boolean=controlPriceSelected == inputPrice;
 			// check price
 			if(isFixed && !checkPriceValue(inputPrice.value)){
@@ -274,9 +274,6 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 				dataValid = false;
 			}
 			
-			
-
-
 			if (dataValid)
 			{
 				if (controlPriceSelected == inputPrice)
@@ -305,6 +302,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			inputPrice.onChangedFunction = onPriceInputChange;
 			inputPrice.setPadding(0);
 			inputPrice.updateTextFormat(tf);
+			inputPrice.hideValue();
 			addItem(inputPrice);
 		}
 		
@@ -317,16 +315,15 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 				inputPrice.invalid();
 			}
 		}
-
+		
 		private function checkPriceValue(val:Number):Boolean{
 			var price:Number=getPrice();
-			var min:Number=price*.95;
-			var max:Number=price*1.05;
+			var min:Number = price * .95;
+			var max:Number = price * 1.05;
 			return val>=min && val<=max;
 		}
 		
 		override public function initScreen(data:Object = null):void {
-			
 			
 			var titleWidth:int = (_width - contentPadding * 3 - mainPadding * 2 - closeButton.width);
 			if (data != null && "title" in data && data.title != null)
@@ -401,7 +398,8 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			priceSelector.draw(getWidth() - contentPadding * 2, -5, 5, 0, selectedPrice, getCurrency());
 			
 			drawControls();
-			showFixedPriceControl();
+			showDeviationControl();
+		//	showFixedPriceControl();
 			onDataReady();
 			updatePositions();
 		}
@@ -470,7 +468,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			radioSelection.push(new SelectorItemData(Lang.deviation_from_market, showDeviationControl));
 			radioSelection.push(new SelectorItemData(Lang.fixed_price, showFixedPriceControl));
 			radio.draw(radioSelection, getWidth() - contentPadding * 2, RadioItem);
-			radio.select(radioSelection[1]);
+			radio.select(radioSelection[0]);
 			
 			var textSettings:TextFieldSettings;
 			var buttonBitmap:ImageBitmapData;

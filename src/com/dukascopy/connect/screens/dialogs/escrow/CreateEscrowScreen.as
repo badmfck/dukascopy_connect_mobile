@@ -201,7 +201,6 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 				var values:Vector.<String> = new Vector.<String>();
 				var currency:String = getCurrency();
 				
-				
 				var amount:Number = getAmount();
 				var targetPrice:Number = 0;
 				if (!isNaN(selectedPrice))
@@ -1130,6 +1129,13 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		
 		private function checkPaymentsSell():void 
 		{
+			var isFixed:Boolean = controlPriceSelected == inputPrice;
+			// check price
+			if(isFixed && !checkPriceValue(inputPrice.value)){
+				GD.S_TOAST.invoke(Lang.escrow_invalidFixedPrice);
+				return;
+			}
+			
 			//	values.push((amount * targetPrice * EscrowSettings.refundableFee + amount * targetPrice).toFixed(decimals) + " " + currency);
 			
 			//TODO: неверное значение при процентном прайсе;
@@ -1508,6 +1514,13 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		
 		private function checkPaymentsBuy():void 
 		{
+			var isFixed:Boolean = controlPriceSelected == inputPrice;
+			// check price
+			if(isFixed && !checkPriceValue(inputPrice.value)){
+				GD.S_TOAST.invoke(Lang.escrow_invalidFixedPrice);
+				return;
+			}
+			
 			//!TODO: lock;
 			
 			//TODO: неверное значение при процентном прайсе;
@@ -1519,6 +1532,13 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			checkPaymentsAction.getFailSignal().add(onPaymentsBuyCheckFail);
 			checkPaymentsAction.getSuccessSignal().add(onPaymentsBuyCheckSuccess);
 			checkPaymentsAction.execute();
+		}
+		
+		private function checkPriceValue(val:Number):Boolean{
+			var price:Number = getPrice();
+			var min:Number = price * .95;
+			var max:Number = price * 1.05;
+			return val >= min && val <= max;
 		}
 		
 		private function onPaymentsBuyCheckSuccess():void 
@@ -1639,7 +1659,8 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			
 			drawControls();
 			createBalance();
-			showFixedPriceControl();
+			showDeviationControl();
+		//	showFixedPriceControl();
 			updatePositions();
 			updateScroll();
 			
@@ -1916,7 +1937,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			radioSelection.push(new SelectorItemData(Lang.deviation_from_market, showDeviationControl));
 			radioSelection.push(new SelectorItemData(Lang.fixed_price, showFixedPriceControl));
 			radio.draw(radioSelection, _width - contentPadding * 2, RadioItem);
-			radio.select(radioSelection[1]);
+			radio.select(radioSelection[0]);
 			
 			if (selectorAccont != null)
 			{

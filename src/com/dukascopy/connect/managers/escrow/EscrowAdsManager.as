@@ -17,6 +17,8 @@ package com.dukascopy.connect.managers.escrow {
 	import com.dukascopy.connect.vo.users.UserVO;
 	import com.dukascopy.langs.Lang;
 	import com.greensock.TweenMax;
+	import flash.net.URLLoader;
+	import flash.net.URLRequest;
 	
 	/**
 	 * ...
@@ -60,6 +62,40 @@ package com.dukascopy.connect.managers.escrow {
 			
 			GD.S_AUTHORIZED.add(onAuthorized);
 			GD.S_UNAUTHORIZED.add(onUnuthorized);
+			
+			loadLocalFilterData();
+		}
+		
+		private function loadLocalFilterData():void 
+		{
+			Store.load(Store.ESCROW_FILTER, onLocalFilterLoaded);
+		}
+		
+		private function onLocalFilterLoaded(data:Object, err:Boolean):void 
+		{
+			if (err == false && data != null)
+			{
+				if ("hideBlocked" in data && data.hideBlocked == true)
+				{
+					escrowAdsFilter.hideBlocked = true;
+				}
+				if ("hideNoobs" in data && data.hideNoobs == true)
+				{
+					escrowAdsFilter.hideNoobs = true;
+				}
+				if ("side" in data && data.side != null)
+				{
+					escrowAdsFilter.side = data.side;
+				}
+				if ("sort" in data && data.sort != null)
+				{
+					escrowAdsFilter.sort = data.sort;
+				}
+				if ("countries" in data && data.countries != null)
+				{
+					escrowAdsFilter.countries = data.countries;
+				}
+			}
 		}
 		
 		private function onAuthorized(data:Object):void {
@@ -73,6 +109,18 @@ package com.dukascopy.connect.managers.escrow {
 		private function onEscrowFilterSetted():void {
 			escrowAdsFilterSetted = escrowAdsFilter.changed;
 			escrowAdsFilter.changed = false;
+			
+			saveCurrentFilter();
+		}
+		
+		private function saveCurrentFilter():void 
+		{
+			Store.save(Store.ESCROW_FILTER, escrowAdsFilter, onLocalFilterSaved);
+		}
+		
+		private function onLocalFilterSaved(data:Object, err:Boolean):void 
+		{
+			trace("123");
 		}
 		
 		private function onEscrowAdsFilterRequested(callback:Function):void {

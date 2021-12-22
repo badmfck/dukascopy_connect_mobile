@@ -95,7 +95,7 @@ package com.dukascopy.connect.sys.style.presets
 			this[Style.MESSAGE_DATE_COLOR] = Color.WHITE;
 			this[Style.STATUS_COLOR] = 0xFDFFFF;
 			this[Style.TOP_BAR_ICON_SIZE] = Config.FINGER_SIZE * .45;
-			this[Style.CHAT_TOP_ICON_SIZE] = .38;
+			this[Style.CHAT_TOP_ICON_SIZE] = Config.FINGER_SIZE * .38;
 			this[Style.ICON_COLOR] = 0x6e92af;
 			this[Style.ICON_RIGHT_COLOR] = Color.GREY_LIGHT;
 			this[Style.COLOR_BACKGROUND] = Color.WHITE;

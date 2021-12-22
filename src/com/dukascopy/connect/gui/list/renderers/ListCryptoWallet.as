@@ -91,7 +91,18 @@ package com.dukascopy.connect.gui.list.renderers {
 			drawIcon(data, 0);
 			setTexts(data, w);
 			updatePositions(0, w);
-			return int(tfName.height + tfLabel.height - 8 + Config.FINGER_SIZE * .5);
+			var result:int = tfName.height - 4;
+			if (tfLabel.text != null && tfLabel.text != "")
+			{
+				result + tfLabel.height - 4;
+				result += Config.FINGER_SIZE * .5;
+			}
+			else
+			{
+				result += Config.FINGER_SIZE * .8;
+			}
+			
+			return result;
 		}
 		
 		override protected function drawIcon(li:ListItem, h:int):void 
@@ -125,8 +136,16 @@ package com.dukascopy.connect.gui.list.renderers {
 		
 		override protected function updatePositions(h:int, w:int):void 
 		{
-			tfName.y = int(Config.FINGER_SIZE * .2);
-			tfLabel.y = int(tfName.y + tfName.height - 8 + Config.FINGER_SIZE * .13);
+			if (tfLabel.text != null && tfLabel.text != "")
+			{
+				tfName.y = int(Config.FINGER_SIZE * .2);
+				tfLabel.y = int(tfName.y + tfName.height - 8 + Config.FINGER_SIZE * .13);
+			}
+			else
+			{
+				tfName.y = int(h * .5 - tfName.height * .5);
+			}
+			
 		}
 	}
 }

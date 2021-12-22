@@ -364,6 +364,10 @@ package com.dukascopy.connect.managers.escrow{
          */
         private function loadDeals():void{
             //TODO: Server method - load deals, fire callback
+			if (authKey == "" || authKey == null || authKey=="web")
+			{
+				return;
+			}
             new SimpleLoader({
                 key:authKey,//"e41ae903d332b69f490d604474c7ca633cd8835f",
                 method:"Cp2p.Deal.GetDeals"

@@ -469,10 +469,11 @@ package com.dukascopy.connect.vo {
 		public function get disableP2P():Boolean {
 			if (_raw == null)
 				return true;
-			if ("UIDS_P2P" in _raw == true && _raw.UIDS_P2P != "false")
-				return _raw.UIDS_P2P.indexOf(Auth.uid) == -1;
-			if ("DISABLE_P2P" in _raw == true && _raw.DISABLE_P2P == "true")
+			if ("DISABLE_P2P" in _raw == true && _raw.DISABLE_P2P == "true") {
+				if ("UIDS_P2P" in _raw == true && _raw.UIDS_P2P != "false")
+					return _raw.UIDS_P2P.indexOf(Auth.uid) == -1;
 				return true;
+			}
 			return false;
 		}
 	}

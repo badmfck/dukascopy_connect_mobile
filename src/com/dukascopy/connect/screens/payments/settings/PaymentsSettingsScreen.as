@@ -16,6 +16,7 @@ package com.dukascopy.connect.screens.payments.settings {
 	import com.dukascopy.connect.screens.WebViewScreen;
 	import com.dukascopy.connect.screens.payments.data.PaymentsScreenData;
 	import com.dukascopy.connect.sys.dialogManager.DialogManager;
+	import com.dukascopy.connect.sys.payments.PayAuthManager;
 	import com.dukascopy.connect.sys.payments.PayConfig;
 	import com.dukascopy.connect.sys.payments.PayManager;
 	import com.dukascopy.connect.sys.style.Style;
@@ -227,7 +228,8 @@ package com.dukascopy.connect.screens.payments.settings {
 		}
 		
 		private function openChangePass():void {
-			DialogManager.showChangePayPass(onPassChangeComplete);
+			//DialogManager.showChangePayPass(onPassChangeComplete);
+			PayAuthManager.onNeedPasswordChange(true);
 		}
 		
 		private function onPassChangeComplete(value:int, currentPass:String = "", newPass:String = ""):void {

@@ -8,7 +8,9 @@ package com.dukascopy.connect.gui.components.ratesPanel
 	import com.dukascopy.langs.Lang;
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
+	import flash.display.PixelSnapping;
 	import flash.display.Sprite;
+	import flash.display.StageQuality;
 	import flash.text.TextField;
 	import flash.text.TextFormat;
 	/**
@@ -66,6 +68,11 @@ package com.dukascopy.connect.gui.components.ratesPanel
 				position += icon.x + icon.width + Config.FINGER_SIZE * .12;
 			}
 			
+			var padding:int = 1;
+			graphics.clear();
+			graphics.beginFill(0, 0);
+			graphics.drawRect(0, 0, width + padding * 2, height + padding * 2);
+			
 			textField.x = position;
 			
 			var code:String = escrowInstrument.code;
@@ -82,9 +89,14 @@ package com.dukascopy.connect.gui.components.ratesPanel
 			textField.width = textField.textWidth + 4;
 			textField.y = int(itemHeight * .5 - textField.height * .5);
 			
-			var bitmap:Bitmap = new Bitmap();
-			var bd:BitmapData = new BitmapData(this.width, itemHeight, false, Style.color(Style.COLOR_ACCENT_PANEL));
-			bd.draw(this);
+			icon.y += padding;
+			icon.x += padding;
+			textField.x += padding;
+			textField.y += padding;
+			
+			var bitmap:Bitmap = new Bitmap(null, PixelSnapping.ALWAYS, true);
+			var bd:BitmapData = new BitmapData(this.width, this.height, false, Style.color(Style.COLOR_ACCENT_PANEL));
+			bd.drawWithQuality(this, null, null, null, null, false, StageQuality.BEST);
 			bitmap.bitmapData = bd;
 			return bitmap;
 		}

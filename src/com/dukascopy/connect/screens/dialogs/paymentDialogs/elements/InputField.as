@@ -78,6 +78,24 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs.elements
 			}
 		}
 		
+		public function get textY():int
+		{
+			if (input != null && input.getTextField() != null)
+			{
+				return input.view.y + input.getTextField().y;
+			}
+			return 0;
+		}
+		
+		public function get textHeight():int
+		{
+			if (input != null && input.getTextField() != null)
+			{
+				return input.getTextField().height;
+			}
+			return 0;
+		}
+		
 		public function get value():Number
 		{
 			if (input != null)
@@ -89,7 +107,6 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs.elements
 		
 		public function get valueString():String
 		{
-			trace(input.value);
 			if (input != null)
 			{
 				return input.value;
@@ -103,6 +120,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs.elements
 			if (input != null)
 			{
 				input.value = val;
+				input.setCurrentColor();
 			}
 		}
 		
@@ -294,7 +312,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs.elements
 			drawUnderline(Style.color(Style.CONTROL_INACTIVE));
 			drawUnderlineValue(underlineString);
 			
-			valueString = defaultValue;
+			setDefaultText(defaultValue);
 			
 			updatePositions();
 		}
@@ -366,6 +384,14 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs.elements
 				underlineValue.x = int(itemWidth - underlineValue.width);
 			}
 			underlineValue.y = int(underline.y + Config.FINGER_SIZE * .16);
+		}
+		
+		public function showValue():void
+		{
+			if (input != null)
+			{
+				input.view.visible = true;
+			}
 		}
 		
 		public function activate():void
@@ -488,16 +514,9 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs.elements
 			underline.transform.colorTransform = new ColorTransform();
 		}
 		
-		public function setDefaultText(defaultText:String):void 
+		public function setDefaultText(value:String):void 
 		{
-			if (valueString == "")
-			{
-				input.setLabelText("0.0000", Style.color(Style.COLOR_SUBTITLE));
-			}
-			else
-			{
-				ApplicationErrors.add();
-			}
+			input.setLabelText(value, Style.color(Style.COLOR_SUBTITLE));
 		}
 		
 		public function forceFocusOut():void 
@@ -570,6 +589,22 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs.elements
 		public function getUnderlineValue():String 
 		{
 			return underlineString;
+		}
+		
+		public function setBackground(color:Number):void 
+		{
+			if (input != null)
+			{
+				input.backgroundColor = color;
+			}
+		}
+		
+		public function hideValue():void 
+		{
+			if (input != null)
+			{
+				input.view.visible = false;
+			}
 		}
 		
 		private function onSelected():void 

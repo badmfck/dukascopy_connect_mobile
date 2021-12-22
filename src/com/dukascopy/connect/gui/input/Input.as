@@ -337,7 +337,7 @@ package com.dukascopy.connect.gui.input {
 			}
 			drawView();
 		}
-
+		
 		protected function drawView():void {
 			if (isDisposed == true)
 			{
@@ -722,6 +722,10 @@ package com.dukascopy.connect.gui.input {
 			{
 				S_FOCUS_LOST.invoke();
 			}
+			
+			/*if (mode == MODE_PHONE && MobileGui.softKeyboardOpened)
+				updateLabelVisibility();*/
+			
 			_isFocused = false;
 			drawView();
 			
@@ -798,10 +802,15 @@ package com.dukascopy.connect.gui.input {
 			if (MobileGui.softKeyboardOpened && SoftKeyboard.getInstance()!=null)
 				SoftKeyboard.getInstance().updateCarretIndex(); 
 			S_FOCUS_IN.invoke();
+			setCurrentColor();
+			drawView();
+		}
+		
+		public function setCurrentColor():void
+		{
 			if (!isNaN(currentColor)){
 				textField.textColor = currentColor;
 			}
-			drawView();
 		}
 		
 		private function onESKFocusIn(e:FocusEvent):void {

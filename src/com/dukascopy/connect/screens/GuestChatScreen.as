@@ -1,38 +1,18 @@
 package com.dukascopy.connect.screens {
 
-	import assets.HandStop;
-	import assets.ScrollBottomIcon;
 	import com.adobe.utils.StringUtil;
 	import com.dukascopy.connect.Config;
 	import com.dukascopy.connect.MobileGui;
-	import com.dukascopy.connect.data.BackgroundModel;
-	import com.dukascopy.connect.data.ButtonActionData;
-	import com.dukascopy.connect.data.ChatBackgroundCollection;
-	import com.dukascopy.connect.data.ChatSettingsModel;
-	import com.dukascopy.connect.data.ChatSystemMessageData;
 	import com.dukascopy.connect.data.GiftData;
 	import com.dukascopy.connect.data.HitZoneData;
 	import com.dukascopy.connect.data.ListRenderInfo;
 	import com.dukascopy.connect.data.LocalAvatars;
 	import com.dukascopy.connect.data.LocalSoundFileData;
 	import com.dukascopy.connect.data.MediaFileData;
-	import com.dukascopy.connect.data.RateBotData;
-	import com.dukascopy.connect.data.ScanPassportResult;
 	import com.dukascopy.connect.data.SoundStatusData;
-	import com.dukascopy.connect.data.UserBanData;
-	import com.dukascopy.connect.data.location.Location;
 	import com.dukascopy.connect.data.screenAction.IScreenAction;
-	import com.dukascopy.connect.data.screenAction.customActions.AddInvoiceAction;
-	import com.dukascopy.connect.data.screenAction.customActions.AddUserToContactsAction;
-	import com.dukascopy.connect.data.screenAction.customActions.BlockUserAction;
-	import com.dukascopy.connect.data.screenAction.customActions.BotReactionAction;
-	import com.dukascopy.connect.data.screenAction.customActions.CallGetEuroAction;
 	import com.dukascopy.connect.data.screenAction.customActions.DownloadFileAction;
-	import com.dukascopy.connect.data.screenAction.customActions.OpenFxProfileAction;
-	import com.dukascopy.connect.data.screenAction.customActions.PayByCardAction;
-	import com.dukascopy.connect.data.screenAction.customActions.PreviewMessagesAction;
 	import com.dukascopy.connect.data.screenAction.customActions.RemoveImageAction;
-	import com.dukascopy.connect.data.screenAction.customActions.ShowBanInfoAction;
 	import com.dukascopy.connect.data.screenAction.customActions.chatMessageAction.CopyMessageAction;
 	import com.dukascopy.connect.data.screenAction.customActions.chatMessageAction.EditMessageAction;
 	import com.dukascopy.connect.data.screenAction.customActions.chatMessageAction.EnlargeMessageAction;
@@ -42,59 +22,34 @@ package com.dukascopy.connect.screens {
 	import com.dukascopy.connect.data.screenAction.customActions.chatMessageAction.ResendMessageAction;
 	import com.dukascopy.connect.data.screenAction.customActions.chatMessageAction.SendGiftMessageAction;
 	import com.dukascopy.connect.gui.button.ChatNewMessagesButton;
-	import com.dukascopy.connect.gui.button.InfoButtonPanel;
-	import com.dukascopy.connect.gui.button.LoadingRectangleButton;
-	import com.dukascopy.connect.gui.chat.BubbleButton;
 	import com.dukascopy.connect.gui.chat.ConnectionIndicator;
-	import com.dukascopy.connect.gui.chat.QuestionPanel;
 	import com.dukascopy.connect.gui.chat.UploadFilePanel;
 	import com.dukascopy.connect.gui.chatInput.ChatInputAndroid;
 	import com.dukascopy.connect.gui.chatInput.ChatInputIOS;
 	import com.dukascopy.connect.gui.chatInput.IChatInput;
 	import com.dukascopy.connect.gui.components.message.ToastMessage;
 	import com.dukascopy.connect.gui.imagesUploaderStatus.ImagesUploaderStatus;
-	import com.dukascopy.connect.gui.invoiceProcess.InvoiceProcessView;
 	import com.dukascopy.connect.gui.lightbox.LightBox;
 	import com.dukascopy.connect.gui.lightbox.UI;
 	import com.dukascopy.connect.gui.list.List;
 	import com.dukascopy.connect.gui.list.ListItem;
 	import com.dukascopy.connect.gui.list.renderers.ListChatItem;
 	import com.dukascopy.connect.gui.list.renderers.ListLink;
-	import com.dukascopy.connect.gui.list.renderers.ListPayWalletItem;
-	import com.dukascopy.connect.gui.menuVideo.BitmapButton;
-	import com.dukascopy.connect.gui.menuVideo.HidableButton;
 	import com.dukascopy.connect.gui.preloader.Preloader;
 	import com.dukascopy.connect.gui.puzzle.Puzzle;
-	import com.dukascopy.connect.gui.topBar.TopBarChat;
 	import com.dukascopy.connect.gui.topBar.TopBarGuestChat;
 	import com.dukascopy.connect.gui.userWriting.UserWriting;
 	import com.dukascopy.connect.screens.base.BaseScreen;
 	import com.dukascopy.connect.screens.base.ScreenManager;
-	import com.dukascopy.connect.screens.call.CallScreen;
-	import com.dukascopy.connect.screens.call.TalkScreen;
 	import com.dukascopy.connect.screens.context.ContextMenuScreen;
-	import com.dukascopy.connect.screens.dialogs.QueuePopup;
-	import com.dukascopy.connect.screens.dialogs.QueueUnderagePopup;
-	import com.dukascopy.connect.screens.dialogs.ScanPassportPopup;
 	import com.dukascopy.connect.screens.dialogs.ScreenLinksDialog;
-	import com.dukascopy.connect.screens.dialogs.ScreenQuestionReactionsDialog;
-	import com.dukascopy.connect.screens.dialogs.calendar.RecognitionDateRemindPopup;
-	import com.dukascopy.connect.screens.dialogs.calendar.SelectRecognitionDatePopup;
-	import com.dukascopy.connect.screens.dialogs.paymentDialogs.FeedbackPopup;
 	import com.dukascopy.connect.screens.serviceScreen.Overlay;
 	import com.dukascopy.connect.sys.DocumentUploader;
 	import com.dukascopy.connect.sys.Gifts;
 	import com.dukascopy.connect.sys.GlobalDate;
-	import com.dukascopy.connect.sys.applicationError.ApplicationErrors;
-	import com.dukascopy.connect.sys.assets.Assets;
 	import com.dukascopy.connect.sys.auth.Auth;
-	import com.dukascopy.connect.sys.calendar.Calendar;
-	import com.dukascopy.connect.sys.callManager.CallManager;
 	import com.dukascopy.connect.sys.chatManager.ChatManager;
 	import com.dukascopy.connect.sys.chatManager.ForwardingManager;
-	import com.dukascopy.connect.sys.chatManager.typesManagers.AnswersManager;
-	import com.dukascopy.connect.sys.chatManager.typesManagers.ChannelsManager;
-	import com.dukascopy.connect.sys.configManager.ConfigManager;
 	import com.dukascopy.connect.sys.connectionManager.NetworkManager;
 	import com.dukascopy.connect.sys.dialogManager.DialogManager;
 	import com.dukascopy.connect.sys.echo.echo;
@@ -105,8 +60,6 @@ package com.dukascopy.connect.screens {
 	import com.dukascopy.connect.sys.imageManager.ImageUploader;
 	import com.dukascopy.connect.sys.nativeExtensionController.NativeExtensionController;
 	import com.dukascopy.connect.sys.payments.InvoiceManager;
-	import com.dukascopy.connect.sys.payments.PayAPIManager;
-	import com.dukascopy.connect.sys.payments.advancedPayments.vo.PayTaskVO;
 	import com.dukascopy.connect.sys.photoGaleryManager.PhotoGaleryManager;
 	import com.dukascopy.connect.sys.php.PHP;
 	import com.dukascopy.connect.sys.php.PHPRespond;
@@ -117,53 +70,39 @@ package com.dukascopy.connect.screens {
 	import com.dukascopy.connect.sys.sound.SoundController;
 	import com.dukascopy.connect.sys.store.Store;
 	import com.dukascopy.connect.sys.style.Style;
-	import com.dukascopy.connect.sys.theme.AppTheme;
 	import com.dukascopy.connect.sys.usersManager.UsersManager;
 	import com.dukascopy.connect.sys.video.VideoUploader;
 	import com.dukascopy.connect.sys.videoStreaming.VideoStreaming;
 	import com.dukascopy.connect.sys.ws.WS;
 	import com.dukascopy.connect.sys.ws.WSClient;
 	import com.dukascopy.connect.type.ActionType;
-	import com.dukascopy.connect.type.BankPhaze;
 	import com.dukascopy.connect.type.ChatInitType;
 	import com.dukascopy.connect.type.ChatItemContextMenuItemType;
-	import com.dukascopy.connect.type.ChatMessageReactionType;
 	import com.dukascopy.connect.type.ChatMessageType;
 	import com.dukascopy.connect.type.ChatRoomType;
-	import com.dukascopy.connect.type.ChatSystemMessageValueType;
 	import com.dukascopy.connect.type.ErrorCode;
 	import com.dukascopy.connect.type.GiftType;
 	import com.dukascopy.connect.type.HitZoneType;
 	import com.dukascopy.connect.type.ImageContextMenuType;
-	import com.dukascopy.connect.type.InvoiceStatus;
-	import com.dukascopy.connect.type.QuestionChatActionType;
-	import com.dukascopy.connect.type.UserBlockStatusType;
-	import com.dukascopy.connect.utils.ColorUtils;
 	import com.dukascopy.connect.vo.ChatMessageVO;
 	import com.dukascopy.connect.vo.ChatSystemMsgVO;
 	import com.dukascopy.connect.vo.ChatVO;
-	import com.dukascopy.connect.vo.QuestionVO;
 	import com.dukascopy.connect.vo.chat.VoiceMessageVO;
 	import com.dukascopy.connect.vo.screen.ChatScreenData;
 	import com.dukascopy.connect.vo.users.UserVO;
 	import com.dukascopy.connect.vo.users.adds.ChatUserVO;
 	import com.dukascopy.langs.Lang;
-	import com.dukascopy.langs.LangManager;
 	import com.greensock.TweenMax;
 	import com.greensock.easing.Quint;
 	import flash.desktop.Clipboard;
 	import flash.desktop.ClipboardFormats;
-	import flash.display.Bitmap;
-	import flash.display.BitmapData;
 	import flash.display.Sprite;
-	import flash.display.StageQuality;
 	import flash.events.Event;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	import flash.media.AudioPlaybackMode;
 	import flash.net.URLRequest;
 	import flash.net.navigateToURL;
-	import flash.text.TextFormatAlign;
 	
 	/**
 	 * @author Igor Bloom
@@ -2235,29 +2174,48 @@ package com.dukascopy.connect.screens {
 			}
 			else if (emailEntered == false)
 			{
-				emailEntered = true;
-				userEmail = message;
-				
 				var messageMyEmail:ChatMessageVO = new ChatMessageVO();
 				messageMyEmail.usePlainText = true;
 				messageMyEmail.userVO = Auth.myProfile;
 				messageMyEmail.userUID = Auth.uid;
 				messageMyEmail.updateText(message);
 				
-				userVO.setData({name:Lang.textSupport, avatar:LocalAvatars.SUPPORT})
-				var messageHowHelp:ChatMessageVO = new ChatMessageVO();
-				messageHowHelp.userVO = userVO;
-				messageHowHelp.updateText(Lang.howCanWeHelpYou);
-				messageHowHelp.usePlainText = true;
-				
-				if (list) {
-					list.appendItem(messageMyEmail, ListChatItem);
-					list.appendItem(messageHowHelp, ListChatItem);
-					list.scrollBottom();
-					clearUnreaded();
+				var mailPattern:RegExp = /([a-z0-9._-]+)@([a-z0-9.-]+)\.([a-z]{2,4})/g;
+				if (mailPattern.test(message))
+				{
+					userVO.setData({name:Lang.textSupport, avatar:LocalAvatars.SUPPORT})
+					var messageHowHelp:ChatMessageVO = new ChatMessageVO();
+					messageHowHelp.userVO = userVO;
+					messageHowHelp.updateText(Lang.howCanWeHelpYou);
+					messageHowHelp.usePlainText = true;
+					
+					if (list) {
+						list.appendItem(messageMyEmail, ListChatItem);
+						list.appendItem(messageHowHelp, ListChatItem);
+						list.scrollBottom();
+						clearUnreaded();
+					}
+					
+					emailEntered = true;
+					userEmail = message;
+					
+					needEnterName = false;
+					sendSystemIntroMessage(userName, userEmail);
 				}
-				needEnterName = false;
-				sendSystemIntroMessage(userName, userEmail);
+				else
+				{
+					var messageWrongEmail:ChatMessageVO = new ChatMessageVO();
+					messageWrongEmail.userVO = userVO;
+					messageWrongEmail.updateText(Lang.enter_valid_email);
+					messageWrongEmail.usePlainText = true;
+					
+					if (list) {
+						list.appendItem(messageMyEmail, ListChatItem);
+						list.appendItem(messageWrongEmail, ListChatItem);
+						list.scrollBottom();
+						clearUnreaded();
+					}
+				}
 			}
 		}
 		
