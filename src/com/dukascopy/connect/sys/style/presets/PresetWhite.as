@@ -16,6 +16,7 @@ package com.dukascopy.connect.sys.style.presets
 	import assets.PaidChatIcon;
 	import assets.PaymentsImageWhite;
 	import assets.PaymentsLogo;
+	import assets.PhonebookIcon;
 	import assets.ProtectionIcon;
 	import assets.SendGiftIcon;
 	import assets.TouchIdIcon;
@@ -189,18 +190,19 @@ package com.dukascopy.connect.sys.style.presets
 			this[Style.MENU_BANK_SELECTED] = white.MenuBankSelected;
 			this[Style.MENU_BOT_SELECTED] = white.MenuBotSelected;
 			this[Style.MENU_SETTINGS_SELECTED] = white.MenuSettingsSelected;
-
+			
 			this[Style.ICON_911] = white.Icon911;
 			this[Style.ICON_SETTINGS] = white.Settings;
 			this[Style.ICON_CALLS] = white.Phone;
 			this[Style.ICON_REFRESH] = white.Refresh;
 			this[Style.ICON_GROUP_CHAT] = white.GroupChat;
-
+			this[Style.ICON_PHONEBOOK] = PhonebookIcon;
+			
             AppTheme.colorPallete=AppTheme.lightColorPallete;
 			Config.TOP_BAR_HEIGHT *= 1.1;
 			
 			this[Style.LIGHT_STATUS_BAR] = false;
-
+			
 			this[Style.ICON_MARKETPLACE] = white.Marketplace;
 			this[Style.ICON_BOT] = white.Bot;
 			this[Style.ICON_BANK] = white.Bank;

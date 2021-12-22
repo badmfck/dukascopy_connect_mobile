@@ -11,6 +11,8 @@ package com.dukascopy.connect.data
 		public var code:String;
 		public var country:String;
 		public var reason:String;
+		public var name:String;
+		public var nameChanged:Boolean;
 		
 		public function CardDeliveryAddress() 
 		{

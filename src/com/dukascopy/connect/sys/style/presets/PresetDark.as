@@ -22,6 +22,7 @@ package com.dukascopy.connect.sys.style.presets
 	import assets.PaymentsImageDark;
 	import assets.PaymentsLogo;
 	import assets.PaymentsLogoDark;
+	import assets.PhonebookIcon;
 	import assets.ProtectionIcon;
 	import assets.SendGiftIcon;
 	import assets.SendGiftIconDark;
@@ -204,6 +205,7 @@ package com.dukascopy.connect.sys.style.presets
 			this[Style.ICON_CALLS] = white.Phone;
 			this[Style.ICON_REFRESH] = white.Refresh;
 			this[Style.ICON_GROUP_CHAT] = white.GroupChat;
+			this[Style.ICON_PHONEBOOK] = PhonebookIcon;
 			
 			AppTheme.colorPallete = AppTheme.lightColorPallete;
 			Config.TOP_BAR_HEIGHT *= 1.1;
