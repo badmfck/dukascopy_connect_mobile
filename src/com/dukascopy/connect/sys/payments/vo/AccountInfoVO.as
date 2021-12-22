@@ -44,6 +44,10 @@ package com.dukascopy.connect.sys.payments.vo {
 		private var _ethAddress:String;
 		private var _btcAddress:String;
 		public var updateTime:Number;
+		
+		public var cardIssuanceCityMaxLength:int = 20;
+		public var cardIssuanceFullnameMaxLength:int = 100;
+		public var cardIssuanceStreetMaxLength:int = 70;
 		// Unused
 		//private var _nationality:String;
 		//private var _title:String;
@@ -66,6 +70,7 @@ package com.dukascopy.connect.sys.payments.vo {
 		static private var wasSend:Boolean=false;
 		private var _address_card:String;
 		private var _city_card:String;
+		private var _fullname_card:String;
 		private var _country_card:String;
 		private var _zip_card:String;
 		
@@ -109,6 +114,9 @@ package com.dukascopy.connect.sys.payments.vo {
 			key = "CARD_DELIVERY_CITY";
 			if (key in data == true)
 				_city_card = data[key];
+			key = "DELIVERY_FULL_NAME";
+			if (key in data == true)
+				_fullname_card = data[key];
 			//---------------------------
 			key = "COUNTRY";
 			if (key in data == true)
@@ -263,6 +271,11 @@ package com.dukascopy.connect.sys.payments.vo {
 		public function get city_card():String 
 		{
 			return _city_card;
+		}
+		
+		public function get fullname_card():String 
+		{
+			return _fullname_card;
 		}
 		
 		public function get country_card():String 

@@ -57,12 +57,8 @@ package com.dukascopy.connect.gui.components
 		private var itemWidth:int;
 		private var streetInput:InputField;
 		private var cityInput:InputField;
+		private var nameInput:InputField;
 		private var codeInput:InputField;
-		private var streetTitle:Bitmap;
-		private var cityTitle:Bitmap;
-		private var codeTitle:Bitmap;
-		private var countryTitle:Bitmap;
-		private var reasonTitle:Bitmap;
 		private var countrySelector:DDFieldButton;
 		private var reasonSelector:DDFieldButton;
 		private var container:Sprite;
@@ -142,8 +138,9 @@ package com.dukascopy.connect.gui.components
 			changeButton.setBitmapData(UI.getSnapshot(icon), true);
 			UI.destroy(icon);
 			
-			streetInput = new InputField( -1, Input.MODE_INPUT);
+			streetInput = new InputField(-1, Input.MODE_INPUT);
 			streetInput.onSelectedFunction = onStreetSelected;
+			streetInput.underlineColor = Style.color(Style.COLOR_LINE);
 			streetInput.restrict = "a-z A-z 0-9 ^[^] \\-\\_,.";
 			streetInput.onChangedFunction = onInputChangeStreet;
 			streetInput.setMaxChars(70);
@@ -157,6 +154,7 @@ package com.dukascopy.connect.gui.components
 			
 			cityInput = new InputField( -1, Input.MODE_INPUT);
 			cityInput.onSelectedFunction = onCitySelected;
+			cityInput.underlineColor = Style.color(Style.COLOR_LINE);
 			cityInput.onChangedFunction = onInputChangeCity;
 			cityInput.setMaxChars(20);
 			cityInput.restrict = "a-z A-z 0-9 ^[^] \\_,.";
@@ -164,8 +162,19 @@ package com.dukascopy.connect.gui.components
 			container.addChild(cityInput);
 			cityInput.updateTextFormat(tf);
 			
+			nameInput = new InputField( -1, Input.MODE_INPUT);
+			nameInput.onSelectedFunction = onCitySelected;
+			nameInput.underlineColor = Style.color(Style.COLOR_LINE);
+			nameInput.onChangedFunction = onInputChangeName;
+			nameInput.setMaxChars(20);
+			nameInput.restrict = "a-z A-z \\- \\' \\.";
+			nameInput.setPadding(0);
+			container.addChild(nameInput);
+			nameInput.updateTextFormat(tf);
+			
 			codeInput = new InputField( -1, Input.MODE_INPUT);
 			codeInput.onSelectedFunction = onCodeSelected;
+			codeInput.underlineColor = Style.color(Style.COLOR_LINE);
 			codeInput.onChangedFunction = onInputChangeCode;
 			codeInput.setMaxChars(10);
 			codeInput.restrict = "a-z A-z 0-9 ^[^] \\_,.";
@@ -173,26 +182,11 @@ package com.dukascopy.connect.gui.components
 			container.addChild(codeInput);
 			codeInput.updateTextFormat(tf);
 			
-			countrySelector = new DDFieldButton(onCountrySelect, "", true, Style.color(Style.CONTROL_INACTIVE));
+			countrySelector = new DDFieldButton(onCountrySelect, "", true, Style.color(Style.COLOR_LINE), Lang.country);
 			container.addChild(countrySelector);
 			
-			reasonSelector = new DDFieldButton(onReasonSelect, "", true, Style.color(Style.CONTROL_INACTIVE));
+			reasonSelector = new DDFieldButton(onReasonSelect, "", true, Style.color(Style.COLOR_LINE), Lang.deliveryChangeReason);
 			container.addChild(reasonSelector);
-			
-			streetTitle = new Bitmap();
-			container.addChild(streetTitle);
-			
-			cityTitle = new Bitmap();
-			container.addChild(cityTitle);
-			
-			codeTitle = new Bitmap();
-			container.addChild(codeTitle);
-			
-			countryTitle = new Bitmap();
-			container.addChild(countryTitle);
-			
-			reasonTitle = new Bitmap();
-			container.addChild(reasonTitle);
 			
 			collapsed = true;
 		}
@@ -235,6 +229,11 @@ package com.dukascopy.connect.gui.components
 		private function onInputChangeCity(e:Event = null):void
 		{
 			cityInput.valid();
+		}
+		
+		private function onInputChangeName(e:Event = null):void
+		{
+			nameInput.valid();
 		}
 		
 		private function onInputChangeCode(e:Event = null):void
@@ -407,15 +406,10 @@ package com.dukascopy.connect.gui.components
 			countrySelector.setValue(getCountry(getCountryCode()));
 		//	countrySelector.alpha = 0.5;
 			
-			streetTitle.bitmapData = TextUtils.createTextFieldData(Lang.streetAddress, itemWidth - padding * 2, 10, true, TextFormatAlign.CENTER, TextFieldAutoSize.LEFT, FontSize.CAPTION_1, true, Style.color(Style.COLOR_SUBTITLE), Style.color(Style.COLOR_BACKGROUND));
-			cityTitle.bitmapData = TextUtils.createTextFieldData(Lang.city, itemWidth - padding * 2, 10, true, TextFormatAlign.CENTER, TextFieldAutoSize.LEFT, FontSize.CAPTION_1, true, Style.color(Style.COLOR_SUBTITLE), Style.color(Style.COLOR_BACKGROUND));
-			codeTitle.bitmapData = TextUtils.createTextFieldData(Lang.postalCode, itemWidth - padding * 2, 10, true, TextFormatAlign.CENTER, TextFieldAutoSize.LEFT, FontSize.CAPTION_1, true, Style.color(Style.COLOR_SUBTITLE), Style.color(Style.COLOR_BACKGROUND));
-			countryTitle.bitmapData = TextUtils.createTextFieldData(Lang.country, itemWidth - padding * 2, 10, true, TextFormatAlign.CENTER, TextFieldAutoSize.LEFT, FontSize.CAPTION_1, true, Style.color(Style.COLOR_SUBTITLE), Style.color(Style.COLOR_BACKGROUND));
-			reasonTitle.bitmapData = TextUtils.createTextFieldData(Lang.deliveryChangeReason, itemWidth - padding * 2, 10, true, TextFormatAlign.CENTER, TextFieldAutoSize.LEFT, FontSize.CAPTION_1, true, Style.color(Style.COLOR_SUBTITLE), Style.color(Style.COLOR_BACKGROUND));
-			
-			streetInput.draw(itemWidth - padding * 2, null, null, null, null, Style.color(Style.FILTER_TABS_COLOR_TAB_BG_SELECTED));
-			cityInput.draw(itemWidth - padding * 2, null, null, null, null, Style.color(Style.FILTER_TABS_COLOR_TAB_BG_SELECTED));
-			codeInput.draw(itemWidth - padding * 2, null, null, null, null, Style.color(Style.FILTER_TABS_COLOR_TAB_BG_SELECTED));
+			streetInput.draw(itemWidth - padding * 2, Lang.streetAddress, null, null, null, Style.color(Style.FILTER_TABS_COLOR_TAB_BG_SELECTED));
+			cityInput.draw(itemWidth - padding * 2, Lang.city, null, null, null, Style.color(Style.FILTER_TABS_COLOR_TAB_BG_SELECTED));
+			codeInput.draw(itemWidth - padding * 2, Lang.postalCode, null, null, null, Style.color(Style.FILTER_TABS_COLOR_TAB_BG_SELECTED));
+			nameInput.draw(itemWidth - padding * 2, Lang.card_delivery_name, null, null, null, Style.color(Style.FILTER_TABS_COLOR_TAB_BG_SELECTED));
 			
 			var textSettings:TextFieldSettings = new TextFieldSettings(Lang.textSave, Style.color(Style.COLOR_BACKGROUND), FontSize.BODY, TextFormatAlign.CENTER);
 			var buttonBitmap:ImageBitmapData = TextUtils.createbutton(textSettings, Color.GREEN, 1, -1, NaN, ((itemWidth - padding * 3) * .5), -1, Style.size(Style.SIZE_BUTTON_CORNER));
@@ -438,6 +432,7 @@ package com.dukascopy.connect.gui.components
 			reasonSelector.setValue(null);
 			streetInput.valueString = null;
 			cityInput.valueString = null;
+			nameInput.valueString = null;
 			codeInput.valueString = null;
 		}
 		
@@ -457,6 +452,7 @@ package com.dukascopy.connect.gui.components
 				}
 				addressData.address = streetInput.valueString;
 				addressData.city = cityInput.valueString;
+				addressData.name = nameInput.valueString;
 				addressData.code = codeInput.valueString;
 				if (selectedReason != null)
 				{
@@ -481,7 +477,7 @@ package com.dukascopy.connect.gui.components
 			return PayManager.accountInfo.country;
 		}
 		
-		private function getAccountCity():String 
+		public function getAccountCity():String 
 		{
 			if (PayManager.accountInfo.city_card != null)
 			{
@@ -490,13 +486,22 @@ package com.dukascopy.connect.gui.components
 			return PayManager.accountInfo.city;
 		}
 		
-		private function getAccountAddress():String 
+		public function getAccountAddress():String 
 		{
 			if (PayManager.accountInfo.address_card != null)
 			{
 				return PayManager.accountInfo.address_card;
 			}
 			return PayManager.accountInfo.address;
+		}
+		
+		public function getAccountName():String 
+		{
+			if (PayManager.accountInfo.fullname_card != null)
+			{
+				return PayManager.accountInfo.fullname_card;
+			}
+			return PayManager.accountInfo.firstName + " " + PayManager.accountInfo.lastName;
 		}
 		
 		private function getAccountZip():String 
@@ -510,11 +515,20 @@ package com.dukascopy.connect.gui.components
 		
 		private function validate():Boolean
 		{
+			if (nameInput.valueString == "" || nameInput.valueString == null)
+			{
+				if (scrollCall != null)
+				{
+					scrollCall(nameInput.y - Config.FINGER_SIZE);
+				}
+				nameInput.invalid();
+				return false;
+			}
 			if (streetInput.valueString == "" || streetInput.valueString == null)
 			{
 				if (scrollCall != null)
 				{
-					scrollCall(streetTitle.y);
+					scrollCall(streetInput.y - Config.FINGER_SIZE);
 				}
 				streetInput.invalid();
 				return false;
@@ -523,7 +537,7 @@ package com.dukascopy.connect.gui.components
 			{
 				if (scrollCall != null)
 				{
-					scrollCall(cityTitle.y);
+					scrollCall(cityInput.y - Config.FINGER_SIZE);
 				}
 				cityInput.invalid();
 				return false;
@@ -532,7 +546,7 @@ package com.dukascopy.connect.gui.components
 			{
 				if (scrollCall != null)
 				{
-					scrollCall(codeTitle.y);
+					scrollCall(codeInput.y - Config.FINGER_SIZE);
 				}
 				codeInput.invalid();
 				return false;
@@ -541,7 +555,7 @@ package com.dukascopy.connect.gui.components
 			{
 				if (scrollCall != null)
 				{
-					scrollCall(reasonTitle.y);
+					scrollCall(reasonSelector.y - Config.FINGER_SIZE);
 				}
 				reasonSelector.invalid();
 				return false;
@@ -583,25 +597,33 @@ package com.dukascopy.connect.gui.components
 			if (PayManager.accountInfo != null)
 			{
 				realAddress = getAddressString();
+				
+				if (getAccountCity() != null && getAccountCity().length > PayManager.accountInfo.cardIssuanceCityMaxLength)
+				{
+					realAddress += "<br/><br/><font color='" + "#" + Color.RED.toString(16) + "'>" + Lang.card_delivery_city_long + "</font>";
+				}
+				else if (getAccountName() != null && getAccountName().length > PayManager.accountInfo.cardIssuanceFullnameMaxLength)
+				{
+					realAddress += "<br/><br/><font color='" + "#" + Color.RED.toString(16) + "'>" + Lang.card_delivery_name_long + "</font>";
+				}
+				else if (getAccountAddress() != null && getAccountAddress().length > PayManager.accountInfo.cardIssuanceStreetMaxLength)
+				{
+					realAddress += "<br/><br/><font color='" + "#" + Color.RED.toString(16) + "'>" + Lang.card_delivery_address_long + "</font>";
+				}
 			}
 			if (tfAddressBitmap.bitmapData != null)
 			{
 				tfAddressBitmap.bitmapData.dispose();
 				tfAddressBitmap.bitmapData = null;
 			}
-			tfAddressBitmap.bitmapData = TextUtils.createTextFieldData(realAddress, itemWidth - changeButton.width - tfAddressIcon.width - padding * 4, 10, true, TextFormatAlign.LEFT, TextFieldAutoSize.LEFT, FontSize.BODY, true, Style.color(Style.COLOR_TEXT));
+			tfAddressBitmap.bitmapData = TextUtils.createTextFieldData(realAddress, itemWidth - changeButton.width - tfAddressIcon.width - padding * 4, 10, true, TextFormatAlign.LEFT, TextFieldAutoSize.LEFT, FontSize.BODY, true, Style.color(Style.COLOR_TEXT), Style.color(Style.FILTER_TABS_COLOR_TAB_BG_SELECTED), false, true);
 		}
 		
 		private function updatePositions():void 
 		{
-			streetTitle.x = padding;
-			cityTitle.x = padding;
-			codeTitle.x = padding;
-			countryTitle.x = padding;
-			reasonTitle.x = padding;
-			
 			streetInput.x = padding;
 			cityInput.x = padding;
+			nameInput.x = padding;
 			codeInput.x = padding;
 			countrySelector.x = padding;
 			reasonSelector.x = padding;
@@ -626,32 +648,20 @@ package com.dukascopy.connect.gui.components
 			
 			minContentHeight = position;
 			
-			streetTitle.y = position;
-			position += streetTitle.height;
+			nameInput.y = position;
+			position += nameInput.height + Config.FINGER_SIZE * .1;
 			
 			streetInput.y = position;
-			position += streetInput.height + Config.FINGER_SIZE * .0;
-			
-			cityTitle.y = position;
-			position += cityTitle.height;
+			position += streetInput.height + Config.FINGER_SIZE * .1;
 			
 			cityInput.y = position;
-			position += cityInput.height + Config.FINGER_SIZE * .0;
-			
-			codeTitle.y = position;
-			position += codeTitle.height;
+			position += cityInput.height + Config.FINGER_SIZE * .1;
 			
 			codeInput.y = position;
-			position += codeInput.height + Config.FINGER_SIZE * .0;
-			
-			countryTitle.y = position;
-			position += countryTitle.height;
+			position += codeInput.height + Config.FINGER_SIZE * .1;
 			
 			countrySelector.y = position;
 			position += countrySelector.height + Config.FINGER_SIZE * .45;
-			
-			reasonTitle.y = position;
-			position += reasonTitle.height;
 			
 			reasonSelector.y = position;
 			position += reasonSelector.height + Config.FINGER_SIZE * .4;
@@ -712,9 +722,9 @@ package com.dukascopy.connect.gui.components
 		{
 			if (addressData != null)
 			{
-				return addressData.address + ", \n" + addressData.city + ", " + addressData.code + " \n" + getCountry(addressData.country);
+				return addressData.name + ",<br/>" + addressData.address + ",<br/>" + addressData.city + ", " + addressData.code + "<br/>" + getCountry(addressData.country);
 			}
-			return getAccountAddress() + ",\n" + getAccountCity() + ", " + getAccountZip() + "\n" + getCountry(getAccountCountry());
+			return getAccountName() + ",<br/>" + getAccountAddress() + ",<br/>" + getAccountCity() + ", " + getAccountZip() + "<br/>" + getCountry(getAccountCountry());
 		}
 		
 		private function updateMask():void
@@ -768,36 +778,6 @@ package com.dukascopy.connect.gui.components
 				UI.destroy(tfAdressContactBitmap);
 				tfAdressContactBitmap = null;
 			}*/
-			if (streetTitle != null)
-			{
-				UI.destroy(streetTitle);
-				streetTitle = null;
-			}
-			if (cityTitle != null)
-			{
-				UI.destroy(cityTitle);
-				cityTitle = null;
-			}
-			if (codeTitle != null)
-			{
-				UI.destroy(codeTitle);
-				codeTitle = null;
-			}
-			if (countryTitle != null)
-			{
-				UI.destroy(countryTitle);
-				countryTitle = null;
-			}
-			if (reasonTitle != null)
-			{
-				UI.destroy(reasonTitle);
-				reasonTitle = null;
-			}
-			if (codeTitle != null)
-			{
-				saveButton.dispose();
-				saveButton = null;
-			}
 			if (cancelButton != null)
 			{
 				cancelButton.dispose();
@@ -817,6 +797,11 @@ package com.dukascopy.connect.gui.components
 			{
 				cityInput.dispose();
 				cityInput = null;
+			}
+			if (nameInput != null)
+			{
+				nameInput.dispose();
+				nameInput = null;
 			}
 			if (codeInput != null)
 			{
@@ -843,6 +828,7 @@ package com.dukascopy.connect.gui.components
 			
 			streetInput.activate();
 			cityInput.activate();
+			nameInput.activate();
 			codeInput.activate();
 			
 			countrySelector.activate();
@@ -857,6 +843,7 @@ package com.dukascopy.connect.gui.components
 			
 			streetInput.deactivate();
 			cityInput.deactivate();
+			nameInput.deactivate();
 			codeInput.deactivate();
 			
 			countrySelector.deactivate();
@@ -876,6 +863,10 @@ package com.dukascopy.connect.gui.components
 			if (cityInput != null && cityInput.isSelected())
 			{
 				return cityInput;
+			}
+			if (nameInput != null && nameInput.isSelected())
+			{
+				return nameInput;
 			}
 			return null;
 		}

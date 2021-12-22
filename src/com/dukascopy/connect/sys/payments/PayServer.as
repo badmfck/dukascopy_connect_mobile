@@ -260,6 +260,12 @@ package com.dukascopy.connect.sys.payments {
 				data.country = deliveryAddress.country;
 				data.postal_code = deliveryAddress.code;
 				data.reason = deliveryAddress.reason;
+				
+				if (deliveryAddress.nameChanged)
+				{
+					data.update_full_name = true;
+					data.delivery_full_name = deliveryAddress.name;
+				}
 			}
 			if (_cardType != null)
 				data.psystem = _cardType;
