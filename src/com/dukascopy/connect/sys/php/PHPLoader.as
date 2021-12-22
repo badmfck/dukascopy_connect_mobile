@@ -21,6 +21,7 @@ package com.dukascopy.connect.sys.php {
 	import flash.net.URLRequestMethod;
 	import flash.net.URLStream;
 	import flash.net.URLVariables;
+	import com.dukascopy.connect.GD;
 
 	/**
 	 * ...
@@ -119,6 +120,7 @@ package com.dukascopy.connect.sys.php {
 			urlStream.removeEventListener(IOErrorEvent.IO_ERROR, onStreamIOError);
 			urlStream.removeEventListener(SecurityErrorEvent.SECURITY_ERROR, onStreamSecurityError);
 			PHP.S_COMPLETE.invoke();
+			GD.S_HTTP_REQUEST_COMPLETED.invoke();
 			createRespond(err, data, callBack, respond, rawRespond, id, additionalData);
 		}
 		
@@ -300,6 +302,7 @@ package com.dukascopy.connect.sys.php {
 		private function onComplete(e:Event):void {
 			//echo("PHPLoader (" + id + ")", "onComplete", new Date().getTime());
 			PHP.S_COMPLETE.invoke();
+			GD.S_HTTP_REQUEST_COMPLETED.invoke();
 			finish();
 		}
 		

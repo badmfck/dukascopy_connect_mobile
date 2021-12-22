@@ -1,8 +1,8 @@
 package com.dukascopy.connect.sys.ws {
 
 	import com.dukascopy.connect.Config;
-import com.dukascopy.connect.GD;
-import com.dukascopy.connect.MobileGui;
+	import com.dukascopy.connect.GD;
+	import com.dukascopy.connect.MobileGui;
 	import com.dukascopy.connect.sys.auth.Auth;
 	import com.dukascopy.connect.sys.connectionManager.NetworkManager;
 	import com.dukascopy.connect.sys.dialogManager.DialogManager;
@@ -39,6 +39,8 @@ import com.dukascopy.connect.MobileGui;
 		static public const STATE_CLOSED:int = 3;
 		
 		static private var ws:IWebSocket;
+
+		static private var iosWS:IOSWS13;
 		
 		static private var _inited:Boolean;
 		static private var _connected:Boolean;
@@ -57,6 +59,47 @@ import com.dukascopy.connect.MobileGui;
 			if (_inited == true)
 				return;
 			_inited = true;
+
+
+			// IOS 13 
+			if(Config.PLATFORM_WINDOWS || (Config.PLATFORM_APPLE && Config.APPLE_VERSION>=13)){
+				
+				GD.S_WS_MESSAGE.add(function(text:String):void{
+					var data:Object = null;
+					try {
+						data = JSON.parse(text);
+					} catch (err:Error) {
+						echo("WS", "onWSMessage",'Can not parse JSON');
+						return;
+					}
+					if (data != null)
+						WSClient.handlePacket(data)
+				})
+
+				GD.S_WS_OPENED.add(function():void{
+					GD.S_LOG.invoke("TRY TO SEND AUTHORIZE");
+					WSClient.call_authorize(Auth.key);
+				})
+
+				GD.S_WS_AUTORIZED.add(function():void{
+					MobileGui.S_WS_EVENT.invoke("WS Authorized");
+					GD.S_LOG.invoke("WS AUTHORIZED");
+					S_CONNECTED.invoke();
+				})
+
+				GD.S_WS_AUTORIZED_ERROR.add(function(err:String):void{
+					MobileGui.S_WS_EVENT.invoke("Auth Error (" + err + ")");
+					DialogManager.alert(Lang.textError, err);
+					Auth.clearAuthorization(err);
+				})
+
+				iosWS=new IOSWS13(); // START WS FOR IOS 13
+				return;
+			}
+
+
+			// ANDROID, OLD IOS & EMULATORS
+
 			Auth.S_AUTHORIZED.add(onAuthSuccess);
 			Auth.S_NEED_AUTHORIZATION.add(onNeedAuthorization);
 			WSClient.S_AUTHORIZED.add(onWSAuthorized);
@@ -400,6 +443,9 @@ import com.dukascopy.connect.MobileGui;
 		}
 		
 		static public function send(method:String, data:Object):Boolean {
+
+			
+
 			if (ws == null) {
 				echo("WS", "send", "WS is null; Method: " + method);
 				return false;

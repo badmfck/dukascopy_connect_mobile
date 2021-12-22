@@ -3,7 +3,7 @@
     "compilerOptions": {
         "default-frame-rate": 60,
         "use-gpu": true,
-        "advanced-telemetry": true,
+        "advanced-telemetry": false,
         "source-path": [
             "src"
         ],
@@ -13,10 +13,9 @@
         "library-path": [
             "src/swc/greensock.swc"
         ],
-        "debug": true,
+        "debug": false,
         "output": "./bin/Dukascopy.swf"
     },
-
 
     "airOptions": {
 		"extdir": [

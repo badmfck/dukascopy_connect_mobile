@@ -38,7 +38,9 @@ package com.dukascopy.connect.sys.messagesController {
 			setup();
 			
 			Auth.S_NEED_AUTHORIZATION.add(clear);
+			
 			WS.S_CONNECTED.add(sendPendingMessagesFromSQL);
+
 			WSClient.S_DUPLICATED_MESSAGE.add(onMessageSentDuplicateError);
 			WSClient.S_BLOCKED_MESSAGE.add(onMessageSentBlockedError);
 			WSClient.S_REMOVE_MESSAGE.add(onMessageSentBlockedError);

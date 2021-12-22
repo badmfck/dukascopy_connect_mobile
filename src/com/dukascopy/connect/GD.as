@@ -24,6 +24,7 @@ package com.dukascopy.connect
 	import com.telefision.sys.signals.S_StringSignal;
 	import com.telefision.sys.signals.S_WSPacketReceived;
 	import com.telefision.sys.signals.S_ErrorData;
+	import com.telefision.sys.signals.S_WSPacketSendRequest;
 	
 	public class GD
 	{
@@ -43,6 +44,7 @@ package com.dukascopy.connect
 		// Fires when config ready to work
 		static public const S_CONFIG_UPDATED:Signal=new Signal();
 		static public const S_URL_CONFIG_READY:S_URLConfigReady = new S_URLConfigReady();
+		static public const REQUEST_URL_CONFIG:Signal = new Signal();
 		
 		static public const S_WS_PACKET_RECEIVED:S_WSPacketReceived=new S_WSPacketReceived();
 
@@ -126,5 +128,25 @@ package com.dukascopy.connect
 
 		//PAY
 		static public const S_PAY_REQUEST_WALLETS:Signal=new Signal("S_PAY_REQUEST_WALLETS");
+
+		// ETC
+		static public const S_LOG:Signal=new Signal("S_LOG");
+
+		// WS
+		static public const S_WS_CLOSED:Signal=new Signal("S_WS_CLOSED");
+		static public const S_WS_OPENED:Signal=new Signal("S_WS_OPENED");
+		static public const S_WS_MESSAGE:Signal=new Signal("S_WS_MESSAGE");
+		static public const S_WS_REQUEST_SEND:S_WSPacketSendRequest=new S_WSPacketSendRequest();
+		static public const S_WS_AUTORIZED_ERROR:S_StringSignal=new S_StringSignal();
+		static public const S_WS_AUTORIZED:Signal=new Signal();
+		static public const S_WS_REQUEST_STATUS:Signal=new Signal();
+		static public const S_WS_STATUS:Signal=new Signal(); //true/false
+
+		// HTTP
+		static public const S_HTTP_REQUEST_COMPLETED:Signal=new Signal();
+
+		// NETWORK
+		static public const S_NETWORK_STATUS:Signal=new Signal(); //DCCNetStat
+		static public const S_REQUEST_NET_STATUS:Signal=new Signal(); //functon(online:Boolean)
 	}
 }

@@ -967,12 +967,12 @@ package com.dukascopy.connect.sys.nativeExtensionController {
 			}
 		}
 		
-		static public function getVersion():int 
+		static public function getVersion():Number 
 		{
 			if (Config.PLATFORM_ANDROID == true)
-			{
 				return MobileGui.androidExtension.getVersion();
-			}
+			if(Config.PLATFORM_APPLE)
+				return Config.APPLE_VERSION
 			return 0;
 		}
 		

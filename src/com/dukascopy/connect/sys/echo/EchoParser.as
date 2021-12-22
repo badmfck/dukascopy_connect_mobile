@@ -152,8 +152,8 @@ import flash.system.Capabilities;
 				s = "0" + s;
 			str ="| "+h+":"+m+":"+s+" | "+((error==true)?"{color:red}ERR{color} | ":"LOG | ")+ target + " | " + method + " | " + data+" |";
 
-			/*if (Capabilities.isDebugger)
-				trace(str);*/
+			if (Capabilities.isDebugger)
+				trace(str);
 
 
 			if(Config.PLATFORM_APPLE && Config.APPLE_LOG==true){

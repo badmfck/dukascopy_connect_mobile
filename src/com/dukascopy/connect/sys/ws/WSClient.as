@@ -26,6 +26,7 @@ package com.dukascopy.connect.sys.ws{
 	import com.telefision.sys.signals.Signal;
 	import com.dukascopy.connect.sys.php.PHP;
 	import com.dukascopy.connect.vo.WSPacketVO;
+	import com.dukascopy.connect.vo.WSPacketSendRequestVO;
 
 	/**
 	 * ...
@@ -390,7 +391,14 @@ package com.dukascopy.connect.sys.ws{
 		
 		static public function call_sendTextMessage(chatUID:String, text:String, existingMid:Number = -1, 
 													addLocallyOnNetworkFailed:Boolean = true, senderId:String = null, 
-													doNotSendToWS:Boolean = false, userUID:String = null, messageId:Object = null):Boolean {
+													doNotSendToWS:Boolean = false, userUID:String = null, messageId:Object = null,callback:Function=null):Boolean {
+
+			if(Config.PLATFORM_WINDOWS || (Config.PLATFORM_APPLE && Config.APPLE_VERSION>=13)){
+				// SEND VIA NEW LOGIC
+				_sendTextMessage(chatUID,text,existingMid,addLocallyOnNetworkFailed,senderId,doNotSendToWS,userUID,messageId,callback);
+				return false;
+			}
+
 			GD.S_DEBUG_WS.invoke("WSC: trying to send msg");
 			wasMessage = true;
 			var needBackMessage:Boolean = false;
@@ -421,8 +429,7 @@ package com.dukascopy.connect.sys.ws{
 			if (needBackMessage == false)
 				return networkSendResult;
 			
-			if (networkSendResult == true && messageId != null)
-			{
+			if (networkSendResult == true && messageId != null){
 				messageId.id = mid;
 			}
 			
@@ -449,6 +456,77 @@ package com.dukascopy.connect.sys.ws{
 			}
 
 			return networkSendResult;
+		}
+
+
+		static private function _sendTextMessage(
+		chatUID:String,
+		text:String,
+		existingMid:Number = -1, 
+		addLocallyOnNetworkFailed:Boolean = true,
+		senderId:String = null,
+		doNotSendToWS:Boolean = false,
+		userUID:String = null,
+		messageId:Object = null,
+		callback:Function=null):void{
+
+
+			// IOS 13 AND BEYOND
+			GD.S_LOG.invoke("SEND MSG START");
+
+			wasMessage = true;
+			var needBackMessage:Boolean = false;
+			var mid:Number = existingMid;
+			if (mid == -1) {
+				needBackMessage = true;
+				mid = new Date().getTime();
+			}
+
+			var data:Object = {};
+			data.chatUID = chatUID;
+			data.text = text;
+			data.mid = mid;
+			if (ChatManager.isAnon(chatUID) == true)
+				data.anonymous = true;
+
+			// SEND REQUEST TO WS
+			GD.S_WS_REQUEST_SEND.invoke(new WSPacketSendRequestVO(
+				"msgAdd",
+				data,
+				function(success:Boolean):void{
+					GD.S_LOG.invoke("MSG SENT: "+success);
+
+					if(!needBackMessage && callback!=null){
+						callback(success);
+						return;
+					}
+						
+					if (success && messageId != null)
+						messageId.id = mid;
+
+					if (success || addLocallyOnNetworkFailed) {
+						
+						if (existingMid == -1) {
+						
+							if (senderId != null)
+								S_MESSAGE_SENT_ADDITIONAL.invoke(senderId, mid);
+
+							var backMessage:Object = createBackMessage(chatUID, text, mid);
+
+							if (doNotSendToWS == true)
+								backMessage.nsws = true;
+						
+							if (success == true && doNotSendToWS == false)
+								MessagesController.newLocalMessage(backMessage);
+							
+							backMessage.text = backMessage.text.substr(backMessage.text.indexOf("^", 1) + 1);
+							S_CHAT_MSG.invoke(backMessage);
+						}
+					}
+				},
+				doNotSendToWS
+			));
+			
 		}
 		
 		static public function call_addMessageReaction(message:Object):void {
@@ -583,10 +661,26 @@ package com.dukascopy.connect.sys.ws{
 		
 		
 		
-		static private function send(method:String, data:Object = null):Boolean {
+		static private function send(method:String, data:Object = null,callback:Function=null):Boolean {
+			
+			if(Config.PLATFORM_WINDOWS || (Config.PLATFORM_APPLE && Config.APPLE_VERSION>=13)){
+				// EXECUTED!
+				GD.S_WS_REQUEST_SEND.invoke(new WSPacketSendRequestVO(
+					method,
+					data,
+					callback
+				));
+
+				return false;
+			}
+
 			if (method != "pong")
 				echo("WSClient", "send", method);
-			return WS.send(method, data);
+
+			var result:Boolean=WS.send(method, data);
+			if(callback && callback.length==1)
+				callback(result);
+			return result;
 		}
 		
 		static public function handlePacket(pack:Object):void {
@@ -671,18 +765,25 @@ package com.dukascopy.connect.sys.ws{
 				}
 				S_USER_PROFILE_UPDATE.invoke(update);
 			}
-			if (pack.method == 'init') {
-				try{
-					var dbg:String = ""; // Print_r.show(pack, true);
-					echo("WSClient","handlePacket","\nAuthorized on socket: \n"+dbg+"\n");9
-				}catch(e:Error){}
 
-				S_AUTHORIZED.invoke();
+
+			if (pack.method == 'init') {
+				if(pack.data!=null && !pack.data.error){
+					S_AUTHORIZED.invoke();
+					GD.S_WS_AUTORIZED.invoke();
+					return;
+				}
+				S_AUTHORIZED_ERROR.invoke("");
+				GD.S_WS_AUTORIZED_ERROR.invoke(Lang.authenticationError);
 				return;
 			}
+
 			// AUTH ERROR
 			if (pack.method == 'auth') {
 				var err:String = 'Auth error';
+
+				GD.S_WS_AUTORIZED_ERROR.invoke(Lang.authenticationError);
+
 				if ('data' in pack && 'error' in pack) {
 					// AUTHORIZATION ERROR!!!
 					if ('info' in pack.data){
@@ -701,6 +802,7 @@ package com.dukascopy.connect.sys.ws{
 				// NEED CLOSE WS AND RECONNECT
 				// Sergey Nosov sad: WS will be immediately closed after auth error (2018.04.12)
 				//WS.onClose();
+				
 				return;
 			}
 			

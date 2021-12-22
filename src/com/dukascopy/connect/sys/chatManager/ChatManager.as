@@ -71,7 +71,9 @@ package com.dukascopy.connect.sys.chatManager {
 	import com.dukascopy.langs.Lang;
 	import com.dukascopy.langs.LangManager;
 	import com.greensock.TweenMax;
-	import com.milkmangames.nativeextensions.CMNetworkType;
+	
+	//import com.milkmangames.nativeextensions.CMNetworkType;
+	
 	import com.telefision.sys.signals.Signal;
 	import flash.media.Camera;
 	import flash.media.Microphone;
@@ -167,7 +169,11 @@ package com.dukascopy.connect.sys.chatManager {
 			
 			Auth.S_PHAZE_CHANGE.add(onAccountPhaseChanged);
 			
+			// IGNORE NETWORK MANAGER ON IOS
 			NetworkManager.S_CONNECTION_CHANGED.add(onConnectionChanged);
+
+
+
 			WS.S_CONNECTED.add(onWSConnected);
 			WS.S_DISCONNECTED.add(onWSDisconnected);
 			Auth.S_NEED_AUTHORIZATION.add(onAuthNeeded);
@@ -1071,11 +1077,11 @@ package com.dukascopy.connect.sys.chatManager {
 			var network:String = "unknown";
 			var nt:int = NetworkManager.getNetworkType();
 			if(nt>-1){
-				if (nt == CMNetworkType.NONE)
+				if (nt == 0)
 					network = "none";
-				else if (nt == CMNetworkType.MOBILE)
+				else if (nt == 2)
 					network = "mobile";
-				else if (nt == CMNetworkType.WIFI)
+				else if (nt == 1)
 					network = "wi-fi";
 			}
 			
@@ -1828,10 +1834,15 @@ package com.dukascopy.connect.sys.chatManager {
 			} );
 			msg = Config.BOUNDS + msg;
 			var textToSend:String = "^" + userUID + "^" + cryptTXT(msg);
-			var networkSendResult:Boolean = WSClient.call_sendTextMessage(chatUID, textToSend, -1, true, null, false, userUID);
-			if (networkSendResult == true && currentChat != null && currentChat.type == ChatRoomType.COMPANY && currentChat.pid > 0) {
+			
+			
+			WSClient.call_sendTextMessage(chatUID, textToSend, -1, true, null, false, userUID,null,function(success:Boolean):void{
+				if (success && currentChat != null && currentChat.type == ChatRoomType.COMPANY && currentChat.pid > 0) {
 				WSClient.call_entryPointStart(currentChat.pid, currentChat.uid, textToSend);
 			}
+			});
+
+			
 		}
 		
 		static public function sendMessage(
@@ -1841,26 +1852,39 @@ package com.dukascopy.connect.sys.chatManager {
 			doNotSendToWS:Boolean = false,
 			msgID:Number = -1,
 			notSendCallback:Function = null,
-			credentials:Boolean = false):Number {
+			credentials:Boolean = false,
+			callback:/*messageID:Number*/Function=null):void{
 				
-				if (txt == null || txt.length == 0)
-					return -1;
+				if (txt == null || txt.length == 0){
+					if(callback!=null)
+						callback(-1)
+					return;
+				}
+					
 				var chatVO:ChatVO;
 				if (chatUID == null)
 					chatVO = currentChat;
 				else
 					chatVO = getChatByUID(chatUID);
-				if (chatVO == null)
-					return -1;
+
+				if (chatVO == null){
+					if(callback!=null)
+						callback(-1)
+					return;
+				}
+					
 				var isAnswer:Boolean = false;
 				if (chatVO.type == ChatRoomType.QUESTION) {
 					isAnswer = true;
 				}
+
 				if (isAnswer == true) {
 					var qVO:QuestionVO = chatVO.getQuestion();
 					if (chatVO.hasQuestionAnswer == false && qVO != null && qVO.answersCount >= qVO.answersMaxCount) {
 						DialogManager.alert(Lang.textWarning, Lang.questionToManyAnswers);
-						return -1;
+						if(callback!=null)
+							callback(-1)
+						return;
 					}
 				}
 				var isCommand:Boolean = false;
@@ -1870,13 +1894,18 @@ package com.dukascopy.connect.sys.chatManager {
 					text = "/" + text;
 				}
 				var messageId:Object = new Object();
-				var networkSendResult:Boolean = WSClient.call_sendTextMessage(chatVO.uid, text, msgID, !isAnswer, senderId, doNotSendToWS, null, messageId);
-				if (networkSendResult == false && isAnswer == true && doNotSendToWS == false) {
+				
+				
+				WSClient.call_sendTextMessage(chatVO.uid, text, msgID, !isAnswer, senderId, doNotSendToWS, null, messageId,function(networkSendResult:Boolean):void{
+
+					if (networkSendResult == false && isAnswer == true && doNotSendToWS == false) {
 					ToastMessage.display(Lang.sendMessageFail);
 					if (notSendCallback != null)
 						notSendCallback();
-					return -1;
+					if(callback)
+						callback(-1)
 				}
+
 				if (networkSendResult == true && chatVO.type == ChatRoomType.COMPANY && chatVO.pid > 0) {
 					WSClient.call_entryPointStart(chatVO.pid, chatVO.uid, text);
 				}
@@ -1886,7 +1915,14 @@ package com.dukascopy.connect.sys.chatManager {
 				{
 					messageIdResult = messageId.id;
 				}
-				return messageIdResult;
+
+
+				if(callback)
+					callback(messageIdResult);
+
+				});
+				
+				
 		}
 		
 		static public function sendMessagePuzzle(txt:String, chatUID:String = null, senderId:String = null, doNotSendToWS:Boolean = false, msgID:Number = -1):void {
@@ -1911,11 +1947,13 @@ package com.dukascopy.connect.sys.chatManager {
 				}
 			}
 			var text:String = Config.BOUNDS_INVOICE + cryptTXT(txt, chatVO.chatSecurityKey, chatVO.pin);
-			var networkSendResult:Boolean = WSClient.call_sendTextMessage(chatVO.uid, text, msgID, !isAnswer, senderId, doNotSendToWS);
-			if (networkSendResult == false && isAnswer == true && doNotSendToWS == false) {
-				DialogManager.alert(Lang.textAttention, Lang.alertProvideInternetConnection);
-				return;
-			}
+			WSClient.call_sendTextMessage(chatVO.uid, text, msgID, !isAnswer, senderId, doNotSendToWS,null,null,function(networkSendResult:Boolean):void{
+				if (networkSendResult == false && isAnswer == true && doNotSendToWS == false) {
+					DialogManager.alert(Lang.textAttention, Lang.alertProvideInternetConnection);
+					return;
+				}
+			});
+			
 		}
 		
 		static public function sendMessageToOtherChat(txt:String, cuid:String, csk:String, incognito:Boolean):void {

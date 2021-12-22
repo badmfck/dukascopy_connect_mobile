@@ -401,7 +401,16 @@ package com.dukascopy.connect.screens {
 			ChatManager.S_LOAD_START.add(showPreloader);
 			ChatManager.S_LOAD_STOP.add(hidePreloader);
 			
-			NetworkManager.S_CONNECTION_CHANGED.add(onNetworkChanged);
+
+			// IGNORE NET CHANGE ON IOS
+			if(Config.PLATFORM_WINDOWS || (Config.PLATFORM_APPLE && Config.APPLE_VERSION>=13))
+				GD.S_WS_STATUS.add(onWSStatus);
+					else
+						NetworkManager.S_CONNECTION_CHANGED.add(onNetworkChanged);
+
+
+
+		
 			
 			/*Calendar.S_APPOINTMENT_BOOK.add(updateViAppointment);
 			Calendar.S_APPOINTMENT_BOOK_CANCEL.add(updateViAppointment);
@@ -462,6 +471,8 @@ package com.dukascopy.connect.screens {
 			
 			NativeExtensionController.S_LOCATION.add(onMyLocation);
 			WSClient.S_LOCATION_UPDATE.add(onUserLocation);
+
+			GD.S_WS_REQUEST_STATUS.invoke();
 		}
 
 		private function hidePreloader():void 
@@ -476,6 +487,13 @@ package com.dukascopy.connect.screens {
 			}
 		}
 		
+		private function onWSStatus(status:Boolean):void{
+			if(!status)
+				showNoConnectionIndicator();
+					else
+						hideNoConnectionIndicator();
+		}
+
 		private function showPreloader():void 
 		{
 			preloader ||= new Preloader();
@@ -1559,7 +1577,7 @@ package com.dukascopy.connect.screens {
 			
 			TweenMax.delayedCall(1.5, addPreloader);
 			
-		//	editingMsgID = -1;
+			//	editingMsgID = -1;
 			
 			if (list != null) {
 				list.activate();
@@ -1605,7 +1623,12 @@ package com.dukascopy.connect.screens {
 			
 			//WSClient.S_CHAT_USER_ENTER.add(onUserEnterChat);
 			WSClient.S_MSG_ADD_ERROR.add(onErrorSendMessage);
-			onNetworkChanged();
+			
+			if(Config.PLATFORM_ANDROID)
+				onNetworkChanged();
+			else
+				GD.S_WS_REQUEST_STATUS.invoke();
+
 			updateChatInput();
 			
 			UsersManager.S_USERS_FULL_DATA.add(onUserInfoUpdated);
@@ -4340,12 +4363,14 @@ package com.dukascopy.connect.screens {
 					replyPanel.removePanel();
 				}
 				
-				var messageId:Number = ChatManager.sendMessage(value as String, null, null, false, -1, setSavedTextToInput);
+				ChatManager.sendMessage(value as String, null, null, false, -1, setSavedTextToInput,false,function(messageId:Number):void{
+					if (RichMessageDetector.detectLink(value))
+					{
+						RichMessageDetector.lastSentMessage = messageId;
+					}
+				});
 				
-				if (RichMessageDetector.detectLink(value))
-				{
-					RichMessageDetector.lastSentMessage = messageId;
-				}
+				
 			} else if (type == ChatMessageType.VOICE)
 				ChatManager.sendVoice(value as LocalSoundFileData);
 			return true;
@@ -4539,7 +4564,13 @@ package com.dukascopy.connect.screens {
 			QuestionsManager.S_QUESTION_CLOSED.remove(onQuestionClosed);
 		//	WSClient.S_LOYALTY_CHANGE.remove(onLoyaltyChanged);
 			
+
+
+			
+			GD.S_WS_STATUS.remove(onWSStatus);
 			NetworkManager.S_CONNECTION_CHANGED.remove(onNetworkChanged);
+
+			
 			
 			/*Calendar.S_APPOINTMENT_BOOK.remove(updateViAppointment);
 			Calendar.S_APPOINTMENT_BOOK_CANCEL.remove(updateViAppointment);
@@ -4547,7 +4578,6 @@ package com.dukascopy.connect.screens {
 			Calendar.S_APPOINTMENT_DATA.remove(updateViAppointment);*/
 			
 			WSClient.S_MSG_ADD_ERROR.remove(onErrorSendMessage);
-			NetworkManager.S_CONNECTION_CHANGED.remove(onNetworkChanged);
 			PhotoGaleryManager.S_GALLERY_IMAGE_LOADED.remove(onImageUploadReady);
 			PhotoGaleryManager.S_GALLERY_MEDIA_LOADED.remove(onMediaUploadReady);
 			ChannelsManager.S_CHANNEL_SETTINGS_UPDATED.remove(onChannelChanged);
@@ -4653,8 +4683,9 @@ package com.dukascopy.connect.screens {
 			}
 		}
 		
-		// NO CONNECTION INDICATOR -> //
+		// NO CONNECTION INDICATOR -> // IGNORED ON IOS
 		private function onNetworkChanged():void {
+
 			if (NetworkManager.isConnected)
 			{
 				
@@ -4683,12 +4714,9 @@ package com.dukascopy.connect.screens {
 				noConnectionIndicator = new ConnectionIndicator();
 				noConnectionIndicator.draw(_width, Config.FINGER_SIZE * .5);
 				noConnectionIndicator.y = chatTop.height;
-				if (forwardMessageButton != null && forwardMessageButton.parent != null)
-				{
+				if (forwardMessageButton != null && forwardMessageButton.parent != null){
 					noConnectionIndicator.y = forwardMessageButton.y + forwardMessageButton.height;
-				}
-				else
-				{
+				}else{
 					noConnectionIndicator.y = chatTop.height;
 				}
 			}
@@ -4702,7 +4730,10 @@ package com.dukascopy.connect.screens {
 		
 		private function tryReconnect(e:Event = null):void 
 		{
-			NetworkManager.reconnect();
+
+			
+
+			//NetworkManager.reconnect();
 		}
 		
 		// LOCK BUTTON -> //

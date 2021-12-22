@@ -145,6 +145,16 @@ package com.dukascopy.connect {
 		
         static public const COMPANY_ID:String = "08A29C35B3";
 		
+        // APPLE VERSION
+        private static var _APPLE_VERSION:Number=1;
+        static public function get APPLE_VERSION():Number{ return _APPLE_VERSION;}
+        static public function setupAppleVersion(ver:Number):void{
+            if(isNaN(ver))
+                return;
+            _APPLE_VERSION=ver;
+        }
+
+
         static public const APPLE_LOG:Boolean=true;
         static public const ANDROID_LOG:Boolean=true;
         static public const VERSION:String = "3.5.96o"+(Capabilities.isDebugger?" dbg":"")+((SERVER_NAME != "")?" - "+SERVER_NAME:"");

@@ -119,6 +119,7 @@ package com.dukascopy.connect {
 	import flash.ui.Keyboard;
 	import com.dukascopy.langs.IOSLocalization;
 	import com.dukascopy.connect.vo.URLConfigVO;
+	import com.dukascopy.dccext.dccNetWatcher.DCCNetWatcher;
 	
 	public class MobileGui {
 		
@@ -172,6 +173,9 @@ package com.dukascopy.connect {
 		static public var preventScreenRemove:Boolean;
 		
 		public function MobileGui(container:Sprite, stage:Stage) {
+
+			GD.S_LOG.invoke("MobileGUI.constructor -> 1");
+
 			th = this;
 			
 			this.container = container;
@@ -185,11 +189,15 @@ package com.dukascopy.connect {
 				DCCExt.init();
 
 				if(DCCExt.isContextCreated()){
-
+					DCCNetWatcher.onLog=GD.S_LOG.invoke;
 					DCCExt.call(new DCCExtCommand(
 						DCCExtMethod.OS_VERSION,
 						{}
 						),function(data:DCCExtData):void{
+							if(data && data.data && "version" in data.data){
+								// GOT OS VERSION
+								Config.setupAppleVersion(parseFloat(data.data.version));
+							}
 							if(data && data.data && data.data.insets){
 								var insets:Object=data.data.insets;
 								var top:int=parseInt(insets.top);
@@ -201,7 +209,7 @@ package com.dukascopy.connect {
 									Config.setupAppleTopOffset(top);
 								if(bottom>0)
 									Config.setupAppleBottomOffset(bottom);
-								Config.setupFingerSize(55*ratio);
+								Config.setupFingerSize(52*ratio);
 							}
 							initComponents();
 						}
@@ -235,6 +243,7 @@ package com.dukascopy.connect {
 			NativeApplication.nativeApplication.addEventListener(Event.EXITING, onAppExit);
 			
 			GD.S_TIMEZONE_REQUEST.add(onTimezoneRequested);
+			GD.S_LOG.invoke("MobileGUI.constructor -> 2");
 		}
 		
 		private function onTimezoneRequested(callback:Function):void {
@@ -261,30 +270,46 @@ package com.dukascopy.connect {
 		}
 		
 		private function initComponents():void {
-			
+			GD.S_LOG.invoke("MobileGUI.initComponents -> 1 start");	
 			new IOSLocalization();
+			GD.S_LOG.invoke("MobileGUI.initComponents -> 11");	
 			Loop.init(stage);
+			GD.S_LOG.invoke("MobileGUI.initComponents -> 111");	
 			RenderUtils.stageRef = stage;
+			GD.S_LOG.invoke("MobileGUI.initComponents -> 1113");	
 			ToastMessage.setStage(stage);
+			GD.S_LOG.invoke("MobileGUI.initComponents -> 1114");	
 			ImagePreviewCrop.setStage(stage);
 			NewMessageNotifier.init();
 			ChatUsersManager.init();
 			NativeExtensionController.init();
+			GD.S_LOG.invoke("MobileGUI.initComponents -> 1115");	
 			PushNotificationsNative.init();
+			GD.S_LOG.invoke("MobileGUI.initComponents -> 1116");	
 			NetworkManager.init();
+			GD.S_LOG.invoke("MobileGUI.initComponents -> 1117");	
 			MessagesController.init();
 			TweenPlugin.activate([AutoAlphaPlugin]);
 			Swiper.init(stage);
+			GD.S_LOG.invoke("MobileGUI.initComponents -> a");
 			WS.init();
+			GD.S_LOG.invoke("MobileGUI.initComponents -> b");
 			/*if (Config.PLATFORM_WINDOWS == true)
 				WSNew.init();*/
 			CallManager.init();
+			GD.S_LOG.invoke("MobileGUI.initComponents -> c");
 			PhonebookManager.init();
+			GD.S_LOG.invoke("MobileGUI.initComponents -> d");
 			ImageManager.init();
+			GD.S_LOG.invoke("MobileGUI.initComponents -> e");
 			SoundController.init();
+			GD.S_LOG.invoke("MobileGUI.initComponents -> f");
 			InnerNotificationManager.init(stage);
+			GD.S_LOG.invoke("MobileGUI.initComponents -> g");
 			ChatManager.init();
+			GD.S_LOG.invoke("MobileGUI.initComponents -> h");
 			CallsHistoryManager.init();
+			GD.S_LOG.invoke("MobileGUI.initComponents -> i");
 			ChannelsManager.init();
 			Gifts.init();
 			PayAPIManager.init();
@@ -297,38 +322,36 @@ package com.dukascopy.connect {
 			Calendar.init();
 			SoftKeyboard.startDetectHeight();
 			DraftMessage.init();
+			GD.S_LOG.invoke("MobileGUI.initComponents -> j");
 			EscrowScreenNavigation.init();
 			
 			new EscrowDealManager();
 			new EscrowAdsManager();
 			new EscrowOfferManager();
-
+			GD.S_LOG.invoke("MobileGUI.initComponents -> k");
 			BankCacheManager.init();
 			new CryptoWalletHolder();
 			new ToastMessageGD(stage);
 			
 
+
 			GD.S_URL_CONFIG_READY.invoke(new URLConfigVO({
-				DCCAPI_URL:Config.URL_PHP_CORE_SERVER
+				DCCAPI_URL:Config.URL_PHP_CORE_SERVER,
+				WSS_URL:Config.URL_WS_HOST_1,
+				PLATFORM:Config.PLATFORM,
+				SCHEME:((Config.SERVER_NAME=="")?"live":Config.SERVER_NAME.toLowerCase())
 			}))
 			
 			create();
 
 			
-
+			GD.S_LOG.invoke("MobileGUI.initComponents -> 2");	
 			/*if(Config.PLATFORM_WINDOWS)
 				stage.addChild(new MemoryMonitor());*/
 		}
 		
-		private function onInitFrames():void {
-			if (framesCount > initFramesCount) {
-				Loop.remove(onInitFrames);
-				create();
-			}
-			framesCount++;
-		}
-		
 		private function create():void {
+			GD.S_LOG.invoke("MobileGUI.create -> 1");	
 			if (_isCreated == true)
 				return;
 			_isCreated = true;
@@ -374,6 +397,7 @@ package com.dukascopy.connect {
 			Auth.init();
 			
 			container.addChild(new HiddenOnlineIndicator());
+			GD.S_LOG.invoke("MobileGUI.create -> 2");	
 		}
 		
 		private function debug_createWSLogger():void{
@@ -1014,6 +1038,9 @@ package com.dukascopy.connect {
 		}
 		
 		private function continueAuth():void {
+
+			GD.S_LOG.invoke("Mobile gui continueAuth 1");	
+
 			if (PushNotificationsNative.handleRemoteNotification(true) == true)
 				return;
 
@@ -1021,6 +1048,9 @@ package com.dukascopy.connect {
 				mainSM.show(VITestScreen);
 				return;
 			}*/
+
+
+			GD.S_LOG.invoke("Mobile gui continueAuth 2");
 
 			if (authSreenShowed == true) {
 				if (SocialManager.available == true)

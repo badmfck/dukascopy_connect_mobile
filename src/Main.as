@@ -28,6 +28,9 @@ import flash.ui.Multitouch;
 import flash.ui.MultitouchInputMode;
 import flash.utils.ByteArray;
 import flash.utils.getTimer;
+import com.dukascopy.connect.GD;
+import com.telefision.sys.signals.SuperSignal;
+import flash.utils.setInterval;
 
 
 
@@ -38,6 +41,17 @@ public class Main extends Sprite {
 		public static var startTime:Number=new Date().getTime();
 
 		public function Main() {
+
+			// TODO: REBUILD WITHOUT ECHO, SAVE LOG TO DEVICE
+			GD.S_LOG.add(function(...rest):void{
+				var str:String="";
+				for(var i:int=0;i<rest.length;i++){
+					if(i>0)
+						str+=", "
+					str+=rest[i];
+				}
+				echo("PARSE"," >>> ",str);
+			})
 
 			timer = getTimer(); 
 			stage.quality = StageQuality.LOW;
@@ -54,6 +68,12 @@ public class Main extends Sprite {
 				this.loaderInfo.uncaughtErrorEvents.addEventListener(UncaughtErrorEvent.UNCAUGHT_ERROR, onGlobalError);
 
 			TweenMax.delayedCall(2, start, null, true);
+
+			
+
+			SuperSignal.onLog=function(str:String):void{
+				echo("PARSE"," SuperSignal ",str);
+			}
 		}
 		
 		private function start():void{
@@ -72,6 +92,7 @@ public class Main extends Sprite {
 					e.error.errorID == 2029) {
 						echo("Main", "onGlobalerror"," Error: " + e.error.errorID, true);
 						//PHP.call_statVI("exception", "errID:"+e.error.errorID);
+						GD.S_LOG.invoke("Got global error: "+e.error.errorID);
 						BloomDebugger.start();
 						return;
 				}
@@ -134,7 +155,6 @@ public class Main extends Sprite {
 			
 			var uptime:Number=new Date().getTime()-startTime;
 			
-			
 			message += "\n";
 			message += "version: " + Config.VERSION+ "\n";
 			message += "user: " + ((Auth.username)?Auth.username:"No username") + "\n";
@@ -148,7 +168,7 @@ public class Main extends Sprite {
 			message += "last message:\n" + EchoParser.lastMessage + "\n";
 			message += "stack:\n" + BloomDebugger.getStack() + "\n";
 			
-			echo("Main","sendError",message);
+			GD.S_LOG.invoke(message);
 			
 			message +="last screen view:\n"+base64Screen;
 			

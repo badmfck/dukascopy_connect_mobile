@@ -203,8 +203,11 @@ import flash.net.Socket;
 				_readyState = WebSocketState.CONNECTING;
 				generateNonce();
 				handshakeBytesReceived = 0;
-				
-				rawSocket.connect(_host, _port);
+				try{
+					rawSocket.connect(_host, _port);
+				}catch(e:Error){
+					
+				}
 				if (debug) {
 					logger("Connecting to " + _host + " on port " + _port);
 				}

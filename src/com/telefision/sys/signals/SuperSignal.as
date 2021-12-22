@@ -9,12 +9,12 @@ package com.telefision.sys.signals
         private var invokes:Array=[];
         private var name:String;
         private static var nextID:int=0;
+        public static var onLog:Function;
 
         public function SuperSignal(name:String=null){
             if(name==null)
                 name="Signal-"+(nextID++);
             this.name=name;
-
         }
 
         public function get listening():Boolean{
@@ -52,23 +52,37 @@ package com.telefision.sys.signals
          * @param ...rest 
          */
         protected function _invoke(...rest):void{
+            
             if(disposed || methods==null)
                 return;
+
             if(busy){
                 invokes.push(rest);
-                trace("Signal already invoking "+name);
+                if(onLog)
+                    onLog("Signal already invoking "+name);
+                        else
+                            trace("Signal already invoking "+name);
                 return;
             }
             busy=true;
+
             var l:int=methods.length;
             for(var i:int=0;i<l;i++){
-                var ssvo:SuperSignalVO=methods[i];
-                if(!ssvo)
-                    continue;
-                if(!(ssvo.callback is Function) || ssvo==null)
-                    continue;
-                ssvo.callback.apply(ssvo.context,rest);
+                try{
+                    var ssvo:SuperSignalVO=methods[i];
+                    if(!ssvo)
+                        continue;
+                    if(!(ssvo.callback is Function) || ssvo==null)
+                        continue;
+                    ssvo.callback.apply(ssvo.context,rest);
+                }catch(e:Error){
+                    if(onLog)
+                        onLog("Error in signal invoking "+e.message+", "+name);
+                            else
+                                trace("Error in signal invoking "+e.message+", "+name);
+                }
             }
+            
             busy=false;
 
             if(disposed){
@@ -79,16 +93,22 @@ package com.telefision.sys.signals
             // add or remove
             if(delays!=null){
                 for each(var val:SuperSignalDelayedVO in delays){
-                    if(val.side==0)
+                    if(val.side==0 && val.vo!=null)
                         add(val.vo.callback,val.vo.context,val.vo.id);
-                    else
-                        _remove(val.value,val.key);
+                    else{
+                        if(val.value && val.key)
+                            _remove(val.value,val.key);
+                    }
                 }
                 delays=[];
             }
 
             // delayed invokes
-            if(invokes!=null){
+            if(invokes!=null && invokes.length>0){
+                if(onLog)
+                    onLog("Invoking delayed call for: "+name+", count: "+invokes.length);
+                        else
+                            trace("Invoking delayed call for: "+name+", count: "+invokes.length);
                 for each(var invokeData:Array in invokes){
                     _invoke.apply(this,invokeData);
                 }

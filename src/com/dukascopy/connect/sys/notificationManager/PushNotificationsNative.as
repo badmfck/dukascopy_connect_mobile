@@ -18,7 +18,6 @@ package com.dukascopy.connect.sys.notificationManager {
 	import com.dukascopy.connect.sys.auth.Auth;
 	import com.dukascopy.connect.sys.chatManager.ChatManager;
 	import com.dukascopy.connect.sys.connectionManager.NetworkManager;
-	import com.dukascopy.connect.sys.crypter.Crypter;
 	import com.dukascopy.connect.sys.dialogManager.DialogManager;
 	import com.dukascopy.connect.sys.echo.echo;
 	import com.dukascopy.connect.sys.nativeExtensionController.NativeExtensionController;
@@ -235,12 +234,10 @@ package com.dukascopy.connect.sys.notificationManager {
 			echo("PushNotificationsNative", "errorHandler", event.data);
 		}
 		
-		private static function notificationHandler(event:PushNotificationEvent):void {
-			echo("PushNotificationsNative", "notificationHandler", event.payload);
+		private static function notificationHandler(event:PushNotificationEvent):void {;
 			try {
 				notificationData = JSON.parse(event.payload);
 			} catch (e:Error) {
-				echo("PushNotificationsNative", "notificationHandler", "ERROR: -> can't parse payload");
 				return;
 			}
 			followNotification = true;
@@ -248,9 +245,8 @@ package com.dukascopy.connect.sys.notificationManager {
 		}
 		
 		static private function readNotifications():void {
-			
 			if (Config.PLATFORM_APPLE == true && MobileGui.dce != null) {
-				readAppleNotifications();
+				readAppleNootifications();
 				
 			} else if (Config.PLATFORM_ANDROID){
 				readAndroidNootifications();
@@ -326,25 +322,21 @@ package com.dukascopy.connect.sys.notificationManager {
 			}
 		}
 		
-		static private function readAppleNotifications():void {
-			var messagesDataString:String;
+		static private function readAppleNootifications():void {
+			var messagesDataString:String = MobileGui.dce.messagesFromNotifications();
 			
-			echo("PushNotificaionsNative", "readAppleNootifications", messagesDataString);
-
 			MobileGui.dce.removeMessagesFromNotifications();
 			if (messagesDataString != null && messagesDataString.toString() != "null") {
-			
+				echo("NOTIFICATION", "new", messagesDataString);
 				currentMessagesArray = null;
 				try {
 					currentMessagesArray = JSON.parse(messagesDataString) as Array;
-					echo("PushNotificaionsNative", "readAppleNootifications", "Process messages: "+currentMessagesArray.length);
 					var l:int = currentMessagesArray.length;
 					for (var i:int = 0; i < l; i++) {
 						currentMessagesArray[i] = JSON.parse(currentMessagesArray[i]);
 					}
 				} catch (e:Error) {
 					//!TODO: обработать ошибку;
-					echo("PushNotificaionsNative", "readAppleNootifications", "Can't parse msg data");
 					handleRemoteNotification();
 				}
 				if (currentMessagesArray != null && currentMessagesArray.length > 0) {
@@ -358,7 +350,6 @@ package com.dukascopy.connect.sys.notificationManager {
 		}
 		
 		static private function saveNotificationsMessages(messagesData:Array):void {
-			echo("PushNotificationsNative","saveNotificationsMessages","calling width messagesData, length: "+messagesData.length);
 			updatedChats = new Array();
 			updatedChatsNum = 0;
 			newNotificationMessages = new Array();
@@ -392,7 +383,6 @@ package com.dukascopy.connect.sys.notificationManager {
 				if (messages.length > 0) {
 					saveMessagesToDatabase(messages);
 				} else {
-					echo("PushNotificationsNative","saveNotificationsMessages","messages length <= 0");
 					handleRemoteNotification();
 				}
 			} else {
@@ -415,13 +405,7 @@ package com.dukascopy.connect.sys.notificationManager {
 			
 			messageData.created = 0;
 			if ("created" in notification && !isNaN(Number(notification.created)))
-			{
 				messageData.created = Math.round(Number(notification.created));
-				if (messageData.created.toString().length > 11)
-				{
-					messageData.created = messageData.created / 1000;
-				}
-			}
 			
 			if ("text" in notification)
 				messageData.text = notification.text;
@@ -440,9 +424,6 @@ package com.dukascopy.connect.sys.notificationManager {
 			messageData.reaction = "";
 			if ("avatar" in notification) {
 				messageData.user_avatar = notification.avatar;
-			}
-			if ("sec" in notification) {
-				messageData.sec = notification.sec;
 			}
 			return messageData;
 		}
@@ -465,114 +446,69 @@ package com.dukascopy.connect.sys.notificationManager {
 		
 		static private function onMessagesSaved(r:SQLRespond = null):void {
 			var result:Boolean = checkApplicationStatus(true);
-			echo("PushNotificationsNative", "onMessagesSaved", "result: "+result);
-			
-			if (!result){
-				notificationData = null;
-				return;
-			}
-			
-			echo("PushNotificationsNative", "onMessagesSaved", "num: "+updatedChatsNum);
-			
-			if (updatedChatsNum == 0) {
-				handleRemoteNotification();
-				notificationData = null;
-				return;
-			}
-
-
-			var isChatScreenOpened:Boolean=MobileGui.centerScreen.currentScreenClass == ChatScreen || MobileGui.centerScreen.currentScreenClass == VIChatScreen;
-
-				if (ChatManager.isLoadedFromStore() == false) {
-					
-					ChatManager.S_LATEST.add(onLatestChatsLoaded);
-					
-					if (ChatManager.isLoadingFromStore() == false)
-						ChatManager.getChats();
-
-					echo("PushNotificationsNative", "onMessagesSaved", "is loaded from store = false, is loading ="+ChatManager.isLoadingFromStore() +" returning");
-
-					return;
-
-				} else {
-					echo("PushNotificationsNative", "onMessagesSaved", "latest not loaded from store");
-					checkForChatsExistance();
-					processUnreadedMessages();
-				}
-
-				echo("PushNotificationsNative", "onMessagesSaved", "go deeper");
-
-				if (updatedChatsNum == 1 || (notificationData != null && notificationData.chatUID != null)) {
-					var chatUID:String;
-					
-					echo("PushNotificationsNative", "onMessagesSaved", "go deeper");
-					
-					if (notificationData != null && notificationData.chatUID != null) {
-						chatUID = notificationData.chatUID;
-					} else {
-						for each(var chat:String in updatedChats) {
-							chatUID = chat;
+			if (result == true) {
+				if (updatedChatsNum > 0) {
+					if (ChatManager.isLoadedFromStore() == false) {
+						ChatManager.S_LATEST.add(onLatestChatsLoaded);
+						if (ChatManager.isLoadingFromStore() == false){
+							ChatManager.getChats();
 						}
-					}
-
-					if (isChatScreenOpened && ChatManager.getCurrentChat().uid == chatUID) {
-							echo("PushNotificationsNative", "onMessagesSaved", "activate chat")
-							ChatManager.activateChat();
+						return;
 					} else {
-						echo("PushNotificationsNative", "onMessagesSaved", "no opened chat. followNotification: "+followNotification)
-						if (followNotification == true) {
-							var chatScreenData:ChatScreenData = new ChatScreenData();
-							chatScreenData.chatUID = chatUID;
-							chatScreenData.type = ChatInitType.CHAT;
-							var chatVO:ChatVO = ChatManager.getChatByUID(chatUID);
-							if (chatVO == null){
-								chatVO = ChatManager.getLocalChatByUID(chatUID);
+						checkForChatsExistance();
+						processUnreadedMessages();
+					}
+					if (updatedChatsNum == 1 || (notificationData != null && notificationData.chatUID != null)) {
+						var chatUID:String;
+						if (notificationData != null && notificationData.chatUID != null) {
+							chatUID = notificationData.chatUID;
+						} else {
+							for each(var chat:String in updatedChats) {
+								chatUID = chat;
 							}
-							chatScreenData.chatVO = chatVO;
-							MobileGui.showChatScreen(chatScreenData);
 						}
-					}
-				} else {
-
-					/**
-					 * BUGFIX: CONNECT-18220
-					 * on IOS:
-					 * 	 	open app, open chat, deactivate app by swipping up.
-					 * 		wait for connection lost (about 30 sec)
-					 * 		receive message to opened chat via push notifications
-					 * 		receive message to another chat via push notifications
-					 * 		activate app, app will appear with opened chat screen without newly added messages.
-					 * 
-					 *	-------- FIXED
-					 */
-					
-					if(isChatScreenOpened && ChatManager.getCurrentChat() != null){
-						// TODO: check if current chat uid exists in updatedChats
-						ChatManager.activateChat();
-						echo("PushNotificationsNative", "onMessagesSaved", "Update current chat screen ")
-					}else{
-						echo("PushNotificationsNative", "onMessagesSaved", "change to root screen: "+followNotification);
+						if ((MobileGui.centerScreen.currentScreenClass == ChatScreen || MobileGui.centerScreen.currentScreenClass == VIChatScreen) && 
+							ChatManager.getCurrentChat() != null && 
+							ChatManager.getCurrentChat().uid == chatUID) {
+								echo("PushNotificationNative", "onMessagesSaved", "activate chat")
+								ChatManager.activateChat();
+						} else {
+							if (followNotification == true) {
+								var chatScreenData:ChatScreenData = new ChatScreenData();
+								chatScreenData.chatUID = chatUID;
+								chatScreenData.type = ChatInitType.CHAT;
+								var chatVO:ChatVO = ChatManager.getChatByUID(chatUID);
+								if (chatVO == null)
+								{
+									chatVO = ChatManager.getLocalChatByUID(chatUID);
+								}
+								chatScreenData.chatVO = chatVO;
+								MobileGui.showChatScreen(chatScreenData);
+							}else{
+								if(ChatManager.getCurrentChat()!=null)
+									ChatManager.activateChat();
+							}
+						}
+					} else {
 						if (followNotification == true) {
 							resortLatests();
 							MobileGui.changeMainScreen(RootScreen, null);
 						}
+						if(ChatManager.getCurrentChat()!=null)
+							ChatManager.activateChat();
 					}
-
-				}
-				
-				notificationData = null;
+					notificationData = null;
+				} else
+					handleRemoteNotification();
+			}
 		}
 		
-		static private function resortLatests():void 
-		{
+		static private function resortLatests():void{
 			ChatManager.resortLatests();
 		}
 		
 		static private function checkForChatsExistance():void 
 		{
-
-			echo("PushNotificationsNative", "checkForChatsExistance", "1");
-
 			if (newNotificationMessages != null)
 			{
 				var l:int = newNotificationMessages.length;
@@ -617,23 +553,19 @@ package com.dukascopy.connect.sys.notificationManager {
 				}
 				
 				newNotificationMessages = null;
-				echo("PushNotificationsNative", "checkForChatsExistance", "2");
 			}
 		}
 		
 		static private function processUnreadedMessages():void {
-			echo("PushNotificationsNative", "processUnreadedMessages", "1");
 			var chatsChanged:Boolean = false;
 			var chat:ChatVO;
 			if (newUnreadedMessages != null) {
-				echo("PushNotificationsNative", "processUnreadedMessages", "not null");
 				if (ChatManager.isLoadedFromStore() == true) {
-					echo("PushNotificationsNative", "processUnreadedMessages", "loaded from store");
 					for (var uid:String in newUnreadedMessages) {
 						if (newUnreadedMessages[uid] != null) {
 							chat = ChatManager.getChatByUID(uid);
 							if (chat != null) {
-								if (chat.messageVO != null){
+								if (chat.messageVO != null) {
 									if (chat.messageVO.num < newUnreadedMessages[uid].num) {
 										chatsChanged = true;
 										chat.setNewUreadedMessage(newUnreadedMessages[uid], false);
@@ -644,22 +576,16 @@ package com.dukascopy.connect.sys.notificationManager {
 								}
 							}
 						}
-						echo("PushNotificationsNative", "processUnreadedMessages", "iterating:");
 					}
 					newUnreadedMessages = null;
-					echo("PushNotificationsNative", "processUnreadedMessages", "notifier 1");
 					NewMessageNotifier.dispatchUpdateLater();
-					echo("PushNotificationsNative", "processUnreadedMessages", "notifier 2");
 					if (chatsChanged) {
-						echo("PushNotificationsNative", "processUnreadedMessages", "chat changes");
 						ChatManager.updateLatestsInStore();
 					}
 				} else {
-					echo("PushNotificationsNative", "processUnreadedMessages", "in else");
 					ChatManager.S_LATEST.add(onLatestChatsLoaded);
 				}
 			}
-			echo("PushNotificationsNative", "processUnreadedMessages", "2");
 		}
 		
 		static private function onActivate(e:Event):void {
@@ -674,7 +600,7 @@ package com.dukascopy.connect.sys.notificationManager {
 		}
 		
 		static private function onInvoke(e:InvokeEvent):void {
-			echo("PushNotificationsNative", "onInvoke",e.reason);
+			echo("PushNotificationsNative", "onInvoke");
 			if (e.reason == InvokeEventReason.OPEN_URL) {
 				if (e.arguments && e.arguments.length > 0) {
 					var msk:String = "dukascopy://";
@@ -759,7 +685,6 @@ package com.dukascopy.connect.sys.notificationManager {
 		}
 		
 		static public function handleRemoteNotification(ignoreAuthScreen:Boolean = false):Boolean {
-			echo("PushNotificationsNative","handleRemoteNotification","ignoreAuthScreen: "+ignoreAuthScreen);
 			var result:Boolean = checkApplicationStatus(false, ignoreAuthScreen);
 			if (result == false)
 				return false;
