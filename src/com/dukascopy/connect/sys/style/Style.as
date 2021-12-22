@@ -223,6 +223,7 @@ package com.dukascopy.connect.sys.style
 		static public const COLOR_RED_LIGHT:String = "colorRedLight";
 		static public const ICON_TRASH:String = "iconTrash";
 		static public const COLOR_ACCENT_PANEL:String = "colorAccentPanel";
+		static public const ICON_PHONEBOOK:String = "iconPhonebook";
 		
 		static private var preset:Preset;
 		
