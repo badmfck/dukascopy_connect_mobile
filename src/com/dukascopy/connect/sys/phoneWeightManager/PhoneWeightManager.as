@@ -39,7 +39,7 @@ public class PhoneWeightManager {
                 }
 
             }catch (err:Error) {
-                Main.sendError("Can't get dev. init",err.message);
+               // TODO: SEND ERROR?
             }
         }
 
@@ -47,13 +47,13 @@ public class PhoneWeightManager {
         static private function onSystemInfo(info:SystemInfo):void{
 
             if(info==null || info.rawData==null){
-                Main.sendError("No dev info!","Dev info is null or dev.info is null");
+                // TODO: SEND ERROR?
                 return;
             }else{
                 try {
                     PHP.call_statVI("dev", JSON.stringify(info.rawData));
                 }catch (err:Error) {
-                    Main.sendError("Can't get dev. can't create json","cant stringify json with info.rawdata");
+                    // TODO: SEND ERROR?
                 }
             }
 
@@ -78,7 +78,7 @@ public class PhoneWeightManager {
                 try {
                     weight += cpu;
                 }catch (err:Error) {
-                    Main.sendError("Can't calc cpus",err.message);
+                    //TODO: SEND ERROR
                 }
 
                 try {
@@ -90,17 +90,17 @@ public class PhoneWeightManager {
                             var totalMem:int = Math.ceil(parseFloat(total));
                             weight += totalMem;
                         } catch (err:Error) {
-                            Main.sendError("Can't get dev. total memory", err.message);
+                            //TODO: SEND ERROR
                         }
                     }
                 }catch (err:Error) {
-                    Main.sendError("Can't get dev. no total mem", err.message);
+                    //TODO: SEND ERROR
                 }
 
                 sendInfo();
 
             }catch (err:Error) {
-                Main.sendError("Can't get dev. info",err.message);
+                //TODO: SEND ERROR
             }
         }
 

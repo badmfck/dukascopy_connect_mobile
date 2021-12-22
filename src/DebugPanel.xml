@@ -1,0 +1,20 @@
+<body id="body" formSize="416" padding="60 20 40 20" fontSize="15" background-color="#000000" background-alpha=".5">
+   
+        <div background-color="#FF0000" id="error" height="200" overflow="scroll">
+            ERROR
+        </div>
+
+        <div layout="horizontal" width="130">
+            <div width="200">CURRENT WS STATE:</div>
+            <div>{WS STATE}</div>
+        </div>
+
+        <div layout="horizontal" >
+            <div width="200">CURRENT NET STATE:</div>
+            <div>{NET STATE}</div>
+        </div>
+        <div height="100%"></div>
+        <div id="btnClose" padding="12" background-color="#00FF00" color="#FFFFFF" width="120">CLOSE</div>
+   
+   
+</body>

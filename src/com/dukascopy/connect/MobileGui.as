@@ -400,45 +400,7 @@ package com.dukascopy.connect {
 			GD.S_LOG.invoke("MobileGUI.create -> 2");	
 		}
 		
-		private function debug_createWSLogger():void{
-			var tf:TextField = new TextField();
-			tf.defaultTextFormat = new TextFormat("Tahoma", Config.FINGER_SIZE_DOT_25);
-			tf.mouseEnabled = false;
-			tf.mouseWheelEnabled = false;
-			tf.backgroundColor = 0;
-			tf.background = true;
-			tf.alpha = .7;
-			tf.textColor = 0xFFFFFF;
-			tf.y = Config.FINGER_SIZE_DOT_75 * 3;
-			tf.x = 0;
-			tf.width = stage.stageWidth;
-			tf.height = stage.stageHeight * .3;
-			tf.wordWrap = true;
-			stage.addChild(tf);
-
-			var txt:Array=[];
-
-			GD.S_DEBUG_WS.add(function (str:String):void{
-				txt.push(str);
-				if(txt.length>300)
-						txt.shift();
-				tf.text="";
-				for(var i:int=0;i<txt.length;i++)
-					tf.appendText(txt[i]+"\n");
-				tf.scrollV=tf.maxScrollV;
-			});
-
-
-			var spr:Sprite=new Sprite();
-			spr.graphics.beginFill(0x00FF00,1);
-			spr.graphics.drawRoundRect(0,0,30,30,4,4);
-			spr.addEventListener(MouseEvent.CLICK,function (e:MouseEvent):void {
-				Clipboard.generalClipboard.setData(ClipboardFormats.TEXT_FORMAT,tf.text,true);
-			});
-			spr.x=stage.stageWidth*.5;
-			spr.y=150;
-			stage.addChild(spr);
-		}
+		
 		
 		private function setSignalsAndEvents():void {
 			Auth.S_NEED_AUTHORIZATION.add(onAuthNeedAuthorization);

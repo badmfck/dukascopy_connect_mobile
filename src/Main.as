@@ -2,6 +2,7 @@ package {
 
 
 /* MAIN PROJECT */
+
 import com.dukascopy.connect.Config;
 import com.dukascopy.connect.MobileGui;
 import com.dukascopy.connect.sys.auth.Auth;
@@ -12,6 +13,7 @@ import com.dukascopy.connect.sys.php.PHP;
 import com.dukascopy.connect.sys.php.PHPRespond;
 import com.dukascopy.connect.utils.Debug.BloomDebugger;
 import com.dukascopy.connect.utils.TextUtils;
+
 import com.greensock.TweenMax;
 import com.hurlant.util.Base64;
 import flash.display.BitmapData;
@@ -30,7 +32,7 @@ import flash.utils.ByteArray;
 import flash.utils.getTimer;
 import com.dukascopy.connect.GD;
 import com.telefision.sys.signals.SuperSignal;
-import flash.utils.setInterval;
+
 
 
 
@@ -39,6 +41,8 @@ public class Main extends Sprite {
 
 		public static var timer:Number;
 		public static var startTime:Number=new Date().getTime();
+		public static var debugPanel:DebugPanel;
+		
 
 		public function Main() {
 
@@ -51,6 +55,18 @@ public class Main extends Sprite {
 					str+=rest[i];
 				}
 				echo("PARSE"," >>> ",str);
+			})
+
+			GD.S_REQUEST_DEBUG_SCREEN.add(function(str:String):void{
+				showDebugScreen(str)
+			})
+
+			GD.S_SEND_ERROR.add(function(data:Object):void{
+				// message, reason
+				if(data==null || !(data is Object))
+					return;
+				if("message" in data)
+					sendError(data.message,("reason" in data && data.reason is String)?data.reason:null);
 			})
 
 			timer = getTimer(); 
@@ -69,8 +85,6 @@ public class Main extends Sprite {
 
 			TweenMax.delayedCall(2, start, null, true);
 
-			
-
 			SuperSignal.onLog=function(str:String):void{
 				echo("PARSE"," SuperSignal ",str);
 			}
@@ -78,10 +92,10 @@ public class Main extends Sprite {
 		
 		private function start():void{
 			new MobileGui(this, stage); 
-			//onGlobalError();
+			showDebugScreen(null);
 		}
 		
-		public static function onGlobalError(e:UncaughtErrorEvent = null):void {
+		private function onGlobalError(e:UncaughtErrorEvent = null):void {
 			
 			BloomDebugger.stop();
 			
@@ -125,7 +139,7 @@ public class Main extends Sprite {
 			
 		}
 		
-		static public function sendError(message:String, reason:String = null):void{
+		private function sendError(message:String, reason:String = null):void{
 			BloomDebugger.stop();
 			var cs:String = "";
 			if (MobileGui.centerScreen == null)
@@ -169,6 +183,9 @@ public class Main extends Sprite {
 			message += "stack:\n" + BloomDebugger.getStack() + "\n";
 			
 			GD.S_LOG.invoke(message);
+
+			if(Config.isTF())
+				showDebugScreen(message);
 			
 			message +="last screen view:\n"+base64Screen;
 			
@@ -177,9 +194,16 @@ public class Main extends Sprite {
 			EchoParser.clearStock();
 			BloomDebugger.start();
 		}
+
+		private function showDebugScreen(message:String):void{
+			TweenMax.delayedCall(1,function():void{
+				if(!debugPanel)
+					debugPanel=new DebugPanel(stage);
+				debugPanel.show(message);
+			})
+		}
 		
-		static private function onReport(r:PHPRespond):void 
-		{
+		static private function onReport(r:PHPRespond):void{
 			r.dispose();
 		}
 	}

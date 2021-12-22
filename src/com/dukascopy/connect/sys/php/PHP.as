@@ -215,7 +215,6 @@ package com.dukascopy.connect.sys.php {
 				ApplicationErrors.add();
 				var error:ErrorEvent = new ErrorEvent(ErrorEvent.ERROR, false, false, "chat_get with empty chatUID: " + reason);
 				var e:UncaughtErrorEvent = new UncaughtErrorEvent(UncaughtErrorEvent.UNCAUGHT_ERROR, true, true, error);
-				Main.onGlobalError(e);
 				return;
 			}
 			call('chat.get', callBack, { chatUID:chatUID, fullKey:fullKey,updateUnreaded:updateUnreaded, ver:1 } , null, false, 'POST', true, false, chatUID);

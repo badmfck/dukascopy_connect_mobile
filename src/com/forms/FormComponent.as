@@ -158,24 +158,24 @@ package com.forms{
             
             
             this.form=form;
-            if(xml is XML){
-                onXMLReady(new XMLDocument(
-                    
-                ).firstChild,predefinedStyle,additionalChilds,dolly);
-                return;
-            }
+            if(xml!=null){
+                if(xml is XML){
+                    onXMLReady(new XMLDocument(xml).firstChild,predefinedStyle,additionalChilds,dolly);
+                    return;
+                }
 
-            if(xml is XMLNode){
-                onXMLReady(xml,predefinedStyle,additionalChilds,dolly)
-                return;
-            }
-            if(xml is String){
-                trace("GOT STRING! ") // check if URL, convert string to xmlDocument ?
-                return;
-            }
-            if(xml is File){
-                loadFile(xml as File,predefinedStyle,additionalChilds);
-                return;
+                if(xml is XMLNode){
+                    onXMLReady(xml,predefinedStyle,additionalChilds,dolly)
+                    return;
+                }
+                if(xml is String){
+                    trace("GOT STRING! ") // check if URL, convert string to xmlDocument ?
+                    return;
+                }
+                if(xml is File){
+                    loadFile(xml as File,predefinedStyle,additionalChilds);
+                    return;
+                }
             }
 
             if(xml==null && !(this is FormText)){
@@ -399,6 +399,12 @@ package com.forms{
         }
 
         private function onXMLReady(xml:XMLNode,predefinedStyle:Object,additionalChilds:XML,dolly:Boolean=false):void{
+            if(xml==null){
+                if(Capabilities.isDebugger)
+                    throw new Error("Form Error, XML node is null");
+                return;
+            }
+
             _nodeName=xml.nodeName;
             _nodeType=xml.nodeType;
 

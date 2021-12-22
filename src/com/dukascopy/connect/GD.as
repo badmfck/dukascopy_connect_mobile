@@ -148,5 +148,9 @@ package com.dukascopy.connect
 		// NETWORK
 		static public const S_NETWORK_STATUS:Signal=new Signal(); //DCCNetStat
 		static public const S_REQUEST_NET_STATUS:Signal=new Signal(); //functon(online:Boolean)
+
+		// SYS
+		static public const S_REQUEST_DEBUG_SCREEN:Signal=new Signal();
+		static public const S_SEND_ERROR:Signal=new Signal(); //{message,reason}
 	}
 }

@@ -34,6 +34,7 @@ import flash.events.UncaughtErrorEvent;
 import flash.filesystem.File;
 	import flash.system.Capabilities;
 	import flash.utils.Dictionary;
+	import com.dukascopy.connect.GD;
 	
 	/**
 	 * ...
@@ -766,7 +767,7 @@ import flash.filesystem.File;
 		}
 		
 		static private function sendError(message:String,reason:String):void {
-			Main.sendError(message,reason);
+			GD.S_SEND_ERROR.invoke({message:message,reason:reason});
 		}
 		
 		static public function get isReady():Boolean {
