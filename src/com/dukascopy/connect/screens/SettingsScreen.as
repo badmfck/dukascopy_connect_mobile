@@ -142,6 +142,7 @@ package com.dukascopy.connect.screens {
 		private var btnTestObject2:Object =                 { type:"button",   iconL:Style.icon(Style.ICON_ATTACH),         title:"Forgot password",      callback:onTestTap2,             id:18 };
 		private var btnTestObject3:Object =                 { type:"button",   iconL:Style.icon(Style.ICON_ATTACH),         title:"Queue popup",          callback:onTestTap3,             id:19 };
 		private var btnDevices:Object =                     { type:"button",   iconL:Style.icon(Style.ICON_TEXT),           title:Lang.myDevices,         callback:devicesTap,             id:20 };
+		private var btnDebugger:Object =                     { type:"button",   iconL:Style.icon(Style.ICON_TEXT),           title:"DEBUGGER",             callback:debuggerTap,             id:20 };
 		
 		private var line_1:Object =                 		{ type:"line" };
 		private var line_2:Object =                 		{ type:"line" };
@@ -365,6 +366,11 @@ package com.dukascopy.connect.screens {
 		private function onTestTap3():void
 		{
 			ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_DIALOG, QueuePopup);
+		}
+		
+		private function debuggerTap():void
+		{
+			trace("DEBUGGER BUTTON");
 		}
 		
 		private function devicesTap():void
@@ -659,6 +665,9 @@ package com.dukascopy.connect.screens {
 			
 			if (Config.isTF() == true && Config.PLATFORM_ANDROID == true) {
 				buttons.push(btnTestObject);
+			}
+			if (Config.isTF() == true) {
+				buttons.push(btnDebugger);
 			}
 		}
 		

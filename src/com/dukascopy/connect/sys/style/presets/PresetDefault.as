@@ -27,6 +27,7 @@ package com.dukascopy.connect.sys.style.presets
 	import assets.PaymentsImageWhite;
 	import assets.PaymentsLogo;
 	import assets.PhoneIconGrey;
+	import assets.PhonebookIcon;
 	import assets.ProtectionIcon;
 	import assets.SendButtonSound;
 	import assets.SendGiftIcon;
@@ -213,6 +214,7 @@ package com.dukascopy.connect.sys.style.presets
 			this[Style.ICON_JAILED] = JailIcon;
 			this[Style.ICON_FILTERS] = FilterSmallIcon;
 			this[Style.ICON_CHAT] = white.ChatIcon;
+			this[Style.ICON_PHONEBOOK] = PhonebookIcon;
 			
 			this[Style.ICON_ROADMAP_FORM_ACTIVE] = Roadmap_form;
 			this[Style.ICON_ROADMAP_FORM_DONE] = Roadmap_form_success;

@@ -4001,6 +4001,23 @@ package com.dukascopy.connect.sys.bankManager {
 		}
 		
 		static private function processCards(data:Object):void {
+			
+			if (PayManager.accountInfo != null)
+			{
+				if ("card_issuance_city_max_length" in data && !isNaN(Number(data.card_issuance_city_max_length)))
+				{
+					PayManager.accountInfo.cardIssuanceCityMaxLength = data.card_issuance_city_max_length;
+				}
+				if ("card_issuance_fullname_max_length" in data && !isNaN(Number(data.card_issuance_fullname_max_length)))
+				{
+					PayManager.accountInfo.cardIssuanceFullnameMaxLength = data.card_issuance_fullname_max_length;
+				}
+				if ("card_issuance_street_max_length" in data && !isNaN(Number(data.card_issuance_street_max_length)))
+				{
+					PayManager.accountInfo.cardIssuanceStreetMaxLength = data.card_issuance_street_max_length;
+				}
+			}
+			
 			if (data.card_issue_available == true) {
 				cardIssueAvailable = true;
 				//delete BankBotController.getScenario().scenario.cards.menu[0].disabled;

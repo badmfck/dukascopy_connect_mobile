@@ -30,6 +30,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs.elements
 	public class InputField extends Sprite
 	{
 		static public const ALIGN_LEFT:String = "alignLeft";
+		public var underlineColor:Number;
 		private var _onLongTapFunction:Function;
 		private var _onChangedFunction:Function;
 		private var _onSelectedFunction:Function;
@@ -226,7 +227,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs.elements
 		private function onFocusOut():void 
 		{
 			selected = false;
-			drawUnderline(Style.color(Style.CONTROL_INACTIVE));
+			drawUnderline(getUnderlineColor());
 		}
 		
 		private function drawType(value:String):void 
@@ -309,7 +310,8 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs.elements
 			
 			drawTitle(titleValue);
 			drawType(typeValue);
-			drawUnderline(Style.color(Style.CONTROL_INACTIVE));
+			
+			drawUnderline(getUnderlineColor());
 			drawUnderlineValue(underlineString);
 			
 			setDefaultText(defaultValue);
@@ -335,7 +337,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs.elements
 			
 			drawTitle(titleValue);
 			drawType(typeValue);
-			drawUnderline(Style.color(Style.CONTROL_INACTIVE));
+			drawUnderline(getUnderlineColor());
 			drawUnderlineValue(underlineString);
 			
 			if (customMode == Input.MODE_INPUT)
@@ -351,6 +353,16 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs.elements
 			}
 			
 			updatePositions();
+		}
+		
+		private function getUnderlineColor():Number 
+		{
+			var lineColor:Number = Style.color(Style.CONTROL_INACTIVE);
+			if (!isNaN(underlineColor))
+			{
+				lineColor = underlineColor;
+			}
+			return lineColor;
 		}
 		
 		public function updatePositions():void 
@@ -616,7 +628,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs.elements
 				{
 					input.value = "";
 				}
-
+				
 				//trace(input.value.length);
 				if (input.getTextField().selectionBeginIndex == input.getTextField().selectionEndIndex && 
 					input.value != null && 

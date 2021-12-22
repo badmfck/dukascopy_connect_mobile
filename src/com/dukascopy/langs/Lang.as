@@ -2667,6 +2667,10 @@ package com.dukascopy.langs {
 		static public var escrow_no_offers_placeholder_title:String = "No items";
 		static public var escrow_no_offers_placeholder_subtitle:String = "";
 		static public var mine_text:String = "MINE";
+		static public var card_delivery_name:String = "Full name";
+		static public var card_delivery_city_long:String = "имя и/или адрес слишком длинные и он должен их отредактировать прежде чем сможет заказать карту.";
+		static public var card_delivery_name_long:String = "имя и/или адрес слишком длинные и он должен их отредактировать прежде чем сможет заказать карту.";
+		static public var card_delivery_address_long:String = "имя и/или адрес слишком длинные и он должен их отредактировать прежде чем сможет заказать карту.";
 		
 		static public function updateKeys(keys:Object):void {
 			for (var n:String in keys) {

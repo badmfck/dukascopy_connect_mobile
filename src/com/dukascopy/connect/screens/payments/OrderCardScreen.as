@@ -7,6 +7,7 @@ package com.dukascopy.connect.screens.payments {
 	import com.dukascopy.connect.gui.button.DDAccountButton;
 	import com.dukascopy.connect.gui.button.DDFieldButton;
 	import com.dukascopy.connect.gui.components.AddressPanel;
+	import com.dukascopy.connect.gui.components.message.ToastMessage;
 	import com.dukascopy.connect.gui.lightbox.UI;
 	import com.dukascopy.connect.gui.list.renderers.ListPayCardType;
 	import com.dukascopy.connect.gui.list.renderers.ListPayCurrency;
@@ -697,24 +698,62 @@ package com.dukascopy.connect.screens.payments {
 		private function onTermsAndConditionsCallback(value:int):void {
 			if (value != 1)
 				return;
-			ocWaiting = true;
-			btnContinue.deactivate();
-			btnContinue.alpha = 0.7;
-			showLoadingIndicator()
-			lastCallIDOrderCard = new Date().getTime().toString();
-			PayManager.S_PPCARD_ISSUE_RECEIVE.add(onCardCreateComplete);
+			
 			var newDeliveryAddress:CardDeliveryAddress;
 			if (addressBox != null && addressBox.addressUpdated == true)
 				newDeliveryAddress = addressBox.addressData;
-			PayManager.callIssueNewCard(
-				Number(paramsObj.from),
-				paramsObj.type,
-				paramsObj.currency,
-				paramsObj.cardType,
-				paramsObj.delivery,
-				lastCallIDOrderCard,
-				newDeliveryAddress
-			);
+			
+			var errorMessage:String;
+			if (addressBox != null && addressBox.addressUpdated == false)
+			{
+				errorMessage = checkCurrentAddressLength();
+			}
+			if (errorMessage == null)
+			{
+				ocWaiting = true;
+				btnContinue.deactivate();
+				btnContinue.alpha = 0.7;
+				showLoadingIndicator()
+				lastCallIDOrderCard = new Date().getTime().toString();
+				PayManager.S_PPCARD_ISSUE_RECEIVE.add(onCardCreateComplete);
+				
+				PayManager.callIssueNewCard(
+					Number(paramsObj.from),
+					paramsObj.type,
+					paramsObj.currency,
+					paramsObj.cardType,
+					paramsObj.delivery,
+					lastCallIDOrderCard,
+					newDeliveryAddress
+				);
+			}
+			else
+			{
+				ToastMessage.display(errorMessage);
+			}
+		}
+		
+		private function checkCurrentAddressLength():String 
+		{
+			var result:String;
+			
+			if (PayManager.accountInfo != null && addressBox != null)
+			{
+				if (addressBox.getAccountCity() != null && addressBox.getAccountCity().length > PayManager.accountInfo.cardIssuanceCityMaxLength)
+				{
+					result = Lang.card_delivery_city_long;
+				}
+				else if (addressBox.getAccountName() != null && addressBox.getAccountName().length > PayManager.accountInfo.cardIssuanceFullnameMaxLength)
+				{
+					result = Lang.card_delivery_name_long;
+				}
+				else if (addressBox.getAccountAddress() != null && addressBox.getAccountAddress().length > PayManager.accountInfo.cardIssuanceStreetMaxLength)
+				{
+					result = Lang.card_delivery_address_long;
+				}
+			}
+			
+			return result;
 		}
 		
 		private function onCardCreateComplete(callID:String , data:Object):void {

@@ -1105,6 +1105,27 @@ package com.dukascopy.connect.sys.payments {
 				showAlert(Lang.textError, Lang.noInternetConnection);
 				return;
 			}
+			
+			if (deliveryAddress != null)
+			{
+				var currentName:String;
+				if (PayManager.accountInfo != null)
+				{
+					if (accountInfo.fullname_card != null)
+					{
+						currentName = accountInfo.fullname_card;
+					}
+					else
+					{
+						currentName = accountInfo.firstName + " " + accountInfo.lastName;
+					}
+				}
+				if (deliveryAddress.name != null && deliveryAddress.name != currentName)
+				{
+					deliveryAddress.nameChanged = true;
+				}
+			}
+			
 			PayServer.call_putAccountCards(onIssueNewCard, _from, _type, _currency, _cardType, _delivery, _callID, deliveryAddress);
 		}
 		

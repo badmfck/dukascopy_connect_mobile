@@ -90,11 +90,6 @@ package com.dukascopy.connect.gui.button {
 			box.addChild(tf);
 			setOverlay(HitZoneType.MENU_MIDDLE_ELEMENT);
 			
-			if (title != null)
-			{
-				drawTitle(title);
-			}
-			
 			container.addChild(titleClip);
 			container.addChild(box);
 		}
@@ -119,7 +114,7 @@ package com.dukascopy.connect.gui.button {
 			}
 		}
 		
-		private function drawTitle(value:String):void
+		private function drawTitle(value:String, w:int):void
 		{
 			if (titleClip.bitmapData)
 			{
@@ -128,7 +123,7 @@ package com.dukascopy.connect.gui.button {
 			}
 			if (value != null)
 			{
-				titleClip.bitmapData = TextUtils.createTextFieldData(value, Config.FINGER_SIZE * 3, 10,
+				titleClip.bitmapData = TextUtils.createTextFieldData(value, w, 10,
 																false, TextFormatAlign.LEFT,
 																TextFieldAutoSize.LEFT,
 																FontSize.SUBHEAD,
@@ -170,6 +165,11 @@ package com.dukascopy.connect.gui.button {
 			this.w = w;
 			this.h = h;
 			
+			if (title != null)
+			{
+				drawTitle(title, w);
+			}
+			
 			lineThickness = Style.getLineThickness();
 
 			if (generatedBitmap != null) {
@@ -193,7 +193,7 @@ package com.dukascopy.connect.gui.button {
 			innerHeight = h;
 			if (titleClip.height > 0)
 			{
-				box.y = int(FontSize.SUBHEAD - Config.FINGER_SIZE * .1);
+				box.y = int(FontSize.SUBHEAD - Config.FINGER_SIZE * .0);
 				
 				resultheight = box.y + h - Config.FINGER_SIZE * .1 + lineThickness;
 				innerHeight = h - Config.FINGER_SIZE * .1;

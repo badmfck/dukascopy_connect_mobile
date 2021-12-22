@@ -1,48 +1,55 @@
 package com.dukascopy.connect.screens.userProfile {
 	
-	import assets.CircleLoaderShape;
-	import assets.PlusIcon;
-	import assets.SearchButtonIconWhite;
 	import com.adobe.utils.StringUtil;
 	import com.dukascopy.connect.Config;
 	import com.dukascopy.connect.MobileGui;
+	import com.dukascopy.connect.data.TextFieldSettings;
 	import com.dukascopy.connect.gui.button.RoundedButton;
+	import com.dukascopy.connect.gui.components.CirclePreloader;
 	import com.dukascopy.connect.gui.input.Input;
 	import com.dukascopy.connect.gui.lightbox.UI;
+	import com.dukascopy.connect.gui.list.renderers.ListPhonebook;
 	import com.dukascopy.connect.gui.menuVideo.BitmapButton;
-	import com.dukascopy.connect.gui.preloader.Preloader;
 	import com.dukascopy.connect.gui.scrollPanel.ScrollPanel;
 	import com.dukascopy.connect.gui.topBar.TopBarScreen;
 	import com.dukascopy.connect.screens.RootScreen;
 	import com.dukascopy.connect.screens.UserProfileScreen;
 	import com.dukascopy.connect.screens.base.BaseScreen;
 	import com.dukascopy.connect.screens.base.ScreenManager;
+	import com.dukascopy.connect.screens.dialogs.paymentDialogs.elements.InputField;
+	import com.dukascopy.connect.screens.dialogs.x.base.bottom.ListSelectionPopup;
+	import com.dukascopy.connect.sys.applicationError.ApplicationErrors;
 	import com.dukascopy.connect.sys.auth.Auth;
 	import com.dukascopy.connect.sys.chatManager.ChatManager;
 	import com.dukascopy.connect.sys.contactsManager.ContactsManager;
 	import com.dukascopy.connect.sys.crypter.Crypter;
+	import com.dukascopy.connect.sys.dialogManager.DialogManager;
 	import com.dukascopy.connect.sys.errors.ErrorLocalizer;
 	import com.dukascopy.connect.sys.imageManager.ImageBitmapData;
 	import com.dukascopy.connect.sys.phonebookManager.PhonebookManager;
 	import com.dukascopy.connect.sys.php.PHP;
 	import com.dukascopy.connect.sys.php.PHPRespond;
+	import com.dukascopy.connect.sys.serviceScreenManager.ServiceScreenManager;
 	import com.dukascopy.connect.sys.softKeyboard.SoftKeyboard;
+	import com.dukascopy.connect.sys.style.FontSize;
+	import com.dukascopy.connect.sys.style.Style;
+	import com.dukascopy.connect.sys.style.presets.Color;
 	import com.dukascopy.connect.sys.theme.AppTheme;
-	import com.dukascopy.connect.sys.usersManager.UsersManager;
 	import com.dukascopy.connect.type.ChatInitType;
+	import com.dukascopy.connect.type.HitZoneType;
 	import com.dukascopy.connect.type.MainColors;
 	import com.dukascopy.connect.utils.TextUtils;
 	import com.dukascopy.connect.vo.ChatVO;
+	import com.dukascopy.connect.vo.screen.ChatScreenData;
 	import com.dukascopy.connect.vo.users.UserVO;
 	import com.dukascopy.connect.vo.users.adds.ContactVO;
-	import com.dukascopy.connect.vo.screen.ChatScreenData;
+	import com.dukascopy.connect.vo.users.adds.PhonebookUserVO;
 	import com.dukascopy.langs.Lang;
 	import com.dukascopy.langs.LangManager;
 	import com.greensock.TweenMax;
 	import com.greensock.easing.Power2;
 	import flash.display.Bitmap;
 	import flash.display.Sprite;
-	import flash.display.StageQuality;
 	import flash.events.Event;
 	import flash.geom.ColorTransform;
 	import flash.text.TextFieldAutoSize;
@@ -64,45 +71,30 @@ package com.dukascopy.connect.screens.userProfile {
 		
 		private var currentState:String;
 		
-		private var FIT_WIDTH:Number;
 		private var max_text_width:int;
 		private var OPTION_LINE_HEIGHT:int = Config.FINGER_SIZE * .8;
 		
 		private var topBar:TopBarScreen;
-		private var backButton:BitmapButton;
 		private var scrollPanel:ScrollPanel;
-		private var nameInputBottom:Bitmap;
-		private var phoneField:Input;
+		private var phoneField:InputField;
 		private var buttonPaddingLeft:int;
-		private var continueButton:RoundedButton;
 		private var currentPhone:String;
 		private var currentSurname:String;
-		private var preloader:Preloader;
-		private var preloaderContainer:Sprite;
-		private var changeNameRequestId:String;
+		private var preloader:CirclePreloader;
 		private var numberBack:Sprite;
 		private var searchButton:BitmapButton;
 		private var resultMessage:Bitmap;
-		private var searchLoader:Preloader;
-		private var searchLoaderContainer:Sprite;
-		private var searchButtonContainer:Sprite;
-		private var resultMessageContainer:Sprite;
-		private var continueButtonContainer:Sprite;
-		private var phoneInputContainer:Sprite;
-		private var phoneBackContainer:Sprite;
-		private var phoneLineContainer:Sprite;
 		private var user:UserSearchResult;
-		private var userContainer:Sprite;
-		private var startChatButton:RoundedButton;
-		private var startChatButtonContainer:Sprite;
-		private var inviteButton:RoundedButton;
-		private var inviteButtonContainer:Sprite;
-		private var plusIcon:PlusIcon;
+		private var startChatButton:BitmapButton;
+		private var inviteButton:BitmapButton;
 		private var animationDistance:Number;
 		private var currentSearchResult:ContactVO;
 		private var userInContacts:Boolean;
 		private var hasName:Boolean;
 		private var currentSearchResultLocal:ContactVO;
+		private var padding:int;
+		private var phoneButton:BitmapButton;
+		private var description:Bitmap;
 		
 		public function StartChatByPhoneScreen() {	}
 		
@@ -111,40 +103,22 @@ package com.dukascopy.connect.screens.userProfile {
 			_params.title = "New chat with phone number";
 			_params.doDisposeAfterClose = true;
 			
+			padding = Config.DOUBLE_MARGIN;
+			drawSearchButton();
+			drawStartChatButton();
+			drawDescription();
+			drawInviteButton();
+			
 			animationDistance = Config.MARGIN;
-			FIT_WIDTH = _width - buttonPaddingLeft * 2;
 			topBar.setData(Lang.startChatByPhoneNumber, true);
 			scrollPanel.view.y = topBar.trueHeight;
 			
-			startChatButton.setSizeLimits(Config.FINGER_SIZE * 3.5, FIT_WIDTH);
-			continueButton.setSizeLimits(Config.FINGER_SIZE * 3.5, FIT_WIDTH);
-			inviteButton.setSizeLimits(Config.FINGER_SIZE * 3.5, FIT_WIDTH);
-			continueButton.draw();
-			inviteButton.draw();
-			startChatButton.draw();
+			if (PhonebookManager.isHasPermissionToContacts)
+			{
+				createPhonebookButton();
+			}
 			
-			phoneInputContainer.x = int(buttonPaddingLeft + plusIcon.width - Config.MARGIN);
-			phoneInputContainer.y = buttonPaddingLeft;
-			phoneField.width = FIT_WIDTH - searchButton.width - Config.MARGIN - plusIcon.width;
-			
-			numberBack.width = _width;
-			numberBack.height = phoneInputContainer.y + phoneField.height + buttonPaddingLeft;
-			
-			nameInputBottom.width = FIT_WIDTH - searchButton.width - Config.MARGIN;
-			phoneLineContainer.y = phoneInputContainer.y + phoneField.view.height - Config.MARGIN*.6;
-			phoneLineContainer.x = buttonPaddingLeft;
-			
-			searchButtonContainer.x = int(phoneLineContainer.x + phoneLineContainer.width + Config.MARGIN);
-			searchButtonContainer.y = int(phoneInputContainer.y + phoneField.height * .5 - searchButton.height * .5);
-			
-			continueButtonContainer.x = int(_width * .5 - continueButton.width * .5);
-			continueButtonContainer.y = int(numberBack.y + numberBack.height + buttonPaddingLeft);
-			
-			searchLoaderContainer.x = int(searchButtonContainer.x + searchButton.width*.5);
-			searchLoaderContainer.y = int(searchButtonContainer.y + searchButton.height*.5);
-			
-			plusIcon.x = buttonPaddingLeft;
-			plusIcon.y = int(phoneInputContainer.y + phoneField.height * .5 - plusIcon.height * .5 + Config.MARGIN * .2);
+			updatePositions();
 			
 			if (data && data.state) {
 				var stateToShow:String = STATE_START;
@@ -153,14 +127,14 @@ package com.dukascopy.connect.screens.userProfile {
 					if (("model" in data) && data.model && (data.model is ContactVO)) {
 						stateToShow = STATE_USER_FOUND;
 						currentSearchResult = data.model as ContactVO;
-						phoneField.value = currentSearchResult.getPhone().toString();
+						phoneField.valueString = currentSearchResult.getPhone().toString();
 					}
 				}
 				else if (data.state == STATE_USER_FOUND_IN_CONTACTS) {
 					if (("model" in data) && data.model && (data.model is UserVO)) {
 						stateToShow = STATE_USER_FOUND_IN_CONTACTS;
 						currentSearchResultLocal = data.model as ContactVO;
-						phoneField.value = currentSearchResultLocal.getPhone().toString();
+						phoneField.valueString = currentSearchResultLocal.getPhone().toString();
 					}
 				}
 				
@@ -169,6 +143,84 @@ package com.dukascopy.connect.screens.userProfile {
 			else {
 				setState(STATE_START);
 			}
+			
+			view.graphics.clear();
+			view.graphics.beginFill(Style.color(Style.COLOR_BACKGROUND));
+			view.graphics.drawRect(0, 0, _width, _height);
+			view.graphics.endFill();
+		}
+		
+		private function drawDescription():void 
+		{
+			if (description.bitmapData != null)
+			{
+				description.bitmapData.dispose();
+				description.bitmapData = null;
+			}
+			description.bitmapData = TextUtils.createTextFieldData(Lang.search_user_description, _width - padding * 2, 10, true, TextFormatAlign.LEFT, TextFieldAutoSize.LEFT, 
+																	FontSize.SUBHEAD_14, true, Style.color(Style.COLOR_SUBTITLE), Style.color(Style.COLOR_BACKGROUND));
+			
+		}
+		
+		private function updatePositions():void 
+		{
+			var position:int = Config.FINGER_SIZE * .3;
+			
+			description.x = padding;
+			description.y = position;
+			position += description.height + padding;
+			
+			var inputWidth:int = _width - padding * 2;
+			if (phoneButton != null)
+			{
+				inputWidth -= phoneButton.width + padding;
+			}
+			var inputPosition:int = padding;
+			phoneField.drawString(inputWidth, null, Lang.enter_phone_number, null, null);
+			phoneField.y = position;
+			if (phoneButton != null)
+			{
+				inputWidth -= phoneButton.width + padding;
+				inputPosition += phoneButton.width + padding;
+				phoneButton.x = padding;
+				phoneButton.y = int(phoneField.y + phoneField.textY + phoneField.textHeight * .5 - phoneButton.height * .5);
+			}
+			
+			phoneField.x = inputPosition;
+			
+			position += phoneField.height + Config.FINGER_SIZE * .3;
+			
+			numberBack.width = _width;
+			numberBack.height = position;
+			
+			searchButton.x = padding;
+			searchButton.y = _height - searchButton.height - padding;
+		}
+		
+		private function drawSearchButton():void 
+		{
+			var textSettings:TextFieldSettings = new TextFieldSettings(Lang.search_user, Style.color(Style.COLOR_BACKGROUND), FontSize.BODY, TextFormatAlign.CENTER);
+			var buttonBitmap:ImageBitmapData = TextUtils.createbutton(textSettings, Color.GREEN, 1, -1, NaN, getButtonWidth(), Style.size(Style.BUTTON_PADDING), Style.size(Style.SIZE_BUTTON_CORNER));
+			searchButton.setBitmapData(buttonBitmap, true);
+		}
+		
+		private function drawStartChatButton():void 
+		{
+			var textSettings:TextFieldSettings = new TextFieldSettings(Lang.startChat, Style.color(Style.COLOR_BACKGROUND), FontSize.BODY, TextFormatAlign.CENTER);
+			var buttonBitmap:ImageBitmapData = TextUtils.createbutton(textSettings, Color.GREEN, 1, -1, NaN, getButtonWidth(), Style.size(Style.BUTTON_PADDING), Style.size(Style.SIZE_BUTTON_CORNER));
+			startChatButton.setBitmapData(buttonBitmap, true);
+		}
+		
+		private function drawInviteButton():void 
+		{
+			var textSettings:TextFieldSettings = new TextFieldSettings(Lang.textInvite, Style.color(Style.COLOR_BACKGROUND), FontSize.BODY, TextFormatAlign.CENTER);
+			var buttonBitmap:ImageBitmapData = TextUtils.createbutton(textSettings, Style.color(Style.COLOR_BUTTON_ACCENT), 1);
+			inviteButton.setBitmapData(buttonBitmap, true);
+		}
+		
+		private function getButtonWidth():int 
+		{
+			return _width - padding * 2;
 		}
 		
 		private function setState(state:String, animate:Boolean = true):void {
@@ -179,28 +231,24 @@ package com.dukascopy.connect.screens.userProfile {
 				
 				TweenMax.killTweensOf(resultMessage);
 				TweenMax.killTweensOf(startChatButton);
-				TweenMax.killTweensOf(userContainer);
 				TweenMax.killTweensOf(user);
 				
 				var animateTime:Number = 1;
 				if (!animate) {
 					animateTime = 0;
 				}
-				
+				var targetPosition:int;
 				switch(state) {
 					case STATE_USER_FOUND_IN_CONTACTS:	{
-						continueButton.hide();
-						continueButton.deactivate();
-						inviteButton.hide();
 						
-						user.draw(currentSearchResultLocal, FIT_WIDTH, Config.FINGER_SIZE * 1.5);
+						user.draw(currentSearchResultLocal, _width - padding * 2, Config.FINGER_SIZE * 1.5);
 						displayMessage(Lang.userAlreadyInContacts, -1, animate);
 						
 						hasName = true;
 						if (currentSearchResultLocal.name == null || currentSearchResultLocal.name == "")
 							hasName = false;
 						
-						userContainer.y = resultMessageContainer.y + resultMessage.height + Config.MARGIN * 2;
+						user.y = resultMessage.y + resultMessage.height + Config.MARGIN * 2;
 						
 						user.visible = true;
 						user.alpha = 0;
@@ -217,115 +265,137 @@ package com.dukascopy.connect.screens.userProfile {
 						break;
 					}
 					case STATE_USER_FOUND: {
-						inviteButton.hide();
-						user.activate();
+						
+						scrollPanel.removeObject(searchButton);
+						phoneButton.alpha = 1;
+						phoneField.alpha = 1;
+						scrollPanel.addObject(user);
+						view.addChild(startChatButton);
+						if (isActivated)
+						{
+							phoneField.activate();
+							phoneButton.activate();
+							user.activate();
+							startChatButton.activate();
+						}
 						
 						var userModel:ContactVO = new ContactVO(currentSearchResult);
-						user.draw(userModel, FIT_WIDTH, Config.FINGER_SIZE * 1.5);
+						user.draw(userModel, _width - padding * 2, Config.FINGER_SIZE * 1.5);
 						displayMessage(Lang.contactFound, -1, animate);
 						
 						hasName = true;
 						if (userModel.name == null || userModel.name == "")
 							hasName = false;
-						userContainer.y = resultMessageContainer.y + resultMessage.height + Config.MARGIN * 2;
+						user.y = resultMessage.y + resultMessage.height + Config.MARGIN * 2;
 						
-						startChatButtonContainer.x = int(_width * .5 - startChatButton.width * .5);
-						startChatButtonContainer.y = int(userContainer.y + user.getHeight() + Config.MARGIN);
+						startChatButton.x = padding;
+						startChatButton.y = int(_height - startChatButton.height - padding);
 						
-						startChatButton.show(0);
-						startChatButton.alpha = 0;
-						startChatButton.y = -animationDistance;
-						startChatButtonContainer.visible = true;
-						TweenMax.to(startChatButton, 0.5 * animateTime, { alpha:1, y:0, delay:0.4 * animateTime, ease:Power2.easeOut } );
+						targetPosition = numberBack.y + numberBack.height + Config.FINGER_SIZE;
 						
 						user.visible = true;
 						user.alpha = 0;
 						user.tap = startChat;
-						user.y = -animationDistance;
+						user.y = targetPosition - animationDistance;
 						
-						TweenMax.to(user, 0.5 * animateTime, { alpha:1, y:0, delay:0.2 * animateTime, ease:Power2.easeOut } );
-						
-						if (_isActivated) {
-							user.activate();
-							searchButton.activate();
-							startChatButton.activate();
-						}
+						TweenMax.to(user, 0.5 * animateTime, { alpha:1, y:targetPosition, delay:0.2 * animateTime, ease:Power2.easeOut } );
 						
 						break;
 					}
 					case STATE_START: {
+						
+						scrollPanel.removeObject(inviteButton);
+						scrollPanel.removeObject(resultMessage);
+						scrollPanel.removeObject(user);
+						view.addChild(searchButton);
+						
+						if (startChatButton != null && view.contains(startChatButton))
+						{
+							view.removeChild(startChatButton);
+						}
+						
+						searchButton.alpha = 1;
+						phoneField.alpha = 1;
+						phoneButton.alpha = 1;
+						
 						currentSearchResultLocal = null;
 						currentSearchResult = null;
-						inviteButton.hide();
-						continueButton.show();
-						continueButtonContainer.visible = true;
-						startChatButton.hide();
 						
 						if (_isActivated) {
-							continueButton.activate();
 							searchButton.activate();
+							phoneButton.activate();
+							phoneField.activate();
 						}
 						
 						hideUserClip();
-						resultMessage.visible = false;
-						
-						continueButton.alpha = 0;
-						TweenMax.to(continueButton, 0.5 * animateTime, {alpha:1, delay:0.3 * animateTime, ease:Power2.easeOut});
 						
 						break;
 					}
 					case STATE_ERROR: {
-						inviteButton.visible = false;
-						continueButton.hide();
-						continueButton.deactivate();
-						startChatButton.hide();
+						
+						phoneField.alpha = 1;
+						searchButton.alpha = 1;
+						phoneButton.alpha = 1;
+						
+						scrollPanel.removeObject(inviteButton);
 						
 						if (_isActivated)
+						{
 							searchButton.activate();
+							phoneButton.activate();
+						}
 						
 						hideUserClip();
 						break;
 					}
 					case STATE_NOT_FOUND: {
-						displayMessage(LangManager.replace(Lang.regExtValue, Lang.startChatByPhoneDataNULL, phoneField.value), -1, animate);
 						
-						inviteButton.show(0);
-						inviteButton.visible = true;
+						phoneField.alpha = 1;
+						searchButton.alpha = 1;
+						phoneButton.alpha = 1;
+						
+						displayMessage(LangManager.replace(Lang.regExtValue, Lang.startChatByPhoneDataNULL, phoneField.valueString), -1, animate);
 						
 						if (_isActivated) {
 							inviteButton.activate();
 						}
 						
-						inviteButtonContainer.x = int(_width * .5 - inviteButton.width * .5);
-						inviteButtonContainer.y = int(resultMessageContainer.y + resultMessage.height + Config.MARGIN * 3);
+						scrollPanel.addObject(inviteButton);
 						
-						inviteButton.show(0);
+						targetPosition = numberBack.y + numberBack.height + resultMessage.height + Config.FINGER_SIZE;
+						
+						inviteButton.x = int(_width * .5 - inviteButton.width * .5);
+						inviteButton.y = targetPosition - animationDistance;
+						
 						inviteButton.alpha = 0;
-						inviteButton.y = -animationDistance;
-						inviteButtonContainer.visible = true;
+						inviteButton.y = targetPosition - animationDistance;
 						
-						TweenMax.to(inviteButton, 0.5 * animateTime, { alpha:1, y:0, delay:0.2 * animateTime, ease:Power2.easeOut } );
+						TweenMax.to(inviteButton, 0.5 * animateTime, { alpha:1, y:targetPosition, delay:0.2 * animateTime, ease:Power2.easeOut } );
 						
 						break;
 					}
 					case STATE_SEARCH: {
-						continueButton.hide();
-						onPoneInputFocusOut();
-						startChatButton.hide();
-						hideUserClip();
+						showPreloader();
+						
+						searchButton.alpha = 0.5;
+						phoneField.alpha = 0.5;
+						phoneButton.alpha = 0.5;
+						
 						Input.S_SOFTKEYBOARD.invoke(false);
-						
-						searchLoader.show();
-						searchButton.hide();
-						resultMessage.visible = false;
-						inviteButton.visible = false;
-						
 						SoftKeyboard.closeKeyboard();
 						
 						break;
 					}
 				}
 			}
+		}
+		
+		private function showPreloader():void 
+		{
+			preloader = new CirclePreloader();
+			view.addChild(preloader);
+			preloader.x = int(_width * .5);
+			preloader.y = int(_height * .5);
 		}
 		
 		private function openProfile():void {
@@ -379,112 +449,136 @@ package com.dukascopy.connect.screens.userProfile {
 			scrollPanel.view.y = topBar.trueHeight;
 			
 			numberBack = new Sprite();
-			numberBack.graphics.beginFill(0xF7F7F7, 1);
+			numberBack.graphics.beginFill(Style.color(Style.COLOR_LIST_SPECIAL), 1);
 			numberBack.graphics.drawRect(0, 0, 10, 10);
 			numberBack.graphics.endFill();
-			phoneBackContainer = new Sprite();
-			phoneBackContainer.addChild(numberBack);
-			scrollPanel.addObject(phoneBackContainer);
+			scrollPanel.addObject(numberBack);
 			
-			phoneField = new Input();
-			phoneField.setTextStart(Config.FINGER_SIZE * .2);
-			phoneField.backgroundColor = 0xF7F7F7;
-			phoneField.setMode(Input.MODE_PHONE);
-			var textFormat:TextFormat = new TextFormat();
-			textFormat.size = Config.FINGER_SIZE * .4;
-			phoneField.updateTextFormat(textFormat);
-			phoneField.setLabelText(Lang.enterPhoneNumber);
-			phoneField.S_FOCUS_OUT.add(onPoneInputFocusOut);
-			phoneField.setBorderVisibility(false);
-			phoneField.setRoundBG(false);
-			phoneField.S_CHANGED.add(onPhoneChange);
-			phoneField.setRoundRectangleRadius(0);
-			phoneField.inUse = true;
-			phoneInputContainer = new Sprite();
-			phoneInputContainer.addChild(phoneField.view);
-			scrollPanel.addObject(phoneInputContainer);
+			var tf:TextFormat = new TextFormat();
+			tf.size = FontSize.AMOUNT;
+			tf.color = Style.color(Style.COLOR_TEXT);
+			tf.font = Config.defaultFontName;
 			
-			plusIcon = new PlusIcon();
-			plusIcon.transform.colorTransform = colorTransform;
-			UI.scaleToFit(plusIcon, int(Config.FINGER_SIZE * .25), int(Config.FINGER_SIZE * .25));
-			scrollPanel.addObject(plusIcon);
+			phoneField = new InputField( -1, Input.MODE_PHONE);
+			phoneField.setBackground(Style.color(Style.COLOR_LIST_SPECIAL));
+			phoneField.setDefaultText(Lang.enterPhoneNumber);
+			phoneField.onSelectedFunction = onInputSelected;
+			phoneField.onChangedFunction = onPhoneChange;
+			phoneField.setMaxChars(20);
+			phoneField.setPadding(0);
+			phoneField.updateTextFormat(tf);
+			scrollPanel.addObject(phoneField);;
 			
-			var hLineBitmapData:ImageBitmapData = UI.getHorizontalLine(AppTheme.GREY_DARK);
-			nameInputBottom = new Bitmap(hLineBitmapData);
-			phoneLineContainer = new Sprite();
-			phoneLineContainer.addChild(nameInputBottom);
-			scrollPanel.addObject(phoneLineContainer);
-			
-			continueButton = new RoundedButton(Lang.BTN_CONTINUE, AppTheme.GREEN_MEDIUM, AppTheme.GREEN_DARK, null);
-			continueButton.setStandartButtonParams();
-			continueButton.setDownScale(1);
-			continueButton.cancelOnVerticalMovement = true;
-			continueButton.tapCallback = searchUser;
-			continueButtonContainer = new Sprite();
-			continueButtonContainer.addChild(continueButton);
-			scrollPanel.addObject(continueButtonContainer);
-			continueButton.hide();
-			
-			startChatButton = new RoundedButton(Lang.startChat, AppTheme.GREEN_MEDIUM, AppTheme.GREEN_DARK, null);
-			startChatButton.setStandartButtonParams();
-			startChatButton.setDownScale(1);
-			startChatButton.cancelOnVerticalMovement = true;
-			startChatButton.tapCallback = startChat;
-			startChatButtonContainer = new Sprite();
-			startChatButtonContainer.addChild(startChatButton);
-			scrollPanel.addObject(startChatButtonContainer);
-			startChatButton.hide();
-			
-			inviteButton = new RoundedButton(Lang.textInvite, AppTheme.GREEN_MEDIUM, AppTheme.GREEN_DARK, null);
-			inviteButton.setStandartButtonParams();
-			inviteButton.setDownScale(1);
-			inviteButton.cancelOnVerticalMovement = true;
-			inviteButton.tapCallback = inviteUser;
-			inviteButtonContainer = new Sprite();
-			inviteButtonContainer.addChild(inviteButton);
-			scrollPanel.addObject(inviteButtonContainer);
-			inviteButton.hide();
-			
-			var searchButtonIcon:SearchButtonIconWhite = new SearchButtonIconWhite();
-			UI.scaleToFit(searchButtonIcon, Config.FINGER_SIZE * .4, Config.FINGER_SIZE * .4);
-			searchButtonIcon.transform.colorTransform = colorTransform;
-			searchButton = new BitmapButton();
-			searchButton.setStandartButtonParams();
-			searchButton.setDownScale(1);
-			searchButton.cancelOnVerticalMovement = true;
-			searchButton.tapCallback = searchUser;
-			searchButton.setOverflow((Config.FINGER_SIZE - searchButton.height)/2, (Config.FINGER_SIZE - searchButton.width)/2, (Config.FINGER_SIZE - searchButton.width)/2, (Config.FINGER_SIZE - searchButton.height)/2);
-			searchButton.setBitmapData(UI.getSnapshot(searchButtonIcon, StageQuality.HIGH, "FindUserScreen.searchButton"));
-			searchButtonContainer = new Sprite();
-			scrollPanel.addObject(searchButtonContainer);
-			searchButtonContainer.addChild(searchButton);
+			createSearchButton();
+			createStartChatButton();
+			createInviteButton();
 			
 			resultMessage = new Bitmap();
-			resultMessage.visible = false;
-			resultMessageContainer = new Sprite();
-			scrollPanel.addObject(resultMessageContainer);
-			resultMessageContainer.addChild(resultMessage);
-			
-			searchLoaderContainer = new Sprite();
-			var loaderSize:int = Config.FINGER_SIZE * .5;
-			if (loaderSize%2 == 1)
-				loaderSize ++;
-			searchLoader = new Preloader(loaderSize, CircleLoaderShape);
-			scrollPanel.addObject(searchLoaderContainer);
-			searchLoaderContainer.addChild(searchLoader);
-			searchLoader.visible = false;
 			
 			user = new UserSearchResult();
 			user.x = buttonPaddingLeft;
-			userContainer = new Sprite();
-			userContainer.addChild(user);
-			scrollPanel.addObject(userContainer);
-			user.visible = false;
 			
-			preloader = new Preloader();
-			_view.addChild(preloader);
-			preloader.hide();
-			preloader.visible = false;
+			description = new Bitmap();
+			scrollPanel.addObject(description);
+		}
+		
+		private function createPhonebookButton():void 
+		{
+			var IconClass:Class = Style.icon(Style.ICON_PHONEBOOK);
+			if (IconClass != null)
+			{
+				phoneButton = new BitmapButton();
+				phoneButton.setStandartButtonParams();
+				phoneButton.tapCallback = openPhonebook;
+				phoneButton.disposeBitmapOnDestroy = true;
+				phoneButton.setDownScale(1);
+				phoneButton.setOverlay(HitZoneType.CIRCLE);
+				
+				var iconSprite:Sprite = new IconClass();
+				var iconSize:int = Config.FINGER_SIZE * .4;
+				UI.scaleToFit(iconSprite, iconSize, iconSize);
+				UI.colorize(iconSprite, Style.color(Style.COLOR_ICON_SETTINGS));
+				phoneButton.setBitmapData(UI.getSnapshot(iconSprite), true);
+				
+				scrollPanel.addObject(phoneButton);
+			}
+			else
+			{
+				ApplicationErrors.add();
+			}
+		}
+		
+		private function openPhonebook():void 
+		{
+			if (currentState == STATE_START || currentState == STATE_ERROR || currentState == STATE_NOT_FOUND || currentState == STATE_USER_FOUND)
+			{
+				var users:Array = PhonebookManager.phones;
+				
+				if (users != null)
+				{
+					DialogManager.showDialog(
+							ListSelectionPopup,
+							{
+								items:users,
+								title:Lang.TEXT_SELECT_ACCOUNT,
+								renderer:ListPhonebook,
+								callback:onUserSelected
+							}, ServiceScreenManager.TYPE_SCREEN
+						);
+				}
+			}
+		}
+		
+		private function onUserSelected(user:PhonebookUserVO):void 
+		{
+			if (user != null)
+			{
+				var phone:String = user.phone;
+				if (phone != null)
+				{
+					phone = StringUtil.trim(phone);
+					phone = phone.replace(/ /g, "");
+					phone = phone.replace("+", "");
+					
+					phoneField.valueString = phone;
+				}
+			}
+		}
+		
+		private function onInputSelected():void 
+		{
+			
+		}
+		
+		private function createSearchButton():void 
+		{
+			searchButton = new BitmapButton();
+			searchButton.setStandartButtonParams();
+			searchButton.tapCallback = searchUser;
+			searchButton.disposeBitmapOnDestroy = true;
+			searchButton.setDownScale(1);
+			searchButton.setOverlay(HitZoneType.BUTTON);
+			view.addChild(searchButton);
+		}
+		
+		private function createStartChatButton():void 
+		{
+			startChatButton = new BitmapButton();
+			startChatButton.setStandartButtonParams();
+			startChatButton.tapCallback = startChat;
+			startChatButton.disposeBitmapOnDestroy = true;
+			startChatButton.setDownScale(1);
+			startChatButton.setOverlay(HitZoneType.BUTTON);
+		}
+		
+		private function createInviteButton():void 
+		{
+			inviteButton = new BitmapButton();
+			inviteButton.setStandartButtonParams();
+			inviteButton.tapCallback = inviteUser;
+			inviteButton.disposeBitmapOnDestroy = true;
+			inviteButton.setDownScale(1);
+			inviteButton.setOverlay(HitZoneType.BUTTON);
 		}
 		
 		private function inviteUser():void {
@@ -492,7 +586,7 @@ package com.dukascopy.connect.screens.userProfile {
 		}
 		
 		private function getPhone():String {
-			var phoneNumber:String = phoneField.value;
+			var phoneNumber:String = phoneField.valueString;
 			
 			phoneNumber = phoneNumber.replace(/[^0-9\+]/gis, '');
 			
@@ -523,47 +617,35 @@ package com.dukascopy.connect.screens.userProfile {
 			}
 			if ("data" in data == true && data.data != null && data.data.payCard == true)
 				chatScreenData.payCard = true;
-			/*var backData:Object = new Object();
-			backData.state = currentState;
-			if (currentState == STATE_USER_FOUND)
-				backData.model = currentSearchResult;
-			else if (currentState == STATE_USER_FOUND_IN_CONTACTS)
-				backData.model = currentSearchResultLocal;
-			if ("data" in data == true && data.data != null && data.data.payCard == true)
-				backData.data = { payCard: true };*/
-			chatScreenData.backScreen = RootScreen;
-			chatScreenData.backScreenData = null;
-			chatScreenData.byPhone=true;
+			
+			chatScreenData.backScreen = MobileGui.centerScreen.currentScreenClass;
+			chatScreenData.backScreenData = {state:currentState, model:user.getData()};
+			chatScreenData.byPhone = true;
 			MobileGui.showChatScreen(chatScreenData);
 		}
 		
-		private function onPoneInputFocusOut():void	{
-			var currentValue:String = StringUtil.trim(phoneField.value);
-			if (currentValue != "" && currentValue != phoneField.getDefValue())	{
-				currentPhone = currentValue;
-			} else {
-				phoneField.value = currentPhone;
-			}
-		}
-		
 		private function searchUser():void {
-			var phone:String = getPhone();
-			if (phone && phone.length > 7) {
-				if (phone == Auth.phone.toString()) {
-					return;
-				}
-				
-				var userModel:ContactVO = ContactsManager.getUserByPhone(phone);
-				if (userModel) {
-					if (userModel.uid == Auth.uid) {
-						setState(STATE_NOT_FOUND);
-					} else {
-						currentSearchResultLocal = userModel;
-						setState(STATE_USER_FOUND_IN_CONTACTS);
+			
+			if (currentState == STATE_START)
+			{
+				var phone:String = getPhone();
+				if (phone && phone.length > 7) {
+					if (phone == Auth.phone.toString()) {
+						return;
 					}
-				} else {
-					setState(STATE_SEARCH);
-					PHP.getUserByPhone(Crypter.getBaseNumber(Number(phone)), onSearchResult), true;
+					
+					var userModel:ContactVO = ContactsManager.getUserByPhone(phone);
+					if (userModel) {
+						if (userModel.uid == Auth.uid) {
+							setState(STATE_NOT_FOUND);
+						} else {
+							currentSearchResultLocal = userModel;
+							setState(STATE_USER_FOUND_IN_CONTACTS);
+						}
+					} else {
+						setState(STATE_SEARCH);
+						PHP.getUserByPhone(Crypter.getBaseNumber(Number(phone)), onSearchResult), true;
+					}
 				}
 			}
 		}
@@ -573,7 +655,9 @@ package com.dukascopy.connect.screens.userProfile {
 				response.dispose();
 				return;
 			}
-			searchLoader.hide();
+			
+			hidePreloader();
+			
 			searchButton.show();
 			if (response.error) {
 				//!TODO:
@@ -586,8 +670,8 @@ package com.dukascopy.connect.screens.userProfile {
 						setState(STATE_NOT_FOUND);
 					} else {
 						currentSearchResult = new ContactVO(response.data);
-						if (currentSearchResult.userVO != null && phoneField != null && phoneField.value != null) {
-							currentSearchResult.userVO.setDataFromPhonebookObject( { phone:phoneField.value } );
+						if (currentSearchResult.userVO != null && phoneField != null && phoneField.valueString != null) {
+							currentSearchResult.userVO.setDataFromPhonebookObject( { phone:phoneField.valueString } );
 						}
 						setState(STATE_USER_FOUND);
 					}
@@ -608,46 +692,51 @@ package com.dukascopy.connect.screens.userProfile {
 				resultMessage.bitmapData.dispose();
 				resultMessage.bitmapData = null;
 			}
-			resultMessage.bitmapData = TextUtils.createTextFieldData(text, FIT_WIDTH - Config.FINGER_SIZE, 10, true, TextFormatAlign.CENTER, TextFieldAutoSize.LEFT, Config.FINGER_SIZE * .3, true, AppTheme.GREY_MEDIUM, MainColors.WHITE);
-			resultMessageContainer.x = int(_width * .5 - resultMessage.width * .5);
+			resultMessage.bitmapData = TextUtils.createTextFieldData(text, _width - padding * 2, 10, true, TextFormatAlign.CENTER, 
+																	TextFieldAutoSize.LEFT, FontSize.BODY, true, 
+																	Style.color(Style.COLOR_SUBTITLE), Style.color(Style.COLOR_BACKGROUND));
+			resultMessage.x = int(_width * .5 - resultMessage.width * .5);
+			
+			var targetPosition:int;
 			if (customPosition == -1) {
-				resultMessageContainer.y = continueButtonContainer.y + Config.MARGIN * 2;
+				targetPosition = int(numberBack.y + numberBack.height + Config.FINGER_SIZE * .4);
 			}
 			else {
-				resultMessageContainer.y = customPosition;
+				targetPosition = customPosition;
 			}
 			
-			resultMessageContainer.visible = true;
+			scrollPanel.addObject(resultMessage);
 			resultMessage.visible = true;
-			resultMessage.y = -animationDistance;
+			resultMessage.visible = true;
+			resultMessage.y = targetPosition - animationDistance;
 			resultMessage.alpha = 0;
-			TweenMax.to(resultMessage, 0.5 * animationTime, { alpha:1, y:0, ease:Power2.easeOut } );
-		}
-		
-		private function lockScreen():void {
-			displayPreloader();
-			deactivateScreen();
-		}
-		
-		private function unlockScreen():void {
-			hidePreloader();
-			activateScreen();
+			TweenMax.to(resultMessage, 0.5 * animationTime, { alpha:1, y:targetPosition, ease:Power2.easeOut } );
 		}
 		
 		override protected function drawView():void	{
 			topBar.drawView(_width);
-			scrollPanel.setWidthAndHeight(_width, _height - topBar.trueHeight);
-		}
-		
-		private function displayPreloader():void {
-			preloader.x = _width * .5;
-			preloader.y = _height * .5;
-			preloader.show();
-			preloader.visible = true;
+			topBar.backgroundColor = Style.color(Style.COLOR_LIST_SPECIAL);
+			scrollPanel.setWidthAndHeight(_width, _height - topBar.trueHeight - searchButton.height - padding * 2);
+			if (searchButton != null)
+			{
+				searchButton.y = _height - searchButton.height - padding;
+			}
+			/*if (searchButton != null)
+			{
+				searchButton.y = _height - searchButton.height - padding;
+			}*/
 		}
 		
 		private function hidePreloader():void {
-			preloader.hide();
+			if (preloader != null)
+			{
+				if (view.contains(preloader))
+				{
+					view.removeChild(preloader);
+				}
+				preloader.dispose();
+				preloader = null;
+			}
 		}
 		
 		override public function clearView():void {
@@ -667,27 +756,13 @@ package com.dukascopy.connect.screens.userProfile {
 				scrollPanel.dispose();
 				scrollPanel = null;
 			}
-			if (nameInputBottom) {
-				UI.destroy(nameInputBottom);
-				nameInputBottom = null;
-			}
 			if (phoneField) {
-				phoneField.S_CHANGED.remove(onPhoneChange);
-				phoneField.S_FOCUS_OUT.remove(onPoneInputFocusOut);
 				phoneField.dispose()
 				phoneField = null;
-			}
-			if (continueButton) {
-				continueButton.dispose()
-				continueButton = null;
 			}
 			if (preloader) {
 				preloader.dispose()
 				preloader = null;
-			}
-			if (preloaderContainer) {
-				UI.destroy(preloaderContainer);
-				preloaderContainer = null;
 			}
 			if (numberBack) {
 				UI.destroy(numberBack);
@@ -713,55 +788,14 @@ package com.dukascopy.connect.screens.userProfile {
 				UI.destroy(resultMessage);
 				resultMessage = null;
 			}
-			if (searchLoaderContainer) {
-				UI.destroy(searchLoaderContainer);
-				searchLoaderContainer = null;
+			if (phoneButton) {
+				phoneButton.dispose()
+				phoneButton = null;
 			}
-			if (searchButtonContainer) {
-				UI.destroy(searchButtonContainer);
-				searchButtonContainer = null;
+			if (description) {
+				UI.destroy(description);
+				description = null;
 			}
-			if (resultMessageContainer) {
-				UI.destroy(resultMessageContainer);
-				resultMessageContainer = null;
-			}
-			if (continueButtonContainer) {
-				UI.destroy(continueButtonContainer);
-				continueButtonContainer = null;
-			}
-			if (phoneInputContainer) {
-				UI.destroy(phoneInputContainer);
-				phoneInputContainer = null;
-			}
-			if (phoneBackContainer) {
-				UI.destroy(phoneBackContainer);
-				phoneBackContainer = null;
-			}
-			if (phoneLineContainer) {
-				UI.destroy(phoneLineContainer);
-				phoneLineContainer = null;
-			}
-			if (userContainer) {
-				UI.destroy(userContainer);
-				userContainer = null;
-			}
-			if (startChatButtonContainer) {
-				UI.destroy(startChatButtonContainer);
-				startChatButtonContainer = null;
-			}
-			if (inviteButtonContainer) {
-				UI.destroy(inviteButtonContainer);
-				inviteButtonContainer = null;
-			}
-			if (plusIcon) {
-				UI.destroy(plusIcon);
-				plusIcon = null;
-			}
-			if (searchLoader) {
-				searchLoader.dispose()
-				searchLoader = null;
-			}
-
 		}
 		
 		override public function activateScreen():void {
@@ -777,20 +811,24 @@ package com.dukascopy.connect.screens.userProfile {
 			switch(currentState) {
 				case STATE_NOT_FOUND: {
 					searchButton.activate();
+					phoneButton.activate();
 					inviteButton.activate();
 					break;
 				}
 				case STATE_SEARCH: {
 					break;
 				}
-				case STATE_START: {
-					continueButton.activate();
+				case STATE_START:
+				case STATE_ERROR:
+				{
+					phoneButton.activate();
 					searchButton.activate();
 					break;
 				}
 				case STATE_USER_FOUND: {
 					user.activate();
 					searchButton.activate();
+					phoneButton.activate();
 					startChatButton.activate();
 					break;
 				}
@@ -812,11 +850,11 @@ package com.dukascopy.connect.screens.userProfile {
 				topBar.deactivate();
 				
 			phoneField.deactivate();
-			continueButton.deactivate();
 			searchButton.deactivate();
 			startChatButton.deactivate();
 			inviteButton.deactivate();
 			user.deactivate();
+			phoneButton.deactivate();
 			
 			SoftKeyboard.closeKeyboard();
 		}
