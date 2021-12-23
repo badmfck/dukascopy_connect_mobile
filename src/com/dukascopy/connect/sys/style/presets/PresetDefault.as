@@ -281,6 +281,8 @@ package com.dukascopy.connect.sys.style.presets
 			this[Style.COLOR_RED_LIGHT] = Color.RED_LIGHT;
 			this[Style.ICON_TRASH] = ContectDeleteIcon;
 			this[Style.COLOR_ACCENT_PANEL] = Color.GREY_DARK;
+			
+			this[Style.SCREEN_PADDING_LEFT] = int(Config.FINGER_SIZE * .2);
 		}
 	}
 }

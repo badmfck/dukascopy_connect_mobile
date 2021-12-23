@@ -76,18 +76,18 @@ package com.dukascopy.connect.gui.components.selector
 			var countText:String = "";
 			back.addChild(labelField);		
 			
-			back.graphics.lineStyle(Math.max(2, int(Config.FINGER_SIZE * .03)), Style.color(Style.FILTER_TABS_COLOR_TAB_BG_BORDER));
+			var line:int = Math.max(2, int(Config.FINGER_SIZE * .03));
+			back.graphics.lineStyle(line, Style.color(Style.FILTER_TABS_COLOR_TAB_BG_BORDER));
 			if (select) {
-				back.graphics.beginFill(Style.color(Style.COLOR_SEPARATOR));
-				back.graphics.drawRoundRect(0, 0, labelField.width + horizontalPadding * 2, labelField.height + verticalPadding * 2, radius, radius);
-				back.graphics.endFill();
+				back.graphics.beginFill(Style.color(Style.FILTER_TABS_COLOR_TAB_BG_BORDER));
+				
 			} else {
 				back.graphics.beginFill(Style.color(Style.COLOR_BACKGROUND));
-				back.graphics.drawRoundRect(0, 0, labelField.width + horizontalPadding * 2, labelField.height + verticalPadding * 2, radius, radius);
-				back.graphics.endFill();
-			}			
+			}
+			back.graphics.drawRoundRect(line/2 + 1, line/2 + 1, labelField.width + horizontalPadding * 2 - line - 2, labelField.height + verticalPadding * 2 - line - 2, radius, radius);
+			back.graphics.endFill();
 			var bitmapData:ImageBitmapData = new ImageBitmapData("TextSelectorItem", labelField.width + horizontalPadding * 2, labelField.height + verticalPadding * 2);
-			bitmapData.drawWithQuality(back, null,null,null,null,false,StageQuality.HIGH);			
+			bitmapData.drawWithQuality(back, null, null, null, null, false, StageQuality.HIGH);
 			return bitmapData;
 		}
 	}
