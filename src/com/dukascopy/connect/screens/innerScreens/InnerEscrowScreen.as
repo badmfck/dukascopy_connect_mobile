@@ -587,108 +587,12 @@ package com.dukascopy.connect.screens.innerScreens {
 				var openOfferAction:OpenOfferAction = new OpenOfferAction((data as EscrowOfferVO).data, (data as EscrowOfferVO).created.time, (data as EscrowOfferVO).msg_id);
 				openOfferAction.execute();
 				return;
-				
-				/*chatScreenData = new ChatScreenData();
-				chatScreenData.type = ChatInitType.CHAT;
-				chatScreenData.chatUID = (data as EscrowOfferVO).chat_uid;
-				chatScreenData.backScreen = RootScreen;
-				MobileGui.showChatScreen(chatScreenData);
-				return;*/
 			}
 			if (data is EscrowDealVO) {
 				
 				var openDealAction:OpenDealAction = new OpenDealAction(data as EscrowDealVO);
 				openDealAction.execute();
-				return;
-				
-				/*chatScreenData = new ChatScreenData();
-				chatScreenData.type = ChatInitType.CHAT;
-				chatScreenData.chatUID = (data as EscrowDealVO).chatUID;
-				chatScreenData.backScreen = RootScreen;
-				MobileGui.showChatScreen(chatScreenData);
-				return;*/
 			}
-			
-			/*else if (data is QuestionVO) {
-				var qVO:QuestionVO = data as QuestionVO;
-				if (qVO.uid == null || qVO.uid == "") {
-					if (itemHitZone == HitZoneType.QUESTION_INFO) {
-						QuestionsManager.showRules();
-						return;
-					}
-					if (QuestionsManager.checkForUnsatisfiedQuestions() == true) {
-						DialogManager.alert(Lang.information, Lang.limitQuestionExists);
-						return;
-					}
-					MobileGui.changeMainScreen(QuestionCreateUpdateScreen, {
-						backScreen:MobileGui.centerScreen.currentScreenClass,
-						title:Lang.addTender, 
-						data:null
-					}, ScreenManager.DIRECTION_RIGHT_LEFT);
-					return;
-				}
-				if (qVO.isRemoving == true)
-					return;
-				if (itemHitZone) {
-					if (itemHitZone == HitZoneType.DELETE) {
-						DialogManager.alert(Lang.confirm, Lang.alertConfirmDeleteQuestion, function(val:int):void {
-							if (val != 1)
-								return;
-							QuestionsManager.close(qVO.uid);
-							list.updateItemByIndex(n);
-						}, Lang.textDelete.toUpperCase(), Lang.textCancel.toUpperCase());
-						return;
-					}
-					if (itemHitZone == HitZoneType.DELETE_ADMIN) {
-						DialogManager.alert(Lang.confirm, Lang.alertConfirmDeleteQuestion, function(val:int):void {
-							if (val != 1)
-								return;
-							QuestionsManager.closeByAdmin(qVO.uid);
-							list.updateItemByIndex(n);
-						}, Lang.textDelete.toUpperCase(), Lang.textCancel.toUpperCase());
-						return;
-					}
-					if (itemHitZone == HitZoneType.QUESTION_INFO) {
-						QuestionsManager.showRules();
-						return;
-					}
-					if (itemHitZone == HitZoneType.TIPS) {
-						DialogManager.alert(Lang.information, qVO.tipsAmount + " " + qVO.tipsCurrencyDisplay + Lang.textAdditionalTips);
-						return;
-					}
-				}
-				if (qVO.userUID != Auth.uid) {
-					AnswersManager.answer(qVO);
-					return;
-				}
-				if (qVO.answersCount > 0) {
-					if (qVO.type == null || qVO.type == QuestionsManager.QUESTION_TYPE_PRIVATE) {
-						AnswersManager.getAnswersByQuestionUID(qVO.uid);
-					} else if (qVO.type == QuestionsManager.QUESTION_TYPE_PUBLIC) {
-						AnswersManager.answer(qVO);
-					}
-					return;
-				}
-				if (qVO.type == QuestionsManager.QUESTION_TYPE_PUBLIC && qVO.status == "process") {
-					AnswersManager.answer(qVO);
-					return;
-				}
-				if (qVO.status == "resolved" || qVO.status == "closed") {
-					AnswersManager.getAnswersByQuestionUID(qVO.uid);
-				}
-				if (qVO.status != "created" && qVO.status != "edited"){
-					ToastMessage.display(Lang.answerAreEmpty);
-					return;
-				}
-				MobileGui.changeMainScreen(
-					QuestionCreateUpdateScreen, {
-						backScreen:MobileGui.centerScreen.currentScreenClass,
-						title:Lang.editEscrowAd,
-						data:qVO
-					},
-					ScreenManager.DIRECTION_RIGHT_LEFT
-				);
-			}*/
 		}
 		
 		private function onItemHold(data:Object, n:int):void {
@@ -816,6 +720,7 @@ package com.dukascopy.connect.screens.innerScreens {
 		}
 		
 		private function onEscrowAdsLoaded(data:Array, preloaderHide:Boolean = false):void {
+			
 			if (_isDisposed)
 				return;
 			if (selectedTabID != TAB_OTHER)
@@ -823,6 +728,11 @@ package com.dukascopy.connect.screens.innerScreens {
 			if (preloaderHide == true)
 				hidePreloader();
 			setListData(data);
+			
+			if ((data == null || data.length == 0))
+				addPlaceholder(Lang.escrow_no_active_ads_placeholder_title, Lang.escrow_no_active_ads_placeholder_subtitle);
+			else
+				removePlaceholder();
 		}
 		
 		private function onEscrowAdsMineLoaded(data:Array, preloaderHide:Boolean = false):void {
