@@ -31,6 +31,7 @@ package com.dukascopy.connect.screens.payments {
 	import com.dukascopy.connect.type.HitZoneType;
 	import com.dukascopy.connect.utils.TextUtils;
 	import com.dukascopy.langs.Lang;
+	import com.dukascopy.langs.LangManager;
 	import flash.display.Bitmap;
 	import flash.display.Shape;
 	import flash.events.Event;
@@ -741,15 +742,15 @@ package com.dukascopy.connect.screens.payments {
 			{
 				if (addressBox.getAccountCity() != null && addressBox.getAccountCity().length > PayManager.accountInfo.cardIssuanceCityMaxLength)
 				{
-					result = Lang.card_delivery_city_long;
+					result = LangManager.replace(Lang.regExtValue, Lang.card_delivery_city_long, String(PayManager.accountInfo.cardIssuanceCityMaxLength));
 				}
 				else if (addressBox.getAccountName() != null && addressBox.getAccountName().length > PayManager.accountInfo.cardIssuanceFullnameMaxLength)
 				{
-					result = Lang.card_delivery_name_long;
+					result = LangManager.replace(Lang.regExtValue, Lang.card_delivery_name_long, String(PayManager.accountInfo.cardIssuanceFullnameMaxLength));
 				}
 				else if (addressBox.getAccountAddress() != null && addressBox.getAccountAddress().length > PayManager.accountInfo.cardIssuanceStreetMaxLength)
 				{
-					result = Lang.card_delivery_address_long;
+					result = LangManager.replace(Lang.regExtValue, Lang.card_delivery_address_long, String(PayManager.accountInfo.cardIssuanceStreetMaxLength));
 				}
 			}
 			
