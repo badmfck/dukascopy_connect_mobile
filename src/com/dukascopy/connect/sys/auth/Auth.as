@@ -400,7 +400,7 @@ package com.dukascopy.connect.sys.auth {
 			}
 			
 			echo("Auth", "onRequestCodeResponse", Print_r.show(r.data));
-			if ("code" in r.data && Config.isTest() == true){
+			if ("code" in r.data && (Config.isTest() || Config.isPre())){
 				S_AUTH_CODE.invoke(r.data.code);
 				//	authorize_sendCode(r.data.to, r.data.code);
 			}

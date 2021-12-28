@@ -46,7 +46,7 @@ package com.dukascopy.connect.sys.payments {
 		static public var S_NEED_AUTHORIZATION:Signal;
 		static public var S_INVALID_PASS_DIALOG_CLOSED:Signal;
 		static public var S_CANCEL_AUTH:Signal = new Signal("PayManager.S_CANCEL_AUTH");
-		static public var S_ACCOUNT:Signal;
+		static public var S_ACCOUNT:Signal = new Signal("PayManager.S_ACCOUNT");
 		static public var S_ACCOUNT_RESPOND:Signal = new Signal("PayManager.S_ACCOUNT_RESPOND");;
 		static public var S_ENTER_PASSWORD_DISMISS:Signal;
 		static public var S_MONEY_TRANSFERED:Signal;
@@ -135,7 +135,7 @@ package com.dukascopy.connect.sys.payments {
 			S_NEED_AUTHORIZATION = new Signal("PayManager.S_NEED_AUTHORIZATION");
 		//	S_CANCEL_AUTH = new Signal("PayManager.S_CANCEL_AUTH");
 			S_INVALID_PASS_DIALOG_CLOSED = new Signal("PayManager.S_INVALID_PASS_DIALOG_CLOSED");
-			S_ACCOUNT = new Signal("PayManager.S_ACCOUNT");
+		//	S_ACCOUNT = new Signal("PayManager.S_ACCOUNT");
 		//	S_ACCOUNT_RESPOND = new Signal("PayManager.S_ACCOUNT_RESPOND");
 			S_MONEY_TRANSFERED = new Signal("PayManager.S_MONEY_TRANSFERED");
 			S_MONEY_TRANSFERED_ERROR = new Signal("PayManager.S_MONEY_TRANSFERED_ERROR");
@@ -453,6 +453,29 @@ package com.dukascopy.connect.sys.payments {
 					S_PASS_CHANGED.invoke();
 				ToastMessage.display(Lang.alertPasswordSuccessfully);
 				return;
+			}
+		}
+		
+		static public function callGetInstrumentRatesHistory(instrumentCode:String, callback:Function):void {
+			PayServer.callGetInstrumentRatesHistory(callGetInstrumentRatesHistoryRespond, instrumentCode, callback);
+		}
+		
+		static private function callGetInstrumentRatesHistoryRespond(respond:PayRespond):void {
+			
+			if (respond.hasAuthorizationError) {
+				validateAuthorization(respond);
+				return;
+			}
+			// trial reached
+			if (respond.hasTrialVersionError) {
+				savedData = respond.savedRequestData;
+				_trialReached = true;
+				S_TRIAL_REACHED.invoke();
+				return;
+			}
+			if (respond.savedRequestData != null && respond.savedRequestData.callback != null)
+			{
+				respond.savedRequestData.callback(respond);
 			}
 		}
 		

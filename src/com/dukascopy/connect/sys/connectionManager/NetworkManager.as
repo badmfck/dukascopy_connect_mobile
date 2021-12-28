@@ -44,12 +44,15 @@ package com.dukascopy.connect.sys.connectionManager {
 
 
 			// DEBUG
-			if(Config.PLATFORM_WINDOWS){
+			if (Config.PLATFORM_WINDOWS){
+				
+				isOnline = true;
+				
 				 NativeApplication.nativeApplication.addEventListener(KeyboardEvent.KEY_DOWN,function(e:KeyboardEvent):void{
 					 var s:DCCNetStatus=new DCCNetStatus();
 					if((e.controlKey || e.ctrlKey) && e.keyCode==Keyboard.E){
 						// EMULATE NETWORK ON
-						isOnline=true;
+						isOnline = true;
 						S_CONNECTION_CHANGED.invoke();
 						
 						s=new DCCNetStatus()
@@ -65,7 +68,7 @@ package com.dukascopy.connect.sys.connectionManager {
 					
 					if((e.controlKey || e.ctrlKey) && e.keyCode==Keyboard.R){
 						// EMULATE NETWORK OFF
-						isOnline=false;
+						isOnline = false;
 						S_CONNECTION_CHANGED.invoke();
 						s=new DCCNetStatus()
 						s.setStatus({
@@ -77,7 +80,7 @@ package com.dukascopy.connect.sys.connectionManager {
 						e.preventDefault();
 						return;
 					}
-				})
+				});
 			}
 			// EOF DEBUG
 

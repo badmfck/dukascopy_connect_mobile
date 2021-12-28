@@ -769,7 +769,7 @@ package com.dukascopy.connect.screens {
 			
 			showStateCode();
 			
-			if (Config.isTest() == true && textCode != null)
+			if ((Config.isTest() || Config.isPre()) && textCode != null)
 			{
 				setCurrentCode(textCode);
 			}
@@ -958,7 +958,7 @@ package com.dukascopy.connect.screens {
 
 				hide();
 
-				if (Config.isTest())
+				if (Config.isTest() || Config.isPre())
 				{
 					Auth.S_AUTH_CODE.add(insertCode);
 				}
@@ -1317,7 +1317,7 @@ package com.dukascopy.connect.screens {
 			nextButton.activate();
 			clearPhoneButton.activate();
 			
-			if (Config.isTest() && currentCode != null)
+			if ((Config.isTest() || Config.isPre()) && currentCode != null)
 			{
 				nextClick();
 			}

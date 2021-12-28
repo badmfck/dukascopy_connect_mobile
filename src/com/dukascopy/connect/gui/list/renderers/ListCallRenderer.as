@@ -7,6 +7,7 @@ package com.dukascopy.connect.gui.list.renderers {
 	import assets.PhoneIconGrey;
 	import assets.SupportAvatar;
 	import com.dukascopy.connect.Config;
+	import com.dukascopy.connect.data.HitZoneData;
 	import com.dukascopy.connect.gui.lightbox.UI;
 	import com.dukascopy.connect.gui.list.ListItem;
 	import com.dukascopy.connect.sys.imageManager.ImageBitmapData;
@@ -194,13 +195,14 @@ package com.dukascopy.connect.gui.list.renderers {
 		
 		protected function setHitZones(item:ListItem):void 
 		{
-			var hitZones:Array = new Array();
-			
-			hitZones.push( { type:HitZoneType.CALL_USER, 
-								x:phoneButton.x - Config.FINGER_SIZE * .5, 
-								y:phoneButton.y - Config.FINGER_SIZE * .5, 
-								width:phoneButton.width + Config.FINGER_SIZE, 
-								height:phoneButton.height + Config.FINGER_SIZE } );
+			var hitZones:Vector.<HitZoneData> = new Vector.<HitZoneData>();
+			var hz:HitZoneData = new HitZoneData();
+			hz.type = HitZoneType.CALL_USER;
+			hz.x = phoneButton.x - Config.FINGER_SIZE * .5;
+			hz.y = phoneButton.y - Config.FINGER_SIZE * .5;
+			hz.width = phoneButton.width + Config.FINGER_SIZE;
+			hz.height = phoneButton.height + Config.FINGER_SIZE;
+			hitZones.push(hz);
 			
 			if (hitZones.length > 0)
 			{

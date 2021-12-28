@@ -1,6 +1,7 @@
 package com.dukascopy.connect.gui.list {
 	
 	import com.dukascopy.connect.Config;
+	import com.dukascopy.connect.data.HitZoneData;
 	import com.dukascopy.connect.data.OverlayData;
 	import com.dukascopy.connect.gui.list.renderers.IListRenderer;
 	import com.dukascopy.connect.sys.imageManager.ImageBitmapData;
@@ -23,9 +24,9 @@ package com.dukascopy.connect.gui.list {
 		private var _renderer:IListRenderer;
 		private var _height:int;
 		private var _width:int;
-		private var _hitZones:Array;
+		private var _hitZones:Vector.<HitZoneData>;
 		private var _lastHitZone:String;
-		private var _lastHitZoneObject:Object;
+		private var _lastHitZoneObject:HitZoneData;
 		private var _num:int;
 		private var _y:int;
 		
@@ -522,10 +523,10 @@ package com.dukascopy.connect.gui.list {
 			_height = _renderer.getHeight(this, _width);
 		}
 		
-		public function setHitZones(hitZones:Array):void { _hitZones = hitZones; }
-		public function getHitZones():Array {	return _hitZones;	}
+		public function setHitZones(hitZones:Vector.<HitZoneData>):void { _hitZones = hitZones; }
+		public function getHitZones():Vector.<HitZoneData> {	return _hitZones;	}
 		
-		public function setLastHitZone(lastHitZoneObject:Object):void { 
+		public function setLastHitZone(lastHitZoneObject:HitZoneData):void { 
 			_lastHitZoneObject = lastHitZoneObject;
 			if (_lastHitZoneObject != null)
 				_lastHitZone = _lastHitZoneObject.type;
@@ -540,8 +541,8 @@ package com.dukascopy.connect.gui.list {
 			}
 			return res;
 		}
-		public function getLastHitZoneObject(doClear:Boolean = true):Object {
-			var res:Object = _lastHitZoneObject;
+		public function getLastHitZoneObject(doClear:Boolean = true):HitZoneData {
+			var res:HitZoneData = _lastHitZoneObject;
 			if (doClear){
 				_lastHitZone = null;
 				_lastHitZoneObject = null;

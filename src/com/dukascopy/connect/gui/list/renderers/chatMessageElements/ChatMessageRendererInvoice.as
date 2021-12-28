@@ -3,6 +3,7 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 	import assets.CancelButtonIconRed;
 	import assets.IconDone;
 	import com.dukascopy.connect.Config;
+	import com.dukascopy.connect.data.HitZoneData;
 	import com.dukascopy.connect.gui.lightbox.UI;
 	import com.dukascopy.connect.gui.list.ListItem;
 	import com.dukascopy.connect.sys.auth.Auth;
@@ -105,7 +106,7 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 			return AppTheme.WHITE;
 		}
 		
-		public function  updateHitzones(itemHitzones:Array):void {
+		public function  updateHitzones(itemHitzones:Vector.<HitZoneData>):void {
 			if (data == null)
 				return;
 			if (parent == null)
@@ -113,29 +114,63 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 			
 			var rejectPoint:Point;
 			
+			var hz:HitZoneData;
+			
 			if (data.status == InvoiceStatus.NEW) {
 				if (!isSentByMe) {
 					var acceptPoint:Point = new Point(payButton.x, payButton.y);
 					acceptPoint.x += x;
 					acceptPoint.y += y;
-					itemHitzones.push( { type:HitZoneType.INVOICE_ACCEPT, x:acceptPoint.x , y:acceptPoint.y, width:payButton.width, height:payButton.height } );
+					
+					hz = new HitZoneData();
+					hz.type = HitZoneType.INVOICE_ACCEPT;
+					hz.x = acceptPoint.x;
+					hz.y = acceptPoint.y;
+					hz.width = payButton.width;
+					hz.height = payButton.height;
+					
+					itemHitzones.push(hz);
 					
 					rejectPoint = new Point(cancelButton.x, cancelButton.y);
 					rejectPoint.x += x;
 					rejectPoint.y += y;
-					itemHitzones.push( { type:HitZoneType.INVOICE_REJECT, x:rejectPoint.x , y:rejectPoint.y, width:cancelButton.width, height:cancelButton.height } );
+					
+					hz = new HitZoneData();
+					hz.type = HitZoneType.INVOICE_REJECT;
+					hz.x = rejectPoint.x;
+					hz.y = rejectPoint.y;
+					hz.width = cancelButton.width;
+					hz.height = cancelButton.height;
+					
+					itemHitzones.push(hz);
 				} else
 				{
 					rejectPoint = new Point(cancelButton.x, cancelButton.y);
 					rejectPoint.x += x;
 					rejectPoint.y += y;
-					itemHitzones.push( { type:HitZoneType.INVOICE_CANCELLED, x:rejectPoint.x , y:rejectPoint.y, width:cancelButton.width, height:cancelButton.height } );
+					
+					hz = new HitZoneData();
+					hz.type = HitZoneType.INVOICE_CANCELLED;
+					hz.x = rejectPoint.x;
+					hz.y = rejectPoint.y;
+					hz.width = cancelButton.width;
+					hz.height = cancelButton.height;
+					
+					itemHitzones.push(hz);
 				}
 			} else if (data.status == InvoiceStatus.ACCEPTED && !isSentByMe) {
 				var retryPoint:Point = new Point(retryButton.x, retryButton.y);
 				retryPoint.x += x;
 				retryPoint.y += y;
-				itemHitzones.push( { type:HitZoneType.INVOICE_RETRY, x:retryPoint.x , y:retryPoint.y, width:retryButton.width, height:retryButton.height } );
+				
+				hz = new HitZoneData();
+				hz.type = HitZoneType.INVOICE_RETRY;
+				hz.x = retryPoint.x;
+				hz.y = retryPoint.y;
+				hz.width = retryButton.width;
+				hz.height = retryButton.height;
+				
+				itemHitzones.push(hz);
 			}
 		}
 		

@@ -2,6 +2,7 @@ package com.dukascopy.connect.gui.list.renderers {
 	
 	import com.dukascopy.connect.Config;
 	import com.dukascopy.connect.data.CountriesData;
+	import com.dukascopy.connect.data.HitZoneData;
 	import com.dukascopy.connect.gui.list.ListItem;
 	import com.dukascopy.connect.sys.assets.Assets;
 	import com.dukascopy.connect.sys.imageManager.ImageManager;
@@ -37,7 +38,7 @@ package com.dukascopy.connect.gui.list.renderers {
 		public function getView(li:ListItem, h:int, width:int, highlight:Boolean = false):IBitmapDrawable {
 			var margin:int = (width - li.data[li.data.length - 1] * Config.FINGER_SIZE * .8) * .5;
 			var bmp:Bitmap;
-			var hitZones:Array = [];
+			var hitZones:Vector.<HitZoneData> = new Vector.<HitZoneData>();
 			for (var i:int = 0; i < li.data.length - 1; i++) {
 				if (bmps.length > i)
 					bmp = bmps[i];
@@ -53,7 +54,14 @@ package com.dukascopy.connect.gui.list.renderers {
 				bmp.smoothing = true;
 				bmp.width = Config.FINGER_SIZE * .7;
 				bmp.height = Config.FINGER_SIZE * .7;
-				hitZones.push( { type:i + "", x:bmp.x, y:bmp.y, width:bmp.width, height:bmp.height } );
+				
+				var hz:HitZoneData = new HitZoneData();
+				hz.type = i + "";
+				hz.x = bmp.x;
+				hz.y = bmp.y;
+				hz.width = bmp.width;
+				hz.height = bmp.height;
+				hitZones.push(hz);
 			}
 			for (i; i < li.data[li.data.length - 1]; i++) {
 				if (i > bmps.length - 1)

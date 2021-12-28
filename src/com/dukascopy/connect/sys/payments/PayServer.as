@@ -668,6 +668,14 @@ package com.dukascopy.connect.sys.payments {
 				php.savedRequestData.callID = _callID;
 		}
 		
+		static public function callGetInstrumentRatesHistory(_callback:Function, _instrument:String, callback:Function):void {
+			var php:PayLoader = call("account/investment/chart", _callback, { instrument:_instrument }, URLRequestMethod.GET);
+			if (php.savedRequestData != null)
+			{
+				php.savedRequestData.callback = callback;
+			}
+		}
+		
 		/**
 		 * This method is used to send money between users of Dukascopy Payments. See description:
 		 * https://intranet.dukascopy.dom/wiki/pages/viewpage.action?pageId=70681770

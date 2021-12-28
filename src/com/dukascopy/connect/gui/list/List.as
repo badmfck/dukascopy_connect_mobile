@@ -953,6 +953,23 @@ package com.dukascopy.connect.gui.list {
 				i.image.bitmapData.drawWithQuality(li.renderer.getView(li,stock[iN].height, _width, true), null, null, null, null, true, StageQuality.HIGH);
 			}
 			
+			var hzs:Vector.<HitZoneData> = stock[iN].getHitZones();
+			var hz:Object;
+			if (hzs != null && i != null) {
+				var touchPoint:Point = new Point(i.mouseX, i.mouseY);
+				for (var j2:int = 0; j2 < hzs.length; j2++) {
+					hz = hzs[j2];
+					if (touchPoint.x >= hz.x && 
+						touchPoint.x <= hz.x + hz.width && 
+						touchPoint.y >= hz.y && 
+						touchPoint.y <= hz.y + hz.height) {
+							//stock[iN].setLastHitZone(hz.type);
+							stock[iN].setLastHitZone(hz);
+							break;
+					}
+				}
+			}
+			
 			TweenMax.delayedCall(.1,onHoldDelayedComplete,[iN, li]);
 		}
 		
@@ -971,6 +988,7 @@ package com.dukascopy.connect.gui.list {
 				i.image.bitmapData.fillRect(i.image.bitmapData.rect, 0);
 				i.image.bitmapData.drawWithQuality(li.renderer.getView(stock[iN], stock[iN].height, _width), null, null, null, null, true, StageQuality.HIGH);
 			}
+			
 			if (S_ITEM_HOLD != null)
 				S_ITEM_HOLD.invoke(stock[iN].data, iN);
 		}
@@ -1067,7 +1085,7 @@ package com.dukascopy.connect.gui.list {
 				return;
 			}
 			
-			var hzs:Array
+			var hzs:Vector.<HitZoneData>
 			var hz:Object;
 			if (contextMenuShown) {
 				var contextMenuClicked:Boolean = false;

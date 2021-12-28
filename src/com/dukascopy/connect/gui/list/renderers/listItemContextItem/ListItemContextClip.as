@@ -24,7 +24,7 @@ package com.dukascopy.connect.gui.list.renderers.listItemContextItem
 		private var data:Vector.<ContextAction>;
 		private var currentItemHeight:int;
 		private var content:Bitmap;
-		private var hitzones:Array;
+		private var hitzones:Vector.<HitZoneData>;
 		private var itemWidth:int;
 		private var lastData:Vector.<ContextAction>;
 		private var swipeIcon:Sprite;
@@ -129,7 +129,7 @@ package com.dukascopy.connect.gui.list.renderers.listItemContextItem
 				return;
 			}
 			lastData = data;
-			hitzones = new Array();
+			hitzones = new Vector.<HitZoneData>();
 			var hitzone:HitZoneData;
 			
 			
@@ -186,7 +186,7 @@ package com.dukascopy.connect.gui.list.renderers.listItemContextItem
 			}
 		}
 		
-		public function getHitZones():Array 
+		public function getHitZones():Vector.<HitZoneData> 
 		{
 			return hitzones;
 		}

@@ -64,7 +64,7 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 			return null;
 		}
 		
-		public function updateHitzones(itemHitzones:Array):void {
+		public function updateHitzones(itemHitzones:Vector.<HitZoneData>):void {
 			if (parent) {
 				var playPoint:Point = new Point(iconPlay.x - Config.MARGIN, iconPlay.y - Config.MARGIN);
 				var switchPoint:Point = new Point(iconLoudSpeaker.x - Config.MARGIN, iconLoudSpeaker.y - Config.MARGIN)
@@ -78,21 +78,23 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 				var hitZonePlay:Object = { } ;
 				var hitZoneSwitchSpeaker:Object = {  } ;
 				
-				itemHitzones.push( {
-					type:HitZoneType.PLAY_SOUND, 
-					x:playPoint.x,
-					y:playPoint.y, 
-					width:(Config.MARGIN * 2 + iconPlay.width),
-					height:(Config.MARGIN * 2 + iconPlay.height)
-				} );
+				var hz:HitZoneData = new HitZoneData();
+				hz.type = HitZoneType.PLAY_SOUND;
+				hz.x = playPoint.x;
+				hz.y = playPoint.y;
+				hz.width = Config.MARGIN * 2 + iconPlay.width;
+				hz.height = Config.MARGIN * 2 + iconPlay.height;
 				
-				itemHitzones.push( {
-					type:HitZoneType.SWITCH_SOUND_SPEAKER, 
-					x:switchPoint.x,
-					y:switchPoint.y, 
-					width:(Config.MARGIN * 2 + iconLoudSpeaker.width), 
-					height:(Config.MARGIN * 2 + iconLoudSpeaker.width)
-				} );
+				itemHitzones.push(hz);
+				
+				hz = new HitZoneData();
+				hz.type = HitZoneType.SWITCH_SOUND_SPEAKER;
+				hz.x = switchPoint.x;
+				hz.y = switchPoint.y;
+				hz.width = Config.MARGIN * 2 + iconLoudSpeaker.width;
+				hz.height = Config.MARGIN * 2 + iconLoudSpeaker.width;
+				
+				itemHitzones.push(hz);
 			}
 		}
 		

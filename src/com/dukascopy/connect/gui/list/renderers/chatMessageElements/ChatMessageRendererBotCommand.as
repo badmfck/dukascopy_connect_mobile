@@ -3,6 +3,7 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 	import assets.ChatMessageCryptedIcon;
 	import assets.ChatMessageUncryptedIcon;
 	import com.dukascopy.connect.Config;
+	import com.dukascopy.connect.data.HitZoneData;
 	import com.dukascopy.connect.gui.lightbox.UI;
 	import com.dukascopy.connect.gui.list.ListItem;
 	import com.dukascopy.connect.gui.megaText.MegaText;
@@ -104,8 +105,14 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 			return height;
 		}
 		
-		public function updateHitzones(itemHitzones:Array):void {
-			itemHitzones.push( { type:HitZoneType.BALLOON, x:x , y:y, width: textBox.width, height: textBox.height } );
+		public function updateHitzones(itemHitzones:Vector.<HitZoneData>):void {
+			var hz:HitZoneData = new HitZoneData();
+			hz.type = HitZoneType.BALLOON;
+			hz.x = x;
+			hz.y = y;
+			hz.width = textBox.width;
+			hz.height = textBox.height;
+			itemHitzones.push(hz);
 		}
 		
 		public function getBackColor():Number {

@@ -1,6 +1,7 @@
 package com.dukascopy.connect.gui.list.renderers 
 {
 	import com.dukascopy.connect.Config;
+	import com.dukascopy.connect.data.HitZoneData;
 	import com.dukascopy.connect.data.LabelItem;
 	import com.dukascopy.connect.data.paidBan.PaidBanProtectionData;
 	import com.dukascopy.connect.data.paidBan.PaidBanReasons;
@@ -300,14 +301,15 @@ package com.dukascopy.connect.gui.list.renderers
 		
 		protected function setHitZones(item:ListItem):void {
 			if (item.data is LabelItem && (item.data as LabelItem).action != null) {
-				var hitZones:Array = new Array();
-				hitZones.push( {
-					type:HitZoneType.SIMPLE_ACTION, 
-					x:banReason.x - Config.FINGER_SIZE*.3 + x,
-					y:banReason.y -  Config.FINGER_SIZE*.1 + y, 
-					width:(Config.FINGER_SIZE * .6 + banReason.width),
-					height:(Config.FINGER_SIZE * .2 + banReason.height)
-				} );
+				var hitZones:Vector.<HitZoneData> = new Vector.<HitZoneData>
+				var hz:HitZoneData = new HitZoneData();
+						hz.type = HitZoneType.SIMPLE_ACTION;
+						hz.x = banReason.x - Config.FINGER_SIZE*.3 + x;
+						hz.y = banReason.y -  Config.FINGER_SIZE*.1 + y;
+						hz.width = (Config.FINGER_SIZE * .6 + banReason.width);
+						hz.height = (Config.FINGER_SIZE * .2 + banReason.height);
+						hitZones.push(hz);
+				hitZones.push(hz);
 				item.setHitZones(hitZones);
 			}
 		}

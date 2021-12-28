@@ -265,8 +265,15 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 			tipsText.setTextFormat(textFormat1);
 		}
 		
-		override public function updateHitzones(itemHitzones:Array):void {
-			itemHitzones.push( { type:HitZoneType.BALLOON, x:x , y:y, width: boxBg.width, height: boxBg.height } );
+		override public function updateHitzones(itemHitzones:Vector.<HitZoneData>):void {
+			
+			var hz:HitZoneData = new HitZoneData();
+				hz.type = HitZoneType.BALLOON;
+				hz.x = x;
+				hz.y = y;
+				hz.width = boxBg.width;
+				hz.height = boxBg.height;
+			itemHitzones.push(hz);
 		}
 		
 		override public function getSelectedHitzone(itemTouchPoint:Point, listItem:ListItem):HitZoneData {

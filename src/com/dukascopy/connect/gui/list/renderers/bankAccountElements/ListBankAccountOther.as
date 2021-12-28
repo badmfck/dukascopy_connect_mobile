@@ -104,8 +104,9 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements {
 		public function getView(li:ListItem, h:int, width:int, highlight:Boolean = false):IBitmapDrawable {
 			var additionalHeight:int = tfUserHeight + Config.DOUBLE_MARGIN;
 			
-			var hitZones:Array = li.getHitZones();
-			hitZones ||= [];
+			var hitZones:Vector.<HitZoneData> = li.getHitZones();
+			if (hitZones == null)
+				hitZones = new Vector.<HitZoneData>();
 			hitZones.length = 0;
 			
 			var pos:int;
@@ -120,14 +121,16 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements {
 			var widthHZSmall:int = widthHZ - Config.FINGER_SIZE;
 			var i:int;
 			var l:int;
-			hitZones.push( {
-					type: HitZoneType.WALLET,
-					x: xPosition,
-					y: additionalHeight, 
-					width: (li.data.otherAcc.length > 1 && li.data.opened == false) ? widthHZSmall : widthHZ,
-					height: otherAccSections[0].getHeight(),
-					param: 0
-			} );
+			
+			var hz:HitZoneData = new HitZoneData();
+			hz.type = HitZoneType.WALLET;
+			hz.param = "0";
+			hz.x = xPosition;
+			hz.y = additionalHeight;
+			hz.width = (li.data.otherAcc.length > 1 && li.data.opened == false) ? widthHZSmall : widthHZ;
+			hz.height = otherAccSections[0].getHeight();
+			
+			hitZones.push(hz);
 			if (li.data.opened == false) {
 				l = otherAccSections.length;
 				if (l > 1)
@@ -154,14 +157,16 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements {
 						}
 						otherAccSections[i].y = pos + additionalHeight;
 						pos += otherAccSections[i].getHeight();
-						hitZones.push( {
-							type: HitZoneType.WALLET,
-							x: xPosition,
-							y: otherAccSections[i].y, 
-							width: (li.data.opened == true && i == otherAccSections.length - 1) ? widthHZSmall : widthHZ,
-							height: otherAccSections[i].getHeight(),
-							param: i
-						} );
+						
+						hz = new HitZoneData();
+						hz.type = HitZoneType.WALLET;
+						hz.param = i.toString();
+						hz.x = xPosition;
+						hz.y = otherAccSections[i].y;
+						hz.width = (li.data.opened == true && i == otherAccSections.length - 1) ? widthHZSmall : widthHZ;
+						hz.height = otherAccSections[i].getHeight();
+						
+						hitZones.push(hz);
 					}
 				}
 			//	otherAccSections[otherAccSections.length - 1].clearGraphics();
@@ -176,14 +181,14 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements {
 				buttonSection.y = pos + additionalHeight;
 				pos += buttonSection.getHeight();
 				
-				hitZones.push( {
-					type: HitZoneType.LAUNCH_PLATFORM,
-					x: buttonSection.x + buttonSection.getButtonX(),
-					y: buttonSection.y + buttonSection.getButtonY(), 
-					width: buttonSection.getButtonWidth(),
-					height: buttonSection.getButtonHeight(),
-					param: 0
-				} );
+				hz = new HitZoneData();
+					hz.type = HitZoneType.LAUNCH_PLATFORM;
+					hz.param = "0";
+					hz.x = buttonSection.x + buttonSection.getButtonX();
+					hz.y = buttonSection.y + buttonSection.getButtonY();
+					hz.width = buttonSection.getButtonWidth();
+					hz.height = buttonSection.getButtonHeight();
+				hitZones.push(hz);
 			}
 			
 			if (li.data.otherAcc.length > 1) {
@@ -201,14 +206,16 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements {
 						zonePosition -= buttonSection.getHeight();
 					}
 				}
-				hitZones.push( {
-					type: HitZoneType.WALLETS_MORE,
-					x: width - rightOffset - Config.FINGER_SIZE,
-					y: zonePosition, 
-					width: otherAccSections[0].getHeight(),
-					height: (li.data.opened == false) ? otherAccSections[0].getHeight() : otherAccSections[li.data.otherAcc.length - 1].getHeight(),
-					param: 0
-				} );
+				
+				hz = new HitZoneData();
+				hz.type = HitZoneType.WALLETS_MORE;
+				hz.param = "0";
+				hz.x = width - rightOffset - Config.FINGER_SIZE;
+				hz.y = zonePosition;
+				hz.width = otherAccSections[0].getHeight();
+				hz.height = (li.data.opened == false) ? otherAccSections[0].getHeight() : otherAccSections[li.data.otherAcc.length - 1].getHeight();
+				
+				hitZones.push(hz);
 			}
 			
 			li.setHitZones(hitZones);
@@ -287,7 +294,7 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements {
 		{
 			const WALLET:String = "wallet";
 			
-			var zones:Array = listItem.getHitZones();
+			var zones:Vector.<HitZoneData> = listItem.getHitZones();
 			var data:Object = listItem.data;
 			getView(listItem, getHeight(listItem, listItem.width), listItem.width, false);
 			
@@ -304,7 +311,7 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements {
 					
 					if (zone.x <= itemTouchPoint.x && zone.y <= itemTouchPoint.y && zone.x + zone.width >= itemTouchPoint.x && zone.y + zone.height >= itemTouchPoint.y)
 					{
-						selectedIndex = zones[i].param;
+						selectedIndex = parseInt(zones[i].param);
 						break;
 					}
 				}

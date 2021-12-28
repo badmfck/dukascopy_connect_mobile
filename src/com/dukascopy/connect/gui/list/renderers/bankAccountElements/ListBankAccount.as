@@ -225,6 +225,10 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements {
 				sections[i].x = avatarSizeDouble + Config.DOUBLE_MARGIN;
 				sectionY += sections[i].getTrueHeight();
 			}
+			
+			var hzs:Vector.<HitZoneData>;
+			var hz:HitZoneData;
+			
 			if ("mine" in li.data == false || li.data.mine == false) {
 				if (avatar.parent == null)
 					addChild(avatar);
@@ -239,25 +243,32 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements {
 						ImageManager.drawGraphicCircleImage(avatar.graphics, avatarSize, avatarSize, avatarSize, UI.getEmptyAvatarBitmapData(), ImageManager.SCALE_PORPORTIONAL);
 					}
 					tfUser.text = uVO.login;
-					li.setHitZones( [ {
-						type: HitZoneType.AVATAR,
-						param: li.data.user.uid,
-						x: avatar.x,
-						y: avatar.y, 
-						width: avatarSizeDouble,
-						height: avatarSizeDouble
-					} ] );
+					
+					hzs = new Vector.<HitZoneData>();
+					hz = new HitZoneData();
+						hz.type = HitZoneType.AVATAR;
+						hz.param = li.data.user.uid;
+						hz.x = avatar.x;
+						hz.y = avatar.y;
+						hz.width = avatarSizeDouble;
+						hz.height = avatarSizeDouble;
+					hzs.push(hz);
+					li.setHitZones(hzs);
 				} else if (li.data.bankBot == true) {
 					ImageManager.drawGraphicCircleImage(avatar.graphics, avatarSize, avatarSize, avatarSize, avatarBankIBMD, ImageManager.SCALE_PORPORTIONAL);
 					tfUser.text = "Bank Bot";
-					li.setHitZones( [ {
-						type: HitZoneType.AVATAR,
-						param: "bankBot",
-						x: avatar.x,
-						y: avatar.y, 
-						width: avatarSizeDouble,
-						height: avatarSizeDouble
-					} ] );
+					
+					hzs = new Vector.<HitZoneData>();
+					hz = new HitZoneData();
+						hz.type = HitZoneType.AVATAR;
+						hz.param = "bankBot";
+						hz.x = avatar.x;
+						hz.y = avatar.y;
+						hz.width = avatarSizeDouble;
+						hz.height = avatarSizeDouble;
+						hzs.push(hz);
+					hzs.push(hz);
+					li.setHitZones(hzs);
 				} else {
 					ImageManager.drawGraphicCircleImage(avatar.graphics, avatarSize, avatarSize, avatarSize, avatarNAIBMD, ImageManager.SCALE_PORPORTIONAL);
 					tfUser.text = "N/A";
@@ -332,14 +343,18 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements {
 							addTF.x = addCircle.x;
 							addTF.y = addCircle.y + int((addCircle.height - addTF.height) * .5);
 							addTF.width = addCircle.width;
-							li.setHitZones( [ {
-								type: HitZoneType.CIRCLE,
-								param: 0,
-								x: addCircle.x,
-								y: addCircle.y, 
-								width: Config.FINGER_SIZE_DOT_75,
-								height: Config.FINGER_SIZE_DOT_75
-							} ] );
+							
+							
+							hzs = new Vector.<HitZoneData>();
+							hz = new HitZoneData();
+							hz.type = HitZoneType.CIRCLE;
+							hz.param = "0";
+							hz.x = addCircle.x;
+							hz.y = addCircle.y;
+							hz.width = Config.FINGER_SIZE_DOT_75;
+							hz.height = Config.FINGER_SIZE_DOT_75;
+							hzs.push(hz);
+							li.setHitZones(hzs);
 						}
 					} else {
 						if ("raw" in li.data && li.data.raw != null &&
@@ -401,7 +416,7 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements {
 			var result:HitZoneData = new HitZoneData();
 			
 			
-			var zones:Array = listItem.getHitZones();
+			var zones:Vector.<HitZoneData> = listItem.getHitZones();
 			var data:Object = listItem.data;
 			getView(listItem, getHeight(listItem, listItem.list.width), listItem.width, false);
 			

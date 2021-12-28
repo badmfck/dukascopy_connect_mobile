@@ -1,6 +1,7 @@
 package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 	
 	import com.dukascopy.connect.Config;
+	import com.dukascopy.connect.data.HitZoneData;
 	import com.dukascopy.connect.gui.lightbox.UI;
 	import com.dukascopy.connect.gui.list.ListItem;
 	import com.dukascopy.connect.sys.auth.Auth;
@@ -39,7 +40,7 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 			return width;
 		}
 		
-		public function updateHitzones(itemHitzones:Array):void {
+		public function updateHitzones(itemHitzones:Vector.<HitZoneData>):void {
 			
 		}
 		

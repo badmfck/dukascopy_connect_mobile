@@ -75,41 +75,45 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements {
 		public function getView(li:ListItem, h:int, width:int, highlight:Boolean = false):IBitmapDrawable {
 			var additionalHeight:int = tfUserHeight + Config.DOUBLE_MARGIN;
 			
-			var hitZones:Array = li.getHitZones();
-			hitZones ||= [];
+			var hitZones:Vector.<HitZoneData> = li.getHitZones();
+			if (hitZones == null)
+				hitZones = new Vector.<HitZoneData>();
 			hitZones.length = 0;
 			
 			var sectionWidth:int = width - cardsXPosition - cardsRightOffset;
 			cardSections[0].setData(li.data.cards[0], sectionWidth);
 			cardSections[0].y = additionalHeight;
 			
+			var hz:HitZoneData;
 			if (li.data.cards.length > 1) {
 				if (li.data.opened == false)
 					createMore(li.data.cards.length - 1, width, h);
 				else
 					createMore(0, width, h);
-				hitZones.push( {
-					type: HitZoneType.WALLETS_MORE,
-					x: width - cardsRightOffset - Config.FINGER_SIZE,
-					y: (li.data.opened == false) ? additionalHeight : (li.data.cards.length -1) * cardSections[0].getHeight() + additionalHeight, 
-					width: cardSections[0].getHeight(),
-					height: cardSections[0].getHeight(),
-					param: 0
-				} );
+				
+				hz = new HitZoneData();
+				hz.type = HitZoneType.WALLETS_MORE;
+				hz.param = "0";
+				hz.x = width - cardsRightOffset - Config.FINGER_SIZE;
+				hz.y = (li.data.opened == false) ? additionalHeight : (li.data.cards.length -1) * cardSections[0].getHeight() + additionalHeight;
+				hz.width = cardSections[0].getHeight();
+				hz.height = cardSections[0].getHeight();
+				hitZones.push(hz);
 			}
 			
 			var widthHZ:int = width - cardsXPosition - cardsRightOffset;
 			var widthHZSmall:int = widthHZ - Config.FINGER_SIZE;
 			var i:int;
 			var l:int;
-			hitZones.push( {
-					type: HitZoneType.WALLET,
-					x: cardsXPosition,
-					y: additionalHeight, 
-					width: (li.data.cards.length > 1 && li.data.opened == false) ? widthHZSmall : widthHZ,
-					height: cardSections[0].getHeight(),
-					param: 0
-			} );
+			
+			hz = new HitZoneData();
+				hz.type = HitZoneType.WALLET;
+				hz.param = "0";
+				hz.x = cardsXPosition;
+				hz.y = additionalHeight;
+				hz.width = (li.data.cards.length > 1 && li.data.opened == false) ? widthHZSmall : widthHZ;
+				hz.height = cardSections[0].getHeight();
+			hitZones.push(hz);
 			if (li.data.opened == false) {
 				l = cardSections.length;
 				if (l > 1)
@@ -133,14 +137,15 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements {
 							cardSections.push(bacs);
 						}
 						cardSections[i].y = int((cardSections[0].getHeight()) * i) + additionalHeight;
-						hitZones.push( {
-							type: HitZoneType.WALLET,
-							x: cardsXPosition,
-							y: cardSections[i].y, 
-							width: (li.data.opened == true && i == cardSections.length - 1) ? widthHZSmall : widthHZ,
-							height: cardSections[i].getHeight(),
-							param: i
-						} );
+						
+						hz = new HitZoneData();
+							hz.type = HitZoneType.WALLET;
+							hz.param = i.toString();
+							hz.x = cardsXPosition;
+							hz.y = cardSections[i].y;
+							hz.width = (li.data.opened == true && i == cardSections.length - 1) ? widthHZSmall : widthHZ;
+							hz.height = cardSections[i].getHeight();
+						hitZones.push(hz);
 					}
 				}
 			}
@@ -216,7 +221,7 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements {
 		{
 			const WALLET:String = "wallet";
 			
-			var zones:Array = listItem.getHitZones();
+			var zones:Vector.<HitZoneData> = listItem.getHitZones();
 			var data:Object = listItem.data;
 			getView(listItem, getHeight(listItem, listItem.width), listItem.width, false);
 			
@@ -233,7 +238,7 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements {
 					
 					if (zone.x <= itemTouchPoint.x && zone.y <= itemTouchPoint.y && zone.x + zone.width >= itemTouchPoint.x && zone.y + zone.height >= itemTouchPoint.y)
 					{
-						selectedIndex = zones[i].param;
+						selectedIndex = parseInt(zones[i].param);
 						break;
 					}
 				}

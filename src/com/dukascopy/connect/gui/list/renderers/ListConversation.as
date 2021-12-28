@@ -12,6 +12,7 @@ package com.dukascopy.connect.gui.list.renderers {
 	import assets.OwnerIcon;
 	import assets.PlusAvatar;
 	import com.dukascopy.connect.Config;
+	import com.dukascopy.connect.data.HitZoneData;
 	import com.dukascopy.connect.gui.lightbox.UI;
 	import com.dukascopy.connect.gui.list.ListItem;
 	import com.dukascopy.connect.gui.megaText.MegaText;
@@ -1073,7 +1074,17 @@ package com.dukascopy.connect.gui.list.renderers {
 			}
 			
 			if (trashIcon.visible == true)
-				li.setHitZones( [ { type:HitZoneType.DELETE, x:width - Config.FINGER_SIZE, y:0, width:Config.FINGER_SIZE, height:height } ] );
+			{
+				var hzs:Vector.<HitZoneData> = new Vector.<HitZoneData>();
+				var hz:HitZoneData = new HitZoneData();
+				hz.type = HitZoneType.DELETE;
+				hz.x = width - Config.FINGER_SIZE;
+				hz.y = 0;
+				hz.width = Config.FINGER_SIZE;
+				hz.height = height;
+				hzs.push(hz);
+				li.setHitZones(hzs);
+			}
 			return this;
 		}
 		

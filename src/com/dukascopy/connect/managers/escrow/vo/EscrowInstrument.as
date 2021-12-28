@@ -1,8 +1,10 @@
 package com.dukascopy.connect.managers.escrow.vo{
+	import com.dukascopy.connect.managers.crypto.InvestmentRates;
 	import com.dukascopy.connect.screens.payments.card.TypeCurrency;
 	import com.dukascopy.langs.Lang;
 
     public class EscrowInstrument{
+		public var rates:InvestmentRates;
 
         private var _name:String;
         private var _wallet:String;

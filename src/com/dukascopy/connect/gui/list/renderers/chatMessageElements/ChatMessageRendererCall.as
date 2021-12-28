@@ -65,7 +65,7 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 			textFormat.align = TextFormatAlign.LEFT;
 		}
 		
-		public function updateHitzones(itemHitzones:Array):void {
+		public function updateHitzones(itemHitzones:Vector.<HitZoneData>):void {
 			
 		}
 		

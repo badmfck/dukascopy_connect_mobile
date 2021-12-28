@@ -3,6 +3,7 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 	import com.dukascopy.connect.Config;
 	import com.dukascopy.connect.data.Entry;
 	import com.dukascopy.connect.MobileGui;
+	import com.dukascopy.connect.data.HitZoneData;
 	import com.dukascopy.connect.data.screenAction.IScreenAction;
 	import com.dukascopy.connect.data.screenAction.customActions.CallGetEuroAction;
 	import com.dukascopy.connect.gui.lightbox.UI;
@@ -60,7 +61,7 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 			return bgColor;
 		}
 		
-		public function updateHitzones(itemHitzones:Array):void { }
+		public function updateHitzones(itemHitzones:Vector.<HitZoneData>):void { }
 		
 		protected function setIconByClass(iconClass:Class):void {
 			if (iconClass == null) {
