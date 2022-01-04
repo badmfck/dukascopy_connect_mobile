@@ -215,7 +215,7 @@ package com.dukascopy.connect.screens.keyboardScreens.attachScreen {
 			{
 				button = buttons[buttons.push(new AttachScreenButtonLabel(actions[i])) - 1];
 				scrollableContainer.addObject(button);
-				if (isActivated && (WS.connected || Config.isTest() == true))
+				if (isActivated && Config.isTest() == true)
 				{
 					enableButtons();
 				}
@@ -266,7 +266,7 @@ package com.dukascopy.connect.screens.keyboardScreens.attachScreen {
 			super.activateScreen();
 			if (_isDisposed)
 				return;
-			if ((NetworkManager.isConnected && WS.connected) || Config.isTest())
+			if ((NetworkManager.isConnected) || Config.isTest())
 				enableButtons();
 		}
 		

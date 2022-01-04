@@ -30,6 +30,7 @@ package com.dukascopy.connect.gui.components
 	import com.dukascopy.connect.type.HitZoneType;
 	import com.dukascopy.connect.utils.TextUtils;
 	import com.dukascopy.langs.Lang;
+	import com.dukascopy.langs.LangManager;
 	import com.greensock.TweenMax;
 	import fl.controls.TextInput;
 	import flash.display.Bitmap;
@@ -598,17 +599,25 @@ package com.dukascopy.connect.gui.components
 			{
 				realAddress = getAddressString();
 				
+				var message:String;
+				
 				if (getAccountCity() != null && getAccountCity().length > PayManager.accountInfo.cardIssuanceCityMaxLength)
 				{
-					realAddress += "<br/><br/><font color='" + "#" + Color.RED.toString(16) + "'>" + Lang.card_delivery_city_long + "</font>";
+					message = LangManager.replace(Lang.regExtValue, Lang.card_delivery_city_long, String(PayManager.accountInfo.cardIssuanceCityMaxLength));
+					
+					realAddress += "<br/><br/><font color='" + "#" + Color.RED.toString(16) + "'>" + message + "</font>";
 				}
 				else if (getAccountName() != null && getAccountName().length > PayManager.accountInfo.cardIssuanceFullnameMaxLength)
 				{
-					realAddress += "<br/><br/><font color='" + "#" + Color.RED.toString(16) + "'>" + Lang.card_delivery_name_long + "</font>";
+					message = LangManager.replace(Lang.regExtValue, Lang.card_delivery_name_long, String(PayManager.accountInfo.cardIssuanceFullnameMaxLength));
+					
+					realAddress += "<br/><br/><font color='" + "#" + Color.RED.toString(16) + "'>" + message + "</font>";
 				}
 				else if (getAccountAddress() != null && getAccountAddress().length > PayManager.accountInfo.cardIssuanceStreetMaxLength)
 				{
-					realAddress += "<br/><br/><font color='" + "#" + Color.RED.toString(16) + "'>" + Lang.card_delivery_address_long + "</font>";
+					message = LangManager.replace(Lang.regExtValue, Lang.card_delivery_address_long, String(PayManager.accountInfo.cardIssuanceStreetMaxLength));
+					
+					realAddress += "<br/><br/><font color='" + "#" + Color.RED.toString(16) + "'>" + message + "</font>";
 				}
 			}
 			if (tfAddressBitmap.bitmapData != null)

@@ -234,7 +234,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 					var countries:Array = new Array();
 					for (var i:int = 0; i < countriesSelected.length; i++) 
 					{
-						countries.push(countriesSelected[i].data[2]);
+						countries.push(countriesSelected[i].data[1]);
 					}
 					
 					filter.countries = countries;
@@ -404,7 +404,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 					{
 						for (i = 0; i < filter.countries.length; i++) 
 						{
-							if (filter.countries[i] == cDataNew[j][2])
+							if (filter.countries[i] == cDataNew[j][1])
 							{
 								countriesSelection.push(new SelectorItemData(cDataNew[j][4], cDataNew[j]));
 							}

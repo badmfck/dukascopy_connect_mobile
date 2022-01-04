@@ -142,6 +142,9 @@ package com.dukascopy.connect.screens.innerScreens {
 			NewMessageNotifier.S_UPDATE.add(onChatNewMessagesUpdate);
 			NativeApplication.nativeApplication.addEventListener(Event.ACTIVATE, onActivateApplication);
 			
+			ChatManager.S_SERVER_DATA_LOAD_START.add(onServerDataLoadStart);
+			ChatManager.S_SERVER_DATA_LOAD_END.add(onServerDataLoadEnd);
+			
 			messagePreloader.setSize(_width, int(Config.FINGER_SIZE * .06));
 		}
 		
@@ -424,6 +427,10 @@ package com.dukascopy.connect.screens.innerScreens {
 			NewMessageNotifier.S_UPDATE.remove(onChatNewMessagesUpdate);
 			SendTradeNotesRequestAction.S_SUCCESS.remove(onLatestLoaded);
 			Auth.S_AUTH_DATA_UPDATED.remove(onEntrypointsUpdated);
+			
+			ChatManager.S_SERVER_DATA_LOAD_START.remove(onServerDataLoadStart);
+			ChatManager.S_SERVER_DATA_LOAD_END.remove(onServerDataLoadEnd);
+			TweenMax.killDelayedCallsTo(onServerDataLoadEnd);
 		}
 		
 		private function onCallsUpdated():void {
@@ -497,8 +504,6 @@ package com.dukascopy.connect.screens.innerScreens {
 			AnswersManager.S_ANSWERS.add(onAnswersUpdated);
 			//WS.S_CONNECTED.add(onWSConnected);
 			Auth.S_NEED_AUTHORIZATION.add(onAuthNeedAuthorization);
-			ChatManager.S_SERVER_DATA_LOAD_START.add(onServerDataLoadStart);
-			ChatManager.S_SERVER_DATA_LOAD_END.add(onServerDataLoadEnd);
 			
 			CallsHistoryManager.activate();
 			CallsHistoryManager.S_CALLS.add(onCallsUpdated);
@@ -537,6 +542,8 @@ package com.dukascopy.connect.screens.innerScreens {
 		private function onServerDataLoadStart():void {
 			messagePreloader.start();
 		//	showLoading();
+			TweenMax.killDelayedCallsTo(onServerDataLoadEnd);
+			TweenMax.delayedCall(10, onServerDataLoadEnd);
 		}
 		
 		private function showLoading():void {
@@ -650,14 +657,13 @@ package com.dukascopy.connect.screens.innerScreens {
 			UsersManager.S_OFFLINE_ALL.remove(onAllUsersOffline);
 			UsersManager.S_ONLINE_STATUS_LIST.remove(onUserlistOnlineStatusChanged);
 			UsersManager.S_ONLINE_CHANGED.remove(onUserOnlineStatusChanged);
-			ChatManager.S_SERVER_DATA_LOAD_START.remove(onServerDataLoadStart);
-			ChatManager.S_SERVER_DATA_LOAD_END.remove(onServerDataLoadEnd);
 			
 			hideStatusClip();
 		}
 		
 		private function onServerDataLoadEnd():void {
 			messagePreloader.stop(false);
+			TweenMax.killDelayedCallsTo(onServerDataLoadEnd);
 		//	hideStatusClip();
 		}
 		
