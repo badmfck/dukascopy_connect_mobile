@@ -120,8 +120,12 @@ package com.telefision.sys.signals {
 			var l:int = -1;
 			var n:int = methodStock.length-1;
 			for (n; n > l; n--)
+				try{
 				if (methodStock[n]!=null)
 					methodStock[n].apply(this, rest);
+				}catch(e:Error){
+					trace("ERROR IN SIGNAL: "+e.text);
+				}
 			isInvoking = false;
 			if (delayedAdd != null && delayedAdd.length > 0){
 				n = 0;

@@ -20,6 +20,8 @@ package com.forms.components{
         public var onItemBeforeDraw:Function;
         public var onItemAfterDraw:Function;
 
+
+        private var maxItems:int=100;
       
         private var listBox:Sprite=new Sprite();
             
@@ -97,6 +99,18 @@ package com.forms.components{
                 
 
             super.calculateBounds(xml);
+        }
+
+        public function put(value:Object):void{
+            var data:Object=value;
+            if(value is String)
+                data={value:value}
+            var li:FormListItem=new FormListItem(itemXML,form);
+            li.setupUserValues(data);
+            add(li);
+            if(children.length>maxItems && maxItems>-1){
+                remove(children[0]);
+            }
         }
         
         override public function destroy():void{

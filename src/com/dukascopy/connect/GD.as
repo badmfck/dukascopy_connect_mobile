@@ -53,7 +53,7 @@ package com.dukascopy.connect
 		static public const S_REQUEST_SHARE_TEXT:Signal = new Signal();
 		static public const S_DEBUG_WS:Signal = new Signal();
 		static public const S_LOG_WS:Signal = new Signal();
-		static public const S_NET_DEBUG:Signal = new Signal();
+		
 		
 		static public const S_START_LOAD:Signal = new Signal();
 		static public const S_STOP_LOAD:Signal = new Signal();
@@ -150,7 +150,7 @@ package com.dukascopy.connect
 		static public const S_REQUEST_NET_STATUS:Signal=new Signal(); //functon(online:Boolean)
 
 		// SYS
-		static public const S_REQUEST_DEBUG_SCREEN:Signal=new Signal();
+		static public const S_REQUEST_DEBUG_SCREEN:Signal=new Signal(); //msg nullable
 		static public const S_SEND_ERROR:Signal=new Signal(); //{message,reason}
 	}
 }

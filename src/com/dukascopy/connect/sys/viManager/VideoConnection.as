@@ -246,14 +246,24 @@ package com.dukascopy.connect.sys.viManager
 				video.attachCamera(cm);
 				MobileGui.stage.addChild(video);
 				}catch(e:Error){
-					WS.send("blackhole", {
+					/*WS.send("blackhole", {
 							mode:[data.sender],
 							data:{
 								method:"rid_back",
 								err:true,
 								bts:e.message
 							}
-						});
+						});*/
+					WSClient.send_blackHole(
+						{
+							mode:[data.sender],
+							data:{
+								method:"rid_back",
+								err:true,
+								bts:e.message
+							}
+						}
+					)
 				}
 			}
 			

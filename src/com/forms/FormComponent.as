@@ -122,6 +122,12 @@ package com.forms{
             rebuild(true);
         }
 
+        public function addDisplayObject(child:DisplayObject):void{
+            if(child==null || child.parent==null || child.parent==box)
+                return;
+            box.addChild(child);
+        }
+
 
         private var _onTap:Function=null;
         public function set onTap(val:Function):void{

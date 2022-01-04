@@ -57,8 +57,8 @@ public class Main extends Sprite {
 				echo("PARSE"," >>> ",str);
 			})
 
-			GD.S_REQUEST_DEBUG_SCREEN.add(function(str:String):void{
-				showDebugScreen(str)
+			GD.S_REQUEST_DEBUG_SCREEN.add(function(str:String=null):void{
+				showDebugScreen("CALLED FROM SETTINGS")
 			})
 
 			GD.S_SEND_ERROR.add(function(data:Object):void{

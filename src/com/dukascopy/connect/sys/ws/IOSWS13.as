@@ -15,6 +15,9 @@ package com.dukascopy.connect.sys.ws
     import com.worlize.websocket.WebSocketMessage;
     import flash.events.IOErrorEvent;
     import flash.events.SecurityErrorEvent;
+    import flash.utils.clearTimeout;
+    import flash.utils.clearInterval;
+    import flash.utils.setInterval;
     
     public class IOSWS13{
 
@@ -24,6 +27,8 @@ package com.dukascopy.connect.sys.ws
         private var url:String;
         private var authorized:Boolean=false;
         private var emulate:Boolean=false;
+        private var heartBitTimerID:int=-1;
+        private var lastMessageTime:Number=-1;
         
         public function IOSWS13(){
             GD.S_AUTHORIZED.add(onAuthorized);
@@ -31,6 +36,8 @@ package com.dukascopy.connect.sys.ws
 
             NativeApplication.nativeApplication.addEventListener(Event.ACTIVATE, onActivate);
 			NativeApplication.nativeApplication.addEventListener(Event.DEACTIVATE, onDeativate);
+
+            setupWatchdog();
 
             GD.S_URL_CONFIG_READY.add(function(urlConfig:URLConfigVO):void{
                 var doConnect:Boolean=url!=urlConfig.WSS_URL;
@@ -81,8 +88,10 @@ package com.dukascopy.connect.sys.ws
                             packet.callback(false);                        
                     }
                     var result:Boolean=false;
-                    if(worlize.readyState==1 && !packet.simulateSend)
-                        result=worlize.sendUTF(packet.toJSON());
+                    if(worlize.readyState==1 && !packet.simulateSend){
+                        worlize.sendUTF(packet.toJSON());
+                        result=true;
+                    }
                     if(packet.simulateSend)
                         result=true;
                     if(packet.callback)
@@ -98,6 +107,7 @@ package com.dukascopy.connect.sys.ws
                         packet.callback(false);
                     return;
                 }
+
                 GD.S_LOG.invoke("WS Request to send: ",packet.toJSON());
 
                 // SIMULATE SEND
@@ -106,6 +116,14 @@ package com.dukascopy.connect.sys.ws
                     if(packet.callback)
                         packet.callback(true);
                     return;
+                }
+
+                if(!isWSReady()){
+                    GD.S_LOG.invoke("Can't send packet, ws is not ready");
+                    if(packet.callback)
+                        packet.callback(false);
+                    return;
+                    
                 }
 
                 if(ws.isDisposed){
@@ -123,15 +141,18 @@ package com.dukascopy.connect.sys.ws
             })
         }
 
-        private function fireWSState():void{
+        private function isWSReady():Boolean{
             var state:Boolean;
             if(emulate){
-                state=worlize!=null && worlize.readyState==1 && authorized;
-                GD.S_WS_STATUS.invoke(state);
-                GD.S_LOG.invoke("WS STATE (EMU): "+state);
-                return;
+                state=worlize!=null && worlize.readyState==1/* && authorized*/;
+                return state;
             }
-            state=ws!=null && ws.connected && ws.isActive && authorized;
+            state=ws!=null && ws.connected && ws.isActive/* && authorized*/;
+            return state;
+        }
+
+        private function fireWSState():void{
+            var state:Boolean=isWSReady();
             GD.S_LOG.invoke("WS STATE: "+state);
             GD.S_WS_STATUS.invoke(state);
         }
@@ -150,6 +171,50 @@ package com.dukascopy.connect.sys.ws
             ws=null;
         }
 
+        private function setupWatchdog():void{
+            return;
+            setInterval(function():void{
+                if(!authorized)
+                    return;
+
+                var state:Boolean=ws!=null && ws.connected && ws.isActive && authorized;
+                if(state)
+                    return;
+
+                GD.S_REQUEST_NET_STATUS.invoke(function(online:Boolean):void{
+                    GD.S_LOG.invoke("LOOKS LIKE WS IS DEAD AND WON'T RECONNECT")
+                })    
+                
+            },3000);
+        }
+
+        private function startHeartBitWatcher():void{
+            return;
+            GD.S_LOG.invoke("WS HEARTBIT STARTED")
+            stopHeartBitWatcher();
+            heartBitTimerID=setInterval(function():void{
+                if((new Date().getTime()-lastMessageTime)>2000){
+                    stopHeartBitWatcher();
+                    if(isWSReady()){
+                        GD.S_REQUEST_NET_STATUS.invoke(function(online:Boolean):void{
+                            GD.S_LOG.invoke("WS LOOKS DEAD BUT IN ACTIVE, TRY TO CLOSE AND RECONNECT if online: "+online);
+                            if(online){
+                                ws.dispose();
+                                connect();
+                            }
+                        });
+                    }
+                }
+            },1000);
+        }
+
+        private function stopHeartBitWatcher():void{
+            return;
+            if(heartBitTimerID>-1)
+                clearInterval(heartBitTimerID);
+            GD.S_LOG.invoke("WS HEARTBIT STOPPED")
+        }
+
         private function onActivate(e:Event):void{
             
         }
@@ -157,22 +222,6 @@ package com.dukascopy.connect.sys.ws
         private function onDeativate(e:Event):void{
             
         }
-
-
-
-        /*private function onNetStatus(stat:DCCNetStatus):void{
-            // ON STATUS EVENT
-            GD.S_LOG.invoke("DCCNetWatcher - status event: "+stat.internet)
-            if(stat.internet==DCCNetStatus.INTERNET_STATUS_AVAILABLE){
-                connect();
-                return;
-            }
-            if(ws!=null){
-                ws.dispose();
-                GD.S_WS_CLOSED.invoke();
-                fireWSState();
-            }
-        }*/
 
         private function connect():void{
 
@@ -234,7 +283,7 @@ package com.dukascopy.connect.sys.ws
 
             
              // Check if WS is not connected
-            if(ws==null || (ws!=null && !ws.connected) || (ws!=null && !ws.isActive)){
+            if(!isWSReady()){
                 try{
                     if(ws!=null)
                         ws.dispose();
@@ -243,12 +292,16 @@ package com.dukascopy.connect.sys.ws
 
                     ws.onClose=function(code:int,reason:String):void{
                         clearListeners();
-                        GD.S_LOG.invoke("WS CLOSED:, code:"+code+", reason: "+reason);
+                        GD.S_LOG.invoke("WS CLOSED:, code:"+code+", reason: "+reason+", WS STATUS: "+isWSReady());
+                        
                         setTimeout(function():void{
                             GD.S_LOG.invoke("RECONNECT IF INTERNET: >> "+(DCCNetWatcher.getStatus().internet==DCCNetStatus.INTERNET_STATUS_AVAILABLE)+" <<\n");
-                            if(DCCNetWatcher.getStatus().internet==DCCNetStatus.INTERNET_STATUS_AVAILABLE)
+                            if(DCCNetWatcher.getStatus().internet==DCCNetStatus.INTERNET_STATUS_AVAILABLE){
+                                GD.S_LOG.invoke("DO CONNECT AFTER CLOSE: "+isWSReady())
                                 connect();
-                        },1000);
+                            }
+                        },500);
+
                         GD.S_WS_CLOSED.invoke();
                         fireWSState();
                     }
@@ -260,12 +313,15 @@ package com.dukascopy.connect.sys.ws
                     }
 
                     ws.onOpen=function():void{
+                        lastMessageTime=new Date().getTime();
                         GD.S_LOG.invoke("OPENED\n");
                         GD.S_WS_OPENED.invoke();
+                        startHeartBitWatcher();
                         fireWSState();
                     }
 
                     ws.onMessage=function(text:String):void{
+                        lastMessageTime=new Date().getTime();
                         GD.S_LOG.invoke("GOT MSG: ",text);
                         GD.S_WS_MESSAGE.invoke(text);
                     }
@@ -280,7 +336,8 @@ package com.dukascopy.connect.sys.ws
                 }catch(e:Error){
                     GD.S_LOG.invoke("CONENCTON ERROR "+e.message+"\n");
                 }
-            }
+            }else
+                GD.S_LOG.invoke("WS LOOKS CONNECTED, IGNORE CONNECTION PROCEDURE: ws:"+((ws!=null)?"exists":"null")+", connected:"+((ws!=null)?ws.connected:"not connected"));
         }
 
         private function disposeWorlize():void{
@@ -292,6 +349,8 @@ package com.dukascopy.connect.sys.ws
         }
 
         private function clearListeners():void{
+            stopHeartBitWatcher();
+            lastMessageTime=-1;
             if(ws==null)
                 return;
             ws.onMessage=null;
