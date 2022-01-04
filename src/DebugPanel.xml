@@ -23,6 +23,7 @@
             <space width="10"/>
             <div id="btnReqNetStat" border-radius="6" padding="10" background-color="#4caf50" color="#FFFFFF" width="90">NET STAT</div>
         </div>
+        <space width="10"/>
         <div layout="horizontal" font-size='11' color="#00FF00" distribute-childs="even">
             <div id="btnScroll" border-radius="6" padding="10" background-color="#4caf50" color="#FFFFFF" width="90">NO SCROLL</div>
             <space width="10"/>
