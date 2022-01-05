@@ -92,7 +92,7 @@ public class Main extends Sprite {
 		
 		private function start():void{
 			new MobileGui(this, stage); 
-			showDebugScreen(null);
+			//showDebugScreen(null);
 		}
 		
 		private function onGlobalError(e:UncaughtErrorEvent = null):void {
