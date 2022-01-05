@@ -474,16 +474,17 @@ package com.dukascopy.connect.screens {
 			}
 		}
 		
-		private function requestCode():void 
-		{
+		private function requestCode():void {
 			if (currentPhone.length < 6)
 				return;
 				
 			var countryCode:String = selectCountryButton.getValue().substr(0);
 			var phoneString:String = currentPhone;
-			if (phoneString != null && phoneString.length > 0 && phoneString.indexOf("p") == 0)
-			{
+			if (phoneString != null && phoneString.length > 0 && phoneString.indexOf("p") == 0) {
 				phoneString = phoneString.substring(1);
+			}
+			if (countryCode != null && countryCode.length > 0 && countryCode.indexOf("p") == 0) {
+				countryCode = countryCode.substring(1);
 			}
 			if (phoneString.substr(0, 2) == "00") {
 				var country:Array = CountriesData.getCountryByPhoneNumber(phoneString);
@@ -498,7 +499,7 @@ package com.dukascopy.connect.screens {
 			}
 			if (countryCode != "33" /*France*/)
 				phoneString = UI.trimFront(phoneString, "0");
-			if (countryCode != "54" /*Argentina*/ && phoneString.indexOf('9') != 0)
+			if (countryCode == "54" /*Argentina*/ && phoneString.indexOf('9') != 0)
 				phoneString = '9' + phoneString;
 			if (phoneString.length < 6)
 				return;
@@ -1312,10 +1313,10 @@ package com.dukascopy.connect.screens {
 			nextButton.activate();
 			clearPhoneButton.activate();
 			
-			if (Config.isTest() && currentCode != null)
+			/*if (Config.isTest() && currentCode != null)
 			{
 				nextClick();
-			}
+			}*/
 		}
 		
 		private function activateStateStart():void 
