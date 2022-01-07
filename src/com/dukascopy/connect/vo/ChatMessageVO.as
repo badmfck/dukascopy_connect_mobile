@@ -341,8 +341,17 @@ package com.dukascopy.connect.vo {
 			var linkFull:String;
 			var linkShort:String;
 			for (var i:int = 0; i < links.length; i++) {
+
 				linkFull = links[i];
-				linkShort = linkFull.match(/href=(.*?)[>,\s]/)[0];
+				if(linkFull==null)
+					continue;
+				
+				var m:Array=linkFull.match(/href=(.*?)[>,\s]/);
+				
+				if(m==null || m.length==0 || m[0]==null)
+					continue;
+
+				linkShort = m[0];
 				linkShort = linkShort.substring(6, linkShort.length - 2);
 				_linksArray.push( {
 					fullLink:linkFull,

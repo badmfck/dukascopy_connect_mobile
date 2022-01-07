@@ -9,6 +9,7 @@ package com.telefision.sys.signals {
 		
 		public static var isDebug:Boolean = false;
 		public static var count:int = 0;
+		public static var onError:Function=null; // function(error:String){}
 		//public static var invoked:Array = [];
 		private static var names:Array;
 		private static var name:String="static signal";
@@ -124,7 +125,12 @@ package com.telefision.sys.signals {
 				if (methodStock[n]!=null)
 					methodStock[n].apply(this, rest);
 				}catch(e:Error){
-					trace("ERROR IN SIGNAL: "+e.text);
+					var st:String=e.getStackTrace();
+					trace("ERROR IN SIGNAL: "+e.text+"\n"+st);
+					if(onError!=null && onError is Function && onError.length==1){
+						try{onError(e.text+((st!=null)?"\n"+st:""))}catch(err:Error){}
+					}
+					
 				}
 			isInvoking = false;
 			if (delayedAdd != null && delayedAdd.length > 0){

@@ -32,6 +32,7 @@ import flash.utils.ByteArray;
 import flash.utils.getTimer;
 import com.dukascopy.connect.GD;
 import com.telefision.sys.signals.SuperSignal;
+import com.telefision.sys.signals.Signal;
 
 
 
@@ -85,6 +86,9 @@ public class Main extends Sprite {
 
 			TweenMax.delayedCall(2, start, null, true);
 
+			Signal.onError=function(error:String):void{
+				sendError(error,"Catched in signal");
+			}
 			SuperSignal.onLog=function(str:String):void{
 				echo("PARSE"," SuperSignal ",str);
 			}

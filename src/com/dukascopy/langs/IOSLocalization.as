@@ -18,7 +18,8 @@ package com.dukascopy.langs
                     DCCExtMethod.LOCALIZATION,
                     {
                         n_group:Lang.iosNotificationUnreadGroup,
-                        n_private:Lang.iosNotificationUnreadPrivate
+                        n_private:Lang.iosNotificationUnreadPrivate,
+                        n_private_single:Lang.iosNotificationUnreadPrivateSingle
                     }
                 ))
             }
