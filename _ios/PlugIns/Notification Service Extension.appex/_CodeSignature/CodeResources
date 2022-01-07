@@ -6,11 +6,27 @@
 	<dict>
 		<key>Info.plist</key>
 		<data>
-		WX8shAH4wBBOo7ci63+UhGwoDJs=
+		GcOCg8Y1n8B0Q2mqUxwNimLGlS4=
+		</data>
+		<key>embedded.mobileprovision</key>
+		<data>
+		F1bABsGsC++hw9+3SPsxSDGhxuc=
 		</data>
 	</dict>
 	<key>files2</key>
-	<dict/>
+	<dict>
+		<key>embedded.mobileprovision</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			F1bABsGsC++hw9+3SPsxSDGhxuc=
+			</data>
+			<key>hash2</key>
+			<data>
+			Y1AHD/H/dhdPRaXMrErq8pAVLmUNPGKRAEolwRxO3sY=
+			</data>
+		</dict>
+	</dict>
 	<key>rules</key>
 	<dict>
 		<key>^.*</key>
