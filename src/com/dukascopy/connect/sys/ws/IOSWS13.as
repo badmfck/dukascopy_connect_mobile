@@ -15,8 +15,6 @@ package com.dukascopy.connect.sys.ws
     import com.worlize.websocket.WebSocketMessage;
     import flash.events.IOErrorEvent;
     import flash.events.SecurityErrorEvent;
-    import flash.utils.clearTimeout;
-    import flash.utils.clearInterval;
     import flash.utils.setInterval;
     
     public class IOSWS13{
@@ -27,8 +25,6 @@ package com.dukascopy.connect.sys.ws
         private var url:String;
         private var authorized:Boolean=false;
         private var emulate:Boolean=false;
-        private var heartBitTimerID:int=-1;
-        private var lastMessageTime:Number=-1;
         
         public function IOSWS13(){
             GD.S_AUTHORIZED.add(onAuthorized);
@@ -188,33 +184,6 @@ package com.dukascopy.connect.sys.ws
             },3000);
         }
 
-        private function startHeartBitWatcher():void{
-            return;
-            GD.S_LOG.invoke("WS HEARTBIT STARTED")
-            stopHeartBitWatcher();
-            heartBitTimerID=setInterval(function():void{
-                if((new Date().getTime()-lastMessageTime)>2000){
-                    stopHeartBitWatcher();
-                    if(isWSReady()){
-                        GD.S_REQUEST_NET_STATUS.invoke(function(online:Boolean):void{
-                            GD.S_LOG.invoke("WS LOOKS DEAD BUT IN ACTIVE, TRY TO CLOSE AND RECONNECT if online: "+online);
-                            if(online){
-                                ws.dispose();
-                                connect();
-                            }
-                        });
-                    }
-                }
-            },1000);
-        }
-
-        private function stopHeartBitWatcher():void{
-            return;
-            if(heartBitTimerID>-1)
-                clearInterval(heartBitTimerID);
-            GD.S_LOG.invoke("WS HEARTBIT STOPPED")
-        }
-
         private function onActivate(e:Event):void{
             
         }
@@ -223,7 +192,7 @@ package com.dukascopy.connect.sys.ws
             
         }
 
-        private function connect():void{
+        private function connect(force:Boolean=false):void{
 
             if(url==null){
                 GD.S_LOG.invoke("ERR, NO WS URL TO CONNECT");
@@ -283,7 +252,7 @@ package com.dukascopy.connect.sys.ws
 
             
              // Check if WS is not connected
-            if(!isWSReady()){
+            if(force ||!isWSReady()){
                 try{
                     if(ws!=null)
                         ws.dispose();
@@ -291,17 +260,17 @@ package com.dukascopy.connect.sys.ws
                     ws=DccWS.getInstance();
 
                     ws.onClose=function(code:int,reason:String):void{
-                        clearListeners();
-                        GD.S_LOG.invoke("WS CLOSED:, code:"+code+", reason: "+reason+", WS STATUS: "+isWSReady());
-                        
+                       
                         setTimeout(function():void{
                             GD.S_LOG.invoke("RECONNECT IF INTERNET: >> "+(DCCNetWatcher.getStatus().internet==DCCNetStatus.INTERNET_STATUS_AVAILABLE)+" <<\n");
                             if(DCCNetWatcher.getStatus().internet==DCCNetStatus.INTERNET_STATUS_AVAILABLE){
                                 GD.S_LOG.invoke("DO CONNECT AFTER CLOSE: "+isWSReady())
-                                connect();
+                                connect(true); 
                             }
                         },500);
 
+                        GD.S_LOG.invoke("WS CLOSED:, code:"+code+", reason: "+reason+", WS STATUS: "+isWSReady());
+                        dispose();
                         GD.S_WS_CLOSED.invoke();
                         fireWSState();
                     }
@@ -313,15 +282,12 @@ package com.dukascopy.connect.sys.ws
                     }
 
                     ws.onOpen=function():void{
-                        lastMessageTime=new Date().getTime();
                         GD.S_LOG.invoke("OPENED\n");
                         GD.S_WS_OPENED.invoke();
-                        startHeartBitWatcher();
                         fireWSState();
                     }
 
                     ws.onMessage=function(text:String):void{
-                        lastMessageTime=new Date().getTime();
                         GD.S_LOG.invoke("GOT MSG: ",text);
                         GD.S_WS_MESSAGE.invoke(text);
                     }
@@ -348,15 +314,15 @@ package com.dukascopy.connect.sys.ws
                 worlize.close();
         }
 
-        private function clearListeners():void{
-            stopHeartBitWatcher();
-            lastMessageTime=-1;
+        private function dispose():void{
             if(ws==null)
                 return;
             ws.onMessage=null;
             ws.onError=null;
             ws.onOpen=null;
             ws.onClose=null;
+            ws.dispose();
+            ws=null;
         }
     }
 }
