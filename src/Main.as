@@ -186,7 +186,7 @@ public class Main extends Sprite {
 			message += "last message:\n" + EchoParser.lastMessage + "\n";
 			message += "stack:\n" + BloomDebugger.getStack() + "\n";
 			
-			GD.S_LOG.invoke(message);
+			GD.S_DEBUG_LOG.invoke(message);
 
 			if(Config.isTF())
 				showDebugScreen(message);

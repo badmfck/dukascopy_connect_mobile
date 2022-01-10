@@ -469,12 +469,20 @@ package com.dukascopy.connect.sys.ws {
 		
 		static public function connectAsGuest():void 
 		{
+
 			allowGuestConnection = true;
+
+			if(Config.PLATFORM_APPLE || Config.PLATFORM_WINDOWS){
+				GD.S_WS_ALLOW_GUEST_CONNECTION.invoke();
+				return;
+			}
+
 			connect();
 		}
 		
 		static public function disableGuestConnection():void
 		{
+			GD.S_WS_DENY_GUEST_CONNECTION.invoke();
 			allowGuestConnection = false;
 		}
 

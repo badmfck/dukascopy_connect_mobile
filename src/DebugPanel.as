@@ -29,15 +29,24 @@ package
         private var btnReqNetStat:FormComponent;
         private var logTextArea:TextField;
         private var autoscroll:Boolean=true;
+        private var err:FormComponent;
+
+        
 
         public function DebugPanel(placeholder:DisplayObjectContainer){
             this.placeholder=placeholder;
             GD.S_WS_STATUS.add(onWSStatus);
             GD.S_NETWORK_STATUS.add(onNetStatus);
             GD.S_LOG.add(onLog);
+            GD.S_DEBUG_LOG.add(onDebugLog);
             logTextArea=new TextField();
             logTextArea.defaultTextFormat=new TextFormat("tahoma",13,0xFFFFFF);
             
+        }
+
+        private function onDebugLog(txt:String):void{
+            if(err!=null)
+                err.textContent=txt;
         }
 
         private function onWSStatus(status:Boolean):void{

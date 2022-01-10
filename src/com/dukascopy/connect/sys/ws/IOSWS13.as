@@ -24,6 +24,7 @@ package com.dukascopy.connect.sys.ws
         private var worlizeDispatcher:Dispatcher;
         private var url:String;
         private var authorized:Boolean=false;
+        private var allowGuestConnection:Boolean=false;
         private var emulate:Boolean=false;
         
         public function IOSWS13(){
@@ -50,6 +51,14 @@ package com.dukascopy.connect.sys.ws
                 if(doConnect && authorized)
                     connect();
             })
+
+            GD.S_WS_ALLOW_GUEST_CONNECTION.add(function():void{
+                allowGuestConnection=true;
+                connect();
+            });
+            GD.S_WS_DENY_GUEST_CONNECTION.add(function():void{
+                allowGuestConnection=false;
+            });
 
             GD.S_WS_REQUEST_STATUS.add(function():void{
                 fireWSState();
@@ -199,7 +208,7 @@ package com.dukascopy.connect.sys.ws
                 return;
             }
 
-            if(!authorized){
+            if(!authorized && !allowGuestConnection){
                 GD.S_LOG.invoke("ERR, NO AUTHORIZED TO CONNECT TO WS");
                 return;
             }

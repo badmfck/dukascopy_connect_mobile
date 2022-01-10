@@ -35,6 +35,7 @@ package com.dukascopy.connect.gui.chatInput {
 	import flash.events.KeyboardEvent;
 	import flash.geom.Point;
 	import flash.ui.Keyboard;
+	import com.dukascopy.connect.GD;
 	
 	/**
 	 * ...
@@ -177,6 +178,10 @@ package com.dukascopy.connect.gui.chatInput {
 		
 		private function onSentPressed(value:String):void 
 		{
+			if(ChatManager.getCurrentChat()==null){
+				GD.S_LOG.invoke("Can't send to chat, no current chat");
+				return;
+			}
 			DraftMessage.clearValue(ChatManager.getCurrentChat().uid);
 			if (chatSendCallBack != null){
 				var sent:Boolean = chatSendCallBack(value);

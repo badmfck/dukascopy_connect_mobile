@@ -131,6 +131,7 @@ package com.dukascopy.connect
 
 		// ETC
 		static public const S_LOG:Signal=new Signal("S_LOG");
+		static public const S_DEBUG_LOG:Signal=new Signal("S_DEBUG_LOG");
 
 		// WS
 		static public const S_WS_CLOSED:Signal=new Signal("S_WS_CLOSED");
@@ -141,6 +142,8 @@ package com.dukascopy.connect
 		static public const S_WS_AUTORIZED:Signal=new Signal();
 		static public const S_WS_REQUEST_STATUS:Signal=new Signal();
 		static public const S_WS_STATUS:Signal=new Signal(); //true/false
+		static public const S_WS_ALLOW_GUEST_CONNECTION:Signal=new Signal(); //true/false
+		static public const S_WS_DENY_GUEST_CONNECTION:Signal=new Signal(); //true/false
 
 		// HTTP
 		static public const S_HTTP_REQUEST_COMPLETED:Signal=new Signal();
