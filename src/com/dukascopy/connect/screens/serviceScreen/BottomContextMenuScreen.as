@@ -111,10 +111,8 @@ package com.dukascopy.connect.screens.serviceScreen
 			}
 		}
 		
-		private function onSelected(action:IScreenAction):void 
-		{
-			if (action is IUpdatableAction && (action as IUpdatableAction).enable == false)
-			{
+		private function onSelected(action:IScreenAction):void {
+			if (action is IUpdatableAction && (action as IUpdatableAction).enable == false) {
 				return;
 			}
 			selectedAction = action;
@@ -143,37 +141,28 @@ package com.dukascopy.connect.screens.serviceScreen
 		
 		override public function dispose():void {
 			super.dispose();
-			
 			TweenMax.killTweensOf(container);
 			TweenMax.killTweensOf(background);
-			if (background != null)
-			{
+			if (background != null) {
 				UI.destroy(background);
 				background = null;
 			}
-			if (container != null)
-			{
+			if (container != null) {
 				UI.destroy(container);
 				container = null;
 			}
-			if (nextButton != null)
-			{
+			if (nextButton != null) {
 				nextButton.dispose();
 				nextButton = null;
 			}
-			if (container != null)
-			{
+			if (container != null) {
 				UI.destroy(background);
 				background = null;
 			}
-			
 			actions = null;
-			if (buttons != null)
-			{
-				for (var i:int = 0; i < buttons.length; i++) 
-				{
-					if (buttons[i] is UpdatebleAction && (buttons[i] as UpdatebleAction).getUpdateSignal() != null)
-					{
+			if (buttons != null) {
+				for (var i:int = 0; i < buttons.length; i++) {
+					if (buttons[i] is UpdatebleAction && (buttons[i] as UpdatebleAction).getUpdateSignal() != null) {
 						(buttons[i] as UpdatebleAction).getUpdateSignal().remove(onActoinUpdate);
 					}
 					buttons[i].dispose();
@@ -182,69 +171,51 @@ package com.dukascopy.connect.screens.serviceScreen
 			buttons = null;
 		}
 		
-		override public function activateScreen():void
-		{
+		override public function activateScreen():void {
 			super.activateScreen();
-			
-			if (_isDisposed)
-			{
+			if (_isDisposed) {
 				return;
 			}
-			
-			if (firstTime)
-			{
+			if (firstTime) {
 				firstTime = false;
 				TweenMax.to(container, 0.3, {y:int(_height - container.height + Config.DIALOG_MARGIN + Config.APPLE_BOTTOM_OFFSET), ease:Power2.easeOut});
 				TweenMax.to(background, 0.3, {alpha:1});
 			}
-			
-			if (buttons != null)
-			{
-				for (var i:int = 0; i < buttons.length; i++) 
-				{
+			if (buttons != null) {
+				for (var i:int = 0; i < buttons.length; i++) {
 					buttons[i].activate();
 				}
 			}
-			
 			PointerManager.addTap(background, close);
 		}
 		
-		private function close(e:Event = null):void 
-		{
+		private function close(e:Event = null):void {
 			Overlay.removeCurrent();
 			deactivateScreen();
 			TweenMax.to(container, 0.3, {y:_height, onComplete:remove, ease:Power2.easeIn});
 			TweenMax.to(background, 0.3, {alpha:0});
 		}
 		
-		private function remove():void 
-		{
-			DialogManager.closeDialog();
-			if (needExecute == true && selectedAction != null)
-			{
+		private function remove():void {
+			//DialogManager.closeDialog();
+			if (needExecute == true && selectedAction != null) {
 				needExecute = false;
 				selectedAction.execute();
 			}
 			selectedAction = null;
+			DialogManager.closeDialog();
 		}
 		
-		override public function deactivateScreen():void
-		{
+		override public function deactivateScreen():void {
 			super.deactivateScreen();
-			
-			if (_isDisposed)
-			{
+			if (_isDisposed) {
 				return;
 			}
-			
-			if (buttons != null)
-			{
-				for (var i:int = 0; i < buttons.length; i++) 
-				{
+			if (buttons != null) {
+				for (var i:int = 0; i < buttons.length; i++) {
 					buttons[i].deactivate();
 				}
 			}
-			
 			PointerManager.removeTap(background, close);
 		}
 	}

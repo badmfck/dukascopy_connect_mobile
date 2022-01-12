@@ -175,96 +175,96 @@ package com.dukascopy.connect.sys.ws{
 			send('getEntryPointNotifications');
 		}
 		
-		static public function call_chatUserAdd(chatUID:String, userUIDs:Array):Boolean {
-			return send("chatUserAdd", { chatUID:chatUID, userUid:userUIDs } );
+		static public function call_chatUserAdd(chatUID:String, userUIDs:Array):void {
+			send("chatUserAdd", { chatUID:chatUID, userUid:userUIDs } );
 		}
 		
-		static public function call_chatUserExit(chatUID:String):Boolean {
-			return send("chatUserExit", { chatUID:chatUID } );
+		static public function call_chatUserExit(chatUID:String):void {
+			send("chatUserExit", { chatUID:chatUID } );
 		}
 		
-		static public function call_chatUserEnter(chatUID:String):Boolean {
-			return send("chatUserEnter", { chatUID:chatUID } );
+		static public function call_chatUserEnter(chatUID:String):void {
+			send("chatUserEnter", { chatUID:chatUID } );
 		}
 		
-		static public function call_chatUserRemove(chatUID:String, userUID:String = null):Boolean {
-			return send("chatUserRemove", { chatUID:chatUID, userUid:userUID } );
+		static public function call_chatUserRemove(chatUID:String, userUID:String = null):void {
+			send("chatUserRemove", { chatUID:chatUID, userUid:userUID } );
 		}
 
-		static public function call_setLang(lang:String):Boolean{
-			return send("setLang", { lang:lang } );
+		static public function call_setLang(lang:String):void{
+			send("setLang", { lang:lang } );
 		}
 		
-		static public function call_sendQMessage(chatUID:String, text:String, anonymous:Boolean = false):Boolean {
-			return send('msgAdd', { chatUID:chatUID, text:text, qa:1, anonymous:anonymous } );
+		static public function call_sendQMessage(chatUID:String, text:String, anonymous:Boolean = false):void {
+			send('msgAdd', { chatUID:chatUID, text:text, qa:1, anonymous:anonymous } );
 		}
 		
-		static public function call_updateTextMessage(chatUID:String, text:String, msgID:Number, updateLocaly:Boolean = false):Boolean {
+		static public function call_updateTextMessage(chatUID:String, text:String, msgID:Number, updateLocaly:Boolean = false):void {
 			if (updateLocaly == true) {
 				S_CHAT_MSG_UPDATED.invoke({ chatUID:chatUID, text:text, id:msgID, nsws:true });
-				return true;
+				return;
 			}
-			return send('msgChange', { chatUID:chatUID, text:text, id:msgID } );
+			send('msgChange', { chatUID:chatUID, text:text, id:msgID } );
 		}
 		
-		static public function call_removeMessage(chatUID:String, msgID:Number):Boolean {
-			return send('msgRemove', { chatUID:chatUID, id:msgID } );
+		static public function call_removeMessage(chatUID:String, msgID:Number):void {
+			send('msgRemove', { chatUID:chatUID, id:msgID } );
 		}
 		
-		static public function call_entryPointAccept(chatUID:String):Boolean {
-			return send('entryPointAccept', { chatUID:chatUID } );
+		static public function call_entryPointAccept(chatUID:String):void {
+			send('entryPointAccept', { chatUID:chatUID } );
 		}
 		
-		static public function call_entryPointCancel(chatUID:String):Boolean {
-			return send("entryPointCancel", { chatUID:chatUID } );
+		static public function call_entryPointCancel(chatUID:String):void {
+			send("entryPointCancel", { chatUID:chatUID } );
 		}
 		
-		static public function call_entryPointFinish(chatUID:String):Boolean {
-			return send("entryPointFinish", { chatUID:chatUID } );
+		static public function call_entryPointFinish(chatUID:String):void {
+			send("entryPointFinish", { chatUID:chatUID } );
 		}
 		
-		static public function call_entryPointForward(userUid:String, chatUID:String):Boolean {
-			return send("entryPointForward", { userUid:userUid, chatUID:chatUID } );
+		static public function call_entryPointForward(userUid:String, chatUID:String):void {
+			send("entryPointForward", { userUid:userUid, chatUID:chatUID } );
 		}
 		
-		static public function call_entryPointStart(pointID:int, chatUID:String, text:String = null):Boolean {
-			return send('entryPointStart', { pointId:pointID, chatUID:chatUID, text:text } );
+		static public function call_entryPointStart(pointID:int, chatUID:String, text:String = null):void {
+			send('entryPointStart', { pointId:pointID, chatUID:chatUID, text:text } );
 		}
 		
-		static public function call_addMemberToCompanyChat(userUIDs:Array, chatUID:String):Boolean {
-			return send('blackHole', { mode:userUIDs, data: { method:"addToCompanyChat", chatUID:chatUID } } );
+		static public function call_addMemberToCompanyChat(userUIDs:Array, chatUID:String):void {
+			send('blackHole', { mode:userUIDs, data: { method:"addToCompanyChat", chatUID:chatUID } } );
 		}
 		
-		static public function call_chatTitleChanged(userUIDs:Array, chatUID:String, value:String):Boolean {
-			return send('blackHole', { mode:userUIDs, data: { method:WSMethodType.CHAT_TITLE_CHANGE, chatUID:chatUID, topic: value } } );
+		static public function call_chatTitleChanged(userUIDs:Array, chatUID:String, value:String):void {
+			send('blackHole', { mode:userUIDs, data: { method:WSMethodType.CHAT_TITLE_CHANGE, chatUID:chatUID, topic: value } } );
 		}
 		
-		static public function call_chatAvatarChanged(userUIDs:Array, chatUID:String, value:String):Boolean {
-			return send('blackHole', { mode:userUIDs, data: { method:WSMethodType.CHAT_AVATAR_CHANGE, chatUID:chatUID, avatar: value } } );
+		static public function call_chatAvatarChanged(userUIDs:Array, chatUID:String, value:String):void {
+			send('blackHole', { mode:userUIDs, data: { method:WSMethodType.CHAT_AVATAR_CHANGE, chatUID:chatUID, avatar: value } } );
 		}
 		
-		static public function call_blackHole(userUIDs:Array, method:String, data:Object):Boolean {
-			return send("blackHole", { mode:(userUIDs == null) ? "user" : userUIDs, data: { method:method, data:data } } );
+		static public function call_blackHole(userUIDs:Array, method:String, data:Object):void {
+			send("blackHole", { mode:(userUIDs == null) ? "user" : userUIDs, data: { method:method, data:data } } );
 		}
 		
-		static public function call_blackHoleWebRTC(userUIDs:Array, method:String, data:Object):Boolean {
-			return send("blackHole", { mode:(userUIDs == null) ? "user" : userUIDs, data: { method:method, message:data } } );
+		static public function call_blackHoleWebRTC(userUIDs:Array, method:String, data:Object):void {
+			send("blackHole", { mode:(userUIDs == null) ? "user" : userUIDs, data: { method:method, message:data } } );
 		}
 		
-		static public function call_blackHoleToGroup(group:String, action:String, scope:String = null, method:String = null, data:Object = null):Boolean {
-			return send("blackHole", { mode:"group", group:group, action:action, scope:scope, data: { method:method, data:data } } );
+		static public function call_blackHoleToGroup(group:String, action:String, scope:String = null, method:String = null, data:Object = null):void {
+			send("blackHole", { mode:"group", group:group, action:action, scope:scope, data: { method:method, data:data } } );
 		}
 		
-		static public function call_chatSendAll(chatUID:String, data:Object):Boolean {
-			return send("blackHole", { mode:"chat", chatUID:chatUID, data:data } );
+		static public function call_chatSendAll(chatUID:String, data:Object):void {
+			send("blackHole", { mode:"chat", chatUID:chatUID, data:data } );
 		}
 		
-		static public function call_contactsOnline(usersUIDs:Array, flag:Number, chatUID:String = null):Boolean {
-			return send('usersOnline', { uids:usersUIDs, flag:flag, chatUID:chatUID } );
+		static public function call_contactsOnline(usersUIDs:Array, flag:Number, chatUID:String = null):void {
+			send('usersOnline', { uids:usersUIDs, flag:flag, chatUID:chatUID } );
 		}
 		
-		static public function call_pushToUser(usersUIDs:Array, type:String = "call", sound:String = "42.caf", customData:Object = null):Boolean {
-			return send('pushToUser', { uid:usersUIDs, type:type, sound:sound, customData:customData } );
+		static public function call_pushToUser(usersUIDs:Array, type:String = "call", sound:String = "42.caf", customData:Object = null):void {
+			send('pushToUser', { uid:usersUIDs, type:type, sound:sound, customData:customData } );
 		}
 		
 		static public function call_notificationBadgeCount(count:int):void {
@@ -294,6 +294,12 @@ package com.dukascopy.connect.sys.ws{
 		static public function call_sendTextMessages(chatUID:String, messages:Array):void {
 			send('msgsAdd', { chatUID:chatUID, msgs:messages } );
 		}
+
+
+		static public function send_viServerAuthorize(data:Object):void{
+			send("client",data);
+		}
+
 		
 		static public function channel_user_ban(channelUid:String, userUid:String, reason:String, durationTime:Number):void {
 			var data:Object = {};
@@ -315,6 +321,10 @@ package com.dukascopy.connect.sys.ws{
 			send(WSMethodType.CHAT_USER_KICK, data );
 		}
 		
+		static public function send_blackHole(data:Object):void{
+			send("blackhole",data);
+		}
+
 		static public function channel_user_unban(channelUid:String, userUid:String):void {
 			var data:Object = { };
 			data.chatUID = channelUid;
@@ -391,14 +401,15 @@ package com.dukascopy.connect.sys.ws{
 		
 		static public function call_sendTextMessage(chatUID:String, text:String, existingMid:Number = -1, 
 													addLocallyOnNetworkFailed:Boolean = true, senderId:String = null, 
-													doNotSendToWS:Boolean = false, userUID:String = null, messageId:Object = null,callback:Function=null):Boolean {
+													doNotSendToWS:Boolean = false, userUID:String = null, messageId:Object = null,callback:Function=null):void {
 
-			if(Config.PLATFORM_WINDOWS || (Config.PLATFORM_APPLE && Config.APPLE_VERSION>=13)){
+			//if(Config.PLATFORM_WINDOWS || (Config.PLATFORM_APPLE && Config.APPLE_VERSION>=13)){
 				// SEND VIA NEW LOGIC
 				_sendTextMessage(chatUID,text,existingMid,addLocallyOnNetworkFailed,senderId,doNotSendToWS,userUID,messageId,callback);
-				return false;
-			}
+				return;
+			//}
 
+			/*
 			GD.S_DEBUG_WS.invoke("WSC: trying to send msg");
 			wasMessage = true;
 			var needBackMessage:Boolean = false;
@@ -455,7 +466,7 @@ package com.dukascopy.connect.sys.ws{
 				GD.S_DEBUG_WS.invoke("WSC: nothing to add to view");
 			}
 
-			return networkSendResult;
+			return networkSendResult;*/
 		}
 
 
@@ -661,17 +672,16 @@ package com.dukascopy.connect.sys.ws{
 		
 		
 		
-		static private function send(method:String, data:Object = null,callback:Function=null):Boolean {
+		static private function send(method:String, data:Object = null,callback:Function=null):void{
 			
-			if(Config.PLATFORM_WINDOWS || (Config.PLATFORM_APPLE && Config.APPLE_VERSION>=13)){
+			if(Config.PLATFORM_WINDOWS || (Config.PLATFORM_APPLE)){
 				// EXECUTED!
 				GD.S_WS_REQUEST_SEND.invoke(new WSPacketSendRequestVO(
 					method,
 					data,
 					callback
 				));
-
-				return false;
+				return;
 			}
 
 			if (method != "pong")
@@ -680,7 +690,7 @@ package com.dukascopy.connect.sys.ws{
 			var result:Boolean=WS.send(method, data);
 			if(callback && callback.length==1)
 				callback(result);
-			return result;
+			return;
 		}
 		
 		static public function handlePacket(pack:Object):void {

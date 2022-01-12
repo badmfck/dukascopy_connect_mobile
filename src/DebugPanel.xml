@@ -1,20 +1,44 @@
 <body id="body" formSize="416" padding="60 20 40 20" fontSize="15" background-color="#000000" background-alpha=".5">
    
-        <div background-color="#FF0000" id="error" height="200" overflow="scroll">
-            ERROR
+        <div layout="horizontal" font-size="11" background-color="#EEBB11" padding="10" >
+            <div>NET:</div>
+            <space size="5" />
+            <div id="netStat">UNKNOWN</div>
+            <space size="10" />
+            <div>WS:</div>
+            <space size="5" />
+            <div id="wsStat">UNKNOWN</div>
+        </div>
+         
+         <space size="20" />
+
+        <div background-color="#FF0000" color="#FFFFFF" id="error" height="100" overflow="scroll">
+            -NO ERROR-
         </div>
 
-        <div layout="horizontal" width="130">
-            <div width="200">CURRENT WS STATE:</div>
-            <div>{WS STATE}</div>
-        </div>
+        <space size="20" />
 
-        <div layout="horizontal" >
-            <div width="200">CURRENT NET STATE:</div>
-            <div>{NET STATE}</div>
+        <div layout="horizontal" font-size='11' color="#00FF00" distribute-childs="even">
+            <div id="btnClose" border-radius="6" padding="10" background-color="#4caf50" color="#FFFFFF" width="90">CLOSE</div>
+            <space width="10"/>
+            <div id="btnReqNetStat" border-radius="6" padding="10" background-color="#4caf50" color="#FFFFFF" width="90">NET STAT</div>
         </div>
-        <div height="100%"></div>
-        <div id="btnClose" padding="12" background-color="#00FF00" color="#FFFFFF" width="120">CLOSE</div>
+        <space width="10"/>
+        <div layout="horizontal" font-size='11' color="#00FF00" distribute-childs="even">
+            <div id="btnScroll" border-radius="6" padding="10" background-color="#4caf50" color="#FFFFFF" width="90">NO SCROLL</div>
+            <space width="10"/>
+            <div id="btnClear" border-radius="6" padding="10" background-color="#4caf50" color="#FFFFFF" width="90">CLEAR</div>
+            <space width="10"/>
+            <div id="btnIgnore" border-radius="6" padding="10" background-color="#368039" color="#FFFFFF" width="90">OPACITY</div>
+        </div>
    
+        <space size="20" />
+
+        <div height="100%" background-color="#000000" background-alpha=".5" id="textarea"></div>
+
+        
+        <space size="20" />
+        
+       
    
 </body>

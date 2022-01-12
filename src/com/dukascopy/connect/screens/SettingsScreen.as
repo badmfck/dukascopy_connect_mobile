@@ -108,6 +108,7 @@ package com.dukascopy.connect.screens {
 	import flash.utils.ByteArray;
 	import flash.utils.getTimer;
 	import flash.utils.setTimeout;
+	import com.dukascopy.connect.GD;
 	
 	/**
 	 * ...
@@ -370,7 +371,7 @@ package com.dukascopy.connect.screens {
 		
 		private function debuggerTap():void
 		{
-			trace("DEBUGGER BUTTON");
+			GD.S_REQUEST_DEBUG_SCREEN.invoke("From settings screen");
 		}
 		
 		private function devicesTap():void
@@ -600,7 +601,7 @@ package com.dukascopy.connect.screens {
 			if (LangManager.initialized)
 				buttons.push(btnLanguageObject);
 			
-			buttons.push(line_2);
+			//buttons.push(line_2);
 			
 			//if (Config.socialAvailable == true && Auth.bank_phase == "ACC_APPROVED") {
 				//buttons.push(btnSocialObject);
@@ -655,7 +656,9 @@ package com.dukascopy.connect.screens {
 			}*/
 		//	buttons.push(btnSubscriptionsObject);
 			//buttons.push(btnDevices);
+			
 			buttons.push(line_3);
+			
 			buttons.push(btnLogoutObject);
 			/*if (Config.isAdmin() == true) {
 				buttons.push(btnTestObject);

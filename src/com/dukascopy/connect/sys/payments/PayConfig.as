@@ -4,7 +4,7 @@ package com.dukascopy.connect.sys.payments {
 		
 		static public const SHOWING_TYPE_COMPANY:String = "company";
 		static public const SHOWING_TYPE_NOPINDOS:String = "nopindos";
-		static public const VERSION:String = "005";
+		static public const VERSION:String = "006";
 		
 		static public var PAY_SESSION_ID:String = "";
 		static public var TIMESTAMP_DIFF:Number = 0;

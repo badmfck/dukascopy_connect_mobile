@@ -55,7 +55,7 @@ package com.dukascopy.connect
 		static public const S_REQUEST_SHARE_TEXT:Signal = new Signal();
 		static public const S_DEBUG_WS:Signal = new Signal();
 		static public const S_LOG_WS:Signal = new Signal();
-		static public const S_NET_DEBUG:Signal = new Signal();
+		
 		
 		static public const S_START_LOAD:Signal = new Signal();
 		static public const S_STOP_LOAD:Signal = new Signal();
@@ -139,6 +139,7 @@ package com.dukascopy.connect
 
 		// ETC
 		static public const S_LOG:Signal=new Signal("S_LOG");
+		static public const S_DEBUG_LOG:Signal=new Signal("S_DEBUG_LOG");
 
 		// WS
 		static public const S_WS_CLOSED:Signal=new Signal("S_WS_CLOSED");
@@ -149,6 +150,8 @@ package com.dukascopy.connect
 		static public const S_WS_AUTORIZED:Signal=new Signal();
 		static public const S_WS_REQUEST_STATUS:Signal=new Signal();
 		static public const S_WS_STATUS:Signal=new Signal(); //true/false
+		static public const S_WS_ALLOW_GUEST_CONNECTION:Signal=new Signal(); //true/false
+		static public const S_WS_DENY_GUEST_CONNECTION:Signal=new Signal(); //true/false
 
 		// HTTP
 		static public const S_HTTP_REQUEST_COMPLETED:Signal=new Signal();
@@ -158,7 +161,7 @@ package com.dukascopy.connect
 		static public const S_REQUEST_NET_STATUS:Signal=new Signal(); //functon(online:Boolean)
 
 		// SYS
-		static public const S_REQUEST_DEBUG_SCREEN:Signal=new Signal();
+		static public const S_REQUEST_DEBUG_SCREEN:Signal=new Signal(); //msg nullable
 		static public const S_SEND_ERROR:Signal=new Signal(); //{message,reason}
 	}
 }

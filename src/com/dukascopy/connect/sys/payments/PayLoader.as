@@ -9,6 +9,7 @@ package com.dukascopy.connect.sys.payments {
 	import com.dukascopy.connect.vo.chat.FileMessageVO;
 	import com.dukascopy.langs.Lang;
 	import com.dukascopy.langs.LangManager;
+	import com.greensock.TweenMax;
 	import com.hurlant.crypto.hash.HMAC;
 	import com.hurlant.crypto.hash.SHA256;
 	import com.hurlant.util.Base64;
@@ -92,7 +93,9 @@ package com.dukascopy.connect.sys.payments {
 				echo("PayLoader (" + id + ")", "load", "\n	url: " + urlRequest.url + "\n	method: " + method + "\n	data:\n" + UI.tracedObj(urlRequest.data));
 				urlLoader.load(urlRequest);
 			} else
-				callback(respond.setData(true, Lang.noInternetConnection, null, -2));
+				TweenMax.delayedCall(1, function():void {
+					callback(respond.setData(true, Lang.noInternetConnection, null, -2));
+				}, null, true);
 		}
 		
 		public function loadAsFile(url:String, callBack:Function = null, data:Object = null, method:String = URLRequestMethod.POST, openMethod:Boolean = false):void {

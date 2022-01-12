@@ -25,7 +25,7 @@ package com.dukascopy.langs {
 		static public var acsessToPhotosDenied:String = "Dukascopy Connect needs access to your photo library to save images \n\n Please go to Settings > Privacy > Photos and set Dukascopy Connect to ON";
 		static public var textActivate:String = "Activate";
 		static public var addInvoice:String = "Invoice";
-		static public var addPuzzle:String = "Puzzle";
+		static public var addPuzzle:String = "P2P";
 		static public var addPinCode:String = "Add PIN code";
 		static public var addToContacts:String = "Add to Contacts";
 		static public var addUserToChat:String = "Add users to chat";
@@ -2224,6 +2224,7 @@ package com.dukascopy.langs {
 		static public var verificationMethods:String = "Verification methods";
 
 		static public var iosNotificationUnreadPrivate:String="You have %i unread messages from %@";
+		static public var iosNotificationUnreadPrivateSingle:String="%@ sent you a message";
 		static public var iosNotificationUnreadGroup:String="You have %i unread messages in group chats";
 		
 		

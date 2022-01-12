@@ -32,6 +32,7 @@ import flash.utils.ByteArray;
 import flash.utils.getTimer;
 import com.dukascopy.connect.GD;
 import com.telefision.sys.signals.SuperSignal;
+import com.telefision.sys.signals.Signal;
 
 
 
@@ -57,8 +58,8 @@ public class Main extends Sprite {
 				echo("PARSE"," >>> ",str);
 			})
 
-			GD.S_REQUEST_DEBUG_SCREEN.add(function(str:String):void{
-				showDebugScreen(str)
+			GD.S_REQUEST_DEBUG_SCREEN.add(function(str:String=null):void{
+				showDebugScreen("CALLED FROM SETTINGS")
 			})
 
 			GD.S_SEND_ERROR.add(function(data:Object):void{
@@ -85,6 +86,9 @@ public class Main extends Sprite {
 
 			TweenMax.delayedCall(2, start, null, true);
 
+			Signal.onError=function(error:String):void{
+				sendError(error,"Catched in signal");
+			}
 			SuperSignal.onLog=function(str:String):void{
 				echo("PARSE"," SuperSignal ",str);
 			}
@@ -92,7 +96,7 @@ public class Main extends Sprite {
 		
 		private function start():void{
 			new MobileGui(this, stage); 
-		//	showDebugScreen(null);
+			//showDebugScreen(null);
 		}
 		
 		private function onGlobalError(e:UncaughtErrorEvent = null):void {
@@ -182,7 +186,7 @@ public class Main extends Sprite {
 			message += "last message:\n" + EchoParser.lastMessage + "\n";
 			message += "stack:\n" + BloomDebugger.getStack() + "\n";
 			
-			GD.S_LOG.invoke(message);
+			GD.S_DEBUG_LOG.invoke(message);
 
 			if(Config.isTF())
 				showDebugScreen(message);

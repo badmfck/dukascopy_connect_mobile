@@ -271,46 +271,44 @@ package com.dukascopy.connect {
 		}
 		
 		private function initComponents():void {
-			GD.S_LOG.invoke("MobileGUI.initComponents -> 1 start");	
+			
 			new IOSLocalization();
-			GD.S_LOG.invoke("MobileGUI.initComponents -> 11");	
+		
 			Loop.init(stage);
-			GD.S_LOG.invoke("MobileGUI.initComponents -> 111");	
+		
 			RenderUtils.stageRef = stage;
-			GD.S_LOG.invoke("MobileGUI.initComponents -> 1113");	
+				
 			ToastMessage.setStage(stage);
-			GD.S_LOG.invoke("MobileGUI.initComponents -> 1114");	
+		
 			ImagePreviewCrop.setStage(stage);
 			NewMessageNotifier.init();
 			ChatUsersManager.init();
 			NativeExtensionController.init();
-			GD.S_LOG.invoke("MobileGUI.initComponents -> 1115");	
+	
 			PushNotificationsNative.init();
-			GD.S_LOG.invoke("MobileGUI.initComponents -> 1116");	
-			NetworkManager.init();
-			GD.S_LOG.invoke("MobileGUI.initComponents -> 1117");	
+		
 			MessagesController.init();
 			TweenPlugin.activate([AutoAlphaPlugin]);
 			Swiper.init(stage);
-			GD.S_LOG.invoke("MobileGUI.initComponents -> a");
+		
 			WS.init();
-			GD.S_LOG.invoke("MobileGUI.initComponents -> b");
+
 			/*if (Config.PLATFORM_WINDOWS == true)
 				WSNew.init();*/
 			CallManager.init();
-			GD.S_LOG.invoke("MobileGUI.initComponents -> c");
+
 			PhonebookManager.init();
-			GD.S_LOG.invoke("MobileGUI.initComponents -> d");
+
 			ImageManager.init();
-			GD.S_LOG.invoke("MobileGUI.initComponents -> e");
+
 			SoundController.init();
-			GD.S_LOG.invoke("MobileGUI.initComponents -> f");
+
 			InnerNotificationManager.init(stage);
-			GD.S_LOG.invoke("MobileGUI.initComponents -> g");
+
 			ChatManager.init();
-			GD.S_LOG.invoke("MobileGUI.initComponents -> h");
+
 			CallsHistoryManager.init();
-			GD.S_LOG.invoke("MobileGUI.initComponents -> i");
+
 			ChannelsManager.init();
 			Gifts.init();
 			PayAPIManager.init();
@@ -323,18 +321,18 @@ package com.dukascopy.connect {
 			Calendar.init();
 			SoftKeyboard.startDetectHeight();
 			DraftMessage.init();
-			GD.S_LOG.invoke("MobileGUI.initComponents -> j");
+			
 			EscrowScreenNavigation.init();
 			
 			new CryptoRates();
 			new EscrowDealManager();
 			new EscrowAdsManager();
 			new EscrowOfferManager();
-			GD.S_LOG.invoke("MobileGUI.initComponents -> k");
+			
 			BankCacheManager.init();
 			new CryptoWalletHolder();
 			new ToastMessageGD(stage);
-			
+			NetworkManager.init();
 
 
 			GD.S_URL_CONFIG_READY.invoke(new URLConfigVO({
@@ -428,10 +426,8 @@ package com.dukascopy.connect {
 			GD.S_BACK.add(onBack);
 		}
 		
-		private function showLoader():void 
-		{
-			if (preloader == null && stage != null)
-			{
+		private function showLoader():void{
+			if (preloader == null && stage != null){
 				preloader = new CirclePreloader(Config.FINGER_SIZE * .25, Config.FINGER_SIZE * .05);
 				preloader.x = int(stage.stageWidth * .5);
 				preloader.y = int(stage.stageHeight * .5);

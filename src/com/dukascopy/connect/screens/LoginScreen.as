@@ -474,16 +474,17 @@ package com.dukascopy.connect.screens {
 			}
 		}
 		
-		private function requestCode():void 
-		{
+		private function requestCode():void {
 			if (currentPhone.length < 6)
 				return;
 				
 			var countryCode:String = selectCountryButton.getValue().substr(0);
 			var phoneString:String = currentPhone;
-			if (phoneString != null && phoneString.length > 0 && phoneString.indexOf("p") == 0)
-			{
+			if (phoneString != null && phoneString.length > 0 && phoneString.indexOf("p") == 0) {
 				phoneString = phoneString.substring(1);
+			}
+			if (countryCode != null && countryCode.length > 0 && countryCode.indexOf("p") == 0) {
+				countryCode = countryCode.substring(1);
 			}
 			if (phoneString.substr(0, 2) == "00") {
 				var country:Array = CountriesData.getCountryByPhoneNumber(phoneString);
@@ -498,6 +499,8 @@ package com.dukascopy.connect.screens {
 			}
 			if (countryCode != "33" /*France*/)
 				phoneString = UI.trimFront(phoneString, "0");
+			if (countryCode == "54" /*Argentina*/ && phoneString.indexOf('9') != 0)
+				phoneString = '9' + phoneString;
 			if (phoneString.length < 6)
 				return;
 			Auth.setMyPhone(phoneString);
@@ -769,14 +772,13 @@ package com.dukascopy.connect.screens {
 			
 			showStateCode();
 			
-			if ((Config.isTest() || Config.isPre()) && textCode != null)
+			/*if (Config.isTest() == true && textCode != null)
 			{
 				setCurrentCode(textCode);
-			}
+			}*/
 		}
 		
-		private function showStateCode():void 
-		{
+		private function showStateCode():void {
 			terms.visible = false;
 			currentCode = "";
 			var distance:int = Config.FINGER_SIZE;
@@ -793,30 +795,25 @@ package com.dukascopy.connect.screens {
 			TweenMax.delayedCall(1.5, unlock);
 		}
 		
-		private function animateHide(item:DisplayObject):void 
-		{
+		private function animateHide(item:DisplayObject):void {
 			TweenMax.to(item, hideTime, {alpha:0, y:item.y - Config.FINGER_SIZE});
 		}
 		
-		override public function onBack(e:Event = null):void
-		{
-			if (state == STATE_PHONE)
-			{
+		override public function onBack(e:Event = null):void {
+			if (state == STATE_PHONE) {
 				DialogManager.alert(Lang.textWarning, Lang.areYouSureQuitApplication, MobileGui.onQuitDialogCallback, Lang.textQuit, Lang.textCancel);
-			}
-			else if(state == STATE_CODE)
-			{
+			} else if(state == STATE_CODE) {
 				clearActions();
 				currentPhone = "";
 				finalPhone = "";
+				
 				toPhoneState();
+				state = "";
 			}
 		}
 		
-		private function toPhoneState():void 
-		{
-			if(loader != null)
-			{
+		private function toPhoneState():void {
+			if(loader != null) {
 				view.removeChild(loader);
 				loader = null;
 			}
@@ -835,8 +832,7 @@ package com.dukascopy.connect.screens {
 			TweenMax.delayedCall(hideTime, drawStateStart);
 		}
 		
-		private function drawStateStart():void 
-		{
+		private function drawStateStart():void {
 			state = STATE_PHONE;
 			
 			phone.clear();
@@ -958,7 +954,7 @@ package com.dukascopy.connect.screens {
 
 				hide();
 
-				if (Config.isTest() || Config.isPre())
+				if (Config.isTest())
 				{
 					Auth.S_AUTH_CODE.add(insertCode);
 				}
@@ -1317,10 +1313,10 @@ package com.dukascopy.connect.screens {
 			nextButton.activate();
 			clearPhoneButton.activate();
 			
-			if ((Config.isTest() || Config.isPre()) && currentCode != null)
+			/*if (Config.isTest() && currentCode != null)
 			{
 				nextClick();
-			}
+			}*/
 		}
 		
 		private function activateStateStart():void 

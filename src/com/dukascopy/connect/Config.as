@@ -157,7 +157,7 @@ package com.dukascopy.connect {
 
         static public const APPLE_LOG:Boolean=true;
         static public const ANDROID_LOG:Boolean=true;
-        static public const VERSION:String = "3.5.96o"+(Capabilities.isDebugger?" dbg":"")+((SERVER_NAME != "")?" - "+SERVER_NAME:"");
+        static public const VERSION:String = "3.6.05o"+(Capabilities.isDebugger?" dbg":"")+((SERVER_NAME != "")?" - "+SERVER_NAME:"");
         static public const VERSION_SQL:int = 1;
 		
         static public const MAX_UPLOAD_THUMB_SIZE:int = 230;

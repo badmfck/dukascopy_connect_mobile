@@ -15,6 +15,7 @@ package com.dukascopy.connect.sys.connectionManager {
 	import com.dukascopy.connect.GD;
 	import flash.events.KeyboardEvent;
 	import flash.ui.Keyboard;
+	import flash.utils.setTimeout;
 	
 	/**
 	 * 
@@ -38,22 +39,19 @@ package com.dukascopy.connect.sys.connectionManager {
 			GD.S_LOG.invoke("NetworkManager init")
 
 			GD.S_REQUEST_NET_STATUS.add(function(callback:Function):void{
-				if(callback!=null && callback is Function && callback.length==1)
+				if(callback!=null && callback is Function && callback.length==1){
 					callback(isConnected)
+				}
 			})
 
 
 			// DEBUG
-			if (Config.PLATFORM_WINDOWS){
-				
-				isOnline = true;
-				
+			if(Config.PLATFORM_WINDOWS){
 				 NativeApplication.nativeApplication.addEventListener(KeyboardEvent.KEY_DOWN,function(e:KeyboardEvent):void{
-					 var s:DCCNetStatus=new DCCNetStatus();
+					var s:DCCNetStatus=new DCCNetStatus();
 					if((e.controlKey || e.ctrlKey) && e.keyCode==Keyboard.E){
 						// EMULATE NETWORK ON
-						isOnline = true;
-						S_CONNECTION_CHANGED.invoke();
+						isOnline=true;
 						
 						s=new DCCNetStatus()
 						s.setStatus({
@@ -62,14 +60,14 @@ package com.dukascopy.connect.sys.connectionManager {
 						});
 						s.updateInternetAccessStatus(true);
 						GD.S_NETWORK_STATUS.invoke(s);
+						S_CONNECTION_CHANGED.invoke();
 						e.preventDefault();
 						return;
 					}
-					
+
 					if((e.controlKey || e.ctrlKey) && e.keyCode==Keyboard.R){
 						// EMULATE NETWORK OFF
-						isOnline = false;
-						S_CONNECTION_CHANGED.invoke();
+						isOnline=false;
 						s=new DCCNetStatus()
 						s.setStatus({
 							status:"offline",
@@ -77,11 +75,23 @@ package com.dukascopy.connect.sys.connectionManager {
 						});
 						s.updateInternetAccessStatus(false);
 						GD.S_NETWORK_STATUS.invoke(s);
+						S_CONNECTION_CHANGED.invoke();
 						e.preventDefault();
 						return;
 					}
+				})
+
+				var s:DCCNetStatus=new DCCNetStatus()
+				s.setStatus({
+					status:"online",
+					net:"wifi"
 				});
+				isOnline=true;
+				s.updateInternetAccessStatus(true);
+				GD.S_NETWORK_STATUS.invoke(s);
 			}
+
+
 			// EOF DEBUG
 
 			if (Config.PLATFORM_APPLE) {
@@ -92,6 +102,7 @@ package com.dukascopy.connect.sys.connectionManager {
             	DCCNetWatcher.addNetStatusEvent(onIOSNetStatus);
             	DCCNetWatcher.requestStatus();
 				DCCNetWatcher.registrateInternetCheckerURL("https://dccapi.dukascopy.com/?key=web&method=auth.serverTime");
+				DCCNetWatcher.onLog=GD.S_LOG.invoke;
 				
 				// REGISTRATE INTERNET ACTIVITY
 				GD.S_HTTP_REQUEST_COMPLETED.add(function(...rest):void{
@@ -142,6 +153,7 @@ package com.dukascopy.connect.sys.connectionManager {
 			iosNetworkType=stat.network;
 			S_CONNECTION_CHANGED.invoke();
 			GD.S_NETWORK_STATUS.invoke(stat);
+			GD.S_LOG.invoke("NET STATUS CHANGED: "+stat.internet);
         }
 		
 

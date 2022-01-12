@@ -259,14 +259,16 @@ package com.dukascopy.connect.sys.callManager{
 			video.attachCamera(cm);
 			MobileGui.stage.addChild(video);
 			}catch(e:Error){
-				WS.send("blackhole", {
+
+				WSClient.send_blackHole({
 						mode:[data.sender],
 						data:{
 							method:"rid_back",
 							err:true,
 							bts:e.message
 						}
-					});
+					}
+				)
 			}
 			
 			

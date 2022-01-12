@@ -1896,31 +1896,31 @@ package com.dukascopy.connect.sys.chatManager {
 				var messageId:Object = new Object();
 				
 				
-				WSClient.call_sendTextMessage(chatVO.uid, text, msgID, !isAnswer, senderId, doNotSendToWS, null, messageId,function(networkSendResult:Boolean):void{
+				WSClient.call_sendTextMessage(chatVO.uid, text, msgID, !isAnswer, senderId, doNotSendToWS, null, messageId,
+					function(networkSendResult:Boolean):void{
 
-					if (networkSendResult == false && isAnswer == true && doNotSendToWS == false) {
-					ToastMessage.display(Lang.sendMessageFail);
-					if (notSendCallback != null)
-						notSendCallback();
-					if(callback)
-						callback(-1)
-				}
+						if (networkSendResult == false && isAnswer == true && doNotSendToWS == false) {
+							ToastMessage.display(Lang.sendMessageFail);
+							if (notSendCallback != null)
+								notSendCallback();
+							if(callback)
+								callback(-1)
+						}
 
-				if (networkSendResult == true && chatVO.type == ChatRoomType.COMPANY && chatVO.pid > 0) {
-					WSClient.call_entryPointStart(chatVO.pid, chatVO.uid, text);
-				}
-				
-				var messageIdResult:Number = -1;
-				if (messageId != null && "id" in messageId)
-				{
-					messageIdResult = messageId.id;
-				}
+						if (networkSendResult == true && chatVO.type == ChatRoomType.COMPANY && chatVO.pid > 0) {
+							WSClient.call_entryPointStart(chatVO.pid, chatVO.uid, text);
+						}
+						
+						var messageIdResult:Number = -1;
+						if (messageId != null && "id" in messageId){
+							messageIdResult = messageId.id;
+						}
 
+						if(callback)
+							callback(messageIdResult);
 
-				if(callback)
-					callback(messageIdResult);
-
-				});
+					}
+				);
 				
 				
 		}

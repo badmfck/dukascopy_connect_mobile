@@ -11,6 +11,7 @@ package com.dukascopy.connect.sys.viManager {
 	import com.worlize.websocket.WebSocketMessage;
 	import flash.events.Event;
 	import flash.events.IOErrorEvent;
+	import com.dukascopy.connect.sys.ws.WSClient;
 	
 	/**
 	 * ...
@@ -61,7 +62,7 @@ package com.dukascopy.connect.sys.viManager {
 		}
 		
 		private function autorize():void {
-			ws.sendUTF(
+			/*ws.sendUTF(
 				JSON.stringify( {
 					method: "client",
 					data: {
@@ -69,7 +70,13 @@ package com.dukascopy.connect.sys.viManager {
 						chatUID: chatUID
 					}
 				} )
-			);
+			);*/
+			WSClient.send_viServerAuthorize("client",
+				{
+					key: Auth.key,
+					chatUID: chatUID
+				}
+			)
 		}
 		
 		private function onWSClosed(e:WebSocketEvent):void {
@@ -186,14 +193,14 @@ package com.dukascopy.connect.sys.viManager {
 			}
 		}
 		
-		public function sendMessage(message:String):void {
+		/*public function sendMessage(message:String):void {
 			if (isOnline() == true) {
 				echo("VIServerConnection", "sendMessage", message);
 				ws.sendUTF(message);
 			} else if (onDisconnect != null) {
 				onDisconnect();
 			}
-		}
+		}*/
 		
 		private function isOnline():Boolean { return ws != null && ws.connected == true; }
 	}
