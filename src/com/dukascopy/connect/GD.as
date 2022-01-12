@@ -6,6 +6,8 @@ package com.dukascopy.connect
 	import com.dukascopy.connect.managers.escrow.signals.S_EscrowDealCreated;
 	import com.dukascopy.connect.managers.escrow.signals.S_EscrowInstrumentRatesHistory;
 	import com.dukascopy.connect.managers.escrow.signals.S_EscrowInstrumentRatesHistoryRequest;
+	import com.telefision.sys.signals.S_ChatSubscribeRequest;
+	import com.telefision.sys.signals.S_ChatUnsubscribeRequest;
 	import com.telefision.sys.signals.Signal;
 	import com.dukascopy.connect.managers.escrow.S_EscrowDealCreateRequest;
 	import com.dukascopy.connect.managers.webview.S_WebViewRequest;
@@ -64,6 +66,11 @@ package com.dukascopy.connect
 		
 		static public const CHAT_START_STREAM:Signal = new Signal();
 		static public const CHAT_LOCK_CHANGED:Signal = new Signal();
+		
+		static public const CHAT_SUBSCRIBE_REQUEST:S_ChatSubscribeRequest = new S_ChatSubscribeRequest();
+		static public const CHAT_SUBSCRIBE_RESULT:Signal = new Signal("CHAT_SUBSCRIBE_RESULT");
+		static public const CHAT_UNSUBSCRIBE_REQUEST:S_ChatUnsubscribeRequest = new S_ChatUnsubscribeRequest();
+		static public const CHAT_UNSUBSCRIBE_RESULT:Signal = new Signal("CHAT_UNSUBSCRIBE_RESULT");
 		
 		// ESCROW
 		static public const S_ESCROW_MANAGER_AVAILABLE:S_EscrowManagerAvailable = new S_EscrowManagerAvailable(); // EscrowDealMap

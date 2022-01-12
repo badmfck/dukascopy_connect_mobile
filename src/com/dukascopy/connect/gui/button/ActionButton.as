@@ -4,6 +4,7 @@ package com.dukascopy.connect.gui.button {
 	import com.dukascopy.connect.data.screenAction.IScreenAction;
 	import com.dukascopy.connect.gui.lightbox.UI;
 	import com.dukascopy.connect.gui.menuVideo.BitmapButton;
+	import com.dukascopy.connect.sys.applicationError.ApplicationErrors;
 	import com.dukascopy.connect.sys.style.Style;
 	import flash.display.Sprite;
 	import flash.display.StageQuality;
@@ -28,27 +29,33 @@ package com.dukascopy.connect.gui.button {
 			disposeBitmapOnDestroy = true;
 			usePreventOnDown = false;
 			show();
-			
 			tapCallback = callAction;
 		}
 		
 		public function build(itemWidth:int, itemHeight:int, iconScale:Number = 1):void {
 			if (action) {
 				var iconClass:Class = action.getIconClass();
-				var icon:Sprite = new iconClass();
-				var ct:ColorTransform = new ColorTransform();
-				ct.color = Style.color(Style.TOP_BAR_ICON_COLOR);
-				icon.transform.colorTransform = ct;
-				UI.scaleToFit(icon, iconScale * Config.FINGER_SIZE * .6, Config.FINGER_SIZE);
-				setBitmapData(UI.getSnapshot(icon, StageQuality.HIGH, "ActionButton.icon"), true);
-				
-				setHitZone(icon.width, icon.height);
-				var horizontalOverflow:int = Math.max(0, (Config.FINGER_SIZE * .85 - icon.width) * .5);
-				var verticalOverflow:int = Math.max(0, (Config.FINGER_SIZE - icon.height) * .5);
-				setOverflow(verticalOverflow, horizontalOverflow, horizontalOverflow, verticalOverflow);
-				
-				UI.destroy(icon);
-				icon = null;
+				if (iconClass != null)
+				{
+					var icon:Sprite = new iconClass();
+					var ct:ColorTransform = new ColorTransform();
+					ct.color = Style.color(Style.TOP_BAR_ICON_COLOR);
+					icon.transform.colorTransform = ct;
+					UI.scaleToFit(icon, Config.FINGER_SIZE, int(itemHeight * iconScale));
+					setBitmapData(UI.getSnapshot(icon, StageQuality.HIGH, "ActionButton.icon"), true);
+					
+					setHitZone(icon.width, icon.height);
+					var horizontalOverflow:int = Math.max(0, (Config.FINGER_SIZE * .85 - icon.width) * .5);
+					var verticalOverflow:int = Math.max(0, (Config.FINGER_SIZE - icon.height) * .5);
+					setOverflow(verticalOverflow, horizontalOverflow, horizontalOverflow, verticalOverflow);
+					
+					UI.destroy(icon);
+					icon = null;
+				}
+				else
+				{
+					ApplicationErrors.add();
+				}
 			}
 		}
 		

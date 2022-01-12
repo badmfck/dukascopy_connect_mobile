@@ -13,12 +13,14 @@ package com.dukascopy.connect.sys.style.presets
 	import assets.JailIcon;
 	import assets.JailIconRound;
 	import assets.LoginLogo;
+	import assets.OwnerIcon;
 	import assets.PaidChatIcon;
 	import assets.PaymentsImageWhite;
 	import assets.PaymentsLogo;
 	import assets.PhonebookIcon;
 	import assets.ProtectionIcon;
 	import assets.SendGiftIcon;
+	import assets.StartStreamIcon;
 	import assets.TouchIdIcon;
 	import assets.TransferIllustration;
 	import assets.VisaClip;
@@ -197,6 +199,7 @@ package com.dukascopy.connect.sys.style.presets
 			this[Style.ICON_REFRESH] = white.Refresh;
 			this[Style.ICON_GROUP_CHAT] = white.GroupChat;
 			this[Style.ICON_PHONEBOOK] = PhonebookIcon;
+			this[Style.ICON_STREAM] = StartStreamIcon;
 			
             AppTheme.colorPallete=AppTheme.lightColorPallete;
 			Config.TOP_BAR_HEIGHT *= 1.1;
@@ -325,6 +328,8 @@ package com.dukascopy.connect.sys.style.presets
 			this[Style.COLOR_ACCENT_PANEL] = Color.GREY_DARK;
 			
 			this[Style.SCREEN_PADDING_LEFT] = int(Config.FINGER_SIZE * .2);
+			this[Style.ICON_UNSUBSCRIBE] = OwnerIcon;
+			this[Style.ICON_SUBSCRIBE] = ownerIconOutline;
 		}
 	}
 }
