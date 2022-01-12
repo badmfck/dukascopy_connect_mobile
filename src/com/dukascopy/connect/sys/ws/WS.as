@@ -24,6 +24,7 @@ package com.dukascopy.connect.sys.ws {
 
 	import flash.system.Capabilities;
 	import flash.utils.getTimer;
+	import com.dukascopy.connect.vo.WSPacketSendRequestVO;
 
 
 	/**
@@ -99,6 +100,11 @@ package com.dukascopy.connect.sys.ws {
 
 
 			// ANDROID, OLD IOS & EMULATORS
+			GD.S_WS_REQUEST_SEND.add(function(data:WSPacketSendRequestVO):void{
+				var result:Boolean=send(data.method,data.data);
+				if(data.callback && data.callback is Function)
+					data.callback(result);
+			})
 
 			Auth.S_AUTHORIZED.add(onAuthSuccess);
 			Auth.S_NEED_AUTHORIZATION.add(onNeedAuthorization);
@@ -217,6 +223,7 @@ package com.dukascopy.connect.sys.ws {
 				GD.S_DEBUG_WS.invoke("C: no network");
 				return;
 			}
+			
 			
 			clearTimeout();
 			if (ws != null)
