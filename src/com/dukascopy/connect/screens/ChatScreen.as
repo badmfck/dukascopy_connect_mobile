@@ -4701,16 +4701,16 @@ package com.dukascopy.connect.screens {
 		}
 		
 		private function hideNoConnectionIndicator():void {
-			if (noConnectionIndicator == null || noConnectionIndicator.parent == null)
+			/*if (noConnectionIndicator == null || noConnectionIndicator.parent == null)
 				return;
 			PointerManager.removeTap(noConnectionIndicator, tryReconnect);
 			noConnectionIndicator.parent.removeChild(noConnectionIndicator);
 			if (lockButton != null)
-				lockButton.y = chatTop.height + Config.FINGER_SIZE * .5;
+				lockButton.y = chatTop.height + Config.FINGER_SIZE * .5;*/
 		}
 		
 		private function showNoConnectionIndicator():void {
-			if (noConnectionIndicator == null) {
+			/*if (noConnectionIndicator == null) {
 				noConnectionIndicator = new ConnectionIndicator();
 				noConnectionIndicator.draw(_width, Config.FINGER_SIZE * .5);
 				noConnectionIndicator.y = chatTop.height;
@@ -4725,7 +4725,7 @@ package com.dukascopy.connect.screens {
 			PointerManager.addTap(noConnectionIndicator, tryReconnect);
 			
 			if (lockButton != null)
-				lockButton.y = chatTop.height + Config.FINGER_SIZE * .5 + noConnectionIndicator.height;
+				lockButton.y = chatTop.height + Config.FINGER_SIZE * .5 + noConnectionIndicator.height;*/
 		}
 		
 		private function tryReconnect(e:Event = null):void 

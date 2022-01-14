@@ -6,15 +6,21 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs.elements
 	import com.dukascopy.connect.gui.input.Input;
 	import com.dukascopy.connect.gui.input.ViewContainer;
 	import com.dukascopy.connect.gui.lightbox.UI;
+	import com.dukascopy.connect.gui.menuVideo.BitmapButton;
 	import com.dukascopy.connect.sys.applicationError.ApplicationErrors;
 	import com.dukascopy.connect.sys.pointerManager.PointerManager;
 	import com.dukascopy.connect.sys.style.FontSize;
 	import com.dukascopy.connect.sys.style.Style;
 	import com.dukascopy.connect.sys.style.presets.Color;
+	import com.dukascopy.connect.type.HitZoneType;
 	import com.dukascopy.connect.utils.TextUtils;
+	import com.dukascopy.langs.Lang;
 	import com.greensock.TweenMax;
 	import com.telefision.utils.Loop;
+	import flash.desktop.Clipboard;
+	import flash.desktop.ClipboardFormats;
 	import flash.display.Bitmap;
+	import flash.display.BitmapData;
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.geom.ColorTransform;
@@ -31,6 +37,13 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs.elements
 	{
 		static public const ALIGN_LEFT:String = "alignLeft";
 		public var underlineColor:Number;
+		private var _decimals:int = -1;
+		
+		public function set decimals(value:int):void 
+		{
+			_decimals = value;
+			format = value;
+		}
 		private var _onLongTapFunction:Function;
 		private var _onChangedFunction:Function;
 		private var _onSelectedFunction:Function;
@@ -41,6 +54,8 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs.elements
 		private var titleValue:String;
 		private var typeValue:String;
 		private var underlineString:String;
+		private var showPasteButton:Boolean;
+		private var pasteButtton:BitmapButton;
 
 		public function get align():String
 		{
@@ -152,7 +167,16 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs.elements
 					{
 						decimal = format;
 					}
-					input.value = parseFloat(val.toFixed(decimal)).toString();
+					var resultString:String;
+					if (_decimals == -1)
+					{
+						resultString = parseFloat(val.toFixed(decimal)).toString();
+					}
+					else
+					{
+						resultString = val.toFixed(decimal);
+					}
+					input.value = resultString;
 				}
 				else
 				{
@@ -226,6 +250,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs.elements
 		
 		private function onFocusOut():void 
 		{
+			removePasteButton();
 			selected = false;
 			drawUnderline(getUnderlineColor());
 		}
@@ -454,6 +479,9 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs.elements
 			_onSelectedFunction = null;
 			_onLongTapFunction = null;
 			
+			TweenMax.killTweensOf(pasteButtton);
+			deletePasteButton();
+			
 			TweenMax.killDelayedCallsTo(selectText);
 			
 			if (longClick != null)
@@ -619,6 +647,11 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs.elements
 			}
 		}
 		
+		public function implementPaste():void 
+		{
+			showPasteButton = true;
+		}
+		
 		private function onSelected():void 
 		{
 			selected = true;
@@ -663,17 +696,76 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs.elements
 				_onSelectedFunction();
 			}
 			drawUnderline(Color.GREEN);
+			
+			if (valueString == "" && showPasteButton)
+			{
+				addPasteButton();
+			}
+		}
+		
+		private function addPasteButton():void 
+		{
+			if (pasteButtton == null)
+			{
+				pasteButtton = new BitmapButton();
+				pasteButtton.setStandartButtonParams();
+				pasteButtton.tapCallback = onPasteClick;
+				pasteButtton.disposeBitmapOnDestroy = true;
+				pasteButtton.setDownScale(1);
+			//	pasteButtton.setOverlay(HitZoneType.BUTTON);
+				addChild(pasteButtton);
+				
+				var clip:Sprite = new Sprite();
+				var text:Bitmap = new Bitmap(TextUtils.createTextFieldData(Lang.paste, itemWidth, 10, true,
+																		TextFormatAlign.LEFT, TextFieldAutoSize.LEFT, 
+																		FontSize.SUBHEAD, true, Style.color(Style.COLOR_BACKGROUND),
+																		Style.color(Style.COLOR_BUTTON_ACCENT)));
+				clip.addChild(text);
+				var vGap:int = Config.FINGER_SIZE * .2;
+				var hGap:int = Config.FINGER_SIZE * .25;
+				text.x = hGap;
+				text.y = vGap;
+				clip.graphics.beginFill(Style.color(Style.COLOR_BUTTON_ACCENT));
+				var r:int = Config.FINGER_SIZE * .2;
+				clip.graphics.drawRoundRect(0, 0, text.width + hGap * 2, text.height + vGap * 2, r, r);
+				clip.graphics.endFill();
+				clip.graphics.beginFill(Style.color(Style.COLOR_BUTTON_ACCENT));
+				clip.graphics.moveTo(r * 1, text.height + vGap * 2);
+				clip.graphics.lineTo(r * 2, text.height + vGap * 2);
+				clip.graphics.lineTo(r * 1.5, text.height + vGap * 2 + r / 2);
+				clip.graphics.lineTo(r * 1, text.height + vGap * 2);
+				clip.graphics.endFill();
+				pasteButtton.setBitmapData(UI.getSnapshot(clip), true);
+				UI.destroy(text);
+				UI.destroy(clip);
+				
+				pasteButtton.x = int(input.view.x + Config.FINGER_SIZE * .1);
+				pasteButtton.y = int(input.view.y - pasteButtton.height + input.getTextField().y - Config.FINGER_SIZE * .05);
+				pasteButtton.activate();
+			}
+		}
+		
+		private function onPasteClick():void 
+		{
+			removePasteButton();
+			var clip:String = Clipboard.generalClipboard.getData(ClipboardFormats.TEXT_FORMAT) as String;
+			if (clip != null)
+			{
+				valueString = clip;
+			}
 		}
 		
 		private function onChanged():void 
 		{
+			removePasteButton();
+			
 			if (customMode == Input.MODE_DIGIT_DECIMAL)
             {
                 if (valueString != null && valueString.length > 0 && valueString.charAt(0) == "0" && !isNaN(Number(valueString)))
                 {
                     if (valueString.length > 1 && (valueString.charAt(1) == "." || valueString.charAt(1) == ","))
                     {
-
+						
                     }
                     else
                     {
@@ -681,10 +773,33 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs.elements
                     }
                 }
             }
-
+			
 			if (_onChangedFunction != null)
 			{
 				_onChangedFunction();
+			}
+		}
+		
+		private function removePasteButton():void 
+		{
+			if (pasteButtton != null)
+			{
+				TweenMax.killTweensOf(pasteButtton);
+				TweenMax.to(pasteButtton, 0.2, {delay:0.2, alpha:0, onComplete:deletePasteButton});
+			}
+		}
+		
+		private function deletePasteButton():void
+		{
+			TweenMax.killTweensOf(pasteButtton);
+			if (pasteButtton != null)
+			{
+				if (contains(pasteButtton))
+				{
+					removeChild(pasteButtton);
+				}
+				pasteButtton.dispose();
+				pasteButtton = null;
 			}
 		}
 		
