@@ -2672,6 +2672,8 @@ package com.dukascopy.langs {
 		static public var card_delivery_city_long:String = "Maximum allowed character count for City field is %@. Please edit the corresponding field and try again.";
 		static public var card_delivery_name_long:String = "Maximum allowed character count for Full name field is %@. Please edit the corresponding field and try again.";
 		static public var card_delivery_address_long:String = "Maximum allowed character count for Address field is %@. Please edit the corresponding field and try again.";
+		static public var waiting_for_connection:String = "Ожидание сети...";
+		static public var paste:String = "Вставить";
 		
 		static public function updateKeys(keys:Object):void {
 			for (var n:String in keys) {

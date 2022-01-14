@@ -11,7 +11,7 @@ package com.dukascopy.connect {
 	
     public class Config {
 		
-        /* LIVE * /
+        /* LIVE */
         static public const URL_PHP_CORE_SERVER:String = 'https://dccapi.dukascopy.online/';
         static public const URL_WS_HOST_1:String = "wss://ws.dukascopy.online"; //192.168.240.142; // 144 или 142
         static public const URL_WS_HOST_2:String = "wss://ws.dukascopy.ch"; //192.168.240.142; // 144 или 142
@@ -78,7 +78,7 @@ package com.dukascopy.connect {
 		static public const TF_UIDS:String = "WdW6DJI1WbWo," +	// Igor Bloom
             "I6DzDaWqWKWE";		// Sergey Dobarin
 
-        /* TEST */
+        /* TEST * /
 		static public const URL_PHP_CORE_SERVER:String = 'https://loki.telefision.com/master/';
 		static public const URL_WS_HOST_1:String = "wss://loki.telefision.com/wss/";
 		static public const URL_WS_HOST_2:String = "wss://loki.telefision.com/wss/";

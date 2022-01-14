@@ -313,7 +313,7 @@ package com.dukascopy.connect.gui.topBar {
 			ct.color = Style.color(Style.TOP_BAR_TEXT_COLOR);
 			icon.transform.colorTransform = ct;
 			UI.scaleToFit(icon, Config.FINGER_SIZE_DOUBLE, Config.TOP_BAR_HEIGHT * .56);
-			titleBitmap.bitmapData = UI.getSnapshot(icon, StageQuality.HIGH, "EmergencyScreen.title");
+			titleBitmap.bitmapData = UI.getSnapshot(icon, StageQuality.HIGH, "TopBar.title");
 			titleBitmap.y = int((Config.TOP_BAR_HEIGHT - titleBitmap.height) * .5);
 		}
 		

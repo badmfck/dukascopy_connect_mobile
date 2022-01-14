@@ -454,7 +454,7 @@ package com.dukascopy.connect.screens {
 		}
 		
 		override public function deactivateScreen():void {
-			echo("QuestionCreateUpdateScreen", "deactivateScreen", "");
+			echo("EscrowAdsCreateScreen", "deactivateScreen", "");
 			if (!_isActivated)
 				return;
 			_isActivated = false;
@@ -466,7 +466,7 @@ package com.dukascopy.connect.screens {
 		}
 		
 		private function checkScrollToBottom():Boolean {
-			echo("QuestionCreateUpdateScreen", "checkScrollToBottom", "");
+			echo("EscrowAdsCreateScreen", "checkScrollToBottom", "");
 			var needScrollToBottom:Boolean  = false;	
 			var allowedBottomOffset:int = 100;
 			if (list.height < list.innerHeight) {
@@ -634,7 +634,7 @@ package com.dukascopy.connect.screens {
 		}
 		
 		override public function clearView():void {
-			echo("QuestionCreateUpdateScreen", "clearView", "");
+			echo("EscrowAdsCreateScreen", "clearView", "");
 			if (answersCountButton) {
 				answersCountButton.dispose();
 				answersCountButton = null;
@@ -661,7 +661,7 @@ package com.dukascopy.connect.screens {
 		}
 		
 		override public function dispose():void {
-			echo("QuestionCreateUpdateScreen", "dispose", "");
+			echo("EscrowAdsCreateScreen", "dispose", "");
 			
 			removeKeyboardAction();
 			

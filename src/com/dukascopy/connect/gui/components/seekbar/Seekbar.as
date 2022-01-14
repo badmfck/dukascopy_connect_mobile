@@ -19,6 +19,7 @@ package com.dukascopy.connect.gui.components.seekbar
 	public class Seekbar extends Sprite
 	{
 		public var flipColors:Boolean;
+		public var hideColors:Boolean;
 		private var back:Sprite;
 		private var backLine:Sprite;
 		private var selectLine:Sprite;
@@ -160,20 +161,23 @@ package com.dukascopy.connect.gui.components.seekbar
 			var distance:int = zeroPosition - button.x;
 			selectLine.x = zeroPosition;
 			
-			var color:Number;
-			if (distance < 0)
+			if (!hideColors)
 			{
-				color = flipColors?Color.GREEN:Color.RED;
+				var color:Number;
+				if (distance < 0)
+				{
+					color = flipColors?Color.GREEN:Color.RED;
+				}
+				else
+				{
+					color = flipColors?Color.RED:Color.GREEN;
+				}
+				
+				selectLine.graphics.clear();
+				selectLine.graphics.beginFill(color);
+				selectLine.graphics.drawRect(0, 0, -distance, lineHeight);
+				selectLine.graphics.endFill();
 			}
-			else
-			{
-				color = flipColors?Color.RED:Color.GREEN;
-			}
-			
-			selectLine.graphics.clear();
-			selectLine.graphics.beginFill(color);
-			selectLine.graphics.drawRect(0, 0, -distance, lineHeight);
-			selectLine.graphics.endFill();
 			
 			dispatchSelection();
 		}
@@ -182,8 +186,8 @@ package com.dukascopy.connect.gui.components.seekbar
 		{
 			if (onChange != null && onChange.length == 1)
 			{
-				var value:Number = (zeroPosition - button.x) * (maxValue - minValue) / (itemWidth - buttonRadius * 2);
-				onChange(-value);
+				var value:Number = minValue + (button.x - buttonRadius) * (maxValue - minValue) / (itemWidth - buttonRadius * 2);
+				onChange(value);
 			}
 		}
 		
@@ -229,6 +233,11 @@ package com.dukascopy.connect.gui.components.seekbar
 		public function setValue(value:Number):void 
 		{
 			updatePosition(value);
+		}
+		
+		public function getHeight():int 
+		{
+			return itemHeight;
 		}
 	}
 }

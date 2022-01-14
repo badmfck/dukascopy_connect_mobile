@@ -18,6 +18,7 @@ package com.dukascopy.connect.screens.innerScreens {
 	import com.dukascopy.connect.gui.tabs.FilterTabs;
 	import com.dukascopy.connect.gui.tools.HorizontalPreloader;
 	import com.dukascopy.connect.screens.ChatScreenBankInfo;
+	import com.dukascopy.connect.screens.EscrowAdsCreateScreen;
 	import com.dukascopy.connect.screens.QuestionCreateUpdateScreen;
 	import com.dukascopy.connect.screens.RootScreen;
 	import com.dukascopy.connect.screens.SearchChannelCategoryScreen;
@@ -60,6 +61,7 @@ package com.dukascopy.connect.screens.innerScreens {
 	import flash.desktop.NativeApplication;
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
+	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
@@ -105,7 +107,7 @@ package com.dukascopy.connect.screens.innerScreens {
 		private var createChatButton:HidableButton;
 		private var phoneIcon:NumericKeyboardIcon;
 		private var searchIcon:SWFSearchChannelButton;
-		private var addQuestionIcon:SWFAddQuestionButton;
+		private var addQuestionIcon:Sprite;
 		
 		private static var needToRefreshAfterScrollStoped:Boolean = false;
 		private var statusClip:StatusClip;
@@ -255,14 +257,16 @@ package com.dukascopy.connect.screens.innerScreens {
 				//return;
 				if (QuestionsManager.checkForUnsatisfiedQuestions() == true) {
 					DialogManager.alert(Lang.information, Lang.limitQuestionExists);
-					echo("EmergencyScreen", "onBottomButtonTap", "START QUESTION FAIL LIMIT");
+					echo("InnerChatScreen", "onBottomButtonTap", "START QUESTION FAIL LIMIT");
 					return;
 				}
-				MobileGui.changeMainScreen(QuestionCreateUpdateScreen, { backScreen:MobileGui.centerScreen.currentScreenClass,
-														   title:Lang.addTender, 
-														   backScreenData:this.data,
-														   data:null}, 
-														   ScreenManager.DIRECTION_RIGHT_LEFT);
+				MobileGui.changeMainScreen(EscrowAdsCreateScreen, {
+						backScreen:RootScreen,
+						title:Lang.escrow_create_your_ad, 
+						backScreenData:null,
+						data:null
+					}, ScreenManager.DIRECTION_RIGHT_LEFT
+				);
 				return;
 			}
 			if (selectedFilter == TAB_HELP) {				
@@ -284,7 +288,7 @@ package com.dukascopy.connect.screens.innerScreens {
 				return;
 			}
 			if (id == TAB_911) {
-				addQuestionIcon ||= new SWFAddQuestionButton();
+				addQuestionIcon ||= new CreateButtonIcon();
 				createChatButton.setDesign(addQuestionIcon);
 				createChatButton.visible = true;
 				return;

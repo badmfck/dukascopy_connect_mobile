@@ -716,6 +716,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 				cryptoWalletInput.setMaxChars(300);
 				cryptoWalletInput.setPadding(0);
 				cryptoWalletInput.updateTextFormat(tf);
+				cryptoWalletInput.implementPaste();
 			}
 			addItem(cryptoWalletInput);
 				
@@ -1755,6 +1756,17 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 				else
 				{
 					ApplicationErrors.add();
+				}
+			}
+			if (state == STATE_FINISH)
+			{
+				if (sendButton != null)
+				{
+					result = sendButton.height + contentPadding * 2;
+				}
+				else if (backButton != null)
+				{
+					result = backButton.height + contentPadding * 2;
 				}
 			}
 			return result;

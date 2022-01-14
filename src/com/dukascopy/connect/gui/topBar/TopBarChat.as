@@ -57,12 +57,6 @@ package com.dukascopy.connect.gui.topBar {
 		private var _circleStatusHeight:int;
 		private var _maxTextWidth:int;
 		
-		private var icoBack:MovieClip = new (Style.icon(Style.ICON_BACK));
-		private var icoSettings:MovieClip = new (Style.icon(Style.ICON_SETTINGS));
-		private var icoCall:MovieClip = new (Style.icon(Style.ICON_CALLS));
-		private var icoInfo:MovieClip = new IconInfoClip() as MovieClip;
-		private var icoStream:MovieClip = new StartStreamIcon() as MovieClip;
-		
 		private var icoSubscribe:MovieClip = new ownerIconOutline() as MovieClip;
 		private var icoUnsubscribe:MovieClip = new OwnerIcon() as MovieClip;
 		
@@ -79,9 +73,6 @@ package com.dukascopy.connect.gui.topBar {
 		private var backButton:BitmapButton;
 		private var lockButton:BitmapButton;
 		private var infoButton:BitmapButton;
-		
-		private var _lockButtonLockedBitmap:BitmapData;
-		private var _lockButtonUnlockedBitmap:BitmapData;
 		
 		private var trueH:int;
 		private var btnY:int;
@@ -114,10 +105,9 @@ package com.dukascopy.connect.gui.topBar {
 			status.addChild(statusTxt);
 			_view.addChild(status);
 			
-			NativeApplication.nativeApplication.addEventListener(Event.ACTIVATE, onActivate);
-			NativeApplication.nativeApplication.addEventListener(Event.DEACTIVATE, onDeativate);
-			ChatManager.S_CHAT_UPDATED.add(onChatUpdated);
-			UsersManager.USER_BLOCK_CHANGED.add(onUserBlockStatusChanged);
+			
+			
+			
 			ChatUsersCollection.S_USERLIST_CHANGED.add(channelUsersChanged);
 		}
 		
@@ -146,23 +136,9 @@ package com.dukascopy.connect.gui.topBar {
 			}
 		}
 		
-		private function onActivate(e:Event):void {
-			if (screen.isActivated == true)
-				activate();
-		}
 		
-		private function onDeativate(e:Event):void {
-			deactivate();
-		}
 		
-		private function onChatUpdated(chatVO:ChatVO):void {
-			echo("ChatTop", "onChatUpdated", "")
-			if (!(ChatManager.getCurrentChat() != null && chatVO != null && chatVO.uid == ChatManager.getCurrentChat().uid)) {
-				return;
-			}
-			redrawTitle();
-			onLockValueChanged();
-		}
+		
 		
 		public function showInfoButton():void {
 			if (infoButton != null)
@@ -189,67 +165,6 @@ package com.dukascopy.connect.gui.topBar {
 		private function onBtnInfoTap():void {
 			echo("ChatTop", "onBtnInfoTap", "");
 			screen.showInfo();
-		}
-		
-		public function updateUserStatus():void {
-			if (ChatManager.getCurrentChat() != null && (ChatManager.getCurrentChat().type == ChatRoomType.PRIVATE || ChatManager.getCurrentChat().type == ChatRoomType.QUESTION)) {
-				UsersManager.S_ONLINE_CHANGED.add(onUserOnlineStatusChanged);
-				if (ChatManager.getCurrentChat().users == null ||
-					ChatManager.getCurrentChat().users.length == 0 ||
-					ChatManager.getCurrentChat().users[0].uid == "")
-						return;
-				onUserOnlineStatusChanged(UsersManager.isOnline(ChatManager.getCurrentChat().users[0].uid), null);
-			}
-		}
-		
-		private function onUserBlockStatusChanged(data:Object):void {
-			updateUserStatus();
-		}
-		
-		private function onUserOnlineStatusChanged(m:OnlineStatus, method:String):void {
-			if (ChatManager.getCurrentChat() == null || (ChatManager.getCurrentChat().type != ChatRoomType.PRIVATE && ChatManager.getCurrentChat().type != ChatRoomType.QUESTION)) {
-				return;
-			}
-			
-			if (ChatManager.getCurrentChat().users == null ||
-				ChatManager.getCurrentChat().users.length == 0 ||
-				ChatManager.getCurrentChat().users[0].uid == "") {
-					return;
-			}
-			
-			var blockStatus:String = "";	
-			var userUID:String = ChatManager.getCurrentChat().users[0].uid;
-			if (Auth.blocked != null && Auth.blocked.indexOf(userUID) !=-1){
-				// user zablochen 
-				blockStatus = "-" + Lang.textBlocked.toLowerCase();
-			}
-			if (m == null) {
-				drawStatus(false, Lang.textOffline + blockStatus);
-				return;
-			}
-			if (m.uid != ChatManager.getCurrentChat().users[0].uid)
-				return;
-			if (m.uid == Config.NOTEBOOK_USER_UID) {
-				drawStatus(true, Lang.textOnline);
-				return;
-			}
-			if (m.online == false) {
-				drawStatus(false, Lang.textOffline+blockStatus);
-				return;
-			}
-			drawStatus(true, Lang.textOnline+blockStatus);
-		}
-		
-		private function drawStatus(val:Boolean, txt:String):void {
-			if (statusTxt.bitmapData != null)
-				statusTxt.bitmapData.dispose();
-			statusTxt.bitmapData = UI.renderText(txt, _maxTextWidth, Config.FINGER_SIZE_DOT_25, false, TextFormatAlign.LEFT, TextFieldAutoSize.LEFT, trueH * .25, false, Style.color(Style.TOP_BAR_ICON_COLOR), 0, true, "ChatTop.status");
-			var metrics:TextLineMetrics = UI.getTextField().getLineMetrics(0);
-			var _circleCenterY:Number = UI.getTextField().textHeight - metrics.descent - _circleStatusHeight + 2;
-			metrics = null;
-			status.graphics.clear();
-			status.graphics.beginFill((val) ? 0x65BF37 : Style.color(Style.TOP_BAR_ICON_COLOR));
-			status.graphics.drawCircle(_circleStatusHeight, _circleCenterY, _circleStatusHeight);
 		}
 		
 		private function drawChatUID():void {
