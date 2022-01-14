@@ -225,6 +225,9 @@ package com.dukascopy.connect.sys.style
 		static public const COLOR_ACCENT_PANEL:String = "colorAccentPanel";
 		static public const ICON_PHONEBOOK:String = "iconPhonebook";
 		static public const SCREEN_PADDING_LEFT:String = "screenPaddingLeft";
+		static public const ICON_STREAM:String = "iconStream";
+		static public const ICON_UNSUBSCRIBE:String = "iconUnsubscribe";
+		static public const ICON_SUBSCRIBE:String = "iconSubscribe";
 		
 		static private var preset:Preset;
 		

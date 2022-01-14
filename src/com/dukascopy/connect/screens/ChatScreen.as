@@ -458,7 +458,7 @@ package com.dukascopy.connect.screens {
 			if (VideoStreaming.isOnAir() && VideoStreaming.currentChat != null && ChatManager.getCurrentChat() != null && ChatManager.getCurrentChat().uid == VideoStreaming.currentChat)
 			{
 				backColorClip.alpha = 0;
-				chatTop.hide(0);
+			//	chatTop.hide(0);
 			}
 			
 			onCloseChatKeyboard();
@@ -466,23 +466,48 @@ package com.dukascopy.connect.screens {
 				showForwardMessageButton();
 			
 			if (chatTop != null){
-				chatTop.redrawTitle();
+				chatTop.update();
 			}
 			
 			updateChatInput();
 			
 			NativeExtensionController.S_LOCATION.add(onMyLocation);
 			WSClient.S_LOCATION_UPDATE.add(onUserLocation);
-
+			
 			GD.S_WS_REQUEST_STATUS.invoke();
 			
 			GD.CHAT_START_STREAM.add(startStream);
 			GD.CHAT_LOCK_CHANGED.add(onLockChanged);
+			
+			GD.CHAT_SUBSCRIBE_RESULT.add(onChatSubscribe);
+			GD.CHAT_UNSUBSCRIBE_RESULT.add(onChatUnsubscribe);
+		}
+		
+		private function onChatUnsubscribe(success:Boolean, uid:String, message:String = null):void 
+		{
+			if (ChatManager.getCurrentChat() != null && ChatManager.getCurrentChat().uid == uid)
+			{
+				if (success) {
+					message = Lang.channelUnsubscribeSuccess;
+				}
+				ToastMessage.display(message);
+			}
+		}
+		
+		private function onChatSubscribe(success:Boolean, uid:String, message:String = null):void 
+		{
+			if (ChatManager.getCurrentChat() != null && ChatManager.getCurrentChat().uid == uid)
+			{
+				if (success) {
+					message = Lang.channelSubscribeSuccess;
+				}
+				ToastMessage.display(message);
+			}
 		}
 		
 		private function onLockChanged():void 
 		{
-			if (ChatManager.getCurrentChat().pin != null && ChatManager.getCurrentChat().pin != "----") {	
+			if (ChatManager.getCurrentChat().locked) {	
 				showLockButton();
 			} else {
 				hideLockButton();
@@ -496,10 +521,9 @@ package com.dukascopy.connect.screens {
 			actionBack.getSuccessSignal().add(onBack);
 			
 			chatTop = new TopBar(new TopBarChatController(chatData, actionBack));
-			chatTop.setChatScreen(this);
 			_view.addChild(chatTop);
 		}
-
+		
 		private function hidePreloader():void 
 		{
 			if (preloader != null)
@@ -518,7 +542,7 @@ package com.dukascopy.connect.screens {
 					else
 						hideNoConnectionIndicator();
 		}
-
+		
 		private function showPreloader():void 
 		{
 			preloader ||= new Preloader();
@@ -589,7 +613,7 @@ package com.dukascopy.connect.screens {
 				satisfyPublicAnswerButton.visible = false;
 			}
 			if (chatTop != null) {
-				chatTop.redrawTitle();
+				chatTop.update();
 			}
 			updateChatInput();
 		}
@@ -926,7 +950,7 @@ package com.dukascopy.connect.screens {
 					break;
 				}
 				case ChannelsManager.EVENT_TITLE_CHANGED: {
-					chatTop.redrawTitle();
+					chatTop.update();
 					break;
 				}
 				case ChannelsManager.EVENT_MODE_CHANGED: {
@@ -1285,7 +1309,7 @@ package com.dukascopy.connect.screens {
 			if (VideoStreaming.isOnAir() && VideoStreaming.currentChat != null && ChatManager.getCurrentChat() != null && ChatManager.getCurrentChat().uid == VideoStreaming.currentChat)
 			{
 				backColorClip.alpha = 0;
-				chatTop.hide(0);
+			//	chatTop.hide(0);
 			}
 			
 			bottomInputClip.width = _width;
@@ -1501,7 +1525,6 @@ package com.dukascopy.connect.screens {
 				showLockButton();
 			}
 			
-			
 			chatTop.activate()
 			
 			list.S_ITEM_TAP.add(onItemTap);
@@ -1614,7 +1637,7 @@ package com.dukascopy.connect.screens {
 				streamContainer = new Sprite();
 				view.addChild(streamContainer);
 				stream = new VideoStreaming(streamContainer, new Rectangle(0, 0, _width, chatInput.getView().y), onStreamEnd, list.view, ChatManager.getCurrentChat().uid);
-				chatTop.hide();
+			//	chatTop.hide();
 				if (backgroundImage != null)
 					backgroundImage.visible = false;
 				TweenMax.to(backColorClip, 0.5, {alpha:0, delay:2});
@@ -1632,7 +1655,7 @@ package com.dukascopy.connect.screens {
 			if (backgroundImage != null)
 				backgroundImage.visible = true;
 			list.view.alpha = 1;
-			chatTop.show();
+		//	chatTop.show();
 			setChatListSize();
 			drawView();
 		}
@@ -3644,7 +3667,7 @@ package com.dukascopy.connect.screens {
 				
 				stream = VideoStreaming.getCurrent();
 				stream.attachTo(streamContainer, new Rectangle(0, 0, _width, chatInput.getView().y), onStreamEnd, list.view);
-				chatTop.hide(0);
+			//	chatTop.hide(0);
 				
 				if (backgroundImage != null)
 					backgroundImage.visible = false;
@@ -4508,8 +4531,13 @@ package com.dukascopy.connect.screens {
 			QuestionsManager.S_QUESTION_CLOSED.remove(onQuestionClosed);
 		//	WSClient.S_LOYALTY_CHANGE.remove(onLoyaltyChanged);
 			
-
-
+			
+			GD.CHAT_START_STREAM.remove(startStream);
+			GD.CHAT_LOCK_CHANGED.remove(onLockChanged);
+			
+			GD.CHAT_SUBSCRIBE_RESULT.remove(onChatSubscribe);
+			GD.CHAT_UNSUBSCRIBE_RESULT.remove(onChatUnsubscribe);
+			
 			
 			GD.S_WS_STATUS.remove(onWSStatus);
 			NetworkManager.S_CONNECTION_CHANGED.remove(onNetworkChanged);
@@ -4688,7 +4716,7 @@ package com.dukascopy.connect.screens {
 				lockButton.setDownScale(1.3);
 				lockButton.setOverflow(20, 20, 20, 20);
 				//lockButton.tapCallback = chatTop.onLockButtonTap;
-				lockButton.tapCallback = chatTop.onLockButtonTap;
+				lockButton.tapCallback = onLockButtonClick;
 				
 				lockButton.x = _width - Config.FINGER_SIZE - Config.DOUBLE_MARGIN;
 				lockButton.y = chatTop.height + Config.MARGIN + ((noConnectionIndicator == null || noConnectionIndicator.parent == null) ? 0 : noConnectionIndicator.height);
@@ -4698,6 +4726,11 @@ package com.dukascopy.connect.screens {
 			}
 			lockButton.activate();
 			lockButton.show(.3);
+		}
+		
+		private function onLockButtonClick():void 
+		{
+			(new ChatLockAction()).execute();
 		}
 		
 		public function hideLockButton():void {
@@ -5027,32 +5060,6 @@ package com.dukascopy.connect.screens {
 		private function confirmStopDialogResponse(value:int):void {
 			ChatManager.closeChat();
 			onBack();
-		}
-		
-		public function subscribe():void {
-			if (ChatManager.getCurrentChat() != null && ChatManager.getCurrentChat().type == ChatRoomType.CHANNEL) {
-				ChannelsManager.subscribe(ChatManager.getCurrentChat().uid, onSubscribeResult);
-			}
-		}
-		
-		private function onSubscribeResult(success:Boolean, uid:String, message:String = null):void {
-			if (success) {
-				message = Lang.channelSubscribeSuccess;
-			}
-			ToastMessage.display(message);
-		}
-		
-		public function unsubscribe():void {
-			if (ChatManager.getCurrentChat() != null && ChatManager.getCurrentChat().type == ChatRoomType.CHANNEL) {
-				ChannelsManager.unsubscribe(ChatManager.getCurrentChat().uid, onUnsubscribeResult);
-			}
-		}
-		
-		private function onUnsubscribeResult(success:Boolean, uid:String, message:String = null):void {
-			if (success) {
-				message = Lang.channelUnsubscribeSuccess;
-			}
-			ToastMessage.display(message);
 		}
 		
 		// GETTERS -> //

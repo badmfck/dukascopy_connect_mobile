@@ -18,6 +18,7 @@ package com.dukascopy.connect.sys.style.presets
 	import assets.JailIconDark;
 	import assets.JailIconRound;
 	import assets.LoginLogoDark;
+	import assets.OwnerIcon;
 	import assets.PaidChatIcon;
 	import assets.PaymentsImageDark;
 	import assets.PaymentsLogo;
@@ -26,6 +27,7 @@ package com.dukascopy.connect.sys.style.presets
 	import assets.ProtectionIcon;
 	import assets.SendGiftIcon;
 	import assets.SendGiftIconDark;
+	import assets.StartStreamIcon;
 	import assets.TouchIdIcon;
 	import assets.TransferIllustration;
 	import assets.TransferIllustrationDark;
@@ -335,6 +337,9 @@ package com.dukascopy.connect.sys.style.presets
 			this[Style.COLOR_ACCENT_PANEL] = Color.GREY_LIGHT;
 			
 			this[Style.SCREEN_PADDING_LEFT] = int(Config.FINGER_SIZE * .2);
+			this[Style.ICON_STREAM] = StartStreamIcon;
+			this[Style.ICON_UNSUBSCRIBE] = OwnerIcon;
+			this[Style.ICON_SUBSCRIBE] = ownerIconOutline;
 		}
 	}
 }
