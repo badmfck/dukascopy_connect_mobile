@@ -1,6 +1,9 @@
 package com.dukascopy.connect.utils {
 	
+	import com.dukascopy.connect.managers.crypto.InvestmentRates;
+	import com.dukascopy.connect.managers.crypto.RateTick;
 	import flash.display.Graphics;
+	import flash.display.Sprite;
 	import flash.geom.Point;
 	/**
 	 * ...
@@ -82,5 +85,69 @@ package com.dukascopy.connect.utils {
 				target.curveTo(cx, cy, px, py);
 			}
 		}
+		
+		public static function drawGraph(target:Sprite, graphWidth:int, graphHeight:int, rates:InvestmentRates):void 
+        {
+			var distance:int = rates.max - rates.min;
+			var timeLength:Number = rates.data[rates.data.length - 1].ts - rates.data[0].ts;
+			var minTime:Number = rates.data[0].ts;
+			var k:Number = graphHeight/ distance;
+			var kTime:Number = graphWidth / timeLength;
+			
+			var items:Vector.<RateTick>;
+			
+			if (rates.data.length > graphWidth)
+			{
+				items = rates.data.slice(rates.data.length - graphWidth);
+			}
+			else
+			{
+				items = rates.data.concat();
+			}
+			
+			var approx:LagrangeApproximator = new LagrangeApproximator();
+			var l:int = items.length;
+			var item:RateTick;
+			for (var i:int = 0; i < l; i++) 
+			{
+				item = items[i];
+				item.ts = int((item.ts - minTime) * kTime);
+				item.val = (item.val - rates.min) * k;
+				approx.addValue(item.ts, item.val);
+			}
+			
+			drawCurve(target, 2, 0, graphWidth, approx);
+		}
+		
+		public static function drawCurve(target:Sprite, step:Number, fromArg:Number, toArg:int, approx:LagrangeApproximator):void 
+        {
+            var gfx:Graphics = target.graphics;
+            gfx.clear();
+			
+            gfx.lineStyle(0, 0xCCCCCC, 1);
+            gfx.moveTo(-50, 0);
+            gfx.lineTo(50, 0);
+            gfx.moveTo(0, -50);
+            gfx.lineTo(0, 50);
+			
+            gfx.lineStyle(2, 0, 1);
+			
+            var minArg:int = Math.min(fromArg, toArg);
+            var maxArg:int = Math.max(fromArg, toArg);
+			
+            if (step == 0) {
+                step = 1;
+            }
+			
+            var value:Number;
+            for (var i:Number = minArg; i <= maxArg; i+=step) {
+                value = approx.getApproximationValue(i);
+                if (i) {
+                    gfx.lineTo(i, value);
+                } else {
+                    gfx.moveTo(i, value);
+                }
+            }
+        }
 	}
 }

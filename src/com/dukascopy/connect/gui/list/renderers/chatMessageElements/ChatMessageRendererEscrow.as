@@ -115,8 +115,14 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 			textFormatTime.align = TextFormatAlign.CENTER;
 		}
 		
-		public function updateHitzones(itemHitzones:Array):void {
-			itemHitzones.push( { type:HitZoneType.BALLOON, x:x , y:y, width: back.width, height: back.height } );
+		public function updateHitzones(itemHitzones:Vector.<HitZoneData>):void {
+			var hz:HitZoneData = new HitZoneData();
+				hz.type = HitZoneType.BALLOON;
+				hz.x = x;
+				hz.y = y;
+				hz.width = back.width;
+				hz.height = back.height;
+			itemHitzones.push(hz);
 		}
 		
 		public function getBackColor():Number {

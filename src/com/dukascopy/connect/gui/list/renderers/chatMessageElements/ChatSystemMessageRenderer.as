@@ -2,6 +2,7 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements
 {
 	import com.dukascopy.connect.Config;
 	import com.dukascopy.connect.data.ChatSystemMessageData;
+	import com.dukascopy.connect.data.HitZoneData;
 	import com.dukascopy.connect.gui.lightbox.UI;
 	import com.dukascopy.connect.sys.theme.AppTheme;
 	import com.dukascopy.connect.type.HitZoneType;
@@ -249,7 +250,15 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements
 					buttonPoint.x = buttons[i].x + x;
 					buttonPoint.y = buttons[i].y + y;
 					
-					zones.push( { type:(HitZoneType.SYSTEM_MESSAGE_INDEX_ + i.toString()), x:buttonPoint.x , y:buttonPoint.y, width:buttons[i].width, height:buttons[i].height } );
+					var hz:HitZoneData = new HitZoneData();
+					hz.type = HitZoneType.SYSTEM_MESSAGE_INDEX_ + i.toString();
+					hz.param = ;
+					hz.x = buttonPoint.x;
+					hz.y = buttonPoint.y;
+					hz.width = width:buttons[i].width;
+					hz.height = height:buttons[i].height;
+					
+					zones.push(hz);
 				}
 			}
 			

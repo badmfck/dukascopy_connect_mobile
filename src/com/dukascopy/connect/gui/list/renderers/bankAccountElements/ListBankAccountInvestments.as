@@ -73,8 +73,9 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements {
 		}
 		
 		public function getView(li:ListItem, h:int, width:int, highlight:Boolean = false):IBitmapDrawable {
-			var hitZones:Array = li.getHitZones();
-			hitZones ||= [];
+			var hitZones:Vector.<HitZoneData> = li.getHitZones();
+			if (hitZones == null)
+				hitZones = new Vector.<HitZoneData>();
 			hitZones.length = 0;
 			
 			var additionalHeight:int;
@@ -87,33 +88,36 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements {
 			walletSections[0].isLast = li.data.opened == false && li.data.accounts.length > 1;
 			walletSections[0].setData(li.data.accounts[0], sectionWidth);
 			walletSections[0].y = additionalHeight;
+			var hz:HitZoneData;
 			if (li.data.accounts.length > 1) {
 				if (li.data.opened == false)
 					createMore(li.data.accounts.length - 1, width, h);
 				else
 					createMore(0, width, h);
-				hitZones.push( {
-					type: HitZoneType.WALLETS_MORE,
-					x: width - walletsRightOffset - Config.FINGER_SIZE,
-					y: (li.data.opened == false) ? additionalHeight : (li.data.accounts.length -1) * walletSections[0].getHeight() + additionalHeight, 
-					width: walletSections[0].getHeight(),
-					height: walletSections[0].getHeight(),
-					param: 0
-				} );
+				
+				hz = new HitZoneData();
+					hz.type = HitZoneType.WALLETS_MORE;
+					hz.param = "0";
+					hz.x = width - walletsRightOffset - Config.FINGER_SIZE;
+					hz.y = (li.data.opened == false) ? additionalHeight : (li.data.accounts.length -1) * walletSections[0].getHeight() + additionalHeight;
+					hz.width = walletSections[0].getHeight();
+					hz.height = walletSections[0].getHeight();
+				hitZones.push(hz);
 			}
 			
 			var widthHZ:int = width - walletsXPosition - walletsRightOffset;
 			var widthHZSmall:int = widthHZ - Config.FINGER_SIZE;
 			var i:int;
 			var l:int;
-			hitZones.push( {
-					type: HitZoneType.WALLET,
-					x: walletsXPosition,
-					y: additionalHeight, 
-					width: (li.data.accounts.length > 1 && li.data.opened == false) ? widthHZSmall : widthHZ,
-					height: walletSections[0].getHeight(),
-					param: 0
-			} );
+			
+			hz = new HitZoneData();
+				hz.type = HitZoneType.WALLET;
+				hz.param = "0";
+				hz.x = walletsXPosition;
+				hz.y = additionalHeight;
+				hz.width = (li.data.accounts.length > 1 && li.data.opened == false) ? widthHZSmall : widthHZ;
+				hz.height = walletSections[0].getHeight();
+			hitZones.push(hz);
 			if (li.data.opened == false) {
 				l = walletSections.length;
 				if (l > 1)
@@ -138,14 +142,15 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements {
 							walletSections.push(bais);
 						}
 						walletSections[i].y = int((walletSections[0].getHeight()) * i) + additionalHeight;
-						hitZones.push( {
-							type: HitZoneType.WALLET,
-							x: walletsXPosition,
-							y: walletSections[i].y, 
-							width: (li.data.opened == true && i == walletSections.length - 1) ? widthHZSmall : widthHZ,
-							height: walletSections[0].getHeight(),
-							param: i
-						} );
+						
+						hz = new HitZoneData();
+							hz.type = HitZoneType.WALLET;
+							hz.param = i.toString();
+							hz.x = walletsXPosition;
+							hz.y = walletSections[i].y;
+							hz.width = (li.data.opened == true && i == walletSections.length - 1) ? widthHZSmall : widthHZ;
+							hz.height = walletSections[0].getHeight();
+						hitZones.push(hz);
 					}
 				}
 			}
@@ -227,7 +232,7 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements {
 		{
 			const WALLET:String = "wallet";
 			
-			var zones:Array = listItem.getHitZones();
+			var zones:Vector.<HitZoneData> = listItem.getHitZones();
 			var data:Object = listItem.data;
 			getView(listItem, getHeight(listItem, listItem.width), listItem.width, false);
 			
@@ -244,7 +249,7 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements {
 					
 					if (zone.x <= itemTouchPoint.x && zone.y <= itemTouchPoint.y && zone.x + zone.width >= itemTouchPoint.x && zone.y + zone.height >= itemTouchPoint.y)
 					{
-						selectedIndex = zones[i].param;
+						selectedIndex = parseInt(zones[i].param);
 						break;
 					}
 				}

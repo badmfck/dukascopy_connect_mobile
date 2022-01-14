@@ -559,7 +559,6 @@ package com.dukascopy.connect.gui.list.renderers {
 				avatar.y = avatar911PosY;
 				avatarWithLetter.y = avatar911PosY;
 				
-				hitZones = [ { type:HitZoneType.QUESTION_INFO, x:bgInfo.x, y:bgInfo.y, width:bgInfo.width, height:bgInfo.height } ];
 			} else if (itemData.uid != null && itemData.uid != "") {
 				if (UsersManager.checkForToad(itemData.userUID) == true)
 					toadIcon.visible = true;
@@ -570,7 +569,7 @@ package com.dukascopy.connect.gui.list.renderers {
 				if (itemData.user != null && itemData.user.ban911VO != null && itemData.user.ban911VO.status != "buyout") {
 					jailIcon.visible = true;
 				}
-				var hitZones:Array;
+				var hitZones:Vector.<HitZoneData>;
 				bottomLine.y = trueHeight - 1;
 				if (item.list != null) {
 					bottomLine.visible = itemData != item.list.data[item.list.data.length - 1];
@@ -598,7 +597,16 @@ package com.dukascopy.connect.gui.list.renderers {
 					tfTips.visible = true;
 					tfTips.y = int(newMessages.y + (newMessages.height -tfTips.height) * .5);
 					tfTips.x = (newMessages.visible == true) ? int(newMessages.x - tfTips.width - Config.MARGIN) : int(width - tfTips.width - Config.FINGER_SIZE_DOT_25 + 2);
-					hitZones = [ { type:HitZoneType.TIPS, x:tfTips.x, y:tfTips.y, width:tfTips.width, height:tfTips.height } ];
+					
+					hitZones = new Vector.<HitZoneData>();
+					var hz:HitZoneData = new HitZoneData();
+					hz.type = HitZoneType.TIPS;
+					hz.x = tfTips.x;
+					hz.y = tfTips.y;
+					hz.width = tfTips.width;
+					hz.height = tfTips.height;
+					hitZones.push(hz);
+					
 					if (itemData.isMine() == true && itemData.isPaid == true) {
 						paidIcon.visible = true;
 						paidIcon.x = 0;

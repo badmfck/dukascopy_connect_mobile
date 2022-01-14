@@ -274,84 +274,6 @@ package com.dukascopy.connect.gui.topBar {
 			title.bitmapData = UI.renderText(value, _maxTextWidth, 1, false, TextFormatAlign.LEFT, TextFieldAutoSize.NONE, trueH * .45, false, Style.color(Style.TOP_BAR_TEXT_COLOR), 0, true, "ChatTop.title", false, true);
 		}
 		
-		private function getTitleValue():String {
-			if (screen != null)
-				return screen.getTitleValue();
-			return "";
-		}
-		
-		public function update():void {
-			firstTime = true;
-			statusTxt.alpha = 1;
-			if (ChatManager.getCurrentChat() == null)
-				return;
-			
-			var chat:ChatVO = ChatManager.getCurrentChat();
-			
-			
-			if (chat.type == ChatRoomType.PRIVATE ||
-				chat.type == ChatRoomType.QUESTION)
-					displayUserStatus();
-			/*if (chat.type == ChatRoomType.QUESTION)
-				showInfoButton();*/
-				
-			var needShowSettingsButton:Boolean = true;
-			if (chat.type == ChatRoomType.COMPANY) {
-				needShowSettingsButton = false;
-			}
-			if (chat.isLocalIncomeChat())
-			{
-				needShowSettingsButton = false;
-			}
-			if (needShowSettingsButton == true)
-				showSettingsButton();
-			if (chat.type == ChatRoomType.CHANNEL && chat.channelData != null/* && 
-				(ChatManager.getCurrentChat().questionID == null || ChatManager.getCurrentChat().questionID == "")*/) {
-					if (!chat.isModerator(Auth.uid) && !chat.isOwner(Auth.uid)) {
-						if (chat.channelData.subscribed) {
-							showUnsubscribeButton();
-						} else {
-							showSubscribeButton();
-						}
-					}
-					else{
-						hideSubscribeButton();
-						hideUnsubscribeButton();
-					}
-			}
-			if (chat.type != ChatRoomType.COMPANY &&
-				chat.isLocalIncomeChat() == false &&
-				chat.type != ChatRoomType.QUESTION &&
-				chat.type != ChatRoomType.CHANNEL)
-					showLockButton();					
-			if (chat.type == ChatRoomType.PRIVATE) {
-				var user:ChatUserVO = UsersManager.getInterlocutor(chat);	
-				if (user != null && user.userVO != null && user.userVO.type == UserVO.TYPE_BOT){
-					// Dobarin style because less of text logic ))) 
-				}else{
-					if (!chat.isLocalIncomeChat() && (!user || user.uid != Config.NOTEBOOK_USER_UID)) {
-						showCallButton();
-					}
-				}		
-			}
-			
-			/*if (ChatManager.getCurrentChat() != null && ChatManager.getCurrentChat().type == ChatRoomType.CHANNEL && ChatManager.getCurrentChat().ownerUID == Auth.uid && Config.isAdmin())
-			{
-				showStartStreamButton();
-			}
-			else */
-			/*if(Auth.uid == "I6DzDaWqWKWE" || Auth.uid == "WdW6DJI1WbWo")
-			{
-				showStartStreamButton();
-			}*/
-			
-			updateButtonsPositions();
-			channelUsersChanged();
-			
-			if (ChatManager.getCurrentChat().type == ChatRoomType.COMPANY)
-				drawChatUID();
-		}
-		
 		public function updateButtonsPositions():void {
 			echo("ChatTop", "updateButtonsPositions", "");
 			var trueX:int = _width;
@@ -645,47 +567,7 @@ package com.dukascopy.connect.gui.topBar {
 			}
 		}
 		
-		private function showDoLockAlert():void	{
-			echo("ChatTop", "showDoLockAlert");
-			DialogManager.showPin(function(val:int, pin:String):void {
-				if (val != 1)
-					return;
-				if (pin.length == 0)
-					return;
-				TweenMax.delayedCall(1, function():void {
-					echo("ChatTop","showDoLockAlert", "TweenMax.delayedCall");
-					ChatManager.addPin(pin);
-					onLockValueChanged();
-				}, null, true);
-			} );
-		}
 		
-		private function showDoUnlockAlert():void {
-			echo("ChatTop", "showDoUnlockAlert");
-			DialogManager.alert(Lang.textAlert, Lang.areYouSureRemovePin, function(val:int):void {
-				if (val != 1)
-					return;
-				ChatManager.removePin();
-				onLockValueChanged();
-			}, Lang.textYes.toUpperCase(), Lang.textCancel.toUpperCase());
-		}
-		
-		private function onLockValueChanged():void {
-			echo("ChatTop", "onLockValueChange", "");
-			if (ChatManager.getCurrentChat() == null)
-				return;
-			if (lockButton == null)
-				return;
-			if (ChatManager.getCurrentChat().pin != null && ChatManager.getCurrentChat().pin != "----") {	
-				lockButton.setBitmapData(lockButtonLockedBitmap);
-				if (screen != null)
-					screen.showLockButton();
-			} else {
-				lockButton.setBitmapData(lockButtonUnlockedBitmap);
-				if (screen != null)
-					screen.hideLockButton();
-			}
-		}
 		
 		public function updateUserStatus():void {
 			if (ChatManager.getCurrentChat() != null && (ChatManager.getCurrentChat().type == ChatRoomType.PRIVATE || ChatManager.getCurrentChat().type == ChatRoomType.QUESTION)) {

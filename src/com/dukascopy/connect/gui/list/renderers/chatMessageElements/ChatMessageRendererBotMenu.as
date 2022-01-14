@@ -1,6 +1,7 @@
 package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 	
 	import com.dukascopy.connect.Config;
+	import com.dukascopy.connect.data.HitZoneData;
 	import com.dukascopy.connect.gui.chat.BotLinks;
 	import com.dukascopy.connect.gui.chat.BotMenu;
 	import com.dukascopy.connect.gui.lightbox.UI;
@@ -369,15 +370,17 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 			return true;
 		}
 		
-		public function updateHitzones(itemHitzones:Array):void {
+		public function updateHitzones(itemHitzones:Vector.<HitZoneData>):void {
+			var hz:HitZoneData;
 			if (imageRenderer != null) {
-				itemHitzones.push( { 
-					type: HitZoneType.BOT_MENU_IMAGE,
-					x: 0,
-					y: imagePlaceHolder.y,
-					width: imagePlaceHolder.width,
-					height: imagePlaceHolder.height
-				} );
+				
+				hz = new HitZoneData();
+					hz.type = HitZoneType.BOT_MENU_IMAGE;
+					hz.x = 0;
+					hz.y = imagePlaceHolder.y;
+					hz.width = imagePlaceHolder.width;
+					hz.height = imagePlaceHolder.height;
+				itemHitzones.push(hz);
 			}
 			
 			if (currentData != null && currentData.links != null && currentData.links.length > 0)
@@ -392,14 +395,14 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 					buttonBounds2 = links.getBtnBounds(i2);
 					destY2 = this.y + links.y + buttonBounds2.y;
 					
-					itemHitzones.push( {
-						type: HitZoneType.OPEN_LINK,
-						x: destX2,
-						y: destY2,
-						width: buttonBounds2.width,
-						height: buttonBounds2.height,
-						text: linksArray[i2].url
-					} );
+					hz = new HitZoneData();
+						hz.type = HitZoneType.OPEN_LINK;
+						hz.text = linksArray[i2].url;
+						hz.x = destX2;
+						hz.y = destY2;
+						hz.width = buttonBounds2.width;
+						hz.height = buttonBounds2.height;
+					itemHitzones.push(hz);
 				}
 			}
 			
@@ -427,17 +430,18 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 				} else {
 					displayText = btn.text;
 				}
-				itemHitzones.push( {
-					type: HitZoneType.BOT_MENU_ACTION,
-					x: destX,
-					y: destY,
-					width: buttonBounds.width,
-					height: buttonBounds.height,
-					action: btn.action,
-					text: displayText,
-					index: i,
-					statAction:btn.statAction
-				} );
+				
+				hz = new HitZoneData();
+					hz.type = HitZoneType.BOT_MENU_ACTION;
+					hz.text = displayText;
+					hz.index = i;
+					hz.statAction = btn.statAction;
+					hz.action = btn.action;
+					hz.x = destX;
+					hz.y = destY;
+					hz.width = buttonBounds.width;
+					hz.height = buttonBounds.height;
+				itemHitzones.push(hz);
 			}
 		}
 		

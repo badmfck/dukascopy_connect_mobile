@@ -2,6 +2,7 @@ package com.dukascopy.connect.gui.list.renderers {
 	
 	import com.dukascopy.connect.Config;
 	import com.dukascopy.connect.data.CountriesData;
+	import com.dukascopy.connect.data.HitZoneData;
 	import com.dukascopy.connect.gui.lightbox.UI;
 	import com.dukascopy.connect.gui.list.ListItem;
 	import com.dukascopy.connect.sys.assets.Assets;
@@ -43,7 +44,7 @@ package com.dukascopy.connect.gui.list.renderers {
 			var stickerBD:ImageBitmapData;
 			var margin:int = (width - li.data.data[li.data.data.length - 1] * (Config.FINGER_SIZE * 1.8)) * .5;
 			var bmp:Bitmap;
-			var hitZones:Array = [];
+			var hitZones:Vector.<HitZoneData> = new Vector.<HitZoneData>();
 			var hzSize:int = Config.FINGER_SIZE * 1.8;
 			for (var i:int = 0; i < li.data.data.length - 1; i++) {
 				if (bmps.length > i) {
@@ -85,7 +86,13 @@ package com.dukascopy.connect.gui.list.renderers {
 					bmp.y = int(Config.FINGER_SIZE * .1 + Config.FINGER_SIZE * 1.6*.5 - bmp.height*.5);
 				}
 				
-				hitZones.push( { type:i + "", x: i * hzSize + margin, y:0, width:hzSize, height:hzSize } );
+				var hz:HitZoneData = new HitZoneData();
+				hz.type = i + "";
+				hz.x = i * hzSize + margin;
+				hz.y = 0;
+				hz.width = hzSize;
+				hz.height = hzSize;
+				hitZones.push(hz);
 			}
 			for (i; i < li.data.data[li.data.data.length - 1]; i++) {
 				if (i > bmps.length - 1)

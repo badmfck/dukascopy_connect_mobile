@@ -17,7 +17,7 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 		function draw(messageData:ChatMessageVO, maxWidth:int, listItem:ListItem = null, securityKey:Array = null, minWidth:int = -1):void;
 		function getWidth():uint;
 		function getBackColor():Number;
-		function updateHitzones(itemHitzones:Array):void;
+		function updateHitzones(itemHitzones:Vector.<HitZoneData>):void;
 		function getContentHeight():Number;
 		function dispose():void;
 		function getSmallGap(listItem:ListItem):int;

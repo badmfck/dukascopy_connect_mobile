@@ -4,6 +4,7 @@ package com.dukascopy.connect.gui.list.renderers{
 	import assets.HelpIcon3;
 	import com.dukascopy.connect.Config;
 	import com.dukascopy.connect.data.CountriesData;
+	import com.dukascopy.connect.data.HitZoneData;
 	import com.dukascopy.connect.gui.lightbox.UI;
 	import com.dukascopy.connect.gui.list.ListItem;
 	import com.dukascopy.connect.screens.dialogs.geolocation.CityLocationListItem;
@@ -99,11 +100,19 @@ package com.dukascopy.connect.gui.list.renderers{
 		}
 		
 		protected function setHitZones(item:ListItem):void {
-			var hitZones:Array = new Array();
+			var hitZones:Vector.<HitZoneData> = new Vector.<HitZoneData>();
 			var data:CityLocationListItem = item.data as CityLocationListItem;
 			if (data != null && data.myPosition == true && data.city == null)
-				hitZones.push( { type:HitZoneType.GET, x:icon.x - Config.MARGIN, y:icon.y - Config.MARGIN, width:(icon.width + Config.MARGIN * 3 + title.width), height:(title.height + Config.MARGIN * 2) } );
-					
+			{
+				var hz:HitZoneData= new HitZoneData();
+				hz.type = HitZoneType.GET;
+				hz.x = icon.x - Config.MARGIN;
+				hz.y = icon.y - Config.MARGIN;
+				hz.width = (icon.width + Config.MARGIN * 3 + title.width);
+				hz.height = (title.height + Config.MARGIN * 2);
+				hitZones.push(hz);
+			}
+				
 			if (hitZones.length > 0)
 				item.setHitZones(hitZones);
 		}

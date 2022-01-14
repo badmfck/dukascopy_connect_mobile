@@ -8,6 +8,7 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 	import assets.PuzzleIcon;
 	import assets.RejectIcon;
 	import com.dukascopy.connect.Config;
+	import com.dukascopy.connect.data.HitZoneData;
 	import com.dukascopy.connect.gui.lightbox.UI;
 	import com.dukascopy.connect.gui.list.ListItem;
 	import com.dukascopy.connect.sys.echo.echo;
@@ -230,7 +231,7 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 			return height;
 		}
 		
-		public function updateHitzones(itemHitzones:Array):void {
+		public function updateHitzones(itemHitzones:Vector.<HitZoneData>):void {
 			var cancelButtonExist:Boolean = false;
 			var resendButtonExist:Boolean = false;
 			var saveButtonExist:Boolean = false;
@@ -253,34 +254,45 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 				}
 			}
 			
+			var hz:HitZoneData;
 			if (parent)	{
 				if (cancelButtonExist == true && cancelIcon.visible == true) {
-					itemHitzones.push( { 
-										type:HitZoneType.CANCEL, 
-										x:cancelIcon.x + x - Config.FINGER_SIZE_DOT_25 , 
-										y:cancelIcon.y + y - Config.FINGER_SIZE_DOT_25, 
-										width:Config.FINGER_SIZE, 
-										height:Config.FINGER_SIZE } );
+					hz = new HitZoneData();
+						hz.type = HitZoneType.CANCEL;
+						hz.x = cancelIcon.x + x - Config.FINGER_SIZE_DOT_25;
+						hz.y = cancelIcon.y + y - Config.FINGER_SIZE_DOT_25;
+						hz.width = Config.FINGER_SIZE;
+						hz.height = Config.FINGER_SIZE;
+					itemHitzones.push(hz);
 				}
 				else if (resendButtonExist == true && textBack.visible == true)	{
-					itemHitzones.push( { 
-										type:HitZoneType.RESEND, 
-										x:textBack.x + x, 
-										y:textBack.y + y, 
-										width:textBack.width, 
-										height:textBack.height } );
+					hz = new HitZoneData();
+						hz.type = HitZoneType.RESEND;
+						hz.x = textBack.x + x;
+						hz.y = textBack.y + y;
+						hz.width = textBack.width;
+						hz.height = textBack.height;
+					itemHitzones.push(hz);
 				}
 				
 				if (saveButtonExist == true) {
-					itemHitzones.push( { 
-										type:HitZoneType.SAVE, 
-										x:iconSave.x + x, 
-										y:iconSave.y + y, 
-										width:iconSave.width, 
-										height:iconSave.height } );
+					hz = new HitZoneData();
+						hz.type = HitZoneType.SAVE;
+						
+						hz.x = iconSave.x + x;
+						hz.y = iconSave.y + y;
+						hz.width = iconSave.width;
+						hz.height = iconSave.height;
+					itemHitzones.push(hz);
 				}
 				
-				itemHitzones.push( { type:HitZoneType.BALLOON, x:x , y:y, width:maxWidth, height:maxWidth } );
+				hz = new HitZoneData();
+						hz.type = HitZoneType.BALLOON;
+						hz.x = x;
+						hz.y = y;
+						hz.width = maxWidth;
+						hz.height = maxWidth;
+				itemHitzones.push(hz);
 			}
 		}
 		

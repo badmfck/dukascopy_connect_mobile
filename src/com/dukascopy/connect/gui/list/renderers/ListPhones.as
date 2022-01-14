@@ -3,6 +3,7 @@ package com.dukascopy.connect.gui.list.renderers {
 	import assets.IconMark;
 	import assets.SupportAvatar;
 	import com.dukascopy.connect.Config;
+	import com.dukascopy.connect.data.HitZoneData;
 	import com.dukascopy.connect.data.screenAction.IScreenAction;
 	import com.dukascopy.connect.gui.button.InviteContactButton;
 	import com.dukascopy.connect.gui.lightbox.UI;
@@ -230,12 +231,29 @@ package com.dukascopy.connect.gui.list.renderers {
 			{
 				if (itemData.uid == null || itemData.uid == "" || itemData.uid == "0")
 				{
+					var hz:HitZoneData;
+					
 					if (!(itemData as PhonebookUserVO).invited)
 					{
-						hitZones.push( { type:HitZoneType.INVITE_BUTTON, x:inviteButton.x, y:inviteButton.y, width:inviteButton.getWidth(), height:inviteButton.getHeight() } );
+						hz = new HitZoneData();
+						hz.type = HitZoneType.INVITE_BUTTON;
+						hz.x = inviteButton.x;
+						hz.y = inviteButton.y;
+						hz.width = inviteButton.getWidth();
+						hz.height = inviteButton.getHeight();
+						
+						hitZones.push(hz);
 					}
 					else {
-						hitZones.push( { type:HitZoneType.INVITE_BUTTON, x:alreadyInvited.x, y:alreadyInvited.y, width:alreadyInvited.width, height:alreadyInvited.height } );
+						
+						hz = new HitZoneData();
+						hz.type = HitZoneType.INVITE_BUTTON;
+						hz.x = alreadyInvited.x;
+						hz.y = alreadyInvited.y;
+						hz.width = alreadyInvited.width;
+						hz.height = alreadyInvited.height;
+						
+						hitZones.push(hz);
 					}
 				}
 			}

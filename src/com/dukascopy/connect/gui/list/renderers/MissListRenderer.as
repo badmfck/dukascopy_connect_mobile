@@ -1,6 +1,7 @@
 package com.dukascopy.connect.gui.list.renderers {
 	import assets.FlowerIcon;
 	import com.dukascopy.connect.Config;
+	import com.dukascopy.connect.data.HitZoneData;
 	import com.dukascopy.connect.gui.lightbox.UI;
 	import com.dukascopy.connect.gui.list.ListItem;
 	import com.dukascopy.connect.sys.auth.Auth;
@@ -202,30 +203,36 @@ package com.dukascopy.connect.gui.list.renderers {
 				hitZones ||= [];
 				hitZones.length = 0;
 				
+				var hz:HitZoneData;
+				
 				if (item.data is MissData && (item.data as MissData).type == MissData.CONTROL_EXPAND)
 				{
 					type = HitZoneType.SHOW_ALL;
 					
-					hitZones.push( {
-						type: HitZoneType.EXPAND,
-						x: width * .5 - Config.FINGER_SIZE * .3,
-						y: controlExpand.y, 
-						width: Config.FINGER_SIZE * .6,
-						height: Config.FINGER_SIZE * .6
-					} );
+					hz = new HitZoneData();
+					hz.type = HitZoneType.EXPAND;
+					hz.param = ;
+					hz.x = width * .5 - Config.FINGER_SIZE * .3;
+					hz.y = controlExpand.y;
+					hz.width = Config.FINGER_SIZE * .6;
+					hz.height = Config.FINGER_SIZE * .6;
+					
+					hitZones.push(hz);
 				}
 				else if (item.data is MissData && (item.data as MissData).type == MissData.CONTROL_BACK)
 				{
 					type = HitZoneType.BACK;
 				}
 				
-				hitZones.push( {
-						type: type,
-						x: width - Config.FINGER_SIZE * .2 - controlExpand.getChildAt(0).width - Config.FINGER_SIZE * .6,
-						y: controlExpand.y, 
-						width: controlExpand.getChildAt(0).width + Config.FINGER_SIZE * .6,
-						height: Config.FINGER_SIZE*.6
-					} );
+				var hz:HitZoneData = new HitZoneData();
+				hz.type = type;
+				hz.param = ;
+				hz.x = width - Config.FINGER_SIZE * .2 - controlExpand.getChildAt(0).width - Config.FINGER_SIZE * .6;
+				hz.y = controlExpand.y;
+				hz.width = controlExpand.getChildAt(0).width + Config.FINGER_SIZE * .6;
+				hz.height = Config.FINGER_SIZE*.6;
+				
+				hitZones.push(hz);
 				
 				item.setHitZones(hitZones);
 			}

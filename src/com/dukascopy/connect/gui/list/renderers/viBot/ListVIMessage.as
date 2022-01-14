@@ -264,6 +264,8 @@ package com.dukascopy.connect.gui.list.renderers.viBot {
 			hitZones ||= [];
 			hitZones.length = 0;
 			
+			var hz:HitZoneData;
+			
 			if (menuSections != null && menuSections.length != 0 && menuSections[0].parent != null) {
 				if (sectionY != 0)
 					sectionY += int(Config.FINGER_SIZE * .2);
@@ -277,14 +279,16 @@ package com.dukascopy.connect.gui.list.renderers.viBot {
 						menuSections[i].draw();
 						menuSections[i].y = sectionY;
 						menuSections[i].x = int(width * .5 - menuSections[i].getContentWidth() * .5);
-						hitZones.push( {
-							type: HitZoneType.BOT_MENU,
-							param: menuSections[i]["getIndex"](),
-							x: menuSections[i].x,
-							y: sectionY, 
-							width: menuSections[i].getContentWidth(),
-							height: menuSections[i].getTrueHeight()
-						} );
+						
+						hz = new HitZoneData();
+						hz.type = HitZoneType.BOT_MENU;
+						hz.param = String(menuSections[i]["getIndex"]());
+						hz.x = menuSections[i].x;
+						hz.y = sectionY;
+						hz.width = menuSections[i].getContentWidth();
+						hz.height = menuSections[i].getTrueHeight();
+						
+						hitZones.push(hz);
 						if (horizoltalMenu == false)
 							sectionY += menuSections[i].getTrueHeight();
 						else
@@ -313,14 +317,16 @@ package com.dukascopy.connect.gui.list.renderers.viBot {
 						buttonSections[i].draw();
 						buttonSections[i].y = sectionY;
 						buttonSections[i].x = sectionX;
-						hitZones.push( {
-							type: HitZoneType.BOT_MENU_BUTTON,
-							param: i,
-							x: buttonSections[i].x,
-							y: sectionY, 
-							width: buttonSections[i].getContentWidth(),
-							height: buttonSections[i].getTrueHeight()
-						} );
+						
+						var hz:HitZoneData = new HitZoneData();
+						hz.type = HitZoneType.BOT_MENU_BUTTON;
+						hz.param = i.toString();
+						hz.x = buttonSections[i].x;
+						hz.y = sectionY;
+						hz.width = buttonSections[i].getContentWidth();
+						hz.height = buttonSections[i].getTrueHeight();
+						
+						hitZones.push(hz);
 						if (horizoltalButtons == false)
 							sectionY += buttonSections[i].getTrueHeight() + Config.MARGIN;
 						else
@@ -333,14 +339,16 @@ package com.dukascopy.connect.gui.list.renderers.viBot {
 				buttonSections[i - 1].draw();
 			}
 			// Add avatar hitozne
-			hitZones.push( {
-				type: HitZoneType.AVATAR,
-				param:i,
-				x: avatar.x,
-				y: avatar.y, 
-				width: avatarSizeDouble,
-				height: avatarSizeDouble
-			} );
+			
+			var hz:HitZoneData = new HitZoneData();
+			hz.type = HitZoneType.AVATAR;
+			hz.param = i.toString();
+			hz.x = avatar.x;
+			hz.y = avatar.y;
+			hz.width = avatarSizeDouble;
+			hz.height = avatarSizeDouble;
+			
+			hitZones.push(hz);
 			
 			li.setHitZones(hitZones);
 			
@@ -418,14 +426,16 @@ package com.dukascopy.connect.gui.list.renderers.viBot {
 				sections[i].x = sx;
 				sections[i].y = sy;
 				if ("isTotal" in sections[i] == false || sections[i].isTotal == false) {
-					hitZones.push( {
-						type: hitZonesType,
-						param: i,
-						x: sections[i].x,
-						y: sy, 
-						width: sections[i].getWidth(),
-						height: sections[i].getHeight()
-					} );
+					
+					var hz:HitZoneData = new HitZoneData();
+					hz.type = hitZonesType;
+					hz.param = i.toString();
+					hz.x = sections[i].x;
+					hz.y = sy;
+					hz.width = sections[i].getWidth();
+					hz.height = sections[i].getHeight();
+					
+					hitZones.push(hz);
 				}
 				sy += sections[i].getHeight();
 			}

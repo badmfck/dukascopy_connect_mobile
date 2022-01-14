@@ -85,20 +85,21 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 			textFormatButton.align = TextFormatAlign.CENTER;
 		}
 		
-		public function updateHitzones(itemHitzones:Array):void {
+		public function updateHitzones(itemHitzones:Vector.<HitZoneData>):void {
 			if (parent) {
 				var buttonPoint:Point = new Point(button.x, button.y)
 				
 				buttonPoint.x = buttonPoint.x + x;
 				buttonPoint.y = buttonPoint.y + y;
 				
-				itemHitzones.push( {
-					type:HitZoneType.SHOW_REACTIONS, 
-					x:buttonPoint.x,
-					y:buttonPoint.y, 
-					width:(button.width),
-					height:(button.height)
-				} );
+				var hz:HitZoneData = new HitZoneData();
+				hz.type = HitZoneType.SHOW_REACTIONS;
+				hz.x = buttonPoint.x;
+				hz.y = buttonPoint.y;
+				hz.width = button.width;
+				hz.height = button.height;
+				
+				itemHitzones.push(hz);
 			}
 		}
 		

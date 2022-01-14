@@ -4,6 +4,8 @@ package com.dukascopy.connect
 	import com.dukascopy.connect.managers.escrow.signals.S_CryptoWalletAdd;
 	import com.dukascopy.connect.managers.escrow.signals.S_CryptoWallets;
 	import com.dukascopy.connect.managers.escrow.signals.S_EscrowDealCreated;
+	import com.dukascopy.connect.managers.escrow.signals.S_EscrowInstrumentRatesHistory;
+	import com.dukascopy.connect.managers.escrow.signals.S_EscrowInstrumentRatesHistoryRequest;
 	import com.telefision.sys.signals.Signal;
 	import com.dukascopy.connect.managers.escrow.S_EscrowDealCreateRequest;
 	import com.dukascopy.connect.managers.webview.S_WebViewRequest;
@@ -60,6 +62,9 @@ package com.dukascopy.connect
 		
 		static public const S_BACK:Signal = new Signal();
 		
+		static public const CHAT_START_STREAM:Signal = new Signal();
+		static public const CHAT_LOCK_CHANGED:Signal = new Signal();
+		
 		// ESCROW
 		static public const S_ESCROW_MANAGER_AVAILABLE:S_EscrowManagerAvailable = new S_EscrowManagerAvailable(); // EscrowDealMap
 		static public const S_ESCROW_DEALS_LOADED:Signal = new Signal("S_ESCROW_DEALS_LOADED");
@@ -111,6 +116,9 @@ package com.dukascopy.connect
 		static public const S_ESCROW_ADS_CREATED:Signal = new Signal("GD.S_ESCROW_ADS_CREATED");
 		static public const S_ESCROW_ADS_CREATE_FAIL:Signal = new Signal("GD.S_ESCROW_ADS_FAIL");
 		static public const S_ESCROW_AD_UPDATED:Signal = new Signal("GD.S_ESCROW_AD_UPDATED");
+		static public const S_ESCROW_INSTRUMENT_UPDATE:Signal = new Signal("GD.S_ESCROW_INSTRUMENT_UPDATE");
+		static public const S_ESCROW_INSTRUMENT_RATES_REQUEST:S_EscrowInstrumentRatesHistoryRequest = new S_EscrowInstrumentRatesHistoryRequest();
+		static public const S_ESCROW_INSTRUMENT_RATES:S_EscrowInstrumentRatesHistory = new S_EscrowInstrumentRatesHistory();
 
 		static public const S_IOS_LOCALIZATION_UPDATE:Signal=new Signal("S_IOS_LOCALIZATION_UPDATE");
 		

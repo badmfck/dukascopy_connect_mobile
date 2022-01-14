@@ -2,6 +2,7 @@ package com.dukascopy.connect.gui.list.renderers {
 	
 	import com.dukascopy.connect.Config;
 	import com.dukascopy.connect.data.CountriesData;
+	import com.dukascopy.connect.data.HitZoneData;
 	import com.dukascopy.connect.gui.lightbox.UI;
 	import com.dukascopy.connect.gui.list.ListItem;
 	import com.dukascopy.connect.sys.assets.Assets;
@@ -267,21 +268,19 @@ package com.dukascopy.connect.gui.list.renderers {
 			
 			tf = null;
 			
-			var hitZones:Array = [];
-			hitZones.push({ type:HitZoneType.INVESTMENT_MENU, 
-								x:hamburgerMenu.x-PADDING_H, 
-								y:hamburgerMenu.y - PADDING_V, 
-								width:hamburgerMenu.width +PADDING_H*2, 
-								height:hamburgerMenu.height +PADDING_V*2});
-								
-			li.setHitZones(hitZones);		
+			var hitZones:Vector.<HitZoneData> = new Vector.<HitZoneData>();
 			
+			var hz:HitZoneData = new HitZoneData();
+			hz.type = HitZoneType.INVESTMENT_MENU;
+			hz.x = hamburgerMenu.x-PADDING_H;
+			hz.y = hamburgerMenu.y - PADDING_V;
+			hz.width = hamburgerMenu.width + PADDING_H * 2;
+			hz.height = hamburgerMenu.height + PADDING_V * 2;
 			
+			hitZones.push(hz);
+			
+			li.setHitZones(hitZones);
 		}
-		
-		
-		
-		
 		
 		private function renderStatsView(li:ListItem, h:int, width:int, highlight:Boolean=false):void
 		{

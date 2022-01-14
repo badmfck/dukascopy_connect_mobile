@@ -739,12 +739,17 @@ package com.dukascopy.connect.gui.list.renderers {
 					needUpdateHitzones = true;
 				}
 			}
+			if (messageType == MESSAGE_TYPE_TEXT && messageData.systemMessageVO != null && 
+					messageData.systemMessageVO.replayMessage != null) {
+				needUpdateHitzones = true;
+			}
 			
+			var hitZones:Vector.<HitZoneData>
 			if (needUpdateHitzones) {
-				var hitZones:Array = data.getHitZones();
+				hitZones = data.getHitZones();
 				if (hitZones == null)
 				{
-					hitZones = new Array();
+					hitZones = new Vector.<HitZoneData>();
 				}
 				else
 				{
@@ -894,7 +899,7 @@ package com.dukascopy.connect.gui.list.renderers {
 				}
 				
 				tfUsername.y = data.elementYPosition;
-				
+				var hz:HitZoneData;
 				if (messageData.created == 0 || messageType == MESSAGE_TYPE_SYSTEM_MESSAGE || messageType == MESSAGE_TYPE_ACTION || messageType == MESSAGE_TYPE_BOT_MENU)
 				{
 					tfDate.visible = false;
@@ -980,27 +985,22 @@ package com.dukascopy.connect.gui.list.renderers {
 								
 								if (needUpdateHitzones) {
 									if (mineReactionExist == true) {
-										hitZones.push(
-											{
-												type: HitZoneType.REMOVE_REACTION_LIKE,
-												x: reactionsClip.x - tapPadding,
-												y: reactionClipYPos - tapPadding, 
-												width: reactionsClip.width + Config.FINGER_SIZE,
-												height: reactionsClip.height + Config.FINGER_SIZE
-											}
-										);
+										hz = new HitZoneData();
+										hz.type = HitZoneType.REMOVE_REACTION_LIKE;
+										hz.x = reactionsClip.x - tapPadding;
+										hz.y = reactionClipYPos - tapPadding;
+										hz.width = reactionsClip.width + Config.FINGER_SIZE;
+										hz.height = reactionsClip.height + Config.FINGER_SIZE;
+										hitZones.push(hz);
 									} else {
-										hitZones.push(
-											{
-												type: HitZoneType.ADD_REACTION_LIKE,
-												x: reactionsClip.x - tapPadding,
-												y: reactionClipYPos - tapPadding, 
-												width: reactionsClip.width + Config.FINGER_SIZE,
-												height: reactionsClip.height + Config.FINGER_SIZE
-											}
-										);
+										hz = new HitZoneData();
+										hz.type = HitZoneType.ADD_REACTION_LIKE;
+										hz.x = reactionsClip.x - tapPadding;
+										hz.y = reactionClipYPos - tapPadding;
+										hz.width = reactionsClip.width + Config.FINGER_SIZE;
+										hz.height = reactionsClip.height + Config.FINGER_SIZE;
+										hitZones.push(hz);
 									}
-									
 								}
 							}
 							
@@ -1057,9 +1057,14 @@ package com.dukascopy.connect.gui.list.renderers {
 					displayAvatar(data, avatarSize, avatarY, -1, null, true, renderer);
 					
 					if (needUpdateHitzones)
-					{											
-						hitZones.push( { type: HitZoneType.AVATAR, x: avatar.x - Config.MARGIN, y: avatar.y - Config.MARGIN, 
-										width: avatarDoubleSize + Config.MARGIN * 2, height: avatarDoubleSize + Config.MARGIN * 2 } );						
+					{
+						hz = new HitZoneData();
+						hz.type = HitZoneType.AVATAR;
+						hz.x = avatar.x - Config.MARGIN;
+						hz.y = avatar.y - Config.MARGIN;
+						hz.width = avatarDoubleSize + Config.MARGIN * 2;
+						hz.height = avatarDoubleSize + Config.MARGIN * 2;
+						hitZones.push(hz);						
 					}
 					
 					if (messageType == MESSAGE_TYPE_TEXT || messageType == MESSAGE_TYPE_UPDLOAD_IMAGE || 
@@ -1116,8 +1121,13 @@ package com.dukascopy.connect.gui.list.renderers {
 					
 					if (needUpdateHitzones)
 					{
-						hitZones.push( { type: HitZoneType.AVATAR, x: avatar.x - Config.MARGIN, y: avatar.y - Config.MARGIN, 
-										width: avatarDoubleSize*2 + Config.MARGIN * 2, height: avatarDoubleSize*2 + Config.MARGIN * 2 } );
+						hz = new HitZoneData();
+						hz.type = HitZoneType.AVATAR;
+						hz.x = avatar.x - Config.MARGIN;
+						hz.y = avatar.y - Config.MARGIN;
+						hz.width = avatarDoubleSize*2 + Config.MARGIN * 2;
+						hz.height = avatarDoubleSize*2 + Config.MARGIN * 2;
+						hitZones.push(hz);
 					}
 				}
 				else if (messageType == MESSAGE_TYPE_CALL)
@@ -1129,17 +1139,24 @@ package com.dukascopy.connect.gui.list.renderers {
 					
 					if (needUpdateHitzones)
 					{
-						hitZones.push( { type: HitZoneType.AVATAR, x: avatar.x - Config.MARGIN, y: avatar.y - Config.MARGIN, 
-										width: avatarDoubleSize * 2 + Config.MARGIN * 2, height: avatarDoubleSize * 2 + Config.MARGIN * 2 } );
+						hz = new HitZoneData();
+						hz.type = HitZoneType.AVATAR;
+						hz.x = avatar.x - Config.MARGIN;
+						hz.y = avatar.y - Config.MARGIN;
+						hz.width = avatarDoubleSize * 2 + Config.MARGIN * 2;
+						hz.height = avatarDoubleSize * 2 + Config.MARGIN * 2;
+						hitZones.push(hz);
+						
 						if (data != null && data.data != null && (data.data is ChatMessageVO) && (data.data as ChatMessageVO).systemMessageVO.callVO != null && (data.data as ChatMessageVO).systemMessageVO.callVO.vidid == false)
 						{
-							hitZones.push( { type: HitZoneType.CALL, 
-												x: renderer.x + renderer.getWidth() - Config.FINGER_SIZE * .2 - Config.FINGER_SIZE * .2 - Config.MARGIN, 
-												y: renderer.y + Config.FINGER_SIZE*.1 - Config.MARGIN, 
-										width: Config.FINGER_SIZE * .4 + Config.MARGIN * 2, 
-										height: Config.FINGER_SIZE * .4 + Config.MARGIN * 2 } );
+							hz = new HitZoneData();
+							hz.type = HitZoneType.CALL;
+							hz.x = renderer.x + renderer.getWidth() - Config.FINGER_SIZE * .2 - Config.FINGER_SIZE * .2 - Config.MARGIN;
+							hz.y = renderer.y + Config.FINGER_SIZE*.1 - Config.MARGIN;
+							hz.width = Config.FINGER_SIZE * .4 + Config.MARGIN * 2;
+							hz.height = Config.FINGER_SIZE * .4 + Config.MARGIN * 2;
+							hitZones.push(hz);
 						}
-						
 					}
 				}
 				
@@ -1202,10 +1219,14 @@ package com.dukascopy.connect.gui.list.renderers {
 				{
 					if (isReply(messageData) && replyRenderer != null && replyRenderer.visible)
 					{
-						hitZones.push( { type: HitZoneType.REPLY_MESSAGE, x: replyRenderer.x, y: replyRenderer.y, 
-										width: replyRenderer.width, height: replyRenderer.getContentHeight() } );						
+						hz = new HitZoneData();
+						hz.type = HitZoneType.REPLY_MESSAGE;
+						hz.x =  replyRenderer.x;
+						hz.y =  replyRenderer.y;
+						hz.width = replyRenderer.width;
+						hz.height = replyRenderer.getContentHeight();
+						hitZones.push(hz);						
 					}
-					
 					
 					renderer.updateHitzones(hitZones);
 					
@@ -1687,6 +1708,9 @@ package com.dukascopy.connect.gui.list.renderers {
 			var messageType:String = getMessageType(listItem.data as ChatMessageVO);
 			if (messageType != null) {
 				var hitZoneType:String;
+				var targetRenderer:IMessageRenderer = lastRenderer;
+				
+				
 				if (messageType == MESSAGE_TYPE_TEXT) {
 					hitZoneType = HitZoneType.MESSAGE_TEXT;
 				}
@@ -1702,7 +1726,6 @@ package com.dukascopy.connect.gui.list.renderers {
 				else if (messageType == MESSAGE_TYPE_CHAT_SYSTEM_MESSAGE) {
 					hitZoneType = HitZoneType.MESSAGE_TEXT;
 				}
-				
 				else if (messageType == MESSAGE_TYPE_FILE) {
 					hitZoneType = HitZoneType.MESSAGE_TEXT;
 				}
@@ -1731,6 +1754,14 @@ package com.dukascopy.connect.gui.list.renderers {
 					hitZoneType = HitZoneType.MESSAGE_TEXT;
 				}
 				
+				var lastHitzoneObject:HitZoneData = listItem.getLastHitZoneObject();
+				var lhz:String = lastHitzoneObject != null?lastHitzoneObject.type:null;
+				var message:ChatMessageVO = listItem.data as ChatMessageVO;
+				if (lhz == HitZoneType.REPLY_MESSAGE && message.systemMessageVO != null && message.systemMessageVO.replayMessage != null && message.systemMessageVO.replayMessage.target != -1) 
+				{
+					hitZoneType = HitZoneType.MESSAGE_TEXT;
+					targetRenderer = replyRenderer;
+				}
 				
 				if (hitZoneType != null) {
 					var height:int = getHeight(listItem, listItem.width);
@@ -1738,15 +1769,16 @@ package com.dukascopy.connect.gui.list.renderers {
 					
 					var hitzone:HitZoneData = new HitZoneData();
 					if (lastRenderer != null) {
-						hitzone.x = lastRenderer.x;
-						hitzone.y = lastRenderer.y;
-						hitzone.width = lastRenderer.getWidth();
-						hitzone.height = lastRenderer.getContentHeight();
+						hitzone.x = targetRenderer.x;
+						hitzone.y = targetRenderer.y;
+						hitzone.width = targetRenderer.getWidth();
+						hitzone.height = targetRenderer.getContentHeight();
 						hitzone.type = hitZoneType;
 						
 						return hitzone;
 					}
 				}
+				
 			}
 			return null;
 		}

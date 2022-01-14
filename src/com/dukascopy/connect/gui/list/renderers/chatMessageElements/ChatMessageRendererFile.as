@@ -1,6 +1,7 @@
 package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 	
 	import com.dukascopy.connect.Config;
+	import com.dukascopy.connect.data.HitZoneData;
 	import com.dukascopy.connect.gui.lightbox.UI;
 	import com.dukascopy.connect.gui.list.ListItem;
 	import com.dukascopy.connect.sys.localFiles.LocalFilesManager;
@@ -70,9 +71,17 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 			return boxBg.height;
 		}
 		
-		public function  updateHitzones(itemHitzones:Array):void {
+		public function  updateHitzones(itemHitzones:Vector.<HitZoneData>):void {
 			if (parent != null)
-				itemHitzones.push( { type:HitZoneType.BALLOON, x:x , y:y, width: boxBg.width, height: boxBg.height } );
+			{
+				var hz:HitZoneData = new HitZoneData();
+					hz.type = HitZoneType.BALLOON;
+					hz.x = x;
+					hz.y = y;
+					hz.width = boxBg.width;
+					hz.height = boxBg.height;
+				itemHitzones.push(hz);
+			}
 		}
 		
 		public function getBackColor():Number {

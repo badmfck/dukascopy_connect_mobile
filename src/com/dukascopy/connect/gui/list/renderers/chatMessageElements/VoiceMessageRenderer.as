@@ -5,6 +5,7 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements
 	import assets.SoundSwitchIcon2;
 	import assets.StopButtonIcon;
 	import com.dukascopy.connect.Config;
+	import com.dukascopy.connect.data.HitZoneData;
 	import com.dukascopy.connect.gui.lightbox.UI;
 	import com.dukascopy.connect.type.HitZoneType;
 	import com.dukascopy.connect.vo.chat.VoiceMessageVO;
@@ -270,11 +271,22 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements
 			
 			var hitzones:Array = new Array();
 			
-			var hitZonePlay:Object = { type:HitZoneType.PLAY_SOUND, x:playPoint.x , y:playPoint.y, width:(Config.MARGIN * 2 + iconPlay.width), height:(Config.MARGIN * 2 + iconPlay.height) } ;
-			var hitZoneSwitchSpeaker:Object = { type:HitZoneType.SWITCH_SOUND_SPEAKER, x:switchPoint.x , y:switchPoint.y, width:(Config.MARGIN * 2 + iconLoudSpeaker.width), height:(Config.MARGIN * 2 + iconLoudSpeaker.width) } ;
+			var hz:HitZoneData = new HitZoneData();
+			hz.type = HitZoneType.PLAY_SOUND;
+			hz.param = ;
+			hz.x = playPoint.x;
+			hz.y = playPoint.y;
+			hz.width = Config.MARGIN * 2 + iconPlay.width;
+			hz.height = Config.MARGIN * 2 + iconPlay.height;
+			hitzones.push(hz);
 			
-			hitzones.push(hitZonePlay);
-			hitzones.push(hitZoneSwitchSpeaker);
+			hz = new HitZoneData();
+			hz.type = HitZoneType.SWITCH_SOUND_SPEAKER;
+			hz.x = switchPoint.x;
+			hz.y = switchPoint.y;
+			hz.width = Config.MARGIN * 2 + iconLoudSpeaker.width;
+			hz.height = Config.MARGIN * 2 + iconLoudSpeaker.width;
+			hitzones.push(hz);
 			
 			return hitzones;
 		}
