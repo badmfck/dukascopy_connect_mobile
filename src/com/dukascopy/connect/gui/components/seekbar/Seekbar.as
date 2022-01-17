@@ -107,6 +107,7 @@ package com.dukascopy.connect.gui.components.seekbar
 			button.y = int(itemHeight * .5);
 			
 			updatePosition(startValue);
+			calculatePosition();
 		}
 		
 		private function updatePosition(positionValue:Number):void
