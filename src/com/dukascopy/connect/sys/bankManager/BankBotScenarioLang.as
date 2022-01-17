@@ -175,6 +175,7 @@ package com.dukascopy.connect.sys.bankManager {
 		static public var menuExchangeMoney:String = "Exchange money";
 		static public var menuInvestments:String = "Investments";
 		static public var menuOpenTradingAccount:String = "Open trading account";
+		static public var menuOpenP2P:String = "911 Crypto P2P";
 		static public var menuCheckAccLimits:String = "Check account limits";
 		static public var menuOpenEBank:String = "Open e-bank";
 		static public var menuOrderCard:String = "Order card";

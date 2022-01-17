@@ -430,7 +430,7 @@ package com.dukascopy.connect.screens {
 			
 			needToOpenChat = true;
 			
-			chatTop.setWidthAndHeight(_width, Config.FINGER_SIZE * .85 + Config.APPLE_TOP_OFFSET);
+			chatTop.setWidthAndHeight(_width, Config.FINGER_SIZE * .85);
 			
 			uploadFilePanel = new UploadFilePanel(view, 0, chatTop.y + chatTop.height, _width);
 			

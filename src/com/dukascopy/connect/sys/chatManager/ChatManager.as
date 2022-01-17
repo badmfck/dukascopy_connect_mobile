@@ -5,6 +5,7 @@ package com.dukascopy.connect.sys.chatManager {
 	import com.dukascopy.connect.GD;
 	import com.dukascopy.connect.MobileGui;
 	import com.dukascopy.connect.data.ChatSettingsModel;
+	import com.dukascopy.connect.data.ChatVOAction;
 	import com.dukascopy.connect.data.LocalSoundFileData;
 	import com.dukascopy.connect.data.MediaFileData;
 	import com.dukascopy.connect.data.MessageData;
@@ -14,6 +15,7 @@ package com.dukascopy.connect.sys.chatManager {
 	import com.dukascopy.connect.data.location.Location;
 	import com.dukascopy.connect.data.paidChat.PaidChatData;
 	import com.dukascopy.connect.data.screenAction.IAction;
+	import com.dukascopy.connect.data.screenAction.customActions.Open911ScreenAction;
 	import com.dukascopy.connect.data.screenAction.customActions.SendMessageToUserAction;
 	import com.dukascopy.connect.data.screenAction.customActions.SendVoiceToChatAction;
 	import com.dukascopy.connect.gui.components.message.ToastMessage;
@@ -1746,6 +1748,10 @@ package com.dukascopy.connect.sys.chatManager {
 					chats.push(getSupportChatVO( -1, Lang.myAccount));
 					chats.push(getSupportChatVO( -3, Lang.bankBot));
 					chats.push(getSupportChatVO( -4, Lang.dukascoinMarketplace));
+					
+					var open911Action:ChatVOAction = getSupportChatVO( -6, Lang.help_911_title) as ChatVOAction;
+					open911Action.action = new Open911ScreenAction();
+					chats.push(open911Action);
 				}
 			} else {
 				chats.unshift(getSupportChatVO( -2, Lang.openAccount));
@@ -1771,7 +1777,7 @@ package com.dukascopy.connect.sys.chatManager {
 				chats.push(cVO);
 		}
 		
-		static private function getSupportChatVO(pid:int, title:String):ChatVO {
+		static private function getSupportChatVO(pid:int, title:String, lastMessage:String = null):ChatVO {
 			if (pid != -1) {
 				var chat:ChatVO = getChatByPID(pid);
 				if (chat != null) {
@@ -1779,11 +1785,21 @@ package com.dukascopy.connect.sys.chatManager {
 					return chat;
 				}
 			}
+			
+			return createBlankSupportChat(pid, title, lastMessage);
+		}
+		
+		static public function createBlankSupportChat(pid:int, title:String, lastMessage:String = null):ChatVO 
+		{
 			var chatData:Object = new Object();
 			chatData.pointID = pid;
 			chatData.title = title;
 			chatData.type = ChatRoomType.COMPANY;
-			return new ChatVO(chatData);
+			if (lastMessage != null)
+			{
+				chatData.message = {text:lastMessage};
+			}
+			return new ChatVOAction(chatData);
 		}
 		
 		static private function sortByDate(a:ChatVO, b:ChatVO):int {

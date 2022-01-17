@@ -113,8 +113,9 @@ package com.dukascopy.connect.screens.serviceScreen {
 				var l:int = secondListData.length;
 				for (var i:int = 0; i < l; i++) 
 				{
-					list.appendItem(secondListData[i], ListChatUsers, null, true);
+					list.appendItem(secondListData[i], ListChatUsers, null, true, false, -1, 0, false, false);
 				}
+				list.updateView();
 			}
 		}
 		
@@ -225,9 +226,10 @@ package com.dukascopy.connect.screens.serviceScreen {
 				l = resultsSecond.length;
 				for (var i2:int = 0; i2 < l; i2++) 
 				{
-					list.appendItem(resultsSecond[i2], ListChatUsers, null, true);
+					list.appendItem(resultsSecond[i2], ListChatUsers, null, true, false, -1, 0, false, false);
 				}
 			}
+			list.updateView();
 		}
 	}
 }

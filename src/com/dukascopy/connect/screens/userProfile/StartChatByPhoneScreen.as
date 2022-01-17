@@ -194,7 +194,7 @@ package com.dukascopy.connect.screens.userProfile {
 			numberBack.height = position;
 			
 			searchButton.x = padding;
-			searchButton.y = _height - searchButton.height - padding;
+			searchButton.y = getContentHeight() - searchButton.height - padding;
 		}
 		
 		private function drawSearchButton():void 
@@ -289,7 +289,7 @@ package com.dukascopy.connect.screens.userProfile {
 						user.y = resultMessage.y + resultMessage.height + Config.MARGIN * 2;
 						
 						startChatButton.x = padding;
-						startChatButton.y = int(_height - startChatButton.height - padding);
+						startChatButton.y = int(getContentHeight() - startChatButton.height - padding);
 						
 						targetPosition = numberBack.y + numberBack.height + Config.FINGER_SIZE;
 						
@@ -395,7 +395,7 @@ package com.dukascopy.connect.screens.userProfile {
 			preloader = new CirclePreloader();
 			view.addChild(preloader);
 			preloader.x = int(_width * .5);
-			preloader.y = int(_height * .5);
+			preloader.y = int(getContentHeight() * .5);
 		}
 		
 		private function openProfile():void {
@@ -716,15 +716,20 @@ package com.dukascopy.connect.screens.userProfile {
 		override protected function drawView():void	{
 			topBar.drawView(_width);
 			topBar.backgroundColor = Style.color(Style.COLOR_LIST_SPECIAL);
-			scrollPanel.setWidthAndHeight(_width, _height - topBar.trueHeight - searchButton.height - padding * 2);
+			scrollPanel.setWidthAndHeight(_width, getContentHeight() - topBar.trueHeight - searchButton.height - padding * 2);
 			if (searchButton != null)
 			{
-				searchButton.y = _height - searchButton.height - padding;
+				searchButton.y = getContentHeight() - searchButton.height - padding;
 			}
 			/*if (searchButton != null)
 			{
-				searchButton.y = _height - searchButton.height - padding;
+				searchButton.y = getContentHeight() - searchButton.height - padding;
 			}*/
+		}
+		
+		private function getContentHeight():int 
+		{
+			return _height - Config.APPLE_BOTTOM_OFFSET;
 		}
 		
 		private function hidePreloader():void {

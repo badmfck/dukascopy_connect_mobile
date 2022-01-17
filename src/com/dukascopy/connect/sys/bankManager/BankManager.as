@@ -12,6 +12,7 @@ package com.dukascopy.connect.sys.bankManager {
 	import com.dukascopy.connect.data.coinMarketplace.MarketplaceScreenData;
 	import com.dukascopy.connect.data.coinMarketplace.TradingOrder;
 	import com.dukascopy.connect.data.coinMarketplace.TradingOrderRequest;
+	import com.dukascopy.connect.data.screenAction.customActions.Open911ScreenAction;
 	import com.dukascopy.connect.data.screenAction.customActions.SendTradeNotesRequestAction;
 	import com.dukascopy.connect.data.voiceCommand.VoiceCommand;
 	import com.dukascopy.connect.data.voiceCommand.VoiceCommandType;
@@ -1255,6 +1256,8 @@ package com.dukascopy.connect.sys.bankManager {
 				if (msg == "payments") {
 					data["tapped"] = false;
 					navigateToURL(new URLRequest(Config.PAYMENTS_WEB));
+				} else if (msg == "openP2P") {
+					(new Open911ScreenAction()).execute();
 				} else if (msg == "showKeyword") {
 					data["tapped"] = false;
 					showTextComposer(data);

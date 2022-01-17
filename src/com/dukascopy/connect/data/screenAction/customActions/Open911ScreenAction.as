@@ -8,11 +8,13 @@ package com.dukascopy.connect.data.screenAction.customActions {
 	import com.dukascopy.connect.data.screenAction.ScreenAction;
 	import com.dukascopy.connect.screens.EmergencyScreen;
 	import com.dukascopy.connect.screens.RootScreen;
+	import com.dukascopy.connect.screens.innerScreens.InnerEscrowInstrumentScreen;
 	import com.dukascopy.connect.screens.serviceScreen.BottomPopupScreen;
 	import com.dukascopy.connect.sys.auth.Auth;
 	import com.dukascopy.connect.sys.dialogManager.DialogManager;
 	import com.dukascopy.connect.sys.serviceScreenManager.ServiceScreenManager;
 	import com.dukascopy.connect.sys.style.Style;
+	import com.dukascopy.connect.type.BankPhaze;
 	import com.dukascopy.langs.Lang;
 	
 	/**
@@ -31,7 +33,7 @@ package com.dukascopy.connect.data.screenAction.customActions {
 				additionalData(RootScreen.QUESTIONS_SCREEN_ID);
 				return;
 			}
-			if (Auth.bank_phase != "ACC_APPROVED") {
+			/*if (Auth.bank_phase != BankPhaze.ACC_APPROVED) {
 				var popupData:PopupData;
 				var action:IScreenAction;
 				popupData = new PopupData();
@@ -43,14 +45,13 @@ package com.dukascopy.connect.data.screenAction.customActions {
 				popupData.text = Lang.featureNoPaments;
 				ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, BottomPopupScreen, popupData);
 				return;
-				
-				/*DialogManager.alert(Lang.information, Lang.featureNoPaments);
-				return;*/
-			}
+			}*/
 			var screenData:Object = { };
 			screenData.backScreen = MobileGui.centerScreen.currentScreenClass;
 			screenData.backScreenData = MobileGui.centerScreen.currentScreen.data;
-			MobileGui.changeMainScreen(EmergencyScreen, screenData);
+			screenData.temp = Math.random();
+			screenData.selectedTab = RootScreen.QUESTIONS_SCREEN_ID;
+			MobileGui.changeMainScreen(RootScreen, screenData);
 			dispose();
 		}
 		

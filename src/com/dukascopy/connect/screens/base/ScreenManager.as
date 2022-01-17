@@ -166,6 +166,7 @@ package com.dukascopy.connect.screens.base {
 			} else if ("backScreenData" in data) {
 				var backScreenData:Object = data.backScreenData;
 				data.backScreenData = null;
+				hashData = data;
 			} else {
 				hashData = data;
 			}

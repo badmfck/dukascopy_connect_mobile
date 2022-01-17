@@ -652,7 +652,8 @@ package com.dukascopy.connect.gui.list {
 			animate:Boolean = false,
 			position:int = -1,
 			animationDelay:Number = 0,
-			refreshStartPosition:Boolean = false):void {
+			refreshStartPosition:Boolean = false, 
+			updateBounds:Boolean = true):void {
 				if (currentRenderer == null && itemRendererClass == null)
 					return;
 				if (appendToDataCollection) {
@@ -697,7 +698,7 @@ package com.dukascopy.connect.gui.list {
 					li.animate(animationDelay);
 				
 				_innerHeight += li.height;
-				if (inMovementPhase == false)
+				if (inMovementPhase == false && updateBounds)
 					onMoved(true, false, false, animate, position);
 				setBoundsBoxes();
 				setScrollBarSize();

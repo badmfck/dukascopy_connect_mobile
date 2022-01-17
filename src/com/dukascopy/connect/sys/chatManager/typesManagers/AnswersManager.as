@@ -1,7 +1,10 @@
 package com.dukascopy.connect.sys.chatManager.typesManagers {
 	
+	import com.dukascopy.connect.Config;
 	import com.dukascopy.connect.GD;
 	import com.dukascopy.connect.MobileGui;
+	import com.dukascopy.connect.data.ChatVOAction;
+	import com.dukascopy.connect.data.screenAction.customActions.Open911ScreenAction;
 	import com.dukascopy.connect.gui.components.message.ToastMessage;
 	import com.dukascopy.connect.managers.escrow.vo.EscrowAdsVO;
 	import com.dukascopy.connect.screens.dialogs.ScreenQuestionsDialog;
@@ -18,6 +21,7 @@ package com.dukascopy.connect.sys.chatManager.typesManagers {
 	import com.dukascopy.connect.sys.ws.WS;
 	import com.dukascopy.connect.type.ChatInitType;
 	import com.dukascopy.connect.type.ChatRoomType;
+	import com.dukascopy.connect.vo.ChatMessageVO;
 	import com.dukascopy.connect.vo.ChatVO;
 	import com.dukascopy.connect.vo.QuestionVO;
 	import com.dukascopy.connect.vo.screen.ChatScreenData;
@@ -91,6 +95,14 @@ package com.dukascopy.connect.sys.chatManager.typesManagers {
 				if (answers[i].isDisposed)
 					answers.splice(i, 1);
 			}
+			
+			if (answers.length == 0 || !(answers[0] is ChatVOAction))
+			{
+				var open911Action:ChatVOAction = ChatManager.createBlankSupportChat(Config.EP_VI_DEF, Lang.help_911_title, Lang.tap_to_see_deals) as ChatVOAction;
+				open911Action.action = new Open911ScreenAction();
+				answers.unshift(open911Action);
+			}
+			
 			return answers;
 		}
 		

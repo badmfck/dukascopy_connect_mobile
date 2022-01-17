@@ -48,6 +48,10 @@ package com.dukascopy.connect.sys.bankManager {
 						action:"nav:crypto",
 						action1:"nav:cryptoOpen"
 					}, {
+						text:"lang.menuOpenP2P",
+						keywords:"open,P2P",
+						action:"app:openP2P"
+					},{
 						text:"lang.menuOpenTradingAccount",
 						keywords:"open,account",
 						action:"nav:chooseAccountToOpen"

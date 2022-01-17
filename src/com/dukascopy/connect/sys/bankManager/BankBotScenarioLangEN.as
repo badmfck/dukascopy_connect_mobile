@@ -133,6 +133,7 @@ package com.dukascopy.connect.sys.bankManager {
 		static public const menuExchangeMoney:String = "Exchange money";
 		static public const menuInvestments:String = "Investments";
 		static public const menuOpenTradingAccount:String = "Open trading account";
+		static public const menuOpenP2P:String = "911 Crypto P2P";
 		static public const menuCheckAccLimits:String = "Check account limits";
 		static public const menuOpenEBank:String = "Open e-bank";
 		static public const menuOrderCard:String = "Order card";

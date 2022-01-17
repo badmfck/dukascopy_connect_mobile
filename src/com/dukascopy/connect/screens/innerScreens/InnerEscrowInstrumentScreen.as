@@ -125,7 +125,7 @@ package com.dukascopy.connect.screens.innerScreens {
 			
 			preloader.setSize(_width, int(Config.FINGER_SIZE * .07));
 			
-			createButton.setPosition(_width - Config.FINGER_SIZE - Config.MARGIN * 2,  _height - Config.FINGER_SIZE - Config.MARGIN * 2 - Config.APPLE_TOP_OFFSET);
+			createButton.setPosition(_width - Config.FINGER_SIZE - Config.MARGIN * 2,  _height - Config.FINGER_SIZE - Config.MARGIN * 2);
 			createButton.setOffset(Config.TOP_BAR_HEIGHT * 2 + Config.APPLE_TOP_OFFSET);
 			
 			GD.S_SCREEN_READY.add(onScreenReady);

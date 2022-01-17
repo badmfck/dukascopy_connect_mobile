@@ -288,6 +288,9 @@ package com.dukascopy.connect.sys.style.presets
 			this[Style.ICON_STREAM] = StartStreamIcon;
 			this[Style.ICON_UNSUBSCRIBE] = OwnerIcon;
 			this[Style.ICON_SUBSCRIBE] = ownerIconOutline;
+			
+			this[Style.MENU_P2P] = white.Icon911;
+			this[Style.MENU_P2P_SELECTED] = white.Icon911;
 		}
 	}
 }

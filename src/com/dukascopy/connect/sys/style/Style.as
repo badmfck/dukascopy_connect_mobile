@@ -41,6 +41,7 @@ package com.dukascopy.connect.sys.style
 		static public const MENU_CONTACTS:String = "MENU_CONTACTS";
 		static public const MENU_BANK:String = "MENU_BANK";
 		static public const MENU_BOT:String = "MENU_BOT";
+		static public const MENU_P2P:String = "MENU_P2P";
 		static public const MENU_SETTINGS:String = "MENU_SETTINGS";
 
 		static public const MENU_CHATS_SELECTED:String = "MENU_CHATS_SELECTED";
@@ -48,6 +49,8 @@ package com.dukascopy.connect.sys.style
 		static public const MENU_BANK_SELECTED:String = "MENU_BANK_SELECTED";
 		static public const MENU_BOT_SELECTED:String = "MENU_BOT_SELECTED";
 		static public const MENU_SETTINGS_SELECTED:String = "MENU_SETTINGS_SELECTED";
+		
+		static public const MENU_P2P_SELECTED:String = "MENU_P2P_SELECTED";
 
 		static public const ICON_911:String = "ICON_911";
 		static public const ICON_SETTINGS:String = "ICON_SETTINGS";

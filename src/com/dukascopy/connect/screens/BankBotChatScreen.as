@@ -5,6 +5,7 @@ package com.dukascopy.connect.screens {
 	import com.dukascopy.connect.MobileGui;
 	import com.dukascopy.connect.data.BackgroundModel;
 	import com.dukascopy.connect.data.ChatBackgroundCollection;
+	import com.dukascopy.connect.data.screenAction.customActions.Open911ScreenAction;
 	import com.dukascopy.connect.gui.chatInput.BankBotInput;
 	import com.dukascopy.connect.gui.chatInput.ChatInputAndroid;
 	import com.dukascopy.connect.gui.chatInput.ChatInputIOS;
@@ -85,10 +86,16 @@ package com.dukascopy.connect.screens {
 			input.menuCallback = goToLastStep;
 			input.homeCallback = onHomeTap;
 			input.mpCallback = BankManager.openMarketPlace;
+			input.p2pCallback = openP2P;
 			
 			_view.addChild(list.view);
 			_view.addChild(topBar);
 			_view.addChild(input);
+		}
+		
+		private function openP2P():void 
+		{
+			(new Open911ScreenAction()).execute();
 		}
 		
 		private function onHomeTap():void {

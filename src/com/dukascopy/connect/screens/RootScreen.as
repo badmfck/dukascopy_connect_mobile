@@ -13,7 +13,6 @@ package com.dukascopy.connect.screens {
 	import com.dukascopy.connect.data.screenAction.customActions.Open911InfoAction;
 	import com.dukascopy.connect.data.screenAction.customActions.Open911ScreenAction;
 	import com.dukascopy.connect.data.screenAction.customActions.Open911SupportAction;
-	import com.dukascopy.connect.data.screenAction.customActions.RefreshLotteryDataAction;
 	import com.dukascopy.connect.data.screenAction.customActions.ShowFilterEscrowAction;
 	import com.dukascopy.connect.gui.components.ratesPanel.RatesPanel;
 	import com.dukascopy.connect.gui.lightbox.LightBox;
@@ -101,6 +100,14 @@ package com.dukascopy.connect.screens {
 				hasSearchBar: true,
 				scaleIndex:1
 			}, {
+				id: QUESTIONS_SCREEN_ID,
+				title: Lang.escrow_title,
+				screenClass: InnerEscrowInstrumentScreen,
+				selectedIcon: new (Style.icon(Style.MENU_P2P_SELECTED)),
+				notSelectedIcon: new (Style.icon(Style.MENU_P2P)),
+				hasSearchBar: false,
+				scaleIndex:1
+			}, {
 				id: PAYMENTS_SCREEN_ID,
 				title: Lang.textPayments,
 				screenClass: null,
@@ -149,7 +156,6 @@ package com.dukascopy.connect.screens {
 		
 		private var firstTime:Boolean;
 		private var BLINK_CHECK_INTERVAL:int = 60 * 4;
-		private var refreshLotteryDataAction:com.dukascopy.connect.data.screenAction.customActions.RefreshLotteryDataAction;
 		private var selectedinstrument:String;
 		private var ratesPanel:RatesPanel;
 		
@@ -232,12 +238,12 @@ package com.dukascopy.connect.screens {
 					onBottomTabsClick(currentTabID, false, 0);
 				}
 				if (currentTabID != "" && bottomTabs != null) {
-					if (currentTabID == QUESTIONS_SCREEN_ID)
+					/*if (currentTabID == QUESTIONS_SCREEN_ID)
 						bottomTabs.selectTap(null);
-					else
+					else*/
 						bottomTabs.selectTap(currentTabID);
 				}
-				QuestionsManager.setInOut(currentTabIndex == 10);
+				QuestionsManager.setInOut(currentTabIndex == 2);
 				return;
 			}
 			firstTime = false;
@@ -369,8 +375,8 @@ package com.dukascopy.connect.screens {
 			if (screensArray != null && screensArray.length > 0) {
 				screensArray[0].title = Lang.textChats;
 				screensArray[1].title = Lang.textContacts;
-				screensArray[2].title = Lang.textPayments;
-				screensArray[3].title = Lang.textSettings;
+				screensArray[3].title = Lang.textPayments;
+				screensArray[4].title = Lang.textSettings;
 			}
 		}
 		
@@ -530,8 +536,8 @@ package com.dukascopy.connect.screens {
 			echo("RootScreen", "onInnerScreenShowComplete", '');
 			if (_isDisposed == true)
 				return;
-			if (currentTabIndex == 10)
-				return;
+			/*if (currentTabIndex == 10)
+				return;*/
 			if (currentTabIndex == 11)
 				return;
 			if (bottomTabs != null) {
@@ -579,7 +585,7 @@ package com.dukascopy.connect.screens {
 			if (tabIndex == -1)
 				return;
 			if (ConfigManager.config.disableP2P == true) {
-				if (tabIndex == 10) {
+				if (tabIndex == 2) {
 					showGoodbyePopup();
 					return;
 				} else if (tabIndex == 11) {
@@ -770,15 +776,7 @@ package com.dukascopy.connect.screens {
 			return array;
 		}
 		
-		private function getRefreshLotteryDataAction():IScreenAction {
-			if (refreshLotteryDataAction == null)
-				refreshLotteryDataAction = new RefreshLotteryDataAction();
-			return refreshLotteryDataAction;
-		}
-		
 		private function getTabIndexById(id:String):int {
-			if (id == QUESTIONS_SCREEN_ID)
-				return 10;
 			if (id == ESCROW_INSTRUMENT_SCREEN_ID)
 				return 11;
 			for (var i:int = 0; i < screensArray.length; i++)
