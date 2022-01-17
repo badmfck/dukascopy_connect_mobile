@@ -2673,7 +2673,7 @@ package com.dukascopy.langs {
 		static public var card_delivery_city_long:String = "Maximum allowed character count for City field is %@. Please edit the corresponding field and try again.";
 		static public var card_delivery_name_long:String = "Maximum allowed character count for Full name field is %@. Please edit the corresponding field and try again.";
 		static public var card_delivery_address_long:String = "Maximum allowed character count for Address field is %@. Please edit the corresponding field and try again.";
-		static public var waiting_for_connection:String = "Ожидание сети...";
+		static public var waiting_for_connection:String = "Waiting for connection...";
 		static public var paste:String = "Paste";
 		static public var help_911_title:String = "911 Crypto P2P";
 		static public var tap_to_see_deals:String = "Tap to see all deals";

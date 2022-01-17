@@ -1,5 +1,6 @@
 package com.dukascopy.connect.utils 
 {
+	import com.dukascopy.connect.screens.payments.card.TypeCurrency;
 	import com.dukascopy.connect.sys.payments.CurrencyHelpers;
 	import com.dukascopy.langs.Lang;
 	/**
@@ -15,6 +16,10 @@ package com.dukascopy.connect.utils
 		
 		static public function formatAmount(amount:Number, currency:String, removeCurrency:Boolean = false):String 
 		{
+			if (currency == "DUK+")
+			{
+				currency = TypeCurrency.DCO;
+			}
 			if (isNaN(amount))
 			{
 				amount = 0;
