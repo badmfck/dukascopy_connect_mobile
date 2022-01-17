@@ -35,6 +35,7 @@ package com.dukascopy.connect.screens.userProfile {
 	import com.dukascopy.connect.sys.style.Style;
 	import com.dukascopy.connect.sys.style.presets.Color;
 	import com.dukascopy.connect.sys.theme.AppTheme;
+	import com.dukascopy.connect.type.BankPhaze;
 	import com.dukascopy.connect.type.ChatInitType;
 	import com.dukascopy.connect.type.HitZoneType;
 	import com.dukascopy.connect.type.MainColors;
@@ -157,7 +158,14 @@ package com.dukascopy.connect.screens.userProfile {
 				description.bitmapData.dispose();
 				description.bitmapData = null;
 			}
-			description.bitmapData = TextUtils.createTextFieldData(Lang.search_user_description, _width - padding * 2, 10, true, TextFormatAlign.LEFT, TextFieldAutoSize.LEFT, 
+			
+			var text:String = Lang.search_user_description;
+			if (Auth.bank_phase == BankPhaze.ACC_APPROVED)
+			{
+				text = Lang.search_user_description_mca;
+			}
+			
+			description.bitmapData = TextUtils.createTextFieldData(text, _width - padding * 2, 10, true, TextFormatAlign.LEFT, TextFieldAutoSize.LEFT, 
 																	FontSize.SUBHEAD_14, true, Style.color(Style.COLOR_SUBTITLE), Style.color(Style.COLOR_BACKGROUND));
 			
 		}

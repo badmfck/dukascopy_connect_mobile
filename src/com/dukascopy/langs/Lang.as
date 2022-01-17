@@ -2660,7 +2660,8 @@ package com.dukascopy.langs {
 		static public var enter_valid_email:String = "Please enter a valid email address";
 		static public var search_user:String = "Search a user by phone number";
 		static public var enter_phone_number:String = "Enter phone number";
-		static public var search_user_description:String = "Enter the phone number of counterparty you would like to pay fromyour card opened with the other bank.";
+		static public var search_user_description:String = "Enter the phone number of the counterparty you would like to chat with or pay to using your card opened with another bank.";
+		static public var search_user_description_mca:String = "Enter the phone number of the counterparty you would like to chat with or pay to using your Multi-currency account in Dukascopy Bank.";
 		static public var escrow_no_active_ads_placeholder_title:String = 'There are no active ads so far';
 		static public var escrow_no_active_ads_placeholder_subtitle:String = "Press "+" sign in the right upper corner to create your Crypto P2P ad";
 		static public var escrow_no_deals_placeholder_title:String = "No items";
