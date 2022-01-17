@@ -290,14 +290,14 @@ package com.dukascopy.connect.vo {
 				if (wasGroupTitle)
 					return false;
 				_truncatedTitle = "";
-				if (_users.length > 0) {
+				/*if (_users.length > 0) {
 					_title = '';
 					for (var m:int = 0; m < _users.length; m++) {
 						if (m > 0)
 							_title+= ', ';
 						_title += _users[m].name;
 					}
-				}
+				}*/
 			}
 			if (title != oldTitle)
 				return true;

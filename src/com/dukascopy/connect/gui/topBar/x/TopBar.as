@@ -204,16 +204,30 @@ package com.dukascopy.connect.gui.topBar.x
 			
 			titleValue = value;
 			
-			var maxTextWidth:int = componentWidth - Style.size(Style.SCREEN_PADDING_LEFT) - leftMargin;
+			var maxTextWidth:int = componentWidth - Style.size(Style.SCREEN_PADDING_LEFT) - leftMargin - getButtonsWidth();
 			if (title.bitmapData != null)
 			{
 				title.bitmapData.dispose();
 				title.bitmapData = null;
 			}
-			title.bitmapData = TextUtils.createTextFieldData(value, maxTextWidth, 10, true,
+			title.bitmapData = TextUtils.createTextFieldData(value, maxTextWidth, 10, false,
 																		TextFormatAlign.LEFT, TextFieldAutoSize.LEFT, 
-																		FontSize.TITLE_2, true, Style.color(Style.TOP_BAR_TEXT_COLOR),
+																		FontSize.TITLE_2, false, Style.color(Style.TOP_BAR_TEXT_COLOR),
 																		Style.color(Style.TOP_BAR));
+		}
+		
+		private function getButtonsWidth():int 
+		{
+			var value:int = 0;
+			if (buttons != null)
+			{
+				for (var i:int = 0; i < buttons.length; i++) 
+				{
+					value += buttonsPadding + buttons[i].width;
+				}
+				value += buttonsPadding + Config.FINGER_SIZE * .1;
+			}
+			return value;
 		}
 		
 		public function updatePositions():void 
