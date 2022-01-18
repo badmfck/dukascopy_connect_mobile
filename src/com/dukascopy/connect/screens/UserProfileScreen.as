@@ -997,6 +997,7 @@ package com.dukascopy.connect.screens {
 		private function onAvatarLoaded(url:String, bmd:ImageBitmapData, success:Boolean):void {
 			if (_isDisposed == true)
 				return;
+			hideAvatarPreloader();
 			if (success == false)
 				return;
 			if (avatarExists == true && avatarBMD == null)
