@@ -14,7 +14,7 @@ package com.dukascopy.connect.utils
 
 		public function NumberFormat(){}
 		
-		static public function formatAmount(amount:Number, currency:String, removeCurrency:Boolean = false):String 
+		static public function formatAmount(amount:Number, currency:String, removeCurrency:Boolean = false, addDecimals:Boolean = false):String 
 		{
 			if (currency == "DUK+")
 			{
@@ -28,7 +28,10 @@ package com.dukascopy.connect.utils
 			decimals = CurrencyHelpers.getMaxDecimalCount(currency);
 			
 			var result:String = amount.toFixed(decimals);
-			result = parseFloat(result).toString();
+			if (!addDecimals)
+			{
+				result = parseFloat(result).toString();
+			}
 			if (currency != null && !removeCurrency)
 			{
 				var resultCurrency:String = currency;

@@ -218,15 +218,15 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 				}
 				if (selectedDirection == TradeDirection.buy)
 				{
-					values.push(NumberFormat.formatAmount((amount * targetPrice), currency));
-					values.push(NumberFormat.formatAmount((amount * targetPrice * EscrowSettings.refundableFee), currency));
-					values.push(NumberFormat.formatAmount((amount * targetPrice * EscrowSettings.refundableFee + amount * targetPrice), currency));
+					values.push(NumberFormat.formatAmount((amount * targetPrice), currency, false, true));
+					values.push(NumberFormat.formatAmount((amount * targetPrice * EscrowSettings.refundableFee), currency, false, true));
+					values.push(NumberFormat.formatAmount((amount * targetPrice * EscrowSettings.refundableFee + amount * targetPrice), currency, false, true));
 				}
 				else
 				{
-					values.push(NumberFormat.formatAmount((amount * targetPrice), currency));
-					values.push(NumberFormat.formatAmount((amount * targetPrice * EscrowSettings.getCommission(selectedCrypto.code)), currency));
-					values.push(NumberFormat.formatAmount((amount * targetPrice - amount * targetPrice * EscrowSettings.getCommission(selectedCrypto.code)), currency));
+					values.push(NumberFormat.formatAmount((amount * targetPrice), currency, false, true));
+					values.push(NumberFormat.formatAmount((amount * targetPrice * EscrowSettings.getCommission(selectedCrypto.code)), currency, false, true));
+					values.push(NumberFormat.formatAmount((amount * targetPrice - amount * targetPrice * EscrowSettings.getCommission(selectedCrypto.code)), currency, false, true));
 				}
 				
 				balance.draw(_width, values);

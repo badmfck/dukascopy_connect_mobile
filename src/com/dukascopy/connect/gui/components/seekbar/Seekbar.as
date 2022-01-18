@@ -44,7 +44,7 @@ package com.dukascopy.connect.gui.components.seekbar
 			
 			itemHeight = Config.FINGER_SIZE * .7;
 			lineHeight = Config.FINGER_SIZE * .04;
-			buttonRadius = Config.FINGER_SIZE * .2;
+			buttonRadius = Config.FINGER_SIZE * .23;
 			
 			createClips();
 		}
@@ -65,17 +65,19 @@ package com.dukascopy.connect.gui.components.seekbar
 			button = new Sprite();
 			button.graphics.clear();
 			
+			var despersion:int = Math.max(1, Config.FINGER_SIZE*.015);
+			
 			button.graphics.beginFill(0, 0);
-			button.graphics.drawCircle(0, 1, buttonRadius * 2.5);
+			button.graphics.drawCircle(0, despersion, buttonRadius * 2.5);
 			
 			button.graphics.beginFill(0, 0.2);
-			button.graphics.drawCircle(0, 1, buttonRadius + 2);
+			button.graphics.drawCircle(0, despersion, buttonRadius + despersion * 2);
 			
 			button.graphics.beginFill(0, 0.1);
-			button.graphics.drawCircle(0, 2, buttonRadius + 2);
+			button.graphics.drawCircle(0, despersion * 2, buttonRadius + despersion * 2);
 			
 			button.graphics.beginFill(0, 0.05);
-			button.graphics.drawCircle(0, 5, buttonRadius);
+			button.graphics.drawCircle(0, despersion * 5, buttonRadius);
 			
 			button.graphics.beginFill(Style.color(Style.COLOR_BACKGROUND));
 			button.graphics.drawCircle(0, 0, buttonRadius);
