@@ -433,8 +433,13 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 			{
 				if (!isNaN(inputPrice.value) && inputPrice.value > 0)
 				{
-					var value:Number = maxEurosAvaliable/inputPrice.value;
-					inputQuantity.drawUnderlineValue(Lang.max + ": " + NumberFormat.formatAmount(value, TypeCurrency.DCO));
+					var value:Number = maxEurosAvaliable / inputPrice.value;
+					var resultValue:Number = parseFloat(NumberFormat.formatAmount(value, TypeCurrency.DCO, true));
+					if (resultValue > value)
+					{
+						resultValue -= 0.0001;
+					}
+					inputQuantity.drawUnderlineValue(Lang.max + ": " + NumberFormat.formatAmount(resultValue, TypeCurrency.DCO));
 				}
 				else
 				{
@@ -572,7 +577,8 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 						maxEurosAvaliable -= getReservedFiat();
 					}	
 				}
-				
+				trace(inputPrice.value, inputQuantity.value, maxEurosAvaliable);
+				trace(inputPrice.value * inputQuantity.value, maxEurosAvaliable);
 				if (isNaN(inputPrice.value) || isNaN(inputQuantity.value) || maxEurosAvaliable < inputPrice.value * inputQuantity.value || inputQuantity.value == 0)
 				{
 					inputPrice.invalid();
