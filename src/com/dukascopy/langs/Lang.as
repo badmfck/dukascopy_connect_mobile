@@ -2677,6 +2677,7 @@ package com.dukascopy.langs {
 		static public var paste:String = "Paste";
 		static public var help_911_title:String = "911 Crypto P2P";
 		static public var tap_to_see_deals:String = "Tap to see all deals";
+		static public var escrow_credit_to_account:String = "Credit to account";
 		
 		static public function updateKeys(keys:Object):void {
 			for (var n:String in keys) {

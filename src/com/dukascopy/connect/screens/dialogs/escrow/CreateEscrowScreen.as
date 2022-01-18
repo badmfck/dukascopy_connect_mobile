@@ -129,7 +129,16 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		
 		private function createAccountSelector():void 
 		{
-			selectorAccont = new DDAccountButton(openWalletSelector, Lang.TEXT_SELECT_ACCOUNT, false, -1, NaN, Lang.escrow_debit_from_account);
+			var title:String;
+			if (selectedDirection == TradeDirection.sell)
+			{
+				title = Lang.escrow_credit_to_account;
+			}
+			else
+			{
+				title = Lang.escrow_debit_from_account;
+			}
+			selectorAccont = new DDAccountButton(openWalletSelector, Lang.TEXT_SELECT_ACCOUNT, false, -1, NaN, title);
 			addItem(selectorAccont);
 		}
 		
