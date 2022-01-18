@@ -9,9 +9,6 @@ package com.dukascopy.connect.utils
 	 */
 	public class NumberFormat 
 	{
-		// Decimals loaded
-		private var currencyDecimalRulesLoaded:Boolean=false;
-
 		public function NumberFormat(){}
 		
 		static public function formatAmount(amount:Number, currency:String, removeCurrency:Boolean = false, addDecimals:Boolean = false):String 

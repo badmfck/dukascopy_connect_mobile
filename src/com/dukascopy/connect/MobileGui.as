@@ -699,6 +699,8 @@ package com.dukascopy.connect {
 		}
 		
 		private function closePopup(e:Event):void {
+			if (dialogsSM.currentScreen != null && dialogsSM.currentScreen.isModal() == true)
+				return;
 			if (dialogsSM.currentScreen != null)
 				DialogManager.closeDialog();
 		}
