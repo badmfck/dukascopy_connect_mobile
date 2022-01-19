@@ -126,7 +126,7 @@ package com.dukascopy.connect.sys.payments {
 			var result:String = currencySymbols[key];
 			if (result == null)
 				result = key;
-			if (fromLang.indexOf(result) != -1)
+			if (fromLang.indexOf(result) != -1) 
 				result = Lang.investmentsCurrency[result];
 			return result;
 		}

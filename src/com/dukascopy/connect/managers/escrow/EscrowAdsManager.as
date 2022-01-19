@@ -100,9 +100,6 @@ package com.dukascopy.connect.managers.escrow {
 		
 		private function onAuthorized(data:Object):void {
 			profile = data.profile;
-			GD.S_ESCROW_INSTRUMENTS_REQUEST.invoke();
-			onEscrowAdsRequested(false, true);
-			onEscrowAdsMineRequested();
 		}
 		
 		private function onUnauthorized():void {
@@ -461,12 +458,16 @@ package com.dukascopy.connect.managers.escrow {
 				for (var i:int = 0; i < l; i++) {
 					if (escrowInstruments[i].code == vo.crypto) {
 						vo.instrument = escrowInstruments[i];
+						break;
 					}
 				}
 				if (vo.instrument == null) {
 					vo.dispose();
 					return null;
 				}
+			}
+			if (vo.instrument == null) {
+				trace();
 			}
 			vo.mine = vo.userUid == profile.uid;
 			return vo;

@@ -212,9 +212,9 @@ package com.dukascopy.connect.sys.payments {
 				respond.dispose();
 				return;
 			}
-			_allowTimeDiffCall = true;
-			_hasSwissTime = true;
 			if (respond.error == false && respond.data != null) {
+				_allowTimeDiffCall = true;
+				_hasSwissTime = true;
 				PayConfig.TIMESTAMP_DIFF = int(Number(respond.data) - swissTimestampCallSeconds);
 				if ("callbackFunction" in respond.savedRequestData &&
 					respond.savedRequestData.callbackFunction != null) {

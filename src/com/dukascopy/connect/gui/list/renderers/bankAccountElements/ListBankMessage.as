@@ -1124,7 +1124,7 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements {
 				return res;
 			if (bmVO.item.type != "operationDetails")
 				return res;
-			if (bmVO.additionalData == null)
+			if ("additionalData" in bmVO == false || bmVO.additionalData == null)
 				return res;
 			var detailsVOs:Array = [];
 			res = Config.MARGIN;
@@ -1204,16 +1204,18 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements {
 				)
 			);
 			dt = null;
-			detailsVOs.push(
-				new AccountLimitVO(
-					[
-						AccountLimit.FIELD_DETAILS_DESC,
-						NaN,
-						NaN,
-						bmVO.additionalData.DESCRIPTION
-					]
-				)
-			);
+			if ("DESCRIPTION" in bmVO.additionalData == true && bmVO.additionalData.DESCRIPTION != null) {
+				detailsVOs.push(
+					new AccountLimitVO(
+						[
+							AccountLimit.FIELD_DETAILS_DESC,
+							NaN,
+							NaN,
+							bmVO.additionalData.DESCRIPTION
+						]
+					)
+				);
+			}
 			if (bmVO.additionalData.FEE_CURRENCY != null) {
 				detailsVOs.push(
 					new AccountLimitVO(
@@ -1674,7 +1676,7 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements {
 			if (bmVO.item == null)
 				return res;
 			var cryptoRDSection:BACryptoRDSection;
-			if (bmVO.item.type != "cryptoRewardsDeposites") {
+			if (bmVO.item.type != "cryptoRewardsDeposites" && bmVO.item.type != "cryptoRewardsDepositesSwap") {
 				if (bmVO.item.type == "showRD") {
 					res = Config.MARGIN;
 					cryptoRDSections ||= [];
@@ -1950,12 +1952,9 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements {
 		}
 		
 		public function dispose():void {
-			
 			if (sectionText != null)
-			{
 				sectionText.dispose();
-				sectionText = null;
-			}
+			sectionText = null;
 			
 			removeButtonSections();
 			buttonSections = null;
@@ -2003,16 +2002,12 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements {
 			cryptoDealsSections = null;
 			
 			if (avatarBankIBMD != null)
-			{
 				avatarBankIBMD.dispose();
-				avatarBankIBMD = null;
-			}
+			avatarBankIBMD = null;
 			
 			if (avatar != null)
-			{
 				UI.destroy(avatar);
-				avatar = null;
-			}
+			avatar = null;
 		}
 	}
 }
