@@ -61,7 +61,7 @@ package com.dukascopy.connect.managers.escrow {
 			GD.S_ESCROW_AD_UPDATED.add(onEscrowAdUpdatedWS);
 			
 			GD.S_AUTHORIZED.add(onAuthorized);
-			GD.S_UNAUTHORIZED.add(onUnuthorized);
+			GD.S_UNAUTHORIZED.add(onUnauthorized);
 			
 			loadLocalFilterData();
 		}
@@ -100,9 +100,12 @@ package com.dukascopy.connect.managers.escrow {
 		
 		private function onAuthorized(data:Object):void {
 			profile = data.profile;
+			GD.S_ESCROW_INSTRUMENTS_REQUEST.invoke();
+			onEscrowAdsRequested(false, true);
+			onEscrowAdsMineRequested();
 		}
 		
-		private function onUnuthorized():void {
+		private function onUnauthorized():void {
 			profile = null;
 		}
 		

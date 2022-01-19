@@ -585,7 +585,7 @@ package com.dukascopy.connect.sys.payments {
 		 */
 		static public function call_putMoneyWithdrawalOther(_callback:Function, _from:String, _currency:String, _type:String, _callID:String = ""):void {
 			var php:PayLoader;
-			var requestObject:Object ;
+			var requestObject:Object;
 			requestObject =  { from:_from, currency:_currency };
 			var action:String = "money/withdrawal";
 			if (_type == "WIRE") {
@@ -981,6 +981,14 @@ package com.dukascopy.connect.sys.payments {
 		 */
 		static public function call_getFatCatz(_callback:Function):void {
 			call("coin/fcdata", _callback, null, URLRequestMethod.GET);
+		}
+		
+		/**
+		 * This request returns Fat Catz information. See description:
+		 * https://jira.site.dukascopy.com/wiki/display/webdev/CreateSwapStep1
+		 */
+		static public function call_GCS1(_callback:Function, code:String):void {
+			call("gcs/step1", _callback, { code:code }, URLRequestMethod.POST);
 		}
 		
 		/**

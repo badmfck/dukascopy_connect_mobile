@@ -480,7 +480,7 @@ package com.dukascopy.connect.sys.payments {
 		}
 		
 		/**
-		 * GET Currency Transsfer Rate
+		 * GET Currency Transfer Rate
 		 * @param    fromCurrency
 		 * @param    toCurrency
 		 * @param    amount
@@ -1337,7 +1337,7 @@ package com.dukascopy.connect.sys.payments {
 		}
 		static public function get isInitialized():Boolean { return _isInitialized; }
 
-		static public function get systemOptionsReady():Boolean { return systemOptions!=null; }
+		static public function get systemOptionsReady():Boolean { return systemOptions != null; }
 		static public function get hasPendingTransfer():Boolean { return _hasPendingTransfer; }
 		static public function get creatingWalletBussy():Boolean { return _creatingWalletBussy; }
 		static public function get internalTransferBusy():Boolean { return _internalTransferBusy; }
@@ -1350,8 +1350,8 @@ package com.dukascopy.connect.sys.payments {
 		
 		static public function get walletsCurrencies():Array {
 			var result:Array = [];
-			if(_accountInfo!= null && _accountInfo.accounts!=null){
-				for (var i:int = 0; i < _accountInfo.accounts.length; i++) 	{
+			if (_accountInfo != null && _accountInfo.accounts != null) {
+				for (var i:int = 0; i < _accountInfo.accounts.length; i++) {
 					result.push(_accountInfo.accounts[i].CURRENCY);
 				}
 			}
@@ -1378,7 +1378,7 @@ package com.dukascopy.connect.sys.payments {
 			_isInsidePaymentsScreenNow = value;
 			
 			if (!_isInsidePaymentsScreenNow) {
-				if (S_ON_EXIT_PAYMENTS != null)
+				if (S_ON_EXIT_PAYMENTS != null) 
 					S_ON_EXIT_PAYMENTS.invoke();
 			}
 			if (_isInsidePaymentsScreenNow == true)

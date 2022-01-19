@@ -109,8 +109,7 @@ package com.dukascopy.connect.data.screenAction.customActions {
 						var limit:AccountLimitVO;
 						for (var j:int = 0; j < limits.length; j++) {
 							limit = limits[j];
-							if (limit.type == "DUKAPAY_INCOMING_LIMIT_AMOUNT_Q" || limit.type == "TOTAL_EQUITY_USD")
-							{
+							if (limit.type == "DUKAPAY_INCOMING_LIMIT_AMOUNT_Q" || limit.type == "TOTAL_EQUITY_USD") {
 								if (limit.maxLimit - limit.current < creditAmount / EscrowSettings.limitAmountKoef) {
 									upLimit = true;
 								}

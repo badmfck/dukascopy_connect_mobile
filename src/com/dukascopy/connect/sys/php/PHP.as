@@ -178,16 +178,14 @@ package com.dukascopy.connect.sys.php {
 				obj.hash = '-1';
 			else
 				obj.hash = hash;
-
 			if (lastID != 0)
 				obj.banan = "-" + lastID;
 			else
 				obj.banan = 0;
-			
 			obj.stat = true;
 			if (lastID == 0)
 				obj.limit = (firstTime == true) ? ChatManager.getFirstMsgsCount() : 50;
-			if (chatType)
+			if (chatType) 
 				obj.tp = chatType;
 			trace(UI.tracedObj(obj));
 			call('chat.hGetMessages', callBack, obj, null, false, "POST", true, false, { firstTime:firstTime } );

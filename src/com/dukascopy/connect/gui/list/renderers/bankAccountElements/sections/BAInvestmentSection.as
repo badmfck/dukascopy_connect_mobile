@@ -159,7 +159,7 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements.sections {
 				if (data.CONSOLIDATE_BALANCE != null) {
 					flagIcon.y = tfAmount.y + tfAmount.height - ICON_SIZE * .5 - Config.FINGER_SIZE * .025 ;
 				} else {
-					tfAmount.width = w -Config.DOUBLE_MARGIN * 4 - ICON_SIZE;
+					tfAmount.width = w - Config.DOUBLE_MARGIN * 4 - ICON_SIZE;
 					tfAmount.htmlText = UI.renderCurrency(
 						Lang.approveTerms,
 						"",
@@ -170,7 +170,7 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements.sections {
 					flagIcon.y = tfAmount.y + tfAmount.height - ICON_SIZE - Config.FINGER_SIZE * .025 ;
 				}
 				flagIcon.x = leftX;
-				tfAmount.x = leftX + Config.FINGER_SIZE*.5;
+				tfAmount.x = leftX + Config.FINGER_SIZE * .5;
 				tfAmountInCurrency.x = leftX + Config.FINGER_SIZE * .5;
 			} else {
 				flagIcon.visible = false;

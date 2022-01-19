@@ -147,6 +147,10 @@ package com.dukascopy.connect.sys.bankManager {
 							}
 						}
 				}*/
+				if (tmp[1] == "rewardDepositeSwapStep1") {
+					onRewardDepositeSwapStep1();
+					return;
+				}
 				if (tmp[1] == "cryptoDeposites") {
 					delete scenario.scenario.cryptoDeposites.menu[2].disabled;
 					delete scenario.scenario.cryptoDeposites.menu[3].disabled;
@@ -819,6 +823,11 @@ package com.dukascopy.connect.sys.bankManager {
 			callPaymentsMethod("transactionCode:" + steps[steps.length - 1].val);
 		}
 		
+		static private function onRewardDepositeSwapStep1():void {
+			sendBlock("actionProgress");
+			callPaymentsMethod("rdSwapStep1:" + steps[steps.length - 1].val);
+		}
+		
 		static private function onOtherWithdrawalConfirm():void {
 			sendBlock("actionProgress");
 			callPaymentsMethod("otherWithdrawal:" + steps[steps.length - 1].val + "|!|" + steps[steps.length - 2].val);
@@ -1030,6 +1039,12 @@ package com.dukascopy.connect.sys.bankManager {
 					return;
 				temp = msg.substr(command.length + 1).split("|!|");
 				lastPaymentsRequests["transactionCode" + PaymentsManagerNew.transactionCode(onTransactionCodeResponse, temp[0], temp[1])] = msg;
+			}
+			if (command == "rdSwapStep1") {
+				if (checkForPaymentsRequestExist(msg) == true)
+					return;
+				lastPaymentsRequests["rdSwapStep1"] = msg;
+				PaymentsManagerNew.rdSwapStep1(onRDSwapStep1, msg.substr(command.length + 1));
 			}
 			if (command == "fatCatz") {
 				if (checkForPaymentsRequestExist(msg) == true)
@@ -1881,6 +1896,15 @@ package com.dukascopy.connect.sys.bankManager {
 			sendBlock("transactionCodeCompleted");
 		}
 		
+		static private function onRDSwapStep1(respondData:Object):void {
+			if (preCheckForErrors(respondData, "rdSwapStep1", null, "paymentsErrorDataNull", [3503]) == true) {
+				if (respondData.code == 3503)
+					sendBlock("paymentsErrorDataNull");
+				return;
+			}
+			sendBlock("transactionCodeCompleted");
+		}
+		
 		static private function onPossibleRD(respondData:Object, hash:String):void {
 			if (preCheckForErrors(respondData, "possibleRD" + hash, null, "paymentsErrorDataNull") == true)
 				return;
@@ -2220,6 +2244,12 @@ package com.dukascopy.connect.sys.bankManager {
 					tempObject.acc = history[i].CURRENCY;
 					tempObject.bankBot = true;
 					tempObject.amount = Number(history[i].AMOUNT) + Number(history[i].FEE_AMOUNT);
+				} else if (history[i].TYPE == "SAVINGS TRANSFER") {
+					tempObject.mine = true;
+					tempObject.type = "savingsTransfer";
+					tempObject.bankBot = true;
+					tempObject.acc = history[i].CURRENCY;
+					tempObject.amount = Number(history[i].AMOUNT);
 				} else if (history[i].TYPE == "SAVINGS") {
 					tempObject.mine = false;
 					tempObject.acc = history[i].CURRENCY;
