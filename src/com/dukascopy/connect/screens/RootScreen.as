@@ -329,8 +329,6 @@ package com.dukascopy.connect.screens {
 				topBar.topPadding = 0;
 			}
 			
-		//	topBar.topPadding+=Config.APPLE_TOP_OFFSET;
-			
 			topBar.setSize(_width, Config.TOP_BAR_HEIGHT);
 			topBar.show();
 			bottomTabs.setWidthAndHeight(_width, Config.TOP_BAR_HEIGHT * 1.1, Config.APPLE_BOTTOM_OFFSET);
@@ -471,20 +469,14 @@ package com.dukascopy.connect.screens {
 			updateMissedCallsNum(CallsHistoryManager.getMissedNum());
 			CallsHistoryManager.S_MISSED_NUM.add(updateMissedCallsNum);
 			
-			if(topBar != null)
-			{
-				if (currentTabID == ESCROW_INSTRUMENT_SCREEN_ID)
-				{
+			if(topBar != null) {
+				if (currentTabID == ESCROW_INSTRUMENT_SCREEN_ID) {
 					topBar.addBackButton();
-				}
-				else
-				{
+				} else {
 					topBar.removeBackButton();
 				}
 			}
-			
-			if (ratesPanel != null)
-			{
+			if (ratesPanel != null) {
 				ratesPanel.activate();
 			}
 		}

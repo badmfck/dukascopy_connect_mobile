@@ -159,6 +159,9 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements.sections {
 					bgColor = COLOR_WHITE;
 					textColor = COLOR_BLACK;
 					lineColor = COLOR_BLACK;
+				} else if (data.type == "savingsTransfer") {
+					bgColor = COLOR_BLUE_LIGHT;
+					textColor = COLOR_WHITE;
 				}
 				lineColor = bgColor;
 				lineAlpha = 1;

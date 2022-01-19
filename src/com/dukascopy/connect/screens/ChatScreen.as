@@ -2,7 +2,6 @@ package com.dukascopy.connect.screens {
 
 	import assets.ContectDeleteIcon;
 	import assets.HandStop;
-	import assets.ScrollBottomIcon;
 	import com.adobe.utils.StringUtil;
 	import com.dukascopy.connect.Config;
 	import com.dukascopy.connect.GD;
@@ -20,10 +19,8 @@ package com.dukascopy.connect.screens {
 	import com.dukascopy.connect.data.RateBotData;
 	import com.dukascopy.connect.data.ScanPassportResult;
 	import com.dukascopy.connect.data.SoundStatusData;
-	import com.dukascopy.connect.data.TestHelper;
 	import com.dukascopy.connect.data.UserBanData;
 	import com.dukascopy.connect.data.escrow.EscrowScreenNavigation;
-	import com.dukascopy.connect.data.escrow.EscrowStatus;
 	import com.dukascopy.connect.data.escrow.TradeDirection;
 	import com.dukascopy.connect.data.location.Location;
 	import com.dukascopy.connect.data.screenAction.IScreenAction;
@@ -71,7 +68,6 @@ package com.dukascopy.connect.screens {
 	import com.dukascopy.connect.gui.list.ListItem;
 	import com.dukascopy.connect.gui.list.renderers.ListChatItem;
 	import com.dukascopy.connect.gui.list.renderers.ListLink;
-	import com.dukascopy.connect.gui.list.renderers.ListPayWalletItem;
 	import com.dukascopy.connect.gui.menuVideo.BitmapButton;
 	import com.dukascopy.connect.gui.menuVideo.HidableButton;
 	import com.dukascopy.connect.gui.preloader.Preloader;
@@ -85,14 +81,10 @@ package com.dukascopy.connect.screens {
 	import com.dukascopy.connect.screens.call.CallScreen;
 	import com.dukascopy.connect.screens.call.TalkScreen;
 	import com.dukascopy.connect.screens.context.ContextMenuScreen;
-	import com.dukascopy.connect.screens.dialogs.QueuePopup;
-	import com.dukascopy.connect.screens.dialogs.QueueUnderagePopup;
 	import com.dukascopy.connect.screens.dialogs.ScanPassportPopup;
 	import com.dukascopy.connect.screens.dialogs.ScreenLinksDialog;
 	import com.dukascopy.connect.screens.dialogs.ScreenQuestionReactionsDialog;
 	import com.dukascopy.connect.screens.dialogs.calendar.RecognitionDateRemindPopup;
-	import com.dukascopy.connect.screens.dialogs.calendar.SelectRecognitionDatePopup;
-	import com.dukascopy.connect.screens.dialogs.paymentDialogs.FeedbackPopup;
 	import com.dukascopy.connect.screens.serviceScreen.Overlay;
 	import com.dukascopy.connect.sys.DocumentUploader;
 	import com.dukascopy.connect.sys.Gifts;
@@ -103,6 +95,7 @@ package com.dukascopy.connect.screens {
 	import com.dukascopy.connect.sys.calendar.Calendar;
 	import com.dukascopy.connect.sys.callManager.CallManager;
 	import com.dukascopy.connect.sys.chat.DraftMessage;
+	import com.dukascopy.connect.sys.chat.RichMessageDetector;
 	import com.dukascopy.connect.sys.chatManager.ChatManager;
 	import com.dukascopy.connect.sys.chatManager.ForwardingManager;
 	import com.dukascopy.connect.sys.chatManager.typesManagers.AnswersManager;
@@ -162,6 +155,7 @@ package com.dukascopy.connect.screens {
 	import com.dukascopy.connect.vo.users.adds.ChatUserVO;
 	import com.dukascopy.langs.Lang;
 	import com.dukascopy.langs.LangManager;
+	import com.greensock.TweenLite;
 	import com.greensock.TweenMax;
 	import com.greensock.easing.Quint;
 	import flash.desktop.Clipboard;
@@ -177,9 +171,6 @@ package com.dukascopy.connect.screens {
 	import flash.net.URLRequest;
 	import flash.net.navigateToURL;
 	import flash.text.TextFormatAlign;
-	import com.dukascopy.connect.sys.chat.RichMessageDetector;
-	import com.dukascopy.connect.sys.chat.RichMessageDetector;
-	import com.greensock.TweenLite;
 	
 	/**
 	 * @author Igor Bloom

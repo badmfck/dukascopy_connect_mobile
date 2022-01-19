@@ -35,6 +35,7 @@ package com.dukascopy.connect.sys.payments.vo {
 		private var _enableSaving:Boolean = false;
 		private var _enableTrading:Boolean = false;
 		private var _enableApplePay:Boolean = false;
+		private var _enableGCS:Boolean = false;
 		private var _updatePersonalInfo:Boolean = false;
 		private var _limitsIncreaseRequest:Boolean = false;
 		
@@ -173,6 +174,9 @@ package com.dukascopy.connect.sys.payments.vo {
 			key = "enable-apple-pay";
 			if (key in data == true)
 				_enableApplePay = data[key];
+			key = "enable-gcs";
+			if (key in data == true)
+				_enableGCS = data[key];
 			key = "update-personal-info";
 			if (key in data == true)
 				_updatePersonalInfo = data[key];
@@ -262,6 +266,7 @@ package com.dukascopy.connect.sys.payments.vo {
 		public function get enableSaving():Boolean { return _enableSaving; }
 		public function get enableTrading():Boolean { return _enableTrading; }
 		public function get enableApplePay():Boolean { return _enableApplePay; }
+		public function get enableGCS():Boolean { return _enableGCS; }
 		
 		public function get address_card():String 
 		{

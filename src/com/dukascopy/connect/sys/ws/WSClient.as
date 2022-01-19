@@ -1140,32 +1140,26 @@ package com.dukascopy.connect.sys.ws{
 			} );
 		}
 		
-		static public function call_accept_offer(id:Number, debitAccount:String, cryptoWallet:String):void 
-		{
+		static public function call_accept_offer(id:Number, debitAccount:String, cryptoWallet:String):void {
 			var request:Object = new Object();
 			request.msg_id = id;
-			if (debitAccount != null)
-			{
+			if (debitAccount != null) {
 				request.debit_account = debitAccount;
 			}
-			if (cryptoWallet != null)
-			{
+			if (cryptoWallet != null) {
 				request.crypto_wallet = cryptoWallet;
 			}
 			send(WSMethodType.ESCROW_OFFER_ACCEPT, request);
 		}
 		
-		static public function call_create_offer(dataObject:Object, cryptoWallet:String):void 
-		{
-			if (cryptoWallet != null)
-			{
+		static public function call_create_offer(dataObject:Object, cryptoWallet:String):void {
+			if (cryptoWallet != null) {
 				dataObject.crypto_wallet = cryptoWallet;
 			}
 			send(WSMethodType.ESCROW_OFFER_CREATE, dataObject);
 		}
 		
-		static public function call_cancel_offer(id:Number):void 
-		{
+		static public function call_cancel_offer(id:Number):void {
 			send(WSMethodType.ESCROW_OFFER_CANCEL, {msg_id:id});
 		}
 		

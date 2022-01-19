@@ -155,7 +155,6 @@ package com.dukascopy.connect.sys.auth {
 		}
 		
 		private static function authorized():void {
-			
 			_isAuthorized = true;
 			WSClient.S_USER_BLOCK_STATUS.add(onUserBlockStatusChangedFromWS);
 			WSClient.S_PUSH_GLOBAL_STATUS.add(onPushNotifocationsChanged);
@@ -582,7 +581,6 @@ package com.dukascopy.connect.sys.auth {
 			}
 			if (dataToSave) {
 				updateDataObjectWithCurrentValues(dataToSave);
-
 				var newHash:String = ArrayUtils.getObjectHash(dataToSave, ["authorized"]);
 				if (laststoredDataHash != newHash)
 				{
@@ -801,7 +799,6 @@ package com.dukascopy.connect.sys.auth {
 			NativeExtensionController.clearFingerprint();
 			_isExpired = true;
 			authorizationClearing = true;
-
 			UsersManager.removeUser(myProfile, null, true);
 			myProfile = null;
 			_authKey = "web";
@@ -811,24 +808,22 @@ package com.dukascopy.connect.sys.auth {
 			pizdec = null;
 			laststoredDataHash = "";
 			GlobalSettings.reset();
-
-            if(EncryptedLocalStore.isSupported) {
+            if (EncryptedLocalStore.isSupported) {
 				try{
 					var dID:ByteArray = EncryptedLocalStore.getItem('dc_connect_devID');
 					EncryptedLocalStore.reset();
 					if (dID != null)
 						EncryptedLocalStore.setItem('dc_connect_devID', dID);
-				}catch(e:Error){
-					trace("GOT ELS ERROR: "+e.message);
+				} catch(err:Error) {
+					trace("GOT ELS ERROR: " + err.message);
 				}
             }
-
 			SQLite.clear();
 			_isCallableToObtainLoginCode = true;
 			Store.clearAll(function():void {
 				echo("Auth", "clearAuthorization", "store cleared");
 				S_NEED_AUTHORIZATION.invoke();
-			});
+			} );
 		}
 		
 		static public function setMyPhone(value:String):void {
@@ -845,11 +840,7 @@ package com.dukascopy.connect.sys.auth {
 		}
 		
 		static public function get devID():String {
-			/*if (_devID == null)
-				_devID = MD5.hash(Capabilities.serverString) + MD5.hash(new Date().getTime() + ',' + Math.round(Math.random() * 10000));
-			return _devID;*/
-			if (_devID == null)
-			{
+			if (_devID == null) {
 				if (Config.PLATFORM_APPLE || Config.PLATFORM_ANDROID) {
 					_devID = getItem('dc_connect_devID');
 					if (_devID == null) {
@@ -865,12 +856,11 @@ package com.dukascopy.connect.sys.auth {
 					_devID = MD5.hash(new Date().getTime() + "");
 				}
 			}
-			
 			// ADD PLATFORM TO DEVID
 			var dev:String = "w_";
-			if(Config.PLATFORM_APPLE)
+			if (Config.PLATFORM_APPLE)
 				dev = "i_";
-			else if(Config.PLATFORM_ANDROID)
+			else if (Config.PLATFORM_ANDROID)
 				dev = "a_";
 			return dev + "" + _devID;
 		}

@@ -1612,56 +1612,43 @@ package com.dukascopy.connect.sys.chatManager {
 		
 		static public function updateLatestsInStore():void {
 			echo("ChatManager", "updateLatestsInStore", "START!");
-		//	trace("processUnreadedMessages 0", isLoadedFromStore(), latestChats);
-			
-
-			echo("ChatManager", "updateLatestsInStore", "1");
-
-			if (isLoadedFromStore() == false){
+			if (isLoadedFromStore() == false) {
 				echo("ChatManager", "updateLatestsInStore", "isLoadedFromStore == false");
 				return;
 			}
-
 			echo("ChatManager", "updateLatestsInStore", "2");
-
-			if (latestChats == null){
+			if (latestChats == null) {
 				echo("ChatManager", "updateLatestsInStore", "latestChats is null");
 				return;
 			}
-
 			echo("ChatManager", "updateLatestsInStore", "3");
-
 			var latestsChatsRawDataArray:Array = [];
 			var l:int = latestChats.length;
-
 			echo("ChatManager", "updateLatestsInStore", "4");
-
-			for (var i:int = 0; i < l; i++){
-				if(latestChats[i]==null){
+			var i:int;
+			for (i = 0; i < l; i++) {
+				if (latestChats[i] == null) {
 					echo("ChatManager","updateLatestsInStore","latest chat item null");
 					continue;
 				}
-				var rawData:Object=null;
-				try{
-					rawData=(latestChats[i] as ChatVO).getRawData();
-				}catch(e:Error){
-					echo("ChatManager","updateLatestsInStore","can't gete raw data");
+				var rawData:Object = null;
+				try {
+					rawData = (latestChats[i] as ChatVO).getRawData();
+				} catch(err:Error) {
+					echo("ChatManager", "updateLatestsInStore", "can't gete raw data");
 					continue;
 				}
 				latestsChatsRawDataArray.push(rawData);
 			}
-
 			echo("ChatManager", "updateLatestsInStore", "6");
-
 			var hash:String = null;
-			try{
-				hash=MD5.hash(JSON.stringify(latestsChatsRawDataArray));
+			try {
+				hash = MD5.hash(JSON.stringify(latestsChatsRawDataArray));
 				echo("ChatManager", "updateLatestsInStore", "7");
-			}catch(e:Error){
-				echo("ChatManager", "updateLatestsInStore", "Can't create hash, stringiy error");	
+			} catch(err:Error) {
+				echo("ChatManager", "updateLatestsInStore", "Can't create hash, stringiy error");
 				return;
 			}
-
 			echo("ChatManager", "updateLatestsInStore", "Start saving latest");
 			Store.save(Store.VAR_CHATS, { hash:hash, latest:latestsChatsRawDataArray, ver:currentDataVersion } );
 			echo("ChatManager", "updateLatestsInStore", "END");

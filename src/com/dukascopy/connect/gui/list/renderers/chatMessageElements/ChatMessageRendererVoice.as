@@ -84,7 +84,6 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 				hz.y = playPoint.y;
 				hz.width = Config.MARGIN * 2 + iconPlay.width;
 				hz.height = Config.MARGIN * 2 + iconPlay.height;
-				
 				itemHitzones.push(hz);
 				
 				hz = new HitZoneData();
@@ -93,7 +92,6 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 				hz.y = switchPoint.y;
 				hz.width = Config.MARGIN * 2 + iconLoudSpeaker.width;
 				hz.height = Config.MARGIN * 2 + iconLoudSpeaker.width;
-				
 				itemHitzones.push(hz);
 			}
 		}
@@ -240,7 +238,6 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 				iconLoading.visible = true;	
 			} else {
 				iconLoading.visible = false;
-				
 				if (data.isPlaying == true) {
 					iconPlay.visible = false;
 					iconStop.visible = true;
@@ -251,7 +248,7 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 			}
 		}
 		
-		public function dispose():void {		
+		public function dispose():void {
 			UI.destroy(back);
 			back = null;
 			UI.destroy(message);
@@ -266,7 +263,6 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 			progressMask = null;
 			UI.destroy(progressClip);
 			progressClip = null;
-			
 			textFormatTime = null;
 		}
 		

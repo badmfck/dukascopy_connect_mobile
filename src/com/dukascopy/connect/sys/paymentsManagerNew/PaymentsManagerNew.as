@@ -55,6 +55,7 @@ package com.dukascopy.connect.sys.paymentsManagerNew {
 		static private var callbacksInvestmentsH:Array;
 		static private var callbacksInvestmentDetails:Array;
 		static private var callbacksFatCatz:Array;
+		static private var callbacksRDSwapStep1:Array;
 		static private var callbacksCards:Array;
 		static private var callbacksLinkedCards:Array;
 		static private var callbacksCardAction:Object;
@@ -1743,6 +1744,26 @@ package com.dukascopy.connect.sys.paymentsManagerNew {
 			var res:Object = checkForError(respond);
 			while (callbacksFatCatz.length != 0)
 				callbacksFatCatz.shift()(res);
+			respond.dispose();
+		}
+		
+		static public function rdSwapStep1(callback:Function, code:String):void {
+			if (preCall() == false)
+				return;
+			if (callbacksRDSwapStep1 == null)
+				callbacksRDSwapStep1 = [];
+			if (callbacksRDSwapStep1.indexOf(callback) != -1)
+				return;
+			callbacksRDSwapStep1.push(callback);
+			PayServer.call_GCS1(onRDSwapStep1, code);
+		}
+		
+		static private function onRDSwapStep1(respond:PayRespond):void {
+			if (callbacksRDSwapStep1 == null)
+				return;
+			var res:Object = checkForError(respond);
+			while (callbacksRDSwapStep1.length != 0)
+				callbacksRDSwapStep1.shift()(res);
 			respond.dispose();
 		}
 		
