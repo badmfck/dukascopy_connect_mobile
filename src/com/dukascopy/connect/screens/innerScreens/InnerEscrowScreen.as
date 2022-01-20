@@ -245,6 +245,13 @@ package com.dukascopy.connect.screens.innerScreens {
 			
 			GD.S_SCREEN_READY.add(onScreenReady);
 			WS.S_CONNECTED.add(update);
+			
+			/*TweenMax.delayedCall(5, invokeInstr);
+		}
+		
+		private function invokeInstr():void {
+			TweenMax.delayedCall(5, invokeInstr);
+			GD.S_ESCROW_INSTRUMENTS_REQUEST.invoke();*/
 		}
 		
 		private function onScreenReady(screenName:String):void {
@@ -502,8 +509,7 @@ package com.dukascopy.connect.screens.innerScreens {
 			GD.S_ESCROW_DEALS_UPDATE.remove(onDealsLoaded);
 			WS.S_CONNECTED.remove(update);
 			
-			if (preloader != null)
-			{
+			if (preloader != null) {
 				TweenMax.killDelayedCallsTo(startPreloader);
 				preloader.dispose();
 				preloader = null;

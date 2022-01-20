@@ -124,6 +124,7 @@ package com.dukascopy.connect
 		static public const S_ESCROW_ADS_CREATE_FAIL:Signal = new Signal("GD.S_ESCROW_ADS_FAIL");
 		static public const S_ESCROW_AD_UPDATED:Signal = new Signal("GD.S_ESCROW_AD_UPDATED");
 		static public const S_ESCROW_INSTRUMENT_UPDATE:Signal = new Signal("GD.S_ESCROW_INSTRUMENT_UPDATE");
+		static public const S_ESCROW_IN_OUT:Signal = new Signal("GD.S_ESCROW_IN_OUT");
 		static public const S_ESCROW_INSTRUMENT_RATES_REQUEST:S_EscrowInstrumentRatesHistoryRequest = new S_EscrowInstrumentRatesHistoryRequest();
 		static public const S_ESCROW_INSTRUMENT_RATES:S_EscrowInstrumentRatesHistory = new S_EscrowInstrumentRatesHistory();
 

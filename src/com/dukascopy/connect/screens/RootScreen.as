@@ -721,6 +721,7 @@ package com.dukascopy.connect.screens {
 				ratesPanel = null;
 			}
 			drawView();
+			GD.S_ESCROW_IN_OUT.invoke(false);
 		}
 		
 		private function addRatesPanel():void 
@@ -732,6 +733,7 @@ package com.dukascopy.connect.screens {
 				view.addChild(ratesPanel);
 			}
 			drawView();
+			GD.S_ESCROW_IN_OUT.invoke(true);
 		}
 		
 		private function getActions(id:String):Vector.<IScreenAction> {
