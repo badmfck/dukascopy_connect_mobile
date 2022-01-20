@@ -324,7 +324,7 @@ package com.dukascopy.connect {
 			
 			EscrowScreenNavigation.init();
 			
-			new CryptoRates();
+		//	new CryptoRates();
 			new EscrowDealManager();
 			new EscrowAdsManager();
 			new EscrowOfferManager();
