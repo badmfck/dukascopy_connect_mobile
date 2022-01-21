@@ -522,9 +522,17 @@ package com.dukascopy.connect.screens {
 			GD.S_ESCROW_ADS_CREATE_FAIL.remove(onEscrowAdsCreatedFail);
 			fillList();
 			topBar.setActions( [ actionTrash ] );
-
+			
+			var screenData:Object = { };
+			screenData.backScreen = RootScreen;
+			screenData.backScreenData = null;
+			screenData.temp = Math.random();
+			screenData.instrument = escrowAdsVONew.instrument;
+			screenData.selectedTab = RootScreen.ESCROW_INSTRUMENT_SCREEN_ID;
+			MobileGui.changeMainScreen(RootScreen, screenData);
+			
 			//GO BACK
-			onBack();
+		//	onBack();
 		}
 		
 		private function onEscrowAdsCreatedFail(message:String = null):void {

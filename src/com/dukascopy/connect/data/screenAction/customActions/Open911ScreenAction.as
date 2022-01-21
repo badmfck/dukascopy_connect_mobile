@@ -59,6 +59,10 @@ package com.dukascopy.connect.data.screenAction.customActions {
 			return 30/30;
 		}
 		
+		override public function getIconColor():Number {
+			return 0x6E92AF;
+		}
+		
 		override public function dispose():void {
 			super.dispose();
 		}

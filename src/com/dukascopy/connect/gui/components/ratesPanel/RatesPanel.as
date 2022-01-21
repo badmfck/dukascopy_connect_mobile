@@ -61,7 +61,7 @@ package com.dukascopy.connect.gui.components.ratesPanel
 		
 		private function onInstruments(instrumentsData:Vector.<EscrowInstrument>):void 
 		{
-			if (instruments == null && instrumentsData != null)
+			if (instrumentsData != null)
 			{
 				instruments = instrumentsData.concat(instrumentsData);
 				construct();
@@ -75,6 +75,14 @@ package com.dukascopy.connect.gui.components.ratesPanel
 		{
 			var item:Bitmap;
 			renderer = new RatePanelItem();
+			
+			stopAnimation();
+			removeItems();
+			
+			lastItemIndex = 0;
+			lastItemPosition = 0;
+			items = new Vector.<Bitmap>();
+			
 			for (var i:int = 0; i < instruments.length; i++) 
 			{
 				if (lastItemPosition + gap < itemWidth)
@@ -91,6 +99,22 @@ package com.dukascopy.connect.gui.components.ratesPanel
 					inAnimation = true;
 					startAnimation();
 				}
+			}
+		}
+		
+		private function removeItems():void 
+		{
+			if (items != null)
+			{
+				for (var i:int = 0; i < items.length; i++) 
+				{
+					if (container != null && container.contains(items[i]))
+					{
+						container.removeChild(items[i]);
+					}
+					UI.destroy(items[i]);
+				}
+				items = null;
 			}
 		}
 		
@@ -153,14 +177,7 @@ package com.dukascopy.connect.gui.components.ratesPanel
 			instruments = null;
 			
 			stopAnimation();
-			if (items != null)
-			{
-				for (var i:int = 0; i < items.length; i++) 
-				{
-					UI.destroy(items[i]);
-				}
-				items = null;
-			}
+			removeItems();
 			if (renderer != null)
 			{
 				UI.destroy(renderer);

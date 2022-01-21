@@ -21,6 +21,7 @@ package com.dukascopy.connect.screens {
 	import com.dukascopy.connect.gui.tools.ImagePreviewCrop;
 	import com.dukascopy.connect.gui.topBar.TopBar;
 	import com.dukascopy.connect.managers.escrow.vo.EscrowAdsFilterVO;
+	import com.dukascopy.connect.managers.escrow.vo.EscrowInstrument;
 	import com.dukascopy.connect.screens.base.BaseScreen;
 	import com.dukascopy.connect.screens.base.ScreenManager;
 	import com.dukascopy.connect.screens.dialogs.x.base.float.FloatAlert;
@@ -233,6 +234,10 @@ package com.dukascopy.connect.screens {
 			_params.doDisposeAfterClose = false;
 			
 			if (firstTime == false) {
+				if (data != null && "instrument" in data && data.instrument != null && data.instrument is EscrowInstrument) {
+					selectedinstrument = (data.instrument as EscrowInstrument).code;
+				}
+				
 				if (data != null && "selectedTab" in data && data.selectedTab != null) {
 					currentTabID = data.selectedTab;
 					onBottomTabsClick(currentTabID, false, 0);

@@ -8,6 +8,7 @@ package com.dukascopy.connect.sys.phonebookManager {
 	import com.dukascopy.connect.data.LocalAvatars;
 	import com.dukascopy.connect.data.screenAction.IScreenAction;
 	import com.dukascopy.connect.data.screenAction.customActions.AddNewContactAction;
+	import com.dukascopy.connect.data.screenAction.customActions.Open911ScreenAction;
 	import com.dukascopy.connect.data.screenAction.customActions.OpenBankAccountAction;
 	import com.dukascopy.connect.data.screenAction.customActions.OpenBankBotAction;
 	import com.dukascopy.connect.data.screenAction.customActions.OpenMarketplaceAction;
@@ -43,6 +44,7 @@ package com.dukascopy.connect.sys.phonebookManager {
 	import flash.net.URLRequest;
 	import connect.DukascopyExtension;
 	import flash.events.StatusEvent;
+	import white.Avatar911;
 	
 	/**
 	 * ...
@@ -680,6 +682,7 @@ package com.dukascopy.connect.sys.phonebookManager {
 					addEpAcc( { pid: -1, title:Lang.myAccount }, res);
 					addEpAcc( { pid: -3, title:Lang.bankBot }, res );
 					addEpAcc( { pid: -4, title:Lang.dukascoinMarketplace }, res);
+					addEpAcc( { pid: -6, title:Lang.help_911_title }, res);
 					//addEpAcc( { pid:Config.EP_TRADING, title:"911 Trading Channel" }, res);
 				}
 			} else {
@@ -716,6 +719,11 @@ package com.dukascopy.connect.sys.phonebookManager {
 				model = new PayWithCardAction();
 			else if (epData.pid == Config.EP_TRADING)
 				model = new TradingChannelAction();
+			else if (epData.pid == -6)
+			{
+				model = new Open911ScreenAction();
+				model.setIconClass(Avatar911);
+			}
 			model.setData(epData.title);
 			if (toFirstPlace == true)
 				res.unshift(model);
