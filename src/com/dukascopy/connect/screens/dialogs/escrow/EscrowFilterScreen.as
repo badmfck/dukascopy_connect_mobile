@@ -86,7 +86,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			line2.bitmapData = UI.getHorizontalLine(Style.color(Style.COLOR_SEPARATOR));
 			addItem(line2);
 			
-			hideBlocked = new Checkbox(Lang.escrow_hide_blocked);
+			hideBlocked = new Checkbox(Lang.escrow_show_from_blocked);
 			addItem(hideBlocked);
 			hideNoobs = new Checkbox(Lang.escrow_hide_noobs);
 			addItem(hideNoobs);
@@ -253,7 +253,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 					filter.hideNoobs = false;
 				}
 				
-				if (hideBlocked != null && hideBlocked.isSelected())
+				if (hideBlocked != null && !hideBlocked.isSelected())
 				{
 					filter.hideBlocked = true;
 				}
@@ -311,7 +311,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 				ApplicationErrors.add();
 			}
 			
-			if (filter.hideBlocked == true)
+			if (!filter.hideBlocked == true)
 			{
 				if (hideBlocked != null)
 				{

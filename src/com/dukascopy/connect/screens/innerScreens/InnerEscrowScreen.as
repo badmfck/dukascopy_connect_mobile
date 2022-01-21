@@ -146,7 +146,7 @@ package com.dukascopy.connect.screens.innerScreens {
 						}
 						case EscrowFilterType.HIDE_BLOCKED:
 						{
-							currentFilter.hideBlocked = false;
+							currentFilter.hideBlocked = true;
 							break;
 						}
 						case EscrowFilterType.HIDE_NOOBS:
@@ -291,9 +291,9 @@ package com.dukascopy.connect.screens.innerScreens {
 			var filtersPanelData:Vector.<SelectorItemData> = new Vector.<SelectorItemData>();
 			if (currentFilter != null)
 			{
-				if (currentFilter.hideBlocked)
+				if (!currentFilter.hideBlocked)
 				{
-					filtersPanelData.push(new SelectorItemData(Lang.escrow_hide_blocked, EscrowFilterType.HIDE_BLOCKED));
+					filtersPanelData.push(new SelectorItemData(Lang.escrow_show_from_blocked, EscrowFilterType.HIDE_BLOCKED));
 				}
 				if (currentFilter.hideNoobs)
 				{

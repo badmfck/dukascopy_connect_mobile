@@ -2676,8 +2676,9 @@ package com.dukascopy.langs {
 		static public var waiting_for_connection:String = "Waiting for connection...";
 		static public var paste:String = "Paste";
 		static public var help_911_title:String = "911 Crypto P2P";
-		static public var tap_to_see_deals:String = "Tap to see all deals";
+		static public var tap_to_see_deals:String = "Tap to see all ads";
 		static public var escrow_credit_to_account:String = "Credit to account";
+		static public var escrow_show_from_blocked:String = "Show ads from blocked users";
 		
 		static public function updateKeys(keys:Object):void {
 			for (var n:String in keys) {

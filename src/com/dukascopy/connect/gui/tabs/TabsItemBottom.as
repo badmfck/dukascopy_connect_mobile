@@ -114,8 +114,10 @@ package com.dukascopy.connect.gui.tabs {
 		//	icon.scaleX = icon.scaleY = scale;
 		//	iconDown.scaleX = iconDown.scaleY = scale;
 			
-			UI.scaleToFit(icon, Config.FINGER_SIZE * .6, Config.FINGER_SIZE * .6);
-			UI.scaleToFit(iconDown, Config.FINGER_SIZE * .6, Config.FINGER_SIZE * .6);
+			var iconSize:int = Config.FINGER_SIZE * .62 * scale;
+			
+			UI.scaleToFit(icon, iconSize, iconSize);
+			UI.scaleToFit(iconDown, iconSize, iconSize);
 			
 			_icon = new Bitmap(UI.getSnapshot(icon, StageQuality.HIGH, "TabsItemBottom." + id + ".icon"));
 			_iconDown = new Bitmap(UI.getSnapshot(iconDown, StageQuality.HIGH, "TabsItemBottom." + id + ".Down.icon"));

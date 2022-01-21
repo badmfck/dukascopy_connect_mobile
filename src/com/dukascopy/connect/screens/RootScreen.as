@@ -106,7 +106,7 @@ package com.dukascopy.connect.screens {
 				selectedIcon: new (Style.icon(Style.MENU_P2P_SELECTED)),
 				notSelectedIcon: new (Style.icon(Style.MENU_P2P)),
 				hasSearchBar: false,
-				scaleIndex:1
+				scaleIndex:0.59
 			}, {
 				id: PAYMENTS_SCREEN_ID,
 				title: Lang.textPayments,
@@ -184,10 +184,10 @@ package com.dukascopy.connect.screens {
 						screensArray[i].id == CHANNELS_SCREEN_ID)
 							continue;
 				}
-				tabScale = UI.getMaxScale(screensArray[i].selectedIcon.width, screensArray[i].selectedIcon.height, Config.TOP_BAR_HEIGHT * .55, Config.TOP_BAR_HEIGHT * .55);
+				tabScale = UI.getMaxScale(screensArray[i].selectedIcon.width, screensArray[i].selectedIcon.height, Config.TOP_BAR_HEIGHT * .42, Config.TOP_BAR_HEIGHT * .42);
 				tabScale *= screensArray[i].scaleIndex;
-				if (Config.PLATFORM_APPLE && Config.isRetina() > 0)
-					tabScale *= 0.9;
+				/*if (Config.PLATFORM_APPLE && Config.isRetina() > 0)
+					tabScale *= 0.9;*/
 				bottomTabs.add("", screensArray[i].id, screensArray[i].selectedIcon, screensArray[i].notSelectedIcon, null, false, tabScale, false);
 			}
 			_view.addChild(bottomTabs.view);

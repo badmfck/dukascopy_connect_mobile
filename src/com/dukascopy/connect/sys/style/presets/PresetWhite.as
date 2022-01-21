@@ -50,6 +50,8 @@ package com.dukascopy.connect.sys.style.presets
 	import white.Logout;
 	import white.MakeCall;
 	import white.Marketplace;
+	import white.Menu911;
+	import white.Menu911Selected;
 	import white.MenuBank;
 	import white.MenuBankSelected;
 	import white.MenuBot;
@@ -331,8 +333,8 @@ package com.dukascopy.connect.sys.style.presets
 			this[Style.ICON_UNSUBSCRIBE] = OwnerIcon;
 			this[Style.ICON_SUBSCRIBE] = ownerIconOutline;
 			
-			this[Style.MENU_P2P] = white.Icon911;
-			this[Style.MENU_P2P_SELECTED] = white.Icon911;
+			this[Style.MENU_P2P] = Menu911;
+			this[Style.MENU_P2P_SELECTED] = Menu911Selected;
 		}
 	}
 }
