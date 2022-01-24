@@ -114,7 +114,7 @@ package com.dukascopy.connect.gui.tabs {
 		//	icon.scaleX = icon.scaleY = scale;
 		//	iconDown.scaleX = iconDown.scaleY = scale;
 			
-			var iconSize:int = Config.FINGER_SIZE * .62 * scale;
+			var iconSize:int = Config.FINGER_SIZE * .58 * scale;
 			
 			UI.scaleToFit(icon, iconSize, iconSize);
 			UI.scaleToFit(iconDown, iconSize, iconSize);
