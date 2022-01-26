@@ -38,6 +38,7 @@ package com.dukascopy.connect.sys.payments.vo {
 		private var _enableGCS:Boolean = false;
 		private var _updatePersonalInfo:Boolean = false;
 		private var _limitsIncreaseRequest:Boolean = false;
+		private var _cardSensitiveData:Boolean = false;
 		
 		private var _virtualMC:Boolean = false;
 		private var _plasticMC:Boolean = false;
@@ -177,6 +178,9 @@ package com.dukascopy.connect.sys.payments.vo {
 			key = "enable-gcs";
 			if (key in data == true)
 				_enableGCS = data[key];
+			key = "enable-view-sensitive-card-data";
+			if (key in data == true)
+				_cardSensitiveData = data[key];
 			key = "update-personal-info";
 			if (key in data == true)
 				_updatePersonalInfo = data[key];
@@ -266,7 +270,8 @@ package com.dukascopy.connect.sys.payments.vo {
 		public function get enableSaving():Boolean { return _enableSaving; }
 		public function get enableTrading():Boolean { return _enableTrading; }
 		public function get enableApplePay():Boolean { return _enableApplePay; }
-		public function get enableGCS():Boolean { return _enableGCS; }
+		public function get enableGCS():Boolean { return false; /*_enableGCS;*/ }
+		public function get cardSensitiveData():Boolean { return _cardSensitiveData; }
 		
 		public function get address_card():String 
 		{

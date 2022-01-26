@@ -523,6 +523,16 @@ package com.dukascopy.connect.sys.payments {
 		}
 		
 		/**
+		 * This method performs different actions on particular prepaid card listed by GET account∕cards. See description:
+		 * https://jira.site.dukascopy.com/wiki/pages/viewpage.action?pageId=76709915
+		 */
+		static public function call_postCardDetailsSensitive(_callback:Function, card:String, _callID:String = ""):void {
+			var php:PayLoader = call("account/cards/" + card, _callback, { action: "view" }, URLRequestMethod.POST);
+			if (php.savedRequestData != null)
+				php.savedRequestData.callID = _callID;
+		}
+		
+		/**
 		 * This method initiates deposit process by different means. See description:
 		 * https://intranet.site.dukascopy.com/wiki/pages/viewpage.action?pageId=134775786
 		 */

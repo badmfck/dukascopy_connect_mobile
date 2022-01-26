@@ -202,9 +202,11 @@ package com.dukascopy.connect.sys.bankManager {
 				menuLayout:"vertical",
 				menu:[
 					{
+						type:"cardDetails",
 						text:"lang.menuCardDetails",
 						value:"@@1",
-						action:"nav:cardDetails"
+						action:"nav:cardDetails",
+						action1:"nav:cardDetailsWebView"
 					}, {
 						text:"lang.menuCardTopUp",
 						keywords:"cards,top,up,money,send,withdrawal",
@@ -519,6 +521,16 @@ package com.dukascopy.connect.sys.bankManager {
 					value:"@@1",
 					command:"cmd:back:deposites",
 					type:"paymentsDeposit"
+				}
+			},
+			
+			cardDetailsWebView: {
+				isItem: true,
+				back:false,
+				item: {
+					value:"@@1",
+					command:"cmd:back:deposites",
+					type:"cardDetailsWebView"
 				}
 			},
 			
@@ -1418,7 +1430,11 @@ package com.dukascopy.connect.sys.bankManager {
 					}, {
 						text:"lang.menuShowOffers",
 						action:"nav:cryptoDeals"
-					},{
+					}, {
+						disabled: true,
+						text:"lang.menuCryptoSwap",
+						action:"nav:cryptoSwap"
+					}, {
 						text:"lang.menuCryptoTransfer",
 						action:"nav:cryptoTransfer"
 					}, {
@@ -1730,6 +1746,42 @@ package com.dukascopy.connect.sys.bankManager {
 				]
 			},
 			
+			cryptoSwap: {
+				desc:"lang.mainDesc",
+				menuLayout:"vertical",
+				menu:[
+					{
+						text:"lang.menuSwapCrypto",
+						action:"nav:cryptoSwapConfirm"
+					}, {
+						text:"lang.menuSwapList",
+						action:"nav:cryptoSwapList"
+					}
+				]
+			},
+			
+			cryptoSwapConfirm: {
+				desc:"lang.cryptoSwapTermsDesc",
+				menuLayout:"vertical",
+				item: {
+					type:"cryptoRewardsDepositesSwap",
+					action:"nav:cryptoSwapSecondConfirm",
+					value:"ACTIVE",
+					text:"lang.itemRewardDepositSelected"
+				}
+			},
+			
+			cryptoSwapSecondConfirm: {
+				desc:"lang.cryptoSwapTermsDesc",
+				menuLayout:"vertical",
+				item: {
+					type:"cryptoRewardsDepositesSwapAmount",
+					action:"nav:cryptoSwapThirdConfirm",
+					value:"@@1",
+					text:"lang.itemRewardDepositSelected"
+				}
+			},
+			
 			cryptoTransfer: {
 				desc:"lang.sendMoneyDesc",
 				menuLayout:"vertical",
@@ -1753,7 +1805,7 @@ package com.dukascopy.connect.sys.bankManager {
 			
 			blockchainOps: {
 				desc:"lang.blockchainOperationsDesc",
-				menuLayout:"vertical",
+				menuLayout:"vertical", 
 				menu:[
 					{
 						text:"lang.menuCryptoWithdrawal",
@@ -1774,10 +1826,10 @@ package com.dukascopy.connect.sys.bankManager {
 				buttons: [
 					{
 						text:"lang.buttonOk",
-						textForUser:"lang.itemBCDeposite",
+						textForUser:"lang.itemBCDeposite", 
 						type:"BCDepositeAddress",
 						action:"nav:bcDepositeConfirm"
-					}
+					} 
 				]
 			},
 			

@@ -226,12 +226,9 @@ package com.dukascopy.connect.screens.innerScreens {
 			super.initScreen(data);
 			_params.doDisposeAfterClose = true;
 			
-			if (data != null && "additionalData" in data && data.additionalData != null && data.additionalData is String)
-			{
+			if (data != null && "additionalData" in data && data.additionalData != null && data.additionalData is String) {
 				instrument = data.additionalData as String;
-			}
-			else
-			{
+			} else {
 				ApplicationErrors.add();
 			}
 			

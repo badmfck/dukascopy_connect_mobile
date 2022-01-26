@@ -84,6 +84,7 @@ package com.dukascopy.connect.sys.bankManager {
 		static public var invoicesDesc:String = "Invoices";
 		static public var cardPinRequestDesc:String = "Please select pin request method.";
 		static public var zeroAccountDesc:String = "You have no funded accounts.";
+		static public var cryptoSwapTermsDesc:String = "Get quick money by selling your staked Dukascoins (DUK+) with a buyback in 1 month at a fixed price.\\nChoose an active stake to know how much you can get:";
 		static public var confirmRDCancelWithPenaltyDesc:String = "You are about to cancel your reward deposit before its maturity date. This will lead to no reward being paid for the cancelled deposit and to a penalty charge  applied to the allocated Dukascoins in the amount of @@1 Dukascoins.\\n\\nTotal amount to be returned: @@2 Dukascoins";
 		static public var confirmRDCancelWithoutPenaltyDesc:String = "You are about to cancel your reward deposit before its maturity date. This will lead to no reward being paid for the cancelled deposit.\\n\\nTotal amount to be returned: @@2 Dukascoins";
 		
@@ -307,6 +308,9 @@ package com.dukascopy.connect.sys.bankManager {
 		static public var menuShareIBAN:String = "Share IBAN";
 		static public var menuPinSMS:String = "SMS";
 		static public var menuPinCallback:String = "Call-back";
+		static public var menuCryptoSwap:String = "Swap Dukascoins";
+		static public var menuSwapCrypto:String = "New swap contract";
+		static public var menuSwapList:String = "List of swaps";
 		
 		static public var investmentIndex:String = "Index";
 		static public var investmentSilver:String = "Silver";
@@ -339,6 +343,7 @@ package com.dukascopy.connect.sys.bankManager {
 		static public var itemBCDeposite:String = "I want to deposit @1 DUK+";
 		static public var itemShowCryptoOfferOperations:String = "Show order operations";
 		static public var itemRewardDepositOperations:String = "Show reward deposit operations";
+		static public var itemRewardDepositSelected:String = "Reward deposit selected";
 		static public var itemInvestmentDeliveryBC:String = "I want to deliver @1 of my investment to @2";
 		static public var itemSelectMainCurrency:String = "Selected currency is @1";
 		static public var itemBCIDeposite:String = "I want to invest from blockchain @1";

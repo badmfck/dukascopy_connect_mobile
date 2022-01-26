@@ -147,7 +147,7 @@ package com.dukascopy.connect.sys.bankManager {
 							}
 						}
 				}*/
-				if (tmp[1] == "rewardDepositeSwapStep1") {
+				if (tmp[1] == "cryptoSwapSecondConfirm") {
 					onRewardDepositeSwapStep1();
 					return;
 				}
@@ -428,6 +428,10 @@ package com.dukascopy.connect.sys.bankManager {
 					if (vals.length != 3)
 						return;
 					sendBlock(tmp[1], [vals[0]]);
+					return;
+				}
+				if (tmp[1] == "cardDetailsWebView") {
+					onCardDetailsSensitiveConfirm();
 					return;
 				}
 				if (tmp[1] == "investmentTransactionConfirmed") {
@@ -831,6 +835,16 @@ package com.dukascopy.connect.sys.bankManager {
 		static private function onOtherWithdrawalConfirm():void {
 			sendBlock("actionProgress");
 			callPaymentsMethod("otherWithdrawal:" + steps[steps.length - 1].val + "|!|" + steps[steps.length - 2].val);
+		}
+		
+		static private function onCardDetailsSensitiveConfirm():void {
+			sendBlock("actionProgress");
+			if (steps == null)
+				return;
+			var vals:Array = steps[steps.length - 2].val.split("|!|");
+			if (vals.length != 3)
+				return;
+			callPaymentsMethod("cardDepositeSensitive:" + vals[0]);
 		}
 		
 		static private function onPaymentsDepositConfirm():void {
@@ -1357,6 +1371,12 @@ package com.dukascopy.connect.sys.bankManager {
 					lastPaymentsRequests[PaymentsManagerNew.callPaymentsDeposit(onPaymentsDepositCompleted, temp[0], temp[1])] = msg;
 				return;
 			}
+			if (command == "cardDepositeSensitive") {
+				if (checkForPaymentsRequestExist(msg) == true)
+					return;
+				lastPaymentsRequests[PaymentsManagerNew.callCardDetailsSensitive(onCardDetailsSensitive, msg.substr(command.length + 1))] = msg;
+				return;
+			}
 			if (command == "sendmoney") {
 				if (checkForPaymentsRequestExist(msg) == true)
 					return;
@@ -1880,7 +1900,7 @@ package com.dukascopy.connect.sys.bankManager {
 		
 		static private function onPinRequested(respondData:Object):void {
 			if (preCheckForErrors(respondData, null, null, "paymentsErrorDataNull"))
-				return;
+				return; 
 			if (respondData.channel == "ivr")
 				sendBlock("pinCodeCallbackCompleted");
 			else
@@ -1902,7 +1922,9 @@ package com.dukascopy.connect.sys.bankManager {
 					sendBlock("paymentsErrorDataNull");
 				return;
 			}
-			sendBlock("transactionCodeCompleted");
+			respondData.step = 1;
+			S_ANSWER.invoke("requestRespond:rdSwap:" + JSON.stringify(respondData));
+			sendBlock("cryptoSwapSecondConfirm", [steps[steps.length - 1].val]);
 		}
 		
 		static private function onPossibleRD(respondData:Object, hash:String):void {
@@ -2485,6 +2507,12 @@ package com.dukascopy.connect.sys.bankManager {
 				return;
 			sendBlock("clearWallets");
 			sendBlock("paymentsDepositConfirm", [respondData.url]);
+		}
+		
+		static private function onCardDetailsSensitive(respondData:Object, hash:String):void {
+			if (preCheckForErrors(respondData, hash, null, "paymentsErrorDataNull") == true)
+				return;
+			sendBlock("cardDetailsWebView", [respondData.url]);
 		}
 		
 		static private function onCardUnloadCompleted(respondData:Object, hash:String):void {
