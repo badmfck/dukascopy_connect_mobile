@@ -20,6 +20,8 @@ package com.dukascopy.connect.managers.escrow{
     import com.dukascopy.connect.vo.URLConfigVO;
     import com.dukascopy.connect.managers.escrow.vo.EscrowDealEventSentRequestVO;
     import com.dukascopy.connect.vo.WSPacketVO;
+    import flash.utils.clearInterval;
+    import flash.utils.setInterval;
     
 
     /**
@@ -46,6 +48,10 @@ package com.dukascopy.connect.managers.escrow{
 		public static var instance:EscrowDealManager;
 
         private var authKey:String="web";
+
+        // monitoring
+        private var timerMonitoringID:int=0;
+        private var timerMonitoringDelay:int=1000 * 60;
 		
         public function EscrowDealManager(){
 
@@ -53,9 +59,18 @@ package com.dukascopy.connect.managers.escrow{
                 SimpleLoader.URL_DEFAULT=cfg.DCCAPI_URL;//"https://loki.telefision.com/master/";    
             })
 
-             GD.S_AUTHORIZED.add(function(data:Object):void{
+            GD.S_AUTHORIZED.add(function(data:Object):void{
                 authKey=data.authKey;
                 loadDeals();
+            })
+
+            GD.S_ESCROW_START_MONITORING.add(function(...rest):void{
+                startMonitoring();
+            })
+
+            GD.S_ESCROW_STOP_MONITORING.add(function(...rest):void{
+                stopMonitoring();
+                
             })
 		    
             // Handle WS packet for deals
@@ -216,6 +231,18 @@ package com.dukascopy.connect.managers.escrow{
             // Escrow get offer calculation
             // instrument, price, amount
 			instance = this;
+        }
+
+        private function startMonitoring():void{
+            stopMonitoring();
+            timerMonitoringID=setInterval(function():void{
+                loadInstruments();
+            },timerMonitoringDelay)
+        }
+
+        private function stopMonitoring():void{
+            if(timerMonitoringID>0)
+                clearInterval(timerMonitoringID);
         }
 		
 		private function updateDeal(raw:Object):void 

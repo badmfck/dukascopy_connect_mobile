@@ -25,6 +25,7 @@ package com.dukascopy.connect
 	import com.telefision.sys.signals.S_WSPacketReceived;
 	import com.telefision.sys.signals.S_ErrorData;
 	import com.telefision.sys.signals.S_WSPacketSendRequest;
+	import com.telefision.sys.signals.S_VoidSignal;
 	
 	public class GD
 	{
@@ -70,6 +71,10 @@ package com.dukascopy.connect
 		static public const S_ESCROW_MONEY_HOLD_REQUEST:S_EscrowMoneyHoldRequest = new S_EscrowMoneyHoldRequest();
 		static public const S_ESCROW_WALLETS_REQUEST:S_EscrowWalletsRequest = new S_EscrowWalletsRequest();
 		static public const S_ESCROW_OFFER_CREATE_REQUEST:S_EscrowOfferCreateRequest = new S_EscrowOfferCreateRequest();
+
+
+		static public const S_ESCROW_START_MONITORING:S_VoidSignal=new S_VoidSignal();
+		static public const S_ESCROW_STOP_MONITORING:S_VoidSignal=new S_VoidSignal();
 
 		static public const S_ESCROW_DEAL_CREATED:S_EscrowDealCreated = new S_EscrowDealCreated();
 		

@@ -19,7 +19,8 @@ package com.dukascopy.langs
                     {
                         n_group:Lang.iosNotificationUnreadGroup,
                         n_private:Lang.iosNotificationUnreadPrivate,
-                        n_private_single:Lang.iosNotificationUnreadPrivateSingle
+                        n_private_single:Lang.iosNotificationUnreadPrivateSingle,
+                        n_group_title:Lang.iosNotificationUnreadGroupTitle
                     }
                 ))
             }

@@ -2116,16 +2116,16 @@ package com.dukascopy.connect.sys.chatManager {
 			return false;
 		}
 
-		static public function updateMessage(txt:String, msgID:Number, chatUID:String = null, updateLocaly:Boolean = false):Boolean {
+		static public function updateMessage(txt:String, msgID:Number, chatUID:String = null, updateLocaly:Boolean = false):void {
 			var chatVO:ChatVO;
 			if (chatUID == null)
 				chatVO = currentChat;
 			else
 				chatVO = getChatByUID(chatUID);
 			if (chatVO == null)
-				return false;
+				return;
 			var text:String = cryptTXT(txt, chatVO.chatSecurityKey, chatVO.pin);
-			return WSClient.call_updateTextMessage(chatVO.uid, text, msgID, updateLocaly);
+			WSClient.call_updateTextMessage(chatVO.uid, text, msgID, updateLocaly);
 		}
 		
 		static public function removeMessage(msg:ChatMessageVO):void {

@@ -77,6 +77,7 @@ package com.dukascopy.connect.screens.serviceScreen
 				MobileGui.stage.quality = StageQuality.HIGH;
 			}
 			
+			//view.alpha=.2;
 			super.initScreen(data);
 			
 			_params.doDisposeAfterClose = true;

@@ -8,13 +8,11 @@ package com.dukascopy.connect.screens {
 	import assets.DesktopOnlineButton;
 	import assets.IconArrowRight;
 	import assets.IconOnlineStatusWeb;
-	import assets.JailedIllustrationClip;
 	import assets.MobileOnlineButton;
 	import assets.PhotoShotIcon;
 	import com.dukascopy.connect.Config;
 	import com.dukascopy.connect.MobileGui;
 	import com.dukascopy.connect.data.GiftData;
-	import com.dukascopy.connect.data.PopupData;
 	import com.dukascopy.connect.data.screenAction.IScreenAction;
 	import com.dukascopy.connect.gui.components.message.ToastMessage;
 	import com.dukascopy.connect.gui.lightbox.LightBox;
@@ -27,7 +25,6 @@ package com.dukascopy.connect.screens {
 	import com.dukascopy.connect.screens.base.BaseScreen;
 	import com.dukascopy.connect.screens.dialogs.gifts.FlowerSticker;
 	import com.dukascopy.connect.screens.dialogs.paidBan.PaidBanSticker;
-	import com.dukascopy.connect.screens.serviceScreen.BottomPopupScreen;
 	import com.dukascopy.connect.sys.Gifts;
 	import com.dukascopy.connect.sys.auth.Auth;
 	import com.dukascopy.connect.sys.callManager.CallManager;

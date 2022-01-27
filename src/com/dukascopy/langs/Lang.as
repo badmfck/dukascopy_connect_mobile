@@ -2226,6 +2226,7 @@ package com.dukascopy.langs {
 		static public var iosNotificationUnreadPrivate:String="You have %i unread messages from %@";
 		static public var iosNotificationUnreadPrivateSingle:String="%@ sent you a message";
 		static public var iosNotificationUnreadGroup:String="You have %i unread messages in group chats";
+		static public var iosNotificationUnreadGroupTitle:String="Group chat";
 		
 		
 		static public var solvency_card_deposit:String = "Card deposit";

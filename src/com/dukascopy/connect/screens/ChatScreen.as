@@ -403,7 +403,7 @@ package com.dukascopy.connect.screens {
 			
 
 			// IGNORE NET CHANGE ON IOS
-			if(Config.PLATFORM_WINDOWS || (Config.PLATFORM_APPLE && Config.APPLE_VERSION>=13))
+			if(Config.PLATFORM_WINDOWS || Config.PLATFORM_APPLE)
 				GD.S_WS_STATUS.add(onWSStatus);
 					else
 						NetworkManager.S_CONNECTION_CHANGED.add(onNetworkChanged);
@@ -4349,11 +4349,16 @@ package com.dukascopy.connect.screens {
 						return true;
 					}
 				}
+				
+				
 				if (editingMsgID != -1) {
-					var res:Boolean = ChatManager.updateMessage(value as String, editingMsgID);
+					ChatManager.updateMessage(value as String, editingMsgID);
 					editingMsgID = -1;
-					return res;
+					return true;
 				}
+
+
+
 				if (String(value).indexOf(Config.BOUNDS) == -1)
 					savedText = value;
 				

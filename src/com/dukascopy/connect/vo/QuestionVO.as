@@ -112,7 +112,7 @@ package com.dukascopy.connect.vo {
 				/*if (_tipsCurrency == "DCO")
 					_tipsCurrency = "DUK+";*/
 				_cryptoAmount = _tipsAmount.toString();
-				GD.S_ESCROW_INSTRUMENTS.add(onResult);
+				GD.S_ESCROW_INSTRUMENTS.add(onResult); 
 				GD.S_ESCROW_INSTRUMENTS_REQUEST.invoke();
 			} else {
 				_tipsAmount = NaN;
