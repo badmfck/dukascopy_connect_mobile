@@ -5,6 +5,7 @@ package com.dukascopy.connect.sys.softKeyboard {
 	import com.dukascopy.connect.data.HitZoneData;
 	import com.dukascopy.connect.gui.input.Input;
 	import com.dukascopy.connect.screens.serviceScreen.Overlay;
+	import com.dukascopy.connect.sys.echo.echo;
 	import com.dukascopy.connect.sys.imageManager.ImageBitmapData;
 	import com.dukascopy.connect.sys.nativeExtensionController.NativeExtensionController;
 	import com.dukascopy.connect.sys.pointerManager.PointerManager;
@@ -767,20 +768,26 @@ package com.dukascopy.connect.sys.softKeyboard {
 		{
 			if (e.code == "keyboardHeight") {
 				if (int(e.level) > 0) {
-					stopDetectHeight();
-					_detectedKeyboardHeight = int(e.level);
-					_extensionKeyboardHeightDetected = true;
-					S_REAL_HEIGHT_DETECTED.invoke();
+					TweenMax.killDelayedCallsTo(setKeyboardHeightValue);
+					TweenMax.delayedCall(0.1, setKeyboardHeightValue, [e.level]);
 				}
 			}
 			if (e.code == "keyboardHeightReal") {
 				if (int(e.level) > 0) {
-					stopDetectHeight();
-					_detectedKeyboardHeight = int(e.level);
-					_extensionKeyboardHeightDetected = true;
-					S_REAL_HEIGHT_DETECTED.invoke();
+					TweenMax.killDelayedCallsTo(setKeyboardHeightValue);
+					TweenMax.delayedCall(0.1, setKeyboardHeightValue, [e.level]);
 				}
 			}
+		}
+		
+		private static function setKeyboardHeightValue(value:Number):void
+		{
+			TweenMax.killDelayedCallsTo(setKeyboardHeightValue);
+			stopDetectHeight();
+			_detectedKeyboardHeight = int(value);
+			echo("!!!!!!!", "s2.keyboardHeight", _detectedKeyboardHeight);
+			_extensionKeyboardHeightDetected = true;
+			S_REAL_HEIGHT_DETECTED.invoke();
 		}
 		
 		static private function checkHeight():void 	{
@@ -788,6 +795,7 @@ package com.dukascopy.connect.sys.softKeyboard {
 			if (h > 200) {
 				stopDetectHeight();
 				_detectedKeyboardHeight = h;
+				echo("!!!!!!!", "s3.keyboardHeight", _detectedKeyboardHeight);
 				//_extensionKeyboardHeightDetected = true;
 				S_REAL_HEIGHT_DETECTED.invoke();
 			}

@@ -1769,9 +1769,9 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			}
 			if (state == STATE_FINISH)
 			{
-				if (sendButton != null)
+				if (sendButton != null && backButton != null)
 				{
-					result = sendButton.height + contentPadding * 2;
+					result = backButton.height + sendButton.height + contentPadding * 3;
 				}
 				else if (backButton != null)
 				{
