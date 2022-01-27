@@ -44,6 +44,8 @@ package com.dukascopy.connect.gui.components.ratesPanel
 			container.y = Config.APPLE_TOP_OFFSET;
 			
 			getInstruments();
+			
+			GD.S_ESCROW_START_MONITORING.invoke();
 		}
 		
 		private function drawBack():void 
@@ -172,6 +174,7 @@ package com.dukascopy.connect.gui.components.ratesPanel
 		
 		public function dispose():void 
 		{
+			GD.S_ESCROW_STOP_MONITORING.invoke();
 			GD.S_ESCROW_INSTRUMENTS.remove(onInstruments);
 			
 			instruments = null;
