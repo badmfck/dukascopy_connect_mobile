@@ -21,22 +21,24 @@ package com.dukascopy.connect.screens.serviceScreen {
 	public class SelectContactExtendedScreen extends SearchListSelectionPopup {
 		
 		private var users:Array;
+		private var firstListData:Array;
+		private var secondListData:Array;
 		
 		public function SelectContactExtendedScreen() { }
-
+		
 		override public function initScreen(data:Object = null):void {
 			super.initScreen(data);
-
+		
 			PhonebookManager.S_PHONES.add(onPhonesLoaded);
 			PhonebookManager.getPhones();
 		}
-
+		
 		override public function dispose():void {
 			super.dispose();
 			
 			ChatManager.S_LATEST.remove(onLatestLoaded);
 			PhonebookManager.S_PHONES.remove(onPhonesLoaded);
-
+			
 			clearUsers();
 		}
 		
@@ -50,10 +52,10 @@ package com.dukascopy.connect.screens.serviceScreen {
 			{
 				return (item as ChatVO).users[0].userVO;
 			}
-
+			
 			return item;
 		}
-
+		
 		override protected function getHeight():int
 		{
 			return _height - Config.FINGER_SIZE * .5;
@@ -79,10 +81,10 @@ package com.dukascopy.connect.screens.serviceScreen {
 			}
 			chatsLength = chats.length;
 			
-			list.setData(chats, ListConversation, ['avatarURL'], null);
+			firstListData = chats;
+			secondListData = new Array();
+			
 			var l:int = users.length;
-			
-			
 			for (var i:int = 0; i < l; i++) 
 			{
 				for (var j:int = 0; j < chatsLength; j++) 
@@ -96,9 +98,25 @@ package com.dukascopy.connect.screens.serviceScreen {
 						}
 					}
 				}
-				list.appendItem(users[i], ListChatUsers, null, true);
+				secondListData.push(users[i]);
 			}
+			
+			setListData();
 			updateListSize();
+		}
+		
+		private function setListData():void 
+		{
+			list.setData(firstListData, ListConversation, ['avatarURL'], null);
+			if (secondListData != null)
+			{
+				var l:int = secondListData.length;
+				for (var i:int = 0; i < l; i++) 
+				{
+					list.appendItem(secondListData[i], ListChatUsers, null, true, false, -1, 0, false, false);
+				}
+				list.updateView();
+			}
 		}
 		
 		private function onPhonesLoaded():void {
@@ -156,35 +174,62 @@ package com.dukascopy.connect.screens.serviceScreen {
 			if (data == null || value == null)
 				return;
 			
+			if (value.length < 3)
+			{
+				setListData();
+				return;
+			}
+			
+			var resultsFirst:Array = new Array();
+			var resultsSecond:Array = new Array();
+			
 			var contact:UserVO;
-			for (var i:int = 0; i < data.length; i++) {
-				if (data[i] is Array) {
-					if(data[i][0].indexOf(value.toLowerCase()) == 0) {
-						list.navigateToItem(i);
-						return;
-					}
-					continue;
-				}
-				else if (data[i] is ChatVO)
+			var l:int;
+			if (firstListData != null)
+			{
+				l = firstListData.length;
+				for (var j:int = 0; j < l; j++) 
 				{
-					if ((data[i] as ChatVO).users != null && (data[i] as ChatVO).users[0] != null)
+					if (firstListData[j] is ChatVO)
 					{
-						contact = (data[i] as ChatVO).users[0].userVO;
-						
-						//trace(contact.getDisplayName(), contact.getDisplayName().indexOf(value.toLowerCase()));
-						
-						if (contact != null && contact.getDisplayName().toLowerCase().indexOf(value.toLowerCase()) == 0)
+						if ((firstListData[j] as ChatVO).users != null && (firstListData[j] as ChatVO).users[0] != null)
 						{
-							list.navigateToItem(i);
-							return;
+							contact = (firstListData[j] as ChatVO).users[0].userVO;
+							
+							if (contact != null && contact.getDisplayName().toLowerCase().indexOf(value.toLowerCase()) != -1)
+							{
+								resultsFirst.push(firstListData[j]);
+							}
 						}
 					}
 				}
-				else if (data[i].contact.getDisplayName().toLowerCase().indexOf(value.toLowerCase()) == 0) {
-					list.navigateToItem(i);
-					return;
+			}
+			
+			if (secondListData != null)
+			{
+				l = secondListData.length;
+				for (var j2:int = 0; j2 < l; j2++) 
+				{
+					if (secondListData[j2] is Array)
+					{
+						continue;
+					}
+					if (secondListData[j2] is ChatUserlistModel && secondListData[j2].contact.getDisplayName().toLowerCase().indexOf(value.toLowerCase()) != -1) {
+						resultsSecond.push(secondListData[j2]);
+					}
 				}
 			}
+			
+			list.setData(resultsFirst, ListConversation, ['avatarURL'], null);
+			if (resultsSecond != null)
+			{
+				l = resultsSecond.length;
+				for (var i2:int = 0; i2 < l; i2++) 
+				{
+					list.appendItem(resultsSecond[i2], ListChatUsers, null, true, false, -1, 0, false, false);
+				}
+			}
+			list.updateView();
 		}
 	}
 }

@@ -28,7 +28,7 @@ package com.dukascopy.connect.data.screenAction.customActions
 			dispose();
 		}
 		
-		override public function getIconScale():Number { return 26/30; }
+		override public function getIconScale():Number { return 35/30; }
 	}
 
 }

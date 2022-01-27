@@ -3,6 +3,7 @@ package com.dukascopy.connect.managers.escrow{
     import com.dukascopy.connect.GD;
 	import com.dukascopy.connect.data.ErrorData;
 	import com.dukascopy.connect.data.escrow.EscrowEventType;
+	import com.dukascopy.connect.managers.crypto.InvestmentRates;
 	import com.dukascopy.connect.managers.escrow.vo.EscrowPrice;
 	import com.dukascopy.connect.managers.escrow.vo.InstrumentParser;
     import com.dukascopy.connect.sys.Dispatcher;
@@ -228,6 +229,20 @@ package com.dukascopy.connect.managers.escrow{
                 timer.start();
             })
 			
+			GD.S_ESCROW_INSTRUMENT_RATES.add(function(instrumentCode:String, rates:InvestmentRates):void
+				{
+					var instrument:EscrowInstrument = getInstrumentByCode(instrumentCode);
+					if (instrument != null)
+					{
+						instrument.rates = rates;
+						GD.S_ESCROW_INSTRUMENT_UPDATE.invoke(instrument);
+					}
+					else
+					{
+						ApplicationErrors.add();
+					}
+				});
+			
             // Escrow get offer calculation
             // instrument, price, amount
 			instance = this;
@@ -353,11 +368,23 @@ package com.dukascopy.connect.managers.escrow{
 				}
             }
             
-            if(tmp.length>0){
-                instruments=tmp;
+            if(tmp.length > 0){
+                instruments = tmp;
+				updateRatesHistory();
                 GD.S_ESCROW_INSTRUMENTS.invoke(instruments);
             }
         };
+		
+		private function updateRatesHistory():void 
+		{
+			if (instruments != null)
+			{
+				for (var i:int = 0; i < instruments.length; i++) 
+				{
+					GD.S_ESCROW_INSTRUMENT_RATES_REQUEST.invoke(instruments[i]);
+				}
+			}
+		}
 		
         /**
          * Parse response with prices from server

@@ -89,8 +89,16 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 			return megaText.y + megaText.height + Config.FINGER_SIZE * .1;
 		}
 		
-		public function updateHitzones(itemHitzones:Array):void {
-			itemHitzones.push( { type:HitZoneType.REPLY_MESSAGE, x:x , y:y, width: textBox.width, height: textBox.height } );
+		public function updateHitzones(itemHitzones:Vector.<HitZoneData>):void {
+			
+			var hz:HitZoneData = new HitZoneData();
+			hz.type = HitZoneType.REPLY_MESSAGE;
+			hz.x = x;
+			hz.y = y;
+			hz.width = textBox.width;
+			hz.height = textBox.height;
+			
+			itemHitzones.push(hz);
 		}
 		
 		public function getWidth():uint {

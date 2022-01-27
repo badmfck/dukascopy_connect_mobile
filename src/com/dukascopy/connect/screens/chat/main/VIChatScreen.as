@@ -57,9 +57,9 @@ package com.dukascopy.connect.screens.chat.main {
 				if (header != null)
 					position = header.y + header.height;
 				else
-					position = chatTop.view.y + chatTop.height;
+					position = chatTop.y + chatTop.height;
 				recognitionSection.setPosition(position);
-				view.setChildIndex(chatTop.view, view.numChildren - 1);
+				view.setChildIndex(chatTop, view.numChildren - 1);
 				if (header != null)
 					view.setChildIndex(header, view.numChildren - 1);
 				if (Config.PLATFORM_APPLE == true) {
@@ -163,7 +163,7 @@ package com.dukascopy.connect.screens.chat.main {
 		public function showHeader(message:String):void {
 			if (header == null) {
 				header = new ChatMessagePanel(onHangout);
-				header.y = int(chatTop.view.y + chatTop.height);
+				header.y = int(chatTop.y + chatTop.height);
 				view.addChild(header);
 			}
 			header.draw(new Point(_width, int(Config.FINGER_SIZE*1.0)), message);

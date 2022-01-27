@@ -420,7 +420,7 @@ package com.dukascopy.connect.gui.list.renderers {
 				bgInfo.visible = true;
 				bgInfo.y = height - bgInfo.height;
 			} else if (itemData.uid != null && itemData.uid != "") {
-				var hitZones:Array;
+				var hitZones:Vector.<HitZoneData>;
 				
 				if (itemData && itemData.isMine() && itemData.unread > 0 && itemData.status != "resolved") {
 					newMessages.visible = true;

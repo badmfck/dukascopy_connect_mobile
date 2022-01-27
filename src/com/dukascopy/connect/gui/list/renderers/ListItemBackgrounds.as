@@ -4,6 +4,7 @@ package com.dukascopy.connect.gui.list.renderers {
 	import com.dukascopy.connect.Config;
 	import com.dukascopy.connect.data.BackgroundModel;
 	import com.dukascopy.connect.data.CountriesData;
+	import com.dukascopy.connect.data.HitZoneData;
 	import com.dukascopy.connect.gui.lightbox.UI;
 	import com.dukascopy.connect.gui.list.ListItem;
 	import com.dukascopy.connect.sys.assets.Assets;
@@ -55,7 +56,7 @@ package com.dukascopy.connect.gui.list.renderers {
 			itemSize = (width - Config.MARGIN*4)/ 3;
 			
 			var bmp:Bitmap;
-			var hitZones:Array = [];
+			var hitZones:Vector.<HitZoneData> = new Vector.<HitZoneData>();
 			
 			for (var i:int = 0; i < li.data.data.length - 1; i++) {
 				if (bmps.length > i) {
@@ -83,7 +84,15 @@ package com.dukascopy.connect.gui.list.renderers {
 					bmps[i].y = int(Config.MARGIN*.5 + topPadding);
 				}
 				source = null;
-				hitZones.push( { type:i + "", x: i * (itemSize + Config.MARGIN) + Config.MARGIN*.5, y:(topPadding), width:(itemSize + Config.MARGIN - 1), height:(itemSize + Config.MARGIN - 1) } );
+				
+				var hz:HitZoneData = new HitZoneData();
+				hz.type = i + "";
+				hz.x = i * (itemSize + Config.MARGIN) + Config.MARGIN*.5;
+				hz.y = topPadding;
+				hz.width = (itemSize + Config.MARGIN - 1);
+				hz.height = (itemSize + Config.MARGIN - 1);
+				
+				hitZones.push(hz);
 			}
 			for (i; i < li.data.data[li.data.data.length - 1]; i++) {
 				if (i > bmps.length - 1)

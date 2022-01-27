@@ -1,5 +1,6 @@
 package com.dukascopy.connect.gui.list.renderers.trade {
 	
+	import assets.New_selected;
 	import assets.SortHorizontalIcon;
 	import assets.SortVerticalIcon;
 	import com.dukascopy.connect.Config;
@@ -356,7 +357,8 @@ package com.dukascopy.connect.gui.list.renderers.trade {
 				return this;
 			}
 			
-			var hitZones:Array;
+			var hz:HitZoneData;
+			var hitZones:Vector.<HitZoneData>;
 				
 			if (data.data is Separator)
 			{
@@ -421,14 +423,21 @@ package com.dukascopy.connect.gui.list.renderers.trade {
 				hitZones = data.getHitZones();
 				if (hitZones == null)
 				{
-					hitZones = new Array();
+					hitZones = new Vector.<HitZoneData>();
 				}
 				else
 				{
 					hitZones.length = 0;
 				}
-				hitZones.push( { type: HitZoneType.CHANGE_LAYOUT, x: width*.5 - Config.FINGER_SIZE * .5, y: divider.y - Config.FINGER_SIZE * .5,
-									width: Config.FINGER_SIZE * 1, height: Config.FINGER_SIZE * 1 } );
+				
+				hz = new HitZoneData();
+				hz.type = HitZoneType.CHANGE_LAYOUT;
+				hz.x = width*.5 - Config.FINGER_SIZE * .5;
+				hz.y = divider.y - Config.FINGER_SIZE * .5;
+				hz.width = Config.FINGER_SIZE * 1;
+				hz.height = Config.FINGER_SIZE * 1;
+				
+				hitZones.push(hz);
 				if (data.getHitZones() == null)
 				{
 					data.setHitZones(hitZones);
@@ -468,7 +477,7 @@ package com.dukascopy.connect.gui.list.renderers.trade {
 			hitZones = data.getHitZones();
 			if (hitZones == null)
 			{
-				hitZones = new Array();
+				hitZones = new Vector.<HitZoneData>();
 			}
 			else
 			{
@@ -564,14 +573,25 @@ package com.dukascopy.connect.gui.list.renderers.trade {
 				numClip.y = Math.min(maxPosition, calcPosition);
 				
 				if (numClip.visible)
-				{											
-					hitZones.push( { type: HitZoneType.EXPAND, x: numClip.x - Config.MARGIN * 2, y: numClip.y - Config.MARGIN * 2,
-									width: numClip.width + Config.MARGIN * 2 * 2, height: numClip.height + Config.MARGIN * 2 * 2 } );
+				{
+					hz = new HitZoneData();
+					hz.type = HitZoneType.EXPAND;
+					hz.x = numClip.x - Config.MARGIN * 2;
+					hz.y = numClip.y - Config.MARGIN * 2;
+					hz.width = numClip.width + Config.MARGIN * 2 * 2;
+					hz.height = numClip.height + Config.MARGIN * 2 * 2;
+					
+					hitZones.push(hz);
 				}
 				
+				hz = new HitZoneData();
+				hz.type = HitZoneType.GET;
+				hz.x = renderer.x;
+				hz.y = renderer.y;
+				hz.width = renderer.getWidth();
+				hz.height = renderer.getContentHeight();
 				
-				hitZones.push( { type: HitZoneType.GET, x: renderer.x, y: renderer.y,
-									width: renderer.getWidth(), height: renderer.getContentHeight() } );
+				hitZones.push(hz);
 				
 				var point:Point;
 				if (orderData.last == true)
@@ -632,8 +652,14 @@ package com.dukascopy.connect.gui.list.renderers.trade {
 					
 					collapseClip.y = Math.min(maxPosition, calcPosition);
 					
-					hitZones.push( { type: HitZoneType.COLLAPSE, x: collapseClip.x - Config.MARGIN * 2, y: collapseClip.y - Config.MARGIN * 2,
-									width: collapseClip.width + Config.MARGIN * 2 * 2, height: collapseClip.height + Config.MARGIN * 2 * 2 } );
+					hz = new HitZoneData();
+					hz.type = HitZoneType.COLLAPSE;
+					hz.x = collapseClip.x - Config.MARGIN * 2;
+					hz.y = collapseClip.y - Config.MARGIN * 2;
+					hz.width = collapseClip.width + Config.MARGIN * 2 * 2;
+					hz.height = collapseClip.height + Config.MARGIN * 2 * 2;
+					
+					hitZones.push(hz);
 				}
 				else if (orderData.middle == true)
 				{

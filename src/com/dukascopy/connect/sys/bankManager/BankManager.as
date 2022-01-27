@@ -12,6 +12,7 @@ package com.dukascopy.connect.sys.bankManager {
 	import com.dukascopy.connect.data.coinMarketplace.MarketplaceScreenData;
 	import com.dukascopy.connect.data.coinMarketplace.TradingOrder;
 	import com.dukascopy.connect.data.coinMarketplace.TradingOrderRequest;
+	import com.dukascopy.connect.data.screenAction.customActions.Open911ScreenAction;
 	import com.dukascopy.connect.data.screenAction.customActions.SendTradeNotesRequestAction;
 	import com.dukascopy.connect.data.voiceCommand.VoiceCommand;
 	import com.dukascopy.connect.data.voiceCommand.VoiceCommandType;
@@ -449,6 +450,17 @@ package com.dukascopy.connect.sys.bankManager {
 					baVO.setMine();
 					invokeAnswerSignal(baVO);
 					sendMessage(msg);
+					return;
+				}
+				if (data.type == "cardDetails") {
+					data["tapped"] = true;
+					baVO = new BankMessageVO(data.text);
+					baVO.setMine();
+					invokeAnswerSignal(baVO);
+					if (accountInfo.cardSensitiveData == true)
+						sendMessage(data.action1);
+					else
+						sendMessage(msg);
 					return;
 				}
 				if (data.type == "BCCheckETH") {
@@ -1149,7 +1161,16 @@ package com.dukascopy.connect.sys.bankManager {
 					baVO = new BankMessageVO(data.text);
 					baVO.setMine();
 					invokeAnswerSignal(baVO);
-					sendMessage("val:" + data.param.code + "|!|" + data.param.deposit + "|!|" + data.param.deposit_penalty + "|!|" + answerType)
+					sendMessage("val:" + data.param.code + "|!|" + data.param.deposit + "|!|" + data.param.deposit_penalty + "|!|" + answerType);
+					sendMessage(msg);
+				} else if (data.type == "cryptoRewardsDepositesSwap") {
+					if ("param" in data == false)
+						return;
+					data.tapped = true;
+					baVO = new BankMessageVO(data.text);
+					baVO.setMine();
+					invokeAnswerSignal(baVO);
+					sendMessage("val:" + data.param.code);
 					sendMessage(msg);
 				} else if (data.type == "cryptoOfferSelect") {
 					data.tapped = true;
@@ -1255,6 +1276,8 @@ package com.dukascopy.connect.sys.bankManager {
 				if (msg == "payments") {
 					data["tapped"] = false;
 					navigateToURL(new URLRequest(Config.PAYMENTS_WEB));
+				} else if (msg == "openP2P") {
+					(new Open911ScreenAction()).execute();
 				} else if (msg == "showKeyword") {
 					data["tapped"] = false;
 					showTextComposer(data);
@@ -1489,28 +1512,6 @@ package com.dukascopy.connect.sys.bankManager {
 				return;
 			if (value == null)
 				return;
-			/*var temp:int;
-            var from:String = value.dateFrom.getFullYear();
-            temp = value.dateFrom.getMonth() + 1;
-            from += "-";
-            from += (temp < 10) ? "0" + temp : temp;
-            temp = value.dateFrom.getDate();
-            from += "-";
-            from += (temp < 10) ? "0" + temp : temp;
-            var to:String = value.dateTo.getFullYear();
-            temp = value.dateTo.getMonth() + 1;
-            to += "-";
-            to += (temp < 10) ? "0" + temp : temp;
-            temp = value.dateTo.getDate();
-            to += "-";
-            to += (temp < 10) ? "0" + temp : temp;
-            sendMessage("val:" +
-                from + "|!|" +
-                to + "|!|" +
-                data.value, true
-            );
-            sendMessage(data.action, true);
-			return;*/
 			var from:String = Number(value.dateFrom.getTime() * .001).toFixed(0);
 			var to:String = Number(value.dateTo.getTime() * .001).toFixed(0);
 			GD.S_TIMEZONE_REQUEST.invoke(function(val:String):void {
@@ -2282,27 +2283,33 @@ package com.dukascopy.connect.sys.bankManager {
 					if ("command" in lastBankMessageVO.item == true) {
 						backScreenData["command"] = lastBankMessageVO.item.command;
 					}
-					
-					
 					var nativeWindow:Boolean = NativeExtensionController.showWebView(
-																					lastBankMessageVO.item.value, 
-																					Lang.TEXT_DEPOSIT, 
-																					MobileGui.centerScreen.currentScreenClass, 
-																					backScreenData);
-					if (nativeWindow && "command" in lastBankMessageVO.item == true)
-					{
-					//	echo("!!!!!!!!", lastBankMessageVO.item.command);
+						lastBankMessageVO.item.value, 
+						Lang.TEXT_DEPOSIT, 
+						MobileGui.centerScreen.currentScreenClass,
+						backScreenData
+					);
+					if (nativeWindow && "command" in lastBankMessageVO.item == true) {
 						sendMessage(lastBankMessageVO.item.command);
 					}
-					/*MobileGui.changeMainScreen( 
-						WebViewScreen,
-						{
-							title:Lang.TEXT_DEPOSIT,
-							backScreen:MobileGui.centerScreen.currentScreenClass,
-							link:lastBankMessageVO.item.value,
-							backScreenData:backScreenData
-						}
-					);*/
+					return;
+				}
+				if (lastBankMessageVO.item.type == "cardDetailsWebView") {
+					backScreenData = MobileGui.centerScreen.currentScreen.data;
+					if (backScreenData == null)
+						backScreenData = {};
+					if ("command" in lastBankMessageVO.item == true) {
+						backScreenData["command"] = lastBankMessageVO.item.command;
+					}
+					var nativeW:Boolean = NativeExtensionController.showWebView(
+						lastBankMessageVO.item.value, 
+						Lang.BTN_CARD_DETAILS, 
+						MobileGui.centerScreen.currentScreenClass,
+						backScreenData
+					);
+					if (nativeW && "command" in lastBankMessageVO.item == true) {
+						sendMessage(lastBankMessageVO.item.command);
+					}
 					return;
 				}
 				if (lastBankMessageVO.item.type == "passwordEnter")
@@ -2541,7 +2548,7 @@ package com.dukascopy.connect.sys.bankManager {
 					} );
 					return;
 				}
-				if (lastBankMessageVO.item.type == "cryptoRewardsDeposites") {
+				if (lastBankMessageVO.item.type == "cryptoRewardsDeposites" || lastBankMessageVO.item.type == "cryptoRewardsDepositesSwap") {
 					if (cryptoRDLoaded == false) {
 						lastBankMessageVO.waitingType = "cryptoRD";
 						getCryptoRD(false);
@@ -3493,6 +3500,11 @@ package com.dukascopy.connect.sys.bankManager {
 				delete BankBotController.getScenario().scenario.deposites.menu[7].disabled;
 			} else {
 				BankBotController.getScenario().scenario.deposites.menu[7].disabled = true;
+			}
+			if (accountInfo.enableGCS == true) {
+				delete BankBotController.getScenario().scenario.crypto.menu[4].disabled;
+			} else {
+				BankBotController.getScenario().scenario.crypto.menu[4].disabled = true;
 			}
 			if (waitingBMVO != null) {
 				if (waitingBMVO.waitingType != "wallets" && waitingBMVO.waitingType != "limits")

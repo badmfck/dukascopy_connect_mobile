@@ -1,7 +1,10 @@
 package com.dukascopy.connect.sys.chatManager.typesManagers {
 	
+	import com.dukascopy.connect.Config;
 	import com.dukascopy.connect.GD;
 	import com.dukascopy.connect.MobileGui;
+	import com.dukascopy.connect.data.ChatVOAction;
+	import com.dukascopy.connect.data.screenAction.customActions.Open911ScreenAction;
 	import com.dukascopy.connect.gui.components.message.ToastMessage;
 	import com.dukascopy.connect.managers.escrow.vo.EscrowAdsVO;
 	import com.dukascopy.connect.screens.dialogs.ScreenQuestionsDialog;
@@ -18,6 +21,7 @@ package com.dukascopy.connect.sys.chatManager.typesManagers {
 	import com.dukascopy.connect.sys.ws.WS;
 	import com.dukascopy.connect.type.ChatInitType;
 	import com.dukascopy.connect.type.ChatRoomType;
+	import com.dukascopy.connect.vo.ChatMessageVO;
 	import com.dukascopy.connect.vo.ChatVO;
 	import com.dukascopy.connect.vo.QuestionVO;
 	import com.dukascopy.connect.vo.screen.ChatScreenData;
@@ -44,6 +48,7 @@ package com.dukascopy.connect.sys.chatManager.typesManagers {
 		private static var loadingAnswersUID:String = "";
 		
 		static private var busy:Boolean = false;
+		static private var open911Action:ChatVOAction;
 		
 		public function AnswersManager() { }
 		
@@ -84,14 +89,44 @@ package com.dukascopy.connect.sys.chatManager.typesManagers {
 			if (answersGetted == false)
 				getAnswers();
 			if (answers == null)
-				answers = [];
+				createAnswersArray();
 			var i:int = answers.length;
 			while (i != 0) {
 				i--;
 				if (answers[i].isDisposed)
 					answers.splice(i, 1);
 			}
-			return answers;
+			
+			var result:Array = answers.concat();
+			addP2PButton(result);
+			
+			return result;
+		}
+		
+		static private function addP2PButton(answers:Array):void 
+		{
+			if (open911Action == null)
+			{
+				open911Action = ChatManager.createBlankSupportChat(Config.EP_VI_DEF, Lang.help_911_title, Lang.tap_to_see_deals) as ChatVOAction;
+				open911Action.action = new Open911ScreenAction();
+			}
+			var exist:Boolean;
+			if (answers != null)
+			{
+				var l:int = answers.length;
+				for (var i:int = 0; i < l; i++) 
+				{
+					if (answers[i] is Open911ScreenAction)
+					{
+						exist = true;
+						break;
+					}
+				}
+				if (!exist)
+				{
+					answers.unshift(open911Action);
+				}
+			}
 		}
 		
 		static public function getAnswers():void {
@@ -130,7 +165,7 @@ package com.dukascopy.connect.sys.chatManager.typesManagers {
 						cVO.setData(data.latest[i]);
 					else {
 						if (answers == null)
-							answers = [];
+							createAnswersArray();
 						answers.push(new ChatVO(data.latest[i]));
 					}
 				}
@@ -176,7 +211,7 @@ package com.dukascopy.connect.sys.chatManager.typesManagers {
 				return;
 			}
 			if (answers == null)
-				answers = [];
+				createAnswersArray();
 			var phpAnswers:Array = phpRespond.data.latest.concat();
 			var l2:int = phpAnswers.length;
 			for (var i:int = answers.length; i > 0; i--) {
@@ -247,7 +282,7 @@ package com.dukascopy.connect.sys.chatManager.typesManagers {
 			if (cvo == null)
 				return;
 			if (answers == null)
-				answers = [];
+				createAnswersArray();
 			var existingChat:ChatVO = getAnswer(cvo.uid);
 			if (existingChat != null)
 				existingChat.setData(cvo.getRawData());
@@ -256,6 +291,11 @@ package com.dukascopy.connect.sys.chatManager.typesManagers {
 			if (cvo.type == ChatRoomType.CHANNEL)
 				ChannelsManager.addNewChannel(cvo);
 			S_ANSWERS.invoke();
+		}
+		
+		static private function createAnswersArray():void 
+		{
+			answers = [];
 		}
 		
 		static public function sendToTop(chatVO:ChatVO, oldDate:Date, newDate:Date):void {

@@ -12,6 +12,10 @@ package com.dukascopy.connect.gui.list.renderers {
 	import assets.OwnerIcon;
 	import assets.PlusAvatar;
 	import com.dukascopy.connect.Config;
+	import com.dukascopy.connect.MobileGui;
+	import com.dukascopy.connect.data.ChatVOAction;
+	import com.dukascopy.connect.data.HitZoneData;
+	import com.dukascopy.connect.data.screenAction.IScreenAction;
 	import com.dukascopy.connect.gui.lightbox.UI;
 	import com.dukascopy.connect.gui.list.ListItem;
 	import com.dukascopy.connect.gui.megaText.MegaText;
@@ -126,6 +130,8 @@ package com.dukascopy.connect.gui.list.renderers {
 		private var bankLogo:LogoChat;
 		private var bankLogo2:LogoChat2;
 		private var officialIcon:Sprite;
+		private var customAvatarBitmap:ImageBitmapData;
+		private var avatarColor:ColorTransform;
 		
 		public function ListConversation() {
 				bg = new Shape();
@@ -258,23 +264,24 @@ package com.dukascopy.connect.gui.list.renderers {
 			//avatarEmpty = UI.getEmptyAvatarBitmapData(avatarSize * 2, avatarSize * 2);
 			avatarEmpty =  UI.drawAssetToRoundRect(new SWFEmptyAvatar(), avatarSize * 2);
 			
-			var ct:ColorTransform = new ColorTransform();
-			ct.color = 0x6e92af;
+			avatarColor = new ColorTransform();
+			
+			avatarPayCard = UI.renderAsset(new IconCardBG(), avatarSize * 2, avatarSize * 2);
+			avatarColor.color = AppTheme.GREEN_LIGHT;
+			avatarPayCard.colorTransform(avatarPayCard.rect, avatarColor);
+			avatarIncognito =  UI.renderAsset(new SWFIncognitoAvatar(), avatarSize * 2, avatarSize * 2);
+			
+			avatarColor.color = 0x6e92af;
 			
 			avatarSupport = UI.renderAsset(new LogoRectangle(), avatarSize * 2, avatarSize * 2);
 			avatarAccount = UI.renderAsset(new SWFAccountAvatar(), avatarSize * 2, avatarSize * 2);
-			avatarAccount.colorTransform(avatarAccount.rect, ct);
+			avatarAccount.colorTransform(avatarAccount.rect, avatarColor);
 			avatarBankBot = UI.renderAsset(new AvatarBot(), avatarSize * 2, avatarSize * 2);
-			avatarBankBot.colorTransform(avatarBankBot.rect, ct);
+			avatarBankBot.colorTransform(avatarBankBot.rect, avatarColor);
 			avatarMarketplace = UI.renderAsset(new SWFUpDownArrows(), avatarSize * 2, avatarSize * 2);
-			avatarMarketplace.colorTransform(avatarMarketplace.rect, ct);
+			avatarMarketplace.colorTransform(avatarMarketplace.rect, avatarColor);
 			avatarTrading = UI.renderAsset(new SWFBars(), avatarSize * 2, avatarSize * 2);
-			avatarTrading.colorTransform(avatarTrading.rect, ct);
-			avatarPayCard = UI.renderAsset(new IconCardBG(), avatarSize * 2, avatarSize * 2);
-			ct.color = AppTheme.GREEN_LIGHT;
-			avatarPayCard.colorTransform(avatarPayCard.rect, ct);
-			avatarIncognito =  UI.renderAsset(new SWFIncognitoAvatar(), avatarSize * 2, avatarSize * 2);
-			
+			avatarTrading.colorTransform(avatarTrading.rect, avatarColor);
 			
 			var tmp:Sprite = new PlusAvatar();
 			tmp.width = tmp.height = avatarSize * 2;
@@ -848,6 +855,7 @@ package com.dukascopy.connect.gui.list.renderers {
 			avatar.graphics.clear();
 		//	UI.decolorize(avatar, 0);
 			if (cVO.type == ChatRoomType.COMPANY) {
+				
 				if (cVO.pid == -1 || cVO.pid == -2)
 					ImageManager.drawGraphicCircleImage(avatar.graphics, avatarSize, avatarSize, avatarSize, avatarAccount, ImageManager.SCALE_PORPORTIONAL);
 				else if (cVO.pid == -3)
@@ -858,6 +866,34 @@ package com.dukascopy.connect.gui.list.renderers {
 					ImageManager.drawGraphicCircleImage(avatar.graphics, avatarSize, avatarSize, avatarSize, avatarPayCard, ImageManager.SCALE_PORPORTIONAL);
 				else if (cVO.pid == Config.EP_TRADING)
 					ImageManager.drawGraphicCircleImage(avatar.graphics, avatarSize, avatarSize, avatarSize, avatarTrading, ImageManager.SCALE_PORPORTIONAL);
+				else if (cVO is ChatVOAction && (cVO as ChatVOAction).action != null && (cVO as ChatVOAction).action.getIconClass() != null)
+				{
+					if (customAvatarBitmap != null)
+					{
+						customAvatarBitmap.dispose();
+					}
+					var icon:Sprite = new ((cVO as ChatVOAction).action.getIconClass())();
+					UI.scaleToFit(icon, int(Config.FINGER_SIZE * .55), int(Config.FINGER_SIZE * .55));
+					UI.colorize(icon, Color.WHITE);
+					var container:Sprite = new Sprite();
+					
+					var color:Number = avatarColor.color;
+					if (cVO.pid == Config.EP_VI_DEF)
+					{
+						color = Color.RED;
+					}
+					
+					container.graphics.beginFill(color);
+					container.graphics.drawRect(0, 0, avatarSize * 2, avatarSize * 2);
+					container.graphics.endFill();
+					container.addChild(icon);
+					icon.x = int(avatarSize - icon.width * .5);
+					icon.y = int(avatarSize - icon.height * .5);
+					customAvatarBitmap = UI.renderAsset(container, avatarSize * 2, avatarSize * 2);
+					icon = null;
+					container = null;
+					ImageManager.drawGraphicCircleImage(avatar.graphics, avatarSize, avatarSize, avatarSize, customAvatarBitmap, ImageManager.SCALE_PORPORTIONAL);
+				}
 				else
 					ImageManager.drawGraphicCircleImage(avatar.graphics, avatarSize, avatarSize, avatarSize, avatarSupport, ImageManager.SCALE_PORPORTIONAL);
 				avatar.visible = true;
@@ -987,7 +1023,7 @@ package com.dukascopy.connect.gui.list.renderers {
 				bgBank.graphics.lineTo(width, 1);*/
 				bgBank.visible = true;
 				
-				if (officialIcon == null)
+				if (officialIcon == null && !(cVO is ChatVOAction))
 				{
 					officialIcon = new Sprite();
 					
@@ -1021,11 +1057,15 @@ package com.dukascopy.connect.gui.list.renderers {
 				tfTitle.autoSize = TextFieldAutoSize.NONE;
 			//	TextUtils.truncate(tfTitle);
 			//	tfTitle.border = true;
-				tfTitle.width = Math.max(Config.FINGER_SIZE, width - officialIcon.x - officialIcon.width - Config.MARGIN * 2);;
-				tfTitle.x = int(officialIcon.x + officialIcon.width + Config.FINGER_SIZE * .1);
 				
-				officialIcon.visible = true;
-				officialIcon.y = int(tfTitle.y + tfTitle.height * .5 - officialIcon.height * .5);
+				if (officialIcon != null)
+				{
+					tfTitle.width = Math.max(Config.FINGER_SIZE, width - officialIcon.x - officialIcon.width - Config.MARGIN * 2);;
+					tfTitle.x = int(officialIcon.x + officialIcon.width + Config.FINGER_SIZE * .1);
+					
+					officialIcon.visible = true;
+					officialIcon.y = int(tfTitle.y + tfTitle.height * .5 - officialIcon.height * .5);
+				}
 				
 				/*if (bankLogo == null)
 				{
@@ -1073,7 +1113,17 @@ package com.dukascopy.connect.gui.list.renderers {
 			}
 			
 			if (trashIcon.visible == true)
-				li.setHitZones( [ { type:HitZoneType.DELETE, x:width - Config.FINGER_SIZE, y:0, width:Config.FINGER_SIZE, height:height } ] );
+			{
+				var hzs:Vector.<HitZoneData> = new Vector.<HitZoneData>();
+				var hz:HitZoneData = new HitZoneData();
+				hz.type = HitZoneType.DELETE;
+				hz.x = width - Config.FINGER_SIZE;
+				hz.y = 0;
+				hz.width = Config.FINGER_SIZE;
+				hz.height = height;
+				hzs.push(hz);
+				li.setHitZones(hzs);
+			}
 			return this;
 		}
 		
@@ -1220,6 +1270,7 @@ package com.dukascopy.connect.gui.list.renderers {
 		
 		public function dispose():void {
 			graphics.clear();
+			avatarColor = null;
 			
 			if (bg != null)
 				bg.graphics.clear();
@@ -1320,6 +1371,9 @@ package com.dukascopy.connect.gui.list.renderers {
 			if (banMark != null)
 				UI.destroy(banMark);
 			banMark = null;
+			if (customAvatarBitmap != null)
+				customAvatarBitmap.dispose();
+			customAvatarBitmap = null;
 			
 			if (bankLogo != null)
 				UI.destroy(bankLogo);

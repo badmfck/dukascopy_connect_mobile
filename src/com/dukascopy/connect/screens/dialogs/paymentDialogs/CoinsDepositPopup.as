@@ -209,6 +209,10 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs {
 			UI.scaleToFit(icon, Config.FINGER_SIZE * .6, Config.FINGER_SIZE * .6);
 		}
 		
+		override public function isModal():Boolean {
+			return true;
+		}
+		
 		private function useAllClick():void 
 		{
 			if (selectedAccount != null)

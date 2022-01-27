@@ -454,7 +454,7 @@ package com.dukascopy.connect.screens {
 		}
 		
 		override public function deactivateScreen():void {
-			echo("QuestionCreateUpdateScreen", "deactivateScreen", "");
+			echo("EscrowAdsCreateScreen", "deactivateScreen", "");
 			if (!_isActivated)
 				return;
 			_isActivated = false;
@@ -466,7 +466,7 @@ package com.dukascopy.connect.screens {
 		}
 		
 		private function checkScrollToBottom():Boolean {
-			echo("QuestionCreateUpdateScreen", "checkScrollToBottom", "");
+			echo("EscrowAdsCreateScreen", "checkScrollToBottom", "");
 			var needScrollToBottom:Boolean  = false;	
 			var allowedBottomOffset:int = 100;
 			if (list.height < list.innerHeight) {
@@ -522,9 +522,17 @@ package com.dukascopy.connect.screens {
 			GD.S_ESCROW_ADS_CREATE_FAIL.remove(onEscrowAdsCreatedFail);
 			fillList();
 			topBar.setActions( [ actionTrash ] );
-
+			
+			var screenData:Object = { };
+			screenData.backScreen = RootScreen;
+			screenData.backScreenData = null;
+			screenData.temp = Math.random();
+			screenData.instrument = escrowAdsVONew.instrument;
+			screenData.selectedTab = RootScreen.ESCROW_INSTRUMENT_SCREEN_ID;
+			MobileGui.changeMainScreen(RootScreen, screenData);
+			
 			//GO BACK
-			onBack();
+		//	onBack();
 		}
 		
 		private function onEscrowAdsCreatedFail(message:String = null):void {
@@ -634,7 +642,7 @@ package com.dukascopy.connect.screens {
 		}
 		
 		override public function clearView():void {
-			echo("QuestionCreateUpdateScreen", "clearView", "");
+			echo("EscrowAdsCreateScreen", "clearView", "");
 			if (answersCountButton) {
 				answersCountButton.dispose();
 				answersCountButton = null;
@@ -661,7 +669,7 @@ package com.dukascopy.connect.screens {
 		}
 		
 		override public function dispose():void {
-			echo("QuestionCreateUpdateScreen", "dispose", "");
+			echo("EscrowAdsCreateScreen", "dispose", "");
 			
 			removeKeyboardAction();
 			

@@ -35,6 +35,7 @@ package com.dukascopy.connect.screens.innerScreens {
 	import com.dukascopy.connect.sys.dialogManager.DialogManager;
 	import com.dukascopy.connect.sys.style.FontSize;
 	import com.dukascopy.connect.sys.style.Style;
+	import com.dukascopy.connect.sys.ws.WS;
 	import com.dukascopy.connect.type.ChatInitType;
 	import com.dukascopy.connect.type.HitZoneType;
 	import com.dukascopy.connect.utils.TextUtils;
@@ -145,7 +146,7 @@ package com.dukascopy.connect.screens.innerScreens {
 						}
 						case EscrowFilterType.HIDE_BLOCKED:
 						{
-							currentFilter.hideBlocked = false;
+							currentFilter.hideBlocked = true;
 							break;
 						}
 						case EscrowFilterType.HIDE_NOOBS:
@@ -225,12 +226,9 @@ package com.dukascopy.connect.screens.innerScreens {
 			super.initScreen(data);
 			_params.doDisposeAfterClose = true;
 			
-			if (data != null && "additionalData" in data && data.additionalData != null && data.additionalData is String)
-			{
+			if (data != null && "additionalData" in data && data.additionalData != null && data.additionalData is String) {
 				instrument = data.additionalData as String;
-			}
-			else
-			{
+			} else {
 				ApplicationErrors.add();
 			}
 			
@@ -239,10 +237,18 @@ package com.dukascopy.connect.screens.innerScreens {
 			GD.S_ESCROW_ADS_FILTER_SETTED.add(onFilterChanged);
 			onFilterChanged();
 			
-			createButton.setPosition(_width - Config.FINGER_SIZE - Config.MARGIN * 2,  _height - Config.FINGER_SIZE - Config.MARGIN * 2 - Config.APPLE_TOP_OFFSET);
+			createButton.setPosition(_width - Config.FINGER_SIZE - Config.MARGIN * 2,  _height - Config.FINGER_SIZE - Config.MARGIN * 2);
 			createButton.setOffset(Config.TOP_BAR_HEIGHT * 2 + Config.APPLE_TOP_OFFSET);
 			
 			GD.S_SCREEN_READY.add(onScreenReady);
+			WS.S_CONNECTED.add(update);
+			
+			/*TweenMax.delayedCall(5, invokeInstr);
+		}
+		
+		private function invokeInstr():void {
+			TweenMax.delayedCall(5, invokeInstr);
+			GD.S_ESCROW_INSTRUMENTS_REQUEST.invoke();*/
 		}
 		
 		private function onScreenReady(screenName:String):void {
@@ -282,9 +288,9 @@ package com.dukascopy.connect.screens.innerScreens {
 			var filtersPanelData:Vector.<SelectorItemData> = new Vector.<SelectorItemData>();
 			if (currentFilter != null)
 			{
-				if (currentFilter.hideBlocked)
+				if (!currentFilter.hideBlocked)
 				{
-					filtersPanelData.push(new SelectorItemData(Lang.escrow_hide_blocked, EscrowFilterType.HIDE_BLOCKED));
+					filtersPanelData.push(new SelectorItemData(Lang.escrow_show_from_blocked, EscrowFilterType.HIDE_BLOCKED));
 				}
 				if (currentFilter.hideNoobs)
 				{
@@ -498,9 +504,9 @@ package com.dukascopy.connect.screens.innerScreens {
 			GD.S_SCREEN_READY.remove(onScreenReady);
 			GD.S_ESCROW_OFFERS_UPDATE.remove(onOffersLoaded);
 			GD.S_ESCROW_DEALS_UPDATE.remove(onDealsLoaded);
+			WS.S_CONNECTED.remove(update);
 			
-			if (preloader != null)
-			{
+			if (preloader != null) {
 				TweenMax.killDelayedCallsTo(startPreloader);
 				preloader.dispose();
 				preloader = null;

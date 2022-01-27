@@ -331,11 +331,13 @@ package com.dukascopy.connect.sys.ws {
 			_connected = true;
 			_connecting = false;
 			S_CONNECTED.invoke();
+			GD.S_WS_STATUS.invoke(true);
 		}
 		
 		static private function onWSClosed(e:WebSocketEvent):void {
 			_connected = false;
 			_connecting = false;
+			GD.S_WS_STATUS.invoke(false);
 			MobileGui.S_WS_EVENT.invoke("Closed (" + ((e != null && e.message != null) ? e.message : "") + ")");
 			/*if (Config.PLATFORM_APPLE == false)
 			{

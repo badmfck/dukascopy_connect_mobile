@@ -1,5 +1,6 @@
 package com.dukascopy.connect.sys.chatManager.typesManagers {
 	
+	import com.dukascopy.connect.GD;
 	import com.dukascopy.connect.data.ErrorMessages;
 	import com.dukascopy.connect.data.ResponseResolver;
 	import com.dukascopy.connect.data.UserBanData;
@@ -118,6 +119,9 @@ package com.dukascopy.connect.sys.chatManager.typesManagers {
 		static public function init():void {
 			Auth.S_NEED_AUTHORIZATION.add(onAuthNeeded);
 			WSClient.S_CHANNEL_UPDATE.add(onChannelUpdateEvent);
+			
+			GD.CHAT_SUBSCRIBE_REQUEST.add(subscribe);
+			GD.CHAT_UNSUBSCRIBE_REQUEST.add(unsubscribe);
 			
 			sortFunction = function(a:ChatVO, b:ChatVO):int {
 				var value:int = 0;
@@ -1138,11 +1142,11 @@ package com.dukascopy.connect.sys.chatManager.typesManagers {
 			phpRespond.dispose();
 		}
 		
-		static public function unsubscribe(channelUID:String, callback:Function):void 
+		static private function unsubscribe(channelUID:String):void 
 		{
 			var resolver:ResponseResolver = new ResponseResolver();
 			resolver.data = channelUID;
-			resolver.callback = callback;
+		//	resolver.callback = callback;
 			PHP.irc_unsubscribe(onChannelUnsubscribeResponse, channelUID, resolver);
 		}
 		
@@ -1155,15 +1159,13 @@ package com.dukascopy.connect.sys.chatManager.typesManagers {
 				echo("ChannelManager", "onChannelSettingsLoaded", "PHP ERROR -> " + phpRespond.errorMsg);
 				if (addData != null)
 				{
-					if (addData.callback != null)
+					var errorMessage:String = ErrorMessages.getLocal(phpRespond.errorMsg);
+					if (errorMessage == null)
 					{
-						var errorMessage:String = ErrorMessages.getLocal(phpRespond.errorMsg);
-						if (errorMessage == null)
-						{
-							errorMessage = Lang.errorUnubscribeChannel;
-						}
-						addData.callback(false, addData.data, errorMessage);
+						errorMessage = Lang.errorUnubscribeChannel;
 					}
+					GD.CHAT_UNSUBSCRIBE_RESULT.invoke(false, addData.data, errorMessage);
+					
 					addData.dispose();
 				}
 				phpRespond.dispose();
@@ -1171,16 +1173,12 @@ package com.dukascopy.connect.sys.chatManager.typesManagers {
 			}
 			if (addData != null)
 			{
-				if (addData.callback != null)
-				{
-					addData.callback(true, addData.data);
-				}
-				
 				var channel:ChatVO = getChannel(addData.data as String);
 				if (channel != null && channel.channelData != null)
 				{
 					channel.channelData.subscribed = false;
 				}
+				GD.CHAT_UNSUBSCRIBE_RESULT.invoke(true, addData.data);
 				addData.dispose();
 				
 				refreshChannelsList();
@@ -1188,11 +1186,11 @@ package com.dukascopy.connect.sys.chatManager.typesManagers {
 			phpRespond.dispose();
 		}
 		
-		static public function subscribe(channelUID:String, callback:Function):void 
+		static private function subscribe(channelUID:String):void 
 		{
 			var resolver:ResponseResolver = new ResponseResolver();
 			resolver.data = channelUID;
-			resolver.callback = callback;
+		//	resolver.callback = callback;
 			PHP.irc_subscribe(onChannelSubscribeResponse, channelUID, resolver);
 		}
 		
@@ -1205,15 +1203,13 @@ package com.dukascopy.connect.sys.chatManager.typesManagers {
 				echo("ChannelManager", "onChannelSettingsLoaded", "PHP ERROR -> " + phpRespond.errorMsg);
 				if (addData != null)
 				{
-					if (addData.callback != null)
+					var errorMessage:String = ErrorMessages.getLocal(phpRespond.errorMsg);
+					if (errorMessage == null)
 					{
-						var errorMessage:String = ErrorMessages.getLocal(phpRespond.errorMsg);
-						if (errorMessage == null)
-						{
-							errorMessage = Lang.errorUnubscribeChannel;
-						}
-						addData.callback(false, addData.data, errorMessage);
+						errorMessage = Lang.errorUnubscribeChannel;
 					}
+					GD.CHAT_SUBSCRIBE_RESULT.invoke(false, addData.data, errorMessage);
+					
 					addData.dispose();
 				}
 				phpRespond.dispose();
@@ -1221,16 +1217,12 @@ package com.dukascopy.connect.sys.chatManager.typesManagers {
 			}
 			if (addData != null)
 			{
-				if (addData.callback != null)
-				{
-					addData.callback(true, addData.data);
-				}
-				
 				var channel:ChatVO = getChannel(addData.data as String);
 				if (channel != null && channel.channelData != null)
 				{
 					channel.channelData.subscribed = true;
 				}
+				GD.CHAT_SUBSCRIBE_RESULT.invoke(true, addData.data);
 				addData.dispose();
 				
 				refreshChannelsList();

@@ -111,27 +111,35 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 			buttons.push(button);
 		}
 		
-		public function updateHitzones(itemHitzones:Array):void {
+		public function updateHitzones(itemHitzones:Vector.<HitZoneData>):void {
+			
+			var hz:HitZoneData;
+			
 			if (buttons)
+			{
 				for (var i:int = 0; i < buttons.length; i++)
-					itemHitzones.push( {
-						type:(HitZoneType.SYSTEM_MESSAGE_INDEX_ + i.toString()),
-						x:(buttons[i].x + x),
-						y:buttons[i].y + y,
-						width:buttons[i].width,
-						height:buttons[i].height
-					} );
+				{
+					hz = new HitZoneData();
+					hz.type = HitZoneType.SYSTEM_MESSAGE_INDEX_ + i.toString();
+					hz.x = buttons[i].x + x;
+					hz.y = buttons[i].y + y;
+					hz.width = buttons[i].width;
+					hz.height = buttons[i].height;
+					
+					itemHitzones.push(hz);
+				}
+			}
 			if (avatar != null)
 			{
-				itemHitzones.push( {
-					type:(HitZoneType.SYSTEM_MESSAGE_INDEX_ + "avatar"),
-					x:x,
-					y:avatar.y + y,
-					width:width,
-					height:title.y + title.height
-				} );
+				hz = new HitZoneData();
+				hz.type = HitZoneType.SYSTEM_MESSAGE_INDEX_ + "avatar";
+				hz.x = x;
+				hz.y = avatar.y + y;
+				hz.width = width;
+				hz.height = title.y + title.height;
+				
+				itemHitzones.push(hz);
 			}
-			
 		}
 		
 		public function getHeight(itemData:ChatMessageVO, itemWidth:int, listItem:ListItem):uint {

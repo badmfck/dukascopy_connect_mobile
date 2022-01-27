@@ -52,7 +52,6 @@ package com.dukascopy.connect.gui.tabs {
 		private var itemTextColor:uint;
 		private var itemBgAlpha:Number;
 		private var selectionBgColor:uint;
-		private var bgHeight:int;
 		private var selectedIndex:String;
 		private var lineBitmap:Bitmap;
 		private var bottomOffset:int = 0;
@@ -129,8 +128,8 @@ package com.dukascopy.connect.gui.tabs {
 				return;				
 			i = new TabsItemBottom(name, id, stock.length, icon, iconDown, bg, itemBgColor, itemBgAlpha, itemTextColor, doSelection, scale, selectionBgColor, selectedBackgroundColor);
 			
-			stock.splice(index,0,i);
-			i.tapCallback=function():void{callTap(id)};
+			stock.splice(index, 0, i);
+			i.tapCallback = function():void{callTap(id)};
 			boxItemsCont.addChild(i.view);
 			updateView();
 		}

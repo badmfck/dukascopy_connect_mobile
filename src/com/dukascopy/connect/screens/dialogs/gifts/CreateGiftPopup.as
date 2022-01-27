@@ -40,6 +40,7 @@ package com.dukascopy.connect.screens.dialogs.gifts
 	import com.dukascopy.connect.sys.errors.ErrorLocalizer;
 	import com.dukascopy.connect.sys.imageManager.ImageBitmapData;
 	import com.dukascopy.connect.sys.imageManager.ImageManager;
+	import com.dukascopy.connect.sys.payments.CurrencyHelpers;
 	import com.dukascopy.connect.sys.payments.InvoiceManager;
 	import com.dukascopy.connect.sys.payments.PayAPIManager;
 	import com.dukascopy.connect.sys.payments.PayManager;
@@ -54,6 +55,7 @@ package com.dukascopy.connect.screens.dialogs.gifts
 	import com.dukascopy.connect.sys.usersManager.UsersManager;
 	import com.dukascopy.connect.type.GiftType;
 	import com.dukascopy.connect.type.HitZoneType;
+	import com.dukascopy.connect.utils.NumberFormat;
 	import com.dukascopy.connect.utils.TextUtils;
 	import com.dukascopy.connect.vo.users.UserVO;
 	import com.dukascopy.langs.Lang;
@@ -954,9 +956,6 @@ package com.dukascopy.connect.screens.dialogs.gifts
 							accountDB.dispose();
 							accountDB = null;
 							
-							var balance:Number = newAmount;
-							balance = Math.floor(balance * 100) / 100;
-							
 							var currency:String;
 							if (selectedAccount != null && "COIN" in selectedAccount)
 							{
@@ -967,7 +966,10 @@ package com.dukascopy.connect.screens.dialogs.gifts
 								currency = selectedAccount.CURRENCY;
 							}
 							
-							var newBalanceBD:ImageBitmapData = TextUtils.createTextFieldData(Lang.textAvailable + " " + currency + " " + balance.toString(), _width - Config.DIALOG_MARGIN, 10, false, TextFormatAlign.CENTER, TextFieldAutoSize.LEFT, Config.FINGER_SIZE * 0.25, false, 0xAAB8C5, 0xFBFBFB);
+							var balance:Number = newAmount;
+						//	balance = parseFloat(NumberFormat.formatAmount(balance, currency, true));
+							
+							var newBalanceBD:ImageBitmapData = TextUtils.createTextFieldData(Lang.textAvailable + " " + NumberFormat.formatAmount(balance, currency), _width - Config.DIALOG_MARGIN, 10, false, TextFormatAlign.CENTER, TextFieldAutoSize.LEFT, Config.FINGER_SIZE * 0.25, false, 0xAAB8C5, 0xFBFBFB);
 							balanceFooterBDPosition = new Point(int(_width - Config.DIALOG_MARGIN - newBalanceBD.width), int(Config.DIALOG_MARGIN + Config.FINGER_SIZE * .5));
 							
 							footer.bitmapData.copyPixels(newBalanceBD, new Rectangle(0, 0, newBalanceBD.width, newBalanceBD.height), balanceFooterBDPosition, null, null, true);
@@ -1244,11 +1246,11 @@ package com.dukascopy.connect.screens.dialogs.gifts
 				{
 					if (giftData.currency == "DCO")
 					{
-						currency = "DUK+ "
+						currency = "DUK+"
 					}
 					else
 					{
-						currency = giftData.currency + " ";
+						currency = giftData.currency;
 					}
 				}
 				
@@ -1351,7 +1353,7 @@ package com.dukascopy.connect.screens.dialogs.gifts
 					}
 					else
 					{
-						currency = selectorCurrency.value + " ";
+						currency = selectorCurrency.value;
 					}
 				}
 				else if (giftData.type == GiftType.FIXED_TIPS)
@@ -1362,7 +1364,7 @@ package com.dukascopy.connect.screens.dialogs.gifts
 					}
 					else
 					{
-						currency = giftData.currency + " ";
+						currency = giftData.currency;
 					}
 				}
 				else
@@ -1371,9 +1373,9 @@ package com.dukascopy.connect.screens.dialogs.gifts
 				}
 				
 				var minus:Number = giftData.getValue() + currentCommision;
-				minus = Math.floor(minus * 100) / 100;
+			//	minus = Math.floor(minus * 100) / 100;
 				
-				var payValueBD:ImageBitmapData = TextUtils.createTextFieldData("-" + currency + minus.toString(), _width - Config.DIALOG_MARGIN, 10, false, TextFormatAlign.CENTER, TextFieldAutoSize.LEFT, Config.FINGER_SIZE * 0.4, false, 0xEAA6A7, 0xFBFBFB);
+				var payValueBD:ImageBitmapData = TextUtils.createTextFieldData("- " + NumberFormat.formatAmount(minus, currency), _width - Config.DIALOG_MARGIN, 10, false, TextFormatAlign.CENTER, TextFieldAutoSize.LEFT, Config.FINGER_SIZE * 0.4, false, 0xEAA6A7, 0xFBFBFB);
 				
 				bdFooter.copyPixels(payValueBD, new Rectangle(0, 0, payValueBD.width, payValueBD.height), new Point(int(_width - Config.DIALOG_MARGIN - payValueBD.width), int(Config.DIALOG_MARGIN)), null, null, true);
 				payValueBD.dispose();
@@ -1382,8 +1384,8 @@ package com.dukascopy.connect.screens.dialogs.gifts
 				if (!isNaN(newAmount))
 				{
 					var balance:Number = newAmount;
-					balance = Math.floor(balance * 100) / 100;
-					var newBalanceBD:ImageBitmapData = TextUtils.createTextFieldData(Lang.textAvailable + " " + selectedAccount.CURRENCY + " " + balance.toString(), _width - Config.DIALOG_MARGIN, 10, false, TextFormatAlign.CENTER, TextFieldAutoSize.LEFT, Config.FINGER_SIZE * 0.25, false, 0xAAB8C5, 0xFBFBFB);
+				//	balance = parseFloat(NumberFormat.formatAmount(balance, currency, true));
+					var newBalanceBD:ImageBitmapData = TextUtils.createTextFieldData(Lang.textAvailable + " " + NumberFormat.formatAmount(balance, currency), _width - Config.DIALOG_MARGIN, 10, false, TextFormatAlign.CENTER, TextFieldAutoSize.LEFT, Config.FINGER_SIZE * 0.25, false, 0xAAB8C5, 0xFBFBFB);
 					balanceFooterBDPosition = new Point(int(_width - Config.DIALOG_MARGIN - newBalanceBD.width), int(Config.DIALOG_MARGIN + Config.FINGER_SIZE * .5));
 					
 					bdFooter.copyPixels(newBalanceBD, new Rectangle(0, 0, newBalanceBD.width, newBalanceBD.height), balanceFooterBDPosition, null, null, true);

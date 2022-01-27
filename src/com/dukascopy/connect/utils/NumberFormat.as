@@ -1,5 +1,6 @@
 package com.dukascopy.connect.utils 
 {
+	import com.dukascopy.connect.screens.payments.card.TypeCurrency;
 	import com.dukascopy.connect.sys.payments.CurrencyHelpers;
 	import com.dukascopy.langs.Lang;
 	/**
@@ -8,13 +9,14 @@ package com.dukascopy.connect.utils
 	 */
 	public class NumberFormat 
 	{
-		// Decimals loaded
-		private var currencyDecimalRulesLoaded:Boolean=false;
-
 		public function NumberFormat(){}
 		
-		static public function formatAmount(amount:Number, currency:String, removeCurrency:Boolean = false):String 
+		static public function formatAmount(amount:Number, currency:String, removeCurrency:Boolean = false, addDecimals:Boolean = false):String 
 		{
+			if (currency == "DUK+")
+			{
+				currency = TypeCurrency.DCO;
+			}
 			if (isNaN(amount))
 			{
 				amount = 0;
@@ -23,7 +25,10 @@ package com.dukascopy.connect.utils
 			decimals = CurrencyHelpers.getMaxDecimalCount(currency);
 			
 			var result:String = amount.toFixed(decimals);
-			result = parseFloat(result).toString();
+			if (!addDecimals)
+			{
+				result = parseFloat(result).toString();
+			}
 			if (currency != null && !removeCurrency)
 			{
 				var resultCurrency:String = currency;

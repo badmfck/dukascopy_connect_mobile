@@ -106,6 +106,7 @@ package com.dukascopy.connect.sys.store{
 		static public const DRAFT_MESSAGES:String = "draftMessages";
 		static public const CRYPTO_WALLETS:String = "cryptoWallets";
 		static public const ESCROW_FILTER:String = "escrowFilter";
+		static public const ESCROW_INSTRUMENT_RATES:String = "escrowInstrumentRates_";
 		
 		static private const TYPE_SAVE:int = 0;
 		static private const TYPE_LOAD:int = 1;

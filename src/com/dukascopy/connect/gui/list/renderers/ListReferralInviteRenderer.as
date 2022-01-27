@@ -4,6 +4,7 @@ package com.dukascopy.connect.gui.list.renderers
 	import assets.StatusPendingIcon;
 	import assets.StatusRejectcon;
 	import com.dukascopy.connect.Config;
+	import com.dukascopy.connect.data.HitZoneData;
 	import com.dukascopy.connect.data.ReferralProgramInviteData;
 	import com.dukascopy.connect.gui.lightbox.UI;
 	import com.dukascopy.connect.gui.list.ListItem;
@@ -75,8 +76,15 @@ package com.dukascopy.connect.gui.list.renderers
 		}
 		
 		override protected function setHitZones(item:ListItem):void {
-			var hitZones:Array = new Array();
-			hitZones.push( { type:HitZoneType.INVITE_BUTTON, x:remindButton.x - Config.DOUBLE_MARGIN, y:remindButton.y - Config.DOUBLE_MARGIN, width:remindButton.width + Config.DOUBLE_MARGIN * 2, height:remindButton.height + Config.DOUBLE_MARGIN * 2 } );
+			var hitZones:Vector.<HitZoneData> = new Vector.<HitZoneData>();
+			
+			var hz:HitZoneData = new HitZoneData();
+			hz.type = HitZoneType.INVITE_BUTTON;
+			hz.x = remindButton.x - Config.DOUBLE_MARGIN;
+			hz.y = remindButton.y - Config.DOUBLE_MARGIN;
+			hz.width = remindButton.width + Config.DOUBLE_MARGIN * 2;
+			hz.height = remindButton.height + Config.DOUBLE_MARGIN * 2;
+			hitZones.push(hz);
 			item.setHitZones(hitZones);
 		}
 		

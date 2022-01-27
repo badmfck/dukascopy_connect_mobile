@@ -19,6 +19,7 @@ package com.dukascopy.connect.gui.components.seekbar
 	public class Seekbar extends Sprite
 	{
 		public var flipColors:Boolean;
+		public var hideColors:Boolean;
 		private var back:Sprite;
 		private var backLine:Sprite;
 		private var selectLine:Sprite;
@@ -43,7 +44,7 @@ package com.dukascopy.connect.gui.components.seekbar
 			
 			itemHeight = Config.FINGER_SIZE * .7;
 			lineHeight = Config.FINGER_SIZE * .04;
-			buttonRadius = Config.FINGER_SIZE * .2;
+			buttonRadius = Config.FINGER_SIZE * .23;
 			
 			createClips();
 		}
@@ -64,17 +65,19 @@ package com.dukascopy.connect.gui.components.seekbar
 			button = new Sprite();
 			button.graphics.clear();
 			
+			var despersion:int = Math.max(1, Config.FINGER_SIZE*.015);
+			
 			button.graphics.beginFill(0, 0);
-			button.graphics.drawCircle(0, 1, buttonRadius * 2.5);
+			button.graphics.drawCircle(0, despersion, buttonRadius * 2.5);
 			
 			button.graphics.beginFill(0, 0.2);
-			button.graphics.drawCircle(0, 1, buttonRadius + 2);
+			button.graphics.drawCircle(0, despersion, buttonRadius + despersion * 2);
 			
 			button.graphics.beginFill(0, 0.1);
-			button.graphics.drawCircle(0, 2, buttonRadius + 2);
+			button.graphics.drawCircle(0, despersion * 2, buttonRadius + despersion * 2);
 			
 			button.graphics.beginFill(0, 0.05);
-			button.graphics.drawCircle(0, 5, buttonRadius);
+			button.graphics.drawCircle(0, despersion * 5, buttonRadius);
 			
 			button.graphics.beginFill(Style.color(Style.COLOR_BACKGROUND));
 			button.graphics.drawCircle(0, 0, buttonRadius);
@@ -106,6 +109,7 @@ package com.dukascopy.connect.gui.components.seekbar
 			button.y = int(itemHeight * .5);
 			
 			updatePosition(startValue);
+			calculatePosition();
 		}
 		
 		private function updatePosition(positionValue:Number):void
@@ -160,20 +164,23 @@ package com.dukascopy.connect.gui.components.seekbar
 			var distance:int = zeroPosition - button.x;
 			selectLine.x = zeroPosition;
 			
-			var color:Number;
-			if (distance < 0)
+			if (!hideColors)
 			{
-				color = flipColors?Color.GREEN:Color.RED;
+				var color:Number;
+				if (distance < 0)
+				{
+					color = flipColors?Color.GREEN:Color.RED;
+				}
+				else
+				{
+					color = flipColors?Color.RED:Color.GREEN;
+				}
+				
+				selectLine.graphics.clear();
+				selectLine.graphics.beginFill(color);
+				selectLine.graphics.drawRect(0, 0, -distance, lineHeight);
+				selectLine.graphics.endFill();
 			}
-			else
-			{
-				color = flipColors?Color.RED:Color.GREEN;
-			}
-			
-			selectLine.graphics.clear();
-			selectLine.graphics.beginFill(color);
-			selectLine.graphics.drawRect(0, 0, -distance, lineHeight);
-			selectLine.graphics.endFill();
 			
 			dispatchSelection();
 		}
@@ -182,8 +189,8 @@ package com.dukascopy.connect.gui.components.seekbar
 		{
 			if (onChange != null && onChange.length == 1)
 			{
-				var value:Number = (zeroPosition - button.x) * (maxValue - minValue) / (itemWidth - buttonRadius * 2);
-				onChange(-value);
+				var value:Number = minValue + (button.x - buttonRadius) * (maxValue - minValue) / (itemWidth - buttonRadius * 2);
+				onChange(value);
 			}
 		}
 		
@@ -229,6 +236,11 @@ package com.dukascopy.connect.gui.components.seekbar
 		public function setValue(value:Number):void 
 		{
 			updatePosition(value);
+		}
+		
+		public function getHeight():int 
+		{
+			return itemHeight;
 		}
 	}
 }

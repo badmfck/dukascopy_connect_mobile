@@ -51,10 +51,12 @@ package com.dukascopy.connect.sys.paymentsManagerNew {
 		static private var callbacksHome:Array;
 		static private var callbacksOtherWithdrawal:Object;
 		static private var callbacksPaymentsDeposit:Object;
+		static private var callbacksCardDetailsSensitive:Object;
 		static private var callbacksInvestments:Array;
 		static private var callbacksInvestmentsH:Array;
 		static private var callbacksInvestmentDetails:Array;
 		static private var callbacksFatCatz:Array;
+		static private var callbacksRDSwapStep1:Array;
 		static private var callbacksCards:Array;
 		static private var callbacksLinkedCards:Array;
 		static private var callbacksCardAction:Object;
@@ -432,6 +434,41 @@ package com.dukascopy.connect.sys.paymentsManagerNew {
 				hashCallbacks.shift()(res, respond.savedRequestData.callID);
 			hashCallbacks = null;
 			delete callbacksPaymentsDeposit[respond.savedRequestData.callID];
+			respond.dispose();
+		}
+		
+		static public function callCardDetailsSensitive(callback:Function, card:String):String {
+			if (preCall() == false)
+				return null;
+			var hash:String = MD5.hash(card);
+			if (callbacksCardDetailsSensitive == null || hash in callbacksCardDetailsSensitive == false) {
+				callbacksCardDetailsSensitive ||= {};
+				callbacksCardDetailsSensitive[hash] = [callback];
+			} else {
+				if (callbacksCardDetailsSensitive[hash].indexOf(callback) == -1)
+					callbacksCardDetailsSensitive[hash].push(callback);
+				return hash;
+			}
+			PayServer.call_postCardDetailsSensitive(onCardDetailsSensitive, card, hash);
+			return hash;
+		}
+		
+		static private function onCardDetailsSensitive(respond:PayRespond):void {
+			if (callbacksCardDetailsSensitive == null)
+				return;
+			var hashCallbacks:Array;
+			if (respond.savedRequestData.callID in callbacksCardDetailsSensitive == true)
+				hashCallbacks = callbacksCardDetailsSensitive[respond.savedRequestData.callID];
+			if (hashCallbacks == null || hashCallbacks.length == 0) {
+				delete callbacksCardDetailsSensitive[respond.savedRequestData.callID];
+				respond.dispose();
+				return;
+			}
+			var res:Object = checkForError(respond);
+			while (hashCallbacks.length != 0)
+				hashCallbacks.shift()(res, respond.savedRequestData.callID);
+			hashCallbacks = null;
+			delete callbacksCardDetailsSensitive[respond.savedRequestData.callID];
 			respond.dispose();
 		}
 		
@@ -1743,6 +1780,26 @@ package com.dukascopy.connect.sys.paymentsManagerNew {
 			var res:Object = checkForError(respond);
 			while (callbacksFatCatz.length != 0)
 				callbacksFatCatz.shift()(res);
+			respond.dispose();
+		}
+		
+		static public function rdSwapStep1(callback:Function, code:String):void {
+			if (preCall() == false)
+				return;
+			if (callbacksRDSwapStep1 == null)
+				callbacksRDSwapStep1 = [];
+			if (callbacksRDSwapStep1.indexOf(callback) != -1)
+				return;
+			callbacksRDSwapStep1.push(callback);
+			PayServer.call_GCS1(onRDSwapStep1, code);
+		}
+		
+		static private function onRDSwapStep1(respond:PayRespond):void {
+			if (callbacksRDSwapStep1 == null)
+				return;
+			var res:Object = checkForError(respond);
+			while (callbacksRDSwapStep1.length != 0)
+				callbacksRDSwapStep1.shift()(res);
 			respond.dispose();
 		}
 		

@@ -16,6 +16,7 @@ package com.dukascopy.connect {
 	import com.dukascopy.connect.gui.networkIndicator.NetworkIndicator;
 	import com.dukascopy.connect.gui.puzzle.Puzzle;
 	import com.dukascopy.connect.gui.tools.ImagePreviewCrop;
+	import com.dukascopy.connect.managers.crypto.CryptoRates;
 	import com.dukascopy.connect.managers.escrow.CryptoWalletHolder;
 	import com.dukascopy.connect.managers.escrow.EscrowAdsManager;
 	import com.dukascopy.connect.managers.escrow.EscrowDealManager;
@@ -323,6 +324,7 @@ package com.dukascopy.connect {
 			
 			EscrowScreenNavigation.init();
 			
+		//	new CryptoRates();
 			new EscrowDealManager();
 			new EscrowAdsManager();
 			new EscrowOfferManager();
@@ -697,6 +699,8 @@ package com.dukascopy.connect {
 		}
 		
 		private function closePopup(e:Event):void {
+			if (dialogsSM.currentScreen != null && dialogsSM.currentScreen.isModal() == true)
+				return;
 			if (dialogsSM.currentScreen != null)
 				DialogManager.closeDialog();
 		}

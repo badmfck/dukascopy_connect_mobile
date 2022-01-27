@@ -35,6 +35,7 @@ package com.dukascopy.connect.screens.userProfile {
 	import com.dukascopy.connect.sys.style.Style;
 	import com.dukascopy.connect.sys.style.presets.Color;
 	import com.dukascopy.connect.sys.theme.AppTheme;
+	import com.dukascopy.connect.type.BankPhaze;
 	import com.dukascopy.connect.type.ChatInitType;
 	import com.dukascopy.connect.type.HitZoneType;
 	import com.dukascopy.connect.type.MainColors;
@@ -157,7 +158,14 @@ package com.dukascopy.connect.screens.userProfile {
 				description.bitmapData.dispose();
 				description.bitmapData = null;
 			}
-			description.bitmapData = TextUtils.createTextFieldData(Lang.search_user_description, _width - padding * 2, 10, true, TextFormatAlign.LEFT, TextFieldAutoSize.LEFT, 
+			
+			var text:String = Lang.search_user_description;
+			if (Auth.bank_phase == BankPhaze.ACC_APPROVED)
+			{
+				text = Lang.search_user_description_mca;
+			}
+			
+			description.bitmapData = TextUtils.createTextFieldData(text, _width - padding * 2, 10, true, TextFormatAlign.LEFT, TextFieldAutoSize.LEFT, 
 																	FontSize.SUBHEAD_14, true, Style.color(Style.COLOR_SUBTITLE), Style.color(Style.COLOR_BACKGROUND));
 			
 		}
@@ -194,7 +202,7 @@ package com.dukascopy.connect.screens.userProfile {
 			numberBack.height = position;
 			
 			searchButton.x = padding;
-			searchButton.y = _height - searchButton.height - padding;
+			searchButton.y = getContentHeight() - searchButton.height - padding;
 		}
 		
 		private function drawSearchButton():void 
@@ -289,7 +297,7 @@ package com.dukascopy.connect.screens.userProfile {
 						user.y = resultMessage.y + resultMessage.height + Config.MARGIN * 2;
 						
 						startChatButton.x = padding;
-						startChatButton.y = int(_height - startChatButton.height - padding);
+						startChatButton.y = int(getContentHeight() - startChatButton.height - padding);
 						
 						targetPosition = numberBack.y + numberBack.height + Config.FINGER_SIZE;
 						
@@ -395,7 +403,7 @@ package com.dukascopy.connect.screens.userProfile {
 			preloader = new CirclePreloader();
 			view.addChild(preloader);
 			preloader.x = int(_width * .5);
-			preloader.y = int(_height * .5);
+			preloader.y = int(getContentHeight() * .5);
 		}
 		
 		private function openProfile():void {
@@ -716,15 +724,20 @@ package com.dukascopy.connect.screens.userProfile {
 		override protected function drawView():void	{
 			topBar.drawView(_width);
 			topBar.backgroundColor = Style.color(Style.COLOR_LIST_SPECIAL);
-			scrollPanel.setWidthAndHeight(_width, _height - topBar.trueHeight - searchButton.height - padding * 2);
+			scrollPanel.setWidthAndHeight(_width, getContentHeight() - topBar.trueHeight - searchButton.height - padding * 2);
 			if (searchButton != null)
 			{
-				searchButton.y = _height - searchButton.height - padding;
+				searchButton.y = getContentHeight() - searchButton.height - padding;
 			}
 			/*if (searchButton != null)
 			{
-				searchButton.y = _height - searchButton.height - padding;
+				searchButton.y = getContentHeight() - searchButton.height - padding;
 			}*/
+		}
+		
+		private function getContentHeight():int 
+		{
+			return _height - Config.APPLE_BOTTOM_OFFSET;
 		}
 		
 		private function hidePreloader():void {

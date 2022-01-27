@@ -57,7 +57,7 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 			message.x = horizontalPadding;
 		}
 		
-		public function updateHitzones(itemHitzones:Array):void {
+		public function updateHitzones(itemHitzones:Vector.<HitZoneData>):void {
 			if (currentData == null)
 				return;
 			if (parent == null)
@@ -69,7 +69,15 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 				var btn:Object;
 				for (var i:int = 0; i < buttonsArray.length; i++) {
 					btn = buttonsArray[i];
-					itemHitzones.push( { type:HitZoneType.BOT_MENU_ACTION, x:horizontalPadding, y:destY, width:width, height:lineHeight, action:btn.action, sys:btn.sys } );
+					var hz:HitZoneData = new HitZoneData();
+						hz.type = HitZoneType.BOT_MENU_ACTION;
+						hz.x = horizontalPadding;
+						hz.y = destY;
+						hz.width = width;
+						hz.action = btn.action;
+						hz.sys = btn.sys;
+						hz.height = lineHeight;
+					itemHitzones.push(hz);
 					destY += lineHeight;
 				}
 			}

@@ -3,6 +3,7 @@ package com.dukascopy.connect.screens.innerScreens {
 	import assets.NumericKeyboardIcon;
 	import com.dukascopy.connect.Config;
 	import com.dukascopy.connect.MobileGui;
+	import com.dukascopy.connect.data.ChatVOAction;
 	import com.dukascopy.connect.data.screenAction.IScreenAction;
 	import com.dukascopy.connect.data.screenAction.customActions.CreateChatAction;
 	import com.dukascopy.connect.data.screenAction.customActions.Open911ScreenAction;
@@ -18,6 +19,7 @@ package com.dukascopy.connect.screens.innerScreens {
 	import com.dukascopy.connect.gui.tabs.FilterTabs;
 	import com.dukascopy.connect.gui.tools.HorizontalPreloader;
 	import com.dukascopy.connect.screens.ChatScreenBankInfo;
+	import com.dukascopy.connect.screens.EscrowAdsCreateScreen;
 	import com.dukascopy.connect.screens.QuestionCreateUpdateScreen;
 	import com.dukascopy.connect.screens.RootScreen;
 	import com.dukascopy.connect.screens.SearchChannelCategoryScreen;
@@ -60,6 +62,7 @@ package com.dukascopy.connect.screens.innerScreens {
 	import flash.desktop.NativeApplication;
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
+	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
@@ -105,7 +108,7 @@ package com.dukascopy.connect.screens.innerScreens {
 		private var createChatButton:HidableButton;
 		private var phoneIcon:NumericKeyboardIcon;
 		private var searchIcon:SWFSearchChannelButton;
-		private var addQuestionIcon:SWFAddQuestionButton;
+		private var addQuestionIcon:Sprite;
 		
 		private static var needToRefreshAfterScrollStoped:Boolean = false;
 		private var statusClip:StatusClip;
@@ -128,7 +131,7 @@ package com.dukascopy.connect.screens.innerScreens {
 			_params.doDisposeAfterClose = false;
 			Auth.S_AUTH_DATA_UPDATED.add(onEntrypointsUpdated);
 			
-			createChatButton.setPosition(_width - Config.FINGER_SIZE - Config.MARGIN * 2,  _height - Config.FINGER_SIZE - Config.MARGIN * 2 - Config.APPLE_TOP_OFFSET);
+			createChatButton.setPosition(_width - Config.FINGER_SIZE - Config.MARGIN * 2,  _height - Config.FINGER_SIZE - Config.MARGIN * 2);
 			createChatButton.setOffset(Config.TOP_BAR_HEIGHT * 2 + Config.APPLE_TOP_OFFSET);
 			
 			lastSelectedFilter = selectedFilter;
@@ -255,14 +258,16 @@ package com.dukascopy.connect.screens.innerScreens {
 				//return;
 				if (QuestionsManager.checkForUnsatisfiedQuestions() == true) {
 					DialogManager.alert(Lang.information, Lang.limitQuestionExists);
-					echo("EmergencyScreen", "onBottomButtonTap", "START QUESTION FAIL LIMIT");
+					echo("InnerChatScreen", "onBottomButtonTap", "START QUESTION FAIL LIMIT");
 					return;
 				}
-				MobileGui.changeMainScreen(QuestionCreateUpdateScreen, { backScreen:MobileGui.centerScreen.currentScreenClass,
-														   title:Lang.addTender, 
-														   backScreenData:this.data,
-														   data:null}, 
-														   ScreenManager.DIRECTION_RIGHT_LEFT);
+				MobileGui.changeMainScreen(EscrowAdsCreateScreen, {
+						backScreen:RootScreen,
+						title:Lang.escrow_create_your_ad, 
+						backScreenData:null,
+						data:null
+					}, ScreenManager.DIRECTION_RIGHT_LEFT
+				);
 				return;
 			}
 			if (selectedFilter == TAB_HELP) {				
@@ -284,7 +289,7 @@ package com.dukascopy.connect.screens.innerScreens {
 				return;
 			}
 			if (id == TAB_911) {
-				addQuestionIcon ||= new SWFAddQuestionButton();
+				addQuestionIcon ||= new CreateButtonIcon();
 				createChatButton.setDesign(addQuestionIcon);
 				createChatButton.visible = true;
 				return;
@@ -319,7 +324,7 @@ package com.dukascopy.connect.screens.innerScreens {
 			
 			list.setWidthAndHeight(_width, _height - list.view.y);
 			
-			createChatButton.setPosition(_width - Config.FINGER_SIZE - Config.MARGIN * 2,  _height - Config.FINGER_SIZE - Config.MARGIN * 2 - Config.APPLE_TOP_OFFSET);
+			createChatButton.setPosition(_width - Config.FINGER_SIZE - Config.MARGIN * 2,  _height - Config.FINGER_SIZE - Config.MARGIN * 2);
 			createChatButton.setOffset(MobileGui.stage.stageHeight - _height);
 			
 			//updateUnreaded();
@@ -765,6 +770,11 @@ package com.dukascopy.connect.screens.innerScreens {
 				return;
 			}
 			
+			if (data is ChatVOAction && (data as ChatVOAction).action != null)
+			{
+				(data as ChatVOAction).action.execute();
+				return;
+			}
 			
 			if (!(data is ChatVO))
 				return;

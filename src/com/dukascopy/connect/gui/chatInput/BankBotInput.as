@@ -34,11 +34,11 @@ package com.dukascopy.connect.gui.chatInput {
 		
 		private var bg:Shape;
 		private var buttonMenu:BitmapButton;
-		private var buttonReset:BitmapButton;
 		private var tfBMP:Bitmap;
 		private var buttonSend:BitmapButton;
 		private var buttonHome:BitmapButton;
 		private var buttonMP:BitmapButton;
+		private var buttonP2P:BitmapButton;
 		
 		private var trueWidth:int;
 		
@@ -49,6 +49,7 @@ package com.dukascopy.connect.gui.chatInput {
 		private var _sendCallback:Function;
 		private var _menuCallback:Function;
 		private var _mpCallback:Function;
+		private var _p2pCallback:Function;
 		private var _title:String;
 		
 		private var _isActive:Boolean  = false;
@@ -58,10 +59,13 @@ package com.dukascopy.connect.gui.chatInput {
 		private var sendButtonNeeded:Boolean = false;
 		private var mpButtonNeeded:Boolean = false;
 		
+		private var p2pButtonNeeded:Boolean = true;
+		
 		private var homeButtonShown:Boolean = false;
 		private var menuButtonShown:Boolean = false;
 		private var sendButtonShown:Boolean = false;
 		private var mpButtonShown:Boolean = false;
+		private var p2pButtonShown:Boolean = false;
 		
 		private var buttonSize:int = Config.FINGER_SIZE * .55;
 		private var componentHeight:int = Config.FINGER_SIZE * .8;
@@ -169,6 +173,27 @@ package com.dukascopy.connect.gui.chatInput {
 				if (buttonMP != null){
 					buttonMP.hide();
 					buttonMP.deactivate();
+				}
+			}
+			
+			if (p2pButtonNeeded == true) {
+				createp2pButton(leftOffset);
+				buttonP2P.x =  leftX;
+				buttonP2P.y = int(componentHeight * .5 - buttonP2P.height * .5);
+				leftX += buttonP2P.width + padding;
+				if (p2pButtonShown == false) {
+					buttonP2P.show(.3, delay);
+					delay += .1;
+					p2pButtonShown = true;
+				}
+				if (_isActive == true) {
+					buttonP2P.activate();
+				}
+			} else {
+				p2pButtonShown = false;
+				if (buttonP2P != null){
+					buttonP2P.hide();
+					buttonP2P.deactivate();
 				}
 			}
 			
@@ -294,6 +319,36 @@ package com.dukascopy.connect.gui.chatInput {
 			}
 		}
 		
+		public function createp2pButton(leftOffset:int = 0):void {
+			if (buttonP2P == null) {
+			//	var asset:BitmapData = UI.drawAssetToRoundRect(UI.colorize(new (Style.icon(Style.ICON_MARKETPLACE)), 0x7DA0BB), buttonSize, true, "BankBotInput.swissIcon");
+			
+				var icon:DisplayObject = new (Style.icon(Style.ICON_911));
+				UI.colorize(icon, Style.color(Style.ICON_COLOR));
+				UI.scaleToFit(icon, buttonSize * 1.2, buttonSize * 1.2);
+				var asset:BitmapData = UI.getSnapshot(icon, StageQuality.HIGH);
+				buttonP2P = new BitmapButton();
+				buttonP2P.setBitmapData(asset, true);
+				buttonP2P.setOverflow(
+					Config.FINGER_SIZE * .2,
+					leftOffset,
+					Config.FINGER_SIZE * .15,
+					Config.FINGER_SIZE * .2
+				);
+				buttonP2P.setDownAlpha(0);
+				buttonP2P.hide();
+				buttonP2P.tapCallback = onP2PButtonTap;
+				addChild(buttonP2P);
+			} else {
+				buttonP2P.setOverflow(
+					Config.FINGER_SIZE * .2,
+					leftOffset,
+					Config.FINGER_SIZE * .15,
+					Config.FINGER_SIZE * .2
+				);
+			}
+		}
+		
 		// Create send button 
 		public function createSendButton():void {
 			if (buttonSend == null){
@@ -342,7 +397,15 @@ package com.dukascopy.connect.gui.chatInput {
 				buttonMP.x = leftSpace;
 				buttonsTotalWidth += Config.FINGER_SIZE * .6;
 				leftSpace += buttonMP.width + padding;
-			} 		
+			}
+			
+			if (p2pButtonNeeded == true) {
+				createp2pButton(leftOffset);
+				buttonP2P.x = leftSpace;
+				buttonsTotalWidth += Config.FINGER_SIZE * .6;
+				leftSpace += buttonP2P.width + padding;
+			}
+			
 			if (sendButtonNeeded == true) {
 				createSendButton();
 				buttonSend.x = trueWidth - int(Config.FINGER_SIZE * .7);				
@@ -403,6 +466,14 @@ package com.dukascopy.connect.gui.chatInput {
 			ToastMessage.hideHandTip();
 			if (_mpCallback != null) {
 				_mpCallback();
+				return;
+			}
+		}
+		
+		private function onP2PButtonTap():void {
+			ToastMessage.hideHandTip();
+			if (_p2pCallback != null) {
+				_p2pCallback();
 				return;
 			}
 		}
@@ -503,6 +574,8 @@ package com.dukascopy.connect.gui.chatInput {
 				buttonHome.deactivate();
 			if (buttonMP != null)
 				buttonMP.deactivate();
+			if (buttonP2P != null)
+				buttonP2P.deactivate();
 			PointerManager.addDown(this, onDown);
 			PointerManager.removeUp(MobileGui.stage, onUp);
 			PointerManager.removeTap(this, onTap);
@@ -525,32 +598,12 @@ package com.dukascopy.connect.gui.chatInput {
 			_mpCallback = val;
 		}
 		
-		public function set homeCallback(val:Function):void {
-			_homeCallback = val;
+		public function set p2pCallback(val:Function):void {
+			_p2pCallback = val;
 		}
 		
-		public function activateMainMenuButton(callback:Function):void {
-			
-			buttonReset = new BitmapButton();
-			buttonReset.setBitmapData(
-				UI.renderAsset(
-					UI.colorize(new SWFRefreshIcon(), 0x7DA0BB),
-					buttonSize,
-					buttonSize
-				)
-			);
-			buttonReset.setOverflow(
-				Config.FINGER_SIZE * .2,
-				Config.FINGER_SIZE * .15,
-				Config.FINGER_SIZE * .3,
-				Config.FINGER_SIZE * .2
-			);
-			buttonReset.x = int(Config.FINGER_SIZE);
-			buttonReset.y = int(componentHeight * .5 - buttonReset.height * .5);
-			buttonReset.hide();
-			buttonReset.tapCallback = callback;
-			addChild(buttonReset);
-			
+		public function set homeCallback(val:Function):void {
+			_homeCallback = val;
 		}
 		
 		public function setButtonsState(homeNeeded:Boolean = false, menuNeeded:Boolean = true, sendNeeded:Boolean = true, mpNeeded:Boolean = true):void {
@@ -576,15 +629,15 @@ package com.dukascopy.connect.gui.chatInput {
 			if (buttonMP != null)
 				buttonMP.dispose();
 			buttonMP = null;
+			if (buttonP2P != null)
+				buttonP2P.dispose();
+			buttonP2P = null;
 			if (tfBMP != null)
 				UI.destroy(tfBMP);
 			tfBMP = null;
 			if (buttonSend != null)
 				buttonSend.dispose();
 			buttonSend = null;
-			if (buttonReset != null)
-				buttonReset.dispose();
-			buttonReset = null;
 			if (buttonHome != null)
 				buttonHome.dispose();
 			buttonHome = null;
@@ -592,6 +645,8 @@ package com.dukascopy.connect.gui.chatInput {
 			_holdCallback = null;
 			_sendCallback = null;
 			_menuCallback = null;
+			_p2pCallback = null;
+			_mpCallback = null;
 		}
 	}
 }

@@ -104,7 +104,7 @@ package com.dukascopy.connect.gui.list.renderers.trade {
 			textFormatMy.align = TextFormatAlign.LEFT;
 		}
 		
-		public function updateHitzones(itemHitzones:Array):void {
+		public function updateHitzones(itemHitzones:Vector.<HitZoneData>):void {
 			
 		}
 		

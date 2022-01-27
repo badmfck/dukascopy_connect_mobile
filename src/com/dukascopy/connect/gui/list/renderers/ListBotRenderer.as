@@ -2,6 +2,7 @@ package com.dukascopy.connect.gui.list.renderers {
 	
 	import assets.BotInfoIcon;
 	import com.dukascopy.connect.Config;
+	import com.dukascopy.connect.data.HitZoneData;
 	import com.dukascopy.connect.gui.components.AvatarView;
 	import com.dukascopy.connect.gui.lightbox.UI;
 	import com.dukascopy.connect.gui.list.ListItem;
@@ -93,24 +94,17 @@ package com.dukascopy.connect.gui.list.renderers {
 		
 		override protected function setHitZones(item:ListItem):void {
 			if (item.data is BotVO) {
-				var hitZones:Array = new Array();
-				/*hitZones.push( {
-					type:HitZoneType.BOT_OWNER, 
-					x:ownerAvatar.x - Config.FINGER_SIZE*.05 + x,
-					y:ownerAvatar.y -  Config.FINGER_SIZE*.05 + y, 
-					width:(Config.FINGER_SIZE * .1 + avatarSizeOwner*2 + Config.FINGER_SIZE*.1 + ownerText.width),
-					height:(Config.FINGER_SIZE * .1 + avatarSizeOwner*2)
-				} );*/
-				
+				var hitZones:Vector.<HitZoneData> = new Vector.<HitZoneData>();
 				if (infoButton != null)
 				{
-					hitZones.push( {
-						type:HitZoneType.BOT_INFO, 
-						x:infoButton.x - Config.FINGER_SIZE*.3 + x,
-						y:infoButton.y -  Config.FINGER_SIZE*.3 + y, 
-						width:(Config.FINGER_SIZE * .3 + infoButton.width + Config.FINGER_SIZE * .3),
-						height:(height)
-					} );
+					var hz:HitZoneData = new HitZoneData();
+					hz.type = HitZoneType.BOT_INFO;
+					hz.x = infoButton.x - Config.FINGER_SIZE*.3 + x;
+					hz.y = infoButton.y -  Config.FINGER_SIZE*.3 + y;
+					hz.width = Config.FINGER_SIZE * .3 + infoButton.width + Config.FINGER_SIZE * .3;
+					hz.height = height;
+					
+					hitZones.push(hz);
 				}
 				
 				item.setHitZones(hitZones);

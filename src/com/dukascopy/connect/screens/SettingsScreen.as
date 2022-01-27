@@ -36,6 +36,7 @@ package com.dukascopy.connect.screens {
 	import com.dukascopy.connect.screens.dialogs.paymentDialogs.SendMoneyByPhonePopup;
 	import com.dukascopy.connect.screens.dialogs.x.base.bottom.AnimatedTitlePopup;
 	import com.dukascopy.connect.screens.dialogs.x.base.bottom.ListSelectionPopup;
+	import com.dukascopy.connect.screens.dialogs.x.base.content.SeekSelectorPopup;
 	import com.dukascopy.connect.screens.dialogs.x.base.content.ShareLinkPopup;
 	import com.dukascopy.connect.screens.dialogs.x.base.content.TransactionFilterPopup;
 	import com.dukascopy.connect.screens.dialogs.calendar.SelectDatePopup;
@@ -897,6 +898,24 @@ package com.dukascopy.connect.screens {
 				ImageManager.loadImage(Auth.getLargeAvatar(AVATAR_SIZE), onAvatarLoaded);
 			if (updateOnActivate == true)
 				onAuthDataUpdated();
+			
+			return;
+			
+			var screenData:Object = new Object();
+			screenData.callback = onValueSelected;
+			screenData.title = "Title";
+			screenData.minValue = 100;
+			screenData.maxValue = 1000;
+			screenData.decimal = 2;
+			screenData.buttonText = "PROCEED";
+			screenData.minText = "min: 100";
+			screenData.maxText = "max: 1000";
+			ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, SeekSelectorPopup, screenData);
+		}
+		
+		private function onValueSelected(value:Number):void 
+		{
+			trace("123");
 		}
 		
 		private function onAuthDataUpdated():void {

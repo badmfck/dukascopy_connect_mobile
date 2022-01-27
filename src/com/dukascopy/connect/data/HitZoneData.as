@@ -19,6 +19,14 @@ package com.dukascopy.connect.data
 		public var disabled:Boolean;
 		public var color:uint = 0;
 		public var alpha:Number = 0.1;
+		public var param:String;
+		public var index:int;
+		public var data:Object;
+		public var text:String;
+		// !TODO: ???;
+		public var statAction:Object;
+		public var action:Object;
+		public var sys:Object;
 		
 		public function HitZoneData() 
 		{

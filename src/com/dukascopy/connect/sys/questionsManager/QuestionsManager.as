@@ -1540,7 +1540,7 @@ package com.dukascopy.connect.sys.questionsManager {
 			PHP.complain_complain(function(phpRespond:PHPRespond):void {
 				if (phpRespond.error == true) {
 					DialogManager.closeDialog();
-					if (phpRespond.errorMsg.substr(0,7) != "block04")
+					if (phpRespond.errorMsg.substr(0, 7) != "block04")
 						DialogManager.alert("Alert", phpRespond.errorMsg.substr(8));
 					phpRespond.dispose();
 					return;
@@ -1897,7 +1897,7 @@ package com.dukascopy.connect.sys.questionsManager {
 			}
 			
 			//!TODO:;
-		//	showTipsOnly = false;
+			//showTipsOnly = false;
 			showTipsOnly = true;
 			
 			if (needToResendInOut == true)

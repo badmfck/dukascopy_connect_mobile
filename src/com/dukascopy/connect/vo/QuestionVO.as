@@ -93,10 +93,7 @@ package com.dukascopy.connect.vo {
 				_geo = true;
 				_geolocation = new Location (data.geo.latt, data.geo.long);
 			}
-			if ("answers" in data) {
-				_answersCount = data.answers[0];
-				_answersMaxCount = data.answers[1];
-			}
+			_price
 			_isPaid = data.paid;
 			if ("tips" in data == true && data.tips != null && "amount" in data.tips == true && data.tips.amount != "" && data.tips.amount != 0) {
 				_tipsAmount = data.tips.amount;
@@ -160,8 +157,7 @@ package com.dukascopy.connect.vo {
 		private function onResult(instruments:Vector.<EscrowInstrument>):void {
 			GD.S_ESCROW_INSTRUMENTS.remove(onResult);
 			//!TODO: instruments == null
-			if (instruments != null)
-			{
+			if (instruments != null) {
 				for (var i:int = 0; i < instruments.length; i++) {
 					if (instruments[i].code == _tipsCurrency) {
 						_instrument = instruments[i];
@@ -169,8 +165,6 @@ package com.dukascopy.connect.vo {
 					}
 				}
 			}
-			
-			
 		}
 		
 		public function get avatarURL():String {

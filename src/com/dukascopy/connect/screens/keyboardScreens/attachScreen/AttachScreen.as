@@ -57,7 +57,7 @@ package com.dukascopy.connect.screens.keyboardScreens.attachScreen {
 		{
 			if (NetworkManager.isConnected || Config.isTest() == true)
 			{
-				enableButtons();
+ 				enableButtons();
 			}
 			else
 			{

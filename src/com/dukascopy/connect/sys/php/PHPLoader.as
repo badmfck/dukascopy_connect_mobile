@@ -292,7 +292,7 @@ package com.dukascopy.connect.sys.php {
 		
 		private function onOpen(e:Event):void {
 			//echo("PHPLoader (" + id + ")", "onOpen", new Date().getTime());
-		}
+		} 
 		
 		private function preCreateRespond(error:String = null):void {
 			_busy = false;

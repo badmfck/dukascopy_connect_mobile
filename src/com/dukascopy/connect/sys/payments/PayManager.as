@@ -46,7 +46,7 @@ package com.dukascopy.connect.sys.payments {
 		static public var S_NEED_AUTHORIZATION:Signal;
 		static public var S_INVALID_PASS_DIALOG_CLOSED:Signal;
 		static public var S_CANCEL_AUTH:Signal = new Signal("PayManager.S_CANCEL_AUTH");
-		static public var S_ACCOUNT:Signal;
+		static public var S_ACCOUNT:Signal = new Signal("PayManager.S_ACCOUNT");
 		static public var S_ACCOUNT_RESPOND:Signal = new Signal("PayManager.S_ACCOUNT_RESPOND");;
 		static public var S_ENTER_PASSWORD_DISMISS:Signal;
 		static public var S_MONEY_TRANSFERED:Signal;
@@ -135,7 +135,7 @@ package com.dukascopy.connect.sys.payments {
 			S_NEED_AUTHORIZATION = new Signal("PayManager.S_NEED_AUTHORIZATION");
 		//	S_CANCEL_AUTH = new Signal("PayManager.S_CANCEL_AUTH");
 			S_INVALID_PASS_DIALOG_CLOSED = new Signal("PayManager.S_INVALID_PASS_DIALOG_CLOSED");
-			S_ACCOUNT = new Signal("PayManager.S_ACCOUNT");
+		//	S_ACCOUNT = new Signal("PayManager.S_ACCOUNT");
 		//	S_ACCOUNT_RESPOND = new Signal("PayManager.S_ACCOUNT_RESPOND");
 			S_MONEY_TRANSFERED = new Signal("PayManager.S_MONEY_TRANSFERED");
 			S_MONEY_TRANSFERED_ERROR = new Signal("PayManager.S_MONEY_TRANSFERED_ERROR");
@@ -456,8 +456,31 @@ package com.dukascopy.connect.sys.payments {
 			}
 		}
 		
+		static public function callGetInstrumentRatesHistory(instrumentCode:String, callback:Function):void {
+			PayServer.callGetInstrumentRatesHistory(callGetInstrumentRatesHistoryRespond, instrumentCode, callback);
+		}
+		
+		static private function callGetInstrumentRatesHistoryRespond(respond:PayRespond):void {
+			
+			if (respond.hasAuthorizationError) {
+				validateAuthorization(respond);
+				return;
+			}
+			// trial reached
+			if (respond.hasTrialVersionError) {
+				savedData = respond.savedRequestData;
+				_trialReached = true;
+				S_TRIAL_REACHED.invoke();
+				return;
+			}
+			if (respond.savedRequestData != null && respond.savedRequestData.callback != null)
+			{
+				respond.savedRequestData.callback(respond);
+			}
+		}
+		
 		/**
-		 * GET Currency Transsfer Rate
+		 * GET Currency Transfer Rate
 		 * @param    fromCurrency
 		 * @param    toCurrency
 		 * @param    amount
@@ -1314,7 +1337,7 @@ package com.dukascopy.connect.sys.payments {
 		}
 		static public function get isInitialized():Boolean { return _isInitialized; }
 
-		static public function get systemOptionsReady():Boolean { return systemOptions!=null; }
+		static public function get systemOptionsReady():Boolean { return systemOptions != null; }
 		static public function get hasPendingTransfer():Boolean { return _hasPendingTransfer; }
 		static public function get creatingWalletBussy():Boolean { return _creatingWalletBussy; }
 		static public function get internalTransferBusy():Boolean { return _internalTransferBusy; }
@@ -1327,8 +1350,8 @@ package com.dukascopy.connect.sys.payments {
 		
 		static public function get walletsCurrencies():Array {
 			var result:Array = [];
-			if(_accountInfo!= null && _accountInfo.accounts!=null){
-				for (var i:int = 0; i < _accountInfo.accounts.length; i++) 	{
+			if (_accountInfo != null && _accountInfo.accounts != null) {
+				for (var i:int = 0; i < _accountInfo.accounts.length; i++) {
 					result.push(_accountInfo.accounts[i].CURRENCY);
 				}
 			}
@@ -1355,7 +1378,7 @@ package com.dukascopy.connect.sys.payments {
 			_isInsidePaymentsScreenNow = value;
 			
 			if (!_isInsidePaymentsScreenNow) {
-				if (S_ON_EXIT_PAYMENTS != null)
+				if (S_ON_EXIT_PAYMENTS != null) 
 					S_ON_EXIT_PAYMENTS.invoke();
 			}
 			if (_isInsidePaymentsScreenNow == true)

@@ -129,7 +129,16 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		
 		private function createAccountSelector():void 
 		{
-			selectorAccont = new DDAccountButton(openWalletSelector, Lang.TEXT_SELECT_ACCOUNT, false, -1, NaN, Lang.escrow_debit_from_account);
+			var title:String;
+			if (selectedDirection == TradeDirection.sell)
+			{
+				title = Lang.escrow_credit_to_account;
+			}
+			else
+			{
+				title = Lang.escrow_debit_from_account;
+			}
+			selectorAccont = new DDAccountButton(openWalletSelector, Lang.TEXT_SELECT_ACCOUNT, false, -1, NaN, title);
 			addItem(selectorAccont);
 		}
 		
@@ -209,15 +218,15 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 				}
 				if (selectedDirection == TradeDirection.buy)
 				{
-					values.push(NumberFormat.formatAmount((amount * targetPrice), currency));
-					values.push(NumberFormat.formatAmount((amount * targetPrice * EscrowSettings.refundableFee), currency));
-					values.push(NumberFormat.formatAmount((amount * targetPrice * EscrowSettings.refundableFee + amount * targetPrice), currency));
+					values.push(NumberFormat.formatAmount((amount * targetPrice), currency, false, true));
+					values.push(NumberFormat.formatAmount((amount * targetPrice * EscrowSettings.refundableFee), currency, false, true));
+					values.push(NumberFormat.formatAmount((amount * targetPrice * EscrowSettings.refundableFee + amount * targetPrice), currency, false, true));
 				}
 				else
 				{
-					values.push(NumberFormat.formatAmount((amount * targetPrice), currency));
-					values.push(NumberFormat.formatAmount((amount * targetPrice * EscrowSettings.getCommission(selectedCrypto.code)), currency));
-					values.push(NumberFormat.formatAmount((amount * targetPrice - amount * targetPrice * EscrowSettings.getCommission(selectedCrypto.code)), currency));
+					values.push(NumberFormat.formatAmount((amount * targetPrice), currency, false, true));
+					values.push(NumberFormat.formatAmount((amount * targetPrice * EscrowSettings.getCommission(selectedCrypto.code)), currency, false, true));
+					values.push(NumberFormat.formatAmount((amount * targetPrice - amount * targetPrice * EscrowSettings.getCommission(selectedCrypto.code)), currency, false, true));
 				}
 				
 				balance.draw(_width, values);
@@ -716,6 +725,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 				cryptoWalletInput.setMaxChars(300);
 				cryptoWalletInput.setPadding(0);
 				cryptoWalletInput.updateTextFormat(tf);
+				cryptoWalletInput.implementPaste();
 			}
 			addItem(cryptoWalletInput);
 				
@@ -1755,6 +1765,17 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 				else
 				{
 					ApplicationErrors.add();
+				}
+			}
+			if (state == STATE_FINISH)
+			{
+				if (sendButton != null)
+				{
+					result = sendButton.height + contentPadding * 2;
+				}
+				else if (backButton != null)
+				{
+					result = backButton.height + contentPadding * 2;
 				}
 			}
 			return result;

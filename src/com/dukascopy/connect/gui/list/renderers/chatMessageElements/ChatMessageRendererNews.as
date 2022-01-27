@@ -175,18 +175,30 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements
 			matr.rotate(Math.PI/2);
 		}
 		
-		public function updateHitzones(itemHitzones:Array):void
+		public function updateHitzones(itemHitzones:Vector.<HitZoneData>):void
 		{
+			var hz:HitZoneData;
+			
 			if (linkClip.visible == true){
-				itemHitzones.push( {
-					type:HitZoneType.OPEN_NEWS, 
-					x:linkClip.x - Config.MARGIN + x,
-					y:linkClip.y - Config.MARGIN + y, 
-					width:(Config.MARGIN * 2 + linkClip.width),
-					height:(Config.MARGIN * 2 + linkClip.height)
-				} );
+				
+				hz = new HitZoneData();
+				hz.type = HitZoneType.OPEN_NEWS;
+				hz.x = linkClip.x - Config.MARGIN + x;
+				hz.y = linkClip.y - Config.MARGIN + y;
+				hz.width = Config.MARGIN * 2 + linkClip.width;
+				hz.height = Config.MARGIN * 2 + linkClip.height;
+				
+				itemHitzones.push(hz);
 			}
-			itemHitzones.push( { type:HitZoneType.BALLOON, x:x , y:y, width:maxWidth, height:mainHeight } );
+			
+			hz = new HitZoneData();
+			hz.type = HitZoneType.BALLOON;
+			hz.x = x;
+			hz.y = y;
+			hz.width = maxWidth;
+			hz.height = mainHeight;
+			
+			itemHitzones.push(hz);
 		}
 		
 		public function getHeight(itemData:ChatMessageVO, itemWidth:int, listItem:ListItem):uint

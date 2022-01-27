@@ -14,12 +14,14 @@ package com.dukascopy.connect.screens.innerScreens {
 	import com.dukascopy.connect.gui.list.renderers.ListEscrowAdsRenderer;
 	import com.dukascopy.connect.gui.list.renderers.ListEscrowDealRenderer;
 	import com.dukascopy.connect.gui.list.renderers.ListEscrowInstrumentRenderer;
+	import com.dukascopy.connect.gui.list.renderers.ListEscrowInstrumentRendererBig;
 	import com.dukascopy.connect.gui.list.renderers.ListEscrowOfferRenderer;
 	import com.dukascopy.connect.gui.menuVideo.HidableButton;
 	import com.dukascopy.connect.gui.tabs.FilterTabs;
 	import com.dukascopy.connect.gui.tools.HorizontalPreloader;
 	import com.dukascopy.connect.managers.escrow.vo.EscrowAdsCryptoVO;
 	import com.dukascopy.connect.managers.escrow.vo.EscrowAdsVO;
+	import com.dukascopy.connect.managers.escrow.vo.EscrowInstrument;
 	import com.dukascopy.connect.managers.escrow.vo.EscrowOfferVO;
 	import com.dukascopy.connect.screens.EscrowAdsCreateScreen;
 	import com.dukascopy.connect.screens.RootScreen;
@@ -29,6 +31,7 @@ package com.dukascopy.connect.screens.innerScreens {
 	import com.dukascopy.connect.sys.dialogManager.DialogManager;
 	import com.dukascopy.connect.sys.style.FontSize;
 	import com.dukascopy.connect.sys.style.Style;
+	import com.dukascopy.connect.sys.ws.WS;
 	import com.dukascopy.connect.type.ChatInitType;
 	import com.dukascopy.connect.type.HitZoneType;
 	import com.dukascopy.connect.utils.TextUtils;
@@ -38,6 +41,7 @@ package com.dukascopy.connect.screens.innerScreens {
 	import com.telefision.utils.maps.EscrowDealMap;
 	import flash.display.Bitmap;
 	import flash.display.Sprite;
+	import flash.events.Event;
 	import flash.text.TextFieldAutoSize;
 	import flash.text.TextFormatAlign;
 	import flash.utils.getTimer;
@@ -123,10 +127,11 @@ package com.dukascopy.connect.screens.innerScreens {
 			
 			preloader.setSize(_width, int(Config.FINGER_SIZE * .07));
 			
-			createButton.setPosition(_width - Config.FINGER_SIZE - Config.MARGIN * 2,  _height - Config.FINGER_SIZE - Config.MARGIN * 2 - Config.APPLE_TOP_OFFSET);
+			createButton.setPosition(_width - Config.FINGER_SIZE - Config.MARGIN * 2,  _height - Config.FINGER_SIZE - Config.MARGIN * 2);
 			createButton.setOffset(Config.TOP_BAR_HEIGHT * 2 + Config.APPLE_TOP_OFFSET);
 			
 			GD.S_SCREEN_READY.add(onScreenReady);
+			WS.S_CONNECTED.add(update);
 		}
 		
 		override protected function update():void {
@@ -246,11 +251,21 @@ package com.dukascopy.connect.screens.innerScreens {
 			GD.S_ESCROW_DEALS_LOADED.remove(onDealsLoaded);
 			GD.S_ESCROW_DEALS_UPDATE.remove(onDealsLoaded);
 			GD.S_SCREEN_READY.remove(onScreenReady);
+			GD.S_ESCROW_INSTRUMENT_UPDATE.remove(onInstrumentUpdate);
+			WS.S_CONNECTED.remove(update);
 			DialogManager.closeDialog();
 			
 			if (createButton)
 				createButton.dispose();
 			createButton = null;
+		}
+		
+		private function onInstrumentUpdate(instrument:EscrowInstrument):void 
+		{
+			if (list != null && selectedTabID == TAB_ID_CRYPTO)
+			{
+				list.refresh();
+			}
 		}
 		
 		override public function drawViewLang():void {
@@ -320,9 +335,11 @@ package com.dukascopy.connect.screens.innerScreens {
 			GD.S_ESCROW_OFFERS_UPDATE.remove(onOffersLoaded);
 			GD.S_ESCROW_DEALS_LOADED.remove(onDealsLoaded);
 			GD.S_ESCROW_DEALS_UPDATE.remove(onDealsLoaded);
+			GD.S_ESCROW_INSTRUMENT_UPDATE.remove(onInstrumentUpdate);
 			showPreloader();
 			
 			if (id == TAB_ID_CRYPTO) {
+				GD.S_ESCROW_INSTRUMENT_UPDATE.add(onInstrumentUpdate);
 				GD.S_ESCROW_ADS_CRYPTOS.add(onEscrowAdsCryptoLoaded);
 				GD.S_ESCROW_ADS_CRYPTOS_REQUEST.invoke();
 				return;

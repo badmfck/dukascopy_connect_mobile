@@ -255,12 +255,14 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements {
 				}
 				sectionY += sectionText.getTrueHeight();
 			}
-			var hitZones:Array;
+			var hitZones:Vector.<HitZoneData>;
 			var i:int;
 			var l:int;
 			var sectionX:int = sectionText.getBirdSize() + Config.FINGER_SIZE;
 			hitZones = li.getHitZones();
-			hitZones ||= [];
+			var hz:HitZoneData;
+			if (hitZones == null)
+				hitZones = new Vector.<HitZoneData>();
 			hitZones.length = 0;
 			sectionY = selectItem(
 				walletSections,
@@ -291,15 +293,16 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements {
 					otherAccSections[i].y = sectionY;
 					otherAccSections[i].x = sectionX;
 					if (otherAccSections[i].isTotal == false){
-						hitZones.push( {
-							type: HitZoneType.OTHER_ACCOUNT,
-							param: i,
-							index:i,
-							x: otherAccSections[i].x,
-							y: sectionY, 
-							width: otherAccSections[i].getWidth(),
-							height: otherAccSections[i].getHeight()
-						} );
+						
+						hz = new HitZoneData();
+							hz.type = HitZoneType.OTHER_ACCOUNT;
+							hz.param = i.toString();
+							hz.index = i;
+							hz.x = otherAccSections[i].x;
+							hz.y = sectionY;
+							hz.width = otherAccSections[i].getWidth();
+							hz.height = otherAccSections[i].getHeight();
+						hitZones.push(hz);
 					}
 					sectionY += otherAccSections[i].getHeight();
 				}
@@ -315,15 +318,16 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements {
 					cryptoSections[i].y = sectionY;
 					cryptoSections[i].x = sectionX;
 					if (cryptoSections[i].isTotal == false) {
-						hitZones.push( {
-							type: HitZoneType.CRYPTO,
-							param: i,
-							index:i,
-							x: cryptoSections[i].x,
-							y: sectionY, 
-							width: cryptoSections[i].getWidth(),
-							height: cryptoSections[i].getHeight()
-						} );
+						
+						hz = new HitZoneData();
+							hz.type = HitZoneType.CRYPTO;
+							hz.param = i.toString();
+							hz.index = i;
+							hz.x = cryptoSections[i].x;
+							hz.y = sectionY;
+							hz.width = cryptoSections[i].getWidth();
+							hz.height = cryptoSections[i].getHeight();
+						hitZones.push(hz);
 					}
 					sectionY += cryptoSections[i].getHeight();
 					cHeight += cryptoSections[i].getHeight();
@@ -359,16 +363,17 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements {
 					cryptoRDSections[i].y = sectionY;
 					cryptoRDSections[i].x = sectionX;
 					if (cryptoRDSections[i].isTotal == false){
-						hitZones.push( {
-							type: HitZoneType.CRYPTO_RD,
-							param: i,
-							data: cryptoRDSections[i].data,
-							index:i,
-							x: cryptoRDSections[i].x,
-							y: sectionY, 
-							width: cryptoRDSections[i].getWidth(),
-							height: cryptoRDSections[i].getHeight()
-						} );
+						
+						hz = new HitZoneData();
+							hz.type = HitZoneType.CRYPTO_RD;
+							hz.param = i.toString();
+							hz.data = cryptoRDSections[i].data,
+							hz.index = i;
+							hz.x = cryptoRDSections[i].x;
+							hz.y = sectionY;
+							hz.width = cryptoRDSections[i].getWidth();
+							hz.height = cryptoRDSections[i].getHeight();
+						hitZones.push(hz);
 					}
 					sectionY += cryptoRDSections[i].getHeight();
 				}
@@ -417,15 +422,16 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements {
 						investmentDetailsSections[i].alpha = .4;
 					investmentDetailsSections[i].y = sectionY;
 					investmentDetailsSections[i].x = sectionX;
-					hitZones.push( {
-						type: HitZoneType.INVESTMENT_ITEM,
-						param: i,
-						index:i,
-						x: investmentDetailsSections[i].x,
-						y: sectionY, 
-						width: investmentDetailsSections[i].getWidth(),
-						height: investmentDetailsSections[i].getHeight()
-					} );
+					
+					hz = new HitZoneData();
+						hz.type = HitZoneType.INVESTMENT_ITEM;
+						hz.param = i.toString();
+						hz.index = i;
+						hz.x = investmentDetailsSections[i].x;
+						hz.y = sectionY;
+						hz.width = investmentDetailsSections[i].getWidth();
+						hz.height = investmentDetailsSections[i].getHeight();
+					hitZones.push(hz);
 					sectionY += investmentDetailsSections[i].getHeight();
 				}
 			}
@@ -563,15 +569,16 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements {
 						menuSections[i].draw();
 						menuSections[i].y = sectionY;
 						menuSections[i].x = sectionX;
-						hitZones.push( {
-							type: HitZoneType.BOT_MENU,
-							param: menuSections[i]["getIndex"](),
-							index:i,
-							x: menuSections[i].x,
-							y: sectionY, 
-							width: menuSections[i].getContentWidth(),
-							height: menuSections[i].getTrueHeight()
-						} );
+						
+						hz = new HitZoneData();
+							hz.type = HitZoneType.BOT_MENU;
+							hz.param = String(menuSections[i]["getIndex"]());
+							hz.index = i;
+							hz.x = menuSections[i].x;
+							hz.y = sectionY;
+							hz.width = menuSections[i].getContentWidth();
+							hz.height = menuSections[i].getTrueHeight();
+						hitZones.push(hz);
 						if (horizoltalMenu == false)
 							sectionY += menuSections[i].getTrueHeight();
 						else
@@ -600,15 +607,16 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements {
 						buttonSections[i].draw();
 						buttonSections[i].y = sectionY;
 						buttonSections[i].x = sectionX;
-						hitZones.push( {
-							type: HitZoneType.BOT_MENU_BUTTON,
-							param: i,
-							index:i,
-							x: buttonSections[i].x,
-							y: sectionY, 
-							width: buttonSections[i].getContentWidth(),
-							height: buttonSections[i].getTrueHeight()
-						} );
+						
+						hz = new HitZoneData();
+							hz.type = HitZoneType.BOT_MENU_BUTTON;
+							hz.param = i.toString();
+							hz.index = i;
+							hz.x = buttonSections[i].x;
+							hz.y = sectionY;
+							hz.width = buttonSections[i].getContentWidth();
+							hz.height = buttonSections[i].getTrueHeight();
+						hitZones.push(hz);
 						if (horizoltalButtons == false)
 							sectionY += buttonSections[i].getTrueHeight() + Config.MARGIN;
 						else
@@ -621,22 +629,22 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements {
 				buttonSections[i - 1].draw();
 			}
 			// Add avatar hitozne
-			hitZones.push( {
-				type: HitZoneType.AVATAR,
-				param:i,
-				index:i,
-				x: avatar.x,
-				y: avatar.y, 
-				width: avatarSizeDouble,
-				height: avatarSizeDouble
-			} );
+			hz = new HitZoneData();
+				hz.type = HitZoneType.AVATAR;
+				hz.param = i.toString();
+				hz.index = i;
+				hz.x = avatar.x;
+				hz.y = avatar.y;
+				hz.width = avatarSizeDouble;
+				hz.height = avatarSizeDouble;
+			hitZones.push(hz);
 			
 			li.setHitZones(hitZones);
 			
 			return this;
 		}
 		
-		private function selectItem(sections:Array, data:Object, sx:int, sy:int, hitZones:Array, hitZonesType:String, field:String = null):int {
+		private function selectItem(sections:Array, data:Object, sx:int, sy:int, hitZones:Vector.<HitZoneData>, hitZonesType:String, field:String = null):int {
 			if (sections == null || sections.length == 0 || sections[0].parent == null)
 				return sy;
 			if (sy != 0)
@@ -707,15 +715,17 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements {
 				sections[i].x = sx;
 				sections[i].y = sy;
 				if ("isTotal" in sections[i] == false || sections[i].isTotal == false) {
-					hitZones.push( {
-						type: hitZonesType,
-						param: (field == null) ? i : sections[i].data[field],
-						index:i,
-						x: sections[i].x,
-						y: sy, 
-						width: sections[i].getWidth(),
-						height: sections[i].getHeight()
-					} );
+					
+					var hz:HitZoneData = new HitZoneData();
+					hz.type = hitZonesType;
+					hz.param = String((field == null) ? i : sections[i].data[field]);
+					hz.index = i;
+					hz.x = sections[i].x;
+					hz.y = sy;
+					hz.width = sections[i].getWidth();
+					hz.height = sections[i].getHeight();
+					
+					hitZones.push(hz);
 				}
 				sy += sections[i].getHeight();
 			}
@@ -724,7 +734,7 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements {
 		}
 		
 		override public function getSelectedHitzone(itemTouchPoint:Point, listItem:ListItem):HitZoneData {
-			var zones:Array = listItem.getHitZones();
+			var zones:Vector.<HitZoneData> = listItem.getHitZones();
 			var data:Object = listItem.data;
 			getView(listItem, getHeight(listItem, listItem.width), listItem.width, false);
 			
@@ -1114,7 +1124,7 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements {
 				return res;
 			if (bmVO.item.type != "operationDetails")
 				return res;
-			if (bmVO.additionalData == null)
+			if ("additionalData" in bmVO == false || bmVO.additionalData == null)
 				return res;
 			var detailsVOs:Array = [];
 			res = Config.MARGIN;
@@ -1194,16 +1204,18 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements {
 				)
 			);
 			dt = null;
-			detailsVOs.push(
-				new AccountLimitVO(
-					[
-						AccountLimit.FIELD_DETAILS_DESC,
-						NaN,
-						NaN,
-						bmVO.additionalData.DESCRIPTION
-					]
-				)
-			);
+			if ("DESCRIPTION" in bmVO.additionalData == true && bmVO.additionalData.DESCRIPTION != null) {
+				detailsVOs.push(
+					new AccountLimitVO(
+						[
+							AccountLimit.FIELD_DETAILS_DESC,
+							NaN,
+							NaN,
+							bmVO.additionalData.DESCRIPTION
+						]
+					)
+				);
+			}
 			if (bmVO.additionalData.FEE_CURRENCY != null) {
 				detailsVOs.push(
 					new AccountLimitVO(
@@ -1664,7 +1676,7 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements {
 			if (bmVO.item == null)
 				return res;
 			var cryptoRDSection:BACryptoRDSection;
-			if (bmVO.item.type != "cryptoRewardsDeposites") {
+			if (bmVO.item.type != "cryptoRewardsDeposites" && bmVO.item.type != "cryptoRewardsDepositesSwap") {
 				if (bmVO.item.type == "showRD") {
 					res = Config.MARGIN;
 					cryptoRDSections ||= [];
@@ -1940,12 +1952,9 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements {
 		}
 		
 		public function dispose():void {
-			
 			if (sectionText != null)
-			{
 				sectionText.dispose();
-				sectionText = null;
-			}
+			sectionText = null;
 			
 			removeButtonSections();
 			buttonSections = null;
@@ -1993,16 +2002,12 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements {
 			cryptoDealsSections = null;
 			
 			if (avatarBankIBMD != null)
-			{
 				avatarBankIBMD.dispose();
-				avatarBankIBMD = null;
-			}
+			avatarBankIBMD = null;
 			
 			if (avatar != null)
-			{
 				UI.destroy(avatar);
-				avatar = null;
-			}
+			avatar = null;
 		}
 	}
 }

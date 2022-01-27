@@ -523,6 +523,16 @@ package com.dukascopy.connect.sys.payments {
 		}
 		
 		/**
+		 * This method performs different actions on particular prepaid card listed by GET account∕cards. See description:
+		 * https://jira.site.dukascopy.com/wiki/pages/viewpage.action?pageId=76709915
+		 */
+		static public function call_postCardDetailsSensitive(_callback:Function, card:String, _callID:String = ""):void {
+			var php:PayLoader = call("account/cards/" + card, _callback, { action: "view" }, URLRequestMethod.POST);
+			if (php.savedRequestData != null)
+				php.savedRequestData.callID = _callID;
+		}
+		
+		/**
 		 * This method initiates deposit process by different means. See description:
 		 * https://intranet.site.dukascopy.com/wiki/pages/viewpage.action?pageId=134775786
 		 */
@@ -585,7 +595,7 @@ package com.dukascopy.connect.sys.payments {
 		 */
 		static public function call_putMoneyWithdrawalOther(_callback:Function, _from:String, _currency:String, _type:String, _callID:String = ""):void {
 			var php:PayLoader;
-			var requestObject:Object ;
+			var requestObject:Object;
 			requestObject =  { from:_from, currency:_currency };
 			var action:String = "money/withdrawal";
 			if (_type == "WIRE") {
@@ -666,6 +676,14 @@ package com.dukascopy.connect.sys.payments {
 			var php:PayLoader = call("money/transfer/rate", _callback, { from:_fromCurrency, to:_toCurrency, amount:_amount, currency:_currency }, URLRequestMethod.GET);
 			if (php.savedRequestData != null)
 				php.savedRequestData.callID = _callID;
+		}
+		
+		static public function callGetInstrumentRatesHistory(_callback:Function, _instrument:String, callback:Function):void {
+			var php:PayLoader = call("account/investment/chart", _callback, { instrument:_instrument }, URLRequestMethod.GET);
+			if (php.savedRequestData != null)
+			{
+				php.savedRequestData.callback = callback;
+			}
 		}
 		
 		/**
@@ -973,6 +991,14 @@ package com.dukascopy.connect.sys.payments {
 		 */
 		static public function call_getFatCatz(_callback:Function):void {
 			call("coin/fcdata", _callback, null, URLRequestMethod.GET);
+		}
+		
+		/**
+		 * This request returns Fat Catz information. See description:
+		 * https://jira.site.dukascopy.com/wiki/display/webdev/CreateSwapStep1
+		 */
+		static public function call_GCS1(_callback:Function, code:String):void {
+			call("gcs/step1", _callback, { code:code }, URLRequestMethod.POST);
 		}
 		
 		/**

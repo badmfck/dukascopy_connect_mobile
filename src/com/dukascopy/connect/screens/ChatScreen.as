@@ -2,7 +2,6 @@ package com.dukascopy.connect.screens {
 
 	import assets.ContectDeleteIcon;
 	import assets.HandStop;
-	import assets.ScrollBottomIcon;
 	import com.adobe.utils.StringUtil;
 	import com.dukascopy.connect.Config;
 	import com.dukascopy.connect.GD;
@@ -20,10 +19,8 @@ package com.dukascopy.connect.screens {
 	import com.dukascopy.connect.data.RateBotData;
 	import com.dukascopy.connect.data.ScanPassportResult;
 	import com.dukascopy.connect.data.SoundStatusData;
-	import com.dukascopy.connect.data.TestHelper;
 	import com.dukascopy.connect.data.UserBanData;
 	import com.dukascopy.connect.data.escrow.EscrowScreenNavigation;
-	import com.dukascopy.connect.data.escrow.EscrowStatus;
 	import com.dukascopy.connect.data.escrow.TradeDirection;
 	import com.dukascopy.connect.data.location.Location;
 	import com.dukascopy.connect.data.screenAction.IScreenAction;
@@ -32,8 +29,10 @@ package com.dukascopy.connect.screens {
 	import com.dukascopy.connect.data.screenAction.customActions.BlockUserAction;
 	import com.dukascopy.connect.data.screenAction.customActions.BotReactionAction;
 	import com.dukascopy.connect.data.screenAction.customActions.CallGetEuroAction;
+	import com.dukascopy.connect.data.screenAction.customActions.ChatLockAction;
 	import com.dukascopy.connect.data.screenAction.customActions.CreateCoinTradeAction;
 	import com.dukascopy.connect.data.screenAction.customActions.DownloadFileAction;
+	import com.dukascopy.connect.data.screenAction.customActions.ExecuteAction;
 	import com.dukascopy.connect.data.screenAction.customActions.OpenFxProfileAction;
 	import com.dukascopy.connect.data.screenAction.customActions.PayByCardAction;
 	import com.dukascopy.connect.data.screenAction.customActions.PreviewMessagesAction;
@@ -69,27 +68,23 @@ package com.dukascopy.connect.screens {
 	import com.dukascopy.connect.gui.list.ListItem;
 	import com.dukascopy.connect.gui.list.renderers.ListChatItem;
 	import com.dukascopy.connect.gui.list.renderers.ListLink;
-	import com.dukascopy.connect.gui.list.renderers.ListPayWalletItem;
 	import com.dukascopy.connect.gui.menuVideo.BitmapButton;
 	import com.dukascopy.connect.gui.menuVideo.HidableButton;
 	import com.dukascopy.connect.gui.preloader.Preloader;
 	import com.dukascopy.connect.gui.puzzle.Puzzle;
 	import com.dukascopy.connect.gui.tools.HorizontalPreloader;
-	import com.dukascopy.connect.gui.topBar.TopBarChat;
+	import com.dukascopy.connect.gui.topBar.x.TopBar;
+	import com.dukascopy.connect.gui.topBar.x.controller.TopBarChatController;
 	import com.dukascopy.connect.gui.userWriting.UserWriting;
 	import com.dukascopy.connect.screens.base.BaseScreen;
 	import com.dukascopy.connect.screens.base.ScreenManager;
 	import com.dukascopy.connect.screens.call.CallScreen;
 	import com.dukascopy.connect.screens.call.TalkScreen;
 	import com.dukascopy.connect.screens.context.ContextMenuScreen;
-	import com.dukascopy.connect.screens.dialogs.QueuePopup;
-	import com.dukascopy.connect.screens.dialogs.QueueUnderagePopup;
 	import com.dukascopy.connect.screens.dialogs.ScanPassportPopup;
 	import com.dukascopy.connect.screens.dialogs.ScreenLinksDialog;
 	import com.dukascopy.connect.screens.dialogs.ScreenQuestionReactionsDialog;
 	import com.dukascopy.connect.screens.dialogs.calendar.RecognitionDateRemindPopup;
-	import com.dukascopy.connect.screens.dialogs.calendar.SelectRecognitionDatePopup;
-	import com.dukascopy.connect.screens.dialogs.paymentDialogs.FeedbackPopup;
 	import com.dukascopy.connect.screens.serviceScreen.Overlay;
 	import com.dukascopy.connect.sys.DocumentUploader;
 	import com.dukascopy.connect.sys.Gifts;
@@ -100,6 +95,7 @@ package com.dukascopy.connect.screens {
 	import com.dukascopy.connect.sys.calendar.Calendar;
 	import com.dukascopy.connect.sys.callManager.CallManager;
 	import com.dukascopy.connect.sys.chat.DraftMessage;
+	import com.dukascopy.connect.sys.chat.RichMessageDetector;
 	import com.dukascopy.connect.sys.chatManager.ChatManager;
 	import com.dukascopy.connect.sys.chatManager.ForwardingManager;
 	import com.dukascopy.connect.sys.chatManager.typesManagers.AnswersManager;
@@ -159,6 +155,7 @@ package com.dukascopy.connect.screens {
 	import com.dukascopy.connect.vo.users.adds.ChatUserVO;
 	import com.dukascopy.langs.Lang;
 	import com.dukascopy.langs.LangManager;
+	import com.greensock.TweenLite;
 	import com.greensock.TweenMax;
 	import com.greensock.easing.Quint;
 	import flash.desktop.Clipboard;
@@ -174,9 +171,6 @@ package com.dukascopy.connect.screens {
 	import flash.net.URLRequest;
 	import flash.net.navigateToURL;
 	import flash.text.TextFormatAlign;
-	import com.dukascopy.connect.sys.chat.RichMessageDetector;
-	import com.dukascopy.connect.sys.chat.RichMessageDetector;
-	import com.greensock.TweenLite;
 	
 	/**
 	 * @author Igor Bloom
@@ -184,7 +178,7 @@ package com.dukascopy.connect.screens {
 	
 	public class ChatScreen extends BaseScreen {
 		
-		protected var chatTop:TopBarChat;
+		protected var chatTop:TopBar;
 		private var noConnectionIndicator:ConnectionIndicator;
 		protected var list:List;
 		protected var chatInput:IChatInput;
@@ -314,9 +308,6 @@ package com.dukascopy.connect.screens {
 			list.setMask(true);
 			list.setOverlayReaction(false);
 			_view.addChild(list.view);
-			chatTop = new TopBarChat();
-			chatTop.setChatScreen(this);
-			_view.addChild(chatTop.view);
 			
 			bottomInputClip = new Sprite();
 			
@@ -419,21 +410,23 @@ package com.dukascopy.connect.screens {
 			Calendar.S_START_VI.add(callStartVI);
 			WSClient.S_LOYALTY_CHANGE.add(onLoyaltyChanged);*/
 			
+			addTopBar();
+			
 			if (invoiceProcessView != null)
 			{
 				invoiceProcessView.setSizes(_width, _height);
 			}
-
+			
 			updateChatBackground();
 			
 			needToOpenChat = true;
 			
-			chatTop.setWidthAndHeight(_width, Config.FINGER_SIZE * .85 + Config.APPLE_TOP_OFFSET);
+			chatTop.setWidthAndHeight(_width, Config.FINGER_SIZE * .85);
 			
-			uploadFilePanel = new UploadFilePanel(view, 0, chatTop.view.y + chatTop.height, _width);
+			uploadFilePanel = new UploadFilePanel(view, 0, chatTop.y + chatTop.height, _width);
 			
-			list.view.y = chatTop.view.y + chatTop.height;
-			messagePreloader.y = chatTop.view.y + chatTop.height;
+			list.view.y = chatTop.y + chatTop.height;
+			messagePreloader.y = chatTop.y + chatTop.height;
 			messagePreloader.setSize(_width, int(Config.FINGER_SIZE * .06));
 			
 			if (Config.PLATFORM_APPLE) {
@@ -456,7 +449,7 @@ package com.dukascopy.connect.screens {
 			if (VideoStreaming.isOnAir() && VideoStreaming.currentChat != null && ChatManager.getCurrentChat() != null && ChatManager.getCurrentChat().uid == VideoStreaming.currentChat)
 			{
 				backColorClip.alpha = 0;
-				chatTop.hide(0);
+			//	chatTop.hide(0);
 			}
 			
 			onCloseChatKeyboard();
@@ -464,17 +457,64 @@ package com.dukascopy.connect.screens {
 				showForwardMessageButton();
 			
 			if (chatTop != null){
-				chatTop.redrawTitle();
+				chatTop.update();
 			}
 			
 			updateChatInput();
 			
 			NativeExtensionController.S_LOCATION.add(onMyLocation);
 			WSClient.S_LOCATION_UPDATE.add(onUserLocation);
-
+			
 			GD.S_WS_REQUEST_STATUS.invoke();
+			
+			GD.CHAT_START_STREAM.add(startStream);
+			GD.CHAT_LOCK_CHANGED.add(onLockChanged);
+			
+			GD.CHAT_SUBSCRIBE_RESULT.add(onChatSubscribe);
+			GD.CHAT_UNSUBSCRIBE_RESULT.add(onChatUnsubscribe);
 		}
-
+		
+		private function onChatUnsubscribe(success:Boolean, uid:String, message:String = null):void 
+		{
+			if (ChatManager.getCurrentChat() != null && ChatManager.getCurrentChat().uid == uid)
+			{
+				if (success) {
+					message = Lang.channelUnsubscribeSuccess;
+				}
+				ToastMessage.display(message);
+			}
+		}
+		
+		private function onChatSubscribe(success:Boolean, uid:String, message:String = null):void 
+		{
+			if (ChatManager.getCurrentChat() != null && ChatManager.getCurrentChat().uid == uid)
+			{
+				if (success) {
+					message = Lang.channelSubscribeSuccess;
+				}
+				ToastMessage.display(message);
+			}
+		}
+		
+		private function onLockChanged():void 
+		{
+			if (ChatManager.getCurrentChat().locked) {	
+				showLockButton();
+			} else {
+				hideLockButton();
+			}
+		}
+		
+		private function addTopBar():void 
+		{
+			
+			var actionBack:ExecuteAction = new ExecuteAction();
+			actionBack.getSuccessSignal().add(onBack);
+			
+			chatTop = new TopBar(new TopBarChatController(chatData, actionBack));
+			_view.addChild(chatTop);
+		}
+		
 		private function hidePreloader():void 
 		{
 			if (preloader != null)
@@ -493,7 +533,7 @@ package com.dukascopy.connect.screens {
 					else
 						hideNoConnectionIndicator();
 		}
-
+		
 		private function showPreloader():void 
 		{
 			preloader ||= new Preloader();
@@ -564,7 +604,7 @@ package com.dukascopy.connect.screens {
 				satisfyPublicAnswerButton.visible = false;
 			}
 			if (chatTop != null) {
-				chatTop.redrawTitle();
+				chatTop.update();
 			}
 			updateChatInput();
 		}
@@ -901,7 +941,7 @@ package com.dukascopy.connect.screens {
 					break;
 				}
 				case ChannelsManager.EVENT_TITLE_CHANGED: {
-					chatTop.redrawTitle();
+					chatTop.update();
 					break;
 				}
 				case ChannelsManager.EVENT_MODE_CHANGED: {
@@ -1016,119 +1056,6 @@ package com.dukascopy.connect.screens {
 					textOverBackgroundColor = DEFAULT_OVER_BACKGROUND_COLOR;
 				}
 			}
-		}
-		
-		public function getTitleValue():String {
-			var userModel:UserVO;
-			var titleText:String;
-			if (chatData != null) {
-				var chatModel:ChatVO;
-				if (ChatManager.getCurrentChat() != null) {
-					chatModel = ChatManager.getCurrentChat();
-				} else if (chatData.chatVO != null) {
-					chatModel = chatData.chatVO;
-				} else {
-					if (chatData.chatUID != null) {
-						chatModel = ChatManager.getChatByUID(chatData.chatUID);
-					}
-				}
-				if (chatModel != null && 
-					(chatModel.type == ChatRoomType.PRIVATE || chatModel.type == ChatRoomType.QUESTION) && 
-					chatModel.users != null && chatModel.users.length > 0) {
-						var user:ChatUserVO = chatModel.users[0];
-						if (user != null) {
-							if (user.secretMode == true)
-								return Lang.textIncognito;
-							userModel = user.userVO;
-							if (userModel != null)
-								titleText = userModel.getDisplayName();
-							else
-								titleText = chatModel.title;
-						}
-				}
-				if (chatModel != null && 
-					chatModel.type == ChatRoomType.CHANNEL && 
-					chatModel.questionID != null && chatModel.questionID != "") {
-						if (chatModel.getQuestion() != null && chatModel.getQuestion().user != null) {
-							if (chatModel.getQuestion().incognito)
-								return Lang.textIncognito;
-							return chatModel.getQuestion().user.getDisplayName();
-						} else
-							return Lang.question;
-				}
-				if (chatData.type == ChatInitType.CHAT || chatData.type == ChatInitType.QUESTION) {
-					if (chatModel != null) {
-						if (chatModel.type == ChatRoomType.PRIVATE || chatModel.type == ChatRoomType.QUESTION) {
-							if (chatModel.users && chatModel.users.length > 0) {
-								userModel = chatModel.users[0].userVO;
-								if (userModel != null)
-									titleText = userModel.getDisplayName();
-								else
-									titleText = chatModel.title;
-							} else
-								titleText = chatModel.title;
-						} else
-							titleText = chatModel.title;
-					} else {
-						if (chatData.type == ChatInitType.QUESTION && chatData.question != null) {
-							if (chatData.question.incognito == true)
-								titleText = Lang.textIncognito;
-							else
-								titleText = chatData.question.title;
-						}
-					}
-				} else if (chatData.type == ChatInitType.USERS_IDS) {
-					if (chatData.usersUIDs) {
-						if (chatData.usersUIDs.length == 1) {
-							userModel = UsersManager.getFullUserData(chatData.usersUIDs[0]);
-							
-							if (userModel && userModel.getDisplayName() != "" && userModel.getDisplayName() != null) {
-								titleText = userModel.getDisplayName();
-							} else {
-								if (chatModel) {
-									titleText = chatModel.title;
-								}
-							}
-						} else {
-							//group chat;
-							if (chatModel) {
-								titleText = chatModel.title;
-							} else {
-								titleText = '';
-								var userProfile:UserVO;
-								for (var i:int = 0; i < chatData.usersUIDs.length; i++) {
-									userProfile = UsersManager.getFullUserData(chatData.usersUIDs[i], false);
-									if (userProfile && userProfile.getDisplayName() != null) {
-										if (i > 0)
-											titleText+= ', ';
-										titleText += userProfile.getDisplayName();
-									}
-								}
-							}
-						}
-					}
-				} else if (chatData.type == ChatInitType.SUPPORT) {
-					var pid:int = (chatData!=null && "pid" in chatData)?chatData.pid:-1;
-					if (pid ==-1 && chatModel != null)
-						pid = chatModel.pid;
-					if (pid ==-1)
-						titleText = Lang.standartSupportTitle;
-					else if (pid == Config.EP_VI_DEF)
-						titleText = Lang.chatWithBankTitle;
-					else if (pid == Config.EP_VI_EUR)
-						titleText = Lang.chatWithBankEUTitle;	
-					else if (pid == Config.EP_VI_PAY)
-						titleText = Lang.chatWithPayEUTitle;
-					else if (chatModel != null)
-						titleText = chatModel.title;
-				}
-			}
-			
-			if (titleText == null){
-				titleText = "";
-			}
-			
-			return titleText;
 		}
 		
 		override public function startRenderingBitmap():void {
@@ -1373,7 +1300,7 @@ package com.dukascopy.connect.screens {
 			if (VideoStreaming.isOnAir() && VideoStreaming.currentChat != null && ChatManager.getCurrentChat() != null && ChatManager.getCurrentChat().uid == VideoStreaming.currentChat)
 			{
 				backColorClip.alpha = 0;
-				chatTop.hide(0);
+			//	chatTop.hide(0);
 			}
 			
 			bottomInputClip.width = _width;
@@ -1589,10 +1516,7 @@ package com.dukascopy.connect.screens {
 				showLockButton();
 			}
 			
-			
 			chatTop.activate()
-			chatTop.setCallCallback(ChatManager.callToChatUser);
-			chatTop.setStartStreamCallback(startStream);
 			
 			list.S_ITEM_TAP.add(onItemTap);
 			list.S_ITEM_SWIPE.add(onItemSwipe);
@@ -1704,7 +1628,7 @@ package com.dukascopy.connect.screens {
 				streamContainer = new Sprite();
 				view.addChild(streamContainer);
 				stream = new VideoStreaming(streamContainer, new Rectangle(0, 0, _width, chatInput.getView().y), onStreamEnd, list.view, ChatManager.getCurrentChat().uid);
-				chatTop.hide();
+			//	chatTop.hide();
 				if (backgroundImage != null)
 					backgroundImage.visible = false;
 				TweenMax.to(backColorClip, 0.5, {alpha:0, delay:2});
@@ -1718,11 +1642,11 @@ package com.dukascopy.connect.screens {
 			streamContainer = null;
 			stream.close();
 			stream = null;
-			list.view.y = chatTop.view.y + chatTop.height;
+			list.view.y = chatTop.y + chatTop.height;
 			if (backgroundImage != null)
 				backgroundImage.visible = true;
 			list.view.alpha = 1;
-			chatTop.show();
+		//	chatTop.show();
 			setChatListSize();
 			drawView();
 		}
@@ -1881,17 +1805,37 @@ package com.dukascopy.connect.screens {
 				}
 			}*/
 			
-			var messageType:String = msgVO.typeEnum;
-			if (messageType == ChatMessageType.REPLY)
-			{
-				messageType = ChatMessageType.TEXT;
-			}
-			
 			if (messageType == ChatMessageType.TEXT && msgVO.text == "")
 				return;
 			var isMine:Boolean = (msgVO.userUID == Auth.uid);
 			var editable:Boolean = (msgVO.created * 1000 > new Date().getTime() - 1800000);
 			var menuItems:Array = new Array();
+			
+			var messageType:String = msgVO.typeEnum;
+			var lhz:String;
+			var lastHitzoneObject:HitZoneData;
+			if (messageType == ChatMessageType.REPLY)
+			{
+				selectedItem = list.getItemByNum(n);
+				lastHitzoneObject = selectedItem.getLastHitZoneObject();
+				
+				lhz = lastHitzoneObject != null?lastHitzoneObject.type:null;// selectedItem.getLastHitZone();
+				
+				if (lhz == HitZoneType.REPLY_MESSAGE && msgVO.systemMessageVO != null && msgVO.systemMessageVO.replayMessage != null && msgVO.systemMessageVO.replayMessage.target != -1) {
+					menuItems.push( { fullLink:Lang.textCopy, id:ChatItemContextMenuItemType.COPY } );
+					var messageNew:ChatMessageVO = msgVO.getClone();
+					messageNew.usePlainText = true;
+					messageNew.updateText(msgVO.systemMessageVO.replayMessage.message);
+					messageNew.decrypt(ChatManager.getCurrentChat().securityKey);
+					msgVO = messageNew;
+					selectedItem.setLastHitZone(lastHitzoneObject);
+				}
+				else
+				{
+					lastHitzoneObject = null;
+					messageType = ChatMessageType.TEXT;
+				}
+			}
 			
 			if (messageType == ChatSystemMsgVO.TYPE_ESCROW_OFFER)
 			{
@@ -1944,7 +1888,13 @@ package com.dukascopy.connect.screens {
 							menuItems.push( { fullLink:Lang.textRemove, id:ChatItemContextMenuItemType.REMOVE } );
 						}
 					}
-				} else {
+				} 
+				else if (messageType == ChatMessageType.REPLY)
+				{
+					
+				}
+				else
+				{
 					if (messageType == ChatMessageType.TEXT) {
 						
 						menuItems.push( { fullLink:Lang.reply, id:ChatItemContextMenuItemType.REPLY } );
@@ -1961,7 +1911,7 @@ package com.dukascopy.connect.screens {
 					{
 						menuItems.push( { fullLink:Lang.textCopy, id:ChatItemContextMenuItemType.COPY } );
 					}
-
+					
 					if (messageType == ChatSystemMsgVO.TYPE_CHAT_SYSTEM) {
 						menuItems.push( { fullLink:Lang.textCopy, id:ChatItemContextMenuItemType.COPY } );
 					}
@@ -2014,7 +1964,7 @@ package com.dukascopy.connect.screens {
 						menuItems.push({fullLink:Lang.forwardMessage, id:ChatItemContextMenuItemType.FORWARD});
 					}
 				}
-				if (messageType != ChatSystemMsgVO.TYPE_FILE)
+				if (messageType != ChatSystemMsgVO.TYPE_FILE && lhz != HitZoneType.REPLY_MESSAGE)
 				{
 					if (msgVO.renderInfo == null || msgVO.renderInfo.renderInforenderBigFont == false)
 					{
@@ -2027,7 +1977,6 @@ package com.dukascopy.connect.screens {
 				}
 			}
 			
-			
 			if (menuItems.length == 0)
 				return;
 			
@@ -2037,6 +1986,10 @@ package com.dukascopy.connect.screens {
 			
 			selectedItem = list.getItemByNum(n);
 			var messageContentHitzone:HitZoneData = (selectedItem.renderer as ListChatItem).getMessageHitzone(selectedItem);
+			/*if (messageType == ChatMessageType.REPLY && lastHitzoneObject != null && lastHitzoneObject is HitZoneData)
+			{
+				messageContentHitzone = lastHitzoneObject as HitZoneData;
+			}*/
 			if (messageContentHitzone != null) {
 				var screenDataContext:Object = new Object();
 				var globalPointTap:Point = selectedItem.liView.parent.localToGlobal(new Point(selectedItem.liView.x, selectedItem.liView.y));
@@ -2346,8 +2299,8 @@ package com.dukascopy.connect.screens {
 							loaderSize ++;
 						historyLoadingScroller = new Preloader(loaderSize, ListLoaderShape);
 						_view.addChild(historyLoadingScroller);
-						if (chatTop != null && chatTop.view != null && _view.contains(chatTop.view)) {
-							_view.setChildIndex(chatTop.view, _view.numChildren - 1);
+						if (chatTop != null && _view.contains(chatTop)) {
+							_view.setChildIndex(chatTop, _view.numChildren - 1);
 						}
 					}
 					historyLoadingScroller.y = Config.FINGER_SIZE * .85 + Config.APPLE_TOP_OFFSET - Config.FINGER_SIZE * .5;
@@ -2558,7 +2511,7 @@ package com.dukascopy.connect.screens {
 			var updateItemTime:Boolean = true;
 			if (lhz == HitZoneType.BALLOON) {
 				if (cmsgVO.paranoic && cmsgVO.crypted) {
-					chatTop.onLockButtonTap();
+					(new ChatLockAction()).execute();
 				} else if (cmsgVO.systemMessageVO != null && cmsgVO.systemMessageVO.fileType == ChatSystemMsgVO.FILETYPE_VIDEO) {
 					NativeExtensionController.showVideo(cmsgVO.systemMessageVO.videoVO, getTitleValue());
 				} else if (cmsgVO.systemMessageVO != null && cmsgVO.systemMessageVO.fileType == ChatSystemMsgVO.FILETYPE_GENERAL) {
@@ -2832,6 +2785,11 @@ package com.dukascopy.connect.screens {
 			{
 				Overlay.displayTouch(overlayTouch);
 			}
+		}
+		
+		private function getTitleValue():String 
+		{
+			return "";
 		}
 		
 		private function onPayActionFail():void 
@@ -3370,7 +3328,7 @@ package com.dukascopy.connect.screens {
 					questionPanel = new QuestionPanel();
 					questionPanel.S_HEIGHT_CHANGE.add(onQuestionPanelSizeChanged);
 					view.addChild(questionPanel);
-					questionPanel.y = Math.floor(chatTop.view.y + chatTop.height);
+					questionPanel.y = Math.floor(chatTop.y + chatTop.height);
 					if (isActivated) {
 						if (questionPanel != null) {
 							questionPanel.activate();
@@ -3430,7 +3388,7 @@ package com.dukascopy.connect.screens {
 					questionPanel = new QuestionPanel();
 					questionPanel.S_HEIGHT_CHANGE.add(onQuestionPanelSizeChanged);
 					view.addChild(questionPanel);
-					questionPanel.y = Math.floor(chatTop.view.y + chatTop.height);
+					questionPanel.y = Math.floor(chatTop.y + chatTop.height);
 					if (isActivated) {
 						if (questionPanel != null) {
 							questionPanel.activate();
@@ -3700,7 +3658,7 @@ package com.dukascopy.connect.screens {
 				
 				stream = VideoStreaming.getCurrent();
 				stream.attachTo(streamContainer, new Rectangle(0, 0, _width, chatInput.getView().y), onStreamEnd, list.view);
-				chatTop.hide(0);
+			//	chatTop.hide(0);
 				
 				if (backgroundImage != null)
 					backgroundImage.visible = false;
@@ -4569,8 +4527,13 @@ package com.dukascopy.connect.screens {
 			QuestionsManager.S_QUESTION_CLOSED.remove(onQuestionClosed);
 		//	WSClient.S_LOYALTY_CHANGE.remove(onLoyaltyChanged);
 			
-
-
+			
+			GD.CHAT_START_STREAM.remove(startStream);
+			GD.CHAT_LOCK_CHANGED.remove(onLockChanged);
+			
+			GD.CHAT_SUBSCRIBE_RESULT.remove(onChatSubscribe);
+			GD.CHAT_UNSUBSCRIBE_RESULT.remove(onChatUnsubscribe);
+			
 			
 			GD.S_WS_STATUS.remove(onWSStatus);
 			NetworkManager.S_CONNECTION_CHANGED.remove(onNetworkChanged);
@@ -4706,16 +4669,16 @@ package com.dukascopy.connect.screens {
 		}
 		
 		private function hideNoConnectionIndicator():void {
-			if (noConnectionIndicator == null || noConnectionIndicator.parent == null)
+			/*if (noConnectionIndicator == null || noConnectionIndicator.parent == null)
 				return;
 			PointerManager.removeTap(noConnectionIndicator, tryReconnect);
 			noConnectionIndicator.parent.removeChild(noConnectionIndicator);
 			if (lockButton != null)
-				lockButton.y = chatTop.height + Config.FINGER_SIZE * .5;
+				lockButton.y = chatTop.height + Config.FINGER_SIZE * .5;*/
 		}
 		
 		private function showNoConnectionIndicator():void {
-			if (noConnectionIndicator == null) {
+			/*if (noConnectionIndicator == null) {
 				noConnectionIndicator = new ConnectionIndicator();
 				noConnectionIndicator.draw(_width, Config.FINGER_SIZE * .5);
 				noConnectionIndicator.y = chatTop.height;
@@ -4730,7 +4693,7 @@ package com.dukascopy.connect.screens {
 			PointerManager.addTap(noConnectionIndicator, tryReconnect);
 			
 			if (lockButton != null)
-				lockButton.y = chatTop.height + Config.FINGER_SIZE * .5 + noConnectionIndicator.height;
+				lockButton.y = chatTop.height + Config.FINGER_SIZE * .5 + noConnectionIndicator.height;*/
 		}
 		
 		private function tryReconnect(e:Event = null):void 
@@ -4749,7 +4712,7 @@ package com.dukascopy.connect.screens {
 				lockButton.setDownScale(1.3);
 				lockButton.setOverflow(20, 20, 20, 20);
 				//lockButton.tapCallback = chatTop.onLockButtonTap;
-				lockButton.tapCallback = chatTop.onLockButtonTap;
+				lockButton.tapCallback = onLockButtonClick;
 				
 				lockButton.x = _width - Config.FINGER_SIZE - Config.DOUBLE_MARGIN;
 				lockButton.y = chatTop.height + Config.MARGIN + ((noConnectionIndicator == null || noConnectionIndicator.parent == null) ? 0 : noConnectionIndicator.height);
@@ -4759,6 +4722,11 @@ package com.dukascopy.connect.screens {
 			}
 			lockButton.activate();
 			lockButton.show(.3);
+		}
+		
+		private function onLockButtonClick():void 
+		{
+			(new ChatLockAction()).execute();
 		}
 		
 		public function hideLockButton():void {
@@ -5088,32 +5056,6 @@ package com.dukascopy.connect.screens {
 		private function confirmStopDialogResponse(value:int):void {
 			ChatManager.closeChat();
 			onBack();
-		}
-		
-		public function subscribe():void {
-			if (ChatManager.getCurrentChat() != null && ChatManager.getCurrentChat().type == ChatRoomType.CHANNEL) {
-				ChannelsManager.subscribe(ChatManager.getCurrentChat().uid, onSubscribeResult);
-			}
-		}
-		
-		private function onSubscribeResult(success:Boolean, uid:String, message:String = null):void {
-			if (success) {
-				message = Lang.channelSubscribeSuccess;
-			}
-			ToastMessage.display(message);
-		}
-		
-		public function unsubscribe():void {
-			if (ChatManager.getCurrentChat() != null && ChatManager.getCurrentChat().type == ChatRoomType.CHANNEL) {
-				ChannelsManager.unsubscribe(ChatManager.getCurrentChat().uid, onUnsubscribeResult);
-			}
-		}
-		
-		private function onUnsubscribeResult(success:Boolean, uid:String, message:String = null):void {
-			if (success) {
-				message = Lang.channelUnsubscribeSuccess;
-			}
-			ToastMessage.display(message);
 		}
 		
 		// GETTERS -> //

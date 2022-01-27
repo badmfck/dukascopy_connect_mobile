@@ -17,7 +17,7 @@ package com.dukascopy.connect.gui.list.renderers.trade {
 		function draw(data:Object, maxWidth:int, listItem:ListItem = null):void;
 		function getWidth():uint;
 		function getBackColor():Number;
-		function updateHitzones(itemHitzones:Array):void;
+		function updateHitzones(itemHitzones:Vector.<HitZoneData>):void;
 		function getContentHeight():Number;
 		function dispose():void;
 		function getSmallGap(listItem:ListItem):int;
