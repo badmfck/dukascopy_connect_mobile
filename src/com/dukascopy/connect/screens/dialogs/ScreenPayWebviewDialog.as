@@ -101,7 +101,7 @@ package com.dukascopy.connect.screens.dialogs {
 			tempRect.y = view.y + container.y + headerHeight;
 			
 			tempRect.width = _width;
-			tempRect.height = getHeight() - Config.FINGER_SIZE;
+			tempRect.height = getHeight() - Config.FINGER_SIZE - Config.APPLE_BOTTOM_OFFSET - Config.APPLE_TOP_OFFSET;
 			webView.viewPort = tempRect;
 		}
 		
