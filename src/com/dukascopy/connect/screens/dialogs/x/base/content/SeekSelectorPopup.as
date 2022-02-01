@@ -146,6 +146,8 @@ package com.dukascopy.connect.screens.dialogs.x.base.content {
 		private function onPriceInputChange():void{
 			onPriceChange(inputField.value);
 			updateCurrencyTextPosition();
+			
+			seekBar.setValue(inputField.value);
 		}
 		
 		private function updateCurrencyTextPosition():void 
