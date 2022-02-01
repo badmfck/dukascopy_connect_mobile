@@ -94,6 +94,14 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs.elements
 			}
 		}
 		
+		public function set backgroundAlpha(value:Number):void 
+		{
+			if (input != null)
+			{
+				input.backgroundAlpha = value;
+			}
+		}
+		
 		public function get textY():int
 		{
 			if (input != null && input.getTextField() != null)
@@ -650,6 +658,24 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs.elements
 		public function implementPaste():void 
 		{
 			showPasteButton = true;
+		}
+		
+		public function getTextWidth():int 
+		{
+			if (input != null)
+			{
+				return input.getTextWidth();
+			}
+			return 0;
+		}
+		
+		public function get textAscent():int 
+		{
+			if (input != null)
+			{
+				return input.textAscent;
+			}
+			return 0;
 		}
 		
 		private function onSelected():void 

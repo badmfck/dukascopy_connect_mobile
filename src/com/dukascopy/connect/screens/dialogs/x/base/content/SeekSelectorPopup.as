@@ -41,6 +41,8 @@ package com.dukascopy.connect.screens.dialogs.x.base.content {
 		private var minValue:Number = 0;
 		private var maxValue:Number = 1;
 		private var selectedValue:Number;
+		private var currency:String;
+		private var currencyText:Bitmap;
 		
 		public function SeekSelectorPopup() { }
 		
@@ -48,6 +50,10 @@ package com.dukascopy.connect.screens.dialogs.x.base.content {
 			super.createView();
 			
 			createNextButton();
+			
+			currencyText = new Bitmap();
+			addItem(currencyText);
+			
 			createInputPrice();
 			
 			titleText = new Bitmap();
@@ -67,6 +73,7 @@ package com.dukascopy.connect.screens.dialogs.x.base.content {
 		private function onValueChange(value:Number):void 
 		{
 			inputField.value = Number(value.toFixed(decimal));
+			updateCurrencyTextPosition();
 		}
 		
 		private function onPriceChange(value:Number):void 
@@ -128,6 +135,7 @@ package com.dukascopy.connect.screens.dialogs.x.base.content {
 			tf.font = Config.defaultFontName;
 			
 			inputField = new InputField( -1, Input.MODE_DIGIT_DECIMAL);
+			inputField.backgroundAlpha = 0;
 			inputField.onChangedFunction = onPriceInputChange;
 			inputField.setPadding(0);
 			inputField.underlineColor = Style.color(Style.COLOR_BACKGROUND);
@@ -137,6 +145,13 @@ package com.dukascopy.connect.screens.dialogs.x.base.content {
 		
 		private function onPriceInputChange():void{
 			onPriceChange(inputField.value);
+			updateCurrencyTextPosition();
+		}
+		
+		private function updateCurrencyTextPosition():void 
+		{
+			currencyText.y = int(inputField.y + inputField.textY + inputField.textAscent - currencyText.height);
+			currencyText.x = int(inputField.x + inputField.width * .5 + inputField.getTextWidth() * 0.5 + Config.FINGER_SIZE * .2);
 		}
 		
 		private function drawMinText():void
@@ -158,6 +173,17 @@ package com.dukascopy.connect.screens.dialogs.x.base.content {
 				minText.bitmapData = TextUtils.createTextFieldData(value, getWidth() - contentPadding * 2, 10, true,
 																		TextFormatAlign.LEFT, TextFieldAutoSize.LEFT, 
 																		FontSize.SUBHEAD, true, Style.color(Style.COLOR_SUBTITLE),
+																		Style.color(Style.COLOR_BACKGROUND));
+			}
+		}
+		
+		private function drawCurrencyText():void
+		{
+			if (currency != null)
+			{
+				currencyText.bitmapData = TextUtils.createTextFieldData(currency, getWidth() - contentPadding * 2, 10, true,
+																		TextFormatAlign.LEFT, TextFieldAutoSize.LEFT, 
+																		FontSize.TITLE_1, true, Style.color(Style.COLOR_TEXT_DISABLE),
 																		Style.color(Style.COLOR_BACKGROUND));
 			}
 		}
@@ -204,6 +230,11 @@ package com.dukascopy.connect.screens.dialogs.x.base.content {
 				{
 					decimal = Math.max(parseInt(data.decimal), 0);
 					inputField.decimals = decimal;
+				}
+				
+				if ("currency" in data && data.currency != null)
+				{
+					currency = data.currency;
 				}
 				
 				if ("title" in data && data.title != null)
@@ -278,12 +309,15 @@ package com.dukascopy.connect.screens.dialogs.x.base.content {
 			{
 				nextButton.y = backgroundContent.height - nextButton.height - contentPadding - scrollPanel.view.y;
 			}
+			
+			updateCurrencyTextPosition();
 		}
 		
 		private function drawControls():void
 		{
 			drawMinText();
 			drawMaxText();
+			drawCurrencyText();
 			drawNextButton();
 			
 			seekBar.draw(getWidth() - contentPadding * 2, minValue, maxValue, currentValue);
@@ -354,9 +388,21 @@ package com.dukascopy.connect.screens.dialogs.x.base.content {
 			if (needCallback == true)
 			{
 				needCallback = false;
-				if (data != null && "callback" in data && data.callback != null && data.callback is Function && (data.callback as Function).length == 1)
+				if (data != null && "callback" in data && data.callback != null && data.callback is Function)
 				{
-					(data.callback as Function)(selectedValue);
+					if ((data.callback as Function).length == 1)
+					{
+						(data.callback as Function)(selectedValue);
+					}
+					else if ((data.callback as Function).length == 2)
+					{
+						var callbackCustomData:Object;
+						if ("data" in data)
+						{
+							callbackCustomData = data.data;
+						}
+						(data.callback as Function)(selectedValue, callbackCustomData);
+					}
 				}
 			}
 		}
@@ -393,6 +439,11 @@ package com.dukascopy.connect.screens.dialogs.x.base.content {
 			{
 				UI.destroy(maxText);
 				maxText = null;
+			}
+			if (currencyText != null)
+			{
+				UI.destroy(currencyText);
+				currencyText = null;
 			}
 		}
 	}

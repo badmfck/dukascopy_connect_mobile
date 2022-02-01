@@ -32,6 +32,7 @@ package com.dukascopy.connect.gui.input {
 	import flash.text.TextField;
 	import flash.text.TextFieldType;
 	import flash.text.TextFormat;
+	import flash.text.TextLineMetrics;
 	import flash.ui.Keyboard;
 	
 	/**
@@ -1025,6 +1026,25 @@ package com.dukascopy.connect.gui.input {
 			{
 				textField.type = TextFieldType.INPUT;
 			}
+		}
+		
+		public function getTextWidth():int 
+		{
+			if (textField != null)
+			{
+				return textField.textWidth;
+			}
+			return 0;
+		}
+		
+		public function get textAscent():int 
+		{
+			if (textField != null)
+			{
+				var line:TextLineMetrics = textField.getLineMetrics(0);
+				return line.ascent + 2;
+			}
+			return 0;
 		}
 		
 		public function get linePosition():int

@@ -44,7 +44,7 @@ package com.dukascopy.connect.gui.components.seekbar
 			
 			itemHeight = Config.FINGER_SIZE * .7;
 			lineHeight = Config.FINGER_SIZE * .04;
-			buttonRadius = Config.FINGER_SIZE * .23;
+			buttonRadius = int(Config.FINGER_SIZE * .23);
 			
 			createClips();
 		}
@@ -190,6 +190,7 @@ package com.dukascopy.connect.gui.components.seekbar
 			if (onChange != null && onChange.length == 1)
 			{
 				var value:Number = minValue + (button.x - buttonRadius) * (maxValue - minValue) / (itemWidth - buttonRadius * 2);
+			//	value = button.x - buttonRadius;
 				onChange(value);
 			}
 		}
