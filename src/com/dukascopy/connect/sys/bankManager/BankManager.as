@@ -31,6 +31,7 @@ package com.dukascopy.connect.sys.bankManager {
 	import com.dukascopy.connect.screens.dialogs.ScreenPayDialog;
 	import com.dukascopy.connect.screens.dialogs.paymentDialogs.SendInvestmentByPhonePopup;
 	import com.dukascopy.connect.screens.dialogs.x.base.bottom.ListSelectionPopup;
+	import com.dukascopy.connect.screens.dialogs.x.base.content.SeekSelectorPopup;
 	import com.dukascopy.connect.screens.dialogs.x.base.content.ShareLinkPopup;
 	import com.dukascopy.connect.screens.dialogs.gifts.CreateGiftPopup;
 	import com.dukascopy.connect.screens.dialogs.paymentDialogs.BuyCommodityPopup;
@@ -179,6 +180,7 @@ package com.dukascopy.connect.sys.bankManager {
 		static private var fatCatz:Object;
 		static private var otherAccounts:Array;
 		static private var savingsAccounts:Array;
+		static private var rdSwapObject:Object;
 		static private var investments:Array;
 		static private var cardMasked:String;
 		static private var waitingBMVO:BankMessageVO;
@@ -1172,6 +1174,28 @@ package com.dukascopy.connect.sys.bankManager {
 					invokeAnswerSignal(baVO);
 					sendMessage("val:" + data.param.code);
 					sendMessage(msg);
+				} else if (data.type == "cryptoSwapAmount") {
+					trace(rdSwapObject);
+					var sd:Object = new Object();
+					sd.callback = function(a:Number, data:Object = null):void {
+						data.tapped = true;
+						baVO = new BankMessageVO(data.text);
+						baVO.setMine();
+						invokeAnswerSignal(baVO);
+						sendMessage("val:" + a + "|!|" + data.additional.currency + "|!|" + data.additional.calc_id);
+						sendMessage(msg);
+					};
+					sd.title = "Choose amount";
+					sd.currency = rdSwapObject.currency;
+					sd.minValue = Number(rdSwapObject.min_amount.amount);
+					sd.maxValue = Number(rdSwapObject.max_amount.amount);
+					sd.decimal = CurrencyHelpers.getMaxDecimalCount(rdSwapObject.currency);
+					sd.buttonText = "PROCEED";
+					sd.minText = "min: " + sd.minValue + " " + sd.currency;
+					sd.maxText = "max: " + sd.maxValue + " " + sd.currency;
+					data.additional = rdSwapObject;
+					sd.data = data;
+					ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, SeekSelectorPopup, sd);
 				} else if (data.type == "cryptoOfferSelect") {
 					data.tapped = true;
 					baVO = new BankMessageVO(data.text);
@@ -2440,6 +2464,35 @@ package com.dukascopy.connect.sys.bankManager {
 						lastBankMessageVO.additionalData = accountInfo.accounts;
 					}
 				}
+				if (lastBankMessageVO.item.type == "newSwapConfirm") {
+					var contractTest:String = "Please carefully review GETCA$H Swap contract conditions:\n\n";
+					contractTest += "Dukascoin amount to sell\n";
+					contractTest += rdSwapObject.coin_amount.readable + "\n";
+					contractTest += "You will receive\n";
+					contractTest += rdSwapObject.total.ccy_symbol + rdSwapObject.total.amount + "\n\n";
+					contractTest += "Buyback date\n";
+					contractTest += rdSwapObject.swap_buyback_date + "\n";
+					contractTest += "Buyback amount\n";
+					contractTest += rdSwapObject.total.ccy_symbol + (Number(rdSwapObject.total.amount) + Number(rdSwapObject.fee.amount)) + "\n\n";
+					contractTest += "Annualized rate\n";
+					contractTest += rdSwapObject.rate + "%\n";
+					contractTest += "1 month prolongation fee\n";
+					contractTest += rdSwapObject.fee.readable + "\n\n";
+					contractTest += "Stake to swap with fiat funds:\n\n";
+					contractTest += "Stake\n";
+					var rd:Object = getCryptoRDByID(lastBankMessageVO.item.value);
+					contractTest += rdSwapObject.coin_amount.readable + "\n";
+					contractTest += "Code\n";
+					contractTest += rd.code + "\n"
+					contractTest += "Maturity\n";
+					var rdDate:Date = new Date();
+					rdDate.setTime(Number(rd.termination) * 1000);
+					contractTest += rdDate.toDateString() + "\n";
+					contractTest += "New termination date\n";
+					rdDate.setTime(Number(rdSwapObject.term_deposit_new_termination) * 1000);
+					contractTest += rdDate.toDateString() + "\n\n";
+					lastBankMessageVO.text = contractTest + lastBankMessageVO.text;
+				}
 				if (lastBankMessageVO.item.type == "showWallet") {
 					lastBankMessageVO.additionalData = getWalletByNumber(lastBankMessageVO.item.selection);
 				}
@@ -2720,10 +2773,27 @@ package com.dukascopy.connect.sys.bankManager {
 				func = onETHLinkReceived;
 			else if (command == "thirdpartyInvoiceLink")
 				func = onTPILinkReceived;
+			else if (command == "rdSwap")
+				func = onRDSwap;
 			if (func == null)
 				return true;
 			func(val.substr(startObjectIndex + 1));
 			return true;
+		}
+		
+		static private function onRDSwap(swapJSON:String):void {
+			var data:Object = null;
+			try {
+				data = JSON.parse(swapJSON);
+			} catch (e:Error) {
+				return;
+			}
+			if (data.step == 1)
+				rdSwapObject = data;
+			if (data.step == 2 && rdSwapObject != null) {
+				for (var n:String in data)
+					rdSwapObject[n] = data[n];
+			}
 		}
 		
 		static private var currentTextEditor:FullscreenTextEditor;

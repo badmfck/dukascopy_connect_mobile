@@ -994,7 +994,8 @@ package com.dukascopy.connect.sys.payments {
 		}
 		
 		/**
-		 * This request returns Fat Catz information. See description:
+		 * This method is used to get min/max fiat amounts for given Term Deposit.
+		 * It is a first step (out of 3) to create new GetCashSwap. See description:
 		 * https://jira.site.dukascopy.com/wiki/display/webdev/CreateSwapStep1
 		 */
 		static public function call_GCS1(_callback:Function, code:String):void {
@@ -1002,10 +1003,44 @@ package com.dukascopy.connect.sys.payments {
 		}
 		
 		/**
+		 * This method is used to get swap fee rate for given Term Deposit and Fiat Amount.
+		 * It is a second step (out of 3) to create new GetCashSwap. See description:
+		 * https://jira.site.dukascopy.com/wiki/display/webdev/CreateSwapStep2
+		 */
+		static public function call_GCS2(_callback:Function, rdID:String, amount:Number, currency:String, calcID:String, _callID:String = ""):void {
+			var data:Object = {
+				code: rdID,
+				amount: amount,
+				currency: currency,
+				calc_id: calcID
+			}
+			var php:PayLoader = call("gcs/step2", _callback, data, URLRequestMethod.POST);
+			if (php.savedRequestData != null)
+				php.savedRequestData.callID = _callID;
+		}
+		
+		/**
+		 * This method is used to create a new GetCashSwap.
+		 * It is a last step (out of 3). See description:
+		 * https://jira.site.dukascopy.com/wiki/display/webdev/CreateSwapStep2
+		 */
+		static public function call_GCS3(_callback:Function, rdID:String, amount:Number, currency:String, calcID:String, _callID:String = ""):void {
+			var data:Object = {
+				code: rdID,
+				amount: amount,
+				currency: currency,
+				calc_id: calcID
+			}
+			var php:PayLoader = call("gcs/step3", _callback, data, URLRequestMethod.POST);
+			if (php.savedRequestData != null)
+				php.savedRequestData.callID = _callID;
+		}
+		
+		/**
 		 * Method is used to get detailed information about active investment. See description:
 		 * https://intranet.dukascopy.dom/wiki/pages/viewpage.action?pageId=100303187
 		 */
-		static public function call_getInvestmentDetails(_callback:Function,_instrument:String = null, _callID:String =""):void {
+		static public function call_getInvestmentDetails(_callback:Function,_instrument:String = null, _callID:String = ""):void {
 			var php:PayLoader = call("account/investment/details", _callback, {instrument:_instrument}, URLRequestMethod.GET);
 			if (php.savedRequestData != null)
 				php.savedRequestData.callID = _callID;

@@ -57,6 +57,8 @@ package com.dukascopy.connect.sys.paymentsManagerNew {
 		static private var callbacksInvestmentDetails:Array;
 		static private var callbacksFatCatz:Array;
 		static private var callbacksRDSwapStep1:Array;
+		static private var callbacksRDSwapStep2:Object;
+		static private var callbacksRDSwap:Object;
 		static private var callbacksCards:Array;
 		static private var callbacksLinkedCards:Array;
 		static private var callbacksCardAction:Object;
@@ -1803,6 +1805,74 @@ package com.dukascopy.connect.sys.paymentsManagerNew {
 			respond.dispose();
 		}
 		
+		static public function rdSwapStep2(callback:Function, rdID:String, amount:Number, currency:String, calcID:String):String {
+			if (preCall() == false)
+				return null;
+			var hash:String = MD5.hash(rdID + amount + currency + calcID);
+			if (callbacksRDSwapStep2 == null || hash in callbacksRDSwapStep2 == false) {
+				callbacksRDSwapStep2 ||= {};
+				callbacksRDSwapStep2[hash] = [callback];
+			} else {
+				if (callbacksRDSwapStep2[hash].indexOf(callback) == -1)
+					callbacksRDSwapStep2[hash].push(callback);
+				return hash;
+			}
+			PayServer.call_GCS2(onRDSwapStep2, rdID, amount, currency, calcID, hash);
+			return hash;
+		}
+		
+		static private function onRDSwapStep2(respond:PayRespond):void {
+			if (callbacksRDSwapStep2 == null)
+				return;
+			var hashCallbacks:Array;
+			if (respond.savedRequestData.callID in callbacksRDSwapStep2 == true)
+				hashCallbacks = callbacksRDSwapStep2[respond.savedRequestData.callID];
+			if (hashCallbacks == null || hashCallbacks.length == 0) {
+				delete callbacksRDSwapStep2[respond.savedRequestData.callID];
+				respond.dispose();
+				return;
+			}
+			var res:Object = checkForError(respond);
+			while (hashCallbacks.length != 0)
+				hashCallbacks.shift()(res, respond.savedRequestData.callID);
+			hashCallbacks = null;
+			delete callbacksRDSwapStep2[respond.savedRequestData.callID];
+		}
+		
+		static public function rdSwap(callback:Function, rdID:String, amount:Number, currency:String, calcID:String):String {
+			if (preCall() == false)
+				return null;
+			var hash:String = MD5.hash("RDSwap" + rdID + amount + currency + calcID);
+			if (callbacksRDSwap == null || hash in callbacksRDSwap == false) {
+				callbacksRDSwap ||= {};
+				callbacksRDSwap[hash] = [callback];
+			} else {
+				if (callbacksRDSwap[hash].indexOf(callback) == -1)
+					callbacksRDSwap[hash].push(callback);
+				return hash;
+			}
+			PayServer.call_GCS3(onRDSwap, rdID, amount, currency, calcID, hash);
+			return hash;
+		}
+		
+		static private function onRDSwap(respond:PayRespond):void {
+			if (callbacksRDSwap == null)
+				return;
+			var hashCallbacks:Array;
+			if (respond.savedRequestData.callID in callbacksRDSwap == true)
+				hashCallbacks = callbacksRDSwap[respond.savedRequestData.callID];
+			if (hashCallbacks == null || hashCallbacks.length == 0) {
+				delete callbacksRDSwap[respond.savedRequestData.callID];
+				respond.dispose();
+				return;
+			}
+			var res:Object = checkForError(respond);
+			while (hashCallbacks.length != 0)
+				hashCallbacks.shift()(res, respond.savedRequestData.callID);
+			hashCallbacks = null;
+			delete callbacksRDSwap[respond.savedRequestData.callID];
+		}
+		
 		static public function transactionCode(callback:Function, trID:String, code:String):String {
 			if (preCall() == false)
 				return null;
@@ -1817,18 +1887,6 @@ package com.dukascopy.connect.sys.paymentsManagerNew {
 			}
 			PayServer.call_getMoneySpecific(onTransactionCode, trID, code, hash);
 			return hash;
-		}
-		
-		static public function callCardStatement(cardNumber:String, from:String, to:String, timezone:String = null):void {
-			PayServer.cardStatement(cardNumber, from, to, timezone);
-		}
-		
-		static public function callOperationStatement(uid:String):void {
-			PayServer.operationStatement(uid);
-		}
-		
-		static public function callWalletStatement(accountNumber:String, from:String, to:String, timezone:String = null):void {
-			PayServer.walletStatement(accountNumber, from, to, timezone);
 		}
 		
 		static private function onTransactionCode(respond:PayRespond):void {
@@ -1847,6 +1905,18 @@ package com.dukascopy.connect.sys.paymentsManagerNew {
 				hashCallbacks.shift()(res, respond.savedRequestData.callID);
 			hashCallbacks = null;
 			delete callbacksTrCode[respond.savedRequestData.callID];
+		}
+		
+		static public function callCardStatement(cardNumber:String, from:String, to:String, timezone:String = null):void {
+			PayServer.cardStatement(cardNumber, from, to, timezone);
+		}
+		
+		static public function callOperationStatement(uid:String):void {
+			PayServer.operationStatement(uid);
+		}
+		
+		static public function callWalletStatement(accountNumber:String, from:String, to:String, timezone:String = null):void {
+			PayServer.walletStatement(accountNumber, from, to, timezone);
 		}
 		
 		static public function filterEmptyWallets(accounts:Array):Array 
