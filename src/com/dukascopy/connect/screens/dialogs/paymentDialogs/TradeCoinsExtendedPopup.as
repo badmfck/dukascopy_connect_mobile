@@ -4,6 +4,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 	import com.dukascopy.connect.Config;
 	import com.dukascopy.connect.data.TextFieldSettings;
 	import com.dukascopy.connect.data.coinMarketplace.CoinBestProposal;
+	import com.dukascopy.connect.data.coinMarketplace.CoinTradeEstimate;
 	import com.dukascopy.connect.data.coinMarketplace.PaymentsAccountsProvider;
 	import com.dukascopy.connect.data.coinMarketplace.TradingOrder;
 	import com.dukascopy.connect.data.coinMarketplace.TradingOrderRequest;
@@ -12,6 +13,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 	import com.dukascopy.connect.data.screenAction.customActions.TradeCoinsAction;
 	import com.dukascopy.connect.gui.components.ComissionView;
 	import com.dukascopy.connect.gui.components.message.ToastMessage;
+	import com.dukascopy.connect.gui.input.Input;
 	import com.dukascopy.connect.gui.lightbox.UI;
 	import com.dukascopy.connect.gui.list.List;
 	import com.dukascopy.connect.gui.list.renderers.trade.TradingOfferStatusRenderer;
@@ -24,22 +26,18 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 	import com.dukascopy.connect.screens.payments.card.TypeCurrency;
 	import com.dukascopy.connect.screens.serviceScreen.Overlay;
 	import com.dukascopy.connect.sys.applicationError.ApplicationErrors;
-	import com.dukascopy.connect.sys.configManager.ConfigManager;
 	import com.dukascopy.connect.sys.dialogManager.DialogManager;
+	import com.dukascopy.connect.sys.errors.ErrorLocalizer;
 	import com.dukascopy.connect.sys.imageManager.ImageBitmapData;
-	import com.dukascopy.connect.sys.payments.CoinComissionChecker;
 	import com.dukascopy.connect.sys.payments.PayManager;
 	import com.dukascopy.connect.sys.payments.PayRespond;
 	import com.dukascopy.connect.sys.payments.PaymentsManager;
-	import com.dukascopy.connect.sys.paymentsManagerNew.PaymentsManagerNew;
 	import com.dukascopy.connect.sys.serviceScreenManager.ServiceScreenManager;
 	import com.dukascopy.connect.sys.softKeyboard.SoftKeyboard;
 	import com.dukascopy.connect.sys.style.Style;
-	import com.dukascopy.connect.sys.theme.AppTheme;
 	import com.dukascopy.connect.type.HitZoneType;
 	import com.dukascopy.connect.utils.TextUtils;
 	import com.dukascopy.langs.Lang;
-	import com.dukascopy.langs.LangManager;
 	import com.greensock.TweenMax;
 	import com.greensock.easing.Power1;
 	import flash.display.Bitmap;
@@ -77,7 +75,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 		private var padding:int;
 		private var lotsValue:Bitmap;
 		private var bestProposal:CoinBestProposal;
-		private var currentProposal:Array;
+		private var currentProposal:CoinTradeEstimate;
 		private var averagePriceTitle:Bitmap;
 		private var bestPriceTitle:Bitmap;
 		private var worstPriceTitle:Bitmap;
@@ -92,8 +90,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 		private var currentTotalMoney:Number;
 		private var refreshButton:BitmapButton;
 		private var currentAction:TradeCoinsAction;
-		private var currentRequest:TradingOrderRequest;
-		private var ordersList:List;
+	//	private var currentRequest:TradingOrderRequest;
 		private var orderStatuses:Array;
 		private var animation:Sprite;
 		private var mainTitle:Bitmap;
@@ -114,7 +111,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 		private var commisionText:ComissionView;
 		private var _lastCommissionCallID:String;
 		private var commissionText:String;
-		private var comission:CoinComissionChecker;
+	//	private var comission:CoinComissionChecker;
 		
 		public function TradeCoinsExtendedPopup() {
 			
@@ -230,7 +227,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 			backButton.setOverlay(HitZoneType.MENU_SIMPLE_ELEMENT);
 			container.addChild(backButton);
 			
-			inputCoins = new InputField(4);
+			inputCoins = new InputField(4, Input.MODE_DIGIT_DECIMAL);
 			inputCoins.onSelectedFunction = onInputSelected;
 			inputCoins.onChangedFunction = onChangeInputCoins;
 			container.addChild(inputCoins);
@@ -256,33 +253,47 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 		
 		private function refreshClick():void 
 		{
+			TweenMax.killDelayedCallsTo(refreshClick);
+			if (isDisposed)
+			{
+				return;
+			}
+			currentProposal = null;
 			preloader.start();
-			bestProposal.refresh();
+			updateValues();
+		//	bestProposal.refresh();
 		}
 		
 		private function onChangeLimit():void 
 		{
-			updateValues();
+			refreshClick();
 		}
 		
 		private function switchLimit(selected:Boolean):void 
 		{
 			priceLimitSwitch.isSelected = selected;
-			updateValues();
 			
 			if (selected)
 			{
 				inputLimitPrice.activate();
 				inputLimitPrice.alpha = 1;
+				if (inputLimitPrice.value == 0)
+				{
+					if (currentProposal != null)
+					{
+						inputLimitPrice.value = currentProposal.worst_price;
+					}
+				}
 			}
 			else
 			{
 				inputLimitPrice.deactivate();
 				inputLimitPrice.alpha = 0.5;
 			}
+			refreshClick();
 		}
 		
-		private function loadComission():void 
+		/*private function loadComission():void 
 		{
 			if (tradeSide == TradingOrder.SELL)
 			{
@@ -294,9 +305,9 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 				
 				drawCommision();
 			}
-		}
+		}*/
 		
-		private function onComission(commissionData:Object):void 
+		/*private function onComission(commissionData:Object):void 
 		{
 			if (commissionData is String)
 			{
@@ -306,9 +317,9 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 			{
 				drawCommision(commissionData);
 			}
-		}
+		}*/
 		
-		private function drawCommision(commissionData:Object = null):void 
+		private function drawCommision(commissionData:CoinTradeEstimate):void 
 		{
 			if (isDisposed == true)
 			{
@@ -316,11 +327,6 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 			}
 			
 			commisionText.draw(componentsWidth, commissionData);
-			
-			if (comission != null && !isNaN(comission.getValue()))
-			{
-				drawTotalMoney(currentTotalMoney - comission.getValue());
-			}
 			
 			drawView();
 		}
@@ -339,7 +345,8 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 				}
 			}
 			
-			updateValues();
+			TweenMax.killDelayedCallsTo(refreshClick);
+			TweenMax.delayedCall(1, refreshClick);
 		}
 		
 		private function onInputSelected():void 
@@ -369,11 +376,11 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 		{
 			if (tradeSide == TradingOrder.SELL)
 			{
-				if (comission != null && comission.lowLoquidityComission != null)
+				if (currentProposal != null && currentProposal.low_liquidity_fee != null)
 				{
-					var lowCommissionText:String =  Lang.coinCommistionM2New.replace("%@1", String(comission.low_liquidity_eur_per_coin));
-					lowCommissionText = lowCommissionText.replace("%@2", String(comission.low_liquidity_price_limit));
-					lowCommissionText = lowCommissionText.replace("%@3", String(comission.lowLoquidityComission));
+					var lowCommissionText:String =  Lang.coinCommistionM2New.replace("%@1", String(currentProposal.low_liquidity_eur_per_coin));
+					lowCommissionText = lowCommissionText.replace("%@2", String(currentProposal.low_liquidity_price_limit));
+					lowCommissionText = lowCommissionText.replace("%@3", String(currentProposal.low_liquidity_fee));
 					DialogManager.alert(Lang.information, lowCommissionText, onCommissionPopup, Lang.iAgreeCreateOrder, Lang.iDontAgree);
 				}
 				else
@@ -414,7 +421,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 		private function nextClick():void {
 			if (state == STATE_START)
 			{
-				if (currentProposal != null && currentProposal.length > 0)
+				if (currentProposal != null)
 				{
 					if (currentTotalMoney < 100)
 					{
@@ -517,25 +524,19 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 			
 			var headerSize:int = Config.FINGER_SIZE * .85;
 			
-			ordersList = new List("TradeCoinsExtendedPopup");
-			ordersList.view.y = Config.FINGER_SIZE * .85;
-			ordersList.setMask(true);
-			ordersList.background = true;
-			ordersList.backgroundColor = Style.color(Style.COLOR_BACKGROUND);
-			
 			drawView();
 			
-			var l:int = currentProposal.length;
+		//	var l:int = currentProposal.length;
 			var item:TradingOrderStatus;
 			orderStatuses = new Array();
-			for (var i:int = 0; i < l; i++) 
+			/*for (var i:int = 0; i < l; i++) 
 			{
 				item = new TradingOrderStatus(currentProposal[i] as TradingOrder);
 				orderStatuses.push(item);
-			}
+			}*/
 			
-			ordersList.setData(orderStatuses, TradingOfferStatusRenderer);
-			container.addChild(ordersList.view);
+		//	ordersList.setData(orderStatuses, TradingOfferStatusRenderer);
+		//	container.addChild(ordersList.view);
 			
 			container.setChildIndex(animation, container.numChildren - 1);
 			
@@ -556,7 +557,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 		//	preloader.y = Config.FINGER_SIZE;
 			container.setChildIndex(preloader, container.numChildren - 1);
 			
-			drawTitleRight(0, l);
+		//	drawTitleRight(0, l);
 			
 			mainTitleRight.y = mainTitle.y;
 			
@@ -570,7 +571,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 			TweenMax.to(animation, 0.4, {height:0, onUpdate:updateAnimatorShow, onComplete:contentShown, ease:Power1.easeOut});
 		}
 		
-		private function drawTitleRight(done:int, total:int):void 
+		/*private function drawTitleRight(done:int, total:int):void 
 		{
 			if (mainTitleRight.bitmapData != null)
 			{
@@ -583,7 +584,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 															Config.FINGER_SIZE * .30, false, Style.color(Style.COLOR_TEXT), 
 															Style.color(Style.COLOR_BACKGROUND), false, true);
 			mainTitleRight.x = int(_width - mainTitleRight.width - padding);
-		}
+		}*/
 		
 		private function drawTitle(value:String):void 
 		{
@@ -604,19 +605,22 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 			
 			unlockScreen();
 			
-			if (_isActivated)
-			{
-				ordersList.activate();
-			}
-			
 			startTransactions();
 		}
 		
 		private function startTransactions():void 
 		{
+			if (currentProposal == null)
+			{
+				ApplicationErrors.add();
+				return;
+			}
+			
 			preloader.start();
 			
-			var order:TradingOrderRequest = new TradingOrderRequest();
+			PayManager.callMarketTradeExecute(tradeSide, currentProposal.coin_amount_value, currentProposal.fiat_amount_before_fee, onTransaction);
+			
+			/*var order:TradingOrderRequest = new TradingOrderRequest();
 			
 			order.orders = currentProposal;
 			order.quantity = inputCoins.value;
@@ -632,75 +636,58 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 			currentAction = new TradeCoinsAction(currentRequest, data.resultSignal, data.callback, onOrderResult);
 			currentAction.getFailSignal().add(onTradeFail);
 			currentAction.getSuccessSignal().add(onTradeSuccess);
-			currentAction.execute();
+			currentAction.execute();*/
 		}
 		
-		private function onOrderResult(success:Boolean, index:int, errorText:String = null, transactionData:Object = null):void 
+		private function onTransaction(respond:PayRespond):void 
 		{
 			if (isDisposed)
 			{
 				return;
 			}
+			preloader.stop();
 			
-			drawTitleRight(index + 1, currentRequest.orders.length);
-			if (ordersList != null && ordersList.data != null && ordersList.data is Array)
+			updateMarketplace();
+			updateAccount();
+			state = STATE_SUCCESS;
+			
+			unlockScreen();
+			
+			if (respond.error)
 			{
-				if ((ordersList.data as Array).length > index)
-				{
-					if (success == true)
-					{
-						((ordersList.data as Array)[index] as TradingOrderStatus).status = TradingOrderStatus.STATUS_SUCCESS;
-						
-						
-						var quantity:String = "0.0000 DUK+";
-						var money:String = "0.00 EUR";
-						var currency:String = "";
-						
-						if (transactionData)
-						{
-							if (tradeSide == TradingOrder.BUY)
-							{
-								currency = transactionData.credit_currency;
-								if (Lang[currency] != null)
-								{
-									currency = Lang[currency];
-								}
-								quantity = transactionData.credit_amount + " " + currency;
-								money = transactionData.debit_amount + " " + transactionData.debit_currency;
-							}
-							else
-							{
-								currency = transactionData.debit_currency;
-								if (Lang[currency] != null)
-								{
-									currency = Lang[currency];
-								}
-								quantity = transactionData.debit_amount + " " + currency;
-								money = transactionData.credit_amount + " " + transactionData.credit_currency;
-							}
-						}
-						
-						((ordersList.data as Array)[index] as TradingOrderStatus).money = money;
-						((ordersList.data as Array)[index] as TradingOrderStatus).quantity = quantity;
-					}
-					else
-					{
-						((ordersList.data as Array)[index] as TradingOrderStatus).status = TradingOrderStatus.STATUS_FAILED;
-						if (errorText != null)
-						{
-							((ordersList.data as Array)[index] as TradingOrderStatus).errorText = errorText;
-						}
-					}
-					
-					if ((ordersList.data as Array).length > index + 1)
-					{
-						((ordersList.data as Array)[index + 1] as TradingOrderStatus).status = TradingOrderStatus.STATUS_PROCESS;
-					}
-					
-					ordersList.updateItemByIndex(index, true, true, true);
-					ordersList.scrollToIndex(index + 1, 0, 0.7);
-				}
+				ToastMessage.display(ErrorLocalizer.getPaymentsError(respond.errorCode.toString(), respond.errorMsg));
+				showFinalAnimation(0, 0, 0);
 			}
+			else
+			{
+				var amountCoins:Number = 0;
+				var amountFiat:Number = 0;
+				var price:Number = 0;
+				
+				if (respond.data != null)
+				{
+					if ("coin_amount" in respond.data && respond.data.coin_amount != null && "amount" in respond.data.coin_amount)
+					{
+						amountCoins = Number(respond.data.coin_amount.amount);
+					}
+					if ("fiat_amount_after_fee" in respond.data && respond.data.fiat_amount_after_fee != null && "amount" in respond.data.fiat_amount_after_fee)
+					{
+						amountFiat = Number(respond.data.fiat_amount_after_fee.amount);
+					}
+					if ("avg_price" in respond.data)
+					{
+						price = Number(respond.data.avg_price);
+					}
+				}
+				
+				showFinalAnimation(amountCoins, price, amountFiat);
+			}
+			respond.dispose();
+		}
+		
+		private function updateAccount():void 
+		{
+			PayManager.callGetAccountInfo();
 		}
 		
 		private function updateMarketplace():void 
@@ -740,20 +727,11 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 		{
 			drawFinalSumTitle();
 			drawFinalSumValue(value);
-			drawFinalStartValue(currentRequest.quantity);
+		//	drawFinalStartValue(currentRequest.quantity);
 			
 			drawFinalPriceTitle();
 			
-			var priceValue:Number;
-			if (value == 0)
-			{
-				priceValue = 0;
-			}
-			else
-			{
-				priceValue = price/resultMoney;
-			}
-			drawFinalPriceValue(priceValue);
+			drawFinalPriceValue(price);
 			
 			drawFinalAmountTitle();
 			drawFinalAmountValue(resultMoney);
@@ -774,21 +752,9 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 			TweenMax.to(finalAmountTitle, 0.3, {alpha:1, delay:0.7});
 			TweenMax.to(finalAmountValue, 0.3, {alpha:1, delay:0.7});
 			
-			if (ordersList.height > ordersList.itemsHeight)
-			{
-				ordersList.deactivate();
-			//	ordersList.setWidthAndHeight(_width, ordersList.itemsHeight);
-			}
+			acceptButton.y = int(bg.height - Config.FINGER_SIZE * .3 - acceptButton.height);
 			
-			var mh:int = Math.min(getMaxContentHeight() - Config.FINGER_SIZE * 2.5, ordersList.itemsHeight + Config.FINGER_SIZE * .2);
-			ordersList.setWidthAndHeight(_width, mh);
-			
-			acceptButton.y = Math.max(Config.FINGER_SIZE * 2.5 + ordersList.view.y + ordersList.height, bg.height - Config.FINGER_SIZE * .3 - acceptButton.height);
-			
-			var listHeight:Object = new Object();
-			listHeight.height = ordersList.height;
-			
-			finalSumTitle.y = int(ordersList.view.y + ordersList.height + Config.FINGER_SIZE * .3);
+			finalSumTitle.y = int(Config.FINGER_SIZE * 1.5);
 			finalSumValue.y = finalSumTitle.y;
 			finalStartValue.y = int(finalSumValue.y + finalSumValue.height + Config.FINGER_SIZE * .2);
 			
@@ -801,8 +767,6 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 			finalSumTitle.x = padding;
 			finalPriceTitle.x = padding;
 			finalAmountTitle.x = padding;
-			
-			var targetHeight:Number = Math.min(acceptButton.y - Config.FINGER_SIZE * 2.5 - ordersList.view.y, ordersList.height);
 			
 			unlockScreen();
 		//	TweenMax.to(listHeight, 0.5, {delay:0.5, height:targetHeight, onUpdate:finalAnimationUpdate, onUpdateParams:[listHeight], onComplete:onFinalAnimationComplete, ease:Power1.easeOut});
@@ -950,12 +914,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 			{
 				return;
 			}
-			if (ordersList != null)
-			{
-				ordersList.setWidthAndHeight(_width, listHeight.height);
-				ordersList.scrollBottom();
-			}
-			finalSumTitle.y = int(ordersList.view.y + ordersList.height + Config.FINGER_SIZE * .3);
+			finalSumTitle.y = int(Config.FINGER_SIZE * 1.5);
 			finalSumValue.y = finalSumTitle.y;
 			finalStartValue.y = int(finalSumValue.y + finalSumValue.height + Config.FINGER_SIZE * .2);
 			finalPriceTitle.y = int(finalStartValue.y + finalStartValue.height + Config.FINGER_SIZE * .2);
@@ -1083,7 +1042,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 			inputLimitPrice.draw(componentsWidth, null, 0, null, null, 0xF5F5F5);
 		}
 		
-		private function onProposalResult(proposal:Array):void 
+		private function onProposalResult(estimate:CoinTradeEstimate):void 
 		{
 			preloader.stop(false);
 			
@@ -1092,63 +1051,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 				return;
 			}
 			
-			currentProposal = proposal;
-			
-			var avaliableCoins:Number = 0;
-			var currentQantity:Number = 0;
-			var minPrice:Number = 100000000000000;
-			var maxPrice:Number = 0;
-			var totalMoney:Number = 0;
-			var prices:Array = new Array();
-			
-			var targetQuantity:Number = inputCoins.value;
-			var nextQuantity:Number;
-			var order:TradingOrder;
-			
-			var l:int;
-			if (proposal != null)
-			{
-				l = proposal.length;
-				for (var i:int = 0; i < l; i++) 
-				{
-					order = proposal[i] as TradingOrder;
-					nextQuantity = Math.min(targetQuantity - currentQantity, order.quantity)
-					prices.push([order.price, nextQuantity]);
-					currentQantity += nextQuantity;
-					if (minPrice > order.price)
-					{
-						minPrice = order.price;
-					}
-					if (maxPrice < order.price)
-					{
-						maxPrice = order.price;
-					}
-					totalMoney += nextQuantity * order.price;
-				}
-			}
-			
-			var averagePrice:Number = 0;
-			
-			if (prices.length > 0)
-			{
-				for (var j:int = 0; j < l; j++) 
-				{
-					averagePrice += prices[j][0] * prices[j][1] / currentQantity;
-				}
-			}
-			
-			var coinsValue:String = parseFloat(currentQantity.toFixed(4)).toString() + " " + getCoinsCurrency();
-			var averagePriceValue:String = "@ " + parseFloat(averagePrice.toFixed(2)).toString();
-			var bestPriceValue:String = "@ " + parseFloat(((tradeSide == TradingOrder.BUY)?minPrice:maxPrice).toFixed(2)).toString();
-			var worstPriceValue:String = "@ " + parseFloat(((tradeSide == TradingOrder.SELL)?minPrice:maxPrice).toFixed(2)).toString();
-			
-			if (proposal == null || proposal.length == 0)
-			{
-				coinsValue = " ";
-				averagePriceValue = " ";
-				bestPriceValue = " ";
-				worstPriceValue = " ";
-			}
+			currentProposal = estimate;
 			
 			var color:Number;
 			if (averagePriceValue == bestPriceValue && bestPriceValue == worstPriceValue)
@@ -1160,19 +1063,29 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 				color = 0x7A8B9C;
 			}
 			
-			currentTotalMoney = totalMoney;
-			
-			drawAvaliableLots(coinsValue);
-			drawAveragePrice(averagePriceValue);
-			drawBestPrice(bestPriceValue, color);
-			drawWorstPrice(worstPriceValue, color);
-			drawTotalMoney(totalMoney);
+			if (currentProposal != null)
+			{
+				currentTotalMoney = currentProposal.fiat_amount_after_fee;
+				drawAvaliableLots(currentProposal.coin_amount);
+				drawAveragePrice(currentProposal.avg_price.toString());
+				drawBestPrice(currentProposal.best_price.toString(), color);
+				drawWorstPrice(currentProposal.worst_price.toString(), color);
+				drawTotalMoney(currentProposal.fiat_amount_after_fee);
+			}
+			else
+			{
+				drawAvaliableLots(" ");
+				drawAveragePrice(" ");
+				drawBestPrice(" ", color);
+				drawWorstPrice(" ", color);
+				drawTotalMoney(0);
+			}
 			
 			drawView();
 			
 			if (tradeSide == TradingOrder.BUY)
 			{
-				if (getMaxMoney() < totalMoney)
+				if (getMaxMoney() < currentTotalMoney)
 				{
 					acceptButton.alpha = 0.5;
 					acceptButton.deactivate();
@@ -1197,7 +1110,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 				}
 			}
 			
-			if (totalMoney < 0.01)
+			if (currentTotalMoney < 0.01)
 			{
 				acceptButton.alpha = 0.5;
 				acceptButton.deactivate();
@@ -1212,7 +1125,9 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 				inputCoins.valid();
 			}
 			
-			loadComission();
+			drawCommision(estimate);
+			
+		//	loadComission();
 		}
 		
 		private function getFormat(value:Number, decimal:int):Number 
@@ -1495,7 +1410,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 			}
 			else
 			{
-				return _height - ordersList.view.y - Config.MARGIN - backButton.height - Config.FINGER_SIZE * .5;
+				return _height - Config.MARGIN - backButton.height - Config.FINGER_SIZE * .5;
 			}
 		}
 		
@@ -1624,30 +1539,19 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 			else if(state == STATE_PROGRESS)
 			{
 				var headerSize:int = Config.FINGER_SIZE;
-				if (ordersList != null)
-				{
-					ordersList.view.y = headerHeight;
-					var maxContentHeightList:int = getMaxContentHeight();
-					//trace(maxContentHeightList);
-					ordersList.setWidthAndHeight(_width, maxContentHeightList);
-					
-					
-					bg.graphics.clear();
-					
-					bg.graphics.beginFill(0xD9E5F0);
-					bg.graphics.drawRect(0, 0, _width, headerHeight);
-					bg.graphics.endFill();
-					
-					bg.graphics.beginFill(Style.color(Style.COLOR_BACKGROUND));
-					
-					bg.graphics.drawRect(0, ordersList.view.y, _width, ordersList.height + backButton.height + Config.FINGER_SIZE * .6);
-					
-					bg.graphics.endFill();
-					
-					acceptButton.y = bg.height - Config.FINGER_SIZE * .3 - acceptButton.height;
-					
-					container.y = int(_height - ordersList.height - headerHeight - Config.FINGER_SIZE * .6 - backButton.height);
-				}
+				
+				var heightBG:int = bg.height;
+				bg.graphics.clear();				
+				bg.graphics.beginFill(0xD9E5F0);
+				bg.graphics.drawRect(0, 0, _width, headerHeight);
+				bg.graphics.endFill();
+				
+				bg.graphics.beginFill(Style.color(Style.COLOR_BACKGROUND));				
+				bg.graphics.drawRect(0, headerHeight, _width, heightBG - headerHeight);
+				
+				bg.graphics.endFill();
+				
+				acceptButton.y = int(bg.height - Config.FINGER_SIZE * .3 - acceptButton.height);
 			}
 		}
 		
@@ -1719,10 +1623,6 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 			}
 			priceLimitSwitch.activate();
 			refreshButton.activate();
-			if (ordersList != null)
-			{
-				ordersList.activate();
-			}
 		}
 		
 		override public function deactivateScreen():void 
@@ -1745,10 +1645,6 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 			priceLimitSwitch.deactivate();
 			priceLimitSwitch.deactivate();
 			refreshButton.deactivate();
-			if (ordersList != null)
-			{
-				ordersList.deactivate();
-			}
 		}
 		
 		protected function onCloseTap():void 
@@ -1762,6 +1658,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 				return;
 			super.dispose();
 			
+			TweenMax.killDelayedCallsTo(refreshClick);
 			TweenMax.killTweensOf(finalSumTitle);
 			TweenMax.killTweensOf(finalSumValue);
 			TweenMax.killTweensOf(finalStartValue);
@@ -1777,11 +1674,11 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 				currentAction = null;
 			}
 			
-			if (comission != null)
+			/*if (comission != null)
 			{
 				comission.dispose();
 				comission = null;
-			}
+			}*/
 			
 			Overlay.removeCurrent();
 			
@@ -1906,11 +1803,6 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 				refreshButton.dispose();
 				refreshButton = null;
 			}
-			if (ordersList != null)
-			{
-				ordersList.dispose();
-				ordersList = null;
-			}
 			if (animation != null)
 			{
 				UI.destroy(animation);
@@ -1963,11 +1855,11 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 				currentAction.dispose();
 				currentAction = null;
 			}
-			if (currentRequest != null)
+			/*if (currentRequest != null)
 			{
 				currentRequest.dispose();
 				currentRequest = null;
-			}
+			}*/
 			if (scrollPanel != null)
 				scrollPanel.dispose();
 			scrollPanel = null;

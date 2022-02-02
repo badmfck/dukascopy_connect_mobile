@@ -7,6 +7,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 	import com.dukascopy.connect.data.CountriesData;
 	import com.dukascopy.connect.data.OrderScreenData;
 	import com.dukascopy.connect.data.TextFieldSettings;
+	import com.dukascopy.connect.data.coinMarketplace.CoinTradeEstimate;
 	import com.dukascopy.connect.data.coinMarketplace.PaymentsAccountsProvider;
 	import com.dukascopy.connect.data.coinMarketplace.TradingOrder;
 	import com.dukascopy.connect.data.coinMarketplace.TradingOrderParser;
@@ -481,11 +482,13 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 			}
 			else
 			{
-				drawCommision(commissionData);
+				var commission:CoinTradeEstimate = new CoinTradeEstimate();
+				commission.fillCommission(commissionData);
+				drawCommision(commission);
 			}
 		}
 		
-		private function drawCommision(commissionData:Object = null):void 
+		private function drawCommision(commissionData:CoinTradeEstimate = null):void 
 		{
 			commisionText.draw(componentsWidth, commissionData);
 			

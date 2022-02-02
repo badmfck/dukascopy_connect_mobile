@@ -686,6 +686,47 @@ package com.dukascopy.connect.sys.payments {
 			}
 		}
 		
+		// https://jira.site.dukascopy.com/wiki/display/webdev/MarketTradeEstimate
+		static public function callMarketTradeEstimate(_callback:Function, side:String, value:Number, priceLimit:Number, callback:Function):void {
+			
+			var request:Object = new Object();
+			request.coin = "DCO";
+			request.side = side;
+			request.amount = value;
+			if (!isNaN(priceLimit))
+			{
+				request.price = priceLimit;
+			}
+			
+			
+			/*coin - DCO is the only option for now
+			side - BUY or SELL
+			amount - amount of coins to be bought/sold
+			price - optional , to limit worst price of the trade*/
+			
+			var php:PayLoader = call("coin/market-trade/estimate", _callback, request, URLRequestMethod.GET);
+			if (php.savedRequestData != null)
+			{
+				php.savedRequestData.callback = callback;
+			}
+		}
+		
+		// https://jira.site.dukascopy.com/wiki/display/webdev/MarketTradeExecute
+		static public function callMarketTradeExecute(_callback:Function, side:String, value:Number, fiatAmount:Number, callback:Function):void {
+			
+			var request:Object = new Object();
+			request.coin = "DCO";
+			request.side = side;
+			request.amount = value;
+			request.fiat_amount = fiatAmount;
+			
+			var php:PayLoader = call("coin/market-trade/execute", _callback, request, URLRequestMethod.PUT);
+			if (php.savedRequestData != null)
+			{
+				php.savedRequestData.callback = callback;
+			}
+		}
+		
 		/**
 		 * This method is used to send money between users of Dukascopy Payments. See description:
 		 * https://intranet.dukascopy.dom/wiki/pages/viewpage.action?pageId=70681770

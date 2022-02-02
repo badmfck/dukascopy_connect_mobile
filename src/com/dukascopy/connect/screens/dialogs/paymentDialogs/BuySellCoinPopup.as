@@ -3,6 +3,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 	import com.dukascopy.connect.Config;
 	import com.dukascopy.connect.data.OrderScreenData;
 	import com.dukascopy.connect.data.TextFieldSettings;
+	import com.dukascopy.connect.data.coinMarketplace.CoinTradeEstimate;
 	import com.dukascopy.connect.data.coinMarketplace.PaymentsAccountsProvider;
 	import com.dukascopy.connect.data.coinMarketplace.TradingOrder;
 	import com.dukascopy.connect.data.coinMarketplace.TradingOrderRequest;
@@ -963,11 +964,13 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 			}
 			else
 			{
-				drawCommision(commissionData);
+				var commission:CoinTradeEstimate = new CoinTradeEstimate();
+				commission.fillCommission(commissionData);
+				drawCommision(commission);
 			}
 		}
 		
-		private function drawCommision(commissionData:Object = null):void 
+		private function drawCommision(commissionData:CoinTradeEstimate = null):void 
 		{
 			commisionText.draw(componentsWidth, commissionData);
 			
@@ -1274,7 +1277,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 			
 			if (commisionText.height > 0)
 			{
-				commisionText.x = hPadding;
+				commisionText.x = Config.DIALOG_MARGIN;
 				commisionText.y = position;
 				position += commisionText.height + Config.FINGER_SIZE * .4;
 			}

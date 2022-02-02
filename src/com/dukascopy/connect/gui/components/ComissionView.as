@@ -1,6 +1,7 @@
 package com.dukascopy.connect.gui.components 
 {
 	import com.dukascopy.connect.Config;
+	import com.dukascopy.connect.data.coinMarketplace.CoinTradeEstimate;
 	import com.dukascopy.connect.gui.lightbox.UI;
 	import com.dukascopy.connect.sys.style.FontSize;
 	import com.dukascopy.connect.sys.style.Style;
@@ -56,31 +57,31 @@ package com.dukascopy.connect.gui.components
 			}
 		}
 		
-		public function draw(componentsWidth:int, commissionData:Object):void 
+		public function draw(componentsWidth:int, commissionData:CoinTradeEstimate):void 
 		{
 			this.componentsWidth = componentsWidth;
 			
 			if (commissionData != null)
 			{
-				if ("total" in commissionData && commissionData.total != null && "readable" in commissionData.total)
-					drawTotal(commissionData.total.readable);
+				if (commissionData.total_fee != null)
+					drawTotal(commissionData.total_fee);
 				else
 					drawTotal();
 				
-				if ("first_transaction" in commissionData && commissionData.first_transaction != null && "readable" in commissionData.first_transaction)
-					drawFirst(commissionData.first_transaction.readable);
+				if (commissionData.first_transaction_fee != null)
+					drawFirst(commissionData.first_transaction_fee);
 				else
 					removeFirst();
 				
 				
-				if ("low_liquidity" in commissionData && commissionData.low_liquidity != null && "readable" in commissionData.low_liquidity)
-					drawLowLiquidity(commissionData.low_liquidity.readable);
+				if (commissionData.low_liquidity_fee != null)
+					drawLowLiquidity(commissionData.low_liquidity_fee);
 				else
 					removeLowLiquidity();
 				
 				
-				if ("main" in commissionData && commissionData.main != null && "readable" in commissionData.main)
-					drawMain(commissionData.main.readable);
+				if (commissionData.main_fee != null)
+					drawMain(commissionData.main_fee);
 				else
 					removeMain();
 			}

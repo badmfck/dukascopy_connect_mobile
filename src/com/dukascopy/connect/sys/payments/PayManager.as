@@ -456,6 +456,52 @@ package com.dukascopy.connect.sys.payments {
 			}
 		}
 		
+		static public function callMarketTradeEstimate(side:String, value:Number, priceLimit:Number, callback:Function):void {
+			PayServer.callMarketTradeEstimate(callMarketTradeEstimateRespond, side, value, priceLimit, callback);
+		}
+		
+		static private function callMarketTradeEstimateRespond(respond:PayRespond):void {
+			
+			if (respond.hasAuthorizationError) {
+				validateAuthorization(respond);
+				return;
+			}
+			// trial reached
+			if (respond.hasTrialVersionError) {
+				savedData = respond.savedRequestData;
+				_trialReached = true;
+				S_TRIAL_REACHED.invoke();
+				return;
+			}
+			if (respond.savedRequestData != null && respond.savedRequestData.callback != null)
+			{
+				respond.savedRequestData.callback(respond);
+			}
+		}
+		
+		static public function callMarketTradeExecute(side:String, value:Number, fiatAmount:Number, callback:Function):void {
+			PayServer.callMarketTradeExecute(callMarketTradeExecuteRespond, side, value, fiatAmount, callback);
+		}
+		
+		static private function callMarketTradeExecuteRespond(respond:PayRespond):void {
+			
+			if (respond.hasAuthorizationError) {
+				validateAuthorization(respond);
+				return;
+			}
+			// trial reached
+			if (respond.hasTrialVersionError) {
+				savedData = respond.savedRequestData;
+				_trialReached = true;
+				S_TRIAL_REACHED.invoke();
+				return;
+			}
+			if (respond.savedRequestData != null && respond.savedRequestData.callback != null)
+			{
+				respond.savedRequestData.callback(respond);
+			}
+		}
+		
 		static public function callGetInstrumentRatesHistory(instrumentCode:String, callback:Function):void {
 			PayServer.callGetInstrumentRatesHistory(callGetInstrumentRatesHistoryRespond, instrumentCode, callback);
 		}

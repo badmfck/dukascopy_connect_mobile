@@ -1,7 +1,10 @@
 package com.dukascopy.connect.data.coinMarketplace 
 {
+	import com.dukascopy.connect.GD;
 	import com.dukascopy.connect.sys.applicationError.ApplicationErrors;
+	import com.dukascopy.connect.sys.errors.ErrorLocalizer;
 	import com.dukascopy.connect.sys.payments.PayManager;
+	import com.dukascopy.connect.sys.payments.PayRespond;
 	import com.dukascopy.langs.LangManager;
 	import com.telefision.sys.signals.Signal;
 	/**
@@ -82,7 +85,16 @@ package com.dukascopy.connect.data.coinMarketplace
 		
 		public function getProposal(side:String, value:Number, priceLimit:Number = NaN):void 
 		{
-			if (side == TradingOrder.SELL)
+			if (!isNaN(value) && value > 0)
+			{
+				PayManager.callMarketTradeEstimate(side, value, priceLimit, onEstimateResult);
+			}
+			else
+			{
+				sendResult(null);
+			}
+			
+			/*if (side == TradingOrder.SELL)
 			{
 				PayManager.callGetSystemOptions(function():void {
 					processCalculation(side, value, priceLimit);
@@ -91,10 +103,36 @@ package com.dukascopy.connect.data.coinMarketplace
 			else
 			{
 				processCalculation(side, value, priceLimit);
+			}*/
+		}
+		
+		private function onEstimateResult(respond:PayRespond):void
+		{
+			if (respond.error)
+			{
+				GD.S_TOAST.invoke(ErrorLocalizer.getPaymentsError(respond.errorCode.toString(), respond.errorMsg));
+				sendResult(null);
+			}
+			else
+			{
+				var result:CoinTradeEstimate = CoinTradeEstimate.parse(respond.data);
+				if (result != null)
+				{
+					sendResult(result);
+				}
+				else
+				{
+					ApplicationErrors.add();
+				}
+				if (respond.data != null)
+				{
+					
+					
+				}
 			}
 		}
 		
-		private function processCalculation(side:String, value:Number, priceLimit:Number):void 
+		/*private function processCalculation(side:String, value:Number, priceLimit:Number):void 
 		{
 			this.side = side;
 			this.value = value;
@@ -131,7 +169,7 @@ package com.dukascopy.connect.data.coinMarketplace
 					}
 				}
 			}
-		}
+		}*/
 		
 		private function getSortFunction(side:String) :Function
 		{
@@ -145,7 +183,7 @@ package com.dukascopy.connect.data.coinMarketplace
 			}
 		}
 		
-		private function filter(dataArray:Array, targetValue:Number, priceLimit:Number = NaN, side:String = null):void 
+		/*private function filter(dataArray:Array, targetValue:Number, priceLimit:Number = NaN, side:String = null):void 
 		{
 			if (dataArray != null && dataArray.length > 0)
 			{
@@ -210,9 +248,9 @@ package com.dukascopy.connect.data.coinMarketplace
 				
 				sendResult(resultArray);
 			}
-		}
+		}*/
 		
-		private function sendResult(value:Array):void 
+		private function sendResult(value:CoinTradeEstimate):void 
 		{
 			if (callback != null)
 			{
