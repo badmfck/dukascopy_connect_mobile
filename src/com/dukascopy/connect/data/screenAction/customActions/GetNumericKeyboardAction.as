@@ -53,6 +53,7 @@ package com.dukascopy.connect.data.screenAction.customActions {
 		override public function dispose():void
 		{
 			super.dispose();
+			SoftKeyboard.closeKeyboardImmediately();
 			removeListenersForDigitMode();
 			if (input != null && input.view != null)
 			{
@@ -102,7 +103,10 @@ package com.dukascopy.connect.data.screenAction.customActions {
 			customKeyboardOpening = false;
 			invokeSoftkeyboard(false);
 			
-			S_ACTION_FAIL.invoke();
+			if (S_ACTION_FAIL != null)
+			{
+				S_ACTION_FAIL.invoke();
+			}
 		}
 		
 		private function invokeSoftkeyboard(val:Boolean):void{
