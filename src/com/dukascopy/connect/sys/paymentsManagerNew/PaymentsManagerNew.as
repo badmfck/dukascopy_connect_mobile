@@ -45,6 +45,7 @@ package com.dukascopy.connect.sys.paymentsManagerNew {
 		static private var callbacksCryptoDeals:Array;
 		static private var callbacksCrypto:Array;
 		static private var callbacksCryptoRDs:Array;
+		static private var callbacksSwapList:Array;
 		static private var callbacksDeclareETHAddress:Array;
 		static private var callbacksGetTPILink:Array;
 		static private var callbacksTotal:Array;
@@ -1469,6 +1470,28 @@ package com.dukascopy.connect.sys.paymentsManagerNew {
 			while (callbacksCryptoRDs.length != 0)
 				callbacksCryptoRDs.shift()(res);
 			callbacksCryptoRDs = null;
+		}
+		
+		static public function cryptoSwapList(callback:Function):void {
+			if (preCall() == false)
+				return;
+			if (callbacksSwapList == null || callbacksSwapList.length == 0) {
+				callbacksSwapList = [callback];
+			} else {
+				if (callbacksSwapList.indexOf(callback) == -1)
+					callbacksSwapList.push(callback);
+				return;
+			}
+			PayServer.call_getSwapList(onSwapListGetted);
+		}
+		
+		static private function onSwapListGetted(respond:PayRespond):void {
+			if (callbacksSwapList == null)
+				return;
+			var res:Object = checkForError(respond);
+			while (callbacksSwapList.length != 0)
+				callbacksSwapList.shift()(res);
+			callbacksSwapList = null;
 		}
 		
 		static public function getDeclareETHAddressLink(callback:Function, currency:String):void {

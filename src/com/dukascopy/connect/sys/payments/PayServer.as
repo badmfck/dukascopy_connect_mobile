@@ -105,10 +105,18 @@ package com.dukascopy.connect.sys.payments {
 		
 		/**
 		 * This request is used to get list of account's term deposits. See description:
-		 * https://intranet.dukascopy.dom/wiki/display/webdev/GET+term-deposit
+		 * https://jira.site.dukascopy.com/wiki/display/webdev/ListSwaps
 		 */
 		static public function call_getCryptoRDs(_callback:Function):void {
 			call("term-deposit", _callback, null, URLRequestMethod.GET);
+		}
+		
+		/**
+		 * This endpoints returns all GetCashSwap entities for current user. See description:
+		 * https://intranet.dukascopy.dom/wiki/display/webdev/GET+term-deposit
+		 */
+		static public function call_getSwapList(_callback:Function):void {
+			call("gcs/list", _callback, null, URLRequestMethod.GET);
 		}
 		
 		/**
@@ -678,6 +686,10 @@ package com.dukascopy.connect.sys.payments {
 				php.savedRequestData.callID = _callID;
 		}
 		
+		/**
+		 * The method returns data for simple investment charts, providing time points and investments value in investments reference currency. See description:
+		 * https://jira.site.dukascopy.com/wiki/pages/viewpage.action?pageId=135430412
+		 */
 		static public function callGetInstrumentRatesHistory(_callback:Function, _instrument:String, callback:Function):void {
 			var php:PayLoader = call("account/investment/chart", _callback, { instrument:_instrument }, URLRequestMethod.GET);
 			if (php.savedRequestData != null)
@@ -686,34 +698,33 @@ package com.dukascopy.connect.sys.payments {
 			}
 		}
 		
-		// https://jira.site.dukascopy.com/wiki/display/webdev/MarketTradeEstimate
+		/**
+		 * This method is used to estimate market trade on Dukascoin marketplace (when you trade by filling one or several deals). See description:
+		 * https://jira.site.dukascopy.com/wiki/display/webdev/MarketTradeEstimate
+		 */
 		static public function callMarketTradeEstimate(_callback:Function, side:String, value:Number, priceLimit:Number, callback:Function):void {
-			
 			var request:Object = new Object();
 			request.coin = "DCO";
 			request.side = side;
 			request.amount = value;
 			if (!isNaN(priceLimit))
-			{
 				request.price = priceLimit;
-			}
 			
-			
-			/*coin - DCO is the only option for now
+			/* coin - DCO is the only option for now
 			side - BUY or SELL
 			amount - amount of coins to be bought/sold
-			price - optional , to limit worst price of the trade*/
+			price - optional , to limit worst price of the trade */
 			
 			var php:PayLoader = call("coin/market-trade/estimate", _callback, request, URLRequestMethod.GET);
 			if (php.savedRequestData != null)
-			{
 				php.savedRequestData.callback = callback;
-			}
 		}
 		
-		// https://jira.site.dukascopy.com/wiki/display/webdev/MarketTradeExecute
+		/**
+		 * This method is used to execute market trade on Dukascoin marketplace (when you trade by filling one or several deals). See description:
+		 * https://jira.site.dukascopy.com/wiki/display/webdev/MarketTradeExecute
+		 */
 		static public function callMarketTradeExecute(_callback:Function, side:String, value:Number, fiatAmount:Number, callback:Function):void {
-			
 			var request:Object = new Object();
 			request.coin = "DCO";
 			request.side = side;
@@ -722,9 +733,7 @@ package com.dukascopy.connect.sys.payments {
 			
 			var php:PayLoader = call("coin/market-trade/execute", _callback, request, URLRequestMethod.PUT);
 			if (php.savedRequestData != null)
-			{
 				php.savedRequestData.callback = callback;
-			}
 		}
 		
 		/**
@@ -732,12 +741,9 @@ package com.dukascopy.connect.sys.payments {
 		 * https://intranet.dukascopy.dom/wiki/pages/viewpage.action?pageId=70681770
 		 */
 		static public function call_putMoneySendAdvanced(_callback:Function, data:Object, _callID:String = ""):void {
-			
-			if (CheckDuplicateTransfer.addTransfer(data) == false)
-			{
+			if (CheckDuplicateTransfer.addTransfer(data) == false) {
 				echo("money.call_putMoneySendAdvanced", "CheckDuplicateTransfer");
-				if (_callback != null)
-				{
+				if (_callback != null) {
 					var respond:PayRespond = new PayRespond(null);
 					respond.setData(true, Lang.pleaseTryLater);
 					
@@ -750,7 +756,6 @@ package com.dukascopy.connect.sys.payments {
 					respond.setSavedRequestData(_savedRequestData);
 					
 					_callback(respond);
-					
 				}
 				return;
 			}

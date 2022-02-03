@@ -2101,6 +2101,9 @@ package com.dukascopy.langs {
 		static public var textFundedByBTC:String = "Funded by BTC";
 		static public var textFundedByDUK:String = "Funded by DUK+";
 		
+		static public var textReceivedAmount:String = "Received: ";
+		static public var textBuybackDate:String = "Expires: ";
+		
 		static public var textFeedbackDesc:String = "Have you received an answer to your question?";
 		static public var textFeedbackDesc1:String = "Send Your feedback";
 		static public var textFeedbackYes:String = "Yes";
