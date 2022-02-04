@@ -2102,6 +2102,7 @@ package com.dukascopy.langs {
 		static public var textFundedByDUK:String = "Funded by DUK+";
 		
 		static public var textReceivedAmount:String = "Received: ";
+		static public var textBuybackAmount:String = "Buyback: ";
 		static public var textBuybackDate:String = "Expires: ";
 		
 		static public var textFeedbackDesc:String = "Have you received an answer to your question?";

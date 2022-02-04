@@ -11,6 +11,7 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements {
 	import com.dukascopy.connect.gui.list.renderers.bankAccountElements.sections.BACryptoDealSection;
 	import com.dukascopy.connect.gui.list.renderers.bankAccountElements.sections.BACryptoRDSection;
 	import com.dukascopy.connect.gui.list.renderers.bankAccountElements.sections.BACryptoSection;
+	import com.dukascopy.connect.gui.list.renderers.bankAccountElements.sections.BACryptoSwapSection;
 	import com.dukascopy.connect.gui.list.renderers.bankAccountElements.sections.BAEMenuForBankMessageSection;
 	import com.dukascopy.connect.gui.list.renderers.bankAccountElements.sections.BAETextForBankMessageSection;
 	import com.dukascopy.connect.gui.list.renderers.bankAccountElements.sections.BAInvestmentDetailSection;
@@ -60,6 +61,7 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements {
 		private var investmentDetailsSections:Array/*BAInvestmentDetailsSection*/;
 		private var cryptoDealsSections:Array/*BACryptoDealSection*/;
 		private var cryptoRDSections:Array/*BACryptoRDSection*/;
+		private var cryptoSwapSections:Array/*BACryptoSwapSection*/;
 		private var operationTransactionSections:Array/*BAOperationTransactionSection*/;
 		private var bestPriceSections:Array/*BALimitSection*/;
 		private var otherAccSections:Array/*BAOtherAccSection*/;
@@ -125,6 +127,7 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements {
 			trueHeight += createOtherAcc(bmVO, sectionMenuWidth);
 			trueHeight += createAccStat(bmVO, sectionMenuWidth);
 			trueHeight += createOperTrans(bmVO, sectionMenuWidth);
+			trueHeight += createSwaps(bmVO, sectionMenuWidth);
 			
 			var maxWidthForH:int;
 			var maxWidth:int;
@@ -376,6 +379,28 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements {
 						hitZones.push(hz);
 					}
 					sectionY += cryptoRDSections[i].getHeight();
+				}
+			}
+			if (cryptoSwapSections != null && cryptoSwapSections.length != 0 && cryptoSwapSections[0].parent != null) {
+				if (sectionY != 0)
+					sectionY += Config.MARGIN;
+				l = cryptoSwapSections.length;
+				graphics.beginFill(0xFFFFFF, (tapped == true) ? .4 : 1);
+				graphics.drawRoundRect(
+					sectionX,
+					sectionY,
+					cryptoSwapSections[0].getWidth(),
+					cryptoSwapSections[i].getHeight() * l,
+					BankAccountElementSectionBase.CORNER_RADIUS_DOUBLE,
+					BankAccountElementSectionBase.CORNER_RADIUS_DOUBLE
+				);
+				graphics.endFill();
+				for (i = 0; i < l; i++) {
+					if (tapped == true)
+						cryptoSwapSections[i].alpha = .4;
+					cryptoSwapSections[i].y = sectionY;
+					cryptoSwapSections[i].x = sectionX;
+					sectionY += cryptoSwapSections[i].getHeight();
 				}
 			}
 			if (operationTransactionSections != null && operationTransactionSections.length != 0 && operationTransactionSections[0].parent != null) {
@@ -1734,6 +1759,57 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements {
 		}
 		
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//  <--  CRYPTO REWARDS DEPOSITE | SWAPS  -->  /////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		
+		private function createSwaps(bmVO:BankMessageVO, sectionMenuWidth:int):int {
+			removeSwaps();
+			var res:int;
+			if (bmVO.item == null)
+				return res;
+			if (bmVO.additionalData == null)
+				return res;
+			res = Config.MARGIN;
+			var cryptoSwapSection:BACryptoSwapSection;
+			if (bmVO.item.type == "showSwap") {
+				cryptoSwapSections ||= [];
+				cryptoSwapSection = new BACryptoSwapSection();
+				cryptoSwapSection.setData(bmVO.additionalData, sectionMenuWidth);
+				cryptoSwapSections.push(cryptoSwapSection);
+				cryptoSwapSection.clearGraphics();
+				addChild(cryptoSwapSection);
+				res += cryptoSwapSection.getHeight();
+				return res;
+			} else if (bmVO.item.type == "showSwaps") {
+				cryptoSwapSections ||= [];
+				var l:int = bmVO.additionalData.length;
+				for (var i:int = 0; i < l; i++) {
+					cryptoSwapSection = new BACryptoSwapSection();
+					cryptoSwapSection.setData(bmVO.additionalData[i], sectionMenuWidth);
+					addChild(cryptoSwapSection);
+					cryptoSwapSections.push(cryptoSwapSection);
+				}
+			}
+			if (cryptoSwapSection != null) {
+				res += cryptoSwapSections.length * cryptoSwapSection.getHeight();
+				cryptoSwapSection.clearGraphics();
+			}
+			return res;
+		}
+		
+		private function removeSwaps():void {
+			if (cryptoSwapSections == null || cryptoSwapSections.length == 0)
+				return;
+			var cryptoSwapSection:BACryptoSwapSection;
+			while (cryptoSwapSections.length > 0) {
+				cryptoSwapSection = cryptoSwapSections.shift();
+				if (cryptoSwapSection.parent != null)
+					cryptoSwapSection.parent.removeChild(cryptoSwapSection);
+				cryptoSwapSection.dispose();
+			}
+		}
+		
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //  <--  CRYPTO | INVESTMENTS  -->  ////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		
@@ -1964,6 +2040,9 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements {
 			
 			removeCryptoRD();
 			cryptoRDSections = null;
+			
+			removeSwaps();
+			cryptoSwapSections = null;
 			
 			removeOperTrans();
 			operationTransactionSections = null;
