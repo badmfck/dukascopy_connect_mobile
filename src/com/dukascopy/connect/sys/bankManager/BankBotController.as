@@ -1098,7 +1098,7 @@ package com.dukascopy.connect.sys.bankManager {
 				if (checkForPaymentsRequestExist(msg) == true)
 					return;
 				lastPaymentsRequests["cryptoSwapList"] = msg;
-				lastPaymentsRequests[PaymentsManagerNew.cryptoSwapList(onCryptoSwapListResponse)] = msg;
+				PaymentsManagerNew.cryptoSwapList(onCryptoSwapListResponse);
 			}
 			if (command == "fatCatz") {
 				if (checkForPaymentsRequestExist(msg) == true)
@@ -1957,7 +1957,7 @@ package com.dukascopy.connect.sys.bankManager {
 		}
 		
 		static private function onCryptoSwapListResponse(respondData:Object):void {
-			if (preCheckForErrors(respondData, "rdSwapStep1", null, "paymentsErrorDataNull") == true)
+			if (preCheckForErrors(respondData, "cryptoSwapList", null, "paymentsErrorDataNull") == true)
 				return;
 			respondData.step = 1;
 			S_ANSWER.invoke("requestRespond:cryptoSwapList:" + JSON.stringify(respondData));

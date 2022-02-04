@@ -365,8 +365,7 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements {
 						cryptoRDSections[i].alpha = .4;
 					cryptoRDSections[i].y = sectionY;
 					cryptoRDSections[i].x = sectionX;
-					if (cryptoRDSections[i].isTotal == false){
-						
+					if (cryptoRDSections[i].isTotal == false) {
 						hz = new HitZoneData();
 							hz.type = HitZoneType.CRYPTO_RD;
 							hz.param = i.toString();
@@ -381,7 +380,8 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements {
 					sectionY += cryptoRDSections[i].getHeight();
 				}
 			}
-			if (cryptoSwapSections != null && cryptoSwapSections.length != 0 && cryptoSwapSections[0].parent != null) {
+			sectionY = selectItem(cryptoSwapSections, li.data.item, sectionX, sectionY, hitZones, HitZoneType.CRYPTO_SWAP, "code");
+			/*if (cryptoSwapSections != null && cryptoSwapSections.length != 0 && cryptoSwapSections[0].parent != null) {
 				if (sectionY != 0)
 					sectionY += Config.MARGIN;
 				l = cryptoSwapSections.length;
@@ -398,11 +398,21 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements {
 				for (i = 0; i < l; i++) {
 					if (tapped == true)
 						cryptoSwapSections[i].alpha = .4;
+					hz = new HitZoneData();
+						hz.type = HitZoneType.CRYPTO_SWAP;
+						hz.param = i.toString();
+						hz.data = cryptoSwapSections[i].data,
+						hz.index = i;
+						hz.x = cryptoSwapSections[i].x;
+						hz.y = sectionY;
+						hz.width = cryptoSwapSections[i].getWidth();
+						hz.height = cryptoSwapSections[i].getHeight();
+					hitZones.push(hz);
 					cryptoSwapSections[i].y = sectionY;
 					cryptoSwapSections[i].x = sectionX;
 					sectionY += cryptoSwapSections[i].getHeight();
 				}
-			}
+			}*/
 			if (operationTransactionSections != null && operationTransactionSections.length != 0 && operationTransactionSections[0].parent != null) {
 				if (sectionY != 0)
 					sectionY += Config.MARGIN;
@@ -740,9 +750,9 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements {
 				sections[i].x = sx;
 				sections[i].y = sy;
 				if ("isTotal" in sections[i] == false || sections[i].isTotal == false) {
-					
 					var hz:HitZoneData = new HitZoneData();
 					hz.type = hitZonesType;
+					hz.data = sections[i].data;
 					hz.param = String((field == null) ? i : sections[i].data[field]);
 					hz.index = i;
 					hz.x = sections[i].x;
@@ -1781,6 +1791,8 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements {
 				res += cryptoSwapSection.getHeight();
 				return res;
 			} else if (bmVO.item.type == "showSwaps") {
+				if (bmVO.item.tapped == true)
+					tapped = true;
 				cryptoSwapSections ||= [];
 				var l:int = bmVO.additionalData.length;
 				for (var i:int = 0; i < l; i++) {

@@ -242,6 +242,10 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements.sections {
 			return trueWidth;
 		}
 		
+		public function getData():Object {
+			return data;
+		}
+		
 		public function dispose():void {
 			if (flagIcon != null)
 				UI.disposeBMD(flagIcon.bitmapData);

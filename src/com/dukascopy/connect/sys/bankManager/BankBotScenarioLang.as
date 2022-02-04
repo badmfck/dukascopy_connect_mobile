@@ -84,6 +84,8 @@ package com.dukascopy.connect.sys.bankManager {
 		static public var invoicesDesc:String = "Invoices";
 		static public var cardPinRequestDesc:String = "Please select pin request method.";
 		static public var zeroAccountDesc:String = "You have no funded accounts.";
+		static public var cryptoSwapEntitiesDesc:String = "GetCash swap entities.";
+		static public var cryptoSwapOptionsDesc:String = "Choose GetCash swap entity action.";
 		static public var cryptoSwapTermsDesc:String = "Get quick money by selling your staked Dukascoins (DUK+) with a buyback in 1 month at a fixed price.\\nChoose an active stake to know how much you can get:";
 		static public var cryptoSwapFiatAmountDesc:String = "For selected Stake you can receive between @@1 and @@2.\\nIndicate the amount you would like to receive:";
 		static public var cryptoSwapConfirmDesc:String = "I confirm the above and I have read and agree with the\\n\\n<a href='https://www.dukascopy.bank/swiss/fees-limits/'>GETCA$H Swap contract terms and conditions</a>";
@@ -315,6 +317,7 @@ package com.dukascopy.connect.sys.bankManager {
 		static public var menuCryptoSwap:String = "Swap Dukascoins";
 		static public var menuSwapCrypto:String = "New swap contract";
 		static public var menuSwapList:String = "List of swaps";
+		static public var menuSwapChooseAmount:String = "Choose amount";
 		
 		static public var investmentIndex:String = "Index";
 		static public var investmentSilver:String = "Silver";

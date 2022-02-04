@@ -511,6 +511,13 @@ package com.dukascopy.connect.sys.bankManager {
 					sendMessage(msg);
 					return;
 				}
+				if (data.type == "showSwaps") {
+					data["tapped"] = true;
+					S_ADDITIONAL_DATA_ENTERED.invoke();
+					sendMessage("val:" + data.param.code);
+					sendMessage(msg);
+					return;
+				}
 				if (data.type == "showAcc") {
 					data["tapped"] = true;
 					S_ADDITIONAL_DATA_ENTERED.invoke();

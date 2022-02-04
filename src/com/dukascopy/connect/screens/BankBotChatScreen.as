@@ -406,14 +406,12 @@ package com.dukascopy.connect.screens {
 					list.updateItemByIndex(n, false);
 			}
 			if (lhz == HitZoneType.CRYPTO_RD) {
-				/*if (bmVO.item.type == "showRD" && bmVO.additionalData.storage_type == "BLOCKCHAIN") {
-					navigateToURL(new URLRequest(Lang.textBlockchainInfoURL + bmVO.additionalData.storage_address));
-					return;
-				}*/
 				bmVO.item.param = lastHitzoneObject.data;
 				BankManager.preSendMessage(bmVO.item);
-				if (_isDisposed == false)
-					list.updateItemByIndex(n, false);
+			}
+			if (lhz == HitZoneType.CRYPTO_SWAP) {
+				bmVO.item.param = lastHitzoneObject.data;
+				BankManager.preSendMessage(bmVO.item);
 			}
 			if (lhz == HitZoneType.AVATAR) {
 				BankManager.showAllAcounts();

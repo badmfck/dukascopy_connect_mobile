@@ -1761,11 +1761,20 @@ package com.dukascopy.connect.sys.bankManager {
 			},
 			
 			cryptoSwapList: {
-				desc:"lang.cryptoSwapTermsDesc",
+				desc:"lang.cryptoSwapEntitiesDesc",
 				menuLayout:"vertical",
 				item: {
 					type:"showSwaps",
 					action:"nav:cryptoSwapOptions"
+				}
+			},
+			
+			cryptoSwapOptions: {
+				desc:"lang.cryptoSwapOptionsDesc",
+				menuLayout:"vertical",
+				item: {
+					type:"showSwap",
+					value:"@@1"
 				}
 			},
 			
@@ -1785,7 +1794,7 @@ package com.dukascopy.connect.sys.bankManager {
 				menuLayout:"vertical",
 				menu:[
 					{
-						text:"Choose amount",
+						text:"lang.menuSwapChooseAmount",
 						textForUser:"lang.itemCryptoSwapFiatAmount",
 						type:"cryptoSwapAmount",
 						action:"nav:cryptoSwapThirdConfirm"
