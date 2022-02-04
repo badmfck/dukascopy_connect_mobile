@@ -136,17 +136,6 @@ package com.dukascopy.connect.sys.bankManager {
 				}
 			}
 			if (command == "nav") {
-				/*if (tmp[1] == "transactionOut" ||
-					tmp[1] == "transactionOutNoUser" ||
-					tmp[1] == "transactionIn" ||
-					tmp[1] == "transactionInNoUser") {
-						if (tmp.length > 2) {
-							if (tmp[2] == "PDF") {
-								sendBlock(tmp[1], false);
-								return;
-							}
-						}
-				}*/
 				if (tmp[1] == "cryptoSwapSecondConfirm") {
 					onRewardDepositeSwapStep1();
 					return;
@@ -157,6 +146,10 @@ package com.dukascopy.connect.sys.bankManager {
 				}
 				if (tmp[1] == "cryptoSwapConfirmed") {
 					onRewardDepositeSwapConfirm();
+					return;
+				}
+				if (tmp[1] == "cryptoSwapList") {
+					onCryptoSwapList();
 					return;
 				}
 				if (tmp[1] == "cryptoDeposites") {
@@ -849,7 +842,12 @@ package com.dukascopy.connect.sys.bankManager {
 		static private function onRewardDepositeSwapConfirm():void {
 			sendBlock("actionProgress");
 			if (steps.length > 2)
-				callPaymentsMethod("rdSwapconfirm:" + steps[steps.length - 3].val + "|!|" + steps[steps.length - 2].val);
+				callPaymentsMethod("rdSwapConfirm:" + steps[steps.length - 3].val + "|!|" + steps[steps.length - 2].val);
+		}
+		
+		static private function onCryptoSwapList():void {
+			sendBlock("actionProgress");
+			callPaymentsMethod("cryptoSwapList");
 		}
 		
 		static private function onOtherWithdrawalConfirm():void {
@@ -1088,13 +1086,19 @@ package com.dukascopy.connect.sys.bankManager {
 					return;
 				lastPaymentsRequests[PaymentsManagerNew.rdSwapStep2(onRDSwapStep2, temp[0], temp[1], temp[2], temp[3])] = msg;
 			}
-			if (command == "rdSwapconfirm") {
+			if (command == "rdSwapConfirm") {
 				if (checkForPaymentsRequestExist(msg) == true)
 					return;
 				temp = msg.substr(command.length + 1).split("|!|");
 				if (temp.length != 4)
 					return;
 				lastPaymentsRequests[PaymentsManagerNew.rdSwap(onRDSwap, temp[0], temp[1], temp[2], temp[3])] = msg;
+			}
+			if (command == "cryptoSwapList") {
+				if (checkForPaymentsRequestExist(msg) == true)
+					return;
+				lastPaymentsRequests["cryptoSwapList"] = msg;
+				lastPaymentsRequests[PaymentsManagerNew.cryptoSwapList(onCryptoSwapListResponse)] = msg;
 			}
 			if (command == "fatCatz") {
 				if (checkForPaymentsRequestExist(msg) == true)
@@ -1952,12 +1956,20 @@ package com.dukascopy.connect.sys.bankManager {
 			sendBlock("transactionCodeCompleted");
 		}
 		
+		static private function onCryptoSwapListResponse(respondData:Object):void {
+			if (preCheckForErrors(respondData, "rdSwapStep1", null, "paymentsErrorDataNull") == true)
+				return;
+			respondData.step = 1;
+			S_ANSWER.invoke("requestRespond:cryptoSwapList:" + JSON.stringify(respondData));
+			sendBlock("cryptoSwapList");
+		}
+		
 		static private function onRDSwapStep1(respondData:Object):void {
 			if (preCheckForErrors(respondData, "rdSwapStep1", null, "paymentsErrorDataNull") == true)
 				return;
 			respondData.step = 1;
 			S_ANSWER.invoke("requestRespond:rdSwap:" + JSON.stringify(respondData));
-			sendBlock("cryptoSwapSecondConfirm", [steps[steps.length - 1].val]);
+			sendBlock("cryptoSwapSecondConfirm", [respondData.min_amount.readable, respondData.max_amount.readable]);
 		}
 		
 		static private function onRDSwapStep2(respondData:Object, hash:String):void {
@@ -1971,7 +1983,10 @@ package com.dukascopy.connect.sys.bankManager {
 		static private function onRDSwap(respondData:Object, hash:String):void {
 			if (preCheckForErrors(respondData, hash, null, "paymentsErrorDataNull") == true)
 				return;
-			sendBlock("cryptoSwapConfirmed");
+			if (respondData.status == "active")
+				sendBlock("cryptoSwapConfirmed");
+			else
+				sendBlock("cryptoSwapCreatedConfirmed", [respondData.address]);
 		}
 		
 		static private function onPossibleRD(respondData:Object, hash:String):void {

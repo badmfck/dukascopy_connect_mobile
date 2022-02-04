@@ -1760,6 +1760,15 @@ package com.dukascopy.connect.sys.bankManager {
 				]
 			},
 			
+			cryptoSwapList: {
+				desc:"lang.cryptoSwapTermsDesc",
+				menuLayout:"vertical",
+				item: {
+					type:"showSwaps",
+					action:"nav:cryptoSwapOptions"
+				}
+			},
+			
 			cryptoSwapFirstConfirm: {
 				desc:"lang.cryptoSwapTermsDesc",
 				menuLayout:"vertical",
@@ -1772,12 +1781,12 @@ package com.dukascopy.connect.sys.bankManager {
 			},
 			
 			cryptoSwapSecondConfirm: {
-				desc:"Please choose amount of Fiat",
+				desc:"lang.cryptoSwapFiatAmountDesc",
 				menuLayout:"vertical",
 				menu:[
 					{
 						text:"Choose amount",
-						textForUser:"lang.itemSendMoneyPhone",
+						textForUser:"lang.itemCryptoSwapFiatAmount",
 						type:"cryptoSwapAmount",
 						action:"nav:cryptoSwapThirdConfirm"
 					}
@@ -1785,7 +1794,7 @@ package com.dukascopy.connect.sys.bankManager {
 			},
 			
 			cryptoSwapThirdConfirm: {
-				desc:"I confirm the above and I have read and agree with the\n\n<a href='https://www.dukascopy.bank/swiss/fees-limits/'>GETCA$H Swap contract terms and conditions</a>",
+				desc:"lang.cryptoSwapConfirmDesc",
 				menuLayout:"vertical",
 				item: {
 					type:"newSwapConfirm",
@@ -1800,9 +1809,24 @@ package com.dukascopy.connect.sys.bankManager {
 			},
 			
 			cryptoSwapConfirmed: {
-				desc:"Crypto swap created. lang.otherOperation",
+				desc:"lang.confirmedCryptoSwapActive lang.otherOperation",
 				isLast:true,
-				value:"@@1",
+				buttons: [
+					{
+						text:"lang.buttonYes",
+						action:"nav:main"
+					}, {
+						text:"lang.buttonNo",
+						action:"app:back"
+					}
+				]
+			},
+			
+			
+			
+			cryptoSwapCreatedConfirmed: {
+				desc:"lang.confirmedCryptoSwapCreated lang.otherOperation",
+				isLast:true,
 				buttons: [
 					{
 						text:"lang.buttonYes",

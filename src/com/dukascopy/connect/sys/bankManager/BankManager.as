@@ -181,6 +181,7 @@ package com.dukascopy.connect.sys.bankManager {
 		static private var otherAccounts:Array;
 		static private var savingsAccounts:Array;
 		static private var rdSwapObject:Object;
+		static private var cryptoSwaps:Array;
 		static private var investments:Array;
 		static private var cardMasked:String;
 		static private var waitingBMVO:BankMessageVO;
@@ -1175,11 +1176,10 @@ package com.dukascopy.connect.sys.bankManager {
 					sendMessage("val:" + data.param.code);
 					sendMessage(msg);
 				} else if (data.type == "cryptoSwapAmount") {
-					trace(rdSwapObject);
 					var sd:Object = new Object();
 					sd.callback = function(a:Number, data:Object = null):void {
 						data.tapped = true;
-						baVO = new BankMessageVO(data.text);
+						baVO = new BankMessageVO(data.textForUser.replace("@1", a + " " + data.additional.currency));
 						baVO.setMine();
 						invokeAnswerSignal(baVO);
 						sendMessage("val:" + a + "|!|" + data.additional.currency + "|!|" + data.additional.calc_id);
@@ -2465,32 +2465,32 @@ package com.dukascopy.connect.sys.bankManager {
 					}
 				}
 				if (lastBankMessageVO.item.type == "newSwapConfirm") {
-					var contractTest:String = "Please carefully review GETCA$H Swap contract conditions:\n\n";
-					contractTest += "Dukascoin amount to sell\n";
+					var contractTest:String = Lang.textSwapCarefullyReviewConditions + "\n\n";
+					contractTest += Lang.textSwapDCOAmountSell + "\n";
 					contractTest += rdSwapObject.coin_amount.readable + "\n";
-					contractTest += "You will receive\n";
+					contractTest += Lang.textSwapWillReceive + "\n";
 					contractTest += rdSwapObject.total.ccy_symbol + rdSwapObject.total.amount + "\n\n";
-					contractTest += "Buyback date\n";
+					contractTest += Lang.textSwapBuybackDate + "\n";
 					contractTest += rdSwapObject.swap_buyback_date + "\n";
-					contractTest += "Buyback amount\n";
+					contractTest += Lang.textSwapBuybackAmount + "\n";
 					contractTest += rdSwapObject.total.ccy_symbol + (Number(rdSwapObject.total.amount) + Number(rdSwapObject.fee.amount)) + "\n\n";
-					contractTest += "Annualized rate\n";
+					contractTest += Lang.textSwapAnnualizedRate + "\n";
 					contractTest += rdSwapObject.rate + "%\n";
-					contractTest += "1 month prolongation fee\n";
+					contractTest += Lang.textSwapProlongationFee + "\n";
 					contractTest += rdSwapObject.fee.readable + "\n\n";
-					contractTest += "Stake to swap with fiat funds:\n\n";
-					contractTest += "Stake\n";
+					contractTest += Lang.textSwapStakeToSwap + "\n\n";
+					contractTest += Lang.textSwapStake + "\n";
 					var rd:Object = getCryptoRDByID(lastBankMessageVO.item.value);
 					contractTest += rdSwapObject.coin_amount.readable + "\n";
-					contractTest += "Code\n";
+					contractTest += Lang.textSwapCode + "\n";
 					contractTest += rd.code + "\n"
-					contractTest += "Maturity\n";
+					contractTest += Lang.textSwapMaturity + "\n";
 					var rdDate:Date = new Date();
 					rdDate.setTime(Number(rd.termination) * 1000);
-					contractTest += rdDate.toDateString() + "\n";
-					contractTest += "New termination date\n";
+					contractTest += DateUtils.getTimeString(rdDate, true) + "\n";
+					contractTest += Lang.textSwapNewTerminateDate + "\n";
 					rdDate.setTime(Number(rdSwapObject.term_deposit_new_termination) * 1000);
-					contractTest += rdDate.toDateString() + "\n\n";
+					contractTest += DateUtils.getTimeString(rdDate, true) + "\n\n";
 					lastBankMessageVO.text = contractTest + lastBankMessageVO.text;
 				}
 				if (lastBankMessageVO.item.type == "showWallet") {
@@ -2607,6 +2607,9 @@ package com.dukascopy.connect.sys.bankManager {
 						getCryptoRD(false);
 						needReturn = true;
 					}
+				}
+				if (lastBankMessageVO.item.type == "showSwaps") {
+					lastBankMessageVO.additionalData = cryptoSwaps;
 				}
 				if (lastBankMessageVO.item.type == "operationTransactions") {
 					if (_initData != null) {
@@ -2775,10 +2778,22 @@ package com.dukascopy.connect.sys.bankManager {
 				func = onTPILinkReceived;
 			else if (command == "rdSwap")
 				func = onRDSwap;
+			else if (command == "cryptoSwapList")
+				func = onCryptoSwapList;
 			if (func == null)
 				return true;
 			func(val.substr(startObjectIndex + 1));
 			return true;
+		}
+		
+		static private function onCryptoSwapList(swapListJSON:String):void {
+			var data:Object = null;
+			try {
+				data = JSON.parse(swapListJSON);
+			} catch (e:Error) {
+				return;
+			}
+			cryptoSwaps = data as Array;
 		}
 		
 		static private function onRDSwap(swapJSON:String):void {

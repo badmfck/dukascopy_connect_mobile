@@ -85,6 +85,8 @@ package com.dukascopy.connect.sys.bankManager {
 		static public var cardPinRequestDesc:String = "Please select pin request method.";
 		static public var zeroAccountDesc:String = "You have no funded accounts.";
 		static public var cryptoSwapTermsDesc:String = "Get quick money by selling your staked Dukascoins (DUK+) with a buyback in 1 month at a fixed price.\\nChoose an active stake to know how much you can get:";
+		static public var cryptoSwapFiatAmountDesc:String = "For selected Stake you can receive between @@1 and @@2.\\nIndicate the amount you would like to receive:";
+		static public var cryptoSwapConfirmDesc:String = "I confirm the above and I have read and agree with the\\n\\n<a href='https://www.dukascopy.bank/swiss/fees-limits/'>GETCA$H Swap contract terms and conditions</a>";
 		static public var confirmRDCancelWithPenaltyDesc:String = "You are about to cancel your reward deposit before its maturity date. This will lead to no reward being paid for the cancelled deposit and to a penalty charge  applied to the allocated Dukascoins in the amount of @@1 Dukascoins.\\n\\nTotal amount to be returned: @@2 Dukascoins";
 		static public var confirmRDCancelWithoutPenaltyDesc:String = "You are about to cancel your reward deposit before its maturity date. This will lead to no reward being paid for the cancelled deposit.\\n\\nTotal amount to be returned: @@2 Dukascoins";
 		
@@ -156,6 +158,8 @@ package com.dukascopy.connect.sys.bankManager {
 		static public var confirmedPinRequest:String = "Pin code was successfully sent to your phone via sms.";
 		static public var confirmedPinCallbackRequest:String = "Automatic voice call with a pin code is being made on your mobile phone number. If you have not received it, please try one more time or let us know at support@dukascopy.bank or support chat.";
 		static public var confirmedChangeCurrency:String = "Main currency changed.";
+		static public var confirmedCryptoSwapActive:String = "Your GETCA$H Swap contract has been successfully made and cash amount has been credited on your account.";
+		static public var confirmedCryptoSwapCreated:String = "Your GETCA$H Swap contract has been created but not funded yet. To finalise the contract, please transfer corresponding amount of Dukascoins (DUK+) to the corresponding blockchain address.\\n@@1";
 		static public var confirmedBCAddressDeposite:String = "The address for this Dukascoin deposit operation is:\\n@@1\\n\\nPlease transfer the exact amount of @@2 Dukascoin\/s to this address.\\n\\nCAUTION! Any discrepancy between the amount declared and the actual deposit performed, mismatch in token address will potentially cause the total loss of the transferred crypto-assets. Dukascopy Bank SA is not obliged to return any crypto tokens received in case of the erroneous or unidentified transactions.";
 		static public var confirmedBCAddressDepositeInvestment:String = "The address for this @@3 investment from blockchain operation is:\\n@@1\\n\\nPlease transfer the exact amount of @@2 @@3 to this address.\\n\\nCAUTION! Any discrepancy between the amount declared and the actual deposit performed, mismatch in token address will potentially cause the total loss of the transferred crypto-assets. Dukascopy Bank SA is not obliged to return any crypto tokens received in case of the erroneous or unidentified transactions.";
 		static public var confirmedTransactionAdd:String = "Please note that this payment method is intended for sending money <b>internally</b> between two Multi-Currency Account holders.\\n\\nThe Bank reserves the right to clarify the purpose of money transfer. To avoid delay in payment processing it is recommended to always fill in the <b>Message</b> field.";
@@ -347,6 +351,7 @@ package com.dukascopy.connect.sys.bankManager {
 		static public var itemInvestmentDeliveryBC:String = "I want to deliver @1 of my investment to @2";
 		static public var itemSelectMainCurrency:String = "Selected currency is @1";
 		static public var itemBCIDeposite:String = "I want to invest from blockchain @1";
+		static public var itemCryptoSwapFiatAmount:String = "I would like to receive @1";
 		
 		static public var errorPwdManyTimes:String = "Password verification is blocked. Too many failed attempts during short period of time. Try again later.";
 		static public var errorAccountBlocked:String = "Account is blocked";
