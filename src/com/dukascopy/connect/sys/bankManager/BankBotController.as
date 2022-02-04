@@ -1983,7 +1983,10 @@ package com.dukascopy.connect.sys.bankManager {
 		static private function onRDSwap(respondData:Object, hash:String):void {
 			if (preCheckForErrors(respondData, hash, null, "paymentsErrorDataNull") == true)
 				return;
-			sendBlock("cryptoSwapConfirmed");
+			if (respondData.status == "active")
+				sendBlock("cryptoSwapConfirmed");
+			else
+				sendBlock("cryptoSwapCreatedConfirmed", [respondData.address]);
 		}
 		
 		static private function onPossibleRD(respondData:Object, hash:String):void {

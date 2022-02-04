@@ -1809,9 +1809,24 @@ package com.dukascopy.connect.sys.bankManager {
 			},
 			
 			cryptoSwapConfirmed: {
-				desc:"Crypto swap created. lang.otherOperation",
+				desc:"lang.confirmedCryptoSwapActive lang.otherOperation",
 				isLast:true,
-				value:"@@1",
+				buttons: [
+					{
+						text:"lang.buttonYes",
+						action:"nav:main"
+					}, {
+						text:"lang.buttonNo",
+						action:"app:back"
+					}
+				]
+			},
+			
+			
+			
+			cryptoSwapCreatedConfirmed: {
+				desc:"lang.confirmedCryptoSwapCreated lang.otherOperation",
+				isLast:true,
 				buttons: [
 					{
 						text:"lang.buttonYes",
