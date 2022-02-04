@@ -352,12 +352,14 @@ package com.dukascopy.langs {
 		static public var noLabbel:String = "no label";
 		static public var alreadyAnswered:String = "already answered";
 		//"already answering " + itemData.answersCount + " of " + itemData.answersMaxCount
+
 		static public var alreadyAnsweringText:String = "already answering %@ of %@";
 		static public var answeringText:String = "answering %@ of %@";
 		static public var openedChat:String = "OPENED CHAT";
 		static public var typeMessage:String = "Type message...";
 		static public var alertSengMoney:String = "You are not yet registered in Dukascopy Payments. Would you like register now?";
 		static public var alertCantOpenPayment:String = "Can`t open payments without internet connection";
+		
 		/// using  like this ("month_"+i)
 		static public var month_0:String = "January";
 		static public var month_1:String = "February";
