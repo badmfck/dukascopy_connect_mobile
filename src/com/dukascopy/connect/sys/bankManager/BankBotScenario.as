@@ -1781,12 +1781,12 @@ package com.dukascopy.connect.sys.bankManager {
 			},
 			
 			cryptoSwapSecondConfirm: {
-				desc:"Please choose amount of Fiat",
+				desc:"lang.cryptoSwapFiatAmountDesc",
 				menuLayout:"vertical",
 				menu:[
 					{
 						text:"Choose amount",
-						textForUser:"lang.itemSendMoneyPhone",
+						textForUser:"lang.itemCryptoSwapFiatAmount",
 						type:"cryptoSwapAmount",
 						action:"nav:cryptoSwapThirdConfirm"
 					}
@@ -1794,7 +1794,7 @@ package com.dukascopy.connect.sys.bankManager {
 			},
 			
 			cryptoSwapThirdConfirm: {
-				desc:"I confirm the above and I have read and agree with the\n\n<a href='https://www.dukascopy.bank/swiss/fees-limits/'>GETCA$H Swap contract terms and conditions</a>",
+				desc:"lang.cryptoSwapConfirmDesc",
 				menuLayout:"vertical",
 				item: {
 					type:"newSwapConfirm",

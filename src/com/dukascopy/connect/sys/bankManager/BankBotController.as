@@ -1969,7 +1969,7 @@ package com.dukascopy.connect.sys.bankManager {
 				return;
 			respondData.step = 1;
 			S_ANSWER.invoke("requestRespond:rdSwap:" + JSON.stringify(respondData));
-			sendBlock("cryptoSwapSecondConfirm", [steps[steps.length - 1].val]);
+			sendBlock("cryptoSwapSecondConfirm", [respondData.min_amount.readable, respondData.max_amount.readable]);
 		}
 		
 		static private function onRDSwapStep2(respondData:Object, hash:String):void {
