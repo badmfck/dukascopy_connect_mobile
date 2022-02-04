@@ -181,6 +181,7 @@ package com.dukascopy.connect.sys.bankManager {
 		static private var otherAccounts:Array;
 		static private var savingsAccounts:Array;
 		static private var rdSwapObject:Object;
+		static private var cryptoSwaps:Array;
 		static private var investments:Array;
 		static private var cardMasked:String;
 		static private var waitingBMVO:BankMessageVO;
@@ -2487,10 +2488,10 @@ package com.dukascopy.connect.sys.bankManager {
 					contractTest += "Maturity\n";
 					var rdDate:Date = new Date();
 					rdDate.setTime(Number(rd.termination) * 1000);
-					contractTest += rdDate.toDateString() + "\n";
+					contractTest += DateUtils.getTimeString(rdDate, true) + "\n";
 					contractTest += "New termination date\n";
 					rdDate.setTime(Number(rdSwapObject.term_deposit_new_termination) * 1000);
-					contractTest += rdDate.toDateString() + "\n\n";
+					contractTest += DateUtils.getTimeString(rdDate, true) + "\n\n";
 					lastBankMessageVO.text = contractTest + lastBankMessageVO.text;
 				}
 				if (lastBankMessageVO.item.type == "showWallet") {
@@ -2607,6 +2608,9 @@ package com.dukascopy.connect.sys.bankManager {
 						getCryptoRD(false);
 						needReturn = true;
 					}
+				}
+				if (lastBankMessageVO.item.type == "showSwaps") {
+					lastBankMessageVO.additionalData = cryptoSwaps;
 				}
 				if (lastBankMessageVO.item.type == "operationTransactions") {
 					if (_initData != null) {
@@ -2775,10 +2779,22 @@ package com.dukascopy.connect.sys.bankManager {
 				func = onTPILinkReceived;
 			else if (command == "rdSwap")
 				func = onRDSwap;
+			else if (command == "cryptoSwapList")
+				func = onCryptoSwapList;
 			if (func == null)
 				return true;
 			func(val.substr(startObjectIndex + 1));
 			return true;
+		}
+		
+		static private function onCryptoSwapList(swapListJSON:String):void {
+			var data:Object = null;
+			try {
+				data = JSON.parse(swapListJSON);
+			} catch (e:Error) {
+				return;
+			}
+			cryptoSwaps = data as Array;
 		}
 		
 		static private function onRDSwap(swapJSON:String):void {

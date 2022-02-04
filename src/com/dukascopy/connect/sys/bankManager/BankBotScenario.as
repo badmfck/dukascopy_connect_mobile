@@ -1760,6 +1760,15 @@ package com.dukascopy.connect.sys.bankManager {
 				]
 			},
 			
+			cryptoSwapList: {
+				desc:"lang.cryptoSwapTermsDesc",
+				menuLayout:"vertical",
+				item: {
+					type:"showSwaps",
+					action:"nav:cryptoSwapOptions"
+				}
+			},
+			
 			cryptoSwapFirstConfirm: {
 				desc:"lang.cryptoSwapTermsDesc",
 				menuLayout:"vertical",

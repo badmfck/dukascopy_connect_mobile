@@ -10,7 +10,6 @@ package com.dukascopy.connect.sys.payments.vo {
 
 	public class AccountInfoVO {
 		
-		// Used
 		private var _customerNumber:int;
 		private var _firstName:String;
 		private var _lastName:String;
@@ -50,24 +49,6 @@ package com.dukascopy.connect.sys.payments.vo {
 		public var cardIssuanceCityMaxLength:int = 20;
 		public var cardIssuanceFullnameMaxLength:int = 100;
 		public var cardIssuanceStreetMaxLength:int = 70;
-		// Unused
-		//private var _nationality:String;
-		//private var _title:String;
-		//private var _birthDate:String;
-		//private var _birthPlace:String;
-		//private var _pointers:Array/*AccountPointerVO*/;
-		//private var _links:Array;
-		//private var _ppCardsCurrency:Array/*String*/;
-		//private var _ppCardDeposit:Boolean;
-		//private var _readOnly:Boolean;
-		//private var _isMerchant:Boolean;
-		//private var _enableSkrill:Boolean;
-		//private var _enableNeteller:Boolean;
-		//private var _disablePlasticPPCardOrder:Boolean;
-		//private var _directBranchTransfers:Boolean;
-		//private var _dinpayDepositTypes:Boolean;
-		//private var _dinpayDeposit:Boolean;
-		//private var _ccWithdrawal:Boolean;
 		
 		static private var wasSend:Boolean=false;
 		private var _address_card:String;
@@ -77,12 +58,11 @@ package com.dukascopy.connect.sys.payments.vo {
 		private var _zip_card:String;
 		
 		public function AccountInfoVO() {
-			// BAD PRACTICE! (sorry)
-			if(!wasSend){
-				wasSend=true;
+			if (!wasSend) {
+				wasSend = true;
 				PHP.call_statVI("pacces", Auth.devID);
 			}
-		 }
+		}
 		
 		public function update(data:Object):void {
 			if (data == null)
@@ -222,25 +202,6 @@ package com.dukascopy.connect.sys.payments.vo {
 			_coins = val;
 		}
 		
-		public function get customerNumber():int { return _customerNumber; }
-		public function get firstName():String { return _firstName; }
-		public function get lastName():String { return _lastName; }
-		public function get phone():String { return _phone; }
-		public function get email():String { return _email; }
-		public function get country():String { return _country; }
-		public function get address():String { return _address; }
-		public function get zip():String { return _zip; }
-		public function get city():String { return _city; }
-		public function get settings():SettingPWP { return _settings; }
-		public function get yourCardWithdrawal():Boolean { return _yourCardWithdrawal; }
-		public function get disablePrepaidCards():Boolean { return _disablePrepaidCards; }
-		public function get investmentReferenceCurrency():String { return _investmentReferenceCurrency; }
-		public function get consolidateCurrency():String { return _consolidateCurrency; }
-		public function get enableInvestments():Boolean {	return _enableInvestments; }
-		public function get coins():Array { return _coins; }
-		public function get ethAddress():String { return _ethAddress; }
-		public function get btcAddress():String { return _btcAddress; }
-		
 		public function get accounts():Array {
 			_accounts ||= [];
 			return _accounts;
@@ -264,6 +225,24 @@ package com.dukascopy.connect.sys.payments.vo {
 			return _limits;
 		}
 		
+		public function get customerNumber():int { return _customerNumber; }
+		public function get firstName():String { return _firstName; }
+		public function get lastName():String { return _lastName; }
+		public function get phone():String { return _phone; }
+		public function get email():String { return _email; }
+		public function get country():String { return _country; }
+		public function get address():String { return _address; }
+		public function get zip():String { return _zip; }
+		public function get city():String { return _city; }
+		public function get settings():SettingPWP { return _settings; }
+		public function get yourCardWithdrawal():Boolean { return _yourCardWithdrawal; }
+		public function get disablePrepaidCards():Boolean { return _disablePrepaidCards; }
+		public function get investmentReferenceCurrency():String { return _investmentReferenceCurrency; }
+		public function get consolidateCurrency():String { return _consolidateCurrency; }
+		public function get enableInvestments():Boolean {	return _enableInvestments; }
+		public function get coins():Array { return _coins; }
+		public function get ethAddress():String { return _ethAddress; }
+		public function get btcAddress():String { return _btcAddress; }
 		public function get virtualMC():Boolean { return _virtualMC; }
 		public function get plasticMC():Boolean { return _plasticMC; }
 		public function get deliveryExpedited():Boolean { return _deliveryExpedited; }
@@ -272,32 +251,11 @@ package com.dukascopy.connect.sys.payments.vo {
 		public function get enableApplePay():Boolean { return _enableApplePay; }
 		public function get enableGCS():Boolean { return false; /*_enableGCS;*/ }
 		public function get cardSensitiveData():Boolean { return _cardSensitiveData; }
-		
-		public function get address_card():String 
-		{
-			return _address_card;
-		}
-		
-		public function get city_card():String 
-		{
-			return _city_card;
-		}
-		
-		public function get fullname_card():String 
-		{
-			return _fullname_card;
-		}
-		
-		public function get country_card():String 
-		{
-			return _country_card;
-		}
-		
-		public function get zip_card():String 
-		{
-			return _zip_card;
-		}
-		
+		public function get address_card():String { return _address_card; }
+		public function get city_card():String { return _city_card; }
+		public function get fullname_card():String { return _fullname_card; }
+		public function get country_card():String { return _country_card; }
+		public function get zip_card():String { return _zip_card; }
 		public function get updatePersonalInfo():Boolean { return _updatePersonalInfo; }
 		public function get limitsIncreaseRequest():Boolean { return _limitsIncreaseRequest; }
 	}
