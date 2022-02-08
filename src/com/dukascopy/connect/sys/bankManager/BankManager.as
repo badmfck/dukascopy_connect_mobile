@@ -2503,6 +2503,20 @@ package com.dukascopy.connect.sys.bankManager {
 				if (lastBankMessageVO.item.type == "showWallet") {
 					lastBankMessageVO.additionalData = getWalletByNumber(lastBankMessageVO.item.selection);
 				}
+				if (lastBankMessageVO.item.type == "showSwap") {
+					if (cryptoSwaps == null)
+						return;
+					var swap:Object;
+					for (var j:int = 0; j < cryptoSwaps.length; j++) {
+						if (cryptoSwaps[j] == null)
+							continue;
+						if (cryptoSwaps[j].code == lastBankMessageVO.item.value) {
+							swap = cryptoSwaps[j];
+							break;
+						}
+					}
+					lastBankMessageVO.additionalData = swap;
+				}
 				if (lastBankMessageVO.item.type == "cardSelect") {
 					if (cardsLoaded == false) {
 						lastBankMessageVO.waitingType = "cards";

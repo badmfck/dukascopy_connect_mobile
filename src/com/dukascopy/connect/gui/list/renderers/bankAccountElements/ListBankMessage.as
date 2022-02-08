@@ -29,6 +29,7 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements {
 	import com.dukascopy.connect.sys.payments.vo.AccountLimitVO;
 	import com.dukascopy.connect.sys.style.Style;
 	import com.dukascopy.connect.type.HitZoneType;
+	import com.dukascopy.connect.utils.DateUtils;
 	import com.dukascopy.connect.vo.BankMessageVO;
 	import com.dukascopy.langs.Lang;
 	import flash.display.IBitmapDrawable;
@@ -67,6 +68,7 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements {
 		private var otherAccSections:Array/*BAOtherAccSection*/;
 		private var fatCatzSections:Array/*BALimitSection*/;
 		private var detailsSections:Array/*BALimitSection*/;
+		private var swapDetailsSections:Array/*BALimitSection*/;
 		private var tradeStatSections:Array/*BALimitSection*/;
 		
 		private var horizoltalMenu:Boolean;
@@ -124,6 +126,7 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements {
 			trueHeight += createBestPrice(bmVO, sectionMenuWidth);
 			trueHeight += createFatCatz(bmVO, sectionMenuWidth);
 			trueHeight += createDetails(bmVO, sectionMenuWidth);
+			trueHeight += createSwapDetails(bmVO, sectionMenuWidth);
 			trueHeight += createOtherAcc(bmVO, sectionMenuWidth);
 			trueHeight += createAccStat(bmVO, sectionMenuWidth);
 			trueHeight += createOperTrans(bmVO, sectionMenuWidth);
@@ -558,6 +561,29 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements {
 					sectionX,
 					startFCY,
 					detailsSections[0].getWidth(),
+					sectionY - startFCY,
+					BankAccountElementSectionBase.CORNER_RADIUS_DOUBLE,
+					BankAccountElementSectionBase.CORNER_RADIUS_DOUBLE
+				);
+				graphics.endFill();
+			}
+			if (swapDetailsSections != null && swapDetailsSections.length != 0 && swapDetailsSections[0].parent != null) {
+				if (sectionY != 0)
+					sectionY += Config.MARGIN;
+				l = swapDetailsSections.length;
+				graphics.beginFill(0xFFFFFF, (tapped == true) ? .4 : 1);
+				startFCY = sectionY;
+				for (i = 0; i < l; i++) {
+					if (tapped == true)
+						swapDetailsSections[i].alpha = .4;
+					swapDetailsSections[i].y = sectionY;
+					swapDetailsSections[i].x = sectionX;
+					sectionY += swapDetailsSections[i].getHeight();
+				}
+				graphics.drawRoundRect(
+					sectionX,
+					startFCY,
+					swapDetailsSections[0].getWidth(),
 					sectionY - startFCY,
 					BankAccountElementSectionBase.CORNER_RADIUS_DOUBLE,
 					BankAccountElementSectionBase.CORNER_RADIUS_DOUBLE
@@ -1326,6 +1352,143 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements {
 		}
 		
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//  <--  OPERATION DETAILS | SWAP DETAILS  -->  ////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		
+		private function createSwapDetails(bmVO:BankMessageVO, sectionMenuWidth:int):int {
+			removeSwapDetails();
+			var res:int;
+			if (bmVO.item == null)
+				return res;
+			if (bmVO.item.type != "showSwap")
+				return res;
+			if ("additionalData" in bmVO == false || bmVO.additionalData == null)
+				return res;
+			var detailsVOs:Array = [];
+			res = Config.MARGIN;
+			detailsVOs.push(
+				new AccountLimitVO(
+					[
+						AccountLimit.FIELD_SWAP_DETAILS_AMOUNT,
+						NaN,
+						Number(bmVO.additionalData.coin_amount.amount),
+						bmVO.additionalData.coin_amount.ccy_code
+					]
+				)
+			);
+			detailsVOs.push(
+				new AccountLimitVO(
+					[
+						AccountLimit.FIELD_SWAP_DETAILS_AMOUNT_RECEIVED,
+						NaN,
+						Number(bmVO.additionalData.swap_amount.amount),
+						bmVO.additionalData.swap_amount.ccy_code
+					]
+				)
+			);
+			detailsVOs.push(
+				new AccountLimitVO(
+					[
+						AccountLimit.FIELD_SWAP_DETAILS_AMOUNT_BUYBACK,
+						NaN,
+						Number(bmVO.additionalData.buyback_amount.amount),
+						bmVO.additionalData.buyback_amount.ccy_code
+					]
+				)
+			);
+			var dt:Date = new Date();
+			dt.setTime(Number(bmVO.additionalData.termination) * 1000);
+			detailsVOs.push(
+				new AccountLimitVO(
+					[
+						AccountLimit.FIELD_SWAP_DETAILS_DATE_BUYBACK,
+						NaN,
+						NaN,
+						DateUtils.getTimeString(dt, true)
+					]
+				)
+			);
+			detailsVOs.push(
+				new AccountLimitVO(
+					[
+						AccountLimit.FIELD_SWAP_DETAILS_PROLONG_FEE,
+						NaN,
+						Number(bmVO.additionalData.swap_fee.amount),
+						bmVO.additionalData.swap_fee.ccy_code
+					]
+				)
+			);
+			detailsVOs.push(
+				new AccountLimitVO(
+					[
+						AccountLimit.FIELD_SWAP_DETAILS_STATUS,
+						NaN,
+						NaN,
+						bmVO.additionalData.status.charAt(0) + bmVO.additionalData.status.substr(1).toLowerCase()
+					]
+				)
+			);
+			dt.setTime(Number(bmVO.additionalData.created) * 1000);
+			detailsVOs.push(
+				new AccountLimitVO(
+					[
+						AccountLimit.FIELD_SWAP_DETAILS_DATE_CREATED,
+						NaN,
+						NaN,
+						DateUtils.getTimeString(dt, true)
+					]
+				)
+			);
+			dt = null;
+			detailsVOs.push(
+				new AccountLimitVO(
+					[
+						AccountLimit.FIELD_SWAP_DETAILS_CODE,
+						NaN,
+						NaN,
+						bmVO.additionalData.code
+					]
+				)
+			);
+			if (bmVO.additionalData.rollover != 0) {
+				detailsVOs.push(
+					new AccountLimitVO(
+						[
+							AccountLimit.FIELD_SWAP_DETAILS_ROLLED_OVER,
+							NaN,
+							NaN,
+							"True"
+						]
+					)
+				);
+			}
+			swapDetailsSections = [];
+			var detailsSection:BALimitSection;
+			for (var i:int = 0; i < detailsVOs.length; i++) {
+				detailsSection = new BALimitSection();
+				detailsSection.setData(detailsVOs[i], sectionMenuWidth);
+				addChild(detailsSection);
+				swapDetailsSections.push(detailsSection);
+				res += detailsSection.getHeight();
+			}
+			if (detailsSection != null)
+				detailsSection.clearGraphics();
+			return res;
+		}
+		
+		private function removeSwapDetails():void {
+			if (swapDetailsSections == null || swapDetailsSections.length == 0)
+				return;
+			var detailsSection:BALimitSection;
+			while (swapDetailsSections.length > 0) {
+				detailsSection = swapDetailsSections.shift();
+				if (detailsSection.parent != null)
+					detailsSection.parent.removeChild(detailsSection);
+				detailsSection.dispose();
+			}
+		}
+		
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //  <--  OPERATION DETAILS | ACCOUNT STAT  -->  ////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		
@@ -1781,16 +1944,7 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements {
 				return res;
 			res = Config.MARGIN;
 			var cryptoSwapSection:BACryptoSwapSection;
-			if (bmVO.item.type == "showSwap") {
-				cryptoSwapSections ||= [];
-				cryptoSwapSection = new BACryptoSwapSection();
-				cryptoSwapSection.setData(bmVO.additionalData, sectionMenuWidth);
-				cryptoSwapSections.push(cryptoSwapSection);
-				cryptoSwapSection.clearGraphics();
-				addChild(cryptoSwapSection);
-				res += cryptoSwapSection.getHeight();
-				return res;
-			} else if (bmVO.item.type == "showSwaps") {
+			if (bmVO.item.type == "showSwaps") {
 				if (bmVO.item.tapped == true)
 					tapped = true;
 				cryptoSwapSections ||= [];

@@ -136,6 +136,10 @@ package com.dukascopy.connect.sys.bankManager {
 				}
 			}
 			if (command == "nav") {
+				if (tmp[1] == "cryptoSwapOptions") {
+					sendBlock(tmp[1], [steps[steps.length - 1].val]);
+					return;
+				}
 				if (tmp[1] == "cryptoSwapSecondConfirm") {
 					onRewardDepositeSwapStep1();
 					return;
