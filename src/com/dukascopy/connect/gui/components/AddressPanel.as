@@ -49,6 +49,7 @@ package com.dukascopy.connect.gui.components
 	{
 		private var tfAddressTitleBitmap:Bitmap;
 		private var tfAddressBitmap:Bitmap;
+		private var errorBitmap:Bitmap;
 		private var tfAddressIcon:Bitmap;
 	//	private var tfAdressContactBitmap:Bitmap;
 		private var saveButton:BitmapButton;
@@ -97,11 +98,13 @@ package com.dukascopy.connect.gui.components
 			
 			tfAddressTitleBitmap = new Bitmap();
 			tfAddressBitmap = new Bitmap();
+			errorBitmap = new Bitmap();
 			tfAddressIcon = new Bitmap();
 		//	tfAdressContactBitmap = new Bitmap();
 			
 			container.addChild(tfAddressTitleBitmap);
 			container.addChild(tfAddressBitmap);
+			container.addChild(errorBitmap);
 			container.addChild(tfAddressIcon);
 		//	container.addChild(tfAdressContactBitmap);
 			
@@ -360,13 +363,17 @@ package com.dukascopy.connect.gui.components
 			}
 		}
 		
-		private function unlock():void
+		private function unlock(clear:Boolean = true):void
 		{
-			clearFields();
+			if (clear)
+			{
+				clearFields();
+			}
+			
 			locked = false;
 		}
 		
-		private function expand():void
+		private function expand(animate:Boolean = true):void
 		{
 			locked = true;
 			collapsed = false;
@@ -380,7 +387,24 @@ package com.dukascopy.connect.gui.components
 			
 			animation = new Object();
 			animation.height = contentHeight;
-			TweenMax.to(animation, 0.5, {height: maxContentHeight, onComplete: onExpanded, onUpdate: onUpdateExpand});
+			if (animate)
+			{
+				TweenMax.to(animation, 0.5, {height: maxContentHeight, onComplete: onExpanded, onUpdate: onUpdateExpand});
+			}
+			else
+			{
+				contentHeight = maxContentHeight;
+				updateMask();
+				if (onChacnge != null)
+				{
+					onChacnge();
+				}
+				if (scrollCall != null)
+				{
+					scrollCall(tfAddressTitleBitmap.y);
+				}
+				unlock(false);
+			}
 		}
 		
 		private function onUpdateExpand():void 
@@ -429,6 +453,8 @@ package com.dukascopy.connect.gui.components
 		
 		private function clearFields():void
 		{
+			return;
+			
 			selectedReason = null;
 			reasonSelector.setValue(null);
 			streetInput.valueString = null;
@@ -462,10 +488,46 @@ package com.dukascopy.connect.gui.components
 				
 				addressUpdated = true;
 				
-				drawAddress();
+				var errorExist:Boolean = drawAddress();
 				updatePositions();
 			//	draw(itemWidth);
+				
 				collapse();
+			}
+		}
+		
+		private function fillExistingData():void 
+		{
+			if (cityInput != null && getAccountCity() != null)
+			{
+				cityInput.valueString = getAccountCity();
+				if (getAccountCity().length > PayManager.accountInfo.cardIssuanceCityMaxLength)
+				{
+					cityInput.invalid();
+				}
+			}
+			
+			if (nameInput != null && getAccountName() != null)
+			{
+				nameInput.valueString = getAccountName();
+				if (getAccountName().length > PayManager.accountInfo.cardIssuanceFullnameMaxLength)
+				{
+					nameInput.invalid();
+				}
+			}
+			
+			if (streetInput != null && getAccountCity() != null)
+			{
+				streetInput.valueString = getAccountAddress();
+				if (getAccountAddress().length > PayManager.accountInfo.cardIssuanceStreetMaxLength)
+				{
+					streetInput.invalid();
+				}
+			}
+			
+			if (codeInput != null && getAccountZip() != null)
+			{
+				codeInput.valueString = getAccountZip();
 			}
 		}
 		
@@ -516,6 +578,37 @@ package com.dukascopy.connect.gui.components
 		
 		private function validate():Boolean
 		{
+			if (PayManager.accountInfo != null)
+			{
+				if (cityInput.valueString != null && cityInput.valueString.length > PayManager.accountInfo.cardIssuanceCityMaxLength)
+				{
+					if (scrollCall != null)
+					{
+						scrollCall(cityInput.y - Config.FINGER_SIZE);
+					}
+					cityInput.invalid();
+					return false;
+				}
+				if (nameInput.valueString != null && nameInput.valueString.length > PayManager.accountInfo.cardIssuanceFullnameMaxLength)
+				{
+					if (scrollCall != null)
+					{
+						scrollCall(nameInput.y - Config.FINGER_SIZE);
+					}
+					nameInput.invalid();
+					return false;
+				}
+				if (streetInput.valueString != null && streetInput.valueString.length > PayManager.accountInfo.cardIssuanceStreetMaxLength)
+				{
+					if (scrollCall != null)
+					{
+						scrollCall(streetInput.y - Config.FINGER_SIZE);
+					}
+					streetInput.invalid();
+					return false;
+				}
+			}
+			
 			if (nameInput.valueString == "" || nameInput.valueString == null)
 			{
 				if (scrollCall != null)
@@ -579,7 +672,18 @@ package com.dukascopy.connect.gui.components
 																		FontSize.BODY, true, Style.color(Style.COLOR_TEXT));
 			}
 			
-			drawAddress();
+			var errorExist:Boolean = drawAddress();
+					
+			if (errorExist)
+			{
+				expand(false);
+				fillExistingData();
+			}
+			else
+			{
+				collapse();
+			}
+			
 			
 			/*var contactText:String = Lang.TEXT_HISTORY_CONTACT + "<a href='mailto:" + Lang.TEXT_HISTORY_CONTACT_EMAIL + "'> <font color='#000000'><u>" + Lang.TEXT_HISTORY_CONTACT_EMAIL + "</u></font></a>" + Lang.TEXT_HISTORY_CONTACT_PART_TWO;
 			if (tfAdressContactBitmap.bitmapData != null)
@@ -592,32 +696,39 @@ package com.dukascopy.connect.gui.components
 			updatePositions();
 		}
 		
-		private function drawAddress():void 
+		private function drawAddress():Boolean 
 		{
 			var realAddress:String = "";
+			var error:Boolean = false;
 			if (PayManager.accountInfo != null)
 			{
 				realAddress = getAddressString();
 				
-				var message:String;
+				var text:String;
+				var errorMessage:String = "";
 				
 				if (getAccountCity() != null && getAccountCity().length > PayManager.accountInfo.cardIssuanceCityMaxLength)
 				{
-					message = LangManager.replace(Lang.regExtValue, Lang.card_delivery_city_long, String(PayManager.accountInfo.cardIssuanceCityMaxLength));
-					
-					realAddress += "<br/><br/><font color='" + "#" + Color.RED.toString(16) + "'>" + message + "</font>";
+					text = LangManager.replace(Lang.regExtValue, Lang.card_delivery_city_long, String(PayManager.accountInfo.cardIssuanceCityMaxLength));
+					error = true;
+					errorMessage += "<font color='" + "#" + Color.RED.toString(16) + "'>" + text + "</font>";
 				}
-				else if (getAccountName() != null && getAccountName().length > PayManager.accountInfo.cardIssuanceFullnameMaxLength)
+				if (getAccountName() != null && getAccountName().length > PayManager.accountInfo.cardIssuanceFullnameMaxLength)
 				{
-					message = LangManager.replace(Lang.regExtValue, Lang.card_delivery_name_long, String(PayManager.accountInfo.cardIssuanceFullnameMaxLength));
-					
-					realAddress += "<br/><br/><font color='" + "#" + Color.RED.toString(16) + "'>" + message + "</font>";
+					text = LangManager.replace(Lang.regExtValue, Lang.card_delivery_name_long, String(PayManager.accountInfo.cardIssuanceFullnameMaxLength));
+					error = true;
+					errorMessage += "<br/><br/><font color='" + "#" + Color.RED.toString(16) + "'>" + text + "</font>";
 				}
-				else if (getAccountAddress() != null && getAccountAddress().length > PayManager.accountInfo.cardIssuanceStreetMaxLength)
+				if (getAccountAddress() != null && getAccountAddress().length > PayManager.accountInfo.cardIssuanceStreetMaxLength)
 				{
-					message = LangManager.replace(Lang.regExtValue, Lang.card_delivery_address_long, String(PayManager.accountInfo.cardIssuanceStreetMaxLength));
-					
-					realAddress += "<br/><br/><font color='" + "#" + Color.RED.toString(16) + "'>" + message + "</font>";
+					text = LangManager.replace(Lang.regExtValue, Lang.card_delivery_address_long, String(PayManager.accountInfo.cardIssuanceStreetMaxLength));
+					error = true;
+					errorMessage += "<br/><br/><font color='" + "#" + Color.RED.toString(16) + "'>" + text + "</font>";
+				}
+				
+				if (errorMessage != "")
+				{
+					drawError(errorMessage);
 				}
 			}
 			if (tfAddressBitmap.bitmapData != null)
@@ -626,6 +737,18 @@ package com.dukascopy.connect.gui.components
 				tfAddressBitmap.bitmapData = null;
 			}
 			tfAddressBitmap.bitmapData = TextUtils.createTextFieldData(realAddress, itemWidth - changeButton.width - tfAddressIcon.width - padding * 4, 10, true, TextFormatAlign.LEFT, TextFieldAutoSize.LEFT, FontSize.BODY, true, Style.color(Style.COLOR_TEXT), Style.color(Style.FILTER_TABS_COLOR_TAB_BG_SELECTED), false, true);
+			
+			return error;
+		}
+		
+		private function drawError(value:String):void 
+		{
+			if (errorBitmap.bitmapData != null)
+			{
+				errorBitmap.bitmapData.dispose();
+				errorBitmap.bitmapData = null;
+			}
+			errorBitmap.bitmapData = TextUtils.createTextFieldData(value, itemWidth - padding * 2, 10, true, TextFormatAlign.LEFT, TextFieldAutoSize.LEFT, FontSize.SUBHEAD_14, true, Style.color(Style.COLOR_TEXT), Style.color(Style.FILTER_TABS_COLOR_TAB_BG_SELECTED), false, true);
 		}
 		
 		private function updatePositions():void 
@@ -654,6 +777,13 @@ package com.dukascopy.connect.gui.components
 			changeButton.y = position;
 			
 			position += Math.max(changeButton.height, tfAddressBitmap.height, tfAddressIcon.height) + Config.FINGER_SIZE * .4;
+			
+			if (errorBitmap != null && errorBitmap.height > 0)
+			{
+				errorBitmap.y = position;
+				errorBitmap.x = int(padding);
+				position += errorBitmap.height + Config.FINGER_SIZE * .4;
+			}
 			
 			minContentHeight = position;
 			
@@ -776,6 +906,11 @@ package com.dukascopy.connect.gui.components
 			{
 				UI.destroy(tfAddressBitmap);
 				tfAddressBitmap = null;
+			}
+			if (errorBitmap != null)
+			{
+				UI.destroy(errorBitmap);
+				errorBitmap = null;
 			}
 			if (tfAddressIcon != null)
 			{
