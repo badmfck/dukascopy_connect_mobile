@@ -2120,6 +2120,7 @@ package com.dukascopy.langs {
 		static public var textSwapMaturity:String = "Maturity";
 		static public var textSwapNewTerminateDate:String = "New termination date";
 		static public var textSwapRolledOver:String = "Rolled over";
+		static public var textSwapRolledOverRequested:String = "Requested";
 		
 		static public var textFeedbackDesc:String = "Have you received an answer to your question?";
 		static public var textFeedbackDesc1:String = "Send Your feedback";

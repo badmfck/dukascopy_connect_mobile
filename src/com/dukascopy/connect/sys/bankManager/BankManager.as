@@ -2503,7 +2503,7 @@ package com.dukascopy.connect.sys.bankManager {
 				if (lastBankMessageVO.item.type == "showWallet") {
 					lastBankMessageVO.additionalData = getWalletByNumber(lastBankMessageVO.item.selection);
 				}
-				if (lastBankMessageVO.item.type == "showSwap") {
+				if (lastBankMessageVO.item.type == "showSwapDetails") {
 					if (cryptoSwaps == null)
 						return;
 					var swap:Object;
@@ -2515,7 +2515,25 @@ package com.dukascopy.connect.sys.bankManager {
 							break;
 						}
 					}
+					if (swap.rollover == 0)
+						delete lastBankMessageVO.menu[0].disabled;
+					else
+						delete lastBankMessageVO.menu[1].disabled;
 					lastBankMessageVO.additionalData = swap;
+				}
+				if (lastBankMessageVO.item.type == "showSwap") {
+					if (cryptoSwaps == null)
+						return;
+					var swap1:Object;
+					for (var k:int = 0; k < cryptoSwaps.length; k++) {
+						if (cryptoSwaps[k] == null)
+							continue;
+						if (cryptoSwaps[k].code == lastBankMessageVO.item.value) {
+							swap1 = cryptoSwaps[k];
+							break;
+						}
+					}
+					lastBankMessageVO.additionalData = swap1;
 				}
 				if (lastBankMessageVO.item.type == "cardSelect") {
 					if (cardsLoaded == false) {

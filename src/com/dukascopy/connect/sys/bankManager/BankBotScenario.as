@@ -1773,8 +1773,45 @@ package com.dukascopy.connect.sys.bankManager {
 				desc:"lang.cryptoSwapOptionsDesc",
 				menuLayout:"vertical",
 				item: {
+					type:"showSwapDetails",
+					value:"@@1"
+				},
+				menu:[
+					{
+						text:"lang.menuSwapProlongationRequest",
+						disabled: true,
+						action:"nav:cryptoSwapProlongationRequestConfirm"
+					}, {
+						text:"lang.menuSwapProlongationCancelling",
+						disabled: true,
+						action:"nav:cryptoSwapProlongationCancelConfirm"
+					}
+				]
+			},
+			
+			cryptoSwapProlongationRequestConfirm: {
+				desc:"lang.cryptoSwapProlongationRequestDesc",
+				menuLayout:"vertical",
+				item: {
 					type:"showSwap",
 					value:"@@1"
+				},
+				buttons: [
+					{
+						text:"lang.buttonConfirm",
+						action:"nav:cryptoSwapProlongationRequestConfirmed"
+					}
+				]
+			},
+			
+			cryptoSwapProlongationRequestConfirmed: {
+				desc:"lang.cryptoSwapTermsDesc",
+				menuLayout:"vertical",
+				item: {
+					type:"cryptoRewardsDepositesSwap",
+					action:"nav:cryptoSwapSecondConfirm",
+					value:"SWAP",
+					text:"lang.itemRewardDepositSelected"
 				}
 			},
 			

@@ -1360,7 +1360,7 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements {
 			var res:int;
 			if (bmVO.item == null)
 				return res;
-			if (bmVO.item.type != "showSwap")
+			if (bmVO.item.type != "showSwapDetails")
 				return res;
 			if ("additionalData" in bmVO == false || bmVO.additionalData == null)
 				return res;
@@ -1457,7 +1457,7 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements {
 							AccountLimit.FIELD_SWAP_DETAILS_ROLLED_OVER,
 							NaN,
 							NaN,
-							"True"
+							Lang.textSwapRolledOverRequested
 						]
 					)
 				);
@@ -1944,7 +1944,16 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements {
 				return res;
 			res = Config.MARGIN;
 			var cryptoSwapSection:BACryptoSwapSection;
-			if (bmVO.item.type == "showSwaps") {
+			if (bmVO.item.type == "showSwap") {
+				cryptoSwapSections ||= [];
+				cryptoSwapSection = new BACryptoSwapSection();
+				cryptoSwapSection.setData(bmVO.additionalData, sectionMenuWidth);
+				cryptoSwapSections.push(cryptoSwapSection);
+				cryptoSwapSection.clearGraphics();
+				addChild(cryptoSwapSection);
+				res += cryptoSwapSection.getHeight();
+				return res;
+			} else if (bmVO.item.type == "showSwaps") {
 				if (bmVO.item.tapped == true)
 					tapped = true;
 				cryptoSwapSections ||= [];

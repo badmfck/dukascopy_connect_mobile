@@ -91,6 +91,7 @@ package com.dukascopy.connect.sys.bankManager {
 		static public var cryptoSwapConfirmDesc:String = "I confirm the above and I have read and agree with the\\n\\n<a href='https://www.dukascopy.bank/swiss/fees-limits/'>GETCA$H Swap contract terms and conditions</a>";
 		static public var confirmRDCancelWithPenaltyDesc:String = "You are about to cancel your reward deposit before its maturity date. This will lead to no reward being paid for the cancelled deposit and to a penalty charge  applied to the allocated Dukascoins in the amount of @@1 Dukascoins.\\n\\nTotal amount to be returned: @@2 Dukascoins";
 		static public var confirmRDCancelWithoutPenaltyDesc:String = "You are about to cancel your reward deposit before its maturity date. This will lead to no reward being paid for the cancelled deposit.\\n\\nTotal amount to be returned: @@2 Dukascoins";
+		static public var cryptoSwapProlongationRequestDesc:String = "You may request GETCA$H Swap contract rollover (prolongation) for one month for the same buyback amount and prolongation fee. After filing the request, a new GETCA$H Swap contract will be created.";
 		
 		static public var bcDepositeDesc:String = "You will be required to declare the DUK+ amount you intend to deposit during your top-up. Note that the entered DUK+ deposit amount has to match exactly the sum of Dukascoins that Dukascopy will receive, otherwise your deposit is likely not to be accepted.\\n\\n"
 			+ "A unique deposit address will be generated for this deposit. It will be valid only for one deposit operation in the amount you declare in advance in the present form. Keep it strictly confidentially and do not disclose to third parties.";
@@ -318,6 +319,8 @@ package com.dukascopy.connect.sys.bankManager {
 		static public var menuSwapCrypto:String = "New swap contract";
 		static public var menuSwapList:String = "List of swaps";
 		static public var menuSwapChooseAmount:String = "Choose amount";
+		static public var menuSwapProlongationRequest:String = "Prolongation request";
+		static public var menuSwapProlongationCancelling:String = "Prolongation cancelling";
 		
 		static public var investmentIndex:String = "Index";
 		static public var investmentSilver:String = "Silver";
