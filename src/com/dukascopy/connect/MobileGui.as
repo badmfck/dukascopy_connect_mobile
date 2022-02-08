@@ -43,6 +43,7 @@ package com.dukascopy.connect {
 	import com.dukascopy.connect.sys.chat.DraftMessage;
 	import com.dukascopy.connect.sys.chatManager.ChatManager;
 	import com.dukascopy.connect.sys.chatManager.ChatUsersManager;
+	import com.dukascopy.connect.sys.chatManager.typesManagers.AnswersManager;
 	import com.dukascopy.connect.sys.chatManager.typesManagers.ChannelsManager;
 	import com.dukascopy.connect.sys.connectionManager.NetworkManager;
 	import com.dukascopy.connect.sys.contactsManager.ContactsManager;
@@ -1067,6 +1068,7 @@ package com.dukascopy.connect {
 		static public function refreshManagers():void {
 			QuestionsManager.refreshLangConsts();
 			GeolocationManager.refreshLangConst();
+			AnswersManager.refreshLangConst();
 		}
 		
 		static public function doNotOpenScreenOnStart():void {

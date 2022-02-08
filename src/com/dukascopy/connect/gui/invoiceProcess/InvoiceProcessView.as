@@ -937,6 +937,8 @@ package com.dukascopy.connect.gui.invoiceProcess
 			
 			InvoiceManager.S_START_PROCESS_INVOICE.remove(onStartProcessInvoice);
 			InvoiceManager.S_STOP_PROCESS_INVOICE.remove(onStopProcessInvoice);	
+			
+			removeEvents();
 		}
 	}
 }
