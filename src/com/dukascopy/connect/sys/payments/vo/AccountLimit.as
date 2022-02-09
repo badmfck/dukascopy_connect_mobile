@@ -62,6 +62,7 @@ package com.dukascopy.connect.sys.payments.vo {
 		public static var FIELD_SWAP_DETAILS_DATE_CREATED:String = "FIELD_SWAP_DETAILS_DATE_CREATED";
 		public static var FIELD_SWAP_DETAILS_CODE:String = "FIELD_SWAP_DETAILS_CODE";
 		public static var FIELD_SWAP_DETAILS_ROLLED_OVER:String = "FIELD_SWAP_DETAILS_ROLLED_OVER";
+		public static var FIELD_SWAP_DETAILS_ADDRESS:String = "FIELD_SWAP_DETAILS_ADDRESS";
 		
 		static public function getLimitLabelsByType(type:String):String {
 			switch (type) {
@@ -215,6 +216,9 @@ package com.dukascopy.connect.sys.payments.vo {
 				}
 				case AccountLimit.FIELD_SWAP_DETAILS_ROLLED_OVER : {
 					return Lang.textSwapRolledOver;
+				}
+				case AccountLimit.FIELD_SWAP_DETAILS_ADDRESS : {
+					return Lang.textAddress;
 				}
 			}
 			return "";

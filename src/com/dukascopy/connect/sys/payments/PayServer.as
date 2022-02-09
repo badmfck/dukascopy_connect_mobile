@@ -1083,6 +1083,22 @@ package com.dukascopy.connect.sys.payments {
 		}
 		
 		/**
+		 * This method is used to update existing GetCashSwap properties. See description:
+		 * https://jira.site.dukascopy.com/wiki/display/webdev/UpdateSwap
+		 */
+		static public function call_updateSwap(_callback:Function, code:String, rollover:int, _callID:String = ""):void {
+			var data:Object = {
+				code: code,
+				rollover: rollover
+			}
+			var php:PayLoader = call("gcs/update", _callback, data, URLRequestMethod.POST);
+			if (php.savedRequestData != null) {
+				php.savedRequestData.rollover = rollover;
+				php.savedRequestData.callID = _callID;
+			}
+		}
+		
+		/**
 		 * Method is used to get detailed information about active investment. See description:
 		 * https://intranet.dukascopy.dom/wiki/pages/viewpage.action?pageId=100303187
 		 */

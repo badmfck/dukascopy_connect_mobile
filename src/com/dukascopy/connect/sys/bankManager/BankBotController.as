@@ -140,8 +140,24 @@ package com.dukascopy.connect.sys.bankManager {
 					sendBlock(tmp[1], [steps[steps.length - 1].val]);
 					return;
 				}
+				if (tmp[1] == "cryptoSwapOptions" || tmp[1] == "cryptoSwapOptionsAddress") {
+					sendBlock(tmp[1], [steps[steps.length - 1].val]);
+					return;
+				}
 				if (tmp[1] == "cryptoSwapProlongationRequestConfirm") {
 					sendBlock(tmp[1], [steps[steps.length - 2].val]);
+					return;
+				}
+				if (tmp[1] == "cryptoSwapProlongationCancelConfirm") {
+					sendBlock(tmp[1], [steps[steps.length - 2].val]);
+					return;
+				}
+				if (tmp[1] == "cryptoSwapProlongationRequestConfirmed") {
+					onSwapProlongation(1);
+					return;
+				}
+				if (tmp[1] == "cryptoSwapProlongationCancelConfirmed") {
+					onSwapProlongation(0);
 					return;
 				}
 				if (tmp[1] == "cryptoSwapSecondConfirm") {
@@ -853,6 +869,12 @@ package com.dukascopy.connect.sys.bankManager {
 				callPaymentsMethod("rdSwapConfirm:" + steps[steps.length - 3].val + "|!|" + steps[steps.length - 2].val);
 		}
 		
+		static private function onSwapProlongation(val:int):void {
+			sendBlock("actionProgress");
+			if (steps.length > 2)
+				callPaymentsMethod("swapProlong:" + steps[steps.length - 3].val + "|!|" + val);
+		}
+		
 		static private function onCryptoSwapList():void {
 			sendBlock("actionProgress");
 			callPaymentsMethod("cryptoSwapList");
@@ -1101,6 +1123,14 @@ package com.dukascopy.connect.sys.bankManager {
 				if (temp.length != 4)
 					return;
 				lastPaymentsRequests[PaymentsManagerNew.rdSwap(onRDSwap, temp[0], temp[1], temp[2], temp[3])] = msg;
+			}
+			if (command == "swapProlong") {
+				if (checkForPaymentsRequestExist(msg) == true)
+					return;
+				temp = msg.substr(command.length + 1).split("|!|");
+				if (temp.length != 2)
+					return;
+				lastPaymentsRequests[PaymentsManagerNew.swapProlong(onSwapProlonged, temp[0], temp[1])] = msg;
 			}
 			if (command == "cryptoSwapList") {
 				if (checkForPaymentsRequestExist(msg) == true)
@@ -1995,6 +2025,15 @@ package com.dukascopy.connect.sys.bankManager {
 				sendBlock("cryptoSwapConfirmed");
 			else
 				sendBlock("cryptoSwapCreatedConfirmed", [respondData.address]);
+		}
+		
+		static private function onSwapProlonged(respondData:Object, hash:String):void {
+			if (preCheckForErrors(respondData, hash, null, "paymentsErrorDataNull") == true)
+				return;
+			if (respondData.rollover == 1)
+				sendBlock("cryptoSwapProlongationRequestConfirmed");
+			else
+				sendBlock("cryptoSwapProlongationCancelConfirmed");
 		}
 		
 		static private function onPossibleRD(respondData:Object, hash:String):void {

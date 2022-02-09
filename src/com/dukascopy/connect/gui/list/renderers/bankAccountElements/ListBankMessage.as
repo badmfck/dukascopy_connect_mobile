@@ -1462,6 +1462,18 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements {
 					)
 				);
 			}
+			if (bmVO.additionalData.status == "CREATED") {
+				detailsVOs.push(
+					new AccountLimitVO(
+						[
+							AccountLimit.FIELD_SWAP_DETAILS_ADDRESS,
+							NaN,
+							NaN,
+							bmVO.additionalData.incoming_address
+						]
+					)
+				);
+			}
 			swapDetailsSections = [];
 			var detailsSection:BALimitSection;
 			for (var i:int = 0; i < detailsVOs.length; i++) {

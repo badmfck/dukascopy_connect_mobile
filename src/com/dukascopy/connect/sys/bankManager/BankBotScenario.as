@@ -1765,7 +1765,8 @@ package com.dukascopy.connect.sys.bankManager {
 				menuLayout:"vertical",
 				item: {
 					type:"showSwaps",
-					action:"nav:cryptoSwapOptions"
+					action:"nav:cryptoSwapOptions",
+					action1:"nav:cryptoSwapOptionsAddress"
 				}
 			},
 			
@@ -1789,6 +1790,30 @@ package com.dukascopy.connect.sys.bankManager {
 				]
 			},
 			
+			cryptoSwapOptionsAddress: {
+				desc:"lang.cryptoSwapOptionsAddressDesc lang.cryptoSwapOptionsDesc",
+				menuLayout:"vertical",
+				item: {
+					type:"showSwapDetails",
+					value:"@@1"
+				},
+				menu:[
+					{
+						text:"lang.menuSwapProlongationRequest",
+						disabled: true,
+						action:"nav:cryptoSwapProlongationRequestConfirm"
+					}, {
+						text:"lang.menuSwapProlongationCancelling",
+						disabled: true,
+						action:"nav:cryptoSwapProlongationCancelConfirm"
+					}, {
+						text:"lang.buttonCopyAddress",
+						type:"BCDepositeCopyAddress",
+						value:"%@"
+					}
+				]
+			},
+			
 			cryptoSwapProlongationRequestConfirm: {
 				desc:"lang.cryptoSwapProlongationRequestDesc",
 				menuLayout:"vertical",
@@ -1805,14 +1830,46 @@ package com.dukascopy.connect.sys.bankManager {
 			},
 			
 			cryptoSwapProlongationRequestConfirmed: {
-				desc:"lang.cryptoSwapTermsDesc",
+				desc:"lang.confirmedSwapProlongation lang.otherOperation",
+				isLast:true,
+				buttons: [
+					{
+						text:"lang.buttonYes",
+						action:"nav:main"
+					}, {
+						text:"lang.buttonNo",
+						action:"app:back"
+					}
+				]
+			},
+			
+			cryptoSwapProlongationCancelConfirm: {
+				desc:"lang.cryptoSwapProlongationCancelDesc",
 				menuLayout:"vertical",
 				item: {
-					type:"cryptoRewardsDepositesSwap",
-					action:"nav:cryptoSwapSecondConfirm",
-					value:"SWAP",
-					text:"lang.itemRewardDepositSelected"
-				}
+					type:"showSwap",
+					value:"@@1"
+				},
+				buttons: [
+					{
+						text:"lang.buttonConfirm",
+						action:"nav:cryptoSwapProlongationCancelConfirmed"
+					}
+				]
+			},
+			
+			cryptoSwapProlongationCancelConfirmed: {
+				desc:"confirmedSwapProlongationCancel lang.otherOperation",
+				isLast:true,
+				buttons: [
+					{
+						text:"lang.buttonYes",
+						action:"nav:main"
+					}, {
+						text:"lang.buttonNo",
+						action:"app:back"
+					}
+				]
 			},
 			
 			cryptoSwapFirstConfirm: {
@@ -1868,13 +1925,15 @@ package com.dukascopy.connect.sys.bankManager {
 				]
 			},
 			
-			
-			
 			cryptoSwapCreatedConfirmed: {
 				desc:"lang.confirmedCryptoSwapCreated lang.otherOperation",
 				isLast:true,
 				buttons: [
 					{
+						text:"lang.buttonCopyAddress",
+						type:"BCDepositeCopyAddress",
+						value:"@@1"
+					}, {
 						text:"lang.buttonYes",
 						action:"nav:main"
 					}, {

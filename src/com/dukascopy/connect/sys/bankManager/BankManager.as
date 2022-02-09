@@ -515,7 +515,10 @@ package com.dukascopy.connect.sys.bankManager {
 					data["tapped"] = true;
 					S_ADDITIONAL_DATA_ENTERED.invoke();
 					sendMessage("val:" + data.param.code);
-					sendMessage(msg);
+					if (data.param.status != "CREATED")
+						sendMessage(msg);
+					else
+						sendMessage(data.action1);
 					return;
 				}
 				if (data.type == "showAcc") {
@@ -2519,6 +2522,8 @@ package com.dukascopy.connect.sys.bankManager {
 						delete lastBankMessageVO.menu[0].disabled;
 					else
 						delete lastBankMessageVO.menu[1].disabled;
+					if (lastBankMessageVO.menu.length > 2)
+						lastBankMessageVO.menu[2].value = swap.incoming_address;
 					lastBankMessageVO.additionalData = swap;
 				}
 				if (lastBankMessageVO.item.type == "showSwap") {
@@ -2533,6 +2538,8 @@ package com.dukascopy.connect.sys.bankManager {
 							break;
 						}
 					}
+					if (swap1.rollover == 0)
+						lastBankMessageVO.text = lastBankMessageVO.text.replace("%@", swap1.swap_fee.readable);
 					lastBankMessageVO.additionalData = swap1;
 				}
 				if (lastBankMessageVO.item.type == "cardSelect") {

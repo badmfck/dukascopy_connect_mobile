@@ -249,7 +249,7 @@ package com.dukascopy.connect.sys.payments.vo {
 		public function get enableSaving():Boolean { return _enableSaving; }
 		public function get enableTrading():Boolean { return _enableTrading; }
 		public function get enableApplePay():Boolean { return _enableApplePay; }
-		public function get enableGCS():Boolean { return false; /*_enableGCS;*/ }
+		public function get enableGCS():Boolean { return _enableGCS; }
 		public function get cardSensitiveData():Boolean { return _cardSensitiveData; }
 		public function get address_card():String { return _address_card; }
 		public function get city_card():String { return _city_card; }

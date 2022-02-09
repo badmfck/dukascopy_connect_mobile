@@ -1290,7 +1290,8 @@ package com.dukascopy.langs {
 			"canceled": "Canceled",
 			"closed": "Closed",
 			"active": "Active",
-			"on_hold": "On hold"
+			"on_hold": "On hold",
+			"created": "Created"
 		};
 		
 		static public var investmentsTitles:Object = {
