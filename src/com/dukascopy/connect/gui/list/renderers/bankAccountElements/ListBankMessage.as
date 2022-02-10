@@ -778,7 +778,7 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements {
 				if ("isTotal" in sections[i] == false || sections[i].isTotal == false) {
 					var hz:HitZoneData = new HitZoneData();
 					hz.type = hitZonesType;
-					hz.data = sections[i].data;
+					hz.data = ("data" in sections[i]) ? sections[i].data : null;
 					hz.param = String((field == null) ? i : sections[i].data[field]);
 					hz.index = i;
 					hz.x = sections[i].x;
