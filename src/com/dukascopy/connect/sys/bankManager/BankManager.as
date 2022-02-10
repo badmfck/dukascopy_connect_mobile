@@ -2292,7 +2292,7 @@ package com.dukascopy.connect.sys.bankManager {
 				var backScreenData:Object;
 				if (lastBankMessageVO.item.type == "error") {
 					if (MobileGui.serviceScreen.currentScreen == null)
-						invokeAnswerSignal(lastBankMessageVO);
+						invokeAnswerSignal(lastBankMessageVO, MobileGui.centerScreen.currentScreenClass == BankBotChatScreen);
 					S_PAYMENT_ERROR.invoke(lastBankMessageVO);
 				}
 				if (lastBankMessageVO.item.type == "action") {
@@ -3108,6 +3108,8 @@ package com.dukascopy.connect.sys.bankManager {
 			tsFrom:int = 0,
 			tsTo:int = 0,
 			obligatory:Boolean = false):void {
+				if (isCardHistory == true)
+					return;
 				init();
 				needToCash = true
 				if (needToGetHistoryUser != null) {

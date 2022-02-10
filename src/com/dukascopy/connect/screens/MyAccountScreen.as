@@ -459,6 +459,8 @@ package com.dukascopy.connect.screens {
 			page++;
 			if (callMore == false)
 				return;
+			if (BankManager.getIsCardHistory() == true)
+				return;
 			topBar.showAnimationOverButton("refreshBtn", false);
 			if (storedFiltersForLoading == null) {
 				BankManager.getPaymentHistory(
