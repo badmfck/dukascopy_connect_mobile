@@ -3715,6 +3715,16 @@ package com.dukascopy.connect.sys.bankManager {
 				return;
 			}
 			cryptoDeals = data;
+			if ("stat" in cryptoDeals == true && cryptoDeals.stat != null) {
+				cryptoDeals.stat.sort(function(a:Object, b:Object):int {
+					if (a.period == b.period) {
+						return (a.side < b.side) ? 1 : -1;
+					} else {
+						return (a.period < b.period) ? -1 : 1;
+					}
+					return 0;
+				} );
+			}
 			S_CRYPTO_DEALS.invoke(cryptoDeals);
 			if (waitingBMVO != null) {
 				if (waitingBMVO.waitingType != "cryptoOffers" &&
