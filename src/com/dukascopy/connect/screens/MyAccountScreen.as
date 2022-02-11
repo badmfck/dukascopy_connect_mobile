@@ -136,8 +136,7 @@ package com.dukascopy.connect.screens {
 			_view.addChild(input);
 		}
 		
-		private function openP2P():void 
-		{
+		private function openP2P():void {
 			(new Open911ScreenAction()).execute();
 		}
 		
@@ -592,7 +591,8 @@ package com.dukascopy.connect.screens {
 		}
 		
 		private function onAllDataLoaded(error:Boolean = false, local:Boolean = true):void {
-			BankManager.getCards(true);
+			if (error == false)
+				BankManager.getCards(true);
 			if (local == false) {
 				_waiting = false;
 				topBar.hideAnimation();

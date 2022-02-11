@@ -170,6 +170,7 @@ package com.dukascopy.connect.sys.bankManager {
 		
 		static private var initialized:Boolean;
 		static private var total:Object;
+		static private var totalSavings:Object;
 		static private var totalAll:Array;
 		
 		static private var needToGetHistoryUser:String;
@@ -322,6 +323,7 @@ package com.dukascopy.connect.sys.bankManager {
 			initialized = false;
 			total = null;
 			totalAll = null;
+			totalSavings = null;
 			
 			needToGetHistoryUser = null;
 			needToShowHistoryWallet = null;
@@ -3908,20 +3910,22 @@ package com.dukascopy.connect.sys.bankManager {
 		static public function get totalSavingAccounts():Object {
 			if (savingsAccounts == null || savingsAccounts.length == 0)
 				return null;
-			var res:Object = {
-				CURRENCY: savingsAccounts[0].CONSOLIDATE_CURRENCY,
+			var lastOpened:Boolean = (totalSavings != null) ? totalSavings.opened : false;
+			totalSavings ||= {
 				IBAN: Lang.textTotalCash.toUpperCase(),
 				type: "total",
 				opened: false,
 				moreFnc: getTotalSavingsAll
 			}
+			totalSavings["BALANCE"] = 0;
+			totalSavings["CURRENCY"] = savingsAccounts[0].CONSOLIDATE_CURRENCY
 			var balance:Number = 0;
 			var l:int = savingsAccounts.length;
 			for (var i:int = 0; i < l; i++) {
 				balance += Number(savingsAccounts[i].CONSOLIDATE_BALANCE);
 			}
-			res.BALANCE = balance;
-			return res;
+			totalSavings.BALANCE = balance;
+			return totalSavings;
 		}
 		
 		static public function getTotalSavingsAll():Array {
