@@ -3355,6 +3355,27 @@ package com.dukascopy.connect.sys.bankManager {
 				]
 			},
 			
+			limitIncreaseError: {
+				desc:"@@1",
+				isError: true,
+				isItem: true,
+				item: {
+					type:"error"
+				},
+				menu: [
+					{
+						text:"lang.menuIncreaseLimits",
+						action:"app:limits"
+					}
+				],
+				buttons: [
+					{
+						text:"lang.buttonOk",
+						action:"nav:main"
+					}
+				]
+			},
+			
 			notReadyYet: {
 				desc:"lang.notReadyYet"
 			},

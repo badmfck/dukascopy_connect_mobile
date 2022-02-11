@@ -1810,8 +1810,11 @@ package com.dukascopy.connect.sys.bankManager {
 		}
 		
 		static private function onCryptoDepositeAddressInvestment(respondData:Object, hash:String):void {
-			if (preCheckForErrors(respondData, hash, null, "paymentsErrorDataNull") == true)
+			if (preCheckForErrors(respondData, hash, null, "paymentsErrorDataNull", [3012]) == true) {
+				if (respondData.code == 3012)
+					sendBlock("limitIncreaseError", [respondData.msg]);
 				return;
+			}
 			var temp:Array = steps[steps.length - 2].val.split("|!|");
 			sendBlock("bcDepositeAddressInvestmentConfirmed", [respondData.address, temp[0], temp[1]]);
 		}
