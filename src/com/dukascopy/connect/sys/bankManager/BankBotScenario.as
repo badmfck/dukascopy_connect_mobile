@@ -313,6 +313,7 @@ package com.dukascopy.connect.sys.bankManager {
 					{
 						text:"lang.menuCardTopUp",
 						type:"cardMoneySend",
+						textForUser:"lang.itemSendToCard",
 						value:"@@1",
 						action:"nav:cardWithdrawalConfirm"
 					}, {
