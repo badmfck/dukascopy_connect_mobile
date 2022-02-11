@@ -96,10 +96,9 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements.sections {
 				tfAmountMaxLabel.width = int(Math.min(tfAmountMaxLabel.textWidth + 5, w - tfAmountMaxLabel.x * 2));
 				tfAmountMaxLabel.height = int(tfAmountMaxLabel.textHeight + 5);
 				
-				tfAmountMax.htmlText = UI.renderCurrency(
-					String(int(data.current)) + ".",
-					String(int((data.current - int(data.current)) * 100)),
-					" " + data.currency,
+				tfAmountMax.htmlText = UI.renderCurrencyAdvanced(
+					data.maxLimit,
+					data.currency,
 					Config.FINGER_SIZE * .25,
 					Config.FINGER_SIZE * .19
 				);
