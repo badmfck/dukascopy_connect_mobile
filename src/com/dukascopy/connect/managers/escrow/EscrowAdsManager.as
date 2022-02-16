@@ -48,6 +48,7 @@ package com.dukascopy.connect.managers.escrow {
 		private var escrowAdsMineLoadingRequestCount:int = 0;
 		private var escrowAdsLoadNeeded:Boolean;
 		private var escrowAdsMineLoadNeeded:Boolean;
+		private var needToLoadStat:Boolean = true;
 		
 		public function EscrowAdsManager() {
 			GD.S_ESCROW_ADS_CRYPTOS_REQUEST.add(onEscrowAdsCryptosRequested);
@@ -152,6 +153,7 @@ package com.dukascopy.connect.managers.escrow {
 		private function onEscrowAdsCryptosRequested():void {
 			WSClient.call_blackHoleToGroup("que", "subscribe");
 			if (escrowAdsCryptosIdsLoadedFromStore == true) {
+				needToLoadStat = true;
 				GD.S_ESCROW_ADS_CRYPTOS.invoke(escrowAdsCryptos);
 				GD.S_ESCROW_INSTRUMENTS_REQUEST.invoke();
 				return;
@@ -174,7 +176,7 @@ package com.dukascopy.connect.managers.escrow {
 				return;
 			}
 			
-			var escrowInstrumentsHashNew:String = "";
+			/*var escrowInstrumentsHashNew:String = "";
 			var needToLoad:Boolean;
 			var index:int;
 			var l:int = instruments.length;
@@ -191,8 +193,12 @@ package com.dukascopy.connect.managers.escrow {
 				needToLoad = true;
 			escrowInstrumentsHash = escrowInstrumentsHashNew;
 			
-			if (needToLoad == true)
+			if (needToLoad == true)*/
+			if (needToLoadStat == true) {
+				needToLoadStat = false;
 				PHP.escrow_getStat(onEscrowAdsCryptosReceived);
+			}
+			
 			if (escrowAdsLoadNeeded == true) {
 				escrowAdsLoadNeeded = false;
 				onEscrowAdsRequested();
@@ -217,6 +223,7 @@ package com.dukascopy.connect.managers.escrow {
 				GD.S_TOAST.invoke(Lang.somethingWentWrong);
 			if (phpRespond.data == null || phpRespond.data.length == 0) {
 				GD.S_ESCROW_ADS_CRYPTOS.invoke(null, true);
+				phpRespond.dispose();
 				return;
 			}
 			escrowAdsCryptos = [];
@@ -244,6 +251,7 @@ package com.dukascopy.connect.managers.escrow {
 			if (escrowAdsCryptos != null)
 				escrowAdsCryptos.sortOn("instrumentCode");
 			GD.S_ESCROW_ADS_CRYPTOS.invoke(escrowAdsCryptos, true);
+			phpRespond.dispose();
 		}
 		
 		private function clearEscrowAdsCryptos():void {
