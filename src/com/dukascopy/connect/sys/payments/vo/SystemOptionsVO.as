@@ -47,7 +47,7 @@ package com.dukascopy.connect.sys.payments.vo {
 			key = 'currency-operation';
 			if (key in data == true) {
 				if ("deposit" in data[key] == true && data[key]["deposit"] != null) {
-					if ("cards" in data[key]["deposite"] == true && data[key]["deposit"]["cards"] != null) {
+					if ("cards" in data[key]["deposit"] == true && data[key]["deposit"]["cards"] != null) {
 						currencyListDepositeCards = data[key]["deposit"]["cards"];
 					}
 				}
