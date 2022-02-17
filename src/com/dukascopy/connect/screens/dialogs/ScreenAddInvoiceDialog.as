@@ -442,22 +442,69 @@ package com.dukascopy.connect.screens.dialogs {
 			hidePreloader();
 			if (PayManager.systemOptions == null)
 				return;
-			if (PayManager.systemOptions.currencyList == null || PayManager.systemOptions.currencyList.length == 0)
+			if (!isCurrenciesAaliable())
+			{
 				return;
+			}
+			
 			if (iCurrency.value == iCurrency.getDefaultlabel())
 			{
-				iCurrency.setValue(PayManager.systemOptions.currencyList[0]);
+				iCurrency.setValue(getFirstCurrency());
 			}
 			
 			checkDataValid();
 		}
 		
-		private function selectCurrency(e:Event = null):void {
-			if (PayManager.systemOptions != null && PayManager.systemOptions.currencyList != null)
+		private function getFirstCurrency():String 
+		{
+			if (data != null && "thirdparty" in data && data.thirdparty == true)
 			{
-				var currencies:Array = PayManager.systemOptions.currencyList.concat();
+				if (PayManager.systemOptions.currencyListDepositeCards != null && PayManager.systemOptions.currencyListDepositeCards.length > 0)
+				{
+					return PayManager.systemOptions.currencyListDepositeCards[0];
+				}
+			}
+			else
+			{
+				if (PayManager.systemOptions.currencyList != null && PayManager.systemOptions.currencyList.length > 0)
+				{
+					return PayManager.systemOptions.currencyList[0];
+				}
+			}
+			return null;
+		}
+		
+		private function isCurrenciesAaliable():Boolean 
+		{
+			if (data != null && "thirdparty" in data && data.thirdparty == true)
+			{
+				if (PayManager.systemOptions.currencyListDepositeCards != null && PayManager.systemOptions.currencyListDepositeCards.length > 0)
+				{
+					return true;
+				}
+			}
+			else
+			{
+				if (PayManager.systemOptions.currencyList != null && PayManager.systemOptions.currencyList.length > 0)
+				{
+					return true;
+				}
+			}
+			
+			return false;
+		}
+		
+		private function selectCurrency(e:Event = null):void {
+			if (isCurrenciesAaliable())
+			{
+				var currencies:Array = getCurrencies();
 				if (!("thirdparty" in data) || data.thirdparty == false)
-					currencies.unshift(TypeCurrency.DCO);
+				{
+					if (currencies != null)
+					{
+						currencies.unshift(TypeCurrency.DCO);
+					}
+				}
 				
 				DialogManager.showDialog(
 					ListSelectionPopup,
@@ -469,6 +516,25 @@ package com.dukascopy.connect.screens.dialogs {
 					}, ServiceScreenManager.TYPE_SCREEN
 				);
 			}
+		}
+		
+		private function getCurrencies():Array 
+		{
+			if (data != null && "thirdparty" in data && data.thirdparty == true)
+			{
+				if (PayManager.systemOptions.currencyListDepositeCards != null)
+				{
+					return PayManager.systemOptions.currencyListDepositeCards.concat();;
+				}
+			}
+			else
+			{
+				if (PayManager.systemOptions.currencyList != null)
+				{
+					return PayManager.systemOptions.currencyList.concat();;
+				}
+			}
+			return null;
 		}
 		
 		private function onCurrencySelected(currency:String):void
