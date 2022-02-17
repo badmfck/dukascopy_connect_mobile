@@ -551,12 +551,12 @@ package com.dukascopy.connect.sys.payments {
 		}
 		
 		/**
-		 * This method is used to perform third party deposits. See description:
-		 * https://intranet.dukascopy.dom/wiki/pages/viewpage.action?pageId=100305381
+		 * This method is used to perform third party deposits. Method can be used only with active session. See description:
+		 * https://jira.site.dukascopy.com/wiki/pages/viewpage.action?pageId=135790928
 		 */
 		static public function call_putDepositThirdParty(_callback:Function, _data:Object, _callID:String = ""):void {
 			_data.referer = "https://www.dukascopy.bank";
-			var php:PayLoader = call("money/deposit-third-party", _callback, _data, URLRequestMethod.PUT);
+			var php:PayLoader = call("money/deposit-third-party-auth", _callback, _data, URLRequestMethod.PUT);
 			if (php.savedRequestData != null)
 				php.savedRequestData.callID = _callID;
 		}
