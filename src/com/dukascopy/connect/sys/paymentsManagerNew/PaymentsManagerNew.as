@@ -980,8 +980,12 @@ package com.dukascopy.connect.sys.paymentsManagerNew {
 				return hash;
 			}
 			var dta:Object = { action:action };
-			if (param != null)
-				dta.verification_value = param;
+			if (param != null) {
+				if (action == "block")
+					dta.type = param;
+				else
+					dta.verification_value = param;
+			}
 			PayServer.call_actionCard(onCardActionRespond, cardID, dta, hash);
 			return hash;
 		}

@@ -130,6 +130,7 @@ package com.dukascopy.connect.sys.bankManager {
 		static public var confirmOfferDeactivate:String = "Do you want to deactivate it?";
 		static public var confirmOfferDelete:String = "Do you want to delete it?";
 		static public var confirmChangeCurrency:String = "Do you want to change main currecy?";
+		static public var confirmCardBlockH:String = "This function allows to permanently block your Dukascopy card. This action cannot be undone. Please confirm your card permanent blockage.";
 		
 		// CONFIRMED DESCRIPTIONS
 		static public var confirmedCardDeposite:String = "Your deposit has been completed.";
@@ -170,6 +171,7 @@ package com.dukascopy.connect.sys.bankManager {
 		static public var confirmedTransactionAdd:String = "Please note that this payment method is intended for sending money <b>internally</b> between two Multi-Currency Account holders.\\n\\nThe Bank reserves the right to clarify the purpose of money transfer. To avoid delay in payment processing it is recommended to always fill in the <b>Message</b> field.";
 		static public var confirmedSwapProlongation:String = "Prolongation request has been sent.";
 		static public var confirmedSwapProlongationCancel:String = "Prolongation cancelling request has been sent.";
+		static public var confirmedCardBlockH:String = "Your card was permanently blocked.";
 		
 		// MENU ITEMS
 		static public var menuInvestmentTransfer:String = "Investment transfer";
@@ -325,6 +327,7 @@ package com.dukascopy.connect.sys.bankManager {
 		static public var menuSwapChooseAmount:String = "Choose amount";
 		static public var menuSwapProlongationRequest:String = "Prolongation request";
 		static public var menuSwapProlongationCancelling:String = "Prolongation cancelling";
+		static public var menuCardBlock:String = "Block card";
 		
 		static public var investmentIndex:String = "Index";
 		static public var investmentSilver:String = "Silver";

@@ -1061,7 +1061,7 @@ package com.dukascopy.connect.sys.bankManager {
 		
 		static private function onBlockHCardConfirm():void {
 			sendBlock("actionProgress");
-			callPaymentsMethod("cardAction:" + steps[steps.length - 3].val);
+			callPaymentsMethod("cardAction:" + steps[steps.length - 3].val + "|!|H");
 		}
 		
 		static private function onUnblockCardConfirm():void {
@@ -1601,6 +1601,8 @@ package com.dukascopy.connect.sys.bankManager {
 						lastPaymentsRequests["removeCard" + temp[0]] = msg;
 						PaymentsManagerNew.callCardRemove(onCardRemoved, temp[0]);
 					}
+				} else if (temp.length == 4 && temp[3] == "H") {
+					lastPaymentsRequests["blockCard" + PaymentsManagerNew.callCardAction(onCardHBlocked, temp[0], "block", "H")] = msg;
 				}
 			}
 		}
@@ -1875,6 +1877,13 @@ package com.dukascopy.connect.sys.bankManager {
 		}
 		
 		static private function onCardBlocked(respondData:Object, hash:String):void {
+			if (preCheckForErrors(respondData, "blockCard" + hash, null, "paymentsErrorDataNull") == true)
+				return;
+			sendBlock("clearCards");
+			sendBlock("blockCardConfirmed");
+		}
+		
+		static private function onCardHBlocked(respondData:Object, hash:String):void {
 			if (preCheckForErrors(respondData, "blockCard" + hash, null, "paymentsErrorDataNull") == true)
 				return;
 			sendBlock("clearCards");

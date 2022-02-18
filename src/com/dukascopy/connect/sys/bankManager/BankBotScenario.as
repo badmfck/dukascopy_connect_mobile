@@ -224,7 +224,10 @@ package com.dukascopy.connect.sys.bankManager {
 					}, {
 						text:"lang.menuCardDisable",
 						action:"nav:blockCardConfirm"
-					}, {
+					}, /*{
+						text:"lang.menuCardBlock",
+						action:"nav:blockHCardConfirm"
+					}, */{
 						text:"lang.menuHistory",
 						action:"app:historyCard",
 						selection:"@@1"
@@ -565,6 +568,16 @@ package com.dukascopy.connect.sys.bankManager {
 				]
 			},
 			
+			blockHCardConfirm: {
+				desc:"lang.confirmCardBlockH",
+				buttons: [
+					{
+						text:"lang.buttonConfirm",
+						action:"nav:blockHCardConfirmed"
+					}
+				]
+			},
+			
 			removeCardConfirm: {
 				desc:"lang.confirmCardRemove",
 				buttons: [
@@ -631,6 +644,23 @@ package com.dukascopy.connect.sys.bankManager {
 			
 			blockCardConfirmed: {
 				desc:"lang.confirmedCardDisable lang.otherOperation",
+				isLast: true,
+				item: {
+					type:"cardsRemove"
+				},
+				buttons: [
+					{
+						text:"lang.buttonYes",
+						action:"nav:main"
+					}, {
+						text:"lang.buttonNo",
+						action:"app:back"
+					}
+				]
+			},
+			
+			blockHCardConfirmed: {
+				desc:"lang.confirmedCardBlockH lang.otherOperation",
 				isLast: true,
 				item: {
 					type:"cardsRemove"
