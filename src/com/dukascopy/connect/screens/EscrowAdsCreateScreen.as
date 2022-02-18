@@ -72,6 +72,8 @@ package com.dukascopy.connect.screens {
 		
 		private var escrowAdsVO:EscrowAdsVO = new EscrowAdsVO(null);
 		
+		private var needToShowCryptoSelect:Boolean;
+		
 		private var msgSide:Object = {
 			type: ChatSystemMsgVO.TYPE_LOCAL_QUESTION,
 			method: ChatSystemMsgVO.METHOD_LOCAL_SIDE,
@@ -128,6 +130,7 @@ package com.dukascopy.connect.screens {
 				topBar.setActions( [ actionTrash ] );*/
 			fillList();
 			GD.S_ESCROW_ADS_FILTER_REQUEST.invoke(onFilter);
+			GD.S_ESCROW_INSTRUMENTS.add(onResult);
 		}
 		
 		private function fillList():void {
@@ -282,7 +285,7 @@ package com.dukascopy.connect.screens {
 							return;
 						}
 						if (cmsgVO.systemMessageVO.method == ChatSystemMsgVO.METHOD_LOCAL_CRYPTO) {
-							GD.S_ESCROW_INSTRUMENTS.add(onResult);
+							needToShowCryptoSelect = true;
 							GD.S_ESCROW_INSTRUMENTS_REQUEST.invoke();
 							return;
 						}
@@ -424,17 +427,29 @@ package com.dukascopy.connect.screens {
 		private function onResult(instruments:Vector.<EscrowInstrument>):void {
 			if (isDisposed)
 				return;
-			GD.S_ESCROW_INSTRUMENTS.remove(onResult);
-			DialogManager.showDialog(
-				ListSelectionPopup,
-				{
-					items:instruments,
-					title:Lang.selectCurrency,
-					renderer:ListCryptoWallet,
-					callback:callBackSelectInstrument
-				},
-				DialogManager.TYPE_SCREEN
-			);
+			if (escrowAdsVO != null) {
+				if (escrowAdsVO.instrument != null && instruments != null) {
+					for (var i:int = 0; i < instruments.length; i++) {
+						if (escrowAdsVO.instrument.code == instruments[i].code) {
+							escrowAdsVO.instrument = instruments[i];
+							break;
+						}
+					}
+				}
+			}
+			if (needToShowCryptoSelect == true) {
+				needToShowCryptoSelect = false;
+				DialogManager.showDialog(
+					ListSelectionPopup,
+					{
+						items:instruments,
+						title:Lang.selectCurrency,
+						renderer:ListCryptoWallet,
+						callback:callBackSelectInstrument
+					},
+					DialogManager.TYPE_SCREEN
+				);
+			}
 		}
 		
 		private function callBackSelectInstrument(ei:EscrowInstrument):void {
@@ -670,6 +685,7 @@ package com.dukascopy.connect.screens {
 		
 		override public function dispose():void {
 			echo("EscrowAdsCreateScreen", "dispose", "");
+			GD.S_ESCROW_INSTRUMENTS.remove(onResult);
 			
 			removeKeyboardAction();
 			
