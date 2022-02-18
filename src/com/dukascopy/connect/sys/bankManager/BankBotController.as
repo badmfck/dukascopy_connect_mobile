@@ -647,6 +647,10 @@ package com.dukascopy.connect.sys.bankManager {
 					onBlockCardConfirm();
 					return;
 				}
+				if (tmp[1] == "blockHCardConfirmed") {
+					onBlockHCardConfirm();
+					return;
+				}
 				if (tmp[1] == "unblockCardConfirmed") {
 					onUnblockCardConfirm();
 					return;
@@ -1051,6 +1055,11 @@ package com.dukascopy.connect.sys.bankManager {
 		}
 		
 		static private function onBlockCardConfirm():void {
+			sendBlock("actionProgress");
+			callPaymentsMethod("cardAction:" + steps[steps.length - 3].val);
+		}
+		
+		static private function onBlockHCardConfirm():void {
 			sendBlock("actionProgress");
 			callPaymentsMethod("cardAction:" + steps[steps.length - 3].val);
 		}
@@ -2755,25 +2764,17 @@ package com.dukascopy.connect.sys.bankManager {
 				return 2;
 			}
 			if ("errorType" in respondData) {
-				if (respondData.code == -2) {
-					
+				if (respondData.code == -2 || respondData.code == -3) {
 					var errorText:String;
-					if (respondData is String)
-					{
+					if (respondData is String) {
 						errorText = respondData as String;
-					}
-					else if (respondData is Object)
-					{
-						if ("msg" in respondData && respondData.msg != null)
-						{
+					} else if (respondData is Object) {
+						if ("msg" in respondData && respondData.msg != null) {
 							errorText = respondData.msg;
-						}
-						else
-						{
+						} else {
 							errorText = respondData as String;
 						}
 					}
-					
 					S_ANSWER.invoke("requestRespond:error:" + errorText);
 					return 2;
 				}

@@ -84,18 +84,19 @@ package com.dukascopy.connect.sys.payments {
 			_savedRequestData.callBack = callBack;
 			respond.setSavedRequestData(_savedRequestData);
 			
+			echo("PayLoader (" + id + ")", "load", "\n	url: " + urlRequest.url + "\n	method: " + method + "\n	data:\n" + UI.tracedObj(urlRequest.data));
 			if (NetworkManager.isConnected) {
 				urlLoader.addEventListener(Event.COMPLETE, onComplete);
 				urlLoader.addEventListener(IOErrorEvent.IO_ERROR, onIOError);
 				urlLoader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, onSecurityError);
 				urlLoader.addEventListener(HTTPStatusEvent.HTTP_STATUS, onHTTPStatus);
 				urlLoader.addEventListener(HTTPStatusEvent.HTTP_RESPONSE_STATUS, onHTTPStatus);
-				echo("PayLoader (" + id + ")", "load", "\n	url: " + urlRequest.url + "\n	method: " + method + "\n	data:\n" + UI.tracedObj(urlRequest.data));
 				urlLoader.load(urlRequest);
 			} else
 				TweenMax.delayedCall(1, function():void {
-					callback(respond.setData(true, Lang.noInternetConnection, null, -2));
+					callback(respond.setData(true, Lang.noInternetConnection, null, -3));
 				}, null, true);
+				
 		}
 		
 		public function loadAsFile(url:String, callBack:Function = null, data:Object = null, method:String = URLRequestMethod.POST, openMethod:Boolean = false):void {
@@ -221,21 +222,17 @@ package com.dukascopy.connect.sys.payments {
 		private function finish(error:String = null, isTimeoutError:Boolean = false):void {
 			var errorCode:int;
 			if (error != null) {
+				echo("PayLoader (" + id + ")", "finish", error);
 				var erorText:String;
-				if (isTimeoutError && timeoutErrorText != null)
-				{
+				if (isTimeoutError && timeoutErrorText != null) {
 					erorText = timeoutErrorText;
-				}
-				else
-				{
+				} else {
 					erorText = Lang.TEXT_SERVER_CANNT_RESPOND;
 				}
 				errorCode = ERROR_SERVER_TIMEOUT;
-				if (isTimeoutError && timeoutErrorCode != 0)
-				{
+				if (isTimeoutError && timeoutErrorCode != 0) {
 					errorCode = timeoutErrorCode;
 				}
-				
 				callback(respond.setData(true, erorText, null, errorCode));
 				return;
 			}
@@ -257,14 +254,6 @@ package com.dukascopy.connect.sys.payments {
 				errorCode = data.code != null ? data.code : -1;
 				callback(respond.setData(true, data.error, data, errorCode));
 				if (errorCode == 1040) {
-					/*if (Config.isTest() == true)
-						displayMessage("Error 1040: " + data.error);
-					var key:String = Auth.uid;
-					for (var i:int = Auth.uid.length; i > 0; i--) {
-						key = key + Auth.uid.charAt(i - 1);
-					}
-					var value:String = AESCrypter.enc(JSON.stringify(_debugData), key);
-					PHP.call_statVI("PayError1040", value);*/
 					PHP.call_statVI("PayError1040", "");
 				}
 				closeURLLoader();
@@ -273,24 +262,6 @@ package com.dukascopy.connect.sys.payments {
 			callback(respond.setData(false, "", data));
 			closeURLLoader();
 		}
-		
-		/*private var toast:WhiteToast;
-		private function displayMessage(message:String):void {
-			var toastTime:Number = 5;
-			toast = new WhiteToast(message, MobileGui.stage.stageWidth, MobileGui.stage.stageHeight, null, toastTime);
-			MobileGui.stage.addChild(toast);
-			TweenMax.delayedCall(toastTime + 0.5, onTostMessageHided);
-		}
-		
-		private function onTostMessageHided():void {
-			if (toast != null) {
-				toast.dispose();
-				if (toast.parent != null) {
-					toast.parent.removeChild(toast);
-				}
-				toast = null;
-			}
-		}*/
 		
 		private function callback(payRespond:PayRespond):void {
 			echo("PayLoader (" + id + ")", "callback", "");

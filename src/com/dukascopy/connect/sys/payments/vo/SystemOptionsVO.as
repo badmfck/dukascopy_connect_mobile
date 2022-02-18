@@ -37,7 +37,7 @@ package com.dukascopy.connect.sys.payments.vo {
 		];
 		
 		public function SystemOptionsVO() { }
-	//	
+		
 		public function update(data:Object):void {
 			if (data == null)
 				return;

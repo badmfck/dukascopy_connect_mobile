@@ -303,13 +303,18 @@ package com.dukascopy.connect.screens {
 				if (val.text != "@@1")
 					ToastMessage.display("Server is busy, please try later.");
 				else
-					ToastMessage.display("val.text");
-			} else if (val != BankManager.PWP_NOT_ENTERED) {
-				ToastMessage.display("Server is busy, please try later.");
+					ToastMessage.display(val.text);
+			} else if (val is String) {
+				if (val == BankManager.PWP_NOT_ENTERED) {
+					onBack();
+					return;
+				} else {
+					ToastMessage.display(val as String);
+				}
 			} else {
-				onBack();
-				return;
+				ToastMessage.display("Server is busy, please try later.");
 			}
+			
 			_waiting = false;
 			if (topBar != null)
 			{

@@ -135,6 +135,7 @@ package com.dukascopy.connect.sys.bankManager {
 		static public var S_DECLARE_ETH_LINK:Signal = new Signal('BankManager.S_DECLARE_ETH_LINK');
 		
 		static public const PWP_NOT_ENTERED:String = "pwpNotEntered";
+		static public const NO_INTERNET_CONNECTION:String = "noInternetConnection";
 		static public const ACCOUNT_NOT_APPROVED:String = "accountNotApproved";
 		
 		static public var balanceOpened:Boolean;
@@ -2766,15 +2767,13 @@ package com.dukascopy.connect.sys.bankManager {
 			var startObjectIndex:int = val.indexOf(":", 15);
 			var command:String = val.substring(15, startObjectIndex);
 			if (command == "error") {
-				var message:String = "";
-				if (val != null && val.length > startObjectIndex)
-				{
+				var message:String;
+				if (val != null && val.length > startObjectIndex) {
 					message = val.substr(startObjectIndex + 1)
 				}
-				DialogManager.alert(Lang.information, "Payments Error: " + message);
-				S_ERROR.invoke();
+				S_ERROR.invoke(message);
 				return true;
-			}
+			} 
 			var func:Function;
 			if (command == "cryptoTrading")
 				func = onCryptoTradeCompleted;
