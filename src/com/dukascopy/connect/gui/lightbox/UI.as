@@ -2328,6 +2328,74 @@ package com.dukascopy.connect.gui.lightbox {
 					invUSDT ||= new SWFInvestmentUSDT();
 					icon = invUSDT;
 					break;
+				case TypeCurrency.AAL:
+					invUSDT ||= new InvestmentAAL();
+					icon = invUSDT;
+					break;
+				case TypeCurrency.BAU:
+					invUSDT ||= new InvestmentBAU();
+					icon = invUSDT;
+					break;
+				case TypeCurrency.BAB:
+					invUSDT ||= new InvestmentBAB();
+					icon = invUSDT;
+					break;
+				case TypeCurrency.DIS:
+					invUSDT ||= new InvestmentDIS();
+					icon = invUSDT;
+					break;
+				case TypeCurrency.GMU:
+					invUSDT ||= new InvestmentGMU();
+					icon = invUSDT;
+					break;
+				case TypeCurrency.INT:
+					invUSDT ||= new InvestmentINT();
+					icon = invUSDT;
+					break;
+				case TypeCurrency.LIG:
+					invUSDT ||= new InvestmentLIG();
+					icon = invUSDT;
+					break;
+				case TypeCurrency.PFE:
+					invUSDT ||= new InvestmentPFE();
+					icon = invUSDT;
+					break;
+				case TypeCurrency.SBU:
+					invUSDT ||= new InvestmentSBU();
+					icon = invUSDT;
+					break;
+				case TypeCurrency.US5:
+					invUSDT ||= new SWFInvestmentUSA();
+					icon = invUSDT;
+					break;
+				case TypeCurrency.BCH:
+					invUSDT ||= new InvestmentBCH();
+					icon = invUSDT;
+					break;
+				case TypeCurrency.XLM:
+					invUSDT ||= new InvestmentXLM();
+					icon = invUSDT;
+					break;
+				case TypeCurrency.BUN:
+					invUSDT ||= new SWFInvestmentDEU();
+					icon = invUSDT;
+					break;
+				case TypeCurrency.USB:
+					invUSDT ||= new SWFInvestmentUSA();
+					icon = invUSDT;
+					break;
+				case TypeCurrency.UBE:
+					invUSDT ||= new InvestmentUBE();
+					icon = invUSDT;
+					break;
+				case TypeCurrency.ZMU:
+					invUSDT ||= new InvestmentZMU();
+					icon = invUSDT;
+					break;
+				case TypeCurrency.MRN:
+					invUSDT ||= new InvestmentMRN();
+					icon = invUSDT;
+					break;
 				default:
 					invNONE ||= new SWFFlagNONE();
 					icon = invNONE;

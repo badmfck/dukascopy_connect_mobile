@@ -1316,7 +1316,7 @@ package com.dukascopy.connect.sys.payments {
 			
 			if (respond.error) {
 				showAlert(Lang.textError, respond.errorMsg);
-				return;
+			//	return;
 			}
 			
 			S_INVESTMENTS_RATE_RESPOND.invoke(respond);		

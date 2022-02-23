@@ -32,6 +32,24 @@ package com.dukascopy.connect.screens.payments.card {
 		static public const ETH:String = "ETH";
 		static public const BTC:String = "BTC";
 		static public const USDT:String = "UST";
+		
+		static public const AAL:String = "AAL";
+		static public const BAU:String = "BAU";
+		static public const BAB:String = "BAB";
+		static public const DIS:String = "DIS";
+		static public const GMU:String = "GMU";
+		static public const INT:String = "INT";
+		static public const LIG:String = "LIG";
+		static public const PFE:String = "PFE";
+		static public const SBU:String = "SBU";
+		static public const US5:String = "US5";
+		static public const BCH:String = "BCH";
+		static public const XLM:String = "XLM";
+		static public const BUN:String = "BUN";
+		static public const USB:String = "USB";
+		static public const UBE:String = "UBE";
+		static public const ZMU:String = "ZMU";
+		static public const MRN:String = "MRN";
 
 		public function TypeCurrency() { }
 	}
