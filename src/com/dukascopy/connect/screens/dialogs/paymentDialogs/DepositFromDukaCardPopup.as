@@ -22,7 +22,6 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 	import com.dukascopy.connect.screens.payments.card.CardStatic;
 	import com.dukascopy.connect.screens.payments.card.TypeCurrency;
 	import com.dukascopy.connect.sys.applicationError.ApplicationErrors;
-	import com.dukascopy.connect.sys.applicationShop.commodity.Commodity;
 	import com.dukascopy.connect.sys.auth.Auth;
 	import com.dukascopy.connect.sys.dialogManager.DialogManager;
 	import com.dukascopy.connect.sys.imageManager.ImageBitmapData;
@@ -74,7 +73,6 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 		private var newAmount:Number;
 		private var currentCommision:Number = 0;
 		private var preloaderShown:Boolean = false;
-		private var commodity:Commodity;
 		private var iAmountCurrency:Input;
 		private var selectorCurrency:DDFieldButton;
 		private var amountSectionTitle:Bitmap;

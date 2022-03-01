@@ -160,10 +160,8 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs.elements {
 			bg.graphics.lineTo(itemWidth, itemHeight - 2);
 		}
 		
-		private function drawIcon():void 
-		{
-			if (icon.bitmapData != null)
-			{
+		private function drawIcon():void {
+			if (icon.bitmapData != null) {
 				icon.bitmapData.dispose();
 				icon.bitmapData = null;
 			}
@@ -172,15 +170,14 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs.elements {
 				iconType = "DCO";
 			else if (data.storage == "BLOCKCHAIN")
 				iconType = "BLOCKCHAIN"
-			if (iconType != null)
-			{
+			if (iconType != null) {
 				var iconClip:Sprite = UI.getInvestIconByInstrument(iconType);
-				if (iconClip != null)
-				{
+				if (iconClip != null) {
 					var size:int = Config.FINGER_SIZE * .3;
 					UI.scaleToFit(iconClip, size, size);
 				}
 				icon.bitmapData = UI.getSnapshot(iconClip);
+				iconClip = null;
 			}
 		}
 		

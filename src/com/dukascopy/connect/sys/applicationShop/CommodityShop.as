@@ -1,9 +1,7 @@
 package com.dukascopy.connect.sys.applicationShop 
 {
-	import com.dukascopy.connect.data.GiftData;
 	import com.dukascopy.connect.sys.applicationShop.commodity.Commodity;
 	import com.dukascopy.connect.sys.applicationShop.commodity.CommodityType;
-	import com.dukascopy.connect.sys.serviceScreenManager.ServiceScreenManager;
 	import com.telefision.sys.signals.Signal;
 	/**
 	 * ...

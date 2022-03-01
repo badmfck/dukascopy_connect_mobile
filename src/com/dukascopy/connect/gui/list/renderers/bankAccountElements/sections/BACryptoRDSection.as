@@ -173,6 +173,7 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements.sections {
 			else if (data.storage_type == "BLOCKCHAIN")
 				flagAsset = UI.getInvestIconByInstrument("BLOCKCHAIN");
 			flagIcon.bitmapData = UI.renderAsset(flagAsset, ICON_SIZE, ICON_SIZE, false, "BACryptoRDSection.flagIcon");
+			flagAsset = null;
 			flagIcon.y = int((trueHeight - flagIcon.height) * .5);
 			flagIcon.x = Config.MARGIN;
 			tfStorage.x = ICON_SIZE + Config.DOUBLE_MARGIN;

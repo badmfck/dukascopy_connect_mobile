@@ -317,26 +317,20 @@ package com.dukascopy.connect.gui.list.renderers {
 			graphics.endFill();
 		}
 		
-		private function drawIcon(data:Object):void 
-		{
+		private function drawIcon(data:Object):void {
 			var iconSource:Sprite = getIcon(data);
-			if (iconSource != null)
-			{
+			if (iconSource != null) {
 				icon.bitmapData = UI.renderAsset(iconSource, ICON_SIZE, ICON_SIZE, false, "ListPayWalletItem.flagIcon");
 				icon.x = padding;
 				icon.y = (itemHeight - icon.height) * .5;
-			}
-			else
-			{
+			} else {
 				icon.bitmapData = null;
 			}
 		}
 		
-		protected function getIcon(data:Object):Sprite 
-		{
+		protected function getIcon(data:Object):Sprite {
 			var flagAsset:Sprite = UI.getFlagByCurrency(getCurrency(data));
-			if (flagAsset == null || flagAsset is SWFFlagNONE)
-			{
+			if (flagAsset == null || flagAsset is SWFFlagNONE) {
 				flagAsset = UI.getInvestIconByInstrument(getCurrency(data));
 			}
 			UI.disposeBMD(icon.bitmapData);

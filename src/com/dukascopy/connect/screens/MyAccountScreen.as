@@ -242,8 +242,7 @@ package com.dukascopy.connect.screens {
 		}
 		
 		private function showTutorial():void {
-			if (Config.isTest())
-			{
+			if (Config.isTest()) {
 				return;
 			}
 			Store.save(Store.BANK_TUTORIAL, (new Date()).getTime().toString());
@@ -448,6 +447,9 @@ package com.dukascopy.connect.screens {
 		private function onRefresh(init:Boolean = false):void {
 			if (_waiting == true)
 				return;
+			if (init == true) {
+				BankManager.setAutoUpdate(true);
+			}
 			resetIndexes();
 			topBar.showAnimationOverButton("refreshBtn", false);
 			_waiting = true;

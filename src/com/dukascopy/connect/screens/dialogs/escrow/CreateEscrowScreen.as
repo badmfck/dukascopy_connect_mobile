@@ -568,29 +568,21 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			return result;
 		}
 		
-		private function getIcon(instrument:EscrowInstrument):Sprite 
-		{
+		private function getIcon(instrument:EscrowInstrument):Sprite {
 			return UI.getInvestIconByInstrument(instrument.code);
 		}
 		
-		private function toState(newState:String):void 
-		{
-			if (state != newState)
-			{
+		private function toState(newState:String):void {
+			if (state != newState) {
 				hideCurrentState();
 				state = newState;
-				
-				if (state == STATE_REGISTER)
-				{
+				if (state == STATE_REGISTER) {
 					addItem(selectorInstrument);
 					createRegisterBlockchainClips();
 					drawRegisterBlock();
 					activateRegisterClips();
-				}
-				else if (state == STATE_START)
-				{
-					if (selectedDirection == TradeDirection.sell)
-					{
+				} else if (state == STATE_START) {
+					if (selectedDirection == TradeDirection.sell) {
 						addItem(terms);
 					}
 					addItem(selectorInstrument);
@@ -598,14 +590,10 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 					addItem(radio);
 					addItem(inputAmount);
 					addItem(balance);
-					if (controlPriceSelected == priceSelector)
-					{
+					if (controlPriceSelected == priceSelector) {
 						addItem(priceSelector);
-					}
-					else
-					{
-						if (selectorCurrency != null)
-						{
+					} else {
+						if (selectorCurrency != null) {
 							addItem(selectorCurrency);
 						}
 						addItem(inputPrice);

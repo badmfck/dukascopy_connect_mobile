@@ -3323,6 +3323,7 @@ package com.dukascopy.connect.sys.bankManager {
 			needToCash = false;
 			BankBotController.S_ANSWER.remove(onAnswerReceived);
 			BankBotController.reset();
+			setAutoUpdate(false);
 		}
 		
 		static public function getTotal():Object {
@@ -4484,6 +4485,20 @@ package com.dukascopy.connect.sys.bankManager {
 			request += "|!|" + DateUtils.getDateStringByFormat(dt, "YYYY-MM-DD", true);
 			BankBotController.getAnswer(request);
 			return true;
+		}
+		
+		static public function setAutoUpdate(val:Boolean):void {
+			if (val == true) {
+				TweenMax.delayedCall(120, updateHome);
+				return;
+			}
+			TweenMax.killDelayedCallsTo(updateHome);
+		}
+		
+		static private function updateHome():void {
+			TweenMax.delayedCall(120, updateHome);
+			
+			BankBotController.getAnswer("bot:bankbot payments:homeS");
 		}
 	}
 }

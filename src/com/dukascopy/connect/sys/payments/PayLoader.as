@@ -288,7 +288,7 @@ package com.dukascopy.connect.sys.payments {
 		
 		public function dispose():void {
 			echo("PayLoader (" + id + ")", "dispose");
-			closeURLLoader();	
+			closeURLLoader();
 			_savedRequestData = null;
 			_id = 0;
 			callBack = null;

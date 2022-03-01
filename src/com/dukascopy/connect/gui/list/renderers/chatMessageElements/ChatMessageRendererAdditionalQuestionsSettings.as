@@ -320,15 +320,12 @@ package com.dukascopy.connect.gui.list.renderers.chatMessageElements {
 				line.graphics.clear();
 			}
 			if (bird != null)
-			{
 				UI.destroy(bird);
-				bird = null;
-			}
+			bird = null;
 			if (buttonBack != null)
-			{
 				UI.destroy(buttonBack);
-				buttonBack = null;
-			}
+			buttonBack = null;
+			icon = null;
 			line = null;
 		}
 		

@@ -155,7 +155,7 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements.sections {
 				flagIcon.visible = true;
 				var flagAsset:Sprite = UI.getInvestIconByInstrument(data.INSTRUMENT);
 				flagIcon.bitmapData = UI.renderAsset(flagAsset, ICON_SIZE, ICON_SIZE, false, "BAInvestmentSection.flagIcon");
-				
+				flagAsset = null;
 				if (data.CONSOLIDATE_BALANCE != null) {
 					flagIcon.y = tfAmount.y + tfAmount.height - ICON_SIZE * .5 - Config.FINGER_SIZE * .025 ;
 				} else {
