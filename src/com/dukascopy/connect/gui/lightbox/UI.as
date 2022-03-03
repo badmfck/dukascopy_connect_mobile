@@ -1595,6 +1595,8 @@ package com.dukascopy.connect.gui.lightbox {
 		
 		[Inline]
 		static public function scaleToFit(objToScale:DisplayObject, fitWidth:Number, fitHeight:Number):void {
+			objToScale.scaleX = objToScale.scaleY = 1
+			objToScale.transform.matrix.identity();
 			var scale:Number = getMinScale(objToScale.width, objToScale.height, fitWidth, fitHeight);
 			objToScale.scaleX = objToScale.scaleY = scale;
 		}
