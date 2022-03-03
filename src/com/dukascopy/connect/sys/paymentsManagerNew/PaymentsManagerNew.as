@@ -60,6 +60,7 @@ package com.dukascopy.connect.sys.paymentsManagerNew {
 		static private var callbacksRDSwapStep1:Array;
 		static private var callbacksRDSwapStep2:Object;
 		static private var callbacksRDSwap:Object;
+		static private var callbacksSwapProlong:Object;
 		static private var callbacksCards:Array;
 		static private var callbacksLinkedCards:Array;
 		static private var callbacksCardAction:Object;
@@ -979,8 +980,12 @@ package com.dukascopy.connect.sys.paymentsManagerNew {
 				return hash;
 			}
 			var dta:Object = { action:action };
-			if (param != null)
-				dta.verification_value = param;
+			if (param != null) {
+				if (action == "block")
+					dta.type = param;
+				else
+					dta.verification_value = param;
+			}
 			PayServer.call_actionCard(onCardActionRespond, cardID, dta, hash);
 			return hash;
 		}
@@ -1894,6 +1899,41 @@ package com.dukascopy.connect.sys.paymentsManagerNew {
 				hashCallbacks.shift()(res, respond.savedRequestData.callID);
 			hashCallbacks = null;
 			delete callbacksRDSwap[respond.savedRequestData.callID];
+		}
+		
+		static public function swapProlong(callback:Function, code:String, rollover:int):String {
+			if (preCall() == false)
+				return null;
+			var hash:String = MD5.hash("swapProlong" + code + rollover);
+			if (callbacksSwapProlong == null || hash in callbacksSwapProlong == false) {
+				callbacksSwapProlong ||= {};
+				callbacksSwapProlong[hash] = [callback];
+			} else {
+				if (callbacksSwapProlong[hash].indexOf(callback) == -1)
+					callbacksSwapProlong[hash].push(callback);
+				return hash;
+			}
+			PayServer.call_updateSwap(onSwapProlong, code, rollover, hash);
+			return hash;
+		}
+		
+		static private function onSwapProlong(respond:PayRespond):void {
+			if (callbacksSwapProlong == null)
+				return;
+			var hashCallbacks:Array;
+			if (respond.savedRequestData.callID in callbacksSwapProlong == true)
+				hashCallbacks = callbacksSwapProlong[respond.savedRequestData.callID];
+			if (hashCallbacks == null || hashCallbacks.length == 0) {
+				delete callbacksSwapProlong[respond.savedRequestData.callID];
+				respond.dispose();
+				return;
+			}
+			var res:Object = checkForError(respond);
+			res.rollover = respond.savedRequestData.rollover;
+			while (hashCallbacks.length != 0)
+				hashCallbacks.shift()(res, respond.savedRequestData.callID);
+			hashCallbacks = null;
+			delete callbacksSwapProlong[respond.savedRequestData.callID];
 		}
 		
 		static public function transactionCode(callback:Function, trID:String, code:String):String {

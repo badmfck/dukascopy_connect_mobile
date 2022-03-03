@@ -354,6 +354,30 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			
 		//	updateScroll();
 		//	recreateLayout();
+			
+			GD.S_ESCROW_START_MONITORING.invoke();
+			GD.S_ESCROW_INSTRUMENTS.add(onInstruments);
+		}
+		
+		private function onInstruments(instrumentsData:Vector.<EscrowInstrument>):void 
+		{
+			trace("123");
+			
+			if (instrumentsData != null)
+			{
+				for (var i:int = 0; i < instrumentsData.length; i++) 
+				{
+					if (selectedCrypto != null)
+					{
+						if (selectedCrypto.code == instrumentsData[i].code)
+						{
+ 							selectedCrypto = instrumentsData[i];
+							break;
+						}
+					}
+				}
+			}
+			refreshPrice(true);
 		}
 		
 		private function selectCurrencyFromPrices():void 
@@ -506,11 +530,16 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			refreshPrice();
 		}
 		
-		private function refreshPrice():void 
+		private function refreshPrice(useCurrentValue:Boolean = false):void 
 		{
-			updatePrice();
+			updatePrice(useCurrentValue);
 			
-			priceSelector.draw(getWidth() - contentPadding * 2, -5, 5, 0, selectedPrice, getCurrency());
+			var startValue:Number = 0;
+			if (useCurrentValue)
+			{
+				startValue = priceSelector.getValue();
+			}
+			priceSelector.draw(getWidth() - contentPadding * 2, -5, 5, startValue, selectedPrice, getCurrency());
 			
 			updatePositions();
 		}
@@ -560,13 +589,16 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			}
 		}*/
 		
-		private function updatePrice():void 
+		private function updatePrice(useCurrentValue:Boolean = false):void 
 		{
 			var price:Number = getPrice();
 			if (!isNaN(price))
 			{
 				setPrice(price);
-				inputPrice.value = selectedPrice;
+				if (!useCurrentValue)
+				{
+					inputPrice.value = selectedPrice;
+				}
 				
 				var underlineText:String = Lang.current_price_of_instrument.replace(Lang.regExtValue, getInstrument()) + " = " + price + " " + getCurrency();
 				inputPrice.drawUnderlineValue(underlineText);
@@ -722,6 +754,8 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		
 		override public function dispose():void {
 			super.dispose();
+			
+			GD.S_ESCROW_STOP_MONITORING.invoke();
 			
 			if (inputPrice != null)
 			{

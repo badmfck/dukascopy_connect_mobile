@@ -96,6 +96,7 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements.sections {
 			if (flagAsset is SWFFlagNONE)
 				flagAsset = UI.getInvestIconByInstrument(data.CURRENCY);
 			flagIcon.bitmapData = UI.renderAsset(flagAsset, ICON_SIZE, ICON_SIZE, false, "BACryptoRDSection.flagIcon");
+			flagAsset = null;
 			flagIcon.y = Config.MARGIN;
 			flagIcon.x = int((w - ICON_SIZE) * .5);
 			

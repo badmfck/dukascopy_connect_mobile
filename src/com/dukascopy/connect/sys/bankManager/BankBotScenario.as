@@ -224,7 +224,10 @@ package com.dukascopy.connect.sys.bankManager {
 					}, {
 						text:"lang.menuCardDisable",
 						action:"nav:blockCardConfirm"
-					}, {
+					}, /*{
+						text:"lang.menuCardBlock",
+						action:"nav:blockHCardConfirm"
+					}, */{
 						text:"lang.menuHistory",
 						action:"app:historyCard",
 						selection:"@@1"
@@ -313,6 +316,7 @@ package com.dukascopy.connect.sys.bankManager {
 					{
 						text:"lang.menuCardTopUp",
 						type:"cardMoneySend",
+						textForUser:"lang.itemSendToCard",
 						value:"@@1",
 						action:"nav:cardWithdrawalConfirm"
 					}, {
@@ -564,6 +568,16 @@ package com.dukascopy.connect.sys.bankManager {
 				]
 			},
 			
+			blockHCardConfirm: {
+				desc:"lang.confirmCardBlockH",
+				buttons: [
+					{
+						text:"lang.buttonConfirm",
+						action:"nav:blockHCardConfirmed"
+					}
+				]
+			},
+			
 			removeCardConfirm: {
 				desc:"lang.confirmCardRemove",
 				buttons: [
@@ -630,6 +644,23 @@ package com.dukascopy.connect.sys.bankManager {
 			
 			blockCardConfirmed: {
 				desc:"lang.confirmedCardDisable lang.otherOperation",
+				isLast: true,
+				item: {
+					type:"cardsRemove"
+				},
+				buttons: [
+					{
+						text:"lang.buttonYes",
+						action:"nav:main"
+					}, {
+						text:"lang.buttonNo",
+						action:"app:back"
+					}
+				]
+			},
+			
+			blockHCardConfirmed: {
+				desc:"lang.confirmedCardBlockH lang.otherOperation",
 				isLast: true,
 				item: {
 					type:"cardsRemove"
@@ -1761,12 +1792,115 @@ package com.dukascopy.connect.sys.bankManager {
 			},
 			
 			cryptoSwapList: {
-				desc:"lang.cryptoSwapTermsDesc",
+				desc:"lang.cryptoSwapEntitiesDesc",
 				menuLayout:"vertical",
 				item: {
 					type:"showSwaps",
-					action:"nav:cryptoSwapOptions"
+					action:"nav:cryptoSwapOptions",
+					action1:"nav:cryptoSwapOptionsAddress"
 				}
+			},
+			
+			cryptoSwapOptions: {
+				desc:"lang.cryptoSwapOptionsDesc",
+				menuLayout:"vertical",
+				item: {
+					type:"showSwapDetails",
+					value:"@@1"
+				},
+				menu:[
+					{
+						text:"lang.menuSwapProlongationRequest",
+						disabled: true,
+						action:"nav:cryptoSwapProlongationRequestConfirm"
+					}, {
+						text:"lang.menuSwapProlongationCancelling",
+						disabled: true,
+						action:"nav:cryptoSwapProlongationCancelConfirm"
+					}
+				]
+			},
+			
+			cryptoSwapOptionsAddress: {
+				desc:"lang.cryptoSwapOptionsAddressDesc lang.cryptoSwapOptionsDesc",
+				menuLayout:"vertical",
+				item: {
+					type:"showSwapDetails",
+					value:"@@1"
+				},
+				menu:[
+					{
+						text:"lang.menuSwapProlongationRequest",
+						disabled: true,
+						action:"nav:cryptoSwapProlongationRequestConfirm"
+					}, {
+						text:"lang.menuSwapProlongationCancelling",
+						disabled: true,
+						action:"nav:cryptoSwapProlongationCancelConfirm"
+					}, {
+						text:"lang.buttonCopyAddress",
+						type:"BCDepositeCopyAddress",
+						value:"%@"
+					}
+				]
+			},
+			
+			cryptoSwapProlongationRequestConfirm: {
+				desc:"lang.cryptoSwapProlongationRequestDesc",
+				menuLayout:"vertical",
+				item: {
+					type:"showSwap",
+					value:"@@1"
+				},
+				buttons: [
+					{
+						text:"lang.buttonConfirm",
+						action:"nav:cryptoSwapProlongationRequestConfirmed"
+					}
+				]
+			},
+			
+			cryptoSwapProlongationRequestConfirmed: {
+				desc:"lang.confirmedSwapProlongation lang.otherOperation",
+				isLast:true,
+				buttons: [
+					{
+						text:"lang.buttonYes",
+						action:"nav:main"
+					}, {
+						text:"lang.buttonNo",
+						action:"app:back"
+					}
+				]
+			},
+			
+			cryptoSwapProlongationCancelConfirm: {
+				desc:"lang.cryptoSwapProlongationCancelDesc",
+				menuLayout:"vertical",
+				item: {
+					type:"showSwap",
+					value:"@@1"
+				},
+				buttons: [
+					{
+						text:"lang.buttonConfirm",
+						action:"nav:cryptoSwapProlongationCancelConfirmed"
+					}
+				]
+			},
+			
+			cryptoSwapProlongationCancelConfirmed: {
+				desc:"confirmedSwapProlongationCancel lang.otherOperation",
+				isLast:true,
+				buttons: [
+					{
+						text:"lang.buttonYes",
+						action:"nav:main"
+					}, {
+						text:"lang.buttonNo",
+						action:"app:back"
+					}
+				]
 			},
 			
 			cryptoSwapFirstConfirm: {
@@ -1785,7 +1919,7 @@ package com.dukascopy.connect.sys.bankManager {
 				menuLayout:"vertical",
 				menu:[
 					{
-						text:"Choose amount",
+						text:"lang.menuSwapChooseAmount",
 						textForUser:"lang.itemCryptoSwapFiatAmount",
 						type:"cryptoSwapAmount",
 						action:"nav:cryptoSwapThirdConfirm"
@@ -1822,13 +1956,15 @@ package com.dukascopy.connect.sys.bankManager {
 				]
 			},
 			
-			
-			
 			cryptoSwapCreatedConfirmed: {
 				desc:"lang.confirmedCryptoSwapCreated lang.otherOperation",
 				isLast:true,
 				buttons: [
 					{
+						text:"lang.buttonCopyAddress",
+						type:"BCDepositeCopyAddress",
+						value:"@@1"
+					}, {
 						text:"lang.buttonYes",
 						action:"nav:main"
 					}, {
@@ -3240,6 +3376,27 @@ package com.dukascopy.connect.sys.bankManager {
 					{
 						text:"lang.menuCryptoWithdrawal",
 						action:"nav:cryptoBCWithdrawal"
+					}
+				],
+				buttons: [
+					{
+						text:"lang.buttonOk",
+						action:"nav:main"
+					}
+				]
+			},
+			
+			limitIncreaseError: {
+				desc:"@@1",
+				isError: true,
+				isItem: true,
+				item: {
+					type:"error"
+				},
+				menu: [
+					{
+						text:"lang.menuIncreaseLimits",
+						action:"app:limits"
 					}
 				],
 				buttons: [

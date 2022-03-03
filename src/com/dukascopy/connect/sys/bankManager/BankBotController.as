@@ -136,6 +136,30 @@ package com.dukascopy.connect.sys.bankManager {
 				}
 			}
 			if (command == "nav") {
+				if (tmp[1] == "cryptoSwapOptions") {
+					sendBlock(tmp[1], [steps[steps.length - 1].val]);
+					return;
+				}
+				if (tmp[1] == "cryptoSwapOptions" || tmp[1] == "cryptoSwapOptionsAddress") {
+					sendBlock(tmp[1], [steps[steps.length - 1].val]);
+					return;
+				}
+				if (tmp[1] == "cryptoSwapProlongationRequestConfirm") {
+					sendBlock(tmp[1], [steps[steps.length - 2].val]);
+					return;
+				}
+				if (tmp[1] == "cryptoSwapProlongationCancelConfirm") {
+					sendBlock(tmp[1], [steps[steps.length - 2].val]);
+					return;
+				}
+				if (tmp[1] == "cryptoSwapProlongationRequestConfirmed") {
+					onSwapProlongation(1);
+					return;
+				}
+				if (tmp[1] == "cryptoSwapProlongationCancelConfirmed") {
+					onSwapProlongation(0);
+					return;
+				}
 				if (tmp[1] == "cryptoSwapSecondConfirm") {
 					onRewardDepositeSwapStep1();
 					return;
@@ -623,6 +647,10 @@ package com.dukascopy.connect.sys.bankManager {
 					onBlockCardConfirm();
 					return;
 				}
+				if (tmp[1] == "blockHCardConfirmed") {
+					onBlockHCardConfirm();
+					return;
+				}
 				if (tmp[1] == "unblockCardConfirmed") {
 					onUnblockCardConfirm();
 					return;
@@ -845,6 +873,12 @@ package com.dukascopy.connect.sys.bankManager {
 				callPaymentsMethod("rdSwapConfirm:" + steps[steps.length - 3].val + "|!|" + steps[steps.length - 2].val);
 		}
 		
+		static private function onSwapProlongation(val:int):void {
+			sendBlock("actionProgress");
+			if (steps.length > 2)
+				callPaymentsMethod("swapProlong:" + steps[steps.length - 3].val + "|!|" + val);
+		}
+		
 		static private function onCryptoSwapList():void {
 			sendBlock("actionProgress");
 			callPaymentsMethod("cryptoSwapList");
@@ -1025,6 +1059,11 @@ package com.dukascopy.connect.sys.bankManager {
 			callPaymentsMethod("cardAction:" + steps[steps.length - 3].val);
 		}
 		
+		static private function onBlockHCardConfirm():void {
+			sendBlock("actionProgress");
+			callPaymentsMethod("cardAction:" + steps[steps.length - 3].val + "|!|H");
+		}
+		
 		static private function onUnblockCardConfirm():void {
 			sendBlock("actionProgress");
 			callPaymentsMethod("cardAction:" + steps[steps.length - 3].val);
@@ -1094,11 +1133,19 @@ package com.dukascopy.connect.sys.bankManager {
 					return;
 				lastPaymentsRequests[PaymentsManagerNew.rdSwap(onRDSwap, temp[0], temp[1], temp[2], temp[3])] = msg;
 			}
+			if (command == "swapProlong") {
+				if (checkForPaymentsRequestExist(msg) == true)
+					return;
+				temp = msg.substr(command.length + 1).split("|!|");
+				if (temp.length != 2)
+					return;
+				lastPaymentsRequests[PaymentsManagerNew.swapProlong(onSwapProlonged, temp[0], temp[1])] = msg;
+			}
 			if (command == "cryptoSwapList") {
 				if (checkForPaymentsRequestExist(msg) == true)
 					return;
 				lastPaymentsRequests["cryptoSwapList"] = msg;
-				lastPaymentsRequests[PaymentsManagerNew.cryptoSwapList(onCryptoSwapListResponse)] = msg;
+				PaymentsManagerNew.cryptoSwapList(onCryptoSwapListResponse);
 			}
 			if (command == "fatCatz") {
 				if (checkForPaymentsRequestExist(msg) == true)
@@ -1554,6 +1601,8 @@ package com.dukascopy.connect.sys.bankManager {
 						lastPaymentsRequests["removeCard" + temp[0]] = msg;
 						PaymentsManagerNew.callCardRemove(onCardRemoved, temp[0]);
 					}
+				} else if (temp.length == 4 && temp[3] == "H") {
+					lastPaymentsRequests["blockCard" + PaymentsManagerNew.callCardAction(onCardHBlocked, temp[0], "block", "H")] = msg;
 				}
 			}
 		}
@@ -1772,8 +1821,11 @@ package com.dukascopy.connect.sys.bankManager {
 		}
 		
 		static private function onCryptoDepositeAddressInvestment(respondData:Object, hash:String):void {
-			if (preCheckForErrors(respondData, hash, null, "paymentsErrorDataNull") == true)
+			if (preCheckForErrors(respondData, hash, null, "paymentsErrorDataNull", [3012]) == true) {
+				if (respondData.code == 3012)
+					sendBlock("limitIncreaseError", [respondData.msg]);
 				return;
+			}
 			var temp:Array = steps[steps.length - 2].val.split("|!|");
 			sendBlock("bcDepositeAddressInvestmentConfirmed", [respondData.address, temp[0], temp[1]]);
 		}
@@ -1825,6 +1877,13 @@ package com.dukascopy.connect.sys.bankManager {
 		}
 		
 		static private function onCardBlocked(respondData:Object, hash:String):void {
+			if (preCheckForErrors(respondData, "blockCard" + hash, null, "paymentsErrorDataNull") == true)
+				return;
+			sendBlock("clearCards");
+			sendBlock("blockCardConfirmed");
+		}
+		
+		static private function onCardHBlocked(respondData:Object, hash:String):void {
 			if (preCheckForErrors(respondData, "blockCard" + hash, null, "paymentsErrorDataNull") == true)
 				return;
 			sendBlock("clearCards");
@@ -1957,7 +2016,7 @@ package com.dukascopy.connect.sys.bankManager {
 		}
 		
 		static private function onCryptoSwapListResponse(respondData:Object):void {
-			if (preCheckForErrors(respondData, "rdSwapStep1", null, "paymentsErrorDataNull") == true)
+			if (preCheckForErrors(respondData, "cryptoSwapList", null, "paymentsErrorDataNull") == true)
 				return;
 			respondData.step = 1;
 			S_ANSWER.invoke("requestRespond:cryptoSwapList:" + JSON.stringify(respondData));
@@ -1987,6 +2046,15 @@ package com.dukascopy.connect.sys.bankManager {
 				sendBlock("cryptoSwapConfirmed");
 			else
 				sendBlock("cryptoSwapCreatedConfirmed", [respondData.address]);
+		}
+		
+		static private function onSwapProlonged(respondData:Object, hash:String):void {
+			if (preCheckForErrors(respondData, hash, null, "paymentsErrorDataNull") == true)
+				return;
+			if (respondData.rollover == 1)
+				sendBlock("cryptoSwapProlongationRequestConfirmed");
+			else
+				sendBlock("cryptoSwapProlongationCancelConfirmed");
 		}
 		
 		static private function onPossibleRD(respondData:Object, hash:String):void {
@@ -2705,25 +2773,17 @@ package com.dukascopy.connect.sys.bankManager {
 				return 2;
 			}
 			if ("errorType" in respondData) {
-				if (respondData.code == -2) {
-					
+				if (respondData.code == -2 || respondData.code == -3) {
 					var errorText:String;
-					if (respondData is String)
-					{
+					if (respondData is String) {
 						errorText = respondData as String;
-					}
-					else if (respondData is Object)
-					{
-						if ("msg" in respondData && respondData.msg != null)
-						{
+					} else if (respondData is Object) {
+						if ("msg" in respondData && respondData.msg != null) {
 							errorText = respondData.msg;
-						}
-						else
-						{
+						} else {
 							errorText = respondData as String;
 						}
 					}
-					
 					S_ANSWER.invoke("requestRespond:error:" + errorText);
 					return 2;
 				}

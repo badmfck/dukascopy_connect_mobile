@@ -141,6 +141,7 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements.sections {
 				else if ("COIN" in data == true)
 					flagAsset = UI.getInvestIconByInstrument(data.COIN);
 				flagIcon.bitmapData = UI.renderAsset(flagAsset, ICON_SIZE, ICON_SIZE, false, "BAWalletSection.flagIcon");
+				flagAsset = null;
 				flagIcon.y = tfAmount.y - Config.FINGER_SIZE*.035;
 				flagIcon.x = leftX;
 				tfAmount.x = leftX + Config.FINGER_SIZE*.5;

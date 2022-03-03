@@ -1,49 +1,40 @@
 package com.dukascopy.connect.sys.chatManager.typesManagers {
 	
 	import com.dukascopy.connect.GD;
+	import com.dukascopy.connect.MobileGui;
 	import com.dukascopy.connect.data.ErrorMessages;
 	import com.dukascopy.connect.data.ResponseResolver;
 	import com.dukascopy.connect.data.UserBanData;
 	import com.dukascopy.connect.gui.components.message.ToastMessage;
-	import com.dukascopy.connect.MobileGui;
 	import com.dukascopy.connect.screens.RootScreen;
-	import com.dukascopy.connect.screens.payments.card.TypeCurrency;
 	import com.dukascopy.connect.sys.applicationError.ApplicationErrors;
 	import com.dukascopy.connect.sys.applicationShop.Shop;
-	import com.dukascopy.connect.sys.applicationShop.commodity.Commodity;
 	import com.dukascopy.connect.sys.applicationShop.parser.ShopProductDataParser;
-	import com.dukascopy.connect.sys.applicationShop.product.ProductCost;
 	import com.dukascopy.connect.sys.applicationShop.product.ProductType;
 	import com.dukascopy.connect.sys.applicationShop.product.ShopProduct;
-	import com.dukascopy.connect.sys.applicationShop.product.SubscriptionDuration;
-	import com.dukascopy.connect.sys.applicationShop.product.SubscriptionDurationType;
 	import com.dukascopy.connect.sys.applicationShop.serverTask.PaidChannelRequestData;
 	import com.dukascopy.connect.sys.auth.Auth;
 	import com.dukascopy.connect.sys.chatManager.ChatManager;
-	import com.dukascopy.connect.sys.chatManager.ChatUsersCollection;
 	import com.dukascopy.connect.sys.echo.echo;
 	import com.dukascopy.connect.sys.errors.ErrorLocalizer;
 	import com.dukascopy.connect.sys.notifier.NewMessageNotifier;
 	import com.dukascopy.connect.sys.php.PHP;
 	import com.dukascopy.connect.sys.php.PHPRespond;
-	import com.dukascopy.connect.sys.sqlite.SQLite;
 	import com.dukascopy.connect.sys.sqlite.SQLRespond;
+	import com.dukascopy.connect.sys.sqlite.SQLite;
 	import com.dukascopy.connect.sys.store.Store;
 	import com.dukascopy.connect.sys.ws.WS;
 	import com.dukascopy.connect.sys.ws.WSClient;
 	import com.dukascopy.connect.sys.ws.WSMethodType;
-	import com.dukascopy.connect.sys.ws.WSMethodType;
 	import com.dukascopy.connect.type.ActionType;
 	import com.dukascopy.connect.type.ChatInitType;
-	import com.dukascopy.connect.utils.ArrayUtils;
-	import com.dukascopy.connect.vo.chat.QuestionUserReactions;
-	import com.dukascopy.connect.vo.users.adds.ChatUserVO;
 	import com.dukascopy.connect.vo.ChatSettingsRemote;
 	import com.dukascopy.connect.vo.ChatVO;
+	import com.dukascopy.connect.vo.chat.QuestionUserReactions;
 	import com.dukascopy.connect.vo.screen.ChatScreenData;
+	import com.dukascopy.connect.vo.users.adds.ChatUserVO;
 	import com.dukascopy.langs.Lang;
 	import com.telefision.sys.signals.Signal;
-	import flash.utils.getTimer;
 	import flash.utils.getTimer;
 	
 	/**

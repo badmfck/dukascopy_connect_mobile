@@ -8,6 +8,7 @@ package com.dukascopy.connect.sys.payments.vo {
 		public var cardWithdrawalCurrencies:Array;
 		
 		public var currencyList:Array;
+		public var currencyListDepositeCards:Array;
 		public var terms:String;
 		public var ppcardsCurrencies:Array;
 		public var investmentCurrencies:Array;
@@ -36,13 +37,21 @@ package com.dukascopy.connect.sys.payments.vo {
 		];
 		
 		public function SystemOptionsVO() { }
-	//	
+		
 		public function update(data:Object):void {
 			if (data == null)
 				return;
 			var key:String = 'currency-list';
 			if (key in data == true)
 				currencyList = data[key];
+			key = 'currency-operation';
+			if (key in data == true) {
+				if ("deposit" in data[key] == true && data[key]["deposit"] != null) {
+					if ("cards" in data[key]["deposit"] == true && data[key]["deposit"]["cards"] != null) {
+						currencyListDepositeCards = data[key]["deposit"]["cards"];
+					}
+				}
+			}
 			key = 'gtc-text';
 			if (key in data == true)
 				terms = data[key];

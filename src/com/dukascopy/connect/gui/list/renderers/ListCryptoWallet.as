@@ -111,8 +111,7 @@ package com.dukascopy.connect.gui.list.renderers {
 			if (li.data != null && li.data is EscrowInstrument){
 				flagIcon.visible = true;
 				var flagAsset:Sprite = UI.getInvestIconByInstrument((li.data as EscrowInstrument).code);
-				if (flagAsset != null)
-				{
+				if (flagAsset != null) {
 					UI.scaleToFit(flagAsset, ICON_SIZE, ICON_SIZE);
 					flagIcon.addChild(flagAsset);
 					

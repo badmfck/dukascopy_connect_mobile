@@ -84,11 +84,16 @@ package com.dukascopy.connect.sys.bankManager {
 		static public var invoicesDesc:String = "Invoices";
 		static public var cardPinRequestDesc:String = "Please select pin request method.";
 		static public var zeroAccountDesc:String = "You have no funded accounts.";
+		static public var cryptoSwapEntitiesDesc:String = "GetCash swap entities.";
+		static public var cryptoSwapOptionsDesc:String = "Choose GetCash swap entity action.";
+		static public var cryptoSwapOptionsAddressDesc:String = "Your GETCA$H Swap contract has been created but not funded yet. To finalise the contract, please transfer corresponding amount of Dukascoins (DUK+) to the corresponding blockchain address.";
 		static public var cryptoSwapTermsDesc:String = "Get quick money by selling your staked Dukascoins (DUK+) with a buyback in 1 month at a fixed price.\\nChoose an active stake to know how much you can get:";
 		static public var cryptoSwapFiatAmountDesc:String = "For selected Stake you can receive between @@1 and @@2.\\nIndicate the amount you would like to receive:";
 		static public var cryptoSwapConfirmDesc:String = "I confirm the above and I have read and agree with the\\n\\n<a href='https://www.dukascopy.bank/swiss/fees-limits/'>GETCA$H Swap contract terms and conditions</a>";
 		static public var confirmRDCancelWithPenaltyDesc:String = "You are about to cancel your reward deposit before its maturity date. This will lead to no reward being paid for the cancelled deposit and to a penalty charge  applied to the allocated Dukascoins in the amount of @@1 Dukascoins.\\n\\nTotal amount to be returned: @@2 Dukascoins";
 		static public var confirmRDCancelWithoutPenaltyDesc:String = "You are about to cancel your reward deposit before its maturity date. This will lead to no reward being paid for the cancelled deposit.\\n\\nTotal amount to be returned: @@2 Dukascoins";
+		static public var cryptoSwapProlongationRequestDesc:String = "You may request GETCA$H Swap contract rollover (prolongation) for one month for the same buyback amount and prolongation fee (%@). After filing the request, a new GETCA$H Swap contract will be created.";
+		static public var cryptoSwapProlongationCancelDesc:String = "The prolongation of the selected swap will be cancelled if you proceed. Please confirm the action.";
 		
 		static public var bcDepositeDesc:String = "You will be required to declare the DUK+ amount you intend to deposit during your top-up. Note that the entered DUK+ deposit amount has to match exactly the sum of Dukascoins that Dukascopy will receive, otherwise your deposit is likely not to be accepted.\\n\\n"
 			+ "A unique deposit address will be generated for this deposit. It will be valid only for one deposit operation in the amount you declare in advance in the present form. Keep it strictly confidentially and do not disclose to third parties.";
@@ -125,6 +130,7 @@ package com.dukascopy.connect.sys.bankManager {
 		static public var confirmOfferDeactivate:String = "Do you want to deactivate it?";
 		static public var confirmOfferDelete:String = "Do you want to delete it?";
 		static public var confirmChangeCurrency:String = "Do you want to change main currecy?";
+		static public var confirmCardBlockH:String = "This function allows to permanently block your Dukascopy card. This action cannot be undone. Please confirm your card permanent blockage.";
 		
 		// CONFIRMED DESCRIPTIONS
 		static public var confirmedCardDeposite:String = "Your deposit has been completed.";
@@ -159,10 +165,13 @@ package com.dukascopy.connect.sys.bankManager {
 		static public var confirmedPinCallbackRequest:String = "Automatic voice call with a pin code is being made on your mobile phone number. If you have not received it, please try one more time or let us know at support@dukascopy.bank or support chat.";
 		static public var confirmedChangeCurrency:String = "Main currency changed.";
 		static public var confirmedCryptoSwapActive:String = "Your GETCA$H Swap contract has been successfully made and cash amount has been credited on your account.";
-		static public var confirmedCryptoSwapCreated:String = "Your GETCA$H Swap contract has been created but not funded yet. To finalise the contract, please transfer corresponding amount of Dukascoins (DUK+) to the corresponding blockchain address.\\n@@1";
+		static public var confirmedCryptoSwapCreated:String = "Your GETCA$H Swap contract has been created but not funded yet. To finalise the contract, please transfer corresponding amount of Dukascoins (DUK+) to the corresponding blockchain address.\\n@@1\\n\\n";
 		static public var confirmedBCAddressDeposite:String = "The address for this Dukascoin deposit operation is:\\n@@1\\n\\nPlease transfer the exact amount of @@2 Dukascoin\/s to this address.\\n\\nCAUTION! Any discrepancy between the amount declared and the actual deposit performed, mismatch in token address will potentially cause the total loss of the transferred crypto-assets. Dukascopy Bank SA is not obliged to return any crypto tokens received in case of the erroneous or unidentified transactions.";
 		static public var confirmedBCAddressDepositeInvestment:String = "The address for this @@3 investment from blockchain operation is:\\n@@1\\n\\nPlease transfer the exact amount of @@2 @@3 to this address.\\n\\nCAUTION! Any discrepancy between the amount declared and the actual deposit performed, mismatch in token address will potentially cause the total loss of the transferred crypto-assets. Dukascopy Bank SA is not obliged to return any crypto tokens received in case of the erroneous or unidentified transactions.";
 		static public var confirmedTransactionAdd:String = "Please note that this payment method is intended for sending money <b>internally</b> between two Multi-Currency Account holders.\\n\\nThe Bank reserves the right to clarify the purpose of money transfer. To avoid delay in payment processing it is recommended to always fill in the <b>Message</b> field.";
+		static public var confirmedSwapProlongation:String = "Prolongation request has been sent.";
+		static public var confirmedSwapProlongationCancel:String = "Prolongation cancelling request has been sent.";
+		static public var confirmedCardBlockH:String = "Your card was permanently blocked.";
 		
 		// MENU ITEMS
 		static public var menuInvestmentTransfer:String = "Investment transfer";
@@ -315,6 +324,10 @@ package com.dukascopy.connect.sys.bankManager {
 		static public var menuCryptoSwap:String = "Swap Dukascoins";
 		static public var menuSwapCrypto:String = "New swap contract";
 		static public var menuSwapList:String = "List of swaps";
+		static public var menuSwapChooseAmount:String = "Choose amount";
+		static public var menuSwapProlongationRequest:String = "Prolongation request";
+		static public var menuSwapProlongationCancelling:String = "Prolongation cancelling";
+		static public var menuCardBlock:String = "Block card";
 		
 		static public var investmentIndex:String = "Index";
 		static public var investmentSilver:String = "Silver";

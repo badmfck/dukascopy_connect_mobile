@@ -120,7 +120,7 @@ package com.dukascopy.connect.gui.lightbox {
 		// 
 		public static function renderAsset(instance:DisplayObject, fitWidth:int, fitHeight:int, destroyInstance:Boolean=true, name:String = ""):ImageBitmapData
 		{
-			if (instance == null) return null;		
+			if (instance == null) return null;
 			instance.scaleX = instance.scaleY = 1;		
 			var scale:Number = getMinScale(instance.width, instance.height, fitWidth, fitHeight);
 			instance.scaleX = instance.scaleY = scale;
@@ -1594,16 +1594,12 @@ package com.dukascopy.connect.gui.lightbox {
 		
 		
 		[Inline]
-		static public function scaleToFit(objToScale:DisplayObject, fitWidth:Number, fitHeight:Number):void
-		{
-			objToScale.transform.matrix.identity();
-			objToScale.transform.matrix = new Matrix();
+		static public function scaleToFit(objToScale:DisplayObject, fitWidth:Number, fitHeight:Number):void {
 			var scale:Number = getMinScale(objToScale.width, objToScale.height, fitWidth, fitHeight);
 			objToScale.scaleX = objToScale.scaleY = scale;
 		}
 		
-		static public function scaleManual(bmdBig:BitmapData, ratio:Number, disposeBigBmd:Boolean = false):ImageBitmapData 
-		{
+		static public function scaleManual(bmdBig:BitmapData, ratio:Number, disposeBigBmd:Boolean = false):ImageBitmapData {
 			var bmBig:Bitmap = new Bitmap(bmdBig, PixelSnapping.NEVER, true);
 			bmBig.smoothing = true;
 			var m:Matrix = reusableMatrix;
@@ -1648,8 +1644,7 @@ package com.dukascopy.connect.gui.lightbox {
 		
 		private static var tempBitmap:Bitmap = new Bitmap();
 		
-		public static function drawInputUnderLine(_color:uint, _width:int, _height:int, _thickness:Number = 1, _transparency:Number = 1):ImageBitmapData
-		{
+		public static function drawInputUnderLine(_color:uint, _width:int, _height:int, _thickness:Number = 1, _transparency:Number = 1):ImageBitmapData {
 			if (_width < 1) _width = 1;
 			if (_height < 1) _height = 1;
 			var _gfx:Graphics = reusableShape.graphics;
@@ -2328,10 +2323,80 @@ package com.dukascopy.connect.gui.lightbox {
 					invUSDT ||= new SWFInvestmentUSDT();
 					icon = invUSDT;
 					break;
+				case TypeCurrency.AAL:
+					invUSDT ||= new InvestmentAAL();
+					icon = invUSDT;
+					break;
+				case TypeCurrency.BAU:
+					invUSDT ||= new InvestmentBAU();
+					icon = invUSDT;
+					break;
+				case TypeCurrency.BAB:
+					invUSDT ||= new InvestmentBAB();
+					icon = invUSDT;
+					break;
+				case TypeCurrency.DIS:
+					invUSDT ||= new InvestmentDIS();
+					icon = invUSDT;
+					break;
+				case TypeCurrency.GMU:
+					invUSDT ||= new InvestmentGMU();
+					icon = invUSDT;
+					break;
+				case TypeCurrency.INT:
+					invUSDT ||= new InvestmentINT();
+					icon = invUSDT;
+					break;
+				case TypeCurrency.LIG:
+					invUSDT ||= new InvestmentLIG();
+					icon = invUSDT;
+					break;
+				case TypeCurrency.PFE:
+					invUSDT ||= new InvestmentPFE();
+					icon = invUSDT;
+					break;
+				case TypeCurrency.SBU:
+					invUSDT ||= new InvestmentSBU();
+					icon = invUSDT;
+					break;
+				case TypeCurrency.US5:
+					invUSDT ||= new SWFInvestmentUSA();
+					icon = invUSDT;
+					break;
+				case TypeCurrency.BCH:
+					invUSDT ||= new InvestmentBCH();
+					icon = invUSDT;
+					break;
+				case TypeCurrency.XLM:
+					invUSDT ||= new InvestmentXLM();
+					icon = invUSDT;
+					break;
+				case TypeCurrency.BUN:
+					invUSDT ||= new SWFInvestmentDEU();
+					icon = invUSDT;
+					break;
+				case TypeCurrency.USB:
+					invUSDT ||= new SWFInvestmentUSA();
+					icon = invUSDT;
+					break;
+				case TypeCurrency.UBE:
+					invUSDT ||= new InvestmentUBE();
+					icon = invUSDT;
+					break;
+				case TypeCurrency.ZMU:
+					invUSDT ||= new InvestmentZMU();
+					icon = invUSDT;
+					break;
+				case TypeCurrency.MRN:
+					invUSDT ||= new InvestmentMRN();
+					icon = invUSDT;
+					break;
 				default:
 					invNONE ||= new SWFFlagNONE();
 					icon = invNONE;
 			}
+			icon.transform.matrix.identity();
+			icon.scaleX = icon.scaleY = 1;
 			return icon;
 		}
 		

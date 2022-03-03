@@ -136,8 +136,7 @@ package com.dukascopy.connect.screens {
 			_view.addChild(input);
 		}
 		
-		private function openP2P():void 
-		{
+		private function openP2P():void {
 			(new Open911ScreenAction()).execute();
 		}
 		
@@ -243,8 +242,7 @@ package com.dukascopy.connect.screens {
 		}
 		
 		private function showTutorial():void {
-			if (Config.isTest())
-			{
+			if (Config.isTest()) {
 				return;
 			}
 			Store.save(Store.BANK_TUTORIAL, (new Date()).getTime().toString());
@@ -304,13 +302,18 @@ package com.dukascopy.connect.screens {
 				if (val.text != "@@1")
 					ToastMessage.display("Server is busy, please try later.");
 				else
-					ToastMessage.display("val.text");
-			} else if (val != BankManager.PWP_NOT_ENTERED) {
-				ToastMessage.display("Server is busy, please try later.");
+					ToastMessage.display(val.text);
+			} else if (val is String) {
+				if (val == BankManager.PWP_NOT_ENTERED) {
+					onBack();
+					return;
+				} else {
+					ToastMessage.display(val as String);
+				}
 			} else {
-				onBack();
-				return;
+				ToastMessage.display("Server is busy, please try later.");
 			}
+			
 			_waiting = false;
 			if (topBar != null)
 			{
@@ -444,6 +447,9 @@ package com.dukascopy.connect.screens {
 		private function onRefresh(init:Boolean = false):void {
 			if (_waiting == true)
 				return;
+			if (init == true) {
+				BankManager.setAutoUpdate(true);
+			}
 			resetIndexes();
 			topBar.showAnimationOverButton("refreshBtn", false);
 			_waiting = true;
@@ -458,6 +464,8 @@ package com.dukascopy.connect.screens {
 		private function onRefresh1(init:Boolean = false):void {
 			page++;
 			if (callMore == false)
+				return;
+			if (BankManager.getIsCardHistory() == true)
 				return;
 			topBar.showAnimationOverButton("refreshBtn", false);
 			if (storedFiltersForLoading == null) {
@@ -590,7 +598,8 @@ package com.dukascopy.connect.screens {
 		}
 		
 		private function onAllDataLoaded(error:Boolean = false, local:Boolean = true):void {
-			BankManager.getCards(true);
+			if (error == false)
+				BankManager.getCards(true);
 			if (local == false) {
 				_waiting = false;
 				topBar.hideAnimation();

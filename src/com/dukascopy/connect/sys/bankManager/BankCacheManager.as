@@ -17,7 +17,6 @@ package com.dukascopy.connect.sys.bankManager {
 		public function BankCacheManager() { }
 		
 		public static function init():void {
-//			GD.S_CONFIG_UPDATED.add(onConfigUpdated);
 			GD.S_BANK_CACHE_ACCOUNT_INFO_REQUEST.add(getAccountInfoCache, "BankCacheManager");
 			GD.S_BANK_CACHE_ACCOUNT_INFO_SAVE.add(setAccountInfoCache, "BankCacheManager");
 			

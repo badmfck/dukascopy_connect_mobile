@@ -116,6 +116,11 @@ package com.dukascopy.connect.screens.promocodes
 		}
 		
 		private function onAgreementStatusLoaded(data:Object, error:Boolean = false):void {
+			drawReferralProgram();
+			return;
+			
+			
+			
 			if (error == false && data == true) {
 				ReferralProgram.agreementAccepted = true;
 				drawReferralProgram();

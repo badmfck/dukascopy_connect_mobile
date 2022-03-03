@@ -53,6 +53,17 @@ package com.dukascopy.connect.sys.payments.vo {
 		public static var FIELD_DETAILS_TO:String = "FIELD_DETAILS_TO";
 		public static var FIELD_DETAILS_MESSAGE:String = "FIELD_DETAILS_MESSAGE";
 		
+		public static var FIELD_SWAP_DETAILS_AMOUNT:String = "FIELD_SWAP_DETAILS_AMOUNT";
+		public static var FIELD_SWAP_DETAILS_AMOUNT_RECEIVED:String = "FIELD_SWAP_DETAILS_AMOUNT_RECEIVED";
+		public static var FIELD_SWAP_DETAILS_AMOUNT_BUYBACK:String = "FIELD_SWAP_DETAILS_AMOUNT_BUYBACK";
+		public static var FIELD_SWAP_DETAILS_DATE_BUYBACK:String = "FIELD_SWAP_DETAILS_DATE_BUYBACK";
+		public static var FIELD_SWAP_DETAILS_PROLONG_FEE:String = "FIELD_SWAP_DETAILS_PROLONG_FEE";
+		public static var FIELD_SWAP_DETAILS_STATUS:String = "FIELD_SWAP_DETAILS_STATUS";
+		public static var FIELD_SWAP_DETAILS_DATE_CREATED:String = "FIELD_SWAP_DETAILS_DATE_CREATED";
+		public static var FIELD_SWAP_DETAILS_CODE:String = "FIELD_SWAP_DETAILS_CODE";
+		public static var FIELD_SWAP_DETAILS_ROLLED_OVER:String = "FIELD_SWAP_DETAILS_ROLLED_OVER";
+		public static var FIELD_SWAP_DETAILS_ADDRESS:String = "FIELD_SWAP_DETAILS_ADDRESS";
+		
 		static public function getLimitLabelsByType(type:String):String {
 			switch (type) {
 				case AccountLimit.IDENTIFICATION_LIMIT_DEPOSITS : {
@@ -178,6 +189,36 @@ package com.dukascopy.connect.sys.payments.vo {
 				}
 				case AccountLimit.FIELD_DETAILS_MESSAGE : {
 					return Lang.textMessage; //"Message";
+				}
+				case AccountLimit.FIELD_SWAP_DETAILS_AMOUNT : {
+					return Lang.textSwapAmount;
+				}
+				case AccountLimit.FIELD_SWAP_DETAILS_AMOUNT_RECEIVED : {
+					return Lang.textSwapReceivedAmount;
+				}
+				case AccountLimit.FIELD_SWAP_DETAILS_AMOUNT_BUYBACK : {
+					return Lang.textSwapBuybackAmount;
+				}
+				case AccountLimit.FIELD_SWAP_DETAILS_DATE_BUYBACK : {
+					return Lang.textSwapBuybackDate;
+				}
+				case AccountLimit.FIELD_SWAP_DETAILS_PROLONG_FEE : {
+					return Lang.textSwapProlongationFee;
+				}
+				case AccountLimit.FIELD_SWAP_DETAILS_STATUS : {
+					return Lang.textStatus;
+				}
+				case AccountLimit.FIELD_SWAP_DETAILS_DATE_CREATED : {
+					return Lang.created.substr(0, 1).toUpperCase() + Lang.created.substr(1).toLowerCase();
+				}
+				case AccountLimit.FIELD_SWAP_DETAILS_CODE : {
+					return Lang.textSwapID;
+				}
+				case AccountLimit.FIELD_SWAP_DETAILS_ROLLED_OVER : {
+					return Lang.textSwapRolledOver;
+				}
+				case AccountLimit.FIELD_SWAP_DETAILS_ADDRESS : {
+					return Lang.textAddress;
 				}
 			}
 			return "";

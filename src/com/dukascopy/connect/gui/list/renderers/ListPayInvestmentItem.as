@@ -257,6 +257,7 @@ package com.dukascopy.connect.gui.list.renderers {
 			if(data.INSTRUMENT!=""){
 				var flagAsset:Sprite = UI.getInvestIconByInstrument(data.INSTRUMENT);			
 				flagIcon.bitmapData = UI.renderAsset(flagAsset, ICON_SIZE, ICON_SIZE, false, "ListPayWalletItemAdvanced.flagIcon");
+				flagAsset = null;
 			}
 			
 			flagIcon.x = width-flagIcon.width - MARGIN_H-PADDING_H;

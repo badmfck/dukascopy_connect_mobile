@@ -568,29 +568,21 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			return result;
 		}
 		
-		private function getIcon(instrument:EscrowInstrument):Sprite 
-		{
+		private function getIcon(instrument:EscrowInstrument):Sprite {
 			return UI.getInvestIconByInstrument(instrument.code);
 		}
 		
-		private function toState(newState:String):void 
-		{
-			if (state != newState)
-			{
+		private function toState(newState:String):void {
+			if (state != newState) {
 				hideCurrentState();
 				state = newState;
-				
-				if (state == STATE_REGISTER)
-				{
+				if (state == STATE_REGISTER) {
 					addItem(selectorInstrument);
 					createRegisterBlockchainClips();
 					drawRegisterBlock();
 					activateRegisterClips();
-				}
-				else if (state == STATE_START)
-				{
-					if (selectedDirection == TradeDirection.sell)
-					{
+				} else if (state == STATE_START) {
+					if (selectedDirection == TradeDirection.sell) {
 						addItem(terms);
 					}
 					addItem(selectorInstrument);
@@ -598,14 +590,10 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 					addItem(radio);
 					addItem(inputAmount);
 					addItem(balance);
-					if (controlPriceSelected == priceSelector)
-					{
+					if (controlPriceSelected == priceSelector) {
 						addItem(priceSelector);
-					}
-					else
-					{
-						if (selectorCurrency != null)
-						{
+					} else {
+						if (selectorCurrency != null) {
 							addItem(selectorCurrency);
 						}
 						addItem(inputPrice);
@@ -1674,8 +1662,30 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			updatePositions();
 			updateScroll();
 			
+			GD.S_ESCROW_START_MONITORING.invoke();
+		//	GD.S_ESCROW_INSTRUMENTS.add(onInstruments);
+			
 			loadInstruments();
 		}
+		
+		/*private function onInstruments(instrumentsData:Vector.<EscrowInstrument>):void 
+		{
+			if (instrumentsData != null)
+			{
+				for (var i:int = 0; i < instrumentsData.length; i++) 
+				{
+					if (selectedCrypto != null)
+					{
+						if (selectedCrypto.code == instrumentsData[i].code)
+						{
+ 							selectedCrypto = instrumentsData[i];
+							break;
+						}
+					}
+				}
+			}
+			refreshPrice(true);
+		}*/
 		
 		private function loadWalletsData():void 
 		{
@@ -1718,7 +1728,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 		
 		private function instrumentsLoaded(instruments:Vector.<EscrowInstrument>):void 
 		{
-			GD.S_ESCROW_INSTRUMENTS.remove(instrumentsLoaded);
+		//	GD.S_ESCROW_INSTRUMENTS.remove(instrumentsLoaded);
 			if (isDisposed)
 			{
 				return;
@@ -1739,6 +1749,11 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 				//	hidePreloader();
 				//	onDataReady();
 				}
+			}
+			else
+			{
+				this.instruments = instruments;
+				onDataReady(true);
 			}
 		}
 		
@@ -1988,7 +2003,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			inputPrice.draw(inputWidth, Lang.pricePerCoin, 0);
 		}
 		
-		public function onDataReady():void
+		public function onDataReady(useCurrentPrice:Boolean = false):void
 		{
 			if (isDisposed)
 			{
@@ -2028,7 +2043,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 						targetInstrument = instruments[0];
 					}
 				}
-				selectInstrument(targetInstrument);
+				selectInstrument(targetInstrument, !useCurrentPrice);
 			}
 			else
 			{
@@ -2098,7 +2113,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			}
 			else
 			{
-				refreshPrice();
+				refreshPrice(NaN, 0, useCurrentPrice);
 			}
 			
 			if (selectedCrypto != null && selectedFiatAccount == null && state != STATE_REGISTER && selectedDirection == TradeDirection.sell)
@@ -2107,12 +2122,17 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			}
 		}
 		
-		private function refreshPrice(overridePrice:Number = NaN, pricePercentStartValue:Number = 0):void 
+		private function refreshPrice(overridePrice:Number = NaN, pricePercentStartValue:Number = 0, useCurrentPrice:Boolean = false):void 
 		{
-			var originalPrice:Number = updatePrice(overridePrice, pricePercentStartValue);
+			var originalPrice:Number = updatePrice(overridePrice, pricePercentStartValue, !useCurrentPrice);
 			if (state == STATE_START)
 			{
-				priceSelector.draw(_width - contentPadding * 2, -5, 5, pricePercentStartValue, originalPrice, getCurrency());
+				var currentValue:Number = pricePercentStartValue;
+				if (useCurrentPrice)
+				{
+					currentValue = priceSelector.getValue();
+				}
+				priceSelector.draw(_width - contentPadding * 2, -5, 5, currentValue, originalPrice, getCurrency());
 			}
 			updateBalance();
 			updatePositions();
@@ -2179,16 +2199,16 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			}
 		}
 		
-		private function selectInstrument(escrowInstrument:EscrowInstrument):void 
+		private function selectInstrument(escrowInstrument:EscrowInstrument, updatePriceValue:Boolean = true):void 
 		{
 			selectCrypto(escrowInstrument);
 			
 			selectorInstrument.setValueExtend(selectedCrypto.name, selectedCrypto, getIcon(selectedCrypto));
 			
-			updatePrice();
+			updatePrice(NaN, NaN, updatePriceValue);
 		}
 		
-		private function updatePrice(overridePrice:Number = NaN, percentStartValue:Number = NaN):Number 
+		private function updatePrice(overridePrice:Number = NaN, percentStartValue:Number = NaN, updatePriceValue:Boolean = true):Number 
 		{
 			var price:Number = getPrice();
 			var originalPrice:Number = price;
@@ -2205,7 +2225,10 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			if (!isNaN(price))
 			{
 				setPrice(price);
-				inputPrice.value = selectedPrice;
+				if (updatePriceValue)
+				{
+					inputPrice.value = selectedPrice;
+				}
 				
 				var currentPriceValue:String = price + " " + getCurrency();
 				if (selectedPriceObject != null)
@@ -2423,6 +2446,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			
 			GD.S_CRYPTO_WALLETS.remove(onCryptoWallets);
 			GD.S_ESCROW_INSTRUMENTS.remove(instrumentsLoaded);
+			GD.S_ESCROW_STOP_MONITORING.invoke();
 			
 			removeCheckPaymentsAction();
 			

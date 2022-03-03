@@ -1292,7 +1292,8 @@ package com.dukascopy.langs {
 			"canceled": "Canceled",
 			"closed": "Closed",
 			"active": "Active",
-			"on_hold": "On hold"
+			"on_hold": "On hold",
+			"created": "Created"
 		};
 		
 		static public var investmentsTitles:Object = {
@@ -2104,20 +2105,25 @@ package com.dukascopy.langs {
 		static public var textFundedByDUK:String = "Funded by DUK+";
 		
 		static public var textReceivedAmount:String = "Received: ";
+		static public var textSwapReceivedAmount:String = "Received amount";
+		static public var textSwapAmount:String = "Swapped amount";
 		static public var textBuybackAmount:String = "Buyback: ";
+		static public var textSwapBuybackAmount:String = "Buyback amount";
 		static public var textBuybackDate:String = "Expires: ";
+		static public var textSwapBuybackDate:String = "Buyback date";
 		static public var textSwapCarefullyReviewConditions:String = "Please carefully review GETCA$H Swap contract conditions:";
 		static public var textSwapDCOAmountSell:String = "Dukascoin amount to sell";
 		static public var textSwapWillReceive:String = "You will receive";
-		static public var textSwapBuybackDate:String = "Buyback date";
-		static public var textSwapBuybackAmount:String = "Buyback amount";
 		static public var textSwapAnnualizedRate:String = "Annualized rate";
 		static public var textSwapProlongationFee:String = "1 month prolongation fee";
 		static public var textSwapStakeToSwap:String = "Stake to swap with fiat funds:";
 		static public var textSwapStake:String = "Stake";
 		static public var textSwapCode:String = "Code";
+		static public var textSwapID:String = "ID";
 		static public var textSwapMaturity:String = "Maturity";
 		static public var textSwapNewTerminateDate:String = "New termination date";
+		static public var textSwapRolledOver:String = "Rolled over";
+		static public var textSwapRolledOverRequested:String = "Requested";
 		
 		static public var textFeedbackDesc:String = "Have you received an answer to your question?";
 		static public var textFeedbackDesc1:String = "Send Your feedback";

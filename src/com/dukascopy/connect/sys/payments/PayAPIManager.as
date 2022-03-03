@@ -183,6 +183,8 @@ package com.dukascopy.connect.sys.payments {
 		
 		static public function lockSession():void {
 			PayServer.call_lock(onSessionLock);
+			PayConfig.PAY_SESSION_ID = "";
+			Store.remove("swissSession");
 		}
 		
 		static private function onSessionLock(respond:PayRespond):void {

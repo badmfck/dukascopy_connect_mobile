@@ -447,8 +447,6 @@ package com.dukascopy.connect.gui.button
 				else{
 					tfRight.htmlText = "";
 				}
-				//tfRight.width = this.w * .4;
-			//	tfRight.x = this.w - (tfRight.width) - Config.MARGIN - Config.MARGIN * 3 * (showArrow?1:0);
 				tfRight.x = this.w - (tfRight.width) - 0 - Config.MARGIN * 2 * (showArrow?1:0);
 				tfRight.y = (h - tfRight.height) * .5;
 				
@@ -464,6 +462,7 @@ package com.dukascopy.connect.gui.button
 						icon.bitmapData = null;
 					}
 					icon.bitmapData = UI.renderAsset(iconAsset, ICON_SIZE, ICON_SIZE, false, "DDAccountButton.icon");
+					iconAsset = null;
 					tf.x = int(ICON_SIZE + Config.FINGER_SIZE * .15);
 					tf.width = tfRight.x - ICON_SIZE - Config.FINGER_SIZE * .15;
 				}

@@ -540,5 +540,21 @@ package com.dukascopy.connect.sys.chatManager.typesManagers {
 						return answers[i];
 			return null;
 		}
+		
+		static public function refreshLangConst():void 
+		{
+			if (open911Action != null)
+			{
+			//	open911Action = ChatManager.createBlankSupportChat(Config.EP_VI_DEF, Lang.help_911_title, Lang.tap_to_see_deals) as ChatVOAction;
+				
+				var chatData:Object = new Object();
+				chatData.pointID = Config.EP_VI_DEF;
+				chatData.title = Lang.help_911_title;
+				chatData.type = ChatRoomType.COMPANY;
+				chatData.message = {text:Lang.tap_to_see_deals};
+				
+				open911Action.setData(chatData);
+			}
+		}
 	}
 }

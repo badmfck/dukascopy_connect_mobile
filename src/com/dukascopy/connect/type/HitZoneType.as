@@ -60,6 +60,7 @@ package com.dukascopy.connect.type
 		static public const OTHER_ACCOUNT:String = "otherAccount";
 		static public const CRYPTO:String = "crypto";
 		static public const CRYPTO_RD:String = "cryptoRD";
+		static public const CRYPTO_SWAP:String = "cryptoSwap";
 		static public const CARD:String = "card";
 		static public const CRYPTO_DEAL:String = "cryptoDeal";
 		

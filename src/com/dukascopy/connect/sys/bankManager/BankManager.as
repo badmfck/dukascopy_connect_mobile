@@ -135,6 +135,7 @@ package com.dukascopy.connect.sys.bankManager {
 		static public var S_DECLARE_ETH_LINK:Signal = new Signal('BankManager.S_DECLARE_ETH_LINK');
 		
 		static public const PWP_NOT_ENTERED:String = "pwpNotEntered";
+		static public const NO_INTERNET_CONNECTION:String = "noInternetConnection";
 		static public const ACCOUNT_NOT_APPROVED:String = "accountNotApproved";
 		
 		static public var balanceOpened:Boolean;
@@ -170,6 +171,7 @@ package com.dukascopy.connect.sys.bankManager {
 		
 		static private var initialized:Boolean;
 		static private var total:Object;
+		static private var totalSavings:Object;
 		static private var totalAll:Array;
 		
 		static private var needToGetHistoryUser:String;
@@ -322,6 +324,7 @@ package com.dukascopy.connect.sys.bankManager {
 			initialized = false;
 			total = null;
 			totalAll = null;
+			totalSavings = null;
 			
 			needToGetHistoryUser = null;
 			needToShowHistoryWallet = null;
@@ -509,6 +512,16 @@ package com.dukascopy.connect.sys.bankManager {
 					S_ADDITIONAL_DATA_ENTERED.invoke();
 					sendMessage("val:" + data.value);
 					sendMessage(msg);
+					return;
+				}
+				if (data.type == "showSwaps") {
+					data["tapped"] = true;
+					S_ADDITIONAL_DATA_ENTERED.invoke();
+					sendMessage("val:" + data.param.code);
+					if (data.param.status != "CREATED")
+						sendMessage(msg);
+					else
+						sendMessage(data.action1);
 					return;
 				}
 				if (data.type == "showAcc") {
@@ -2282,7 +2295,7 @@ package com.dukascopy.connect.sys.bankManager {
 				var backScreenData:Object;
 				if (lastBankMessageVO.item.type == "error") {
 					if (MobileGui.serviceScreen.currentScreen == null)
-						invokeAnswerSignal(lastBankMessageVO);
+						invokeAnswerSignal(lastBankMessageVO, MobileGui.centerScreen.currentScreenClass == BankBotChatScreen);
 					S_PAYMENT_ERROR.invoke(lastBankMessageVO);
 				}
 				if (lastBankMessageVO.item.type == "action") {
@@ -2495,6 +2508,42 @@ package com.dukascopy.connect.sys.bankManager {
 				}
 				if (lastBankMessageVO.item.type == "showWallet") {
 					lastBankMessageVO.additionalData = getWalletByNumber(lastBankMessageVO.item.selection);
+				}
+				if (lastBankMessageVO.item.type == "showSwapDetails") {
+					if (cryptoSwaps == null)
+						return;
+					var swap:Object;
+					for (var j:int = 0; j < cryptoSwaps.length; j++) {
+						if (cryptoSwaps[j] == null)
+							continue;
+						if (cryptoSwaps[j].code == lastBankMessageVO.item.value) {
+							swap = cryptoSwaps[j];
+							break;
+						}
+					}
+					if (swap.rollover == 0)
+						delete lastBankMessageVO.menu[0].disabled;
+					else
+						delete lastBankMessageVO.menu[1].disabled;
+					if (lastBankMessageVO.menu.length > 2)
+						lastBankMessageVO.menu[2].value = swap.incoming_address;
+					lastBankMessageVO.additionalData = swap;
+				}
+				if (lastBankMessageVO.item.type == "showSwap") {
+					if (cryptoSwaps == null)
+						return;
+					var swap1:Object;
+					for (var k:int = 0; k < cryptoSwaps.length; k++) {
+						if (cryptoSwaps[k] == null)
+							continue;
+						if (cryptoSwaps[k].code == lastBankMessageVO.item.value) {
+							swap1 = cryptoSwaps[k];
+							break;
+						}
+					}
+					if (swap1.rollover == 0)
+						lastBankMessageVO.text = lastBankMessageVO.text.replace("%@", swap1.swap_fee.readable);
+					lastBankMessageVO.additionalData = swap1;
 				}
 				if (lastBankMessageVO.item.type == "cardSelect") {
 					if (cardsLoaded == false) {
@@ -2718,15 +2767,13 @@ package com.dukascopy.connect.sys.bankManager {
 			var startObjectIndex:int = val.indexOf(":", 15);
 			var command:String = val.substring(15, startObjectIndex);
 			if (command == "error") {
-				var message:String = "";
-				if (val != null && val.length > startObjectIndex)
-				{
+				var message:String;
+				if (val != null && val.length > startObjectIndex) {
 					message = val.substr(startObjectIndex + 1)
 				}
-				DialogManager.alert(Lang.information, "Payments Error: " + message);
-				S_ERROR.invoke();
+				S_ERROR.invoke(message);
 				return true;
-			}
+			} 
 			var func:Function;
 			if (command == "cryptoTrading")
 				func = onCryptoTradeCompleted;
@@ -3062,6 +3109,8 @@ package com.dukascopy.connect.sys.bankManager {
 			tsFrom:int = 0,
 			tsTo:int = 0,
 			obligatory:Boolean = false):void {
+				if (isCardHistory == true)
+					return;
 				init();
 				needToCash = true
 				if (needToGetHistoryUser != null) {
@@ -3274,6 +3323,7 @@ package com.dukascopy.connect.sys.bankManager {
 			needToCash = false;
 			BankBotController.S_ANSWER.remove(onAnswerReceived);
 			BankBotController.reset();
+			setAutoUpdate(false);
 		}
 		
 		static public function getTotal():Object {
@@ -3667,6 +3717,16 @@ package com.dukascopy.connect.sys.bankManager {
 				return;
 			}
 			cryptoDeals = data;
+			if ("stat" in cryptoDeals == true && cryptoDeals.stat != null) {
+				cryptoDeals.stat.sort(function(a:Object, b:Object):int {
+					if (a.period == b.period) {
+						return (a.side < b.side) ? 1 : -1;
+					} else {
+						return (a.period < b.period) ? -1 : 1;
+					}
+					return 0;
+				} );
+			}
 			S_CRYPTO_DEALS.invoke(cryptoDeals);
 			if (waitingBMVO != null) {
 				if (waitingBMVO.waitingType != "cryptoOffers" &&
@@ -3850,20 +3910,22 @@ package com.dukascopy.connect.sys.bankManager {
 		static public function get totalSavingAccounts():Object {
 			if (savingsAccounts == null || savingsAccounts.length == 0)
 				return null;
-			var res:Object = {
-				CURRENCY: savingsAccounts[0].CONSOLIDATE_CURRENCY,
+			var lastOpened:Boolean = (totalSavings != null) ? totalSavings.opened : false;
+			totalSavings ||= {
 				IBAN: Lang.textTotalCash.toUpperCase(),
 				type: "total",
 				opened: false,
 				moreFnc: getTotalSavingsAll
 			}
+			totalSavings["BALANCE"] = 0;
+			totalSavings["CURRENCY"] = savingsAccounts[0].CONSOLIDATE_CURRENCY
 			var balance:Number = 0;
 			var l:int = savingsAccounts.length;
 			for (var i:int = 0; i < l; i++) {
 				balance += Number(savingsAccounts[i].CONSOLIDATE_BALANCE);
 			}
-			res.BALANCE = balance;
-			return res;
+			totalSavings.BALANCE = balance;
+			return totalSavings;
 		}
 		
 		static public function getTotalSavingsAll():Array {
@@ -4423,6 +4485,20 @@ package com.dukascopy.connect.sys.bankManager {
 			request += "|!|" + DateUtils.getDateStringByFormat(dt, "YYYY-MM-DD", true);
 			BankBotController.getAnswer(request);
 			return true;
+		}
+		
+		static public function setAutoUpdate(val:Boolean):void {
+			if (val == true) {
+				TweenMax.delayedCall(120, updateHome);
+				return;
+			}
+			TweenMax.killDelayedCallsTo(updateHome);
+		}
+		
+		static private function updateHome():void {
+			TweenMax.delayedCall(120, updateHome);
+			
+			BankBotController.getAnswer("bot:bankbot payments:homeS");
 		}
 	}
 }

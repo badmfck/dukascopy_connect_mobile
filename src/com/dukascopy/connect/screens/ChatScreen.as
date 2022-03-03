@@ -4559,6 +4559,8 @@ package com.dukascopy.connect.screens {
 			
 			TweenMax.killDelayedCallsTo(sendInitialBotCommand);
 			
+			InvoiceManager.stopProcessInvoice();
+			
 		//	Calendar.S_START_VI.remove(callStartVI);
 				
 			if (chatInput != null)
