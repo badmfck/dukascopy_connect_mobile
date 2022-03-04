@@ -224,10 +224,10 @@ package com.dukascopy.connect.sys.bankManager {
 					}, {
 						text:"lang.menuCardDisable",
 						action:"nav:blockCardConfirm"
-					}, /*{
+					}, {
 						text:"lang.menuCardBlock",
 						action:"nav:blockHCardConfirm"
-					}, */{
+					}, {
 						text:"lang.menuHistory",
 						action:"app:historyCard",
 						selection:"@@1"
