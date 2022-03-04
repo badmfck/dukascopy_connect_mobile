@@ -3109,8 +3109,6 @@ package com.dukascopy.connect.sys.bankManager {
 			tsFrom:int = 0,
 			tsTo:int = 0,
 			obligatory:Boolean = false):void {
-				if (isCardHistory == true)
-					return;
 				init();
 				needToCash = true
 				if (needToGetHistoryUser != null) {
@@ -3133,6 +3131,8 @@ package com.dukascopy.connect.sys.bankManager {
 				isCardHistory = false;
 				isInvestmentHistory = false;
 				if (historyAccount != "all") {
+					if (isCardHistory == true)
+						return;
 					var account:Object = getAccountByNumberAll(historyAccount);
 					if (account != null) {
 						if ("CURRENCY" in account == true)
