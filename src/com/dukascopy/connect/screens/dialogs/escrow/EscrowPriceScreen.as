@@ -756,6 +756,7 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			super.dispose();
 			
 			GD.S_ESCROW_STOP_MONITORING.invoke();
+			GD.S_ESCROW_INSTRUMENTS.remove(onInstruments);
 			
 			if (inputPrice != null)
 			{
