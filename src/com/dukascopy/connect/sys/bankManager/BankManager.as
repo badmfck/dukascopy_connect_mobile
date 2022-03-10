@@ -1198,14 +1198,14 @@ package com.dukascopy.connect.sys.bankManager {
 						sendMessage("val:" + a + "|!|" + data.additional.currency + "|!|" + data.additional.calc_id);
 						sendMessage(msg);
 					};
-					sd.title = "Choose amount";
+					sd.title = Lang.chooseAmount;
 					sd.currency = rdSwapObject.currency;
 					sd.minValue = Number(rdSwapObject.min_amount.amount);
 					sd.maxValue = Number(rdSwapObject.max_amount.amount);
 					sd.decimal = CurrencyHelpers.getMaxDecimalCount(rdSwapObject.currency);
-					sd.buttonText = "PROCEED";
-					sd.minText = "min: " + sd.minValue + " " + sd.currency;
-					sd.maxText = "max: " + sd.maxValue + " " + sd.currency;
+					sd.buttonText = Lang.textProceed.toUpperCase();
+					sd.minText = Lang.min.toLowerCase() + ": " + sd.minValue + " " + sd.currency;
+					sd.maxText = Lang.max.toLowerCase() + ": " + sd.maxValue + " " + sd.currency;
 					data.additional = rdSwapObject;
 					sd.data = data;
 					ServiceScreenManager.showScreen(ServiceScreenManager.TYPE_SCREEN, SeekSelectorPopup, sd);

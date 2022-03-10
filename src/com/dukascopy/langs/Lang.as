@@ -1293,7 +1293,8 @@ package com.dukascopy.langs {
 			"closed": "Closed",
 			"active": "Active",
 			"on_hold": "On hold",
-			"created": "Created"
+			"created": "Created",
+			"completed": "Completed"
 		};
 		
 		static public var investmentsTitles:Object = {
@@ -2124,6 +2125,7 @@ package com.dukascopy.langs {
 		static public var textSwapNewTerminateDate:String = "New termination date";
 		static public var textSwapRolledOver:String = "Rolled over";
 		static public var textSwapRolledOverRequested:String = "Requested";
+		static public var closeAcc:String = "Close account";
 		
 		static public var textFeedbackDesc:String = "Have you received an answer to your question?";
 		static public var textFeedbackDesc1:String = "Send Your feedback";
@@ -2704,6 +2706,7 @@ package com.dukascopy.langs {
 		static public var tap_to_see_deals:String = "Tap to see all ads";
 		static public var escrow_credit_to_account:String = "Credit to account";
 		static public var escrow_show_from_blocked:String = "Show blocked users";
+		static public var chooseAmount:String = "Choose amount";
 		
 		static public function updateKeys(keys:Object):void {
 			for (var n:String in keys) {

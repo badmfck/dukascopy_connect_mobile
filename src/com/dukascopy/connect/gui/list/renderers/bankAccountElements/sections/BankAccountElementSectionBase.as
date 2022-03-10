@@ -65,9 +65,6 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements.sections {
 			bg = new Shape();
 			addChild(bg);
 			
-			/*bgGradient = new Shape();
-			addChild(bgGradient);*/
-			
 			lineHeight = Config.FINGER_SIZE * .03;
 			if (lineHeight == 0)
 				lineHeight = 1;
