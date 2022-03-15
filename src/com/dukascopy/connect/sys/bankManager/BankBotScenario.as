@@ -1890,7 +1890,7 @@ package com.dukascopy.connect.sys.bankManager {
 			},
 			
 			cryptoSwapProlongationCancelConfirmed: {
-				desc:"confirmedSwapProlongationCancel lang.otherOperation",
+				desc:"lang.confirmedSwapProlongationCancel lang.otherOperation",
 				isLast:true,
 				buttons: [
 					{

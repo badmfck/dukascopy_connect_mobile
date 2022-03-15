@@ -2480,30 +2480,30 @@ package com.dukascopy.connect.sys.bankManager {
 				if (lastBankMessageVO.item.type == "newSwapConfirm") {
 					var contractTest:String = Lang.textSwapCarefullyReviewConditions + "\n\n";
 					contractTest += Lang.textSwapDCOAmountSell + "\n";
-					contractTest += rdSwapObject.coin_amount.readable + "\n";
+					contractTest += "<b>" + rdSwapObject.coin_amount.readable + "</b>\n";
 					contractTest += Lang.textSwapWillReceive + "\n";
-					contractTest += rdSwapObject.total.ccy_symbol + rdSwapObject.total.amount + "\n\n";
+					contractTest += "<b>" + rdSwapObject.total.ccy_symbol + rdSwapObject.total.amount + "</b>\n\n";
 					contractTest += Lang.textSwapBuybackDate + "\n";
-					contractTest += rdSwapObject.swap_buyback_date + "\n";
+					contractTest += "<b>" + rdSwapObject.swap_buyback_date + "</b>\n";
 					contractTest += Lang.textSwapBuybackAmount + "\n";
-					contractTest += rdSwapObject.total.ccy_symbol + (Number(rdSwapObject.total.amount) + Number(rdSwapObject.fee.amount)) + "\n\n";
+					contractTest += "<b>" + rdSwapObject.total.ccy_symbol + (Number(rdSwapObject.total.amount) + Number(rdSwapObject.fee.amount)) + "</b>\n\n";
 					contractTest += Lang.textSwapAnnualizedRate + "\n";
-					contractTest += rdSwapObject.rate + "%\n";
+					contractTest += "<b>" + rdSwapObject.rate + "</b>\n";
 					contractTest += Lang.textSwapProlongationFee + "\n";
-					contractTest += rdSwapObject.fee.readable + "\n\n";
+					contractTest += "<b>" + rdSwapObject.fee.readable + "</b>\n\n";
 					contractTest += Lang.textSwapStakeToSwap + "\n\n";
 					contractTest += Lang.textSwapStake + "\n";
 					var rd:Object = getCryptoRDByID(lastBankMessageVO.item.value);
-					contractTest += rdSwapObject.coin_amount.readable + "\n";
+					contractTest += "<b>" + rdSwapObject.coin_amount.readable + "</b>\n";
 					contractTest += Lang.textSwapCode + "\n";
-					contractTest += rd.code + "\n"
+					contractTest += "<b>" + rd.code + "</b>\n"
 					contractTest += Lang.textSwapMaturity + "\n";
 					var rdDate:Date = new Date();
 					rdDate.setTime(Number(rd.termination) * 1000);
-					contractTest += DateUtils.getTimeString(rdDate, true) + "\n";
+					contractTest += "<b>" + DateUtils.getTimeString(rdDate, true) + "</b>\n";
 					contractTest += Lang.textSwapNewTerminateDate + "\n";
 					rdDate.setTime(Number(rdSwapObject.term_deposit_new_termination) * 1000);
-					contractTest += DateUtils.getTimeString(rdDate, true) + "\n\n";
+					contractTest += "<b>" + DateUtils.getTimeString(rdDate, true) + "</b>\n\n";
 					lastBankMessageVO.text = contractTest + lastBankMessageVO.text;
 				}
 				if (lastBankMessageVO.item.type == "showWallet") {
@@ -2521,10 +2521,12 @@ package com.dukascopy.connect.sys.bankManager {
 							break;
 						}
 					}
-					if (swap.rollover == 0)
-						delete lastBankMessageVO.menu[0].disabled;
-					else
-						delete lastBankMessageVO.menu[1].disabled;
+					if (swap.status == "ACTIVE") {
+						if (swap.rollover == 0)
+							delete lastBankMessageVO.menu[0].disabled;
+						else
+							delete lastBankMessageVO.menu[1].disabled;
+					}
 					if (lastBankMessageVO.menu.length > 2)
 						lastBankMessageVO.menu[2].value = swap.incoming_address;
 					lastBankMessageVO.additionalData = swap;

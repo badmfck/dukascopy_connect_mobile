@@ -210,6 +210,10 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements.sections {
 				statusColor = 0x7E94A9;
 			else if (data.status == "CREATED")
 				statusColor = 0xFFCC00;
+			else if (data.rollover == 1) {
+				textSettings.text = Lang.textSwapRolledOver;
+				statusColor = 0xED6F00;
+			}
 			var buttonBitmap:ImageBitmapData = TextUtils.createbutton(
 				textSettings,
 				statusColor,
