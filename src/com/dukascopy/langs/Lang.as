@@ -2707,6 +2707,8 @@ package com.dukascopy.langs {
 		static public var escrow_credit_to_account:String = "Credit to account";
 		static public var escrow_show_from_blocked:String = "Show blocked users";
 		static public var chooseAmount:String = "Choose amount";
+		static public var fast_track_button:String = "FAST TRACK";
+		static public var request_fasttrack_message:String = "Request fast track";
 		
 		static public function updateKeys(keys:Object):void {
 			for (var n:String in keys) {

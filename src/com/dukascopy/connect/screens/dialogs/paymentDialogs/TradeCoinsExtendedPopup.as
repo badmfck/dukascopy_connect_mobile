@@ -36,6 +36,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 	import com.dukascopy.connect.sys.softKeyboard.SoftKeyboard;
 	import com.dukascopy.connect.sys.style.Style;
 	import com.dukascopy.connect.type.HitZoneType;
+	import com.dukascopy.connect.utils.NumberFormat;
 	import com.dukascopy.connect.utils.TextUtils;
 	import com.dukascopy.langs.Lang;
 	import com.greensock.TweenMax;
@@ -1067,7 +1068,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 			{
 				currentTotalMoney = currentProposal.fiat_amount_after_fee;
 				drawAvaliableLots(currentProposal.coin_amount);
-				drawAveragePrice(currentProposal.avg_price.toString());
+				drawAveragePrice(NumberFormat.formatAmount(currentProposal.avg_price, currentProposal.currency, true, true));
 				drawBestPrice(currentProposal.best_price.toString(), color);
 				drawWorstPrice(currentProposal.worst_price.toString(), color);
 				drawTotalMoney(currentProposal.fiat_amount_after_fee);

@@ -103,7 +103,7 @@ package com.dukascopy.connect.screens.dialogs {
 		
 		private function onNextClick():void 
 		{
-			if (inputAmount.value == 0)
+			if (inputAmount.value == 0 || isNaN(inputAmount.value))
 			{
 				inputAmount.invalid();
 				return;
