@@ -2658,6 +2658,9 @@ package com.dukascopy.connect.sys.bankManager {
 						getCryptoRD(false);
 						needReturn = true;
 					}
+					if (lastBankMessageVO.item.type == "cryptoRewardsDepositesSwap")
+						if (cryptoSwaps == null || cryptoSwaps.length == 0)
+							lastBankMessageVO.text = Lang.noStakeAvailable;
 				}
 				if (lastBankMessageVO.item.type == "showSwaps") {
 					lastBankMessageVO.additionalData = cryptoSwaps;
