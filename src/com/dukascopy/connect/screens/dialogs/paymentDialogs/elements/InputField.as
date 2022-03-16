@@ -669,6 +669,20 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs.elements
 			return 0;
 		}
 		
+		public function show():void 
+		{
+			visible = true;
+			
+			showValue();
+		}
+		
+		public function hide():void 
+		{
+			visible = false;
+			
+			hideValue();
+		}
+		
 		public function get textAscent():int 
 		{
 			if (input != null)

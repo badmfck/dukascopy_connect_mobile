@@ -244,11 +244,11 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 		{
 			if (iAmountCurrency != null)
 			{
-				iAmountCurrency.visible = false;
+				iAmountCurrency.hide()
 			}
 			if (iAmount != null)
 			{
-				iAmount.visible = false;
+				iAmount.hide()
 			}
 		}
 		
@@ -1242,7 +1242,7 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 			
 			super.activateScreen();
 			
-			showInputs();
+		//	showInputs();
 			
 			if (walletSelected == true)
 			{
@@ -1273,14 +1273,20 @@ package com.dukascopy.connect.screens.dialogs.paymentDialogs
 		
 		private function showInputs():void 
 		{
-			if (iAmountCurrency != null)
-			{
-				iAmountCurrency.visible = true;
-			}
 			if (iAmount != null)
 			{
-				iAmount.visible = true;
+				iAmount.show();
 			}
+			if (iAmountCurrency != null)
+			{
+				iAmountCurrency.show();
+			}
+		}
+		
+		override protected function animationFinished():void 
+		{
+			super.animationFinished();
+			showInputs();
 		}
 		
 		override public function deactivateScreen():void

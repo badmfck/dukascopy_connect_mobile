@@ -2152,6 +2152,23 @@ package com.dukascopy.connect.gui.lightbox {
 		static private var invADS:Sprite;
 		static private var invBPG:SWFInvestmentBPG;
 		static private var invUSDT:Sprite;
+		static private var invMRN:InvestmentMRN;
+		static private var invZMU:InvestmentZMU;
+		static private var invUBE:InvestmentUBE;
+		static private var invUSB:SWFInvestmentUSA;
+		static private var invBUN:SWFInvestmentDEU;
+		static private var invXLM:InvestmentXLM;
+		static private var invBCH:InvestmentBCH;
+		static private var invUS5:SWFInvestmentUSA;
+		static private var invSBU:InvestmentSBU;
+		static private var invPFE:InvestmentPFE;
+		static private var invLIG:InvestmentLIG;
+		static private var invINT:InvestmentINT;
+		static private var invGMU:InvestmentGMU;
+		static private var invDIS:InvestmentDIS;
+		static private var invBAB:InvestmentBAB;
+		static private var invBAU:InvestmentBAU;
+		static private var invAAL:InvestmentAAL;
 		
 		public static function getInvestIconByInstrument(type:String):Sprite {
 			var icon:Sprite;
@@ -2326,72 +2343,72 @@ package com.dukascopy.connect.gui.lightbox {
 					icon = invUSDT;
 					break;
 				case TypeCurrency.AAL:
-					invUSDT ||= new InvestmentAAL();
-					icon = invUSDT;
+					invAAL ||= new InvestmentAAL();
+					icon = invAAL;
 					break;
 				case TypeCurrency.BAU:
-					invUSDT ||= new InvestmentBAU();
-					icon = invUSDT;
+					invBAU ||= new InvestmentBAU();
+					icon = invBAU;
 					break;
 				case TypeCurrency.BAB:
-					invUSDT ||= new InvestmentBAB();
-					icon = invUSDT;
+					invBAB ||= new InvestmentBAB();
+					icon = invBAB;
 					break;
 				case TypeCurrency.DIS:
-					invUSDT ||= new InvestmentDIS();
-					icon = invUSDT;
+					invDIS ||= new InvestmentDIS();
+					icon = invDIS;
 					break;
 				case TypeCurrency.GMU:
-					invUSDT ||= new InvestmentGMU();
-					icon = invUSDT;
+					invGMU ||= new InvestmentGMU();
+					icon = invGMU;
 					break;
 				case TypeCurrency.INT:
-					invUSDT ||= new InvestmentINT();
-					icon = invUSDT;
+					invINT ||= new InvestmentINT();
+					icon = invINT;
 					break;
 				case TypeCurrency.LIG:
-					invUSDT ||= new InvestmentLIG();
-					icon = invUSDT;
+					invLIG ||= new InvestmentLIG();
+					icon = invLIG;
 					break;
 				case TypeCurrency.PFE:
-					invUSDT ||= new InvestmentPFE();
-					icon = invUSDT;
+					invPFE ||= new InvestmentPFE();
+					icon = invPFE;
 					break;
 				case TypeCurrency.SBU:
-					invUSDT ||= new InvestmentSBU();
-					icon = invUSDT;
+					invSBU ||= new InvestmentSBU();
+					icon = invSBU;
 					break;
 				case TypeCurrency.US5:
-					invUSDT ||= new SWFInvestmentUSA();
-					icon = invUSDT;
+					invUS5 ||= new SWFInvestmentUSA();
+					icon = invUS5;
 					break;
 				case TypeCurrency.BCH:
-					invUSDT ||= new InvestmentBCH();
-					icon = invUSDT;
+					invBCH ||= new InvestmentBCH();
+					icon = invBCH;
 					break;
 				case TypeCurrency.XLM:
-					invUSDT ||= new InvestmentXLM();
-					icon = invUSDT;
+					invXLM ||= new InvestmentXLM();
+					icon = invXLM;
 					break;
 				case TypeCurrency.BUN:
-					invUSDT ||= new SWFInvestmentDEU();
-					icon = invUSDT;
+					invBUN ||= new SWFInvestmentDEU();
+					icon = invBUN;
 					break;
 				case TypeCurrency.USB:
-					invUSDT ||= new SWFInvestmentUSA();
-					icon = invUSDT;
+					invUSB ||= new SWFInvestmentUSA();
+					icon = invUSB;
 					break;
 				case TypeCurrency.UBE:
-					invUSDT ||= new InvestmentUBE();
-					icon = invUSDT;
+					invUBE ||= new InvestmentUBE();
+					icon = invUBE;
 					break;
 				case TypeCurrency.ZMU:
-					invUSDT ||= new InvestmentZMU();
-					icon = invUSDT;
+					invZMU ||= new InvestmentZMU();
+					icon = invZMU;
 					break;
 				case TypeCurrency.MRN:
-					invUSDT ||= new InvestmentMRN();
-					icon = invUSDT;
+					invMRN ||= new InvestmentMRN();
+					icon = invMRN;
 					break;
 				default:
 					invNONE ||= new SWFFlagNONE();

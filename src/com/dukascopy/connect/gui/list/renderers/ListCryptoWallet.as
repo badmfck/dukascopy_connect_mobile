@@ -94,8 +94,8 @@ package com.dukascopy.connect.gui.list.renderers {
 			var result:int = tfName.height - 4;
 			if (tfLabel.text != null && tfLabel.text != "")
 			{
-				result + tfLabel.height - 4;
-				result += Config.FINGER_SIZE * .5;
+				result = tfLabel.y + tfLabel.height - 4;
+				result += Config.FINGER_SIZE * .2;
 			}
 			else
 			{

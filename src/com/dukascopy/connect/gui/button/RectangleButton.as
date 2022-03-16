@@ -21,7 +21,7 @@ package com.dukascopy.connect.gui.button {
 	public class RectangleButton extends BitmapButton
 	{
 		protected var generatedBitmap:ImageBitmapData;
-		private var value:String = Lang.textInvite + "!";
+		protected var value:String = Lang.textInvite + "!";
 		
 		protected var box:Sprite;
 		protected var tf:TextField;
@@ -30,7 +30,7 @@ package com.dukascopy.connect.gui.button {
 		protected var color:Number;
 		
 		private var lastValue:String;
-		private var changed:Boolean;
+		protected var changed:Boolean;
 		private var lastColor:Number;
 		private var lastButtonWidth:int;
 		
