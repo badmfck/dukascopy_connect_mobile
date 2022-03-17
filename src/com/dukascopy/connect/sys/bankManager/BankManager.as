@@ -1196,6 +1196,11 @@ package com.dukascopy.connect.sys.bankManager {
 						baVO.setMine();
 						invokeAnswerSignal(baVO);
 						sendMessage("val:" + a + "|!|" + data.additional.currency + "|!|" + data.additional.calc_id);
+						rdSwapObject.amount = {
+							amount: a,
+							currency: data.additional.currency,
+							ccy_symbol: data.additional.min_amount.ccy_symbol
+						}
 						sendMessage(msg);
 					};
 					sd.title = Lang.chooseAmount;
@@ -2482,11 +2487,11 @@ package com.dukascopy.connect.sys.bankManager {
 					contractTest += Lang.textSwapDCOAmountSell + "\n";
 					contractTest += "<b>" + rdSwapObject.coin_amount.readable + "</b>\n";
 					contractTest += Lang.textSwapWillReceive + "\n";
-					contractTest += "<b>" + rdSwapObject.total.ccy_symbol + rdSwapObject.total.amount + "</b>\n\n";
+					contractTest += "<b>" + rdSwapObject.amount.ccy_symbol + rdSwapObject.amount.amount + "</b>\n\n";
 					contractTest += Lang.textSwapBuybackDate + "\n";
 					contractTest += "<b>" + rdSwapObject.swap_buyback_date + "</b>\n";
 					contractTest += Lang.textSwapBuybackAmount + "\n";
-					contractTest += "<b>" + rdSwapObject.total.ccy_symbol + (Number(rdSwapObject.total.amount) + Number(rdSwapObject.fee.amount)) + "</b>\n\n";
+					contractTest += "<b>" + rdSwapObject.total.ccy_symbol + Number(rdSwapObject.total.amount) + "</b>\n\n";
 					contractTest += Lang.textSwapAnnualizedRate + "\n";
 					contractTest += "<b>" + rdSwapObject.rate + "</b>\n";
 					contractTest += Lang.textSwapProlongationFee + "\n";
