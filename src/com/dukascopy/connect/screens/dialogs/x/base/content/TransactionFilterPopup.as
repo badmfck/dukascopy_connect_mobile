@@ -415,9 +415,9 @@ package com.dukascopy.connect.screens.dialogs.x.base.content
 			var categoryStatus:FilterCategory = new FilterCategory(Lang.filter_status, new FinanceFilterCategoryType(FinanceFilterCategoryType.STATUS));
 			filter = new FilterData(Lang.filter_completed, new FinanceFilterType(FinanceFilterType.COMPLETED), Filter_completed);
 				categoryStatus.add(filter);
-			filter = new FilterData(Lang.filter_pending, new FinanceFilterType(FinanceFilterType.PENDING), Filter_cancelled);
+			filter = new FilterData(Lang.filter_pending, new FinanceFilterType(FinanceFilterType.PENDING), Filter_pending);
 				categoryStatus.add(filter);
-			filter = new FilterData(Lang.filter_cancelled, new FinanceFilterType(FinanceFilterType.CANCELLED), Filter_pending);
+			filter = new FilterData(Lang.filter_cancelled, new FinanceFilterType(FinanceFilterType.CANCELLED), Filter_cancelled);
 				categoryStatus.add(filter);
 			
 			var categoryAccount:FilterCategory = new FilterCategory(Lang.filter_account, new FinanceFilterCategoryType(FinanceFilterCategoryType.ACCOUNT));
