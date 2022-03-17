@@ -27,6 +27,7 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements.sections {
 		protected const COLOR_GRAY_LIGHTER:uint = 0xf7f8f9;
 		protected const COLOR_GRAY_MEDIUM:uint = 0xE2E3E4;
 		protected const COLOR_ORANGE:uint = 0xED6F00;
+		protected const COLOR_PARTNER:uint = 0x3C1131;
 		
 		protected const LINE_OPACITY_1:Number = .1;
 		protected const LINE_OPACITY_2:Number = .2;

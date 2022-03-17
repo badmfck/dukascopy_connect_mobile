@@ -2409,6 +2409,12 @@ package com.dukascopy.connect.sys.bankManager {
 					tempObject.bankBot = true;
 					tempObject.acc = history[i].CURRENCY;
 					tempObject.amount = -Number(history[i].AMOUNT);
+				} else if (history[i].TYPE == "PARTNER ACCOUNT TRANSFER" || history[i].TYPE == "PARTNER CRYPTO TRADE") {
+					tempObject.mine = true;
+					tempObject.type = "partner";
+					tempObject.bankBot = true;
+					tempObject.acc = history[i].CURRENCY;
+					tempObject.amount = -Number(history[i].AMOUNT);
 				} else if (history[i].TYPE == "SAVINGS") {
 					tempObject.mine = false;
 					tempObject.acc = history[i].CURRENCY;

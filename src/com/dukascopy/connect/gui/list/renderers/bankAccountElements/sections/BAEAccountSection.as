@@ -107,6 +107,9 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements.sections {
 				if ("type" in data && data.type == "getcashSwap") {
 					bgColor = COLOR_ORANGE;
 					textColor = COLOR_WHITE;
+				} else if ("type" in data && data.type == "partner") {
+					bgColor = COLOR_PARTNER;
+					textColor = COLOR_WHITE;
 				} else if ("type" in data && data.type.indexOf(")!2") != 0) {
 					if (data.type == "coinTrade") {
 						bgColor = COLOR_BLUE_LIGHT;
