@@ -2491,7 +2491,7 @@ package com.dukascopy.connect.sys.bankManager {
 					contractTest += Lang.textSwapBuybackDate + "\n";
 					contractTest += "<b>" + rdSwapObject.swap_buyback_date + "</b>\n";
 					contractTest += Lang.textSwapBuybackAmount + "\n";
-					contractTest += "<b>" + rdSwapObject.total.ccy_symbol + Number(rdSwapObject.total.amount) + "</b>\n\n";
+					contractTest += "<b>" + rdSwapObject.total.ccy_symbol + rdSwapObject.total.amount + "</b>\n\n";
 					contractTest += Lang.textSwapAnnualizedRate + "\n";
 					contractTest += "<b>" + rdSwapObject.rate + "</b>\n";
 					contractTest += Lang.textSwapProlongationFee + "\n";
