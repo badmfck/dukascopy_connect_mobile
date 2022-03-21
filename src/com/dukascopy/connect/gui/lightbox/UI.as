@@ -2399,6 +2399,8 @@ package com.dukascopy.connect.gui.lightbox {
 			}
 			icon.transform.matrix.identity();
 			icon.scaleX = icon.scaleY = 1;
+			icon.x=0;
+			icon.y=0;
 			return icon;
 		}
 		

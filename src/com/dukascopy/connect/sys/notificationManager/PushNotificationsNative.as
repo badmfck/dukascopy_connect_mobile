@@ -627,10 +627,11 @@ package com.dukascopy.connect.sys.notificationManager {
 							notificationData.screen = 'payments';
 							handleRemoteNotification();
 
-						} else if (parsedParams[0] == 'support') {
-
-							if (parsedParams[1] == null)
+						} else if (parsedParams[0] == 'support' || parsedParams[0] == 'vidid') {
+							if (parsedParams[1] == null){
+								parsedParams[1] = "133";
 								return;
+							}
 							notificationData = { pid:int(parsedParams[1]) };
 							notificationData.type = TYPE_URL;
 							notificationData.screen = 'support';
@@ -646,13 +647,23 @@ package com.dukascopy.connect.sys.notificationManager {
 							notificationData.chatUID = parsedParams[1];
 							handleRemoteNotification();
 							parsedParams = null;
-						} 
+						} else if(parsedParams[0] == "referral"){
+
+							notificationData = { };
+							notificationData.type = TYPE_URL;
+							notificationData.screen = 'referral';
+							handleRemoteNotification();
+							parsedParams = null;
+
+						}
 					}
 				}
 
 				//uid = "I6DzDaWqWKWE"
 
 			} else if (e.reason == InvokeEventReason.NOTIFICATION) {
+
+
 			} else {
 				TweenMax.delayedCall(1, checkPendingNotifications, null, true);
 			}
