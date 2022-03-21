@@ -8,12 +8,16 @@ package com.dukascopy.connect.gui.button
 	import com.dukascopy.connect.screens.roadMap.RoadmapStepClip;
 	import com.dukascopy.connect.screens.roadMap.RoadmapStepData;
 	import com.dukascopy.connect.sys.imageManager.ImageBitmapData;
+	import com.dukascopy.connect.sys.style.FontSize;
+	import com.dukascopy.connect.sys.style.Style;
 	import com.dukascopy.connect.sys.style.presets.Color;
 	import com.dukascopy.connect.type.BankPhaze;
 	import com.dukascopy.langs.Lang;
 	import com.greensock.TweenMax;
 	import flash.display.Sprite;
 	import flash.display.StageQuality;
+	import flash.text.TextFormat;
+	import flash.text.TextFormatAlign;
 	/**
 	 * ...
 	 * @author Sergey Dobarin
@@ -37,14 +41,69 @@ package com.dukascopy.connect.gui.button
 		public function set type(value:String):void 
 		{
 			_type = value;
+			trace("TYPE", _type);
+		}
+		
+		override public function draw():void
+		{
+			if (!changed)
+			{
+				return;
+			}
+			changed = false;
+			
+			tf.text = value;
+			
+			
+			var textWidth:int = w - Config.MARGIN * 2;
+			var buttonWidth:int = w;
+			var textFormat:TextFormat = new TextFormat();
+				textFormat.align = TextFormatAlign.CENTER;
+				tf.setTextFormat(textFormat);
+			if (_type == "suspend")
+			{
+				textWidth = (w - Config.MARGIN * 4) / 2;
+				textFormat.size = FontSize.BODY;
+				tf.setTextFormat(textFormat);
+				buttonWidth = w / 2;
+			}
+			
+			
+			tf.width = textWidth
+			tf.height = tf.textHeight + 4;
+			tf.y = int(Config.MARGIN * 1.3);
+			tf.x = int(buttonWidth * .5 - tf.width * .5);
+			
+			var itemHeight:int = int(Config.MARGIN * 2.6 + tf.height);
+			
+			var padding:int = Config.FINGER_SIZE * .1;
+			box.graphics.clear();
+			box.graphics.beginFill(color, 1);
+			box.graphics.drawRoundRect(padding, padding, buttonWidth - padding * 2, itemHeight - padding * 2, Style.size(Style.SIZE_BUTTON_CORNER), Style.size(Style.SIZE_BUTTON_CORNER));
+			box.graphics.endFill();
+			
+			if (generatedBitmap == null || generatedBitmap.isDisposed == true || generatedBitmap.width != buttonWidth || generatedBitmap.height != itemHeight) {
+				
+				UI.disposeBMD(generatedBitmap);
+				
+				generatedBitmap = new ImageBitmapData("RectangleButton.generatedBitmap", buttonWidth, itemHeight, true, 0);
+			}else {
+				generatedBitmap.fillRect(generatedBitmap.rect, 0);	
+			}
+			
+			generatedBitmap.drawWithQuality(box, null, null, null, null, true, StageQuality.BEST);
+			
+			setBitmapData(generatedBitmap);
+			setHitZone(buttonWidth, itemHeight);
 		}
 		
 		public function animateProgress():void 
 		{
 			if (animation == null)
 			{
-				animation = new Preloader(height * .5, WhiteLoadShape);
+				animation = new Preloader(Config.FINGER_SIZE * .5, WhiteLoadShape);
 			}
+			animation.visible = true;
 			animation.show();
 			animation.y = int(height * .5 - animation.height * .5);
 			animation.x = 0;
@@ -54,22 +113,28 @@ package com.dukascopy.connect.gui.button
 			TweenMax.to(animation, animationTime, {x:Config.DOUBLE_MARGIN + Config.DOUBLE_MARGIN});
 			if (tf.x < animation.x + animation.width*2 + Config.DOUBLE_MARGIN*2.5)
 			{
-				TweenMax.to(tf, animationTime, {x:(animation.x + animation.width*2 + Config.DOUBLE_MARGIN*2.5), onUpdate:render});
+			//	TweenMax.killTweensOf(tf);
+				var dist:int = (animation.x + Config.FINGER_SIZE);
+				TweenMax.to(tf, animationTime, {x:dist, onUpdate:render});
 			}
 		}
 		
 		override public function setValue(value:String = null):void
 		{
-			hideAnimation();
 			super.setValue(value);
+			hideAnimation();
 		}
 		
 		private function render():void 
 		{
 			var itemHeight:int = int(Config.MARGIN * 2.6 + tf.height);
 			var needDispose:Boolean = false;
-			
-			if (generatedBitmap == null || generatedBitmap.isDisposed == true || generatedBitmap.width != w || generatedBitmap.height != itemHeight) {
+			var buttonWidth:int = w;
+				if (_type == "suspend")
+				{
+					buttonWidth = w / 2;
+				}
+			if (generatedBitmap == null || generatedBitmap.isDisposed == true || generatedBitmap.width != buttonWidth || generatedBitmap.height != itemHeight) {
 				
 				UI.disposeBMD(generatedBitmap);
 				
@@ -79,6 +144,7 @@ package com.dukascopy.connect.gui.button
 				generatedBitmap.fillRect(generatedBitmap.rect, 0);	
 			}
 			
+			setHitZone(buttonWidth, itemHeight);
 			generatedBitmap.drawWithQuality(box, null, null, null, null, true, StageQuality.BEST);
 			
 			setBitmapData(generatedBitmap, needDispose);
@@ -88,12 +154,25 @@ package com.dukascopy.connect.gui.button
 		{
 			if (animation != null)
 			{
+				var buttonWidth:int = w;
+				if (_type == "suspend")
+				{
+					buttonWidth = w / 2;
+				}
+				
 				TweenMax.killChildTweensOf(animation);
 				TweenMax.killTweensOf(animation);
 				TweenMax.to(animation, 0.3, {x:0});
-				TweenMax.to(tf, 0.3, {x:int(w * .5 - tf.width * .5), onUpdate:render});
+			//	TweenMax.killTweensOf(tf);
+				var dist:int = int(buttonWidth * .5 - tf.width * .5);
+				if (dist > 0)
+				{
+					TweenMax.to(tf, 0.3, {x:dist, onUpdate:render, onComplete:removeAnimation});
+				}
 				animation.hide();
 			}
+			
+			setHitZone(buttonWidth, height);
 		}
 		
 		override public function dispose():void
@@ -196,6 +275,10 @@ package com.dukascopy.connect.gui.button
 		{
 			if (animation != null)
 			{
+				if (contains(animation))
+				{
+					removeChild(animation);
+				}
 				TweenMax.killTweensOf(animation);
 				TweenMax.killChildTweensOf(animation);
 				UI.destroy(animation);

@@ -352,25 +352,15 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			
 			super.initScreen(data);
 			
-		//	updateScroll();
-		//	recreateLayout();
-			
 			GD.S_ESCROW_START_MONITORING.invoke();
 			GD.S_ESCROW_INSTRUMENTS.add(onInstruments);
 		}
 		
-		private function onInstruments(instrumentsData:Vector.<EscrowInstrument>):void 
-		{
-			trace("123");
-			
-			if (instrumentsData != null)
-			{
-				for (var i:int = 0; i < instrumentsData.length; i++) 
-				{
-					if (selectedCrypto != null)
-					{
-						if (selectedCrypto.code == instrumentsData[i].code)
-						{
+		private function onInstruments(instrumentsData:Vector.<EscrowInstrument>):void {
+			if (instrumentsData != null) {
+				for (var i:int = 0; i < instrumentsData.length; i++) {
+					if (selectedCrypto != null) {
+						if (selectedCrypto.code == instrumentsData[i].code) {
  							selectedCrypto = instrumentsData[i];
 							break;
 						}
@@ -380,44 +370,31 @@ package com.dukascopy.connect.screens.dialogs.escrow {
 			refreshPrice(true);
 		}
 		
-		private function selectCurrencyFromPrices():void 
-		{
-			if (selectedCrypto != null && selectedCrypto.price != null)
-			{
+		private function selectCurrencyFromPrices():void {
+			if (selectedCrypto != null && selectedCrypto.price != null) {
 				var preferredCurrency:String = TypeCurrency.USD;
 				var exist:Boolean;
-				for (var i:int = 0; i < selectedCrypto.price.length; i++) 
-				{
-					if (selectedCrypto.price[i].name == preferredCurrency)
-					{
+				for (var i:int = 0; i < selectedCrypto.price.length; i++) {
+					if (selectedCrypto.price[i].name == preferredCurrency) {
 						exist = true;
 						break;
 					}
 				}
-				if (exist)
-				{
+				if (exist) {
 					currencySign = preferredCurrency;
-				}
-				else
-				{
-					if (selectedCrypto.price.length > 0)
-					{
+				} else {
+					if (selectedCrypto.price.length > 0) {
 						currencySign = selectedCrypto.price[0].name;
-					}
-					else
-					{
+					} else {
 						ApplicationErrors.add();
 					}
 				}
-			}
-			else
-			{
+			} else {
 				ApplicationErrors.add("selectedCrypto null");
 			}
 		}
 		
-		override protected function drawContent():void 
-		{
+		override protected function drawContent():void {
 			priceSelector.direction = selectedDirection;
 			priceSelector.draw(getWidth() - contentPadding * 2, -5, 5, 0, selectedPrice, getCurrency());
 			

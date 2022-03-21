@@ -116,7 +116,7 @@ package com.dukascopy.connect.utils {
 		public static function createbutton(text:TextFieldSettings, backgroundColor:Number, 
 											backgroundAlpha:Number = 0.6, 
 											sidePadding:int = -1, 
-											outlineColor:Number = NaN, overridedWidth:int = -1, verticalPadding:int = -1, radius:Number = NaN, outlineAlpha:Number = 1):ImageBitmapData
+											outlineColor:Number = NaN, overridedWidth:int = -1, verticalPadding:int = -1, radius:Number = NaN, outlineAlpha:Number = 1, overrideHeight:Number = NaN):ImageBitmapData
 		{
 			serviceSprite ||= new Sprite();
 			serviceSprite.graphics.clear();
@@ -173,7 +173,14 @@ package com.dukascopy.connect.utils {
 			{
 				r = radius;
 			}
-			serviceSprite.graphics.drawRoundRect(0, 0, itemWidth, textField.height + verticalPadding * 2, r, r);
+			
+			
+			if (!isNaN(overrideHeight))
+			{
+				itemHeight = overrideHeight;
+				verticalPadding = itemHeight * .5 - textField.height * .5;
+			}
+			serviceSprite.graphics.drawRoundRect(0, 0, itemWidth, itemHeight, r, r);
 			serviceSprite.graphics.endFill();
 			
 			var bitmapData:ImageBitmapData = new ImageBitmapData("TextUtils.createbutton", serviceSprite.width + lineStyle, serviceSprite.height + lineStyle);

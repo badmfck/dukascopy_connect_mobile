@@ -149,6 +149,11 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements.sections {
 		
 		override protected function setColorScheme():void {
 			if ("type" in data == true) {
+				if (data.type == "partner" || data.type == "getcashSwap") {
+					bgColor = COLOR_WHITE;
+					textColor = COLOR_BLACK;
+					lineColor = COLOR_BLACK;
+				}
 				if (data.type == "exchange" || data.type == ")!2exchange") {
 					bgColor = COLOR_GRAY_MEDIUM;
 					textColor = COLOR_BLACK;
@@ -172,7 +177,7 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements.sections {
 				lineColor = COLOR_BLACK;
 				lineAlpha = LINE_OPACITY_1;
 				textColor = COLOR_BLACK;
-				return
+				return;
 			}
 			textColor = COLOR_GRAY_LIGHT;
 			if (data.acc == "DCO" && data.userAccNumber == BankManager.rewardAccount) {
@@ -194,11 +199,9 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements.sections {
 			UI.destroy(leftTextField);
 			leftTextField = null;
 			
-			if (codeProtection != null)
-			{
+			if (codeProtection != null) {
 				codeProtection.dispose();
-				if (contains(codeProtection))
-				{
+				if (contains(codeProtection)) {
 					removeChild(codeProtection);
 				}
 				codeProtection = null;

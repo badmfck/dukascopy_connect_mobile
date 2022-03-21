@@ -2042,9 +2042,10 @@ package com.dukascopy.connect.sys.bankManager {
 		static private function onRDSwap(respondData:Object, hash:String):void {
 			if (preCheckForErrors(respondData, hash, null, "paymentsErrorDataNull") == true)
 				return;
-			if (respondData.status == "active")
+			if (respondData.status == "active") {
+				sendBlock("clearCryptoRD");
 				sendBlock("cryptoSwapConfirmed");
-			else
+			} else
 				sendBlock("cryptoSwapCreatedConfirmed", [respondData.address]);
 		}
 		
@@ -2402,6 +2403,18 @@ package com.dukascopy.connect.sys.bankManager {
 					tempObject.bankBot = true;
 					tempObject.acc = history[i].CURRENCY;
 					tempObject.amount = Number(history[i].AMOUNT);
+				} else if (history[i].TYPE == "GETCASH SWAP") {
+					tempObject.mine = true;
+					tempObject.type = "getcashSwap";
+					tempObject.bankBot = true;
+					tempObject.acc = history[i].CURRENCY;
+					tempObject.amount = -Number(history[i].AMOUNT);
+				} else if (history[i].TYPE == "PARTNER ACCOUNT TRANSFER" || history[i].TYPE == "PARTNER CRYPTO TRADE") {
+					tempObject.mine = true;
+					tempObject.type = "partner";
+					tempObject.bankBot = true;
+					tempObject.acc = history[i].CURRENCY;
+					tempObject.amount = -Number(history[i].AMOUNT);
 				} else if (history[i].TYPE == "SAVINGS") {
 					tempObject.mine = false;
 					tempObject.acc = history[i].CURRENCY;

@@ -673,7 +673,7 @@ package com.dukascopy.connect.gui.components
 			}
 			
 			var errorExist:Boolean = drawAddress();
-					
+		//	errorExist = true;
 			if (errorExist)
 			{
 				expand(false);
@@ -682,6 +682,7 @@ package com.dukascopy.connect.gui.components
 			else
 			{
 				collapse();
+				fillExistingData();
 			}
 			
 			
@@ -706,6 +707,10 @@ package com.dukascopy.connect.gui.components
 				
 				var text:String;
 				var errorMessage:String = "";
+				
+			//	PayManager.accountInfo.cardIssuanceCityMaxLength = 1;
+			//	PayManager.accountInfo.cardIssuanceFullnameMaxLength = 1;
+			//	PayManager.accountInfo.cardIssuanceStreetMaxLength = 1;
 				
 				if (getAccountCity() != null && getAccountCity().length > PayManager.accountInfo.cardIssuanceCityMaxLength)
 				{

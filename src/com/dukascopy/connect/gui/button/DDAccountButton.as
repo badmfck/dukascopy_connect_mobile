@@ -102,7 +102,7 @@ package com.dukascopy.connect.gui.button
 			textFormatLabel.font = Config.defaultFontName;
 			
 			textFormatPlaceholder = new TextFormat();
-			textFormatPlaceholder.size = FontSize.BODY;
+			textFormatPlaceholder.size = FontSize.AMOUNT;
 			textFormatPlaceholder.color = Style.color(Style.COLOR_TEXT);
 			textFormatPlaceholder.font = Config.defaultFontName;
 			

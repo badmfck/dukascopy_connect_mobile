@@ -19,6 +19,7 @@ package com.dukascopy.connect.screens {
 	import com.dukascopy.connect.data.RateBotData;
 	import com.dukascopy.connect.data.ScanPassportResult;
 	import com.dukascopy.connect.data.SoundStatusData;
+	import com.dukascopy.connect.data.TextFieldSettings;
 	import com.dukascopy.connect.data.UserBanData;
 	import com.dukascopy.connect.data.escrow.EscrowScreenNavigation;
 	import com.dukascopy.connect.data.escrow.TradeDirection;
@@ -84,6 +85,7 @@ package com.dukascopy.connect.screens {
 	import com.dukascopy.connect.screens.dialogs.ScanPassportPopup;
 	import com.dukascopy.connect.screens.dialogs.ScreenLinksDialog;
 	import com.dukascopy.connect.screens.dialogs.ScreenQuestionReactionsDialog;
+	import com.dukascopy.connect.screens.dialogs.ScreenWebviewDialogBase;
 	import com.dukascopy.connect.screens.dialogs.calendar.RecognitionDateRemindPopup;
 	import com.dukascopy.connect.screens.serviceScreen.Overlay;
 	import com.dukascopy.connect.sys.DocumentUploader;
@@ -122,6 +124,7 @@ package com.dukascopy.connect.screens {
 	import com.dukascopy.connect.sys.sound.PlaySoundTicket;
 	import com.dukascopy.connect.sys.sound.SoundController;
 	import com.dukascopy.connect.sys.store.Store;
+	import com.dukascopy.connect.sys.style.FontSize;
 	import com.dukascopy.connect.sys.style.Style;
 	import com.dukascopy.connect.sys.style.presets.Color;
 	import com.dukascopy.connect.sys.theme.AppTheme;
@@ -145,6 +148,7 @@ package com.dukascopy.connect.screens {
 	import com.dukascopy.connect.type.QuestionChatActionType;
 	import com.dukascopy.connect.type.UserBlockStatusType;
 	import com.dukascopy.connect.utils.ColorUtils;
+	import com.dukascopy.connect.utils.TextUtils;
 	import com.dukascopy.connect.vo.ChatMessageVO;
 	import com.dukascopy.connect.vo.ChatSystemMsgVO;
 	import com.dukascopy.connect.vo.ChatVO;
@@ -249,6 +253,7 @@ package com.dukascopy.connect.screens {
 		private var replyPanel:ReplyMessagePanel;
 		private var payByCardAction:PayByCardAction;
 		private var messagePreloader:HorizontalPreloader;
+		private var fastTrackButton:BitmapButton;
 		protected var backColorClip:Sprite;
 		static public var scannPassTime:Number = 0;
 		
@@ -1445,6 +1450,9 @@ package com.dukascopy.connect.screens {
 			if (basketButton != null) {
 				basketButton.activate();
 			}
+			if (fastTrackButton != null) {
+				fastTrackButton.activate();
+			}
 			if (satisfyPublicAnswerButton != null) {
 				satisfyPublicAnswerButton.activate();
 			}
@@ -2256,6 +2264,8 @@ package com.dukascopy.connect.screens {
 				answersCountButton.deactivate();
 			if (verificationButton != null)
 				verificationButton.deactivate();
+			if (fastTrackButton != null)
+				fastTrackButton.deactivate();
 			chatTop.deactivate();
 			list.S_ITEM_TAP.remove(onItemTap);
 			list.S_ITEM_SWIPE.remove(onItemSwipe);
@@ -4169,6 +4179,12 @@ package com.dukascopy.connect.screens {
 			if (verificationButton != null) {
 				bottomY -= verificationButton.height;
 				verificationButton.y = chatInput.getView().y - verificationButton.height;
+				
+				if (fastTrackButton != null)
+				{
+					fastTrackButton.x = verificationButton.x + verificationButton.width + Config.FINGER_SIZE * .1;
+					fastTrackButton.y = verificationButton.y + Config.FINGER_SIZE * .1;
+				}
 			}
 
 			var position: int = bottomY;
@@ -4419,6 +4435,7 @@ package com.dukascopy.connect.screens {
 			if (reportButton != null)
 				reportButton.dispose();
 			reportButton = null;
+			removeFastTrackButton();
 			
 			if (chatTop != null)
 				chatTop.dispose();
@@ -5095,14 +5112,16 @@ package com.dukascopy.connect.screens {
 			}
 			var text:String = "";
 			var buttonColor:Number = AppTheme.RED_MEDIUM;
+			var addFastTrackButton:Boolean = false;
 			switch(type) {
 				case "ready": {
 					text = Lang.pressToStartVerification;
 					break;
 				}
 				case "suspend": {
-					buttonColor = AppTheme.GREY_MEDIUM;
+					buttonColor = AppTheme.GREY_DARK;
 					text = Lang.letsDoVerificationLater;
+					addFastTrackButton = true;
 					break;
 				}
 				case "payCard": {
@@ -5188,6 +5207,61 @@ package com.dukascopy.connect.screens {
 				verificationButton.showPhaze(phaze);
 			}
 			setChatListSize();
+			
+			if (addFastTrackButton)
+			{
+				createFastTrackButton();
+			}
+			else
+			{
+				removeFastTrackButton();
+			}
+		}
+		
+		private function removeFastTrackButton():void 
+		{
+			if (fastTrackButton != null)
+			{
+				if (_view != null && _view.contains(fastTrackButton))
+				{
+					_view.removeChild(fastTrackButton);
+				}
+				fastTrackButton.dispose();
+				fastTrackButton = null;
+			}
+		}
+		
+		private function createFastTrackButton():void 
+		{
+			if (fastTrackButton == null)
+			{
+				fastTrackButton = new BitmapButton();
+				fastTrackButton.setStandartButtonParams();
+				fastTrackButton.setDownScale(1);
+				
+				fastTrackButton.tapCallback = startFastTrack;
+				
+				fastTrackButton.x = verificationButton.x + verificationButton.width + Config.FINGER_SIZE * .1;
+				fastTrackButton.y = verificationButton.y + Config.FINGER_SIZE * .1;
+				
+				var textSettings:TextFieldSettings = new TextFieldSettings(Lang.fast_track_button, Color.WHITE, FontSize.BODY, TextFormatAlign.CENTER);
+				var buttonBitmap:ImageBitmapData = TextUtils.createbutton(textSettings, Color.GREEN, 1, -1, NaN, int(_width/2 - Config.FINGER_SIZE*.2), Style.size(Style.BUTTON_PADDING), Style.size(Style.SIZE_BUTTON_CORNER), 1, int(verificationButton.height - Config.FINGER_SIZE*.2));
+				fastTrackButton.setBitmapData(buttonBitmap, true);
+				
+				fastTrackButton.show();
+				if (_isActivated)
+				{
+					fastTrackButton.activate();
+				}
+				_view.addChild(fastTrackButton);
+			}
+		}
+		
+		private function startFastTrack():void 
+		{
+		//	{"method":"botMenu","type":"chatSystem","additionalData":"{\"menu\":{\"title\":\"ask_for_fast_track\",\"items\":[{\"text\":\"ask_for_fast_track_yes\",\"action\":\"nav:fast_track_submit\"},{\"text\":\"ask_for_fast_track_no\",\"action\":\"nav:fast_track_wait\"}]}}"}
+			
+			ChatManager.sendBotActionMessage("nav:en:fast_track_button", Lang.request_fasttrack_message, null, ChatManager.getCurrentChat().uid, Auth.uid);
 		}
 		
 		private function loadSteps(type:String):void 
