@@ -199,11 +199,9 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements.sections {
 			UI.destroy(leftTextField);
 			leftTextField = null;
 			
-			if (codeProtection != null)
-			{
+			if (codeProtection != null) {
 				codeProtection.dispose();
-				if (contains(codeProtection))
-				{
+				if (contains(codeProtection)) {
 					removeChild(codeProtection);
 				}
 				codeProtection = null;

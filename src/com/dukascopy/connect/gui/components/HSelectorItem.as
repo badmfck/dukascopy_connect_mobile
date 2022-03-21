@@ -116,6 +116,10 @@ package com.dukascopy.connect.gui.components
 						UI.scaleToFit(icon, iconSize, iconSize);
 					//	UI.colorize(icon, Style.color(Style.TOP_BAR_ICON_COLOR));
 						
+						if (!isNaN(data.color))
+						{
+							UI.colorize(icon, data.color);
+						}
 						iconClip = new Bitmap();
 						addChild(iconClip);
 						

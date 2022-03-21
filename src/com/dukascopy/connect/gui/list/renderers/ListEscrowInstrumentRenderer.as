@@ -21,7 +21,7 @@ package com.dukascopy.connect.gui.list.renderers {
 	 * @author Alexey
 	 */
 	
-	public class ListEscrowInstrumentRenderer extends BaseRenderer implements IListRenderer{
+	public class ListEscrowInstrumentRenderer extends BaseRenderer implements IListRenderer {
 		
 		private static const TEXT_SIZE_LABEL:int = Config.FINGER_SIZE * .3;
 		private static const TEXT_SIZE_DESC:int = Config.FINGER_SIZE * .24;
@@ -113,8 +113,6 @@ package com.dukascopy.connect.gui.list.renderers {
 		private function drawName(data:Object):void {
 			var code:String = data.instrument.code;
 			var name:String = data.instrument.name;
-			/*if (code in Lang.cryptoTitles == true)
-				name = Lang.cryptoTitles[code];*/
 			if (code == "DCO")
 				code = "DUK+";
 			var text:String = String(name + " (" + code + ")").toUpperCase();
