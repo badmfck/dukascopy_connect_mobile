@@ -177,7 +177,7 @@ package com.dukascopy.connect.gui.list.renderers.bankAccountElements.sections {
 				lineColor = COLOR_BLACK;
 				lineAlpha = LINE_OPACITY_1;
 				textColor = COLOR_BLACK;
-				return
+				return;
 			}
 			textColor = COLOR_GRAY_LIGHT;
 			if (data.acc == "DCO" && data.userAccNumber == BankManager.rewardAccount) {

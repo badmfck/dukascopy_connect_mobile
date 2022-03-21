@@ -24,8 +24,8 @@ package com.dukascopy.connect.gui.list.renderers {
 	public class ListEscrowInstrumentRenderer extends BaseRenderer implements IListRenderer{
 		
 		private static const TEXT_SIZE_LABEL:int = Config.FINGER_SIZE * .3;
-		private static const TEXT_SIZE_DESC:int = Config.FINGER_SIZE * .2;
-		private static const TEXT_SIZE_DESC_VALS:int = Config.FINGER_SIZE * .2;
+		private static const TEXT_SIZE_DESC:int = Config.FINGER_SIZE * .24;
+		private static const TEXT_SIZE_DESC_VALS:int = Config.FINGER_SIZE * .24;
 		private static const ICON_SIZE:int = Config.FINGER_SIZE * .7;
 		private static const NEW_COUNT_SIZE:int = Config.FINGER_SIZE * .42;
 		private static const PADDING:int = Config.FINGER_SIZE * .2;
@@ -135,7 +135,7 @@ package com.dukascopy.connect.gui.list.renderers {
 			
 			var baseSize:Number = FontSize.TITLE_2;
 			var captionSize:Number = FontSize.SUBHEAD;
-			var color:String = "#" + Style.color(Style.COLOR_TEXT).toString(16);
+			var color:String = "#9EAFBE";
 			
 			result = "<font color='" + color + "' size='" + TEXT_SIZE_DESC + "'>" + Lang.escrow_ads + ": </font><font color='#CD3F43' size='" + TEXT_SIZE_DESC_VALS + "'>" + data.count + "</font>";
 			result += "<font color='" + color + "' size='" + TEXT_SIZE_DESC + "'>, " + Lang.escrow_coins + ": </font><font color='#CD3F43' size='" + TEXT_SIZE_DESC_VALS + "'>" + data.volume + "</font>";
